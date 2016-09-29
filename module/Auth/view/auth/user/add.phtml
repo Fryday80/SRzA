@@ -1,0 +1,20 @@
+<?php
+
+$title = 'Add new User';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form->setAttribute('action', $this->url('user', array('action' => 'add')));
+$form->prepare();
+ 
+ 
+//  echo $this->formCollection($form);
+ echo $this->form()->openTag($form);
+ echo $this->formHidden($form->get('id'));
+ echo $this->formRow($form->get('name'));
+ echo '<br>';
+ echo $this->formRow($form->get('password'));
+ echo '<br>';
+ echo $this->formSubmit($form->get('submit'));
+ echo $this->form()->closeTag();

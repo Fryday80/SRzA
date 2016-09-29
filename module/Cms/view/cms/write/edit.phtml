@@ -1,0 +1,12 @@
+<h1>WriteController::addAction()</h1>
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('cms/edit', array(), true));
+$form->prepare();
+$form->get('submit')->setValue('Update');
+
+echo $this->form()->openTag($form);
+
+echo $this->formCollection($form);
+
+echo $this->form()->closeTag();

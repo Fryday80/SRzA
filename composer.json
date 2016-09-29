@@ -1,0 +1,10 @@
+{
+    "name": "Schwartze Ritter zu Augsburg",
+    "description": "Die webseite des vereins Schwartze Ritter zu Augsburg",
+    "homepage": "http://xxx",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "~2.4",
+        "doctrine/doctrine-orm-module": "0.8.*"
+    }
+}
