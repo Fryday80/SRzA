@@ -14,10 +14,6 @@ $(document).ready(function () {
         $(".secondLevel").addClass("hidden");
     }
 
-   /* function showSub() {
-        $(".secondLevel", this).removeClass( "hidden" );
-    }*/
-
     /**
      *  toggles the whole menu visible or hidden for mobile view
      */
@@ -48,25 +44,6 @@ $(document).ready(function () {
             $("#menuItems").show();
         };
     }
-
-   /* function rebindMenuHandlers () {
-
-        $("#navbutton").off("click", toggleMenu);
-        $("#mainMenu li").off("click", toggleSub);
-        $("#mainMenu li").off("mouseover", showSub);
-        $("#mainMenu li").off("mouseout", hideSub);
-
-        if ($(window)[0].innerWidth < 700 ){
-            $("#menuItems").hide();
-            $("#navbutton").on("click", toggleMenu);
-            $("#mainMenu li").on("click", toggleSub);
-        } else {
-            $("#mainMenu li").on("click", toggleSub);
-            $("#mainMenu li").on("mouseover", showSub);
-            $("#mainMenu li").on("mouseout", hideSub);
-            $("#menuItems").show();
-        };
-    }*/
 
     $(window).resize(function() {
 

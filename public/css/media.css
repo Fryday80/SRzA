@@ -10,7 +10,7 @@
         margin-top: -7px;
     }
     ownhead {
-    font-size: 60;
+    font-size: 60px;
     }
     #headlinks {
     font-size: 14px;
@@ -23,7 +23,7 @@
         width: 22%;
     }
     news {
-        font-size: 20;
+        font-size: 20px;
     }
 }
 
@@ -59,11 +59,11 @@
         float: left;
     }
     ownhead {
-        font-size: 35;
+        font-size: 35px;
     }
     owntitel,
     news {
-        font-size: 30;
+        font-size: 30px;
     }
 }
 
@@ -74,6 +74,6 @@
         padding-top: 20px;
     }
     ownhead {
-        font-size: 20;
+        font-size: 20px;
     }
 }

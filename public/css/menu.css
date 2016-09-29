@@ -4,7 +4,7 @@
     #mainMenu {
         list-style-type: none;
         margin: 0 0 0 0;
-        padding: 5;
+        padding: 5px;
         display: block;
     }
 
@@ -12,7 +12,7 @@
     #mainMenu li {
         vertical-align: middle;
         list-style-type: none;
-        padding-left: 10;
+        padding-left: 10px;
         font-weight: 700;
         line-height: 30px;
         width: 90%;
@@ -144,7 +144,7 @@
         width: auto;
         margin-left: -0px;
         padding-right: 0;
-        padding-bottom: 5;
+        padding-bottom: 5px;
     }
     .secondLevel {
         background-color: black;
@@ -164,9 +164,9 @@
     }
     #mainMenu>li>ul {
         position: relative;
-        padding-left: 10;
+        padding-left: 10px;
         float: none;
-        top: 2;
+        top: 2px;
         left: 5px;
     }
     #mainMenu li:link,

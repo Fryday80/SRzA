@@ -27,12 +27,12 @@ a:active{
 ownhead {
     font-family: stylo, arial, sans-serif;
     color: black;
-    font-size: 68;
+    font-size: 68px;
     font-size-adjust: auto;
 }
 owntitel {
     font-family: stylo, arial, sans-serif;
-    font-size: 25;
+    font-size: 25px;
     color: black;
 }
 
