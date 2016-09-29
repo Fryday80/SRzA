@@ -1,37 +1,215 @@
+/* -----------------general Settings----------------- */
+* {
+    padding: 0;
+    margin: 0;
+}
+html {
+    background-color: black;
+    background-image: url(../media/html.bg.png);
+    background-size: 100px;
+}
+
 body {
-    padding-top: 60px;
-    padding-bottom: 40px;
+    margin-top: 60px;
+    margin-left: 60px;
+    margin-right: 60px;
+    background-image: url(../media/div.bg.test.png);
+    background-size: auto 130px;
 }
 
-.zf-green {
-    color: #68b604;
+a:link,
+a:visited,
+a:hover,
+a:active{
+    text-decoration: none;
+    color: black;
+}
+ownhead {
+    font-family: stylo, arial, sans-serif;
+    color: black;
+    font-size: 68;
+    font-size-adjust: auto;
+}
+owntitel {
+    font-family: stylo, arial, sans-serif;
+    font-size: 25;
+    color: black;
 }
 
-.btn-success {
-  background-color: #57a900;
-  background-image: -moz-linear-gradient(top, #70d900, #57a900);
-  background-image: -ms-linear-gradient(top, #70d900, #57a900);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#70d900), to(#57a900));
-  background-image: -webkit-linear-gradient(top, #70d900, #57a900);
-  background-image: -o-linear-gradient(top, #70d900, #57a900);
-  background-image: linear-gradient(top, #70d900, #57a900);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#70d900', endColorstr='#57a900', GradientType=0);
+input {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius:5px;
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+input::after {
+    display: inline-block;
+    content: "\A";
+    white-space: pre;
 }
 
-.btn-success:hover,
-.btn-success:active,
-.btn-success.active,
-.btn-success.disabled,
-.btn-success[disabled] {
-  background-color: #57a900;
+/* ---------------Fonts---------------------*/
+@font-face { font-family: 'stylo';
+             src: url('../media/hp.ttf') format('truetype'); }
+
+
+/* -----------------Head----------------- */
+#headcontainer {
+    position: relative;
+    width: 100%;
+/*
+    background-image: url(../media/div.bg.test.png);
+    background-repeat: repeat;
+    background-size: auto 100%;
+*/
+}
+#headdeko {
+    position: relative;
+    float:left;
+    width: 15%;
+    height: 110px;
+    background-image: none;
+    z-index: 5;
+}
+#headdeko>img {
+    margin-left: auto;
+    height: 160px;
+    margin-top: -15px;
+}
+#head {
+    position: relative;
+    float: right;
+    width: 85%;
+    text-align: center;
+    height: 90px;  /*height + padding = height of div*/
+    padding-top: 20px;
+}
+#headlinks {
+    clear:both;
+    position: relative;
+    padding-right: 10px;
+    width: calc (100%-10px);
+    height: 20px;
+    text-align: right;
+    color: black;
+}
+#headlinks>span,
+#headlinks>span>a:link,
+#headlinks>span>a:visited {
+    color: black;
 }
 
-.btn-success:active, .btn-success.active {
-  background-color: #57a900;
+#headlinks>span>a:hover {
+    background-image: url(../media/uikit/highlight.d.u.png);
+    background-size: 100% 50%;
+    background-position: bottom;
+    color: black;
+}
+#headlinks>span>a:active {
+    color: black;
 }
 
-div.container a.brand {
-    background: url("../img/zf2-logo.png") no-repeat scroll 0 10px transparent;
-    margin-left: 0;
-    padding: 8px 20px 12px 40px;
+
+/* -----------------hp body----------------- */
+.bodycontainer {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+}
+
+#navframe,
+#content,
+.rightcontainer {
+
+    position: relative;
+    z-index: inherit;
+/*    background-image: url(../media/div.bg.test.png);*/
+/*    background-size: auto 130px;*/
+}
+
+/* -----------------colum 1 (navframe)----------------- */
+#navframe {
+    position: relative;
+    text-align: center;
+    width: 15%;
+    padding-top: 20px;
+    float: left;
+    min-height: 100%;
+    z-index: 2;
+}
+
+/* -----------------colum 2 content----------------- */
+#content {
+    float: left;
+    width: 65%;
+    margin-left: 2px;
+    padding-left: 5px;
+    padding-top: 20px;
+    min-height: 50%;
+
+}
+
+/* -----------------colum 3 right bar----------------- */
+.rightcontainer {
+    position: relative;
+    float: right;
+    width: 19%;
+    text-align: center;
+/*    min-height: 100%;*/
+}
+
+.rightbarup, .rightbardown {
+    position: relative;
+    padding-left: 5px;
+    padding-right: 10px;
+    padding-top: 20px;
+    width: 90%;
+    float: right;
+    height: auto;
+    min-height: 20%;
+    overflow: visible;
+}
+newstitel {
+    font-weight: 700;
+}
+
+/* -----------------foot----------------- */
+#foot {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+#foottext {
+    color: black;
+    padding-top: 10px;
+    min-height: 30px;
+    background-image: url(../media/div.bg.test.png);
+    background-size: auto 100%;
+}
+
+#footimage {
+    background-image: url(../Media/foot.png);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 150px;
+}
+
+/* -----------------auxilliary classes for JQuery----------------- */
+.hidden {
+    display: none;
+}
+.mobilenavigation {
+    background-color: black;
+}
+
+/* ----------------- UI special desing -------------------------------- */
+
+.spacer_h {
+    background-image: url(../Media/uikit/decoration.h.png);
+    background-repeat: repeat-x;
+    background-size: contain;
+    height: 15px;
 }

@@ -31,7 +31,7 @@ class LoginForm extends Form
             'type' => 'password',
             'attributes' => array(
                 'id' => 'password',
-                'class' => 'input-sm',
+                'class' => 'input-sm br',
                 'placeholder' => '**********'
             ),
             'options' => array(

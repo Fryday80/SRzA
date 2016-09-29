@@ -1,54 +1,121 @@
 <?php echo $this->doctype(); ?>
 
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
+<html>
+<head>
+    <meta charset="utf-8">
         <?php echo $this->headTitle('Schwarze Ritter zu Augsburg') ?>
 
         <?php echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
-
-        <!-- Le styles -->
-        <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+<!--    CSS styles   -->
+    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                         ->prependStylesheet($this->basePath('css/style.css'))
-                        ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
-                        ->prependStylesheet($this->basePath('css/bootstrap.min.css')) ?>
-
-        <!-- Scripts -->
-        <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/bootstrap.min.js'))
+                        ->prependStylesheet($this->basePath('css/menu.css'))
+                        ->prependStylesheet($this->basePath('css/media.css'))
+        ?>
+<!--    jquery scripts   -->
+    <?php echo $this->headScript()
             ->prependFile($this->basePath('js/jquery.min.js'))
-            ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript', array('conditional' => 'lt IE 9',))
-            ->prependFile($this->basePath('js/html5shiv.js'),   'text/javascript', array('conditional' => 'lt IE 9',))
-        ; ?>
+            ->prependFile($this->basePath('js/menu.js'))
+            ->prependFile($this->basePath('js/main.js'))
+    ; ?>
 
-    </head>
-    <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?php echo $this->url('home') ?>"><img src="<?php echo $this->basePath('img/zf2-logo.png') ?>" alt="Zend Framework 2"/>&nbsp;<?php echo $this->translate('Skeleton Application') ?></a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
+</head>
+
+<body>
+    <div id="headcontainer">
+        <div id="headdeko">
+            <img src="media/Wappenklein.png">
+        </div>
+        <div id="head">
+            <a href="<?php echo $this->url('home') ?>"><ownhead>Schwarze Ritter zu Augsburg</ownhead></a>
+        </div>
+
+        <div id="headlinks">
+            <span><a href="#">Kontakt </a></span> |
+            <span><a href="#"> Impressum</a></span>
+        </div>
+    </div>
+    <div class="bodycontainer">
+
+        <div id="navframe">
+            <div id="navbutton">
+                <img src="media/Wappenklein.png">
             </div>
-        </nav>
-        <div class="container">
+            <div id="menuItems">
+            <div class="navtitel"><owntitel>Wegweiser</owntitel><div class="spacer_h"></div></div>
+
+                <ul id="mainMenu">
+                    <li><span><a href="#">First one</a></span>
+                    </li>
+                    <li><span>first two</span>
+                        <ul class="secondLevel hidden">
+                            <li><span><a href="#">sec 1-2-2</a></span></li>
+                            <li><span><a href="#">sec 2-2-2</a></span></li>
+                            <li><span><a href="#">sec 3-2-2</a></span></li>
+                            <li><span><a href="#">sec 1-2-2</a></span></li>
+                            <li><span><a href="#">sec 2-2-2</a></span></li>
+                            <li><span><a href="#">sec 3-2-2</a></span></li>
+                            <li><span><a href="#">sec 1-2-2</a></span></li>
+                            <li><span><a href="#">sec 2-2-2</a></span></li>
+                            <li><span><a href="#">sec 3-2-2</a></span></li>
+                            <li><span><a href="#">sec 1-2-2</a></span></li>
+                            <li><span><a href="#">sec 2-2-2</a></span></li>
+                            <li><span><a href="#">sec 3-2-2</a></span></li>
+                        </ul>
+                    </li>
+                    <li><span><a href="#">first three</a></span>
+                        <ul class="secondLevel hidden">
+                            <li><span><a href="#">sec 1-2-3</a></span></li>
+                        </ul>
+                    </li>
+                    <li><span><a href="#">First four</a></span>
+                </ul>
+            </div>
+        </div>
+
+        <div id="content">
+            <owntitel>Content</owntitel><br><div class="spacer_h"></div>
+
             <?php echo $this->content; ?>
-            <hr>
-            <footer>	
-            </footer>
-        </div> <!-- /container -->
-        <?php echo $this->inlineScript() ?>
-    </body>
+        </div>
+
+        <div class="rightcontainer">
+            <div class="rightbarup">
+                <owntitel>~Login~</owntitel><div class="spacer_h"></div><br>
+                <form>
+                    <span>Username</span><br>
+                    <span><input type="Login" name="Login" value="Benutzername" size="10" ></span><br>
+                    <span>Passwort</span><br>
+                    <span><input type="password" name="Pass" value="Pass" size="10"></span><br>
+
+                    <input type="checkbox">Angemeldet bleiben<br>
+                    <input type="submit" name="send" value="Login">
+                    <input type="submit" name="new_reg" value="Registrieren">
+                </form>
+            </div>
+
+            <div class="rightbardown">
+                <a href="#"><owntitel><news>~Informationen~</news></owntitel></a><div class="spacer_h"></div><br>
+                <span><newstitel>24.12.0006</newstitel></span><br>
+                <span>Christi Geburt, Geschenke fürs Wichteln kaufen!!!</span><br><br>
+                <span><newstitel>15.03.44 BC 9:00</newstitel></span><br>
+                <span>Bei Brutus die geschliffenen Messer vorbeibringen. Pünktlich sein, er hat noch einen Termin bei seinem Vater!!</span><br><br>
+                <span><newstitel>333 BC</newstitel></span><br>
+                <span>Schlacht bei Issos, bitte Schwert nicht vergessen</span><br><br>
+        </div>
+
+        </div>
+    </div>
+    <div style="clear: both"></div>
+    <div id="foot">
+        <div id="foottext">
+            <span>copyright © 2016 Schwarze Ritter zu Augsburg</span>
+        </div>
+        <div id="footimage"></div>
+    </div>
+    <?php echo $this->inlineScript() ?>
+</body>
 </html>

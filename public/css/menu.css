@@ -1,0 +1,205 @@
+/* -----------------Navbar CSS settings----------------- */
+@media only screen {
+
+    #mainMenu {
+        list-style-type: none;
+        margin: 0 0 0 0;
+        padding: 5;
+        display: block;
+    }
+
+    #mainMenu ul,
+    #mainMenu li {
+        vertical-align: middle;
+        list-style-type: none;
+        padding-left: 10;
+        font-weight: 700;
+        line-height: 30px;
+        width: 90%;
+    }
+    #mainMenu li {
+        background-repeat: no-repeat;
+        background-image: url(../media/uikit/Button.png);
+        background-size: 100% 30px;
+    }
+    #mainMenu li:link,
+    #mainMenu li:visited{
+        background-size: 100% 30px;
+        color: black;
+    }
+
+    #mainMenu li:active,
+    #mainMenu li:hover {
+        background-image: url(../media/uikit/Button.hover.png);
+        background-size: 100% 30px;
+        color: black;
+    }
+
+    .secondLevel {
+        position: absolute;
+        top: 80px;
+        left: 95%;
+        min-width: 120px;
+        text-align: center;
+        min-height: 100%;
+        padding-bottom: 5px;
+        background-color: none;
+        background-image: none;1^^
+    }
+    #mainMenu>li>ul>li {
+        padding-left: 10px;
+    }
+
+    #navbutton {
+        display: none;
+    }
+}
+
+/* @media special desing */
+/*-----------------------------------------------------------------------------*/
+@media only screen and (max-width: 1000px ) {
+/*-----------------------------------------------------------------------------*/
+
+    #navframe {
+        width: 100%;
+        min-height: auto !important;
+        margin-bottom: 1%;
+    }
+
+    #mainmenu li {
+        list-style: none;
+        font-size: 15px;
+        line-height: normal;
+        width: inherit;
+    }
+
+    #mainmenu>li {
+        width: auto;
+        float: left;
+        margin-right: 10px;
+        padding: 5px 10px;
+        text-align: center;
+    }
+
+    #mainMenu>li {
+        position: relative;
+    }
+    .secondLevel {
+        position: absolute;
+        top: 25px;
+        left: -5px;
+        min-height: 50px;
+        width: 100px;
+        background-image: url(../media/div.bg.test.png);
+        background-size: auto 100%;
+    }
+    .navtitel {
+        font-size: 30px;
+    }
+    .navtitel>div {
+        display: none;
+    }
+    .secondLevel>li {
+        margin: 0;
+        padding: 0;
+    }
+    #mainMenu li {
+        background-repeat: no-repeat;
+        background-image: none;
+        color: black;
+}
+    #mainMenu a {
+        color: black;
+    }
+    #mainMenu li:link,
+    #mainMenu li:visited{
+        color: #ffb100;
+        color: black;
+    }
+
+    #mainMenu li:active,
+    #mainMenu li:hover {
+        background-image: url(../media/uikit/highlight.u.d.dark.png);
+        background-size: 100% 50%;
+        background-position: top;
+        color: #ffb100;
+        color: black;
+    }
+}
+
+/*-----------------------------------------------------------------------------*/
+@media only screen and (max-width: 700px ) {
+/*-----------------------------------------------------------------------------*/
+    #navframe{
+        color: white;
+        position: fixed ;
+        width: auto;
+        margin-left: -50px;
+        padding-right: 0;
+        z-index: 10;
+        background-image: none;
+    }
+    #navbutton {
+        display: block;
+        width: auto;
+        margin-left: -0px;
+        padding-right: 0;
+        padding-bottom: 5;
+    }
+    .secondLevel {
+        background-color: black;
+        background-image: none;
+    }
+    #navbutton>img {
+        width: 50px;
+    }
+    .navtitel>.spacer_h {
+        display: none;
+    }
+    #mainMenu li {
+        color: white;
+    }
+    #mainMenu>li {
+        float: none;
+    }
+    #mainMenu>li>ul {
+        position: relative;
+        padding-left: 10;
+        float: none;
+        top: 2;
+        left: 5px;
+    }
+    #mainMenu li:link,
+    #mainMenu li:visited{
+        color: white;
+    }
+    #mainMenu li:active,
+    #mainMenu li:hover {
+        color: white;
+        background-image: url(../media/uikit/highlight.u.d.png);
+        background-size: 100%;
+        background-position: top;
+    }
+    #mainMenu a:link,
+    #mainMenu a:visited,
+    #mainMenu a:hover,
+    #mainMenu a:active {
+        color: white;
+    }
+    #menuItems{
+        display: none;
+    }
+    .navtitel {
+        display: block;
+    }
+    #mainMenu>li>ul {
+        background-color: black;
+        position: relative;
+        top: 0;
+        left: -5px;
+    }
+    #navframe owntitel {
+        color: white;
+    }
+
+}
