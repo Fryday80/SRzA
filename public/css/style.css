@@ -48,6 +48,18 @@ input::after {
     content: "\A";
     white-space: pre;
 }
+butti {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-repeat: no-repeat;
+    background-image: url(../media/uikit/Button.png);
+    background-size: 100% 100%;
+    }
+butti:hover {
+    background-repeat: no-repeat;
+    background-image: url(../media/uikit/Button.hover.png);
+    background-size: 100% 100%;
+}
 
 /* ---------------Fonts---------------------*/
 @font-face { font-family: 'stylo';
