@@ -65,23 +65,42 @@
         min-height: auto !important;
         margin-bottom: 1%;
     }
-
+    .navtitel {
+        font-size: 30px;
+    }
+    .navtitel>div {
+        display: none;
+    }
     #mainmenu li {
         list-style: none;
         font-size: 15px;
         line-height: normal;
         width: inherit;
+        background-repeat: no-repeat;
+        background-image: none;
+        color: black;
     }
-
+    #mainMenu a {
+        color: black;
+    }
+    #mainMenu li:link,
+    #mainMenu li:visited{
+        color: black;
+    }
+    #mainMenu li:active,
+    #mainMenu li:hover {
+        background-image: url(../media/uikit/highlight.u.d.dark.png);
+        background-size: 100% 50%;
+        background-position: top;
+        color: #ffb100;
+        color: black;
+    }
     #mainmenu>li {
         width: auto;
         float: left;
         margin-right: 10px;
         padding: 5px 10px;
         text-align: center;
-    }
-
-    #mainMenu>li {
         position: relative;
     }
     .secondLevel {
@@ -93,37 +112,9 @@
         background-image: url(../media/div.bg.test.png);
         background-size: auto 100%;
     }
-    .navtitel {
-        font-size: 30px;
-    }
-    .navtitel>div {
-        display: none;
-    }
     .secondLevel>li {
         margin: 0;
         padding: 0;
-    }
-    #mainMenu li {
-        background-repeat: no-repeat;
-        background-image: none;
-        color: black;
-}
-    #mainMenu a {
-        color: black;
-    }
-    #mainMenu li:link,
-    #mainMenu li:visited{
-        color: #ffb100;
-        color: black;
-    }
-
-    #mainMenu li:active,
-    #mainMenu li:hover {
-        background-image: url(../media/uikit/highlight.u.d.dark.png);
-        background-size: 100% 50%;
-        background-position: top;
-        color: #ffb100;
-        color: black;
     }
 }
 
