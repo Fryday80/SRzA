@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 30. Sep 2016 um 13:34
+-- Erstellungszeit: 30. Sep 2016 um 20:35
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `album` (
   `artist` varchar(100) NOT NULL,
   `title` varchar(100) NOT NULL,
   `event` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `date` date NOT NULL,
+  `date` timestamp NULL DEFAULT NULL,
   `duration` int(11) NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
@@ -43,11 +43,10 @@ CREATE TABLE IF NOT EXISTS `album` (
 --
 
 INSERT INTO `album` (`id`, `artist`, `title`, `event`, `date`, `duration`) VALUES
-(1, 'Ich sollte hier nicht stehen_A1', 'Ich sollte hier nicht stehen_T1', 'Testevent_1', '2016-09-30', 3),
-(2, 'Ich sollte hier nicht stehen_A2', 'Ich sollte hier nicht stehen_T2', 'Testevent_2', '2016-09-27', 3),
-(3, 'Ich sollte hier nicht stehen_A3', 'Ich sollte hier nicht stehen_T3', 'Testevent_3', '2016-09-25', 3),
-(4, 'Ich sollte hier nicht stehen_A4', 'Ich sollte hier nicht stehen_T4', 'Testevent_4', '2016-09-22', 3),
-(5, 'Ich sollte hier nicht stehen_A5', 'Ich sollte hier nicht stehen_T5', 'Testevent_5', '2016-09-20', 3);
+(1, 'Ich sollte hier nicht stehen_A1', 'Ich sollte hier nicht stehen_T1', 'Testevent_1', '2016-09-30 04:40:00', 5),
+(2, 'Ich sollte hier nicht stehen_A2', 'Ich sollte hier nicht stehen_T2', 'Testevent_2', '2016-09-26 22:00:00', 3),
+(3, 'Ich sollte hier nicht stehen_A3', 'Ich sollte hier nicht stehen_T3', 'Testevent_3', '2016-09-24 22:00:00', 3),
+(4, 'Ich sollte hier nicht stehen_A4', 'Ich sollte hier nicht stehen_T4', 'Testevent_4', '2016-09-21 22:00:00', 3);
 
 -- --------------------------------------------------------
 
