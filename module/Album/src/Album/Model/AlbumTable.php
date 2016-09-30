@@ -33,7 +33,7 @@ class AlbumTable
     {
         $data = array(
             'event' => $album->event,
-            'datum'  => $album->datum,
+            'date'  => $album->date,
             'duration'  => $album->duration,
         );
 

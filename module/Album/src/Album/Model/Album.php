@@ -9,9 +9,11 @@ class Album
 
     public $id;
 
-    public $artist;
+    public $event;
 
-    public $title;
+    public $date;
+
+    public $duration;
 
     protected $inputFilter;
 
@@ -19,7 +21,7 @@ class Album
     {
         $this->id = (! empty($data['id'])) ? $data['id'] : null;
         $this->event = (! empty($data['event'])) ? $data['event'] : null;
-        $this->datum = (! empty($data['datum'])) ? $data['datum'] : null;
+        $this->date = (! empty($data['date'])) ? $data['date'] : null;
         $this->duration = (! empty($data['duration'])) ? $data['duration'] : null;
     }
 
@@ -72,7 +74,7 @@ class Album
             ));
 
             $inputFilter->add(array(               //datum und duration anders? weil datum und INT??
-                'name' => 'datum',
+                'name' => 'date',
                 'required' => true,
                 'filters' => array(
                     array(

@@ -19,7 +19,7 @@ $this->headTitle($title);
  <?php foreach ($albums as $album) : ?>
  <tr>
      <td><?php echo $this->escapeHtml($album->event);?></td>
-     <td><?php echo $this->escapeHtml($album->datum);?></td>
+     <td><?php echo $this->escapeHtml($album->date);?></td>
      <td><?php echo $this->escapeHtml($album->duration);?> Tage</td>
      <td>
          <a href="<?php echo $this->url('album',
