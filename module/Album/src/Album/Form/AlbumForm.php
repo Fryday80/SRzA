@@ -15,17 +15,24 @@ class AlbumForm extends Form
             'type' => 'Hidden',
         ));
         $this->add(array(
-            'name' => 'title',
+            'name' => 'event',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Title',
+                'label' => 'Event',
             ),
         ));
         $this->add(array(
-            'name' => 'artist',
+            'name' => 'datum',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Artist',
+                'label' => 'Datum',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'duration',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Dauer',
             ),
         ));
         $this->add(array(
