@@ -1,3 +1,5 @@
+console.log (window.innerWidth + "px width -- refreshes on reload");
+
 $(document).ready(function () {
 
     /**
@@ -31,6 +33,7 @@ $(document).ready(function () {
 
         $("#navbutton").off("click", toggleMenu);
         $("#mainMenu li").off("click mouseover mouseout", toggleSub);
+        console.log ("i am the rebinder");
 
         if ($(window)[0].innerWidth < 1000 ){
             $("#menuItems").hide();
