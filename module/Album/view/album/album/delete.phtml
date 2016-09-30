@@ -5,9 +5,9 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
- <p>Are you sure that you want to delete
-     '<?php echo $this->escapeHtml($album->event); ?>' by
-     '<?php echo $this->escapeHtml($album->datum); ?>'?
+ <p>Willst du wirklich das Album vom Event
+     '<?php echo $this->escapeHtml($album->event); ?>' am
+     '<?php echo $this->escapeHtml($album->date); ?>' löschen?
  </p>
  <?php
  $url = $this->url('album', array(
