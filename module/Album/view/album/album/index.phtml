@@ -13,12 +13,14 @@ $this->headTitle($title);
  <tr>
      <th>Event</th>     <?php //@todo sort by?>
      <th>Datum</th>     <?php //@todo sort by?>
+     <th>Dauer</th>
      <th>&nbsp;</th>
  </tr>
  <?php foreach ($albums as $album) : ?>
  <tr>
-     <td><?php echo $this->escapeHtml($album->title);?></td>
-     <td><?php echo $this->escapeHtml($album->artist);?></td>
+     <td><?php echo $this->escapeHtml($album->event);?></td>
+     <td><?php echo $this->escapeHtml($album->datum);?></td>
+     <td><?php echo $this->escapeHtml($album->duration);?> Tage</td>
      <td>
          <a href="<?php echo $this->url('album',
              array('action'=>'show', 'id' => $album->id));?>"><butti>Ansehen</butti></a>
