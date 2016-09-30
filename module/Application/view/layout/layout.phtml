@@ -84,16 +84,23 @@
         <div class="rightcontainer">
             <div class="rightbarup">
                 <owntitel>~Login~</owntitel><div class="spacer_h"></div><br>
-                <form>
-                    <span>Username</span><br>
-                    <span><input type="Login" name="Login" value="Benutzername" size="10" ></span><br>
-                    <span>Passwort</span><br>
-                    <span><input type="password" name="Pass" value="Pass" size="10"></span><br>
+                <?php
+                    $form = new Auth\Form\LoginForm('Login');
+                    $form->prepare();
+                    echo $this->form()->openTag($form);
+                    echo $this->formCollection($form);
+                    echo $this->form()->closeTag();
+                ?>
+<!--                 <form> -->
+<!--                     <span>Username</span><br> -->
+<!--                     <span><input type="Login" name="Login" value="Benutzername" size="10" ></span><br> -->
+<!--                     <span>Passwort</span><br> -->
+<!--                     <span><input type="password" name="Pass" value="Pass" size="10"></span><br> -->
 
-                    <input type="checkbox">Angemeldet bleiben<br>
-                    <input type="submit" name="send" value="Login">
-                    <input type="submit" name="new_reg" value="Registrieren">
-                </form>
+<!--                     <input type="checkbox">Angemeldet bleiben<br> -->
+<!--                     <input type="submit" name="send" value="Login"> -->
+<!--                     <input type="submit" name="new_reg" value="Registrieren"> -->
+<!--                 </form> -->
             </div>
 
             <div class="rightbardown">
