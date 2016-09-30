@@ -18,8 +18,9 @@ class Album
     public function exchangeArray($data)
     {
         $this->id = (! empty($data['id'])) ? $data['id'] : null;
-        $this->artist = (! empty($data['artist'])) ? $data['artist'] : null;
-        $this->title = (! empty($data['title'])) ? $data['title'] : null;
+        $this->event = (! empty($data['event'])) ? $data['event'] : null;
+        $this->datum = (! empty($data['datum'])) ? $data['datum'] : null;
+        $this->duration = (! empty($data['duration'])) ? $data['duration'] : null;
     }
 
     public function getArrayCopy()
@@ -48,7 +49,30 @@ class Album
             ));
             
             $inputFilter->add(array(
-                'name' => 'artist',
+                'name' => 'event',
+                'required' => true,
+                'filters' => array(
+                    array(
+                        'name' => 'StripTags'
+                    ),
+                    array(
+                        'name' => 'StringTrim'
+                    )
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min' => 1,
+                            'max' => 100
+                        )
+                    )
+                )
+            ));
+
+            $inputFilter->add(array(               //datum und duration anders? weil datum und INT??
+                'name' => 'datum',
                 'required' => true,
                 'filters' => array(
                     array(
@@ -71,7 +95,7 @@ class Album
             ));
             
             $inputFilter->add(array(
-                'name' => 'title',
+                'name' => 'duration',
                 'required' => true,
                 'filters' => array(
                     array(

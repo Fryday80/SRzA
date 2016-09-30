@@ -32,8 +32,9 @@ class AlbumTable
     public function saveAlbum(Album $album)
     {
         $data = array(
-            'artist' => $album->artist,
-            'title'  => $album->title,
+            'event' => $album->event,
+            'datum'  => $album->datum,
+            'duration'  => $album->duration,
         );
 
         $id = (int) $album->id;
