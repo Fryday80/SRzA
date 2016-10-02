@@ -125,7 +125,7 @@ class AlbumController extends AbstractActionController
                 'action' => 'index'
             ));
         }
-        // load Galerieansicht mit den bildern aus:
+        // load Galerieansicht mit den bildern aus: wenn möglich "Overlay/Pop-Up-Gallery" -> keine neue Seite.. nur js??
         // $album_path = "../ftp/gallery/"
         // $pic_path = $albumpath.$form->path
     }
