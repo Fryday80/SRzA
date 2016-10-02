@@ -39,7 +39,7 @@ class AlbumForm extends Form
             'name' => 'path',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Speicherort',
+                'label' => 'Speicherort',  //  ./ftp/gallery/xxx
             ),
         ));
         $this->add(array(

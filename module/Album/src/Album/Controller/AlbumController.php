@@ -125,6 +125,8 @@ class AlbumController extends AbstractActionController
                 'action' => 'index'
             ));
         }
-        // load Galerieansicht mit den bildern aus ->path
+        // load Galerieansicht mit den bildern aus:
+        // $album_path = "../ftp/gallery/"
+        // $pic_path = $albumpath.$form->path
     }
 }
