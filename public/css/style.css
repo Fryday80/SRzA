@@ -63,7 +63,7 @@ butti:hover {
 
 /* ---------------Fonts---------------------*/
 @font-face { font-family: 'stylo';
-             src: url('../media/hp.ttf') format('truetype'); }
+             src: url('../fonts/hp.ttf') format('truetype'); }
 
 
 /* -----------------Head----------------- */
