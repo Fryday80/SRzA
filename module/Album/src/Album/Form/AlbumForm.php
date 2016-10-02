@@ -36,6 +36,13 @@ class AlbumForm extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'path',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Speicherort',
+            ),
+        ));
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
             'attributes' => array(

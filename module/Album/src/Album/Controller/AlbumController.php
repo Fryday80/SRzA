@@ -118,4 +118,13 @@ class AlbumController extends AbstractActionController
         }
         return $this->albumTable;
     }
+    public function showAction () {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (! $id) {
+            return $this->redirect()->toRoute('album', array(
+                'action' => 'index'
+            ));
+        }
+        // load Galerieansicht mit den bildern aus ->path
+    }
 }
