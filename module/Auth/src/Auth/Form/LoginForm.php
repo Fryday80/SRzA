@@ -4,6 +4,7 @@ namespace Auth\Form;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\Form\Element\Csrf;
+use Auth\Form\Filter\LoginFilter;
 
 class LoginForm extends Form
 {
@@ -12,7 +13,8 @@ class LoginForm extends Form
     {
         parent::__construct($name);
         $this->setAttribute('method', 'post');
-        
+        $this->setAttribute('action', '/login');
+        $this->setInputFilter(new LoginFilter());
         $this->add(array(
             'name' => 'email',
             'type' => 'text',

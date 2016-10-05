@@ -20,7 +20,7 @@ class UserController extends AbstractActionController
 //             print("access denied");die;
 //         }
         return array(
-            'users' => $this->getUserTable()->select()
+            'users' => $this->getUserTable()->select()->toArray()
         );
     }
 
@@ -31,12 +31,9 @@ class UserController extends AbstractActionController
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $user = new User();
-            $form->setInputFilter($user->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $user->exchangeArray($form->getData());
-                $this->getUserTable()->saveUser($user);
+                $this->getUserTable()->saveUser($form->getData());
                 
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
@@ -67,21 +64,26 @@ class UserController extends AbstractActionController
                 'action' => 'index'
             ));
         }
-        
         $form = new UserForm();
-        $form->bind($user);
+        $form->setData($user);
         $form->get('submit')->setAttribute('value', 'Edit');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setInputFilter($user->getInputFilter());
+            //$form->setInputFilter($user->getInputFilter());
             $form->setData($request->getPost());
             
             if ($form->isValid()) {
-                $this->getUserTable()->saveUser($user);
+                //show errors
+                
+                print('not implemented');
+                die;
+                
+                
+                //$this->getUserTable()->saveUser($user);
                 
                 // Redirect to list of Users
-                return $this->redirect()->toRoute('user');
+                //return $this->redirect()->toRoute('user');
             }
         }
         
@@ -97,7 +99,6 @@ class UserController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('user');
         }
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');

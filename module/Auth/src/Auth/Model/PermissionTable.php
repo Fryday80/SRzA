@@ -18,29 +18,25 @@ class PermissionTable extends AbstractTableGateway
         $this->initialize();
     }
 
-    public function getResourcePermissions($roleId)
+    public function getResourcePermissions()
     {
         try {
             $sql = new Sql($this->getAdapter());
-            $select = $sql->select()->from(array(
+            $select = $sql->select()
+                ->from(array(
                 'p' => $this->table
-            ));
-            $select->columns(array(
-                'resid'
-            ));
-            
-            $select->join(array(
+            ))
+                ->columns(array(
+                'id',
+                'permission_name'
+            ))
+                ->join(array(
                 "r" => "resource"
-            ), "p.resid = r.resid", array(
-                "name",
-                "route"
-            ));
-            $select->where(array(
-                'p.rid' => $roleId
-            ));
-            $select->order(array(
-                'menu_order'
-            ));
+            ), "p.resource_id = r.id", array(
+                'resource_name',
+                'resource_id' => 'id'
+            ))
+                ->order('resource_name');
             
             $statement = $sql->prepareStatementForSqlObject($select);
             $resources = $this->resultSetPrototype->initialize($statement->execute())
@@ -49,5 +45,20 @@ class PermissionTable extends AbstractTableGateway
         } catch (\Exception $err) {
             throw $err;
         }
+    }
+    public function getByResourceID($resourceID) {
+        $result = $this->select("resource_id = $resourceID");
+        return $result->toArray();
+    }
+    public function add($resourceID, $permissionName)
+    {
+        return $this->insert([
+            'resource_id' => $resourceID,
+            'permission_name' => $permissionName,
+        ]);
+    }
+    public function deleteByResourceID($resourceID)
+    {
+        return $this->delete(['resource_id' => $resourceID]);
     }
 }

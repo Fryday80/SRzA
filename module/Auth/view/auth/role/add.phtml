@@ -5,8 +5,8 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <?php
-$form->setAttribute('action', $this->url('role', array('action' => 'add')));
+$form->setAttribute('action', $this->url('role/add'));
 $form->prepare();
  
  
-echo $this->formCollection($form);
+echo $this->form($form);

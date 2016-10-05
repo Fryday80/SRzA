@@ -1,16 +1,14 @@
 <?php
 
-$title = 'Edit User';
+$title = 'Add new album';
 $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
-
  <?php
- $form = $this->form;
- $form->setAttribute('action', $this->url('user/edit', array('id' => $this->id)));
+ $form->setAttribute('action', $this->url('album', array('action' => 'add')));
  $form->prepare();
- echo $this->form($form);
  
+ echo $this->formCollection($form);
 //  echo $this->form()->openTag($form);
 //  echo $this->formHidden($form->get('id'));
 //  echo $this->formRow($form->get('title'));

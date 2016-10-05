@@ -30,7 +30,6 @@ class RoleTable extends AbstractTableGateway
                 'rid',
                 'role_name',
                 'role_parent',
-                'status',
             ));
             $select->join(array(
                     'parent' => $this->table
@@ -38,7 +37,6 @@ class RoleTable extends AbstractTableGateway
                     'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
                 );
             
-            $select->where('role.rid != "Active"');
             if (count($where) > 0) {
                 $select->where($where);
             }
@@ -53,5 +51,24 @@ class RoleTable extends AbstractTableGateway
         } catch (\Exception $e) {
             throw new \Exception($e->getPrevious()->getMessage());
         }
+    }
+    public function getRoleByID($id) {
+        $res = $this->select("rid = $id")->toArray();
+        if (count($res) > 0) {
+            return $res[0];
+        }
+        return null;
+    }
+    public function edit($data, $id) {
+        $this->update($data, array('rid' => $id));
+    }
+    public function add($name, $parent, $status) {
+        $status = 'Active';//($status)? 'Active': 'Inactive';
+        $this->insert(array('role_name' => $name, 'role_parent' => $parent, 'status' => $status));
+    }
+    public function deleteByID($id) {
+        return $this->delete([
+            'rid' => $id
+        ]);
     }
 }

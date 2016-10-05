@@ -6,20 +6,6 @@ use Auth\Form\RoleForm;
 
 class RoleController extends AbstractActionController
 {
-
-    private function getUserDetails($mail)
-    {
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-        $users = $userTable->getUsers(array(
-                        'email' => $mail
-                    ), array(
-                        'user_id' => 'id',
-                        'email',
-                        'user_name'
-                    ));
-        return $users[0];
-    }
-
     public function indexAction()
     {
         //list all roles
@@ -30,24 +16,16 @@ class RoleController extends AbstractActionController
     }
     public function addAction()
     {
-
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new RoleForm($roleTable);
-        
-
-        
         $form->get('submit')->setValue('Add');
-        
         $request = $this->getRequest();
         if ($request->isPost()) {
-
             $form->setData($request->getPost());
             if ($form->isValid()) {
-//   save data to 
-//                 $user->exchangeArray($form->getData());
-//                 $this->getUserTable()->saveUser($user);
-                
-                // Redirect to list of Users
+                $data = $form->getData();
+                //if role_parent == 0 then set to null
+                $roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
                 return $this->redirect()->toRoute('role');
             } else {
                 
@@ -59,16 +37,53 @@ class RoleController extends AbstractActionController
     }
     public function editAction()
     {
-        //list all roles
+        $id = $this->params('id');
+        //@todo verify id
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $form = new RoleForm($roleTable);
+        $form->get('submit')->setValue('Edit');
+        $data = $roleTable->getRoleByID($id)[0];
+        $form->populateValues($data);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $data = $form->getData();
+                $roleTable->edit(array(
+                    'role_name' => $data['role_name'],
+                    'role_parent'=> $data['role_parent']
+                ), $data['rid']);
+                return $this->redirect()->toRoute('role');
+            }
+        }
         return array(
-            'form' => 42,
+            'id' => $id,
+            'form' => $form
         );
     }
     public function deleteAction()
     {
-        //list all roles
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $role = $roleTable->getRoleByID($id);
+        
+        if ($role == null) {
+            //@todo add error: role with $id dosn't exists
+            return $this->redirect()->toRoute('role');
+        }
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $del = $request->getPost('del', 'No');
+    
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $roleTable->deleteByID($id);
+            }
+           return $this->redirect()->toRoute('role');
+        }
         return array(
-            'form' => 42,
+            'id' => $id,
+            'rolename' => $role['role_name']
         );
     }
 }

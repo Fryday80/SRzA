@@ -1,12 +1,14 @@
 <?php
 namespace Auth;
+
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Auth\Controller\User'      => 'Auth\Controller\UserController',
-            'Auth\Controller\Auth'      => 'Auth\Controller\AuthController',
-            'Auth\Controller\Success'   => 'Auth\Controller\SuccessController',
-            'Auth\Controller\Role'      => 'Auth\Controller\RoleController',
+            'Auth\Controller\User' => 'Auth\Controller\UserController',
+            'Auth\Controller\Auth' => 'Auth\Controller\AuthController',
+            'Auth\Controller\Role' => 'Auth\Controller\RoleController',
+            'Auth\Controller\Permission' => 'Auth\Controller\PermissionController',
+            'Auth\Controller\Resource' => 'Auth\Controller\ResourceController'
         )
     ),
     'view_manager' => array(
@@ -19,14 +21,53 @@ return array(
             'user' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/user[/:action][/:id]',
-                    'constraints' => array(
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9]+'
-                    ),
+                    'route' => '/user',
+                    'constraints' => array(),
                     'defaults' => array(
                         'controller' => 'Auth\Controller\User',
                         'action' => 'index'
+                    )
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'delete' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/delete[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'delete',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'add' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/add[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'add',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'edit' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/edit[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'edit',
+                                'id' => '[0-9]+'
+                            )
+                        )
                     )
                 )
             ),
@@ -72,8 +113,8 @@ return array(
                     'route' => '/success',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
-                        'controller' => 'Success',
-                        'action' => 'index'
+                        'controller' => 'Auth',
+                        'action' => 'success'
                     )
                 ),
                 'may_terminate' => true,
@@ -92,30 +133,123 @@ return array(
                 )
             ),
             'role' => array(
-                'type' => 'Literal',
+                'type' => 'segment',
                 'options' => array(
                     'route' => '/role',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Auth\Controller',
-                        'controller' => 'role',
+                        'controller' => 'Auth\Controller\Role',
                         'action' => 'index'
                     )
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'process' => array(
+                    'delete' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:action]',
+                            'route' => '/delete/:id',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                                'id' => '[0-9]+'
                             ),
-                            'defaults' => array()
+                            'defaults' => array(
+                                'action' => 'delete',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'add' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/add[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'add',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'edit' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/edit[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'edit',
+                                'id' => '[0-9]+'
+                            )
                         )
                     )
                 )
             ),
+            'permission' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/permission',
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Permission',
+                        'action' => 'index'
+                    )
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'delete' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/delete[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'delete',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'add' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/add[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'add',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    ),
+                    'edit' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/edit[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'edit',
+                                'id' => '[0-9]+'
+                            )
+                        )
+                    )
+                )
+            ),
+            'resource' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/resource[/:action][/:id]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                        'id' => '[0-9]+'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Resource',
+                        'action' => 'index'
+                    )
+                )
+            )
         )
-    ),
+    )
 );

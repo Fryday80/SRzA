@@ -65,10 +65,6 @@ class AuthController extends AbstractActionController
                 if ($result->isValid()) {
         
                     $userDetails = $this->getUserDetails($data['email']);
-                print('<br>');
-                print('<pre>');
-                var_dump($userDetails);
-                print('</pre>');
                     $storage = $this->getSessionStorage();
                     $storage->setUserID($userDetails['user_id']);
                     $storage->setUserName($userDetails['user_name']);
@@ -98,6 +94,14 @@ class AuthController extends AbstractActionController
         return $this->redirect()->toRoute('login');
     }
 
+    public function successAction()
+    {
+        if (! $this->getServiceLocator()
+            ->get('AuthService')->hasIdentity()){
+                return $this->redirect()->toRoute('login');
+        }
+        return array();
+    }
     public function accessDeniedAction()
     {}
 }

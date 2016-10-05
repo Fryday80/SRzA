@@ -1,0 +1,15 @@
+<?php
+$title = 'Edit Permissions for:';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <table class="table" style="width:90%">
+ <?php foreach ($roles as $role) : 
+    $roleName = $this->escapeHtml($role['role_name']);
+    $href = $this->url('permission/edit', array('id' => $role['rid']));
+ ?>
+ <tr>
+     <td><a href="<?php echo $href ?>"><?php echo $roleName ?></a></td>
+ </tr>
+ <?php endforeach; ?>
+ </table>

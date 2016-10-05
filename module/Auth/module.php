@@ -15,6 +15,7 @@ use Zend\Mvc\ModuleRouteListener;
 use Zend\Session\Container;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
+use Auth\Service\AccessService;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -69,6 +70,12 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $authService->setStorage($sm->get('Auth\Model\AuthStorage'));
                     return $authService;
                 },
+                'AccessService' => function ($serviceManager) {
+                    $storage = $serviceManager->get('Auth\Model\AuthStorage');
+                    $aclService = $serviceManager->get('Auth\AclService');
+                    $authService = $serviceManager->get('AuthService');
+                    return new AccessService($aclService, $authService, $storage);
+                },
                 'Auth\AclService' => function ($serviceManager) {
                     return new AclService();
                 },
@@ -96,47 +103,28 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
     public function boforeDispatch(MvcEvent $event)
     {
-        return;
-        $response = $event->getResponse();
-        
         $whiteList = array(
             'Auth\Controller\Auth-login',
             'Auth\Controller\Auth-logout',
         );
-        
-        $controller = $event->getRouteMatch()->getParam('controller');
-        
-        $action = $event->getRouteMatch()->getParam('action');
-        
-        $requestedResourse = $controller . "-" . $action;
 
-        $serviceManager = $event->getApplication()->getServiceManager();
-        $session = $serviceManager->get('Auth\Model\AuthStorage');
+        $response           = $event->getResponse();
+        $controller         = $event->getRouteMatch()->getParam('controller');
+        $action             = $event->getRouteMatch()->getParam('action');
+        $requestedResourse  = $controller . "-" . $action;
+        $serviceManager     = $event->getApplication()->getServiceManager();
+        $accessService      = $serviceManager->get('AccessService');
+        
 
-        $acl = $serviceManager->get('Auth\AclService');
-        $acl->initAcl();
-        if ($session->hasIdentity()) {
-            if (in_array($requestedResourse, $whiteList) || $requestedResourse == 'Auth\Controller\Success-index') {
-//                 $url = '/';
-//                 $response->setHeaders($response->getHeaders()
-//                     ->addHeaderLine('Location', $url));
-//                 $response->setStatusCode(302);
-            } else {
-                $userRole = $session->getRoleName();
-                $status = $acl->isAccessAllowed($userRole, $controller, $action);
-                if (! $status) {
-                    //@todo redirect to access denied page
-                    die('Permission denied');
-                }
-            }
-        } else {
-            if (! in_array($requestedResourse, $whiteList)) {
+        if (!in_array($requestedResourse, $whiteList) || $requestedResourse != 'Auth\Controller\Success-index') {
+            $status = $accessService->allowed($controller, $action);
+            if (! $status) {
                 $url = '/login';
                 $response->setHeaders($response->getHeaders()
                     ->addHeaderLine('Location', $url));
                 $response->setStatusCode(302);
+                $response->sendHeaders();
             }
-            $response->sendHeaders();
         }
     }
 }

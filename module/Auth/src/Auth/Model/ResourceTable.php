@@ -1,5 +1,4 @@
 <?php
-
 namespace Auth\Model;
 
 use Zend\Db\Sql\Sql;
@@ -37,5 +36,32 @@ class ResourceTable extends AbstractTableGateway
         } catch (\Exception $e) {
             throw new \Exception($e->getPrevious()->getMessage());
         }
+    }
+
+    public function getByID($id)
+    {
+        // @todo check id for int
+        $result = $this->select([
+            'id' => $id
+        ])->toArray();
+        if (count($result) < 1) {
+            return null;
+        }
+        return $result[0];
+    }
+
+    public function add($name)
+    {
+        $this->insert([
+            'resource_name' => $name
+        ]);
+        return $this->lastInsertValue;
+    }
+
+    public function deleteByID($id)
+    {
+        return $this->delete([
+            'id' => $id
+        ]);
     }
 }

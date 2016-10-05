@@ -97,14 +97,15 @@ class UserTable extends AbstractTableGateway
             throw new \Exception($e->getPrevious()->getMessage());
         }
     }   
-    public function saveUser(UserTable $user)
+    public function saveUser($user)
     {
         $data = array(
-            'name' => $user->name,
-            'password'  => $user->password,
+            'email' => $user['email'],
+            'user_name' => $user['user_name'],
+            'password'  => $user['password'],
         );
 
-        $id = (int) $user->id;
+        $id = (int) $user['id'];
         if ($id == 0) {
             $this->insert($data);
         } else {

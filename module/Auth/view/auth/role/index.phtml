@@ -4,27 +4,22 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
  <p>
-     <a href="<?php echo $this->url('role', array('action'=>'add'));?>">Add new Role</a>
- </p><pre>
-<?php var_dump($roles); ?>
-</pre>
+     <a href="<?php echo $this->url('role/add');?>">Add new Role</a>
+ </p>
  <table class="table">
  <tr>
      <th>Name</th>
      <th>Parent</th>
-     <th>Status</th>
      <th>&nbsp;</th>
  </tr>
  <?php foreach ($roles as $role) : ?>
  <tr>
      <td><?php echo $this->escapeHtml($role['role_name']);?></td>
      <td><?php echo $this->escapeHtml($role['role_parent_name']);?></td>
-     <td><?php echo $this->escapeHtml($role['status']);?></td>
      <td>
-         <a href="<?php echo $this->url('role',
-             array('action'=>'edit', 'id' => $role['id']));?>">Edit</a>
-         <a href="<?php echo $this->url('user',
-             array('action'=>'delete', 'id' => $role['id']));?>">Delete</a>
+         <a href="<?php echo $this->url('role/edit', array('id' => $role['rid']));?>">Edit</a>
+         <a href="<?php echo $this->url('permission/edit', array('id' => $role['rid']));?>">Permissions</a>
+         <a href="<?php echo $this->url('role/delete', array('id' => $role['rid']));?>">Delete</a>
      </td>
  </tr>
  <?php endforeach; ?>
