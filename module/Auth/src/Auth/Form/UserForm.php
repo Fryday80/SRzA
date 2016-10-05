@@ -2,13 +2,15 @@
 namespace Auth\Form;
 
 use Zend\Form\Form;
+use Auth\Form\Filter\UserFilter;
 
 class UserForm extends Form
 {
     public function __construct($name = null)
     {
-        // we want to ignore the name passed
-        parent::__construct('user');
+        parent::__construct('User');
+        $this->setAttribute('method', 'post');
+        $this->setInputFilter(new UserFilter());
 
         $this->add(array(
             'name' => 'id',
@@ -24,7 +26,7 @@ class UserForm extends Form
         ));
         
         $this->add(array(
-            'name' => 'user_name',
+            'name' => 'name',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Name',
@@ -34,23 +36,8 @@ class UserForm extends Form
         $this->add(array(
             'name' => 'password',
             'type' => 'Password',
-            'required' => true,
             'options' => array(
                 'label' => 'Password',
-            ),
-            'filters' => array(
-                array('name' => 'StripTags'),
-                array('name' => 'StringTrim')
-            ),
-            'validators' => array(
-                array(
-                    'name' => 'StringLength',
-                    'options' => array(
-                        'encoding' => 'UTF-8',
-                        'min' => 3,
-                        'max' => 32
-                    )
-                )
             )
         ));
         
@@ -59,15 +46,7 @@ class UserForm extends Form
             'type'       => 'Password',
             'options' => array(
                 'label' => 'Password confirm',
-            ),
-            'validators' => array(
-                array(
-                    'name'    => 'Identical',
-                    'options' => array(
-                        'token' => 'password',
-                    ),
-                ),
-            ),
+            )
         ));
         $this->add(array(
             'name' => 'submit',

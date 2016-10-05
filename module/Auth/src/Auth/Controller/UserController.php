@@ -16,11 +16,8 @@ class UserController extends AbstractActionController
     }
     public function indexAction()
     {
-//         if (!$this->getAuthService()->hasIdentity()) {
-//             print("access denied");die;
-//         }
         return array(
-            'users' => $this->getUserTable()->select()->toArray()
+            'users' => $this->getUserTable()->getUsers()
         );
     }
 
@@ -31,14 +28,12 @@ class UserController extends AbstractActionController
         
         $request = $this->getRequest();
         if ($request->isPost()) {
+            $user = new User();
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->getUserTable()->saveUser($form->getData());
-                
-                // Redirect to list of Users
+                $user->exchangeArray($form->getData());
+                $this->getUserTable()->saveUser($user);
                 return $this->redirect()->toRoute('user');
-            } else {
-                
             }
         }
         return array(
@@ -50,9 +45,7 @@ class UserController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
-            return $this->redirect()->toRoute('user', array(
-                'action' => 'add'
-            ));
+            return $this->redirect()->toRoute('user');
         }
         
         // Get the users with the specified id. An exception is thrown
@@ -60,30 +53,21 @@ class UserController extends AbstractActionController
         try {
             $user = $this->getUserTable()->getUser($id);
         } catch (\Exception $ex) {
-            return $this->redirect()->toRoute('user', array(
-                'action' => 'index'
-            ));
+            return $this->redirect()->toRoute('user');
         }
         $form = new UserForm();
-        $form->setData($user);
+        $form->setData($user->getArrayCopy());
         $form->get('submit')->setAttribute('value', 'Edit');
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            //$form->setInputFilter($user->getInputFilter());
             $form->setData($request->getPost());
-            
             if ($form->isValid()) {
-                //show errors
-                
-                print('not implemented');
-                die;
-                
-                
-                //$this->getUserTable()->saveUser($user);
+                $user->exchangeArray($form->getData());
+                $this->getUserTable()->saveUser($user);
                 
                 // Redirect to list of Users
-                //return $this->redirect()->toRoute('user');
+                return $this->redirect()->toRoute('user');
             }
         }
         

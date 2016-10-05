@@ -16,6 +16,9 @@ use Zend\Session\Container;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
 use Auth\Service\AccessService;
+use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Stdlib\Hydrator\ObjectProperty;
+use Auth\Model\User;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -80,7 +83,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return new AclService();
                 },
                 'Auth\Model\UserTable' => function ($serviceManager) {
-                    return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
+                    $resultSetPrototype = new HydratingResultSet();
+                    $resultSetPrototype->setHydrator(new ObjectProperty());
+                    $resultSetPrototype->setObjectPrototype(new User());
+                    return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $resultSetPrototype);
                 },
                 'Auth\Model\RoleTable' => function ($serviceManager) {
                     return new RoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
