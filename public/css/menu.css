@@ -1,6 +1,4 @@
 /* -----------------Navbar CSS settings----------------- */
-@media only screen {
-
     #mainMenu {
         list-style-type: none;
         margin: 0 0 0 0;
@@ -53,7 +51,6 @@
     #navbutton {
         display: none;
     }
-}
 
 /* @media special desing */
 /*-----------------------------------------------------------------------------*/
