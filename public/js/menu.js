@@ -1,6 +1,6 @@
 console.log (window.innerWidth + "px width -- refreshes on reload");
 
-$(document).ready(function () {
+jQuery(document).ready(function () {
 
     /**
      *  toggles submenus visible or hidden via CSS class "hidden" on submenu class ".secondLevel"
@@ -43,8 +43,9 @@ $(document).ready(function () {
                 $("#menuItems").show();
             }
         } else {
-            $("#mainMenu li").on("mouseover mouseout", toggleSub);
             $("#menuItems").show();
+            $("#mainMenu li").on("mouseover", toggleSub);
+            $(".secondLevel").on("mouseout", hideSubs);
         };
     }
 

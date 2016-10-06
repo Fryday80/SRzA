@@ -68,7 +68,7 @@
     .navtitel>div {
         display: none;
     }
-    #mainmenu li {
+    #mainMenu li {
         list-style: none;
         font-size: 15px;
         line-height: normal;
@@ -76,6 +76,7 @@
         background-repeat: no-repeat;
         background-image: none;
         color: black;
+        float:left;
     }
     #mainMenu a {
         color: black;
