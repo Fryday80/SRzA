@@ -1,13 +1,13 @@
 /* -----------------Navbar CSS settings----------------- */
-    #mainMenu {
+    .navigation {
         list-style-type: none;
         margin: 0 0 0 0;
         padding: 5px;
         display: block;
     }
 
-    #mainMenu ul,
-    #mainMenu li {
+    .navigation ul,
+    .navigation li {
         vertical-align: middle;
         list-style-type: none;
         padding-left: 10px;
@@ -15,19 +15,19 @@
         line-height: 30px;
         width: 90%;
     }
-    #mainMenu li {
+    .navigation li {
         background-repeat: no-repeat;
         background-image: url(../media/uikit/Button.png);
         background-size: 100% 30px;
     }
-    #mainMenu li:link,
-    #mainMenu li:visited{
+    .navigation li:link,
+    .navigation li:visited{
         background-size: 100% 30px;
         color: black;
     }
 
-    #mainMenu li:active,
-    #mainMenu li:hover {
+    .navigation li:active,
+    .navigation li:hover {
         background-image: url(../media/uikit/Button.hover.png);
         background-size: 100% 30px;
         color: black;
@@ -44,7 +44,7 @@
         background-color: none;
         background-image: none;1^^
     }
-    #mainMenu>li>ul>li {
+    .navigation>li>ul>li {
         padding-left: 10px;
     }
 
@@ -68,7 +68,7 @@
     .navtitel>div {
         display: none;
     }
-    #mainmenu li {
+    .navigation li {
         list-style: none;
         font-size: 15px;
         line-height: normal;
@@ -76,23 +76,24 @@
         background-repeat: no-repeat;
         background-image: none;
         color: black;
+        float:left;
     }
-    #mainMenu a {
+    .navigation a {
         color: black;
     }
-    #mainMenu li:link,
-    #mainMenu li:visited{
+    .navigation li:link,
+    .navigation li:visited{
         color: black;
     }
-    #mainMenu li:active,
-    #mainMenu li:hover {
+    .navigation li:active,
+    .navigation li:hover {
         background-image: url(../media/uikit/highlight.u.d.dark.png);
         background-size: 100% 50%;
         background-position: top;
         color: #ffb100;
         color: black;
     }
-    #mainmenu>li {
+    .navigation>li {
         width: auto;
         float: left;
         margin-right: 10px;
@@ -144,34 +145,34 @@
     .navtitel>.spacer_h {
         display: none;
     }
-    #mainMenu li {
+    .navigation li {
         color: white;
     }
-    #mainMenu>li {
+    .navigation>li {
         float: none;
     }
-    #mainMenu>li>ul {
+    .navigation>li>ul {
         position: relative;
         padding-left: 10px;
         float: none;
         top: 2px;
         left: 5px;
     }
-    #mainMenu li:link,
-    #mainMenu li:visited{
+    .navigation li:link,
+    .navigation li:visited{
         color: white;
     }
-    #mainMenu li:active,
-    #mainMenu li:hover {
+    .navigation li:active,
+    .navigation li:hover {
         color: white;
         background-image: url(../media/uikit/highlight.u.d.png);
         background-size: 100%;
         background-position: top;
     }
-    #mainMenu a:link,
-    #mainMenu a:visited,
-    #mainMenu a:hover,
-    #mainMenu a:active {
+    .navigation a:link,
+    .navigation a:visited,
+    .navigation a:hover,
+    .navigation a:active {
         color: white;
     }
     #menuItems{
@@ -180,7 +181,7 @@
     .navtitel {
         display: block;
     }
-    #mainMenu>li>ul {
+    .navigation>li>ul {
         background-color: black;
         position: relative;
         top: 0;

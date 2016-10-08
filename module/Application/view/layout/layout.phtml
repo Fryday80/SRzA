@@ -10,6 +10,7 @@
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 <!--    CSS styles   -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" />
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/media/favicon.ico'))
                         ->prependStylesheet($this->basePath('css/media.css'))
                         ->prependStylesheet($this->basePath('css/menu.css'))
@@ -17,9 +18,11 @@
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/menu.js'))
-            ->prependFile($this->basePath('js/jquery.min.js'))
+        ->prependFile($this->basePath('js/popup.js'))
+        ->prependFile($this->basePath('js/menu.js'))
+        ->prependFile($this->basePath('js/jquery.min.js'))
     ; ?>
+    <script   src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
 
 </head>
 
@@ -34,7 +37,8 @@
         <div id="headlinks">
         	<span><?php echo $this->userinfo(); ?></span>
             <span><a href="#">Kontakt </a></span> |
-            <span><a href="#"> Impressum</a></span>
+            <span><a href="#"> Impressum</a></span> |
+            <span><a class="disclaim" href="#"> Haftungsausschluss</a></span>
         </div>
     </div>
     <div class="bodycontainer">
@@ -47,8 +51,9 @@
             <div class="navtitel"><owntitel>Wegweiser</owntitel><div class="spacer_h"></div></div>
 
         		<?php echo $this->navigation('navigation')->menu(); ?>
-                <ul id="mainMenu">
-                    <li><span><a href="<?php echo $this->url('album') ?>">First one</a></span>
+                <!--
+                <ul class="navigation">
+                    <li><span><a href="">First one</a></span>
                     </li>
                     <li><span>first two</span>
                         <ul class="secondLevel hidden">
@@ -71,8 +76,8 @@
                             <li><span><a href="#">sec 1-2-3</a></span></li>
                         </ul>
                     </li>
-                    <li><span><a href="<?php echo $this->url('album') ?>">First four</a></span>
-                </ul>
+                    <li><span><a href="">First four</a></span>
+                </ul> -->
             </div>
         </div>
 
@@ -124,5 +129,6 @@
         <div id="footimage"></div>
     </div>
     <?php echo $this->inlineScript() ?>
+    <div></div>
 </body>
 </html>
