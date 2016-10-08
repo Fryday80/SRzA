@@ -88,7 +88,7 @@ class NavController extends AbstractActionController
                 $data = $form->getData();
                 $navTable->updateItem(array(
                     'label' => $data['label'],
-                    'route' => $data['route'],
+                    'uri' => $data['uri'],
                     'permission_id' => $data['permission_id']
                 ), $data['id']);
                 return $this->redirect()->toRoute('nav/sort');

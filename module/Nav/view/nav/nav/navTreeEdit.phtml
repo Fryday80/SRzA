@@ -140,7 +140,7 @@
         $form->setAttribute('action', $ctx->url('nav/edit', array('id' => $nodeID)));
         $form->get('id')->setValue($page['id']);
         $form->get('label')->setValue($page['label']);
-        $form->get('route')->setValue($page['route']);
+        $form->get('uri')->setValue($page['uri']);
         $form->get('permission_id')->setValue($page['permission_id']);
 
         $form->prepare();

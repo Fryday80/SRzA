@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. Okt 2016 um 16:40
+-- Erstellungszeit: 08. Okt 2016 um 17:38
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -63,20 +63,22 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
 
 --
 -- Daten für Tabelle `nav`
 --
 
 INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt`) VALUES
-(1, 0, 'Users and Rights', 'user', 67, 3, 10),
-(2, 0, 'Resources', 'resource', 62, 6, 7),
-(3, 0, 'Permissions', 'permission', 58, 4, 5),
-(4, 0, 'Users', 'user', 67, 8, 9),
-(5, 0, 'Gallery', 'album', 66, 11, 12),
-(7, 0, 'Home', 'home', 1, 1, 2),
-(8, 0, 'Navigation', 'nav/sort', 73, 13, 14);
+(1, 0, 'Users and Rights', '/user', 67, 8, 17),
+(2, 0, 'Resources', '/resource', 62, 11, 12),
+(3, 0, 'Permissions', '/permission', 58, 9, 10),
+(4, 0, 'Users', '/user', 67, 13, 14),
+(5, 0, 'Gallery', '/album', 66, 3, 4),
+(7, 0, 'Home', '/', 1, 1, 2),
+(8, 0, 'Navigation', '/nav/sort', 73, 6, 7),
+(9, 0, 'Administration', '/#', 69, 5, 18),
+(10, 0, 'Roles', '/role', 54, 15, 16);
 
 -- --------------------------------------------------------
 
