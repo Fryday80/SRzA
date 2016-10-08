@@ -10,19 +10,23 @@
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 <!--    CSS styles   -->
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" />
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/media/favicon.ico'))
+                        ->prependStylesheet($this->basePath('css/jquery-ui.css'))
                         ->prependStylesheet($this->basePath('css/media.css'))
                         ->prependStylesheet($this->basePath('css/menu.css'))
                         ->prependStylesheet($this->basePath('css/style.css'))
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
-        ->prependFile($this->basePath('js/popup.js'))
-        ->prependFile($this->basePath('js/menu.js'))
-        ->prependFile($this->basePath('js/jquery.min.js'))
+            ->prependFile($this->basePath('js/popup.js'))
+            ->prependFile($this->basePath('js/menu.js'))
+            ->prependFile($this->basePath('js/jquery-ui.min.js'))
+            ->prependFile($this->basePath('js/jquery.min.js'))
+
     ; ?>
-    <script   src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
+    <!-- <script   src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" />
+-->
 
 </head>
 
