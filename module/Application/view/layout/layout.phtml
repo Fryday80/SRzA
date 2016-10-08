@@ -22,6 +22,7 @@
             ->prependFile($this->basePath('js/menu.js'))
             ->prependFile($this->basePath('js/jquery-ui.min.js'))
             ->prependFile($this->basePath('js/jquery.min.js'))
+
     ; ?>
     <!-- <script   src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" />
@@ -37,8 +38,8 @@
         <div id="head">
             <a href="<?php echo $this->url('home') ?>"><ownhead>Schwarze Ritter zu Augsburg</ownhead></a>
         </div>
-
         <div id="headlinks">
+        	<span><?php echo $this->userinfo(); ?></span>
             <span><a href="#">Kontakt </a></span> |
             <span><a href="#"> Impressum</a></span> |
             <span><a class="disclaim" href="#"> Haftungsausschluss</a></span>
@@ -56,7 +57,7 @@
         		<?php echo $this->navigation('navigation')->menu(); ?>
                 <!--
                 <ul class="navigation">
-                    <li><span><a href="<?php echo $this->url('album') ?>">First one</a></span>
+                    <li><span><a href="">First one</a></span>
                     </li>
                     <li><span>first two</span>
                         <ul class="secondLevel hidden">
@@ -79,7 +80,7 @@
                             <li><span><a href="#">sec 1-2-3</a></span></li>
                         </ul>
                     </li>
-                    <li><span><a href="<?php //echo $this->url('album') ?>">First four</a></span>
+                    <li><span><a href="">First four</a></span>
                 </ul> -->
             </div>
         </div>
