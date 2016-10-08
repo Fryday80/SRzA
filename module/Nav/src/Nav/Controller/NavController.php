@@ -45,10 +45,6 @@ class NavController extends AbstractActionController
                 array_push($routeNames, $name);
             }
         }
-
-        print('<pre>');
-        var_dump($routeNames);
-        die();
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());

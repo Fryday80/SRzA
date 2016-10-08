@@ -42,7 +42,7 @@ class NavTable extends AbstractTableGateway
                 SELECT 
                 n.id,
                 n.label,
-                n.route AS uri,
+                n.uri,
                 n.permission_id,
                 res.resource_name AS resource,
                 perm.permission_name AS privilege,
@@ -78,7 +78,7 @@ class NavTable extends AbstractTableGateway
         $this->insert([
             'menu_id'       => 0,
             'label'         => $data['label'],
-            'route'         => $data['route'],
+            'uri'           => $data['uri'],
             'permission_id' => $data['permission_id'],
             'lft'           => $maxRgt + 1,
             'rgt'           => $maxRgt + 2
@@ -93,7 +93,7 @@ class NavTable extends AbstractTableGateway
 
         $rgt = 2;
         $label = 'testLabel';
-        $route = 'user/add';
+        $uri = 'user/add';
 
         $sql = $this->sql;
         $update = $sql->update();
@@ -108,7 +108,7 @@ class NavTable extends AbstractTableGateway
         $this->insert([
             'menu_id'   => 0,
             'label'     => $label,
-            'route'     => $route,
+            'rui'       => $uri,
             'lft'       => $rgt,
             'rgt'       => $rgt + 1
         ]);

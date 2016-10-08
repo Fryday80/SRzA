@@ -26,10 +26,10 @@ class NavForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'route',
+            'name' => 'uri',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Route',
+                'label' => 'Url',
             ),
         ));
         $this->add(array(
