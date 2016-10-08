@@ -4,7 +4,6 @@ namespace Auth\Controller;
 use Auth\Utility\UserPassword;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
-use Doctrine\DBAL\Schema\View;
 
 class AuthController extends AbstractActionController
 {
@@ -28,11 +27,12 @@ class AuthController extends AbstractActionController
         $users = $userTable->getUsers(array(
                         'email' => $mail
                     ), array(
-                        'user_id' => 'id',
+                        'id' => 'id',
                         'email',
-                        'user_name'
+                        'name'
                     ));
-        return $users[0];
+        var_dump($users[0]);
+        return $users;
     }
 
     public function loginAction()
@@ -57,19 +57,21 @@ class AuthController extends AbstractActionController
                 ->setCredential($encyptPass);
         
                 $result = $authService->authenticate();
+
                 foreach ($result->getMessages() as $message) {
                     // save message temporary into flashmessenger
                     $this->flashmessenger()->addMessage($message);
                 }
         
                 if ($result->isValid()) {
-        
-                    $userDetails = $this->getUserDetails($data['email']);
+
+                    $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+                    $userDetails = $userTable->getUsersForAuth($data['email']);
                     $storage = $this->getSessionStorage();
-                    $storage->setUserID($userDetails['user_id']);
-                    $storage->setUserName($userDetails['user_name']);
-                    $storage->setRoleID($userDetails['role_id']);
-                    $storage->setRoleName($userDetails['role_name']);
+                    $storage->setUserID($userDetails->id);
+                    $storage->setUserName($userDetails->name);
+                    $storage->setRoleID($userDetails->role_id);
+                    $storage->setRoleName($userDetails->role_name);
                     // check if it has rememberMe :
                     if ($request->getPost('rememberme') == 1) {
                         $storage->setRememberMe(1);
@@ -91,14 +93,13 @@ class AuthController extends AbstractActionController
         $this->getServiceLocator()->get('AuthService')->clearIdentity();
         
         $this->flashmessenger()->addMessage("You've been logged out");
-        return $this->redirect()->toRoute('login');
+        return $this->redirect()->toRoute('home');
     }
 
     public function successAction()
     {
-        if (! $this->getServiceLocator()
-            ->get('AuthService')->hasIdentity()){
-                return $this->redirect()->toRoute('login');
+        if (! $this->getServiceLocator()->get('AuthService')->hasIdentity()){
+            return $this->redirect()->toRoute('login');
         }
         return array();
     }

@@ -1,0 +1,62 @@
+<?php
+$title = 'Edit Menu';
+// $this->headLink()->prependStylesheet('/js/jstree/themes/default-dark/style.css');
+$this->headScript()->appendFile('/js/jquery.nestable.js');
+// $this->headScript()->appendFile('/js/jstree/jstree.min.js');
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+
+<input id="save-menu" type="button" value="Save Sorting"></input>
+<input id="add-menu-item" type="button" value="Add Item"></input>
+<br>
+<div id="navTree" class="dd">
+	<?php echo $this->render('jsTree.phtml'); ?>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+    	$('.dd').nestable({
+
+        });
+
+        $('#save-menu').on('click', function() {
+        	var data = $('.dd').nestable('serialize');
+        	data = JSON.stringify(data);
+        	console.log(data);
+            $.ajax
+            ({
+                type: "POST",
+                url: '/nav/sort',
+                dataType: 'json',
+                async: true,
+                data: data,
+                success: function (e, a) {
+					console.log(e, a);
+                },
+                error: function (e, a) {
+    				console.log(e.responseText, a);
+                }
+            }).done(function( msg ) {
+                console.log(msg);
+            });
+        });
+        $('#add-menu-item').on('click', function() {
+        	var getUrl = window.location;
+        	var url = getUrl.protocol + "//" + getUrl.host + "/nav/add";
+        	window.location = url;
+        });
+        $('.dd-edit').on('click', function(e) {
+        	$(this).parent('.dd3-content').toggleClass('dd-expanded');
+            //console.log($(this).parent('.dd3-content') );
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
