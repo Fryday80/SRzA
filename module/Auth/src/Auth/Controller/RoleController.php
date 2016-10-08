@@ -42,7 +42,7 @@ class RoleController extends AbstractActionController
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new RoleForm($roleTable);
         $form->get('submit')->setValue('Edit');
-        $data = $roleTable->getRoleByID($id)[0];
+        $data = $roleTable->getRoleByID($id);
         $form->populateValues($data);
         $request = $this->getRequest();
         if ($request->isPost()) {

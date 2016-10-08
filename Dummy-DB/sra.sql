@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. Okt 2016 um 17:38
+-- Erstellungszeit: 08. Okt 2016 um 18:32
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -197,7 +197,7 @@ CREATE TABLE IF NOT EXISTS `role` (
 INSERT INTO `role` (`rid`, `role_name`, `role_parent`, `status`) VALUES
 (1, 'Guest', NULL, 'Active'),
 (2, 'Role2', 1, 'Active'),
-(3, 'Role3', 2, 'Active'),
+(3, 'Member', 2, 'Active'),
 (4, 'Administrator', NULL, 'Active');
 
 -- --------------------------------------------------------
@@ -326,12 +326,9 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`) VALUES
-(1, 'salt@salt.de', 'salt', 'e4be948b534bc81b68a28e737b9f049eb2e665f6', 'Y', '0000-00-00 00:00:00', '2016-09-27 17:12:35'),
-(2, 'example.2@example.com', 'test', 'e4be948b534bc81b68a28e737b9f049eb2e665f6', 'Y', '0000-00-00 00:00:00', '2016-09-29 00:46:21'),
-(3, 'example.3@example.com', 'example', 'd7d833534a39afbac08ec536bed7ae9eeac45638', 'Y', '0000-00-00 00:00:00', '2016-09-27 00:58:02'),
-(6, 'zz@zz.com', 'dsa', 'aaaa', 'Y', '0000-00-00 00:00:00', '2016-10-05 17:44:06'),
-(7, 'fdsdfdsf@dsa.com', 'dsafafasfas', 'dsa', 'Y', '0000-00-00 00:00:00', '2016-10-05 17:52:28'),
-(8, 'gandalf@web.de', 'gandalf', 'gandalf', 'Y', '0000-00-00 00:00:00', '2016-10-05 18:16:24');
+(1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 'Y', '0000-00-00 00:00:00', '2016-10-08 18:00:20'),
+(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', '0000-00-00 00:00:00', '2016-10-08 18:04:01'),
+(3, 'example.3@example.com', 'example', 'd7d833534a39afbac08ec536bed7ae9eeac45638', 'Y', '0000-00-00 00:00:00', '2016-09-27 00:58:02');
 
 -- --------------------------------------------------------
 

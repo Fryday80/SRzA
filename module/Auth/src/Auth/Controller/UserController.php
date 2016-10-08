@@ -2,6 +2,7 @@
 namespace Auth\Controller;
 
 
+use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -32,6 +33,10 @@ class UserController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $user->exchangeArray($form->getData());
+                if (strlen($form->getData()['password']) > 4) {
+                    $userPassword = new UserPassword();
+                    $user->password = $userPassword->create($user->password);
+                }
                 $this->getUserTable()->saveUser($user);
                 return $this->redirect()->toRoute('user');
             }
@@ -64,6 +69,10 @@ class UserController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $user->exchangeArray($form->getData());
+                if (strlen($form->getData()['password']) > 3) {
+                    $userPassword = new UserPassword();
+                    $user->password = $userPassword->create($user->password);
+                }
                 $this->getUserTable()->saveUser($user);
                 
                 // Redirect to list of Users

@@ -69,7 +69,7 @@ class UserFilter extends InputFilter
                     'name' => 'StringLength',
                     'options' => array(
                         'encoding' => 'UTF-8',
-                        'min' => 3,
+                        'min' => 4,
                         'max' => 32
                     )
                 )
