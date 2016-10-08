@@ -27,7 +27,7 @@ $(document).ready(function () {
                 $(".ui-dialog-titlebar-close").hide();      //entfernt das X im eck
                 $('.ui-dialog').css({
                     'width': $(window).width(),          //addClass geht hier nicht, das überschreibt dann nicht
-                    'height': 500,
+                    'height': 600,
                     'left': '0px',
                     'top':'0px'
                 });
