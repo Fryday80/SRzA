@@ -19,18 +19,15 @@ $(document).ready(function () {
         markup.done(function (e){
             $(ele).html(e);
         });
-        var wWidth = $(window).innerWidth;
 
         ele = $( "<div></div>" ).dialog({
-            width: wWidth,
-            height: 500,
             modal: true,
             title: "Disclaimer",
             open: function () {
                 $(".ui-dialog-titlebar-close").hide();      //entfernt das X im eck
                 $('.ui-dialog').css({
-                    'width': $(window).width(),
-                    'height': $(window).height(),           //addClass geht hier nicht, das überschreibt dann nicht
+                    'width': $(window).width(),          //addClass geht hier nicht, das überschreibt dann nicht
+                    'height': 500,
                     'left': '0px',
                     'top':'0px'
                 });
