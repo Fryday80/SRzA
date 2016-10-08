@@ -1,6 +1,10 @@
 console.log (window.innerWidth + "px width -- refreshes on reload");
 
 jQuery(document).ready(function () {
+    function giveClassesToMenu () {
+        $(".navigation li ul").addClass("secondLevel");
+    }
+    giveClassesToMenu ();
 
     /**
      *  toggles submenus visible or hidden via CSS class "hidden" on submenu class ".secondLevel"
@@ -32,19 +36,19 @@ jQuery(document).ready(function () {
     function rebindMenuHandlers () {
 
         $("#navbutton").off("click", toggleMenu);
-        $("#mainMenu li").off("click mouseover mouseout", toggleSub);
+        $(".navigation li").off("click mouseover mouseout", toggleSub);
         console.log ("i am the rebinder");
 
         if ($(window)[0].innerWidth < 1000 ){
             $("#menuItems").hide();
             $("#navbutton").on("click", toggleMenu);
-            $("#mainMenu li").on("click", toggleSub);
+            $(".navigation li").on("click", toggleSub);
             if ($(window)[0].innerWidth > 700 ){
                 $("#menuItems").show();
             }
         } else {
             $("#menuItems").show();
-            $("#mainMenu li").on("mouseover", toggleSub);
+            $(".navigation li").on("mouseover", toggleSub);
             $(".secondLevel").on("mouseout", hideSubs);
         };
     }
