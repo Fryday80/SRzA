@@ -8,9 +8,6 @@ class LoginFilter extends InputFilter
 
     public function __construct()
     {
-        $isEmpty = \Zend\Validator\NotEmpty::IS_EMPTY;
-        $invalidEmail = \Zend\Validator\EmailAddress::INVALID_FORMAT;
-        
         $this->add(array(
             'name' => 'email',
             'required' => true,
@@ -22,6 +19,12 @@ class LoginFilter extends InputFilter
                     'name' => 'StringTrim'
                 )
             ),
+            'validators' => array(
+                array(
+                    'name' => 'EmailAddress',
+                    'options' => array()
+                )
+            )
 //             'validators' => array(
 //                 array(
 //                     'name' => 'NotEmpty',

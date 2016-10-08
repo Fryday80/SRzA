@@ -15,11 +15,11 @@ $this->headTitle($title);
  </tr>
  <?php foreach ($users as $user) : ?>
  <tr>
-     <td><?php echo $this->escapeHtml($user['user_name']);?></td>
-     <td><?php echo $this->escapeHtml($user['email']);?></td>
+     <td><?php echo $this->escapeHtml($user->name);?></td>
+     <td><?php echo $this->escapeHtml($user->email);?></td>
      <td>
-         <a href="<?php echo $this->url('user/edit', array('id' => $user['id']));?>">Edit</a>
-         <a href="<?php echo $this->url('user/delete', array('id' => $user['id']));?>">Delete</a>
+         <a href="<?php echo $this->url('user/edit', array('id' => $user->id));?>">Edit</a>
+         <a href="<?php echo $this->url('user/delete', array('id' => $user->id));?>">Delete</a>
      </td>
  </tr>
  <?php endforeach; ?>
