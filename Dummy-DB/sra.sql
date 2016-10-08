@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. Okt 2016 um 16:38
+-- Erstellungszeit: 08. Okt 2016 um 16:40
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -59,8 +59,6 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `menu_id` int(11) NOT NULL,
   `label` tinytext COLLATE utf8_bin NOT NULL,
   `uri` tinytext COLLATE utf8_bin,
-  `resource` tinytext COLLATE utf8_bin,
-  `privilege` tinytext COLLATE utf8_bin,
   `permission_id` int(11) NOT NULL,
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
@@ -71,14 +69,14 @@ CREATE TABLE IF NOT EXISTS `nav` (
 -- Daten für Tabelle `nav`
 --
 
-INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `resource`, `privilege`, `permission_id`, `lft`, `rgt`) VALUES
-(1, 0, 'Users and Rights', 'user', 'Auth\\Controller\\User', 'index', 67, 3, 10),
-(2, 0, 'Resources', 'resource', 'Auth\\Controller\\Resource', 'index', 62, 6, 7),
-(3, 0, 'Permissions', 'permission', 'Auth\\Controller\\Permission', 'index', 58, 4, 5),
-(4, 0, 'Users', 'user', 'Auth\\Controller\\User', 'index', 67, 8, 9),
-(5, 0, 'Gallery', 'album', 'Album\\Controller\\Album', 'index', 66, 11, 12),
-(7, 0, 'Home', 'home', 'Application\\Controller\\Index', 'index', 1, 1, 2),
-(8, 0, 'Navigation', 'nav/sort', NULL, NULL, 73, 13, 14);
+INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt`) VALUES
+(1, 0, 'Users and Rights', 'user', 67, 3, 10),
+(2, 0, 'Resources', 'resource', 62, 6, 7),
+(3, 0, 'Permissions', 'permission', 58, 4, 5),
+(4, 0, 'Users', 'user', 67, 8, 9),
+(5, 0, 'Gallery', 'album', 66, 11, 12),
+(7, 0, 'Home', 'home', 1, 1, 2),
+(8, 0, 'Navigation', 'nav/sort', 73, 13, 14);
 
 -- --------------------------------------------------------
 
