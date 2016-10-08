@@ -18,7 +18,28 @@ class UserTable extends AbstractTableGateway
         $this->resultSetPrototype = $resultSetPrototype;
         $this->initialize();
     }
-    
+    public function getUsersForAuth($email) {
+        try {
+            $sql = $this->getSql();
+            $select = $sql->select();
+            $select->where("email = '$email'");
+//             if (count($columns) > 0) {
+//                 $select->columns($columns);
+//             }
+
+            $select->join(array('userRole' => 'user_role'), 'userRole.user_id = users.id', array('role_id'), 'LEFT');
+            $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
+
+            $user = $this->selectWith($select)->current();
+            if (!$user) {
+                throw new \Exception("Could not find user with email: $email");
+            }
+            return $user;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+            die;
+        }
+    }
     public function getUsers($where = array(), $columns = array())
     {
         try {

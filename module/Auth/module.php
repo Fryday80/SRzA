@@ -19,8 +19,12 @@ use Auth\Service\AccessService;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Stdlib\Hydrator\ObjectProperty;
 use Auth\Model\User;
+use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
+use Auth\View\Helper\UserInfo;
+use Zend\ServiceManager\ServiceLocatorInterface;
+use Auth\Model\AuthStorage;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface
+class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
 {
 
     public function onBootstrap(MvcEvent $e)
@@ -56,11 +60,23 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
         return include __DIR__ . '/config/module.config.php';
     }
 
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'userinfo' => function (ServiceLocatorInterface $serviceLocator) {
+                    $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
+                    $userInfo = new UserInfo($storage);
+                    return $userInfo;
+                }
+            )
+        );
+    }
+
     public function getServiceConfig()
     {
         return array(
             'factories' => array(
-                
                 'Auth\Model\AuthStorage' => function ($sm) {
                     $storage = new Model\AuthStorage('sra');
                     return $storage;
@@ -111,18 +127,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         $whiteList = array(
             'Auth\Controller\Auth-login',
-            'Auth\Controller\Auth-logout',
+            'Auth\Controller\Auth-logout'
         );
-
-        $response           = $event->getResponse();
-        $controller         = $event->getRouteMatch()->getParam('controller');
-        $action             = $event->getRouteMatch()->getParam('action');
-        $requestedResourse  = $controller . "-" . $action;
-        $serviceManager     = $event->getApplication()->getServiceManager();
-        $accessService      = $serviceManager->get('AccessService');
         
+        $response = $event->getResponse();
+        $controller = $event->getRouteMatch()->getParam('controller');
+        $action = $event->getRouteMatch()->getParam('action');
+        $requestedResourse = $controller . "-" . $action;
+        $serviceManager = $event->getApplication()->getServiceManager();
+        $accessService = $serviceManager->get('AccessService');
 
-        if (!in_array($requestedResourse, $whiteList) || $requestedResourse != 'Auth\Controller\Success-index') {
+        if (! in_array($requestedResourse, $whiteList) || $requestedResourse != 'Auth\Controller\Success-index') {
             $status = $accessService->allowed($controller, $action);
             if (! $status) {
                 $url = '/login';

@@ -116,20 +116,6 @@ return array(
                         'controller' => 'Auth',
                         'action' => 'success'
                     )
-                ),
-                'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/[:action]',
-                            'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                            ),
-                            'defaults' => array()
-                        )
-                    )
                 )
             ),
             'role' => array(

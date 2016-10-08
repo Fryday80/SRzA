@@ -17,14 +17,18 @@ class NavTable extends AbstractTableGateway
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
     }
-
-    public function fetchAll()
-    {
-        $resultSet = $this->tableGateway->select();
-        return $resultSet;
+//     public function fetchAll()
+//     {
+//         $resultSet = $this->tableGateway->select();
+//         return $resultSet;
+//     }
+    public function getItem($id) {
+        $result = $this->select("id = $id")->toArray();
+        if (count($result) < 1) {
+            return false;
+        }
+        return $result[0];
     }
-
-    public function testSave() {}
     public function getNav($id)
     {
         $id  = (int) $id;
@@ -36,14 +40,20 @@ class NavTable extends AbstractTableGateway
         
         $statement = $this->adapter->query('
                 SELECT 
+                n.id,
                 n.label,
-                n.route,
-                n.resource,
-                n.privilege,
+                n.route AS uri,
+                n.permission_id,
+                res.resource_name AS resource,
+                perm.permission_name AS privilege,
+
                 COUNT(*)-1 AS level,
                 ROUND ((n.rgt - n.lft - 1) / 2) AS offspring
-                FROM nav AS n,
-                nav AS p
+                FROM nav AS n, nav AS p
+
+                INNER JOIN permission as perm ON permission_id = perm.id
+                INNER JOIN resource as res ON perm.resource_id = res.id
+
                 WHERE n.lft BETWEEN p.lft AND p.rgt
                 GROUP BY n.lft
                 ORDER BY n.lft;', array());
@@ -52,7 +62,31 @@ class NavTable extends AbstractTableGateway
         $result = $this->toArray($result);
         return $result;
     }
-    public function add() {
+    public function append($data) {
+        //find highest rgt
+        $select = $this->getSql()->select();
+        $select->columns(array(
+            'rgt' => new \Zend\Db\Sql\Expression('MAX(rgt)')
+        ));
+        $rowset = $this->selectWith($select);
+        $lastItem = $rowset->current();
+        if (!$lastItem) {
+            throw new \Exception("Could not retrieve max rgt value");
+        }
+        $maxRgt = $lastItem['rgt'];
+        //add new item at lft = $maxRgt + 1
+        $this->insert([
+            'menu_id'       => 0,
+            'label'         => $data['label'],
+            'route'         => $data['route'],
+            'permission_id' => $data['permission_id'],
+            'lft'           => $maxRgt + 1,
+            'rgt'           => $maxRgt + 2
+        ]);
+        return $this->lastInsertValue;
+    }
+    public function add($data, $lft) {
+        return 'function not used try append instad';
 //         UPDATE nav SET rgt=rgt+2 WHERE rgt >= $RGT;
 //         UPDATE nav SET lft=lft+2 WHERE lft > $RGT;
 //         INSERT INTO nav (label,lft,rgt) VALUES ('Halbaffen', $RGT, $RGT +1);
@@ -78,6 +112,17 @@ class NavTable extends AbstractTableGateway
             'lft'       => $rgt,
             'rgt'       => $rgt + 1
         ]);
+    }
+    public function updateNesting($row) {
+        $id = $row['id'];
+        unset($row['id']);
+        $this->update($row, array('id' => $id));
+    }
+    public function updateItem($data, $id) {
+        $this->update($data, array('id' => $id));
+    }
+    public function deleteByID($id) {
+        $this->delete("id = $id");
     }
     public function toArray(array $nodes)
     {
