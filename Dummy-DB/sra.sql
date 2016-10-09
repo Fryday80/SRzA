@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 08. Okt 2016 um 18:32
+-- Erstellungszeit: 09. Okt 2016 um 15:16
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `album` (
   `date` timestamp NULL DEFAULT NULL,
   `duration` int(11) NOT NULL DEFAULT '3',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `album`
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=12 ;
 
 --
 -- Daten für Tabelle `nav`
@@ -77,8 +77,9 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 (5, 0, 'Gallery', '/album', 66, 3, 4),
 (7, 0, 'Home', '/', 1, 1, 2),
 (8, 0, 'Navigation', '/nav/sort', 73, 6, 7),
-(9, 0, 'Administration', '/#', 69, 5, 18),
-(10, 0, 'Roles', '/role', 54, 15, 16);
+(9, 0, 'Administration', '/#', 69, 5, 20),
+(10, 0, 'Roles', '/role', 54, 15, 16),
+(11, 0, 'Content', '/cms', 69, 18, 19);
 
 -- --------------------------------------------------------
 
@@ -89,6 +90,7 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` tinytext NOT NULL,
+  `url` tinytext NOT NULL,
   `content` mediumtext NOT NULL,
   `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
@@ -98,11 +100,10 @@ CREATE TABLE IF NOT EXISTS `pages` (
 -- Daten für Tabelle `pages`
 --
 
-INSERT INTO `pages` (`id`, `title`, `content`, `updated`) VALUES
-(1, 'Home', 'Home page', '2016-09-23 16:45:48'),
-(2, 'Page 2', 'lorum ipsum....', '2016-09-23 16:45:48'),
-(3, 'Wander Tag', 'sers', '2016-09-24 00:13:39'),
-(4, 'Langweilig', 'pups', '2016-09-24 00:13:54');
+INSERT INTO `pages` (`id`, `title`, `url`, `content`, `updated`) VALUES
+(1, 'Home', 'Home', '<p>Home page bla<img alt="angel" src="http://localhost/js/ckeditor/plugins/smiley/images/angel_smile.png" style="height:23px; width:23px" title="angel" />&Ocirc;</p>\r\n\r\n<div style="page-break-after: always"><span style="display:none">&nbsp;</span></div>\r\n\r\n<p><iframe align="middle" frameborder="0" height="500" scrolling="yes" src="http://www.gidf.de/" width="500"></iframe></p>\r\n', '2016-09-23 16:45:48'),
+(3, 'Wander Tag', 'Wander-Tag', 'sers', '2016-09-24 00:13:39'),
+(4, 'Langweilig', 'Langweilig', 'warum giebts in php my admin eigentilich nix zum einfügen von dummy texten ??', '2016-09-24 00:13:54');
 
 -- --------------------------------------------------------
 
@@ -115,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=75 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=81 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -148,7 +149,13 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (70, 'edit', 19),
 (71, 'add', 19),
 (73, 'sort', 19),
-(74, 'success', 13);
+(74, 'success', 13),
+(75, 'index', 20),
+(76, 'detail', 20),
+(77, 'add', 20),
+(78, 'edit', 20),
+(79, 'delete', 20),
+(80, 'index', 21);
 
 -- --------------------------------------------------------
 
@@ -160,7 +167,7 @@ CREATE TABLE IF NOT EXISTS `resource` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 --
 -- Daten für Tabelle `resource`
@@ -174,7 +181,9 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 (15, 'Auth\\Controller\\Permission'),
 (16, 'Auth\\Controller\\Resource'),
 (17, 'Album\\Controller\\Album'),
-(19, 'Nav\\Controller\\Nav');
+(19, 'Nav\\Controller\\Nav'),
+(20, 'Cms\\Controller\\Content'),
+(21, 'Cms\\Controller\\Page');
 
 -- --------------------------------------------------------
 
@@ -211,7 +220,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=178 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=184 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -302,7 +311,13 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (174, 4, 72),
 (175, 4, 73),
 (176, 4, 74),
-(177, 1, 74);
+(177, 1, 74),
+(178, 4, 77),
+(179, 4, 78),
+(180, 4, 79),
+(181, 4, 75),
+(182, 4, 76),
+(183, 4, 80);
 
 -- --------------------------------------------------------
 
@@ -319,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `created_on` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `modified_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `users`
