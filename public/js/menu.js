@@ -93,6 +93,7 @@ jQuery(document).ready(function () {
             }
         } else {
             $("#menuItems").show();
+        };
 //            $(".navigation li img").addClass("hidden");
             $(".navigation>li").on("mouseover", toggle2nd);
             $(".secondLevel>li").on("mouseover", toggle3rd);
@@ -101,7 +102,6 @@ jQuery(document).ready(function () {
             $("#navbutton").on("click", toggleMenu);
             $(".dropdown").on("click", toggle2nd);
             $(".dropdown").on("click", toggle3rd);
-        };
     }
 
     $(window).resize(function() {
