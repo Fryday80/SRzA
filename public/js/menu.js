@@ -2,22 +2,52 @@ console.log (window.innerWidth + "px width -- refreshes on reload");
 
 jQuery(document).ready(function () {
     function giveClassesToMenu () {
-        $(".navigation li ul").addClass("secondLevel");
+        $(".navigation>li>ul").addClass("secondLevel hidden");
+        $(".secondLevel>li>ul").addClass("thirdLevel hidden");
     }
     giveClassesToMenu ();
+
+    function attachdropdown (ele) {
+        var $ele = $('img');
+        $ele.addClass('dropdown second');
+        $ele.attr('src', 'media/uikit/arrow-down.png');
+        $(ele).append($ele);
+//        $(this).append('<img class="dropdown second" src="media/uikit/arrow-down.png" />');
+    }
+
+    function attach2Menu () {
+        var helper = $(".navigation>li");
+        helper.each(function (index) {
+            $(helper[index]).has("ul").addClass("topic");
+            //nur die was ist da das ele??
+            $(".topic").each (function(index, value) {
+                attachdropdown(value);//funtz des jetzt weil vorhin hab ich index übergeben nich valuemoom
+            });
+        });
+    }
+
+    attach2Menu ();
 
     /**
      *  toggles submenus visible or hidden via CSS class "hidden" on submenu class ".secondLevel"
      */
-    function toggleSub() {
-        $(".secondLevel").addClass("hidden");
+    function toggle2nd() {
+        $(".secondLevel").not(this).addClass("hidden");
         $(".secondLevel", this).toggleClass( "hidden" );
     }
     /**
-     *  turns submenus hidden via CSS class "hidden" on submenu class ".secondLevel"
+     *  toggles submenus visible or hidden via CSS class "hidden" on submenu class ".thirdLevel"
+     */
+    function toggle3rd() {
+        $(".thirdLevel").not(this).addClass("hidden");
+        $(".thirdLevel", this).toggleClass( "hidden" );
+    }
+    /**
+     *  turns all submenus hidden via CSS class "hidden" on submenu class ".secondLevel" and ".thirdLevel"
      */
     function hideSubs () {
         $(".secondLevel").addClass("hidden");
+        $(".thirdLevel").addClass("hidden");
     }
 
     /**
@@ -29,27 +59,34 @@ jQuery(document).ready(function () {
     }
 
     /**
-    * binds menu event handlers depending on screen size on startup or re-binds them after resize
+    * binds menu event handlers depending on screen size on load or re-binds them after resize
     *
     * unbinds event handlers for the case of resizing
     */
     function rebindMenuHandlers () {
 
         $("#navbutton").off("click", toggleMenu);
-        $(".navigation li").off("click mouseover mouseout", toggleSub);
+        $(".navigation>li").off("click mouseover", toggle2nd);
+        $(".secondLevel>li").off("mouseover", toggle3rd);
+        $(".thirdLevel").off("mouseout", hideSubs);
         console.log ("i am the rebinder");
 
         if ($(window)[0].innerWidth < 1000 ){
+            $(".navigation li img").removeClass("hidden");
             $("#menuItems").hide();
-            $("#navbutton").on("click", toggleMenu);
-            $(".navigation li").on("click", toggleSub);
             if ($(window)[0].innerWidth > 700 ){
                 $("#menuItems").show();
             }
         } else {
             $("#menuItems").show();
-            $(".navigation li").on("mouseover", toggleSub);
-            $(".secondLevel").on("mouseout", hideSubs);
+//            $(".navigation li img").addClass("hidden");
+            $(".navigation>li").on("mouseover", toggle2nd);
+            $(".secondLevel>li").on("mouseover", toggle3rd);
+            $(".thirdLevel").on("mouseout", hideSubs);
+
+            $("#navbutton").on("click", toggleMenu);
+            $(".dropdown").on("click", toggle2nd);
+            $(".dropdown").on("click", toggle3rd);
         };
     }
 

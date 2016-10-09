@@ -1,4 +1,9 @@
 /* -----------------Navbar CSS settings----------------- */
+
+    .dropdown {
+        width: 20px;
+    }
+
     .navigation {
         list-style-type: none;
         margin: 0 0 0 0;
@@ -16,20 +21,24 @@
         width: 90%;
     }
     .navigation li {
-        background-repeat: no-repeat;
-        background-image: url(../media/uikit/Button.png);
-        background-size: 100% 30px;
+/*        background-repeat: no-repeat;*/
+/*        background-image: url(../media/uikit/Button.png);*/
+/*        background-size: 100% 30px;*/
+        background-color: none;
     }
     .navigation li:link,
     .navigation li:visited{
-        background-size: 100% 30px;
+/*        background-size: 100% 30px;*/
         color: black;
     }
 
     .navigation li:active,
     .navigation li:hover {
-        background-image: url(../media/uikit/Button.hover.png);
-        background-size: 100% 30px;
+        background-color: grey;
+/*
+        background-image: url(../media/uikit/hover.png);
+        background-repeat: repeat;
+*/
         color: black;
     }
 
@@ -41,11 +50,17 @@
         text-align: center;
         min-height: 100%;
         padding-bottom: 5px;
-        background-color: none;
-        background-image: none;1^^
+        background-color: grey;
+        background-image: none;
     }
-    .navigation>li>ul>li {
+    .secondLevel>li {
         padding-left: 10px;
+    }
+    .secondLevel>li:hover {
+        background-color: lightgrey;
+    }
+    .thirdLevel {
+
     }
 
     #navbutton {
@@ -85,8 +100,8 @@
     .navigation li:visited{
         color: black;
     }
-    .navigation li:active,
-    .navigation li:hover {
+    .out_navigation li:active,
+    .out_navigation li:hover {
         background-image: url(../media/uikit/highlight.u.d.dark.png);
         background-size: 100% 50%;
         background-position: top;
