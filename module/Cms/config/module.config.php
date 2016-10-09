@@ -2,7 +2,6 @@
 return array(
     'service_manager' => array(
         'factories' => array(
-            'Zend\Db\Adapter\Adapter' => 'Zend\Db\Adapter\AdapterServiceFactory',
             'Cms\Service\PostServiceInterface' => 'Cms\Factory\PostServiceFactory',
             'Cms\Mapper\PostMapperInterface' => 'Cms\Factory\ZendDbSqlMapperFactory'
         )
@@ -14,19 +13,54 @@ return array(
     ),
     'controllers' => array(
         'factories' => array(
-            'Cms\Controller\List' => 'Cms\Factory\ListControllerFactory',
-            'Cms\Controller\Write' => 'Cms\Factory\WriteControllerFactory',
-            'Cms\Controller\Delete' => 'Cms\Factory\DeleteControllerFactory'
+            'Cms\Controller\Content' => 'Cms\Factory\ContentControllerFactory',
+            'Cms\Controller\Page' => 'Cms\Factory\PageControllerFactory'
         )
     ),
     'router' => array(
         'routes' => array(
+            'page' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Cms\Controller',
+                        'controller' => 'Page',
+                        'action'     => 'index',
+                        'title'      => '_default'
+                    ),
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'title' => array(
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => ':title',
+                            'constraints' => array(
+                                'title' => '[a-zA-Z_-]+'
+                            )
+                        )
+                    ),
+                )
+            ),
+            'home' => array(
+                'type' => 'literal',
+                'options' => array(
+                    'route'    => '/',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Cms\Controller',
+                        'controller' => 'Page',
+                        'action'     => 'index',
+                        'title'      => '_default'
+                    ),
+                )
+            ),
             'cms' => array(
                 'type' => 'literal',
                 'options' => array(
                     'route' => '/cms',
                     'defaults' => array(
-                        'controller' => 'Cms\Controller\List',
+                        'controller' => 'Cms\Controller\Content',
                         'action' => 'index'
                     )
                 ),
@@ -49,7 +83,6 @@ return array(
                         'options' => array(
                             'route' => '/add',
                             'defaults' => array(
-                                'controller' => 'Cms\Controller\Write',
                                 'action' => 'add'
                             )
                         )
@@ -59,7 +92,6 @@ return array(
                         'options' => array(
                             'route' => '/edit/:id',
                             'defaults' => array(
-                                'controller' => 'Cms\Controller\Write',
                                 'action' => 'edit'
                             ),
                             'constraints' => array(
@@ -72,7 +104,6 @@ return array(
                         'options' => array(
                             'route' => '/delete/:id',
                             'defaults' => array(
-                                'controller' => 'Cms\Controller\Delete',
                                 'action' => 'delete'
                             ),
                             'constraints' => array(

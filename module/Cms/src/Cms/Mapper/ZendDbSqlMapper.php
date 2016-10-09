@@ -30,7 +30,7 @@ class ZendDbSqlMapper implements PostMapperInterface
 
     /**
      *
-     * @var \Blog\Model\PostInterface
+     * @var \Cms\Model\PostInterface
      */
     protected $postPrototype;
 
@@ -70,6 +70,31 @@ class ZendDbSqlMapper implements PostMapperInterface
         }
         
         throw new \InvalidArgumentException("Page with given ID:{$id} not found.");
+    }
+
+    /**
+     *
+     * @param string $url
+     *
+     * @return PostInterface
+     * @throws \InvalidArgumentException
+     */
+    public function findByUrl($url)
+    {
+        $sql = new Sql($this->dbAdapter);
+        $select = $sql->select('pages');
+        $select->where(array(
+            'url = ?' => $url
+        ));
+
+        $stmt = $sql->prepareStatementForSqlObject($select);
+        $result = $stmt->execute();
+
+        if ($result instanceof Result && $result->isQueryResult() && $result->getAffectedRows()) {
+            return $this->hydrator->hydrate($result->current(), $this->postPrototype);
+        }
+
+        throw new \InvalidArgumentException("Page with given Url:{$url} not found.");
     }
 
     /**

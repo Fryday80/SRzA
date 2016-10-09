@@ -86,7 +86,7 @@
         </div>
 
         <div id="content">
-            <owntitel>Content</owntitel><br><div class="spacer_h"></div>
+            <owntitel><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></owntitel><br><div class="spacer_h"></div>
 
             <?php echo $this->content; ?>
         </div>

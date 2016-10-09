@@ -19,15 +19,7 @@ class PostFieldset extends Fieldset
             'type' => 'hidden',
             'name' => 'id'
         ));
-        
-        $this->add(array(
-            'type' => 'text',
-            'name' => 'content',
-            'options' => array(
-                'label' => 'Content'
-            )
-        ));
-        
+
         $this->add(array(
             'type' => 'text',
             'name' => 'title',
@@ -35,5 +27,22 @@ class PostFieldset extends Fieldset
                 'label' => 'Title'
             )
         ));
+
+        $this->add(array(
+            'type' => 'text',
+            'name' => 'url',
+            'options' => array(
+                'label' => 'Url'
+            )
+        ));
+
+        $this->add(array(
+            'type' => 'textarea',
+            'name' => 'content',
+            'options' => array(
+                'label' => 'Content'
+            )
+        ));
+
     }
 }

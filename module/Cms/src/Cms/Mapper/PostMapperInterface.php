@@ -13,6 +13,12 @@
      public function find($id);
 
      /**
+      * @param string $url
+      * @return PostInterface
+      * @throws \InvalidArgumentException
+      */
+     public function findByUrl($url);
+     /**
       * @return array|PostInterface[]
       */
      public function findAll();
