@@ -43,22 +43,40 @@ window.menuapp = {
     }
 }
 
+
+
 $(document).ready (function menu_hndler_js () {
+
+    function toggleSub ($item) {
+        if ($item == ".firstLevel-li") {
+            $(".secondLevel-li").not (this).addClass ("hidden");
+            $(".secondLevel-li", this).removeClass ("hidden");
+        }
+        if ($item == ".secondLevel-li") {
+            $(".thirdLevel-li", this).removeClass ("hidden");
+        }
+
+    }
 
     function reBindEventHandler () {
         //unbind
-
+        $(".firstLevel-li").off("mouseover", toggleSub (".firstLevel-li"));
         //bind dependend from window.size
         if ($(window)[0].innerWidth < 1000 ){
+            console.log ($(window)[0].innerWidth);
+            $(".firstLevel-li").on("mouseover", toggleSub (".firstLevel-li"));
+            $(".secondLevel-li").on("mouseover", toggleSub (".secondLevel-li"));
             if ($(window)[0].innerWidth < 700 ){
 
             }
         } else {
-
+            $(".navigation li").removeClass("hidden");
         }
-        // bind always
-        $(".firstLevel-li").on("mouseover", toggle);
     };
+    $(window).resize ( function () {
+        reBindEventHandler ();
+    });
 
+    reBindEventHandler ();
 
 });
