@@ -45,17 +45,19 @@ window.menuapp = {
 
 
 
-$(document).ready (function menu_hndler_js () {
-
-    function toggleSub ($item) {
-        if ($item == ".firstLevel-li") {
-            $(".secondLevel-li").not (this).addClass ("hidden");
-            $(".secondLevel-li", this).removeClass ("hidden");
+$(document).ready (function menu_handler_js () {
+console.trace();
+    function toggleSub (level, $element) {
+        if (level == ".firstLevel-li") {
+            console.log ("mouseover");
+            $(".secondLevel-li").not ($element).addClass ("hidden");
+            $(".secondLevel-li", $element).removeClass ("hidden");
         }
-        if ($item == ".secondLevel-li") {
+        if (level == ".secondLevel-li") {
             $(".thirdLevel-li", this).removeClass ("hidden");
         }
-
+        // ich hab beide versionen getestet (die in den ifs)
+// wenn ich das this im secondlevel-if weglasse zeigt er alle an, mit if keines das mouseover geht gar nicht
     }
 
     function reBindEventHandler () {
@@ -64,7 +66,7 @@ $(document).ready (function menu_hndler_js () {
         //bind dependend from window.size
         if ($(window)[0].innerWidth < 1000 ){
             console.log ($(window)[0].innerWidth);
-            $(".firstLevel-li").on("mouseover", toggleSub (".firstLevel-li"));
+            $(".firstLevel-li").on("mouseover", toggleSub (".firstLevel-li", this));
             $(".secondLevel-li").on("mouseover", toggleSub (".secondLevel-li"));
             if ($(window)[0].innerWidth < 700 ){
 
