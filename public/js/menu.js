@@ -1,6 +1,8 @@
 console.log (window.innerWidth + "px width -- refreshes on reload");
 
 jQuery(document).ready(function () {
+
+        console.trace();
     function giveClassesToMenu () {
         $(".navigation>li>ul").addClass("secondLevel hidden");
         $(".secondLevel>li>ul").addClass("thirdLevel hidden");
@@ -8,21 +10,33 @@ jQuery(document).ready(function () {
     giveClassesToMenu ();
 
     function attachdropdown (ele) {
-        var $ele = $('img');
-        $ele.addClass('dropdown second');
-        $ele.attr('src', 'media/uikit/arrow-down.png');
-        $(ele).append($ele);
-//        $(this).append('<img class="dropdown second" src="media/uikit/arrow-down.png" />');
+//        if ($(ele).has ("img")) {
+//            console.log ('hat angeblch dropdown');
+//            console.log (ele);
+//            // do nothing
+//        }
+//        else {
+//            var $ele = $('img');
+//            $ele.addClass('dropdown second');
+//            $ele.attr('src', '/media/uikit/arrow-down.png');
+//            $(ele).append($ele);
+//        }
+        $(ele).prepend('<img class="dropdown second" style="margin-top: auto" src="/media/uikit/arrow-down.png" />');
     }
 
     function attach2Menu () {
-        var helper = $(".navigation>li");
+        var helper = $(".navigation>li").has("ul");
         helper.each(function (index) {
-            $(helper[index]).has("ul").addClass("topic");
-            //nur die was ist da das ele??
-            $(".topic").each (function(index, value) {
-                attachdropdown(value);//funtz des jetzt weil vorhin hab ich index übergeben nich valuemoom
-            });
+            $(helper[index]).addClass("topic");
+        });
+
+        var helper2 = $(".secondLevel>li").has ("ul");
+        helper2.each (function (index) {
+            $(helper2[index]).addClass ("topic");
+        });
+
+        $(".topic").each (function(index, value) {
+            attachdropdown(value);
         });
     }
 

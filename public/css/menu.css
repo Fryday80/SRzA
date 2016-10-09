@@ -4,6 +4,11 @@
         width: 20px;
     }
 
+    li {
+        min-height: 30px;
+        vertical-align: text-bottom;
+    }
+
     .navigation {
         list-style-type: none;
         margin: 0 0 0 0;

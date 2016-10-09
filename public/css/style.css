@@ -146,7 +146,7 @@ butti:hover {
 #navframe {
     position: relative;
     text-align: center;
-    width: 15%;
+    width: 20%;
     padding-top: 20px;
     float: left;
     min-height: 100%;
@@ -156,7 +156,7 @@ butti:hover {
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 65%;
+    width: 68%;
     margin-left: 2px;
     padding-left: 5px;
     padding-top: 20px;
@@ -168,7 +168,7 @@ butti:hover {
 .rightcontainer {
     position: relative;
     float: right;
-    width: 19%;
+    width: 16%;
     text-align: center;
 /*    min-height: 100%;*/
 }
