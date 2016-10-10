@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 09. Okt 2016 um 15:16
+-- Erstellungszeit: 10. Okt 2016 um 13:19
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -101,7 +101,7 @@ CREATE TABLE IF NOT EXISTS `pages` (
 --
 
 INSERT INTO `pages` (`id`, `title`, `url`, `content`, `updated`) VALUES
-(1, 'Home', 'Home', '<p>Home page bla<img alt="angel" src="http://localhost/js/ckeditor/plugins/smiley/images/angel_smile.png" style="height:23px; width:23px" title="angel" />&Ocirc;</p>\r\n\r\n<div style="page-break-after: always"><span style="display:none">&nbsp;</span></div>\r\n\r\n<p><iframe align="middle" frameborder="0" height="500" scrolling="yes" src="http://www.gidf.de/" width="500"></iframe></p>\r\n', '2016-09-23 16:45:48'),
+(1, 'Home', 'Home', '<p>Home page bla&Ocirc;</p>\r\n\r\n<div style="page-break-after: always"><span style="display:none">&nbsp;</span></div>\r\n\r\n<p>&nbsp;</p>\r\n', '2016-09-23 16:45:48'),
 (3, 'Wander Tag', 'Wander-Tag', 'sers', '2016-09-24 00:13:39'),
 (4, 'Langweilig', 'Langweilig', 'warum giebts in php my admin eigentilich nix zum einfügen von dummy texten ??', '2016-09-24 00:13:54');
 
@@ -364,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `user_role` (
 
 INSERT INTO `user_role` (`id`, `user_id`, `role_id`) VALUES
 (1, 1, 4),
-(2, 2, 2),
+(2, 2, 4),
 (3, 3, 3);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

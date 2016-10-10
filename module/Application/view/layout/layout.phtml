@@ -39,20 +39,23 @@
             <a href="<?php echo $this->url('home') ?>"><ownhead>Schwarze Ritter zu Augsburg</ownhead></a>
         </div>
         <div id="headlinks">
-        	<span><?php echo $this->userinfo(); ?></span>
-            <span><a href="#">Kontakt </a></span> |
-            <span><a href="#"> Impressum</a></span> |
-            <span><a class="disclaim" href="#"> Haftungsausschluss</a></span>
+            <span><a href="#">Kontakt </a></span> <span class="L_spacer"> | </span> <br class="M_S_br">
+            <span><a href="#"> Impressum</a></span> <span class="L_spacer"> | </span> <br class="M_S_br">
+            <span><a class="disclaim" href="#"> Haftungsausschluss</a></span><br>
+            <span><?php $greet = $this->userinfo(); if ($greet != '') {echo 'Hallo<br>' .$greet.'<br>';} ?></span>
         </div>
     </div>
     <div class="bodycontainer">
 
-        <div id="navframe">
-            <div id="navbutton">
+        <div class="navframe">
+            <div class="navbutton">
                 <img src="media/Wappenklein.png">
             </div>
-            <div id="menuItems">
-            <div class="navtitel"><owntitel>Wegweiser</owntitel><div class="spacer_h"></div></div>
+            <div class="menuItems hidden">
+                <div class="navtitel">
+                    <owntitel>Wegweiser</owntitel>
+                    <div class="spacer_h"></div>
+                </div>
 
         		<?php echo $this->navigation('navigation')->menu(); ?>
 

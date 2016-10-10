@@ -25,6 +25,12 @@
     news {
         font-size: 20px;
     }
+    .M_S_br {
+        display: block;
+    }
+    .L_spacer {
+        display:none;
+    }
 }
 
 /* ----------------------------------- */

@@ -20,7 +20,9 @@ class UserInfo extends AbstractHelper
     {
         $role = $this->storage->getRoleName();
         if ($role == 'Guest') {
-            return 'Wilkommem, Gast.';
+            return 'Gast';
+        } else {
+            return $this->storage->getUserName();
         }
         return $role;
     }

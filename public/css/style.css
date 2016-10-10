@@ -123,6 +123,9 @@ butti:hover {
 #headlinks>span>a:active {
     color: black;
 }
+.M_S_br {
+    display: none;
+}
 
 
 /* -----------------hp body----------------- */
@@ -132,18 +135,16 @@ butti:hover {
     z-index: 1;
 }
 
-#navframe,
+.navframe,
 #content,
 .rightcontainer {
 
     position: relative;
     z-index: inherit;
-/*    background-image: url(../media/div.bg.test.png);*/
-/*    background-size: auto 130px;*/
 }
 
 /* -----------------colum 1 (navframe)----------------- */
-#navframe {
+.navframe {
     position: relative;
     text-align: center;
     width: 20%;
