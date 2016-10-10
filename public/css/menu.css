@@ -63,7 +63,7 @@
 
 /* @media special desing */
 /*-----------------------------------------------------------------------------*/
-@media only screen and (max-width: 1000px ) {
+@media only screen and (min-width: 701px) and (max-width: 1000px ) {
 /*-----------------------------------------------------------------------------*/
 
     .navframe {
@@ -110,6 +110,11 @@
         background-color: rgba(0, 0, 0, 0.1);
         color: black;
     }
+    .navigation>li:active,
+    .navigation>li:hover {
+        background-color: rgb(188, 177, 144);
+        color: black;
+    }
 
     .secondLevel-ul {
         position: absolute;
@@ -118,7 +123,7 @@
 
         min-height: 50px;
         width: 100%;
-        background-color: rgb(178, 58, 58);
+        background-color: rgb(188, 177, 144);
     }
     .secondLevel-ul {
         margin-left: 0;
@@ -126,19 +131,20 @@
     }
     .thirdLevel-ul {
         position: absolute;
-        top: 40px;
+        top: 0px;
         margin-left: 100%;
         min-width: 120px;
         text-align: center;
         min-height: 100%;
         padding-bottom: 5px;
-        background-color: rgb(178, 58, 58);
+        background-color: rgb(188, 177, 144);
     }
 }
 
 /*-----------------------------------------------------------------------------*/
 @media only screen and (max-width: 700px ) {
 /*-----------------------------------------------------------------------------*/
+    /** ------------------------------ the Frame --------------------------**/
     .navframe{
         color: white;
         position: fixed ;
@@ -149,11 +155,18 @@
         background-image: none;
         height: 100%;
     }
-
-    .navframe owntitel {
+    .navframe *  {
         color: white;
     }
+    .navframe *:link,
+    .navframe *:visited,
+    .navframe *:active,
+    .navframe *:hover{
+        color: red;
+    }
 
+
+    /** ------------------------------ the navbutton --------------------------**/
     .navbutton {
         display: block!important;
         width: auto;
@@ -164,68 +177,17 @@
         width: 50px;
     }
 
-    .menuItems{
-        background-color: aqua;
-        height: auto;
+    li {
+        display:block;
     }
 
-    .navtitel {
-        display: block;
-    }
-    .navtitel>.spacer_h {
-        display: none;
-    }
-
-    .navigation li {
-        color: white;
-        text-align: center;
-        padding-top: 5px;
-        height: 100%;
-        z-index: 100;
-        background-color: black;
-        position: relative;
-    }
-    .navigation>li {
-        float: none;
-        width: 100%;
-        padding-top: 5px;
-    }
-    .navigation li:link,
-    .navigation li:visited{
-        color: white;
-    }
-    .navigation li:active,
-    .navigation li:hover {
-        color: white;
-        background-image: url(..//uikit/highlight.u.d.png);
-        background-size: 100%;
+    li:active,
+    li:hover {
+        background-image: url(../img/uikit/highlight.u.d.png);
+        background-size: 100% auto;
+        background-repeat: no-repeat;
         background-position: top;
-        background-color: black;
     }
-    .navigation a:link,
-    .navigation a:visited,
-    .navigation a:hover,
-    .navigation a:active {
-        color: white;
-    }
-    .secondLevel-ul {
-    margin: 0;
-    padding: 0;
-        position: relative;
-        float: none;
-        background-color: black;
-        height: auto;
-        padding-top: 5px;
-    }
-    .thirdLevel-ul {
-    margin: 0;
-    padding: 0;
-        position: relative;
-        background-color: black;
-        height: auto;
-        padding-top: 5px;
-        z-index: 100;
-}
 
 }
 /* Helper for js */
@@ -234,7 +196,6 @@
     position:absolute;
     margin: 0;
     padding: 0;
-    margin-left: 0px;
     width: 100%;
     height: auto;
     background-color: black;

@@ -57,6 +57,7 @@ $(document).ready (function menu_handler_js () {
         if(window.matchMedia('(max-width: 1000px)').matches) {
             mode ="M";
             $(".menuItems").removeClass ("hidden");
+            $(".navframe").removeClass ("mobileMenuCenter");
             for(var i = 0; i < menuItems.length; i++) {
                 menuItems[i].close();
             }
@@ -71,6 +72,7 @@ $(document).ready (function menu_handler_js () {
             mode ="L";
             $(".menuItems").removeClass ("hidden");
             for(var i = 0; i < menuItems.length; i++) {
+                $(".navframe").removeClass ("mobileMenuCenter");
                 menuItems[i].open();
             }
 
