@@ -33,13 +33,16 @@ window.menuapp = {
             });
         };
 
-        function menushowS () {
-            if ($(window).innerWidth () <700) {
+        /**
+        * hides menuItems in S-View
+        **/
+        function menuhide_in_S () {
+            if (window.matchMedia('(max-width: 700px)').matches) {
                 $(".menuItems").addClass ("hidden");
             }
         }
 
-        menushowS ();
+        menuhide_in_S ();
         giveClassesToMenu ();
         spotTheTopics ();
     }
@@ -53,6 +56,11 @@ $(document).ready (function menu_handler_js () {
 
     var mode = "L";
 
+    /**
+     * Sets the mode by Viewsize
+     * returns string 'L', 'M' or 'S'
+     * given in var mode
+     */
     function setMode () {
         if(window.matchMedia('(max-width: 1000px)').matches) {
             mode ="M";
@@ -109,10 +117,6 @@ $(document).ready (function menu_handler_js () {
             state = open();
         }
 
-//        $ele.on("click", function () {
-//            if (mode !== 'S') return;
-//            toggle();
-//        });
         $ele.on("mouseenter", function() {
             if (mode !== 'M') return;
             open();
