@@ -21,6 +21,7 @@ return array(
         'routes' => array(
             'page' => array(
                 'type' => 'literal',
+                'priority' => -1000,
                 'options' => array(
                     'route'    => '/',
                     'defaults' => array(
