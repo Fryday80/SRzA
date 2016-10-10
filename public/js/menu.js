@@ -33,25 +33,6 @@ window.menuapp = {
             });
         };
 
-        /**
-        * adds and <img> in front of every li that has class "topic"
-        * <img> with class "dropdown"
-        **/
-        function attachdropdown () {
-    //        if ($(ele).has ("img")) {
-    //            console.log ('hat angeblch dropdown');
-    //            console.log (ele);
-    //            // do nothing
-    //        }
-    //        else {
-    //            var $ele = $('img');
-    //            $ele.addClass('dropdown second hidden');
-    //            $ele.attr('src', '/media/uikit/arrow-down.png');
-    //            $(ele).append($ele);
-    //        }
-            $(".topic").prepend('<img class="dropdown second hidden" style="margin-top: auto" src="/media/uikit/arrow-down.png" />');
-        };
-
         function menushowS () {
             if ($(window).innerWidth () <700) {
                 $(".menuItems").addClass ("hidden");
@@ -61,7 +42,6 @@ window.menuapp = {
         menushowS ();
         giveClassesToMenu ();
         spotTheTopics ();
-        attachdropdown ();
     }
 }
 
@@ -69,32 +49,37 @@ window.menuapp = {
 
 $(document).ready (function menu_handler_js () {
 
-    var li_L1 = ".firstLevel-li";
-    var li_L2 = ".secondLevel-li";
-    var li_L3 = ".thirdLevel-li";
-    var li_U1 = ".firstLevel-ul";
-    var li_U2 = ".secondLevel-ul";
-    var li_U3 = ".thirdLevel-ul";
+    var menuItems = [];
 
     var mode = "L";
 
     function setMode () {
-        if($(window).innerWidth () <1000) {
+        if(window.matchMedia('(max-width: 1000px)').matches) {
             mode ="M";
             $(".menuItems").removeClass ("hidden");
-        }
-        if($(window).innerWidth () <700) {
-            mode = "S";
-            $(".menuItems").addClass ("hidden");
+            for(var i = 0; i < menuItems.length; i++) {
+                menuItems[i].close();
+            }
+            if(window.matchMedia('(max-width: 700px)').matches) {
+                mode = "S";
+                $(".menuItems").addClass ("hidden");
+                for(var i = 0; i < menuItems.length; i++) {
+                    menuItems[i].open();
+                }
+            }
         } else {
             mode ="L";
             $(".menuItems").removeClass ("hidden");
+            for(var i = 0; i < menuItems.length; i++) {
+                menuItems[i].open();
+            }
+
         }
         console.log (mode);
         console.log ($(window).innerWidth ());
     }
 
-    function a($ele) {
+    function stateMachine($ele) {
         var state = 'close';
 
         function update() {
@@ -118,118 +103,52 @@ $(document).ready (function menu_handler_js () {
             update();
         }
 
-        $ele.on("click", function () {
-            if (mode !== 'S') return;
-            toggle});
+        if (mode == 'L') {
+            state = open();
+        }
+
+//        $ele.on("click", function () {
+//            if (mode !== 'S') return;
+//            toggle();
+//        });
         $ele.on("mouseenter", function() {
-            if (mode === 'S' | mode === 'L') return;
+            if (mode !== 'M') return;
             open();
         });
         $ele.on("mouseleave", function() {
-            if (mode === 'S' | mode === 'L') return;
+            if (mode !== 'M') return;
             close();
         });
+
         $ele.on('myapp.closemenus', function($e) {
             console.log($e === $ele);
             if ($e === $ele) return;
-            state = close();
+            state = 'close';
             update();
         });
-
+        return {
+            open: open,
+            close: close
+        };
     }
 
-
-    /**
-    * toggels submenu in Medium Screen/ M-view
-    * selected via event.data= "first" or "second"
-    * adds class "hidden" on elements.not(this) and removes it from (elements,this)
-    **/
-    function toggleSub (event) {
-        if (event.data == "first") {
-//            $(li_U2).addClass ("hidden");  //alle ul not this>ul
-            $(li_U2, this).toggleClass ("hidden"); // show
-            console.log($(li_U2, this));
-        }
-        if (event.data == "second") {
-            $(li_U3).not (this).addClass ("hidden");
-            $(li_U3, this).toggleClass ("hidden");
-        }
-
-    }
-
-    /**
-    * hides all submenus for Medium Screen/ M-view
-    * uses class "hidden" selected via event.data= "first" or "second"
-    **/
-//    function hideSubs (event) {
-//        if (event.data == "first" ) {
-//            $(li_U2).addClass ("hidden");
-//        }
-//        if (event.data == "second") {
-//            $(li_U3).addClass ("hidden");
-//        }
-//    }
-
-    /**
-    * toggles view of the whole Menu for Mobile/ S-view
-    * uses class "hidden"
-    * adds toggles class "mobileMenuCenter" to move open menu more to the middle of the screen
-    **/
-    /*function toggleMenu () {
-        $(".menuItems").toggle ();
-        $(".navframe").toggleClass ("mobileMenuCenter");
-    }
-
-    function reBindEventHandler () {
-        console.log('rebind');
-        console.log ($(window)[0].innerWidth);
-        //unbind
-        $(".navbutton").off("click", toggleMenu)
-        $(li_L1).off("click", toggleSub);
-        $(li_L2).off("click", toggleSub );
-        $(li_L1).off("mouseover", toggleSub);
-        $(li_L2).off("mouseover", toggleSub );
-        $(li_L1).off("mouseout", hideSubs );
-        $(li_L2).off("mouseout", hideSubs );
-        //bind dependend from window.size
-        if ($(window)[0].innerWidth < 1000 & $(window)[0].innerWidth >700){
-            $(li_L1).on("mouseover", null,'first', toggleSub );
-            $(li_L2).on("mouseover", null, 'second', toggleSub );
-            $(li_L1).on("mouseout", null,'first', hideSubs );
-            $(li_L2).on("mouseout", null, 'second', hideSubs );
-        }
-        if ($(window)[0].innerWidth < 700 ){
-            $(".navigation").addClass("hidden");
-            $(".navbutton").on("click", toggleMenu)
-            $(li_L1).on("click", null,'first', toggleSub );
-            $(li_L2).on("click", null, 'second', toggleSub );
-            $(li_L1).on("mouseout", null,'first', hideSubs );
-            $(li_L2).on("mouseout", null, 'second', hideSubs );
-        } else {
-            $(".navigation ul").removeClass("hidden");
-        }
-    };
-
-    $(window).resize ( function () {
-        reBindEventHandler ();
-    });
-
-    reBindEventHandler ();*/
     $(".navbutton").on("click", function(){
-        console.log ($(".menuItems"))
+//        console.log ($(".menuItems"))
         $(".menuItems").toggleClass("hidden");
-        if ($(".menuItems").is("hidden")) {
+        if ($(".menuItems").is(".hidden")) {
                 $(".navframe").removeClass ("mobileMenuCenter");
             } else {
                 $(".navframe").addClass ("mobileMenuCenter");
             }
     });
-    $(".navigation li").each ( function (i, element) {
-        a ($(element));
-    } );
+
     setMode ();
     $(window).resize ( function () {
         setMode ();
     });
+
+    $(".navigation li").each ( function (i, element) {
+        menuItems.push(stateMachine ($(element)));
+    } );
 
 });
