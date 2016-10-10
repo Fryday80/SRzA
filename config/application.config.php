@@ -5,6 +5,7 @@ return array(
         'Application',
         'Auth',
         'Cms',
+        'Media',
         'Nav',
         'Album',
     ),
