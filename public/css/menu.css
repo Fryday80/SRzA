@@ -90,10 +90,7 @@
     }
     .navigation>li {
         width: auto;
-        float: left;
         margin-right: 10px;
-/*        padding: 5px 10px;*/
-/*        text-align: center;*/
         position: relative;
     }
     .navigation a {
@@ -115,29 +112,25 @@
         background-color: rgb(188, 177, 144);
         color: black;
     }
+    .navigation ul{
+        position: absolute;
+        text-align: center;
+	    background-color: rgb(188, 177, 144);
+    }
 
     .secondLevel-ul {
-        position: absolute;
         top: 30px;
-        padding-right: 5px;
-
         min-height: 50px;
         width: 100%;
-        background-color: rgb(188, 177, 144);
-    }
-    .secondLevel-ul {
         margin-left: 0;
         padding: 0;
     }
     .thirdLevel-ul {
-        position: absolute;
         top: 0px;
         margin-left: 100%;
         min-width: 120px;
-        text-align: center;
         min-height: 100%;
         padding-bottom: 5px;
-        background-color: rgb(188, 177, 144);
     }
 }
 
