@@ -133,7 +133,6 @@ $(document).ready (function menu_handler_js () {
     }
 
     $(".navbutton").on("click", function(){
-//        console.log ($(".menuItems"))
         $(".menuItems").toggleClass("hidden");
         if ($(".menuItems").is(".hidden")) {
                 $(".navframe").removeClass ("mobileMenuCenter");
@@ -142,13 +141,14 @@ $(document).ready (function menu_handler_js () {
             }
     });
 
-    setMode ();
-    $(window).resize ( function () {
-        setMode ();
-    });
 
     $(".navigation li").each ( function (i, element) {
         menuItems.push(stateMachine ($(element)));
     } );
+
+    setMode ();
+    $(window).resize ( function () {
+        setMode ();
+    });
 
 });
