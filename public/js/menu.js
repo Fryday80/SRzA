@@ -1,6 +1,11 @@
 window.menuapp = {
     organizeMenu:function menu_js() {
 
+        /**
+        * adds classes to the Menus ul>li structure
+        * down to 3 Levels
+        * hides menus that are not first level by adding class "hidden"
+        **/
         function giveClassesToMenu () {
             $(".navigation>li").addClass ("firstLevel-li");
             $(".navigation>li>ul").addClass ("secondLevel-ul");
@@ -9,9 +14,15 @@ window.menuapp = {
             $(".navigation>li>ul>li>ul>li").addClass ("thirdLevel-li hidden");
         };
 
+        /**
+        * finds all menu items, that have sub levels
+        * down to 3 levels
+        * adds class "topic" to all of them
+        * adds class "firstLevel-top" or "secondLevel-top" depending on the Level
+        **/
         function spotTheTopics () {
 
-            var spotHelperOne = $(".firstLevel-li").has("ul");
+            var spotHelperOne = $(".firstLevel-li").has ("ul");
             spotHelperOne.each(function (index) {
                 $(spotHelperOne[index]).addClass("topic firstLevel-top");
             });
@@ -22,7 +33,11 @@ window.menuapp = {
             });
         };
 
-        function attachdropdown (ele) {
+        /**
+        * adds and <img> in front of every li that has class "topic"
+        * <img> with class "dropdown"
+        **/
+        function attachdropdown () {
     //        if ($(ele).has ("img")) {
     //            console.log ('hat angeblch dropdown');
     //            console.log (ele);
@@ -34,7 +49,7 @@ window.menuapp = {
     //            $ele.attr('src', '/media/uikit/arrow-down.png');
     //            $(ele).append($ele);
     //        }
-            $(ele).prepend('<img class="dropdown second hidden" style="margin-top: auto" src="/media/uikit/arrow-down.png" />');
+            $(".topic").prepend('<img class="dropdown second hidden" style="margin-top: auto" src="/media/uikit/arrow-down.png" />');
         };
 
         giveClassesToMenu ();
@@ -46,35 +61,74 @@ window.menuapp = {
 
 
 $(document).ready (function menu_handler_js () {
-console.trace();
-    function toggleSub (level, $element) {
-        if (level == ".firstLevel-li") {
-            console.log ("mouseover");
-            $(".secondLevel-li").not ($element).addClass ("hidden");
-            $(".secondLevel-li", $element).removeClass ("hidden");
+
+    var li_L1 = ".firstLevel-li";
+    var li_L2 = ".secondLevel-li";
+    var li_L3 = ".thirdLevel-li";
+
+
+
+
+    /**
+    * toggels submenu in Medium Screen/ M-view
+    * selected via event.data= "first" or "second"
+    * adds class "hidden" on elements.not(this) and removes it from (elements,this)
+    **/
+    function toggleSub (event) {
+        if (event.data == "first") {
+            $(li_L2).not (this).addClass ("hidden");
+            $(li_L2, this).removeClass ("hidden");
         }
-        if (level == ".secondLevel-li") {
-            $(".thirdLevel-li", this).removeClass ("hidden");
+        if (event.data == "second") {
+            $(li_L3).not (this).addClass ("hidden");
+            $(li_L3, this).removeClass ("hidden");
         }
-        // ich hab beide versionen getestet (die in den ifs)
-// wenn ich das this im secondlevel-if weglasse zeigt er alle an, mit if keines das mouseover geht gar nicht
+    }
+
+    /**
+    * hides all submenus for Medium Screen/ M-view
+    * uses class "hidden" selected via event.data= "first" or "second"
+    **/
+    function hideSubs (event) {
+        if (event.data == "first" ) {
+            $(li_L2).addClass ("hidden");
+        }
+        if (event.data == "second") {
+            $(li_L3).addClass ("hidden");
+        }
+    }
+
+    /**
+    * toggles view of the whole Menu for Mobile/ S-view
+    * uses class "hidden"
+    **/
+    function toggleMenu () {
+        $("#navbutton").toggleClass ("hidden")
     }
 
     function reBindEventHandler () {
+        console.log('rebind');
         //unbind
-        $(".firstLevel-li").off("mouseover", toggleSub (".firstLevel-li"));
+        $(li_L1).off("mouseover", toggleSub);
+        $(li_L2).off("mouseover", toggleSub );
+        $(li_L1).off("mouseout", hideSubs );
+        $(li_L2).off("mouseout", hideSubs );
         //bind dependend from window.size
         if ($(window)[0].innerWidth < 1000 ){
-            console.log ($(window)[0].innerWidth);
-            $(".firstLevel-li").on("mouseover", toggleSub (".firstLevel-li", this));
-            $(".secondLevel-li").on("mouseover", toggleSub (".secondLevel-li"));
+                                                                                    console.log ($(window)[0].innerWidth);
+            $(li_L1).on("mouseover", null,'first', toggleSub );
+            $(li_L2).on("mouseover", null, 'second', toggleSub );
+            $(li_L1).on("mouseout", null,'first', hideSubs );
+            $(li_L2).on("mouseout", null, 'second', hideSubs );
             if ($(window)[0].innerWidth < 700 ){
-
+                $(".navigation").addClass("hidden")
+                $("#navbutton").on("click", toggleMenu)
             }
         } else {
             $(".navigation li").removeClass("hidden");
         }
     };
+
     $(window).resize ( function () {
         reBindEventHandler ();
     });
