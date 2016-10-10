@@ -5,7 +5,7 @@
 }
 html {
     background-color: black;
-    background-image: url(../media/html.bg.png);
+    background-image: url(../img/html.bg.png);
     background-size: 100px;
 }
 
@@ -13,7 +13,7 @@ body {
     margin-top: 60px;
     margin-left: 60px;
     margin-right: 60px;
-    background-image: url(../media/div.bg.test.png);
+    background-image: url(../img/div.bg.test.png);
     background-size: auto 130px;
 }
 
@@ -53,13 +53,13 @@ butti {
     padding-left: 5px;
     padding-right: 5px;
     background-repeat: no-repeat;
-    background-image: url(../media/uikit/Button.png);
+    background-image: url(../img/uikit/Button.png);
     background-size: 100% 100%;
     }
 butti:hover {
     color: black;
     background-repeat: no-repeat;
-    background-image: url(../media/uikit/Button.hover.png);
+    background-image: url(../img/uikit/Button.hover.png);
     background-size: 100% 100%;
 }
 
@@ -73,7 +73,7 @@ butti:hover {
     position: relative;
     width: 100%;
 /*
-    background-image: url(../media/div.bg.test.png);
+    background-image: url(../img/div.bg.test.png);
     background-repeat: repeat;
     background-size: auto 100%;
 */
@@ -115,13 +115,16 @@ butti:hover {
 }
 
 #headlinks>span>a:hover {
-    background-image: url(../media/uikit/highlight.d.u.png);
+    background-image: url(../img/uikit/highlight.d.u.png);
     background-size: 100% 50%;
     background-position: bottom;
     color: black;
 }
 #headlinks>span>a:active {
     color: black;
+}
+.M_S_br {
+    display: none;
 }
 
 
@@ -132,18 +135,16 @@ butti:hover {
     z-index: 1;
 }
 
-#navframe,
+.navframe,
 #content,
 .rightcontainer {
 
     position: relative;
     z-index: inherit;
-/*    background-image: url(../media/div.bg.test.png);*/
-/*    background-size: auto 130px;*/
 }
 
 /* -----------------colum 1 (navframe)----------------- */
-#navframe {
+.navframe {
     position: relative;
     text-align: center;
     width: 20%;
@@ -199,12 +200,12 @@ newstitel {
     color: black;
     padding-top: 10px;
     min-height: 30px;
-    background-image: url(../media/div.bg.test.png);
+    background-image: url(../img/div.bg.test.png);
     background-size: auto 100%;
 }
 
 #footimage {
-    background-image: url(../Media/foot.png);
+    background-image: url(../img/foot.png);
     background-position: center top;
     background-repeat: no-repeat;
     background-size: contain;
@@ -222,7 +223,7 @@ newstitel {
 /* ----------------- UI special desing -------------------------------- */
 
 .spacer_h {
-    background-image: url(../Media/uikit/decoration.h.png);
+    background-image: url(../img/uikit/decoration.h.png);
     background-repeat: repeat-x;
     background-size: contain;
     height: 15px;

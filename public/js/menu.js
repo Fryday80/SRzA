@@ -8,10 +8,10 @@ window.menuapp = {
         **/
         function giveClassesToMenu () {
             $(".navigation>li").addClass ("firstLevel-li");
-            $(".navigation>li>ul").addClass ("secondLevel-ul");
-            $(".navigation>li>ul>li").addClass ("secondLevel-li hidden");
-            $(".navigation>li>ul>li>ul").addClass ("thirdLevel-ul");
-            $(".navigation>li>ul>li>ul>li").addClass ("thirdLevel-li hidden");
+            $(".navigation>li>ul").addClass ("secondLevel-ul hidden");
+            $(".navigation>li>ul>li").addClass ("secondLevel-li");
+            $(".navigation>li>ul>li>ul").addClass ("thirdLevel-ul hidden");
+            $(".navigation>li>ul>li>ul>li").addClass ("thirdLevel-li");
         };
 
         /**
@@ -33,28 +33,15 @@ window.menuapp = {
             });
         };
 
-        /**
-        * adds and <img> in front of every li that has class "topic"
-        * <img> with class "dropdown"
-        **/
-        function attachdropdown () {
-    //        if ($(ele).has ("img")) {
-    //            console.log ('hat angeblch dropdown');
-    //            console.log (ele);
-    //            // do nothing
-    //        }
-    //        else {
-    //            var $ele = $('img');
-    //            $ele.addClass('dropdown second hidden');
-    //            $ele.attr('src', '/media/uikit/arrow-down.png');
-    //            $(ele).append($ele);
-    //        }
-            $(".topic").prepend('<img class="dropdown second hidden" style="margin-top: auto" src="/media/uikit/arrow-down.png" />');
-        };
+        function menushowS () {
+            if ($(window).innerWidth () <700) {
+                $(".menuItems").addClass ("hidden");
+            }
+        }
 
+        menushowS ();
         giveClassesToMenu ();
         spotTheTopics ();
-        attachdropdown ();
     }
 }
 
@@ -62,77 +49,106 @@ window.menuapp = {
 
 $(document).ready (function menu_handler_js () {
 
-    var li_L1 = ".firstLevel-li";
-    var li_L2 = ".secondLevel-li";
-    var li_L3 = ".thirdLevel-li";
+    var menuItems = [];
 
+    var mode = "L";
 
-
-
-    /**
-    * toggels submenu in Medium Screen/ M-view
-    * selected via event.data= "first" or "second"
-    * adds class "hidden" on elements.not(this) and removes it from (elements,this)
-    **/
-    function toggleSub (event) {
-        if (event.data == "first") {
-            $(li_L2).not (this).addClass ("hidden");
-            $(li_L2, this).removeClass ("hidden");
-        }
-        if (event.data == "second") {
-            $(li_L3).not (this).addClass ("hidden");
-            $(li_L3, this).removeClass ("hidden");
-        }
-    }
-
-    /**
-    * hides all submenus for Medium Screen/ M-view
-    * uses class "hidden" selected via event.data= "first" or "second"
-    **/
-    function hideSubs (event) {
-        if (event.data == "first" ) {
-            $(li_L2).addClass ("hidden");
-        }
-        if (event.data == "second") {
-            $(li_L3).addClass ("hidden");
-        }
-    }
-
-    /**
-    * toggles view of the whole Menu for Mobile/ S-view
-    * uses class "hidden"
-    **/
-    function toggleMenu () {
-        $("#navbutton").toggleClass ("hidden")
-    }
-
-    function reBindEventHandler () {
-        console.log('rebind');
-        //unbind
-        $(li_L1).off("mouseover", toggleSub);
-        $(li_L2).off("mouseover", toggleSub );
-        $(li_L1).off("mouseout", hideSubs );
-        $(li_L2).off("mouseout", hideSubs );
-        //bind dependend from window.size
-        if ($(window)[0].innerWidth < 1000 ){
-                                                                                    console.log ($(window)[0].innerWidth);
-            $(li_L1).on("mouseover", null,'first', toggleSub );
-            $(li_L2).on("mouseover", null, 'second', toggleSub );
-            $(li_L1).on("mouseout", null,'first', hideSubs );
-            $(li_L2).on("mouseout", null, 'second', hideSubs );
-            if ($(window)[0].innerWidth < 700 ){
-                $(".navigation").addClass("hidden")
-                $("#navbutton").on("click", toggleMenu)
+    function setMode () {
+        if(window.matchMedia('(max-width: 1000px)').matches) {
+            mode ="M";
+            $(".menuItems").removeClass ("hidden");
+            for(var i = 0; i < menuItems.length; i++) {
+                menuItems[i].close();
+            }
+            if(window.matchMedia('(max-width: 700px)').matches) {
+                mode = "S";
+                $(".menuItems").addClass ("hidden");
+                for(var i = 0; i < menuItems.length; i++) {
+                    menuItems[i].open();
+                }
             }
         } else {
-            $(".navigation li").removeClass("hidden");
-        }
-    };
+            mode ="L";
+            $(".menuItems").removeClass ("hidden");
+            for(var i = 0; i < menuItems.length; i++) {
+                menuItems[i].open();
+            }
 
-    $(window).resize ( function () {
-        reBindEventHandler ();
+        }
+        console.log (mode);
+        console.log ($(window).innerWidth ());
+    }
+
+    function stateMachine($ele) {
+        var state = 'close';
+
+        function update() {
+            if (state == 'close') {
+                $('>ul', $ele).addClass("hidden");
+            } else {
+                $('>ul', $ele).removeClass("hidden");
+                $('.navigation').trigger('myapp.closemenus', $ele);
+            }
+        };
+        function toggle(e) {
+            state = (state == 'close')? 'open': 'close';
+            update();
+        }
+        function open(e) {
+            state = 'open';
+            update();
+        }
+        function close(e) {
+            state = 'close';
+            update();
+        }
+
+        if (mode == 'L') {
+            state = open();
+        }
+
+//        $ele.on("click", function () {
+//            if (mode !== 'S') return;
+//            toggle();
+//        });
+        $ele.on("mouseenter", function() {
+            if (mode !== 'M') return;
+            open();
+        });
+        $ele.on("mouseleave", function() {
+            if (mode !== 'M') return;
+            close();
+        });
+
+        $ele.on('myapp.closemenus', function($e) {
+            console.log($e === $ele);
+            if ($e === $ele) return;
+            state = 'close';
+            update();
+        });
+        return {
+            open: open,
+            close: close
+        };
+    }
+
+    $(".navbutton").on("click", function(){
+        $(".menuItems").toggleClass("hidden");
+        if ($(".menuItems").is(".hidden")) {
+                $(".navframe").removeClass ("mobileMenuCenter");
+            } else {
+                $(".navframe").addClass ("mobileMenuCenter");
+            }
     });
 
-    reBindEventHandler ();
+
+    $(".navigation li").each ( function (i, element) {
+        menuItems.push(stateMachine ($(element)));
+    } );
+
+    setMode ();
+    $(window).resize ( function () {
+        setMode ();
+    });
 
 });
