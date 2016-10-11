@@ -1,4 +1,4 @@
-window.greater_look = {
+window.last_fixes = {
     organize: function style () {
         var css = [];
         css.push (".rightbarup");

@@ -18,16 +18,12 @@
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/greater_look.js'))
+            ->prependFile($this->basePath('js/last_fixes.js'))
             ->prependFile($this->basePath('js/popup.js'))
             ->prependFile($this->basePath('js/menu.js'))
             ->prependFile($this->basePath('js/jquery-ui.min.js'))
             ->prependFile($this->basePath('js/jquery.min.js'))
-
     ; ?>
-    <!-- <script   src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"   integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="   crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" />
--->
 
 </head>
 
@@ -43,7 +39,7 @@
             <span><a href="#">Kontakt </a></span> <span class="L_spacer"> | </span>
             <span><a href="#"> Impressum</a></span> <span class="L_spacer"> | </span> <br class="M_S_br">
             <span><a class="disclaim" href="#"> Haftungsausschluss</a></span><br><br class="M_br">
-            <span><?php $greet = $this->userinfo(); if ($greet != '') {echo $greet;} ?></span>
+            <?php $greet = $this->userinfo(); if ($greet != '') {echo $greet;} ?>
         </div>
     </div>
     <div class="bodycontainer">
@@ -80,16 +76,6 @@
                     echo $this->formCollection($form);
                     echo $this->form()->closeTag();
                 ?>
-<!--                 <form> -->
-<!--                     <span>Username</span><br> -->
-<!--                     <span><input type="Login" name="Login" value="Benutzername" size="10" ></span><br> -->
-<!--                     <span>Passwort</span><br> -->
-<!--                     <span><input type="password" name="Pass" value="Pass" size="10"></span><br> -->
-
-<!--                     <input type="checkbox">Angemeldet bleiben<br> -->
-<!--                     <input type="submit" name="send" value="Login"> -->
-<!--                     <input type="submit" name="new_reg" value="Registrieren"> -->
-<!--                 </form> -->
             </div>
 
             <div class="rightbardown">
@@ -111,7 +97,7 @@
         </div>
         <div id="footimage"></div>
     </div>
-    <script>greater_look.organize ()</script>
+    <script>last_fixes.organize ()</script>
     <?php echo $this->inlineScript() ?>
     <div></div>
 </body>
