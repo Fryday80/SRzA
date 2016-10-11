@@ -34,7 +34,7 @@
         color: black;
     }
 
-    .secondLevel-ul {
+    .ul_level_1 {
         top: 40px;
         min-width: 120px;
         text-align: center;
@@ -47,7 +47,7 @@
         background-color: rgba(0, 0, 0, 0.15);
     }
 
-    .thirdLevel-ul {
+    .ul_level_2 {
         top: 40px;
         min-width: 120px;
         text-align: center;
@@ -117,14 +117,14 @@
 	    background-color: rgb(188, 177, 144);
     }
 
-    .secondLevel-ul {
+    .ul_level_1 {
         top: 30px;
         min-height: 50px;
         width: 100%;
         margin-left: 0;
         padding: 0;
     }
-    .thirdLevel-ul {
+    .ul_level_2 {
         top: 0px;
         margin-left: 100%;
         min-width: 120px;

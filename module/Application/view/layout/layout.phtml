@@ -53,8 +53,8 @@
                     <owntitel>Wegweiser</owntitel>
                     <div class="spacer_h"></div>
                 </div>
-
-        		<?php echo $this->navigation('navigation')->menu(); ?>
+                <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
+        		<?php //echo $this->navigation('navigation')->menu(); ?>
 
             </div>
             <script>menuapp.organizeMenu ()</script>

@@ -1,0 +1,22 @@
+<?php
+function sdfsdf($page, $level) {
+    echo "<li class='level_$level'>";
+    echo $page->getLabel();
+    if($page->hasPages()) {
+        $nextLevel = $level + 1;
+        echo '<ul class="ul_level_'.$nextLevel.' hidden">';
+        foreach($page->getPages() as $child) {
+            sdfsdf($child, $nextLevel);
+        }
+        echo '</ul>';
+    }
+    echo '</li>';
+    return;
+}
+
+echo '<ul class="navigation">';
+foreach($container->getPages() as $child) {
+    sdfsdf($child, 0);
+}
+echo '</ul>';
+?>

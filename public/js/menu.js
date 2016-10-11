@@ -1,36 +1,27 @@
+/**
+*   instant run in base html to attach sublevel Classes that spot out, wich has a sublevel
+*   adapts the view for the smallest view
+*/
 window.menuapp = {
     organizeMenu:function menu_js() {
 
         /**
-        * adds classes to the Menus ul>li structure
-        * down to 3 Levels
-        * hides menus that are not first level by adding class "hidden"
-        **/
-        function giveClassesToMenu () {
-            $(".navigation>li").addClass ("firstLevel-li");
-            $(".navigation>li>ul").addClass ("secondLevel-ul hidden");
-            $(".navigation>li>ul>li").addClass ("secondLevel-li");
-            $(".navigation>li>ul>li>ul").addClass ("thirdLevel-ul hidden");
-            $(".navigation>li>ul>li>ul>li").addClass ("thirdLevel-li");
-        };
-
-        /**
         * finds all menu items, that have sub levels
-        * down to 3 levels
+        * @param {int} (count) starting number, usually 0
+        * @param {int} (max_level) down to e.g. 3 levels
         * adds class "topic" to all of them
-        * adds class "firstLevel-top" or "secondLevel-top" depending on the Level
+        * adds class "top_[levelnumber]"
         **/
-        function spotTheTopics () {
+        function spotTheTopics (count, max_level) {
 
-            var spotHelperOne = $(".firstLevel-li").has ("ul");
-            spotHelperOne.each(function (index) {
-                $(spotHelperOne[index]).addClass("topic firstLevel-top");
-            });
-
-            var spotHelperTwo = $(".secondLevel>li").has ("ul");
-            spotHelperTwo.each (function (index) {
-                $(spotHelperTwo[index]).addClass ("topic secondLevel-top");
-            });
+            for (count ; count < max_level; count++) {
+                var selector = ".level_"+count;
+                var classadd = "topic top_"+count;
+                var spotHelper = $(selector).has ("ul");
+                spotHelper.each(function (index) {
+                    $(spotHelper[index]).addClass(classadd);
+                });
+            }
         };
 
         /**
@@ -42,9 +33,8 @@ window.menuapp = {
             }
         }
 
+        spotTheTopics ( 0, 3 );
         menuhide_in_S ();
-        giveClassesToMenu ();
-        spotTheTopics ();
     }
 }
 
@@ -53,7 +43,6 @@ window.menuapp = {
 $(document).ready (function menu_handler_js () {
 
     var menuItems = [];
-
     var mode = "L";
 
     /**
@@ -138,15 +127,19 @@ $(document).ready (function menu_handler_js () {
         };
     }
 
-    $(".navbutton").on("click", function(){
+    function S_view_fix () {
         $(".menuItems").toggleClass("hidden");
+
         if ($(".menuItems").is(".hidden")) {
                 $(".navframe").removeClass ("mobileMenuCenter");
             } else {
                 $(".navframe").addClass ("mobileMenuCenter");
             }
-    });
+    }
 
+
+
+    $(".navbutton").on("click", S_view_fix);
 
     $(".navigation li").each ( function (i, element) {
         menuItems.push(stateMachine ($(element)));
