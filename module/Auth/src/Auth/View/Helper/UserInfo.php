@@ -31,6 +31,6 @@ class UserInfo extends AbstractHelper
             $expression = '<span class="greets">Hallo '.$name.$showrole. '</span>';
             return $expression;
         }
-        return $role;
+        return $role;           //müsste er da nicht irgendwo noch die $role ausgeben???
     }
 }

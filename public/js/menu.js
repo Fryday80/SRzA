@@ -80,9 +80,9 @@ $(document).ready (function menu_handler_js () {
             mode ="L";
             $(".menuItems").removeClass ("hidden");
             for(var i = 0; i < menuItems.length; i++) {
-                $(".navframe").removeClass ("mobileMenuCenter");
                 menuItems[i].open();
             }
+            $(".navframe").removeClass ("mobileMenuCenter");
 
         }
         console.log (mode);
