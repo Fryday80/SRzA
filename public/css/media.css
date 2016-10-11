@@ -25,9 +25,14 @@
     news {
         font-size: 20px;
     }
+
     .M_S_br {
+    display: block;
+    }
+    .M_br {
         display: block;
     }
+
     .L_spacer {
         display:none;
     }
@@ -70,6 +75,12 @@
     owntitel,
     news {
         font-size: 30px;
+    }
+    .M_S_br {
+    display: block;
+    }
+    .M_br {
+        display: none;
     }
 }
 

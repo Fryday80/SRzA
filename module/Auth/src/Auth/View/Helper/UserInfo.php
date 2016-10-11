@@ -20,17 +20,15 @@ class UserInfo extends AbstractHelper
     {
         $role = $this->storage->getRoleName();
         $name = $this->storage->getUserName();
-        $br = '<br>';
-        $special_br = '<br class="M_S_br">';
 
         if ($role == 'Guest') {
-            return 'Hallo '.$special_br.' Gast'.$br;
+            return 'Hallo <br> Gast';
         } else {
             $showrole = '';
             if ($role = 'Administrator') {
-                $showrole = $br.$role;
+                $showrole = ' | '.$role;
             }
-            $expression = '<span class="greets">Hallo '.$special_br.$name.$showrole. '</span>';
+            $expression = '<span class="greets">Hallo '.$name.$showrole. '</span>';
             return $expression;
         }
         return $role;

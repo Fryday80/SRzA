@@ -86,7 +86,8 @@ butti:hover {
 #headdeko>img {
     margin-left: auto;
     height: 160px;
-    margin-top: -15px;
+    margin-top: 5px;
+    margin-left: 5px;
 }
 #head {
     position: relative;
@@ -125,6 +126,9 @@ butti:hover {
     color: black;
 }
 .M_S_br {
+    display: none;
+}
+.M_br {
     display: none;
 }
 .greets {
