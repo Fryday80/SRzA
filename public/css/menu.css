@@ -1,14 +1,5 @@
 /* -----------------Navbar CSS settings----------------- */
 @media only screen {
-    .dropdown {
-        width: 20px;
-    }
-
-    li {
-        min-height: 30px;
-        vertical-align: text-bottom;
-    }
-
     .navigation {
         list-style-type: none;
         margin: 0 0 0 0;
@@ -22,16 +13,6 @@
         font-weight: 700;
         line-height: 30px;
         width: 100%;
-    }
-
-    .navigation li:link,
-    .navigation li:visited{
-        color: black;
-    }
-
-    .navigation li:active,
-    .navigation li:hover {
-        color: black;
     }
 
     .ul_level_1 {
@@ -97,20 +78,14 @@
         text-align: left;
         color: black;
     }
-    .navigation li:link,
-    .navigation li:visited{
-        color: black;
-    }
 
     .navigation li:active,
     .navigation li:hover {
         background-color: rgba(0, 0, 0, 0.1);
-        color: black;
     }
     .navigation>li:active,
     .navigation>li:hover {
         background-color: rgb(188, 177, 144);
-        color: black;
     }
     .navigation ul{
         position: absolute;
@@ -151,11 +126,14 @@
     .navframe *  {
         color: white;
     }
-    .navframe *:link,
-    .navframe *:visited,
-    .navframe *:active,
-    .navframe *:hover{
-        color: red;
+
+    .navtitel>owntitel:hover {
+	   color: white;
+    }
+
+    .navigation *:active,
+    .navigation *:hover{
+        color: black;
     }
 
 
@@ -166,8 +144,21 @@
         padding-right: 0;
         padding-bottom: 5px;
     }
-    .navbutton>img {
+    .menu_open,
+    .menu_close {
         width: 50px;
+        display: none;
+    }
+    .menu_close {
+        display: block;
+    }
+    .mobileMenuCenter>.navbutton>.menu_close {
+	   display: none;
+    }
+    .mobileMenuCenter>.navbutton>.menu_open {
+        margin-left: 45%;
+        padding: 5px;
+        display: block;
     }
 
     li {
