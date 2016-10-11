@@ -19,10 +19,19 @@ class UserInfo extends AbstractHelper
     public function __invoke()
     {
         $role = $this->storage->getRoleName();
+        $name = $this->storage->getUserName();
+        $br = '<br>';
+        $special_br = '<br class="M_S_br">';
+
         if ($role == 'Guest') {
-            return 'Gast';
+            return 'Hallo '.$special_br.' Gast'.$br;
         } else {
-            return $this->storage->getUserName();
+            $showrole = '';
+            if ($role = 'Administrator') {
+                $showrole = $br.$role;
+            }
+            $expression = '<span class="greets">Hallo '.$special_br.$name.$showrole. '</span>';
+            return $expression;
         }
         return $role;
     }
