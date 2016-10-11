@@ -1,5 +1,5 @@
 /* -----------------Navbar CSS settings----------------- */
-
+@media only screen {
     .dropdown {
         width: 20px;
     }
@@ -23,9 +23,7 @@
         line-height: 30px;
         width: 100%;
     }
-    .navigation li {
-        background-color: none;
-    }
+
     .navigation li:link,
     .navigation li:visited{
         color: black;
@@ -46,7 +44,7 @@
     }
 
     .navigation li:hover {
-        background-color: rgba(0, 0, 0, 0.12);
+        background-color: rgba(0, 0, 0, 0.15);
     }
 
     .thirdLevel-ul {
@@ -60,6 +58,7 @@
     .navbutton {
         display: none;
     }
+}
 
 /* @media special desing */
 /*-----------------------------------------------------------------------------*/
@@ -183,7 +182,7 @@
     }
 
 }
-/* Helper for js */
+/* ---------------------------- Helper for js ------------------------------------------- */
 
 .mobileMenuCenter {
     position:absolute;
