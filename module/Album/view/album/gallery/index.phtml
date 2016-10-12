@@ -14,6 +14,12 @@ $this->headTitle($title);
  </tr>
  <?php
 //    weiß ned ob bzw wo ich das in die Gallery einbauen muss... code das jetzt hier und dann kann mans rumschieben...
+    function what_is ($array) {
+        echo '<pre>';
+        var_dump ($array);
+        echo '</pre>';
+    }
+
     function sonic_screwdriver ($eventAlbumID = NULL) {
         if ($eventAlbumID == NULL) {
             $timestamp = "2016-01-01 00:00:00";
@@ -26,16 +32,20 @@ $this->headTitle($title);
         list($year, $month, $day) = explode("-", $date);
 
         $splitDate = array (
-                    'day' => $day,
-                    'month' => $month,
-                    'year' => $year
+                    'day'   =>  $day,
+                    'month' =>  $month,
+                    'year'  => $year
         );
         foreach ($splitDate as $key => $value) {
             $splitDate[$key] = intval ($value);
         }
         return $splitDate;
     }
+    $data = sonic_screwdriver();
 
+    what_is ($data);
+    echo $data['year'];
+    for ($i=$data['year']; $i<2018; $i++) { echo $i; }
 //    foreach ($albums as $album) :
 ?>
  <tr>

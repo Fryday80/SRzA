@@ -13,8 +13,6 @@
         font-weight: 700;
         line-height: 30px;
         width: 100%;
-        -webkit-transition: display 2s; /* Safari */
-        transition: display 2s;
     }
 
     .ul_level_1 {
