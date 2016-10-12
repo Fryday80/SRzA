@@ -3,6 +3,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Album\Controller\Album' => 'Album\Controller\AlbumController',
+            'Album\Controller\Gallery' => 'Album\Controller\GalleryController',
         ),
     ),
     'view_manager' => array(
@@ -22,6 +23,19 @@ return array(
                      ),
                      'defaults' => array(
                          'controller' => 'Album\Controller\Album',
+                         'action'     => 'index',
+                     ),
+                 ),
+             ),
+             'gallery' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/gallery[/:id]',
+                     'constraints' => array(
+                         'id'     => '[0-9]+',
+                     ),
+                     'defaults' => array(
+                         'controller' => 'Album\Controller\Gallery',
                          'action'     => 'index',
                      ),
                  ),
