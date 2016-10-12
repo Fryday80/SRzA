@@ -23,8 +23,10 @@ $this->headTitle($title);
      <td></td>
      <td><img class = "preview_gallery" src="/data/gallery/2016/t1.jpg"></td>
      <td>
-         <a href="<?php echo $this->url('album',
-             array('action'=>'show', 'id' => $album->id));?>"><butti>Ansehen</butti></a>
+         <a href="<?php echo $this->url('gallery',
+             array('action'=>'fullscreen', 0/*'id' => $album->id*/));?>"><butti>Vollbild</butti></a>
+         <a href="<?php echo $this->url('gallery',
+             array('action'=>'small', 0/*'id' => $album->id*/));?>"><butti>Ansehen</butti></a>
      </td>
  </tr>
  <?php
