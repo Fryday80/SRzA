@@ -11,11 +11,10 @@ html {
 }
 
 body {
-    margin-top: 60px;
-    margin-left: 60px;
-    margin-right: 60px;
+    margin: 60px;
     background-image: url(../img/div.bg.test.png);
     background-size: auto 130px;
+    border-radius: 35px;
 }
 
 a:link,
