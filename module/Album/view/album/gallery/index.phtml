@@ -6,14 +6,36 @@ $this->headTitle($title);
 <table class="table">
  <tr>
      <th>Jahr</th>
-     <th>Event</th>     <?php //@todo sort by?>
-     <th>Datum</th>     <?php //@todo sort by?>
+     <th>Event</th>
+     <th>Datum</th>
      <th>Dauer</th>
      <th>&nbsp;</th>
      <th>&nbsp;</th>
  </tr>
  <?php
-//    echo $test;
+//    weiß ned ob bzw wo ich das in die Gallery einbauen muss... code das jetzt hier und dann kann mans rumschieben...
+    function sonic_screwdriver ($eventAlbumID = NULL) {
+        if ($eventAlbumID == NULL) {
+            $timestamp = "2016-01-01 00:00:00";
+        }
+        else
+        {
+            $timestamp = $eventAlbumID->$timestamp;
+        }
+        list($date, $time) = explode(" ",$timestamp);
+        list($year, $month, $day) = explode("-", $date);
+
+        $splitDate = array (
+                    'day' => $day,
+                    'month' => $month,
+                    'year' => $year
+        );
+        foreach ($splitDate as $key => $value) {
+            $splitDate[$key] = intval ($value);
+        }
+        return $splitDate;
+    }
+
 //    foreach ($albums as $album) :
 ?>
  <tr>
