@@ -1,7 +1,7 @@
 <?php
 function iter($page, $level) {
     echo "<li class='level_$level'>";
-    echo '<a>'.$page->getLabel().'</a>';
+    echo '<a href="'.$page->getUri().'">'.$page->getLabel().'</a>';
     if($page->hasPages()) {
         $nextLevel = $level + 1;
         echo '<ul class="ul_level_'.$nextLevel.' hidden">';

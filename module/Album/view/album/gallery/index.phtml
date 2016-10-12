@@ -44,12 +44,10 @@ $this->headTitle($title);
     $data = sonic_screwdriver();
 
     what_is ($data);
-    echo $data['year'];
-    for ($i=$data['year']; $i<2018; $i++) { echo $i; }
 //    foreach ($albums as $album) :
 ?>
  <tr>
-     <td>2016</td>
+     <td><?php echo $data['year']; ?></td>
      <td></td>
      <td></td>
      <td></td>
