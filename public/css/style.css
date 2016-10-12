@@ -4,7 +4,7 @@
     margin: 0;
 }
 html {
-    background-color: black;
+    background-color: rgb(67, 12, 12);
     background-image: url(../img/html.bg.png);
     background-size: 100px;
 }
@@ -43,11 +43,7 @@ input {
     padding-left: 5px;
     padding-right: 5px;
 }
-input::after {
-    display: inline-block;
-    content: "\A";
-    white-space: pre;
-}
+
 butti {
     color: black;
     padding-left: 5px;
@@ -63,20 +59,15 @@ butti:hover {
     background-size: 100% 100%;
 }
 
+
 /* ---------------Fonts---------------------*/
 @font-face { font-family: 'stylo';
              src: url('../fonts/hp.ttf') format('truetype'); }
-
 
 /* -----------------Head----------------- */
 #headcontainer {
     position: relative;
     width: 100%;
-/*
-    background-image: url(../img/div.bg.test.png);
-    background-repeat: repeat;
-    background-size: auto 100%;
-*/
 }
 #headdeko {
     position: relative;
@@ -88,8 +79,9 @@ butti:hover {
 }
 #headdeko>img {
     margin-left: auto;
-    height: 160px;
-    margin-top: -15px;
+    height: 170px;
+    margin-top: -10px;
+    margin-left: 5px;
 }
 #head {
     position: relative;
@@ -104,9 +96,13 @@ butti:hover {
     position: relative;
     padding-right: 10px;
     width: calc (100%-10px);
-    height: 20px;
+    height: auto;
     text-align: right;
     color: black;
+    border-bottom: 4px;
+    border-bottom-style: ridge;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 #headlinks>span,
 #headlinks>span>a:link,
@@ -125,6 +121,13 @@ butti:hover {
 }
 .M_S_br {
     display: none;
+}
+.M_br {
+    display: none;
+}
+.greets {
+    font-size: 15px;
+    font-weight: 700;
 }
 
 
@@ -157,7 +160,7 @@ butti:hover {
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 68%;
+    width: 60%;
     margin-left: 2px;
     padding-left: 5px;
     padding-top: 20px;
@@ -177,9 +180,9 @@ butti:hover {
 .rightbarup, .rightbardown {
     position: relative;
     padding-left: 5px;
-    padding-right: 10px;
+    padding-right: 0px;
     padding-top: 20px;
-    width: 90%;
+    width: 100%;
     float: right;
     height: auto;
     min-height: 20%;
@@ -218,6 +221,12 @@ newstitel {
 }
 .mobilenavigation {
     background-color: black;
+}
+.width_95 {
+    width: 95%;
+}
+.width_90 {
+    width: 90%;
 }
 
 /* ----------------- UI special desing -------------------------------- */

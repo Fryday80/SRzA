@@ -1,14 +1,5 @@
 /* -----------------Navbar CSS settings----------------- */
-
-    .dropdown {
-        width: 20px;
-    }
-
-    li {
-        min-height: 30px;
-        vertical-align: text-bottom;
-    }
-
+@media only screen {
     .navigation {
         list-style-type: none;
         margin: 0 0 0 0;
@@ -23,20 +14,8 @@
         line-height: 30px;
         width: 100%;
     }
-    .navigation li {
-        background-color: none;
-    }
-    .navigation li:link,
-    .navigation li:visited{
-        color: black;
-    }
 
-    .navigation li:active,
-    .navigation li:hover {
-        color: black;
-    }
-
-    .secondLevel-ul {
+    .ul_level_1 {
         top: 40px;
         min-width: 120px;
         text-align: center;
@@ -46,10 +25,10 @@
     }
 
     .navigation li:hover {
-        background-color: rgba(0, 0, 0, 0.12);
+        background-color: rgba(0, 0, 0, 0.15);
     }
 
-    .thirdLevel-ul {
+    .ul_level_2 {
         top: 40px;
         min-width: 120px;
         text-align: center;
@@ -60,16 +39,18 @@
     .navbutton {
         display: none;
     }
+}
 
 /* @media special desing */
 /*-----------------------------------------------------------------------------*/
-@media only screen and (max-width: 1000px ) {
+@media only screen and (min-width: 701px) and (max-width: 1000px ) {
 /*-----------------------------------------------------------------------------*/
 
     .navframe {
-        width: 100%;
+        width: 99%;
         min-height: auto !important;
         margin-bottom: 1%;
+        padding-left: 5px;
     }
     .navtitel {
         font-size: 30px;
@@ -90,55 +71,48 @@
     }
     .navigation>li {
         width: auto;
-        float: left;
         margin-right: 10px;
-/*        padding: 5px 10px;*/
-/*        text-align: center;*/
         position: relative;
     }
     .navigation a {
         text-align: left;
         color: black;
     }
-    .navigation li:link,
-    .navigation li:visited{
-        color: black;
-    }
 
     .navigation li:active,
     .navigation li:hover {
         background-color: rgba(0, 0, 0, 0.1);
-        color: black;
+    }
+    .navigation>li:active,
+    .navigation>li:hover {
+        background-color: rgb(188, 177, 144);
+    }
+    .navigation ul{
+        position: absolute;
+        text-align: center;
+	    background-color: rgb(188, 177, 144);
     }
 
-    .secondLevel-ul {
-        position: absolute;
+    .ul_level_1 {
         top: 30px;
-        padding-right: 5px;
-
         min-height: 50px;
         width: 100%;
-        background-color: rgb(178, 58, 58);
-    }
-    .secondLevel-ul {
         margin-left: 0;
         padding: 0;
     }
-    .thirdLevel-ul {
-        position: absolute;
-        top: 40px;
+    .ul_level_2 {
+        top: 0px;
         margin-left: 100%;
         min-width: 120px;
-        text-align: center;
         min-height: 100%;
         padding-bottom: 5px;
-        background-color: rgb(178, 58, 58);
     }
 }
 
 /*-----------------------------------------------------------------------------*/
 @media only screen and (max-width: 700px ) {
 /*-----------------------------------------------------------------------------*/
+    /** ------------------------------ the Frame --------------------------**/
     .navframe{
         color: white;
         position: fixed ;
@@ -149,92 +123,63 @@
         background-image: none;
         height: 100%;
     }
-
-    .navframe owntitel {
+    .navframe *  {
         color: white;
     }
 
+    .navtitel>owntitel:hover {
+	   color: white;
+    }
+
+    .navigation *:active,
+    .navigation *:hover{
+        color: black;
+    }
+
+
+    /** ------------------------------ the navbutton --------------------------**/
     .navbutton {
         display: block!important;
         width: auto;
         padding-right: 0;
         padding-bottom: 5px;
     }
-    .navbutton>img {
+    .menu_open,
+    .menu_close {
         width: 50px;
-    }
-
-    .menuItems{
-        background-color: aqua;
-        height: auto;
-    }
-
-    .navtitel {
-        display: block;
-    }
-    .navtitel>.spacer_h {
         display: none;
     }
+    .menu_close {
+        display: block;
+    }
+    .mobileMenuCenter>.navbutton>.menu_close {
+	   display: none;
+    }
+    .mobileMenuCenter>.navbutton>.menu_open {
+        margin-left: 45%;
+        padding: 5px;
+        display: block;
+    }
 
-    .navigation li {
-        color: white;
-        text-align: center;
-        padding-top: 5px;
-        height: 100%;
-        z-index: 100;
-        background-color: black;
-        position: relative;
+    li {
+        display:block;
     }
-    .navigation>li {
-        float: none;
-        width: 100%;
-        padding-top: 5px;
-    }
-    .navigation li:link,
-    .navigation li:visited{
-        color: white;
-    }
-    .navigation li:active,
-    .navigation li:hover {
-        color: white;
-        background-image: url(..//uikit/highlight.u.d.png);
-        background-size: 100%;
+
+    li:active,
+    li:hover {
+        background-image: url(../img/uikit/highlight.u.d.png);
+        background-size: 100% auto;
+        background-repeat: no-repeat;
         background-position: top;
-        background-color: black;
     }
-    .navigation a:link,
-    .navigation a:visited,
-    .navigation a:hover,
-    .navigation a:active {
-        color: white;
-    }
-    .secondLevel-ul {
-    margin: 0;
-    padding: 0;
-        position: relative;
-        float: none;
-        background-color: black;
-        height: auto;
-        padding-top: 5px;
-    }
-    .thirdLevel-ul {
-    margin: 0;
-    padding: 0;
-        position: relative;
-        background-color: black;
-        height: auto;
-        padding-top: 5px;
-        z-index: 100;
-}
 
 }
-/* Helper for js */
+/* ---------------------------- Helper for js ------------------------------------------- */
 
 .mobileMenuCenter {
     position:absolute;
     margin: 0;
     padding: 0;
-    margin-left: 0px;
     width: 100%;
     height: auto;
     background-color: black;
