@@ -11,39 +11,52 @@ class GalleryController extends AbstractActionController
 
     protected $albumTable;
 
+//    private function findedenfehler ()
+//    {
+//        if (property_exists ($this, 'getAlbumTable()') )
+//        {
+//            $this->getAlbumTable()->fetchAll();
+//        }
+//        else
+//        {
+//            echo 'ich mog ned';
+//        }
+//    }
+
     public function indexAction()
     {
         $viewModel = new ViewModel(array(
-        ));
-        //mach 2 actions eine für small eine für fullscreen k k aber da die viel gleichen code haben in ne extra funktion auslagern
-        //und nohc ein action für die alben auswahl ... besten mit nem vorschaubild
-        if (true) {
-            $viewModel->setTemplate('Album/gallery/small.phtml');
-        } else {
-            $viewModel->setTerminal(true);
-        }
+//            'test' => $this->findedenfehler(),
+//            'albums' => $this->getAlbumTable()->fetchAll()
+        ) );
         return $viewModel;
     }
 
     public function smallAction()
     {
         $viewModel = new ViewModel(array());
-        if (true) {
             $viewModel->setTemplate('Album/gallery/small.phtml');
-        } else {
-            $viewModel->setTerminal(true);
-        }
         return $viewModel;
     }
 
     public function fullscreenAction()
     {
         $viewModel = new ViewModel(array());
-        if (true) {
-            $viewModel->setTemplate('Album/gallery/small.phtml');
-        } else {
-            $viewModel->setTerminal(true);
-        }
+        $viewModel->setTerminal(true);
         return $viewModel;
     }
+
+
+
+
+//    public function fullscreenAction()
+//    {
+//        $viewModel = new ViewModel(array());
+//        if (true) {
+//            $viewModel->setTemplate('Album/gallery/small.phtml');
+//        } else {
+//            $viewModel->setTerminal(true);
+//        }
+//        return $viewModel;
+//    }
 }
