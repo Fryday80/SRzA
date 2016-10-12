@@ -1,0 +1,41 @@
+<?php
+$this->headLink()->prependStylesheet('/js/jstree/dist/themes/default-dark/style.css');
+$this->headScript()->appendFile('/js/jstree/dist/jstree.js');
+$this->headScript()->appendFile('/js/fileBrowser.js');
+$title = 'file Browser';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('cms/add');?>">Add new Content</a>
+</p>
+<table class="table" style="width:90%">
+    <tr>
+        <th>path</th>
+        <th>name</th>
+        <th>&nbsp;</th>
+    </tr>
+ <?php foreach ($files as $file) : ?>
+     <tr>
+         <td><?php echo $this->escapeHtml($file['path']);?></td>
+         <td><?php echo $this->escapeHtml($file['name']);?></td>
+         <td>
+             <a href="<?php echo $this->url('cms/edit', array('id' => $file['id']));?>">Edit</a>
+             <a href="<?php echo $this->url('cms/delete', array('id' => $file['id']));?>">Delete</a>
+         </td>
+     </tr>
+ <?php endforeach; ?>
+</table>
+
+
+
+
+<div id="filebrowser">
+    <div class="head-bar"></div>
+    <div class="file-tree"></div>
+    <div class="content"></div>
+    <div class="foot-bar"></div>
+</div>
+<script type="text/javascript">
+    window.tempFilesForFileBrowser = '<?= $jsonFiles ?>';
+</script>

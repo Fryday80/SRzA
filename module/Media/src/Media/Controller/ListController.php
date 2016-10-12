@@ -10,9 +10,10 @@ class ListController extends AbstractActionController  {
     {
         //show a file browser
         $fileTable = $this->getServiceLocator()->get('Media\Model\FileTable');
-        $files = $fileTable->getAll();
+        $files = $fileTable->getAllFolders();
         return array(
-            'files' => $files
+            'files' => $files,
+            'jsonFiles' => json_encode($files)
         );
     }
 }

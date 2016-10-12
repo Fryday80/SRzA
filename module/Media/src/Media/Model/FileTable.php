@@ -11,17 +11,24 @@ class FileTable extends AbstractTableGateway
 {
     public $table = 'files';
 
-    public function __construct(Adapter $dbAdapter)
-    {
+    public function __construct(Adapter $dbAdapter) {
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
     }
-//     public function fetchAll()
-//     {
-//         $resultSet = $this->tableGateway->select();
-//         return $resultSet;
-//     }
+    public function getAll() {
+        return $this->select()->toArray();
+    }
+
+    public function getAllFolders() {
+        return $this->select('type = "folder"')->toArray();
+    }
+
+
+
+
+
+
     public function getItem($id) {
         $result = $this->select("id = $id")->toArray();
         if (count($result) < 1) {
@@ -62,29 +69,6 @@ class FileTable extends AbstractTableGateway
         $result = $this->toArray($result);
         return $result;
     }
-    public function append($data) {
-        //find highest rgt
-        $select = $this->getSql()->select();
-        $select->columns(array(
-            'rgt' => new \Zend\Db\Sql\Expression('MAX(rgt)')
-        ));
-        $rowset = $this->selectWith($select);
-        $lastItem = $rowset->current();
-        if (!$lastItem) {
-            throw new \Exception("Could not retrieve max rgt value");
-        }
-        $maxRgt = $lastItem['rgt'];
-        //add new item at lft = $maxRgt + 1
-        $this->insert([
-            'menu_id'       => 0,
-            'label'         => $data['label'],
-            'uri'           => $data['uri'],
-            'permission_id' => $data['permission_id'],
-            'lft'           => $maxRgt + 1,
-            'rgt'           => $maxRgt + 2
-        ]);
-        return $this->lastInsertValue;
-    }
     public function add($data, $lft) {
         return 'function not used try append instad';
 //         UPDATE nav SET rgt=rgt+2 WHERE rgt >= $RGT;
@@ -124,34 +108,5 @@ class FileTable extends AbstractTableGateway
     public function deleteByID($id) {
         $this->delete("id = $id");
     }
-    public function toArray(array $nodes)
-    {
-        $result     = array();
-        $stackLevel = 0;
-        // Node Stack. Used to help building the hierarchy
-        $stack = array();
-        foreach ($nodes as $node) {
-            $node['pages'] = array();
-            // Number of stack items
-            $stackLevel = count($stack);
-            // Check if we're dealing with different levels
-            while ($stackLevel > 0 && $stack[$stackLevel - 1]['level'] >= $node['level']) {
-                array_pop($stack);
-                $stackLevel--;
-            }
-            // Stack is empty (we are inspecting the root)
-            if ($stackLevel == 0) {
-                // Assigning the root node
-                $i = count($result);
-                $result[$i] = $node;
-                $stack[] =& $result[$i];
-            } else {
-                // Add node to parent
-                $i = count($stack[$stackLevel - 1]['pages']);
-                $stack[$stackLevel - 1]['pages'][$i] = $node;
-                $stack[] =& $stack[$stackLevel - 1]['pages'][$i];
-            }
-        }
-        return $result;
-    }
+
 }
