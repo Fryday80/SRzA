@@ -37,7 +37,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $table = new FileTable($dbAdapter);
                     return $table;
                 },
-                'Media\Service\MediaService' => function ($sm) {
+                'MediaService' => function ($sm) {
                     return new MediaService();
                 }
             )

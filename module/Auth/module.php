@@ -125,6 +125,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
 
     public function boforeDispatch(MvcEvent $event)
     {
+        return;
         $whiteList = array(
             'Auth\Controller\Auth-login',
             'Auth\Controller\Auth-logout'
