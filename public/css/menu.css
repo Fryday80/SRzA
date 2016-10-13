@@ -123,16 +123,24 @@
         background-image: none;
         height: 100%;
     }
-    .navframe *  {
+/*
+    .navframe li  {
         color: white;
     }
+*/
 
+    .navtitel>owntitel,
     .navtitel>owntitel:hover {
 	   color: white;
     }
+    .navigation li>a {
+        color: white;
+    }
 
-    .navigation *:active,
-    .navigation *:hover{
+    .navigation li:active>a,
+    .navigation li:hover>a,
+    .navigation li>a:active,
+    .navigation li>a:hover {
         color: black;
     }
 
@@ -183,4 +191,5 @@
     width: 100%;
     height: auto;
     background-color: black;
+    border-radius: 20px;
 }

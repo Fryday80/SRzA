@@ -2,6 +2,7 @@
 * {
     padding: 0;
     margin: 0;
+    z-index: 5;
 }
 html {
     background-color: rgb(67, 12, 12);
@@ -10,11 +11,10 @@ html {
 }
 
 body {
-    margin-top: 60px;
-    margin-left: 60px;
-    margin-right: 60px;
+    margin: 60px;
     background-image: url(../img/div.bg.test.png);
     background-size: auto 130px;
+    border-radius: 35px;
 }
 
 a:link,
@@ -49,13 +49,13 @@ butti {
     padding-left: 5px;
     padding-right: 5px;
     background-repeat: no-repeat;
-    background-image: url(../img/uikit/Button.png);
+    background-image: url(/img/uikit/Button.png);
     background-size: 100% 100%;
     }
 butti:hover {
     color: black;
     background-repeat: no-repeat;
-    background-image: url(../img/uikit/Button.hover.png);
+    background-image: url(/img/uikit/Button.hover.png);
     background-size: 100% 100%;
 }
 
@@ -75,7 +75,7 @@ butti:hover {
     width: 15%;
     height: 110px;
     background-image: none;
-    z-index: 5;
+    z-index: 10;
 }
 #headdeko>img {
     margin-left: auto;
@@ -135,7 +135,6 @@ butti:hover {
 .bodycontainer {
     position: relative;
     width: 100%;
-    z-index: 1;
 }
 
 .navframe,
@@ -143,7 +142,6 @@ butti:hover {
 .rightcontainer {
 
     position: relative;
-    z-index: inherit;
 }
 
 /* -----------------colum 1 (navframe)----------------- */
@@ -154,7 +152,7 @@ butti:hover {
     padding-top: 20px;
     float: left;
     min-height: 100%;
-    z-index: 2;
+    z-index: 10;
 }
 
 /* -----------------colum 2 content----------------- */
