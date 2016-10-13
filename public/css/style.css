@@ -270,3 +270,23 @@ noscript>div>ownhead {
     color: white;
     font-size: 100px;
 }
+/* ----------------- spielerei -------------------------------- */
+@keyframes deko_jump {
+      0% { height: 170px; }
+     20% { height: 200px; transform:rotate(  0deg); }
+     40% { height: 200px; transform:rotate(-30deg); }
+     60% { height: 200px; transform:rotate( 30deg); }
+     80% { height: 200px; transform:rotate(  0deg); }
+    100% { height: 170px; }
+}
+
+#headdeko>img:hover {
+    margin-left: auto;
+    height: 170px;
+    margin-top: -10px;
+    margin-left: 5px;
+    z-index: 100;
+    animation-name: deko_jump;
+    animation-duration: 3s;
+    animation-direction: alternate;
+}
