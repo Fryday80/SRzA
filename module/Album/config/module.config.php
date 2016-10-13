@@ -73,13 +73,15 @@ return array(
              ),
              'gallery' => array(
                  'type'    => 'segment',
+                 'priority' => 1111,
                  'options' => array(
                      'route'    => '/gallery[/:id]',
                      'constraints' => array(
                          'id'     => '[0-9]+',
                      ),
                      'defaults' => array(
-                         'controller' => 'Album\Controller\Gallery',
+                        '__NAMESPACE__' => 'Album\Controller',
+                         'controller' => 'Gallery',//eventuel ... glaub ich aber nich das des des problem is
                          'action'     => 'index',
                      ),
                  ),
