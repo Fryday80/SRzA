@@ -51,7 +51,7 @@ $(document).ready (function menu_handler_js () {
      * given in var mode
      */
     function setMode () {
-        if(window.matchMedia('(max-width: 1000px)').matches) {
+        if(window.matchMedia('(max-width: 1200px)').matches) {
             mode ="M";
             $(".menuItems").removeClass ("hidden");
             $(".navframe").removeClass ("mobileMenuCenter");

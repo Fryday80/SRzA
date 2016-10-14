@@ -8,11 +8,13 @@
 
     .navigation ul,
     .navigation li {
+        padding-top: 5px;
         vertical-align: middle;
         list-style-type: none;
         font-weight: 700;
         line-height: 30px;
         width: 100%;
+        border-radius: 5px;
     }
 
     .ul_level_1 {
@@ -43,7 +45,7 @@
 
 /* @media special desing */
 /*-----------------------------------------------------------------------------*/
-@media only screen and (min-width: 701px) and (max-width: 1000px ) {
+@media only screen and (min-width: 701px) and (max-width: 1200px ) {
 /*-----------------------------------------------------------------------------*/
 
     .navframe {
