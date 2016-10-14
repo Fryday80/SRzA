@@ -4,6 +4,7 @@ return array(
         'invokables' => array(
             'Media\Controller\List' => 'Media\Controller\ListController',
             'Media\Controller\Upload' => 'Media\Controller\UploadController',
+            'Media\Controller\File' => 'Media\Controller\FileController',
         )
     ),
     'view_manager' => array(
@@ -16,7 +17,7 @@ return array(
             'media' => array(
                 'type' => 'literal',
                 'options' => array(
-                    'route'    => '/media/',
+                    'route'    => '/media',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Media\Controller',
                         'controller' => 'List',
@@ -25,6 +26,30 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
+                    'file' => array(
+                        'type' => 'regex',
+                        'options' => array(
+                            'regex' => '/file(?<path>\/.*)',
+                            'defaults' => array(
+                                'controller' => 'file',
+                                'action' => 'index',
+                            ),
+                            'spec' => '/path%path%'
+                        ),
+                        /*
+                        'type' => 'segment',
+                        'options' => array(
+                            'route' => '/file/:path',
+                            'defaults' => array(
+                                'controller' => 'File',
+                                'action'     => 'index',
+                            ),
+                            'constraints' => array(
+                                'path' => '(.)+'
+                            ),
+                        )
+                        */
+                    ),
                     'upload' => array(
                         'type' => 'segment',
                         'options' => array(
@@ -34,7 +59,8 @@ return array(
                             )
                         )
                     ),
-                )
+
+                ),//child_routes
             ),
         )
     )
