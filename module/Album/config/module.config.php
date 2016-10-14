@@ -16,11 +16,7 @@ return array(
              'album' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/album[/:action][/:id]',
-                     'constraints' => array(
-                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                         'id'     => '[0-9]+',
-                     ),
+                     'route'    => '/album',
                      'defaults' => array(
                          'controller' => 'Album\Controller\Album',
                          'action'     => 'index',
@@ -30,6 +26,7 @@ return array(
                  'child_routes' => array(
                     'delete' => array(
                         'type' => 'Segment',
+                        'may_terminate' => true,
                         'options' => array(
                             'route' => '/delete[/:id]',
                             'constraints' => array(
@@ -73,15 +70,12 @@ return array(
              ),
              'gallery' => array(
                  'type'    => 'segment',
-                 'priority' => 1111,
+                 'may_terminate' => true,//des brauchst wenn man die gallery auch ohne eine child route benutzen will also /gallery  und nich /gallery/fullscreen oder so
                  'options' => array(
-                     'route'    => '/gallery[/:id]',
-                     'constraints' => array(
-                         'id'     => '[0-9]+',
-                     ),
+                     'route'    => '/gallery',
                      'defaults' => array(
                         '__NAMESPACE__' => 'Album\Controller',
-                         'controller' => 'Gallery',//eventuel ... glaub ich aber nich das des des problem is
+                         'controller' => 'Gallery',
                          'action'     => 'index',
                      ),
                  ),
@@ -95,7 +89,7 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'fullscreen',
-                                'id' => '[0-9]+'
+                                'id' => '1'
                             )
                         )
                     ),
@@ -108,7 +102,7 @@ return array(
                             ),
                             'defaults' => array(
                                 'action' => 'small',
-                                'id' => '[0-9]+'
+                                'id' => '1'
                             )
                         )
                     ),
