@@ -34,8 +34,7 @@ return array(
                                 'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                                'action' => 'delete',
-                                'id' => '[0-9]+'
+                                'action' => 'delete'
                             )
                         )
                     ),
@@ -47,8 +46,7 @@ return array(
                                 'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                                'action' => 'add',
-                                'id' => '[0-9]+'
+                                'action' => 'add'
                             )
                         )
                     ),
@@ -60,8 +58,7 @@ return array(
                                 'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                                'action' => 'edit',
-                                'id' => '[0-9]+'
+                                'action' => 'edit'
                             )
                         )
                     )

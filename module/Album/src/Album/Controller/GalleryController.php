@@ -70,4 +70,28 @@ class GalleryController extends AbstractActionController
 //        }
 //        return $viewModel;
 //    }
+    //so jetzt hat dein controller ne helfer funktion ... und wenn man ne funktionalität haben will die in vielen views gebraucht wird machste ein viewHelper
+    //des is von zend direkt so wie UserInfo ... der is glaub in auth ... den schauste dir auch mal an, und ürgendwo muss man den auch registrieren glaub ich
+    //aber zum theme timestamp
+    private function split_up_timestamp ($eventAlbumID = NULL) {
+        if ($eventAlbumID == NULL) {
+            $timestamp = "2016-01-01 00:00:00";
+        }
+        else
+        {
+            $timestamp = $eventAlbumID->$timestamp;
+        }
+        list($date, $time) = explode(" ",$timestamp);
+        list($year, $month, $day) = explode("-", $date);
+
+        $splitDate = array (
+                    'day'   =>  $day,
+                    'month' =>  $month,
+                    'year'  => $year
+        );
+        foreach ($splitDate as $key => $value) {
+            $splitDate[$key] = intval ($value);
+        }
+        return $splitDate;
+    }
 }

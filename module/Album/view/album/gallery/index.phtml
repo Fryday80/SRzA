@@ -13,29 +13,7 @@ $this->headTitle($title);
      <th>&nbsp;</th>
  </tr>
  <?php
-//    weiß ned ob bzw wo ich das in die Gallery einbauen muss... code das jetzt hier und dann kann mans rumschieben...
-    function split_up_timestamp ($eventAlbumID = NULL) {
-        if ($eventAlbumID == NULL) {
-            $timestamp = "2016-01-01 00:00:00";
-        }
-        else
-        {
-            $timestamp = $eventAlbumID->$timestamp;
-        }
-        list($date, $time) = explode(" ",$timestamp);
-        list($year, $month, $day) = explode("-", $date);
 
-        $splitDate = array (
-                    'day'   =>  $day,
-                    'month' =>  $month,
-                    'year'  => $year
-        );
-        foreach ($splitDate as $key => $value) {
-            $splitDate[$key] = intval ($value);
-        }
-        return $splitDate;
-    }
-    $data = split_up_timestamp();
 //    foreach ($albums as $album) :
 ?>
  <tr>
@@ -45,10 +23,12 @@ $this->headTitle($title);
      <td></td>
      <td><img class = "preview_gallery" src="/data/gallery/2016/t1.jpg"></td>
      <td>
-         <a href="<?php echo $this->url('gallery',
-             array('action'=>'fullscreen', 0/*'id' => $album->id*/));?>"><butti>Vollbild</butti></a>
-         <a href="<?php echo $this->url('gallery',
-             array('action'=>'small', 0/*'id' => $album->id*/));?>"><butti>Ansehen</butti></a>
+                                            und in dem array stehen dann die argumente also
+         <a href="<?php echo $this->url('gallery/fullscreen', array('id' => $album->id));
+
+                  ?>">
+             <butti>Vollbild</butti></a>
+         <a href="<?php echo $this->url('gallery/small', array('id' => $album->id));?>"><butti>Ansehen</butti></a>
      </td>
  </tr>
  <?php

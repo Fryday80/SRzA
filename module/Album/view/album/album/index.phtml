@@ -22,10 +22,8 @@ $this->headTitle($title);
      <td><?php echo $this->escapeHtml($album->date);?></td>
      <td><?php echo $this->escapeHtml($album->duration);?> Tage</td>
      <td>
-         <a href="<?php echo $this->url('album',
-             array('action'=>'edit', 'id' => $album->id));?>"><butti>Edit</butti></a>
-         <a href="<?php echo $this->url('album',
-             array('action'=>'delete', 'id' => $album->id));?>"><butti>Delete</butti></a>
+         <a href="<?php echo $this->url('album/edit', array('id' => $album->id));?>"><butti>Edit</butti></a>
+         <a href="<?php echo $this->url('album/delete', array('id' => $album->id));?>"><butti>Delete</butti></a>
      </td>
  </tr>
  <?php endforeach; ?>
