@@ -13,8 +13,10 @@ return array(
     ),
      'router' => array(
          'routes' => array(
+
              'album' => array(
                  'type'    => 'segment',
+                 'may_terminate' => true,
                  'options' => array(
                      'route'    => '/album',
                      'defaults' => array(
@@ -26,7 +28,6 @@ return array(
                  'child_routes' => array(
                     'delete' => array(
                         'type' => 'Segment',
-                        'may_terminate' => true,
                         'options' => array(
                             'route' => '/delete[/:id]',
                             'constraints' => array(
