@@ -14,13 +14,7 @@ $this->headTitle($title);
  </tr>
  <?php
 //    weiß ned ob bzw wo ich das in die Gallery einbauen muss... code das jetzt hier und dann kann mans rumschieben...
-    function what_is ($array) {
-        echo '<pre>';
-        var_dump ($array);
-        echo '</pre>';
-    }
-
-    function sonic_screwdriver ($eventAlbumID = NULL) {
+    function split_up_timestamp ($eventAlbumID = NULL) {
         if ($eventAlbumID == NULL) {
             $timestamp = "2016-01-01 00:00:00";
         }
@@ -41,9 +35,7 @@ $this->headTitle($title);
         }
         return $splitDate;
     }
-    $data = sonic_screwdriver();
-
-    what_is ($data);
+    $data = split_up_timestamp();
 //    foreach ($albums as $album) :
 ?>
  <tr>

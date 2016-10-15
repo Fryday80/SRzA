@@ -110,19 +110,7 @@ butti:hover {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
-#headlinks>span,
-#headlinks>span>a:link,
-#headlinks>span>a:visited {
-    color: black;
-}
-
-#headlinks>span>a:hover {
-    background-image: url(../img/uikit/highlight.d.u.png);
-    background-size: 100% 50%;
-    background-position: bottom;
-    color: black;
-}
-#headlinks>span>a:active {
+#headlinks>span {
     color: black;
 }
 .M_S_br {
@@ -206,7 +194,7 @@ newstitel {
     color: black;
     padding-top: 10px;
     min-height: 30px;
-    background-image: url(../img/div.bg.test.png);
+    background-image: url(../img/body.bg.png);
     background-size: auto 100%;
 }
 
