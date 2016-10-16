@@ -44,6 +44,8 @@ class AlbumController extends AbstractActionController
 
     public function editAction()
     {
+        //des problem is bisal kompliziert ... liegt daran das wir hier eine extra Model classe haben (class Album).
+        //man kann auch einfach nur die AlbumTable benutzen ... so machs ich auch fast überall. egal
         $request = $this->getRequest();
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id && !$request->isPost()) {
@@ -51,27 +53,18 @@ class AlbumController extends AbstractActionController
                 'action' => 'add'
             ));
         }
-        
-        // Get the Album with the specified id. An exception is thrown
-        // if it cannot be found, in which case go to the index page.
+        $album = null;
         try {
             $album = $this->getAlbumTable()->getAlbum($id);
         } catch (\Exception $ex) {
-//            return $this->redirect()->toRoute('album', array(
-//                'action' => 'index'
-//            ));
+            $album = new Album(); //das hier is das problem. er braucht immer ein album hatte aber beim post keins weil keine id da war
         }
         $form = new AlbumForm();
-        $album->timestamp = time() * 1000;
-
-        $form->bind($album);
+        $form->bind($album);//zum verständnis   durch bind ändern sich die daten in album auch wenn man die form daten ändert
         $form->get('submit')->setAttribute('value', 'Edit');
 
         if ($request->isPost()) {
             $data = $request->getPost();
-            print('<pre>');
-            var_dump($data);
-            die;
             $data['timestamp'] = $data['timestamp'] / 1000;
             $form->setInputFilter($album->getInputFilter());
             $form->setData($request->getPost());
