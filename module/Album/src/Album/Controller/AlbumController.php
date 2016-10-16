@@ -75,7 +75,7 @@ class AlbumController extends AbstractActionController
             print('<pre>');
             var_dump($data);
             die;
-            $data['timestamp'] = $data['timestamp'] / 1000;//weiß nich ob php des mag mit dem \=
+            $data['timestamp'] = $data['timestamp'] / 1000;
             $form->setInputFilter($album->getInputFilter());
             $form->setData($request->getPost());
             if ($form->isValid()) {

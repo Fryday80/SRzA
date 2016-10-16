@@ -23,11 +23,9 @@ class Album
     {
         $this->id = (! empty($data['id'])) ? $data['id'] : null;
         $this->event = (! empty($data['event'])) ? $data['event'] : null;
-        $this->timestamp = (! empty($data['date'])) ? $data['date'] : null;
-        //du kannst dir heir auch noch timestamp formatieren und in date speichern ... dann haste auch immer nen schönen string zur hand
-        //stimmt doch :)
-        $this->date = date('d-m-Y', $this->timestamp);
+        $this->timestamp = (! empty($data['timestamp'])) ? $data['timestamp'] : null;
         $this->duration = (! empty($data['duration'])) ? $data['duration'] : null;
+        $this->date = date('d-m-Y', $this->timestamp);
     }
 
     public function getArrayCopy()
@@ -78,27 +76,14 @@ class Album
                 )
             ));
 
-            $inputFilter->add(array(               //datum und duration anders? weil datum und INT??
+            $inputFilter->add(array(               //wird nicht gespeichert, sondern timestamp wird in db gespeichert
                 'name' => 'date',
                 'required' => true,
                 'filters' => array(
                     array(
-                        'name' => 'StripTags'
+                        'name' => 'Int'
                     ),
-                    array(
-                        'name' => 'StringTrim'
-                    )
                 ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 100
-                        )
-                    )
-                )
             ));
             
             $inputFilter->add(array(
@@ -106,22 +91,9 @@ class Album
                 'required' => true,
                 'filters' => array(
                     array(
-                        'name' => 'StripTags'
+                        'name' => 'Int'
                     ),
-                    array(
-                        'name' => 'StringTrim'
-                    )
                 ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 100
-                        )
-                    )
-                )
             ));
             
             $this->inputFilter = $inputFilter;
