@@ -1,0 +1,284 @@
+/* -----------------general Settings----------------- */
+* {
+    padding: 0;
+    margin: 0;
+    z-index: 5;
+}
+html {
+    background-color: rgb(67, 12, 12);
+    background-image: url(../img/html.bg.png);
+    background-size: 100px;
+}
+
+body {
+    margin: 60px;
+    background-image: url(../img/body.bg.png);
+    background-size: auto 130px;
+    border-radius: 35px;
+}
+form,
+label,
+input {
+    border-radius: 5px;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active{
+    text-decoration: none;
+    color: black;
+}
+ownhead {
+    font-family: stylo, arial, sans-serif;
+    color: black;
+    font-size: 68px;
+    font-size-adjust: auto;
+}
+owntitel {
+    font-family: stylo, arial, sans-serif;
+    font-size: 25px;
+    color: black;
+}
+
+input {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius:5px;
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+butti {
+    color: black;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-repeat: no-repeat;
+    background-image: url(/img/uikit/Button.png);
+    background-size: 100% 100%;
+    }
+butti:hover {
+    color: black;
+    background-repeat: no-repeat;
+    background-image: url(/img/uikit/Button.hover.png);
+    background-size: 100% 100%;
+}
+
+
+/* ---------------Fonts---------------------*/
+@font-face { font-family: 'stylo';
+             src: url('../fonts/hp.ttf') format('truetype'); }
+
+/* -----------------Head----------------- */
+#headcontainer {
+    position: relative;
+    width: 100%;
+}
+#headdeko {
+    position: relative;
+    float:left;
+    width: 15%;
+    height: 110px;
+    background-image: none;
+    z-index: 100;
+}
+#headdeko>img {
+    margin-left: auto;
+    height: 170px;
+    margin-top: -10px;
+    margin-left: 5px;
+    z-index: 100;
+}
+#head {
+    position: relative;
+    float: right;
+    width: 85%;
+    text-align: center;
+    height: 90px;  /*height + padding = height of div*/
+    padding-top: 20px;
+}
+#headlinks {
+    clear:both;
+    position: relative;
+    padding-right: 10px;
+    width: calc (100%-10px);
+    height: auto;
+    text-align: right;
+    color: black;
+    border-bottom: 4px;
+    border-bottom-style: ridge;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+#headlinks>span {
+    color: black;
+}
+.M_S_br {
+    display: none;
+}
+.M_br {
+    display: none;
+}
+.greets {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+/* -----------------hp body----------------- */
+.bodycontainer {
+    position: relative;
+    width: 100%;
+}
+
+.navframe,
+#content,
+.rightcontainer {
+    position: relative;
+}
+
+/* -----------------colum 1 (navframe)----------------- */
+.navframe {
+    position: relative;
+    text-align: center;
+    width: 15%;
+    padding-top: 20px;
+    float: left;
+    min-height: 100%;
+    z-index: 10;
+}
+
+/* -----------------colum 2 content----------------- */
+#content {
+    float: left;
+    width: 60%;
+    margin-left: 2px;
+    padding-left: 5px;
+    padding-top: 20px;
+    min-height: 50%;
+
+}
+
+/* -----------------colum 3 right bar----------------- */
+.rightcontainer {
+    position: relative;
+    float: right;
+    width: 21%;
+    text-align: center;
+/*    min-height: 100%;*/
+}
+
+.rightbarup, .rightbardown {
+    position: relative;
+    padding-left: 5px;
+    padding-right: 0px;
+    padding-top: 20px;
+    width: 100%;
+    float: right;
+    height: auto;
+    min-height: 20%;
+    overflow: visible;
+}
+newstitel {
+    font-weight: 700;
+}
+
+/* -----------------foot----------------- */
+#foot {
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+#foottext {
+    color: black;
+    padding-top: 10px;
+    min-height: 30px;
+    background-image: url(../img/body.bg.png);
+    background-size: auto 100%;
+}
+
+#footimage {
+    background-image: url(../img/foot.png);
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 150px;
+}
+
+/* -----------------auxilliary classes for JQuery----------------- */
+.hidden {
+    display: none;
+}
+.mobilenavigation {
+    background-color: black;
+}
+.width_95 {
+    width: 95%;
+}
+.width_90 {
+    width: 90%;
+}
+
+/* ----------------- UI special desing -------------------------------- */
+
+.spacer_h {
+    background-image: url(../img/uikit/decoration.h.png);
+    background-repeat: repeat-x;
+    background-size: contain;
+    height: 15px;
+}
+
+
+/* ----------------- NoScript desing -------------------------------- */
+
+@keyframes nojs {
+0%    {transform:rotate(0deg);    top: 200px; left:  30px; right:   30px; }
+25%   {transform:rotate(20deg);   top: 150px; left:  30px; right:   30px; }
+50%   {transform:rotate(0deg);    top: 350px; left:  50px; right:   10px; background-color: rgb(67, 12, 12); }
+60%   {transform:rotate(0deg);    top: 450px; left: 150px; right: -120px; }
+70%   {transform:rotate(0deg);    top: 150px; left: 250px; right: -220px; }
+100%  {transform:rotate(-360deg); top: 200px; left:  30px; right:   30px; background-color: black; }
+}
+
+
+noscript>div {
+    z-index: 20;
+    position:absolute;
+    top: 200px;
+    left: 30px;
+    right:30px;
+    padding: auto;
+    padding-left: 20px;
+    padding-right: 20px;
+    min-height: 200px;
+    background-color: black;
+    border-radius: 20px;
+    text-align: center;
+    animation-name: nojs;
+    animation-duration: 8s;
+}
+noscript>div>ownhead {
+    color: white;
+    font-size: 100px;
+}
+/* ----------------- spielerei -------------------------------- */
+@keyframes rotate_sign {
+      0% { height: 170px; }
+     20% { height: 200px; transform:rotate(  0deg); }
+     40% { height: 200px; transform:rotate(-30deg); }
+     60% { height: 200px; transform:rotate( 30deg); }
+     80% { height: 200px; transform:rotate(  0deg); }
+    100% { height: 170px; }
+}
+
+#headdeko>img:hover {
+    margin-left: auto;
+    height: 170px;
+    margin-top: -10px;
+    margin-left: 5px;
+    z-index: 100;
+    animation-name: rotate_sign;
+    animation-duration: 3s;
+    animation-direction: alternate;
+}

@@ -1,5 +1,0 @@
-@import url(style.css);     /* Basic Layout without Menu            */
-@import url(menu.css);      /* Menu Layout                          */
-@import url(media.css);     /* Mediaquerys for Basic Layout         */
-@import url(jquery-ui.css); /* jquery UI Style                      */
-@import url(jgallery.css);  /* additional settings for the gallery  */

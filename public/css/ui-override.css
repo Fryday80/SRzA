@@ -1,0 +1,7 @@
+.ui-datepicker {
+	background-image: url(/img/body.bg.png);
+    background-size: 100% 100%;
+}
+#ui-datepicker-div>table>thead>tr>th>span {
+    color: black;
+}
