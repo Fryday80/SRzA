@@ -19,8 +19,8 @@ class Module
         $eventManager        = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+        date_default_timezone_set ("Europe/Berlin");
     }
-
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';

@@ -7,19 +7,23 @@ $this->headTitle($title);
 
  <?php
  $form = $this->form;
- $form->setAttribute('action', $this->url(
-     'album',
-     array(
-         'action' => 'edit',
-         'id'     => $this->id,
-     )
- ));
  $form->prepare();
-
- echo $this->form()->openTag($form);
- echo $this->formHidden($form->get('id'));
- echo $this->formRow($form->get('event'));
- echo $this->formRow($form->get('date'));
- echo $this->formRow($form->get('duration'));
- echo $this->formSubmit($form->get('submit'));
- echo $this->form()->closeTag();
+ echo $this->form($form);
+// echo $this->form()->openTag($form);
+// echo $this->formHidden($form->get('id'));
+// echo $this->formRow($form->get('event'));
+// echo $this->formRow($form->get('date'));
+// echo $this->formRow($form->get('duration'));
+// echo $this->formSubmit($form->get('submit'));
+// echo $this->form()->closeTag();
+?>
+<script>
+    $('#content input[name="date"]').datepicker({
+        dateFormat: "yy-mm-dd",
+        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()), //ups
+        onSelect: function (selectedDate) {
+            var date = new Date($('#content input[name="date"]' ).val());
+            $('#content input[name="timestamp"]').val(date.getTime());
+        }
+    });
+</script>

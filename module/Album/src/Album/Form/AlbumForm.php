@@ -9,7 +9,7 @@ class AlbumForm extends Form
     {
         // we want to ignore the name passed
         parent::__construct('album');
-
+        $this->setAttribute('action', '/album/edit');
         $this->add(array(
             'name' => 'id',
             'type' => 'Hidden',
@@ -27,6 +27,10 @@ class AlbumForm extends Form
             'options' => array(
                 'label' => 'Datum',
             ),
+        ));
+        $this->add(array(
+            'name' => 'timestamp',
+            'type' => 'Hidden',
         ));
         $this->add(array(
             'name' => 'duration',

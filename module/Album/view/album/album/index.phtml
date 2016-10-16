@@ -6,9 +6,8 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
  <p>
-     <a href="<?php echo $this->url('album', array('action'=>'add'));?>"><butti>Add new album</butti></a>
+     <a href="<?php echo $this->url('album/add');?>"><butti>Add new album</butti></a>
  </p>
-
  <table class="table">
  <tr>
      <th>Event</th>     <?php //@todo sort by?>

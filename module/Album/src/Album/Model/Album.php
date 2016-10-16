@@ -13,6 +13,8 @@ class Album
 
     public $date;
 
+    public $timestamp;
+
     public $duration;
 
     protected $inputFilter;
@@ -21,7 +23,10 @@ class Album
     {
         $this->id = (! empty($data['id'])) ? $data['id'] : null;
         $this->event = (! empty($data['event'])) ? $data['event'] : null;
-        $this->date = (! empty($data['date'])) ? $data['date'] : null;
+        $this->timestamp = (! empty($data['date'])) ? $data['date'] : null;
+        //du kannst dir heir auch noch timestamp formatieren und in date speichern ... dann haste auch immer nen schönen string zur hand
+        //stimmt doch :)
+        $this->date = date('d-m-Y', $this->timestamp);
         $this->duration = (! empty($data['duration'])) ? $data['duration'] : null;
     }
 

@@ -14,6 +14,7 @@ class AlbumTable
 
     public function fetchAll()
     {
+        //die hier
         $resultSet = $this->tableGateway->select();
         return $resultSet;
     }
@@ -33,7 +34,7 @@ class AlbumTable
     {
         $data = array(
             'event' => $album->event,
-            'date'  => $album->date,
+            'date'  => $album->timestamp,
             'duration'  => $album->duration,
         );
 
