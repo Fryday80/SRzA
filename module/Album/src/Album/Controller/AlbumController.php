@@ -44,7 +44,6 @@ class AlbumController extends AbstractActionController
 
     public function editAction()
     {
-
         $request = $this->getRequest();
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id && !$request->isPost()) {
@@ -58,14 +57,12 @@ class AlbumController extends AbstractActionController
         try {
             $album = $this->getAlbumTable()->getAlbum($id);
         } catch (\Exception $ex) {
-            return $this->redirect()->toRoute('album', array(
-                'action' => 'index'
-            ));
+//            return $this->redirect()->toRoute('album', array(
+//                'action' => 'index'
+//            ));
         }
-        
         $form = new AlbumForm();
         $album->timestamp = time() * 1000;
-        // $album->date = date('d-m-Y', $album->date) ;
 
         $form->bind($album);
         $form->get('submit')->setAttribute('value', 'Edit');

@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Edit Album';
+$title = 'Edit Gallery';
 $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -20,7 +20,7 @@ $this->headTitle($title);
 <script>
     $('#content input[name="date"]').datepicker({
         dateFormat: "yy-mm-dd",
-        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()), //ups
+        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
         onSelect: function (selectedDate) {
             var date = new Date($('#content input[name="date"]' ).val());
             $('#content input[name="timestamp"]').val(date.getTime());
