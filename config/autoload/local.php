@@ -13,7 +13,7 @@
 
 return array(
     'db' => array(
-        'username' => 'sql7139812',
-        'password' => 'sALBStUgLx',
+        'username' => 'frysql',
+        'password' => 'sqlfry',
     ),
 );
