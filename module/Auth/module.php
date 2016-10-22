@@ -8,6 +8,7 @@ use Auth\Model\ResourceTable;
 use Auth\Model\RolePermissionTable;
 use Auth\Model\UserRoleTable;
 use Auth\Service\AclService;
+use Auth\Utility\UserPassword;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\Mvc\MvcEvent;
