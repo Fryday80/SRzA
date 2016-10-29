@@ -26,29 +26,27 @@ return array(
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'file' => array(
+                    'download' => array(
                         'type' => 'regex',
                         'options' => array(
-                            'regex' => '/file(?<path>\/.*)',
+                            'regex' => '/download(?<path>\/.*)',
                             'defaults' => array(
                                 'controller' => 'file',
-                                'action' => 'index',
+                                'action' => 'download',
                             ),
                             'spec' => '/path%path%'
                         ),
-                        /*
-                        'type' => 'segment',
+                    ),
+                    'image' => array(
+                        'type' => 'regex',
                         'options' => array(
-                            'route' => '/file/:path',
+                            'regex' => '/image(?<path>\/.*)',
                             'defaults' => array(
-                                'controller' => 'File',
-                                'action'     => 'index',
+                                'controller' => 'file',
+                                'action' => 'image',
                             ),
-                            'constraints' => array(
-                                'path' => '(.)+'
-                            ),
-                        )
-                        */
+                            'spec' => '/path%path%'
+                        ),
                     ),
                     'upload' => array(
                         'type' => 'segment',
