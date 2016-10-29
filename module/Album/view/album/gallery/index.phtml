@@ -12,12 +12,9 @@ $this->headTitle($title);
      <th>&nbsp;</th>
      <th>&nbsp;</th>
  </tr>
- <?php
-
-//    foreach ($albums as $album) :
-?>
+ <?php foreach ($albums as $album) : ?>
  <tr>
-     <td><?php echo $data['year']; ?></td>
+     <td><?php echo "" ?></td>
      <td></td>
      <td></td>
      <td></td>
@@ -31,7 +28,5 @@ $this->headTitle($title);
          <a href="<?php echo $this->url('gallery/small', array('id' => $album->id));?>"><butti>Ansehen</butti></a>
      </td>
  </tr>
- <?php
-//    endforeach;
-?>
+ <?php endforeach; ?>
  </table>
