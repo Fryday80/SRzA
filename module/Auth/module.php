@@ -27,6 +27,10 @@ use Auth\Model\AuthStorage;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
 {
+    private $whitelist = array(
+        'Auth\Controller\Auth-login',
+        'Auth\Controller\Auth-logout'
+    );
 
     public function onBootstrap(MvcEvent $e)
     {
@@ -38,7 +42,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
             $this,
             'boforeDispatch'
         ), 100);
-        
+
+        $eventManager->attach('dispatch', array($this, 'checkLogin'));
+
         // $eventManager->attachAggregate($e->getApplication()
         // ->getServiceManager()
         // ->get('Auth/Listener/AclListener'));
@@ -124,13 +130,31 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         );
     }
 
+    public function checkLogin($e)
+    {
+        return;
+        $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
+        $target             = $e->getTarget();
+        $match              = $e->getRouteMatch();
+        $controller         = $match->getParam('controller');
+        $action             = $match->getParam('action');
+        $requestedResourse  = $controller . "-" . $action;
+
+        if( !in_array($requestedResourse, $this->whitelist)){
+            var_dump($accessService->allowed($controller, $action));
+            if( !$accessService->allowed($controller, $action) ){
+                return $target->redirect()->toUrl('/login');
+            }
+        }
+
+    }
+
+    /**
+     * deprecated
+     */
     public function boforeDispatch(MvcEvent $event)
     {
         return;
-        $whiteList = array(
-            'Auth\Controller\Auth-login',
-            'Auth\Controller\Auth-logout'
-        );
         
         $response = $event->getResponse();
         $controller = $event->getRouteMatch()->getParam('controller');
@@ -138,15 +162,26 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $requestedResourse = $controller . "-" . $action;
         $serviceManager = $event->getApplication()->getServiceManager();
         $accessService = $serviceManager->get('AccessService');
-
+        $request = $event->getRequest();
+        $target = $event->getTarget();
         if (! in_array($requestedResourse, $whiteList) || $requestedResourse != 'Auth\Controller\Success-index') {
             $status = $accessService->allowed($controller, $action);
             if (! $status) {
+                //@todo add after login redirect
+                $requestedUrl = "";
+                if ($request->isPost()) {
+                    //  redirect 2 HTTP_REFERER
+                    $requestedUrl = $request->getHeader('referer')->getUri();
+                } else {
+                    //  redirect to requestet url
+                    $requestedUrl = $request->getRequestUri();
+                }
                 $url = '/login';
-                $response->setHeaders($response->getHeaders()
-                    ->addHeaderLine('Location', $url));
-                $response->setStatusCode(302);
-                $response->sendHeaders();
+               // $response->setHeaders($response->getHeaders()
+               //     ->addHeaderLine('Location', $url));
+               // $response->setStatusCode(302);
+               // $response->sendHeaders();
+                return $target->redirect()->toUrl('/login');
             }
         }
     }

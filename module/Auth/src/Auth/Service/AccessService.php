@@ -22,6 +22,16 @@ class AccessService {
         AbstractHelper::setDefaultRole($this->role);
     }
     function allowed($resoure, $permission) {
+        //print("<br>");
+        //print($this->role);
+        //print("<br>");
+        //print($resoure);
+        //print("<br>");
+        //print($permission);
+        //die;
         return $this->acl->isAccessAllowed($this->role, $resoure, $permission);
+    }
+    function hasIdentity() {
+        return $this->authService->hasIdentity();
     }
 }
