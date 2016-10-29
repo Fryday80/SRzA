@@ -43,31 +43,7 @@ class MediaService {
     }
 
     /**
-     * returns a multidimensional array with folders
-     */
-    function getAllFolders() {
-        return array(
-            'name',
-            'path',
-            'folders' => array(
-                'name',
-                'path',
-                'folders' => array())
-        );
-    }
-    /**
-     * @param {string} $path relative path to the data folder
-     */
-    function getFolder($path) {
-        //path exists
-        //load folder.perm
-        //check permission   permission template = recource is media  privileg is /path/to/folder
-        //if no permission ?? redirect to login ?? or return false
-        //return array with file paths'
-    }
-
-    /**
-     * @param {string} $albumName or better the folder name where the images in
+     * @param {string} $albumName or better the folder name where the images life in
      * @return {array} array with all images and there paths'
      */
     function getAlbumFiles($albumName) {
@@ -79,19 +55,16 @@ class MediaService {
             foreach ($dir as $key => $value) {
                 if ($value == '.' || $value == '..') continue;
                 $relPath = str_replace($this->dataPath, '', $albumPath);
+                $relPath = str_replace("\\", "/", $relPath);
+                $fileInfo = pathinfo($relPath.'/'.$value);
                 if ($relPath == '') $relPath = '/';
                 $type = (is_dir($albumPath.'\\'.$value))? 'folder': 'file';
-                array_push($result, array(
-                    'name' => $value,
-                    'path' => $relPath,
-                    'fullPath' => $albumPath.'\\'.$value,
-                    'type' => $type
-                ));
+                $fileInfo['url'] = '/media/image'.$relPath.'/'.$value;
+                $fileInfo['fullPath'] = $albumPath.'\\'.$value;
+
+                array_push($result, $fileInfo);
             }
-            print('<pre>');
-            var_dump($result);
-            print('<pre>');
-            die;
+            return $result;
         }
         //check if album exists
         //read files
@@ -120,4 +93,28 @@ class MediaService {
         }
         return $result;
     }
+    /**
+     * returns a multidimensional array with folders
+     */
+    function getAllFolders() {
+        return array(
+            'name',
+            'path',
+            'folders' => array(
+                'name',
+                'path',
+                'folders' => array())
+        );
+    }
+    /**
+     * @param {string} $path relative path to the data folder
+     */
+    function getFolder($path) {
+        //path exists
+        //load folder.perm
+        //check permission   permission template = recource is media  privileg is /path/to/folder
+        //if no permission ?? redirect to login ?? or return false
+        //return array with file paths'
+    }
+
 }
