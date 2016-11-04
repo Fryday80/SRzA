@@ -82,7 +82,7 @@ class GoogelCalendarView extends AbstractHelper
      * Agendastyle
      * @return string html for iframe
      */
-    public function createList () {
+    public function googleCaledarList () {
 
         $set = $this->getSettings("list");
         foreach ($set as $key => $value) {

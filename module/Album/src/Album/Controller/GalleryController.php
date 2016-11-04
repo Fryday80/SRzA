@@ -5,6 +5,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Album\Model\Album;
 use Album\Form\AlbumForm;
+use Google_Service_Calendar;
+use Google_Client;
+use Exception;
 
 class GalleryController extends AbstractActionController
 {
