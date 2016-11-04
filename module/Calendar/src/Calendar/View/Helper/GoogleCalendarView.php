@@ -5,7 +5,7 @@ use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
 use Auth\Model\AuthStorage;
 
-class CalendarView extends AbstractHelper
+class GoogelCalendarView extends AbstractHelper
 {
     /**
      *

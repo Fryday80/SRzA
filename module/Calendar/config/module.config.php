@@ -7,12 +7,12 @@ return array(
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'album' => __DIR__ . '/../view',
+            'calendar' => __DIR__ . '/../view',
         ),
     ),
      'router' => array(
          'routes' => array(
-             'album' => array(
+             'calendar' => array(
                  'type'    => 'segment',
                  'options' => array(
                      'route'    => '/album[/:action][/:id]',
