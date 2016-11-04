@@ -71,24 +71,18 @@
 
         <div class="rightcontainer">
             <div class="rightbarup">
-                <owntitel>~Login~</owntitel><div class="spacer_h"></div><br>
+
                 <?php
-                    $form = new Auth\Form\LoginForm('Login');
-                    $form->prepare();
-                    echo $this->form()->openTag($form);
-                    echo $this->formCollection($form);
-                    echo $this->form()->closeTag();
+                    echo $this->loginview();
                 ?>
             </div>
 
             <div class="rightbardown">
-                <a href="#"><owntitel><news>~Informationen~</news></owntitel></a><div class="spacer_h"></div><br>
-                <span><newstitel>24.12.0006</newstitel></span><br>
-                <span>Christi Geburt, Geschenke fürs Wichteln kaufen!!!</span><br><br>
-                <span><newstitel>15.03.44 BC 9:00</newstitel></span><br>
-                <span>Bei Brutus die geschliffenen Messer vorbeibringen. Pünktlich sein, er hat noch einen Termin bei seinem Vater!!</span><br><br>
-                <span><newstitel>333 BC</newstitel></span><br>
-                <span>Schlacht bei Issos, bitte Schwert nicht vergessen</span><br><br>
+                <owntitel>~Termine~</owntitel><div class="spacer_h"></div><br>
+                <iframe src="https://calendar.google.com/calendar/embed?showTitle=0&amp;showNav=0&amp;showDate=0&amp;showPrint=0&amp;showTabs=0&amp;showCalendars=0&amp;showTz=0&amp;mode=AGENDA&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;
+                src=6h1fqs4om97fvrt8upgrgga1ds%40group.calendar.google.com&amp;color=%23711616&amp;ctz=Europe%2FBerlin"
+                style="border-width:1px; border-radius: 10px" width="95%" height="400" frameborder="0" scrolling="no">
+                </iframe>
         </div>
 
         </div>

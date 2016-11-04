@@ -41,7 +41,18 @@ class MediaService {
         }
         return $errors;
     }
-
+    function getAlbumFolderNames() {
+        $albumPath = realpath($this->dataPath.'/gallery/');
+        $dir = scandir($albumPath);
+        $result = array();
+        foreach ($dir as $key => $value) {
+            if ($value == '.' || $value == '..') continue;
+            if( is_dir ($albumPath.$value) ) {
+                array_push($result, $value);
+            }
+        }
+        return $result;
+    }
     /**
      * @param {string} $albumName or better the folder name where the images life in
      * @return {array} array with all images and there paths'

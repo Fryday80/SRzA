@@ -22,6 +22,7 @@ use Zend\Stdlib\Hydrator\ObjectProperty;
 use Auth\Model\User;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Auth\View\Helper\UserInfo;
+use Auth\View\Helper\LoginView;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Auth\Model\AuthStorage;
 
@@ -75,6 +76,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
                     $userInfo = new UserInfo($storage);
                     return $userInfo;
+                },
+                'loginview' => function (ServiceLocatorInterface $serviceLocator) {
+                    $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
+                    $loginview = new LoginView($storage);
+                    return $loginview;
                 }
             )
         );
