@@ -1,28 +1,30 @@
 <?php
 namespace Calendar\Service;
 
+use Google_Service_Calendar;
+use Google_Client;
+
 class CalendarService {
+    private $APPLICATION_NAME;
+    private $CREDENTIALS_PATH;
+    private $CLIENT_SECRET_PATH;
+    private $SCOPES;
     private $gCalendarService;
 
     function __construct($serviceManager) {
-        define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
-        define('CREDENTIALS_PATH', '~/.credentials/calendar-php-quickstart.json');
-        define('CLIENT_SECRET_PATH', __DIR__ . '/../../../config/client_secret.json');
-// If modifying these scopes, delete your previously saved credentials
-// at ~/.credentials/calendar-php-quickstart.json
-        define('SCOPES', implode(' ', array(
+        $confPath = __DIR__.'/../../../config/';
+        $this->APPLICATION_NAME = 'SRA Events';
+        $this->CREDENTIALS_PATH = $confPath.'calendar-php-quickstart.json';
+        $this->CLIENT_SECRET_PATH = $confPath.'client_secret.json';
+        // If modifying these scopes, delete your previously saved credentials
+        $this->SCOPES = implode(' ', array(
                 Google_Service_Calendar::CALENDAR_READONLY)
-        ));
-        if (php_sapi_name() != 'cli') {
-            throw new Exception('This application must be run on the command line.');
-        }
-
+        );
         // Get the API client and construct the service object.
-        $client = getClient();
+        $client = $this->getClient();
         $this->gCalendarService = new Google_Service_Calendar($client);
     }
     public function getEventsFrom($start, $end) {
-
         // Print the next 10 events on the user's calendar.
         $calendarId = 'primary';
         $optParams = array(
@@ -41,13 +43,14 @@ class CalendarService {
      */
     function getClient() {
         $client = new Google_Client();
-        $client->setApplicationName(APPLICATION_NAME);
-        $client->setScopes(SCOPES);
-        $client->setAuthConfig(CLIENT_SECRET_PATH);
+        $client->setApplicationName($this->APPLICATION_NAME);
+        $client->setScopes($this->SCOPES);
+        $client->setAuthConfig($this->CLIENT_SECRET_PATH);
         $client->setAccessType('offline');
 
         // Load previously authorized credentials from a file.
-        $credentialsPath = expandHomeDirectory(CREDENTIALS_PATH);
+        $credentialsPath = $this->expandHomeDirectory($this->CREDENTIALS_PATH);
+
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
         } else {
@@ -84,9 +87,13 @@ class CalendarService {
      */
     function expandHomeDirectory($path) {
         $homeDirectory = getenv('HOME');
+        print($homeDirectory);
         if (empty($homeDirectory)) {
             $homeDirectory = getenv('HOMEDRIVE') . getenv('HOMEPATH');
         }
+        print('<br>');
+        print($homeDirectory);
+        print('<br>');
         return str_replace('~', realpath($homeDirectory), $path);
     }
 }
