@@ -1,12 +1,9 @@
 <?php
-namespace Album;
+namespace Calendar;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Album\Model\Album;
-use Album\Model\AlbumTable;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\ResultSet\ResultSet;
+use Calendar\Service\CalendarService;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {

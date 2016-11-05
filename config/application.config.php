@@ -8,6 +8,7 @@ return array(
         'Media',
         'Nav',
         'Album',
+        'Calendar',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

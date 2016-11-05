@@ -1,108 +1,56 @@
 <?php
 namespace Calendar\Service;
 
+use Google_Service_Calendar;
+use Google_Client;
+
 class CalendarService {
-    private $calendar_service;
+    private $APPLICATION_NAME;
+    private $CREDENTIALS_PATH;
+    private $CLIENT_SECRET_PATH;
+    private $SCOPES;
+    private $gCalendarService;
 
     function __construct($serviceManager) {
-        define('APPLICATION_NAME', 'Google Calendar API PHP Quickstart');
-        define('CREDENTIALS_PATH', '~/.credentials/calendar-php-quickstart.json');
-        define('CLIENT_SECRET_PATH', __DIR__ . '/../../../config/client_secret.json');
-
+        $confPath = __DIR__.'/../../../config/';
+        $this->APPLICATION_NAME = 'SRA Events';
+        $this->CREDENTIALS_PATH = $confPath.'calendar-php-quickstart.json';
+        $this->CLIENT_SECRET_PATH = $confPath.'client_secret.json';
+        // If modifying these scopes, delete your previously saved credentials
+        $this->SCOPES = implode(' ', array(
+                Google_Service_Calendar::CALENDAR_READONLY)
+        );
         // Get the API client and construct the service object.
         $client = $this->getClient();
+        $this->gCalendarService = new Google_Service_Calendar($client);
     }
-
-    public function getEventsFrom($start = NULL, $end = NULL) {
-        if ($start !== NULL || $end !== Null) {
-            $dates = $this->fix_up_date($start, $end);
-            $start = $dates['date1'];
-            $end = $dates['date2'];
-        }
-
+    public function getEventsFrom($start, $end) {
         // Print the next 10 events on the user's calendar.
         $calendarId = 'primary';
         $optParams = array(
             'maxResults' => 10,
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
-            'timeMin' => $start,
-            'timeMax' => $end
+            'timeMin' => date('c'),
         );
-        $results = $this->calendar_service->events->listEvents($calendarId, $optParams);
+        $results = $this->gCalendarService->events->listEvents($calendarId, $optParams);
         return $results;
-    }
-
-    private function fix_up_date ($date1 = NULL, $date2 = NULL){
-        if ($date1 == NULL) {
-            $date1 = date('c');
-        } else {
-            //checkdate ?? $date1
-        }
-        if ($date2 == NULL) {
-            $date2 = "9999-02-12T15:19:21+00:00";
-        } else {
-            //checkdate $date2
-        }
-        return $dates = array (
-                            'date1' = $date1,
-                            'date2' = $date2
-                        );
     }
 
     /**
      * Returns an authorized API client.
      * @return Google_Client the authorized client object
      */
-    private function getClient() {
-        session_start();
-
+    function getClient() {
         $client = new Google_Client();
-        $client->setAuthConfig('client_secrets.json');
-        $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-        $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php');
-
-        if (isset($_SESSION['access_token']) && $_SESSION['access_token']) {
-            $client->setAccessToken($_SESSION['access_token']);
-            $this->calendar_service = new Google_Service_Calendar($client);
-        } else {
-            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php';
-            header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
-        }
-        ////???????????
-        if (! isset($_GET['code'])) {
-            $auth_url = $client->createAuthUrl();
-            header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
-        } else {
-            $client->authenticate($_GET['code']);
-            $_SESSION['access_token'] = $client->getAccessToken();
-            $redirect_uri = 'http://' . $_SERVER['HTTP_HOST'] . '/';
-            header('Location: ' . filter_var($redirect_uri, FILTER_SANITIZE_URL));
-        }
-
-        return $client;
-
-        /*
-        $client = new Google_Client();
-        $client->setAuthConfig(CLIENT_SECRET_PATH);
-        $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
-        $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/oauth2callback.php');
-
-        /*                        $client = new Google_Client();
-                                $client->setApplicationName(APPLICATION_NAME);
-                                $client->setScopes(SCOPES);
-                                $client->setAuthConfig(CLIENT_SECRET_PATH);
-        //                        $client->setAccessType('offline');
-
-        $auth_url = $client->createAuthUrl();
-        header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
-
-        $client->authenticate($_GET['code']);
-
-        //          $access_token = $client->getAccessToken();
+        $client->setApplicationName($this->APPLICATION_NAME);
+        $client->setScopes($this->SCOPES);
+        $client->setAuthConfig($this->CLIENT_SECRET_PATH);
+        $client->setAccessType('offline');
 
         // Load previously authorized credentials from a file.
-        $credentialsPath = $this->expandHomeDirectory(CREDENTIALS_PATH);
+        $credentialsPath = $this->expandHomeDirectory($this->CREDENTIALS_PATH);
+
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
         } else {
@@ -129,7 +77,7 @@ class CalendarService {
             $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
             file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
         }
-        return $client;   *//
+        return $client;
     }
 
     /**
@@ -139,9 +87,13 @@ class CalendarService {
      */
     function expandHomeDirectory($path) {
         $homeDirectory = getenv('HOME');
+        print($homeDirectory);
         if (empty($homeDirectory)) {
             $homeDirectory = getenv('HOMEDRIVE') . getenv('HOMEPATH');
         }
+        print('<br>');
+        print($homeDirectory);
+        print('<br>');
         return str_replace('~', realpath($homeDirectory), $path);
     }
 }
