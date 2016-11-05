@@ -5,7 +5,7 @@ use Calendar\Service\CalendarService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class AlbumController extends AbstractActionController
+class CalendarController extends AbstractActionController
 {
 
     protected $albumTable;
@@ -27,8 +27,8 @@ class AlbumController extends AbstractActionController
                 printf("%s (%s)\n", $event->getSummary(), $start);
             }
         }
-        return new ViewModel(array(
-            'albums' => $this->getAlbumTable()->fetchAll()
-        ));
+        //return new ViewModel(array(
+        //    'albums' => $this->getAlbumTable()->fetchAll()
+        //));
     }
 }
