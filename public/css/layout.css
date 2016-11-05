@@ -84,29 +84,44 @@ input {
     position: relative;
     width: 100%;
 }
-#headdeko {
+.headdeko {
+    width: 180px;
+    z-index: 100;
+    margin-top: -70px;
+    margin-left: auto;
+    margin-right: auto;
+}
+/* #headdeko {
     position: relative;
     float:left;
     width: 15%;
     height: 110px;
     background-image: none;
     z-index: 100;
-}
-#headdeko>img {
-    margin-left: auto;
-    height: 170px;
-    margin-top: -10px;
-    margin-left: 5px;
-    z-index: 100;
-}
+} */
+
 #head {
     position: relative;
     float: right;
-    width: 85%;
+   /* width: 85%;*/
     text-align: center;
+    width: 100%;
     height: 90px;  /*height + padding = height of div*/
     padding-top: 20px;
 }
+
+.leftHead {
+    float: left;
+    text-align: right;
+    width: calc(100%-90px);
+}
+
+.rightHead {
+    float: right;
+    text-align: left;
+    width: calc(100%-90px);
+}
+
 #headlinks {
     clear:both;
     position: relative;
@@ -240,55 +255,24 @@ newstitel {
 }
 
 
-/* ----------------- NoScript desing -------------------------------- */
-
-@keyframes nojs {
-0%    {transform:rotate(0deg);    top: 200px; left:  30px; right:   30px; }
-25%   {transform:rotate(20deg);   top: 150px; left:  30px; right:   30px; }
-50%   {transform:rotate(0deg);    top: 350px; left:  50px; right:   10px; background-color: rgb(67, 12, 12); }
-60%   {transform:rotate(0deg);    top: 450px; left: 150px; right: -120px; }
-70%   {transform:rotate(0deg);    top: 150px; left: 250px; right: -220px; }
-100%  {transform:rotate(-360deg); top: 200px; left:  30px; right:   30px; background-color: black; }
-}
-
-
-noscript>div {
-    z-index: 20;
-    position:absolute;
-    top: 200px;
-    left: 30px;
-    right:30px;
-    padding: auto;
-    padding-left: 20px;
-    padding-right: 20px;
-    min-height: 200px;
-    background-color: black;
-    border-radius: 20px;
-    text-align: center;
-    animation-name: nojs;
-    animation-duration: 8s;
-}
-noscript>div>ownhead {
-    color: white;
-    font-size: 100px;
-}
 /* ----------------- spielerei -------------------------------- */
 @keyframes rotate_sign {
-      0% { height: 170px; }
-     20% { height: 200px; transform:rotate(  0deg); }
-     40% { height: 200px; transform:rotate(-30deg); }
-     60% { height: 200px; transform:rotate( 30deg); }
-     80% { height: 200px; transform:rotate(  0deg); }
-    100% { height: 170px; }
+    0%      { }
+    20%     { transform:rotate(  0deg); }
+    40%     { transform:rotate(-30deg); }
+    60%     { transform:rotate( 30deg); }
+    80%     { transform:rotate(  0deg); }
+100%      }
 }
 
 #headdeko>img:hover {
+
     margin-left: auto;
     height: 170px;
     margin-top: -10px;
     margin-left: 5px;
     z-index: 100;
+
     animation-name: rotate_sign;
     animation-duration: 3s;
     animation-direction: alternate;
-}

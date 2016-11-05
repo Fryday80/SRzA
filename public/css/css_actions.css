@@ -1,0 +1,22 @@
+/* ----------------- spielerei -------------------------------- */
+@keyframes rotate_sign {
+    0%      { }
+    20%     { transform:rotate(  0deg); }
+    40%     { transform:rotate(-30deg); }
+    60%     { transform:rotate( 30deg); }
+    80%     { transform:rotate(  0deg); }
+    100%      }
+}
+
+#headdeko>img:hover {
+
+    margin-left: auto;
+    height: 170px;
+    margin-top: -10px;
+    margin-left: 5px;
+    z-index: 100;
+
+    animation-name: rotate_sign;
+    animation-duration: 3s;
+    animation-direction: alternate;
+}

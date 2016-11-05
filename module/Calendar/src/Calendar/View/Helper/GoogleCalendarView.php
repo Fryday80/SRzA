@@ -12,15 +12,22 @@ class GoogelCalendarView extends AbstractHelper
      * @var AuthStorage
      */
     protected $storage;
+    public $events;
 
     public function __construct(AuthStorage $storage) {
         $this->storage = $storage;
+        $this->events = $this->getServiceLocator()->get('CalendarService');
         return $this;
     }
     public function __invoke()
     {
 
     }
+
+    public function listEvents($start=NULL, $end =NULL) {
+        echo echo json_encode($this->events->getEventsFrom($start, $end));
+    }
+
 
     /**
      * @param string $kind as "list" or "calendar"
