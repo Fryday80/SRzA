@@ -39,7 +39,7 @@ Class GalleryDBService
         $db_dirs = $this->read_db();
         $changes = $this->compare($directorys, $db_dirs);
         $new    = $changes['new'];
-        $gone   = $changes['gone']
+        $gone   = $changes['gone'];
 
         if (!empty($new))
         {
@@ -79,7 +79,7 @@ Class GalleryDBService
         $new_dirs = array();
         foreach ($directories as $local_dir)
         {
-            if (in_array($local_dir, $db_results)
+            if (in_array($local_dir, $db_results))
             {
                 array_push($this->matched, $local_dir);
             }
