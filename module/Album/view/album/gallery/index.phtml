@@ -1,6 +1,7 @@
 <?php
 $title = 'Gallerie ';
 $this->headTitle($title);
+var_dump($albums);
 ?>
 
 <table class="table">
@@ -15,12 +16,11 @@ $this->headTitle($title);
  <?php foreach ($albums as $album) : ?>
  <tr>
      <td><?php echo "" ?></td>
-     <td></td>
+     <td><?php echo $album ?></td>
      <td></td>
      <td></td>
      <td><img class = "preview_gallery" src="/data/gallery/2016/t1.jpg"></td>
      <td>
-         <a href="<?php echo $this->url('gallery/fullscreen', array('id' => $album->id)); ?>"><butti>Vollbild</butti></a>
          <a href="<?php echo $this->url('gallery/small', array('id' => $album->id));?>"><butti>Ansehen</butti></a>
      </td>
  </tr>

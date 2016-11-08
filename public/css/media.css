@@ -3,14 +3,31 @@
 @media only screen and (max-width: 1200px ) {
 /* ----------------------------------- */
     #head {
-        height: 85px;
+/*        height: 85px;*/
+        height: 100px;
     }
 */
     ownhead {
-    font-size: 60px;
+        font-size: 60px;
     }
+    .headdeko {
+        float:left;
+        width: 15%;
+        margin-top: 5px;
+    }
+    .leftHead {
+        float: right;
+        width: 85%;
+        text-align: center;
+    }
+
+    .rightHead {
+        float: right;
+        width: 85%;
+        text-align: center;
+    }   
     #headlinks {
-    font-size: 14px;
+        font-size: 14px;
     }
     #content {
         width: 73%;
@@ -24,7 +41,7 @@
     }
 
     .M_S_br {
-    display: block;
+        display: block;
     }
     .M_br {
         display: block;
@@ -44,9 +61,20 @@
         height: 60px;
         text-align: left;
     }
-    #headdeko {
-        display: none;
+    .headdeko {
+	display: none;
+}
+    .leftHead {
+        float: right;
+        width: 100%;
+        text-align: center;
     }
+
+    .rightHead {
+        float: right;
+        width: 100%;
+        text-align: center;
+    }   
 
     #content {
         margin-left: 50px;
@@ -67,7 +95,7 @@
         float: left;
     }
     ownhead {
-        font-size: 35px;
+        font-size: 40px;
     }
     owntitel,
     news {

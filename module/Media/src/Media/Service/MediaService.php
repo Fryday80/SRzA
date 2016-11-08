@@ -47,7 +47,9 @@ class MediaService {
         $result = array();
         foreach ($dir as $key => $value) {
             if ($value == '.' || $value == '..') continue;
-            if( is_dir ($albumPath.$value) ) {
+            print($albumPath.'\ '.$value);
+            print('<br>');
+            if( is_dir ($albumPath.'/'.$value) ) {
                 array_push($result, $value);
             }
         }

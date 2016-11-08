@@ -8,7 +8,7 @@
     100%      }
 }
 
-#headdeko>img:hover {
+img.headdeko:hover {
 
     margin-left: auto;
     height: 170px;
