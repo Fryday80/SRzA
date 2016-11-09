@@ -9,7 +9,7 @@
 /**
  * Class GalleryDBService
  *
- * Manages the db - folder mapping
+ * Manages the db <-> folder mapping
  * for additional (db) information
  */
 Class GalleryDBService
@@ -20,7 +20,7 @@ Class GalleryDBService
     protected $refactored_db_results = array();
     protected $mapped = array ();
 
-    protected $error_occurred_in = 'error occured ind GalleryDBService';
+    protected $error_occurred_in = 'error occurred ind GalleryDBService';
 
 
     /**
