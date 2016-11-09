@@ -12,12 +12,11 @@
  * Manages the db <-> folder mapping
  * for additional (db) information
  */
-Class GalleryDBService
+Class GalleryService
 {
     protected $matched = array();
     protected $directories = array();
     protected $db_dirs = array();
-    protected $refactored_db_results = array();
     protected $mapped = array ();
 
     protected $error_occurred_in = 'error occurred ind GalleryDBService';
@@ -82,13 +81,12 @@ Class GalleryDBService
     {
         foreach ($this->matched as $foldername)
         {
-            $this->refactor_db_results();
-            $id = $this->refactored_db_results['folder']["$foldername"];
+            $id = $this->db_dirs['folder']["$foldername"];
             $this->mapped = array (
                 $id => array (
                     'id'=> $id,
-                    'folder' => $this->refactored_db_results['id']["$id"]['folder'],
-                    'vis' => $this->refactored_db_results['id']["$id"]['vis']
+                    'folder' => $this->db_dirs['id']["$id"]['folder'],
+                    'vis' => $this->db_dirs['id']["$id"]['vis']
                 )
             );
         }
@@ -148,7 +146,12 @@ Class GalleryDBService
         return $result;
     }
 
-    /* ---------db functions ---------*/ // Auslagern in eigenen service??
+    /* ---------db functions ---------*/ //
+
+    private function get_db_connection() {
+        $t = $this->getServiceLocator()->get('dbSevice');  //richtigen service eintragen
+        return $connection;
+    }
 
     /**
      * reads out db
@@ -156,7 +159,25 @@ Class GalleryDBService
      */
     private function read_db()
     {
-        $this->db_dirs = '$results of db "link tab" read';
+        $conn = $this->get_db_connection();
+        $sql = 'SELECT * FROM gallery_link';
+
+        foreach ($conn->query($sql) as $row) {
+            $id =  $row['id'];
+            $folder =  $row['folder'];
+            $vis =  $row['vis'];
+            $this->db_dirs = array (
+                'id'    => array (
+                    $id => array (
+                        'id'        => $id,
+                        'folder'    => $folder,
+                        'vis'       => $vis
+                    )),
+                'folder' => array(
+                    $folder => $id
+                ));
+
+        }
     }
 
     /**
@@ -181,27 +202,5 @@ Class GalleryDBService
         foreach ($gone_folders as $foldernames) {
             //DELETE WHERE 'foldername' = $foldername
         }
-    }
-
-    /**
-     * refactors the db result array
-     *
-     * @param $results pure db result array
-     *
-     * sets $this->refactored_db_results
-     */
-    private function refactor_db_results ($results)
-    {
-        //$results to array; ///  vars anpassen!!!!!!
-        $this->refactored_db_results = array (
-                                        'id'    => array (
-                                                            $this->db_dirs['id'] => array (
-                                                                            'id'        => $this->db_dirs['id'],
-                                                                            'folder'    => $this->db_dirs['folder'],
-                                                                            'vis'       => $this->db_dirs['vis']
-                                                        )),
-                                        'folder' => array(
-                                                        $this->db_dirs['folder'] => $this->db_dirs['id']
-                                        ));
     }
 }
