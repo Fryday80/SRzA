@@ -82,6 +82,7 @@ Class GalleryDBService
     {
         foreach ($this->matched as $foldername)
         {
+            $this->refactor_db_results();
             $id = $this->refactored_db_results['folder']["$foldername"];
             $this->mapped = array (
                 $id => array (
@@ -194,13 +195,13 @@ Class GalleryDBService
         //$results to array; ///  vars anpassen!!!!!!
         $this->refactored_db_results = array (
                                         'id'    => array (
-                                                            $id => array (
-                                                                            'id'        => 'gallery-id'.$id,
-                                                                            'folder'    => 'foldername',
-                                                                            'vis'       => 'visibility'
+                                                            $this->db_dirs['id'] => array (
+                                                                            'id'        => $this->db_dirs['id'],
+                                                                            'folder'    => $this->db_dirs['folder'],
+                                                                            'vis'       => $this->db_dirs['vis']
                                                         )),
                                         'folder' => array(
-                                                            $foldername => $id
+                                                        $this->db_dirs['folder'] => $this->db_dirs['id']
                                         ));
     }
 }
