@@ -24,6 +24,8 @@ class GalleryController extends AbstractActionController
     public function indexAction()
     {
         $t = $this->getServiceLocator()->get('MediaService');
+        $g = $this->getServiceLocator()->get('GalleryService');
+
         $albums = $t->getAlbumFolderNames();
         $viewModel = new ViewModel(array(
             'albums' => $albums

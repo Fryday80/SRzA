@@ -19,6 +19,13 @@ class AlbumTable
         return $resultSet;
     }
 
+    public function fetchAllGalleryFolder ()
+    {
+        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle Gallery Links oä.
+        return $resultSet;
+    }
+
+
     public function getAlbum($id)
     {
         $id  = (int) $id;

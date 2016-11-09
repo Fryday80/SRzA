@@ -7,6 +7,8 @@ use Album\Model\Album;
 use Album\Model\AlbumTable;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
+use Album\Service\GalleryService;
+use Album\Service\ImageService;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -42,6 +44,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Album());
                     return new TableGateway('album', $dbAdapter, null, $resultSetPrototype);
+                },
+                'AlbumImageTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Album());
+                    return new TableGateway('album_Images', $dbAdapter, null, $resultSetPrototype);
+                },
+                'GalleryService' => function ($sm) {
+                    return new GalleryService($sm);
                 },
             ),
         );
