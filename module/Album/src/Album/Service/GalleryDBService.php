@@ -14,18 +14,33 @@
  */
 Class GalleryDBService
 {
-    protected $new_dirs = array();
     protected $matched = array();
+    protected $directories = array();
+    protected $db_dirs = array();
+    protected $refactored_db_results = array();
+    protected $mapped = array ();
+
+    protected $error_occurred_in = 'error occured ind GalleryDBService';
 
 
     /**
      * Mapps folder names on db entrys
      *
-     * @return array
+     * checks if db is up to date
+     *
+     * @return array of matched db-folder links
      */
-    public function gallery_db_mapping ()
+    public function get_gallery_db_mapping ()
     {
-        return $this->refactor_db_results($this->read_db());
+        $changes = $this->getTheParts();        // check if all is up-to-date
+        if (!empty($changes))                   // fallback if not up-to-date
+        {
+            $this->gallery_db_mapping_update();
+        }
+
+        $this->mapping();
+        return $this->mapped;
+
     }
 
     /**
@@ -33,42 +48,72 @@ Class GalleryDBService
      */
     public function gallery_db_mapping_update ()
     {
-        $t = $this->getServiceLocator()->get('MediaService');
-        $directorys = $t->getAlbumFolderNames();
-
-        $db_dirs = $this->read_db();
-        $changes = $this->compare($directorys, $db_dirs);
+        $changes = $this->getTheParts();
         $new    = $changes['new'];
         $gone   = $changes['gone'];
 
         if (!empty($new))
         {
             $this->dbupdate ($new);
-            $new_dir = $this->compare($directorys, $db_dirs);
-            if ($new_dir !=='')
+            $changes = $this->compare($this->directories, $this->db_dirs);
+            if ($changes['new'] !=='')
             {
-                echo ('here is something wrong with the db in the GalleryDBService!!');
+                echo ("$this->error_occurred_in gallery_db_mapping_update write");
             }
         }
 
         if (!empty($gone))
         {
             $this->deleteGoneItems($gone);
+            $changes = $this->compare($this->directories, $this->db_dirs);
+            if ($changes['gone'] !=='')
+            {
+                echo ("$this->error_occurred_in gallery_db_mapping_update delete");
+            }
         }
     }
 
     /**
-     * reads out db
+     * mapping function
      *
-     * @return array
+     * sets $this->mapped
      */
-    private function read_db()
+    private function mapping ()
     {
-        $db = 'db "link tab" auslesen';
-        return $db;
+        foreach ($this->matched as $foldername)
+        {
+            $id = $this->refactored_db_results['folder']["$foldername"];
+            $this->mapped = array (
+                $id => array (
+                    'id'=> $id,
+                    'folder' => $this->refactored_db_results['id']["$id"]['folder'],
+                    'vis' => $this->refactored_db_results['id']["$id"]['vis']
+                )
+            );
+        }
+    }
+
+
+    /**
+     * get the parts needed for comparison and update and finally $this->matched
+     *
+     * sets $this->directories and $this->db_dirs
+     *
+     * @return mixed array with keys "new" and "gone"
+     */
+    private function getTheParts ()
+    {
+        $t = $this->getServiceLocator()->get('MediaService');
+        $this->directories = $t->getAlbumFolderNames();
+
+        $this->read_db();
+        $changes = $this->compare($this->directories, $this->db_dirs);
+        return $changes;
     }
 
     /**
+     * compares local folders with db entries
+     *
      * @param $directories
      * @param $db_results
      * @return mixed array with keys "new" and "gone"
@@ -77,6 +122,7 @@ Class GalleryDBService
     {
         $gone_folders = array();
         $new_dirs = array();
+
         foreach ($directories as $local_dir)
         {
             if (in_array($local_dir, $db_results))
@@ -101,6 +147,17 @@ Class GalleryDBService
         return $result;
     }
 
+    /* ---------db functions ---------*/ // Auslagern in eigenen service??
+
+    /**
+     * reads out db
+     * into $this->db_dirs
+     */
+    private function read_db()
+    {
+        $this->db_dirs = '$results of db "link tab" read';
+    }
+
     /**
      * db update action
      *
@@ -108,7 +165,9 @@ Class GalleryDBService
      */
     private function dbupdate ($dir_array_new)
     {
-        // write $dir_array to db
+        foreach ($dir_array_new as $foldername) {
+            // INSERT 'foldername' = $foldername, 'vis' =  1
+        }
     }
 
     /**
@@ -118,7 +177,9 @@ Class GalleryDBService
      */
     private function deleteGoneItems ($gone_folders)
     {
-        // delete $gone_folders from db
+        foreach ($gone_folders as $foldernames) {
+            //DELETE WHERE 'foldername' = $foldername
+        }
     }
 
     /**
@@ -126,12 +187,20 @@ Class GalleryDBService
      *
      * @param $results pure db result array
      *
-     * @return mixed refactored array
+     * sets $this->refactored_db_results
      */
     private function refactor_db_results ($results)
     {
-        //$results to array;
-        $refactored_db_results = $results;
-        return $refactored_db_results;
+        //$results to array; ///  vars anpassen!!!!!!
+        $this->refactored_db_results = array (
+                                        'id'    => array (
+                                                            $id => array (
+                                                                            'id'        => 'gallery-id'.$id,
+                                                                            'folder'    => 'foldername',
+                                                                            'vis'       => 'visibility'
+                                                        )),
+                                        'folder' => array(
+                                                            $foldername => $id
+                                        ));
     }
 }
