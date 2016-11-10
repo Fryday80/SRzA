@@ -13,8 +13,9 @@ $this->headTitle($title);
  </tr>
  <?php foreach ($albums as $album) :
      $pre_path = '/media/image/gallery/';
-     if ($album['avisibility'] !== 1) {continue;}
-     $prev_src = ($album['preview_pic'] == NULL) ? $pre_path.$album['folder'].'/'.$album['preview_pic'] : $pre_path.'default/default.png';
+     if ($album['visibility'] !== 1) {continue;}
+     $prev_src = 
+         ($album['preview_pic'] == NULL) ? $pre_path.'default/default.png' : $pre_path.$album['folder'].'/'.$album['preview_pic']; 
  ?>
  <tr>
      <td><?php echo date ('Y', $album['timestamp']); ?></td>
@@ -22,7 +23,7 @@ $this->headTitle($title);
      <td><?php echo date ('d.m.Y', $album['timestamp']); ?></td>
      <td style="text-align: center"><img class = "preview_gallery" src="<?php echo $prev_src;?>"></td>
      <td>
-         <a href="<?php echo $this->url('gallery/small', array('id' => $album['aid']));?>"><butti>Ansehen</butti></a>
+         <a href="<?php echo $this->url('gallery/small', array('id' => $album['id']));?>"><butti>Ansehen</butti></a>
      </td>
  </tr>
  <?php endforeach; ?>

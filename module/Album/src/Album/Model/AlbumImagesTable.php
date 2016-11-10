@@ -33,7 +33,8 @@ class AlbumImagesTable extends AbstractTableGateway
     }
     public function removeByImageID($id) {
         return $this->delete(array('image_id' => (int)$id));
-    }public function removeByAlbumID($id) {
+    }
+    public function removeByAlbumID($id) {
         return $this->delete(array('album_id' => (int)$id));
     }
 

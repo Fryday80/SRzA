@@ -53,11 +53,13 @@ Class GalleryService
     public function addImage($data) {}
     
     public function deleteWholeAlbum($id) {
-        //delete album
+        $this->deleteAllAlbumImages($id);
+        $this->albumsTable->remove($id);
     }
     
-    public function deleteImage($id) {
-        //delete from images
+    public function deleteImage($image_id) {
+        $this->imagesTable->remove($image_id);
+        $this->albumImagesTable->removeByImageID($image_id);
     }
     
     public function deleteAllAlbumImages($id) {
