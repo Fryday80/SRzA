@@ -23,14 +23,17 @@ class GalleryController extends AbstractActionController
 
     public function indexAction()
     {
+        //@todo code clean up
+        /*  
         $t = $this->getServiceLocator()->get('MediaService');
         $albums = $t->getAlbumFolderNames();
+        */
+        $g = $this->getServiceLocator()->get('GalleryService');
 
-        $g = $this->getServiceLocator()->get('GalleryTable');
-        $db_albums = $g->getAlbums();
-
+        $album = $g->deleteAllAlbumImages(1);
         $viewModel = new ViewModel(array(
-            'albums' => $db_albums
+            'album' => $album[0],
+            'images' => $album[1]
         ) );
         return $viewModel;
     }

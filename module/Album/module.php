@@ -3,13 +3,10 @@ namespace Album;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Album\Model\Album;
-use Album\Model\AlbumTable;
-use Zend\Db\TableGateway\TableGateway;
-use Zend\Db\ResultSet\ResultSet;
+use Album\Model\AlbumsTable;
+use Album\Model\AlbumImagesTable;
+use Album\Model\ImagesTable;
 use Album\Service\GalleryService;
-use Album\Service\ImageService;
-use Album\Model\GalleryTable;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -35,25 +32,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'Album\Model\AlbumTable' =>  function($sm) {
-                    $tableGateway = $sm->get('AlbumTableGateway');
-                    $table = new AlbumTable($tableGateway);
-                    return $table;
-                },
-                'AlbumTableGateway' => function ($sm) {
+                'Album\Model\AlbumsTable' =>  function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Album());
-                    return new TableGateway('album', $dbAdapter, null, $resultSetPrototype);
+                    return new AlbumsTable($dbAdapter);
                 },
-                'GalleryTable' =>  function($sm) {
-                    $tableGateway = $sm->get('GalleryTableGateway');
-                    $table = new AlbumTable($tableGateway);
-                    return $table;
+                'Album\Model\AlbumImagesTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    return new AlbumImagesTable($dbAdapter);
                 },
-                'GalleryTable' => function ($sm) {
-                    //ja kopier dir den RolePerm.... 
-                    return new GalleryTable($sm->get('Zend\Db\Adapter\Adapter'));
+                'Album\Model\ImagesTable' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    return new ImagesTable($dbAdapter);
                 },
                 'GalleryService' => function ($sm) {
                     return new GalleryService($sm);

@@ -6,36 +6,50 @@ use Zend\Db\TableGateway\TableGateway;
 class AlbumTable
 {
     protected $tableGateway;
+    protected $galleryTable;
 
-    public function __construct(TableGateway $tableGateway)
+    public function __construct(TableGateway $tableGateway, $galleryTable)
     {
         $this->tableGateway = $tableGateway;
+        $this->galleryTable = $galleryTable;
     }
 
     public function fetchAll()
     {
-        //die hier
+        //@todo kann ich das hier nicht umleiten auf Gallery Table?
+        return $this->galleryTable->getAlbums();
+
+        /* ---alter code
         $resultSet = $this->tableGateway->select();
         return $resultSet;
+        */
     }
 
     public function getAlbum($id)
     {
         $id  = (int) $id;
+        //@todo kann ich das hier nicht umleiten auf Gallery Table?
+        return $this->galleryTable->getAlbumById($id);
+
+        /* ---alter code
         $rowset = $this->tableGateway->select(array('id' => $id));
         $row = $rowset->current();
         if (!$row) {
             throw new \Exception("Could not find row $id");
         }
         return $row;
+        */
     }
 
     public function saveAlbum(Album $album)
     {
         $data = array(
+            'aid',
+            'folder',
             'event' => $album->event,
             'timestamp'  => $album->timestamp,
-            'duration'  => $album->duration,
+            'preview_pic',
+            'avisibility'
         );
 
         $id = (int) $album->id;
@@ -53,17 +67,5 @@ class AlbumTable
     public function deleteAlbum($id)
     {
         $this->tableGateway->delete(array('id' => (int) $id));
-    }
-
-    public function fetchAllGalleryFolder ()
-    {
-        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle Galleries oä.
-        return $resultSet;
-    }
-
-    public function fetchAllImages ()
-    {
-        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle images oä.
-        return $resultSet;
     }
 }

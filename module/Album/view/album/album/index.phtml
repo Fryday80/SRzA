@@ -1,28 +1,36 @@
+
+
 <?php
 // module/Album/view/album/album/index.phtml:
 
 $title = 'Gallerie ';
 $this->headTitle($title);
+dump($albums);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
  <p>
      <a href="<?php echo $this->url('album/add');?>"><butti>Add new album</butti></a>
  </p>
- <table class="table">
+ <table class="table" style="width: 95%;">
  <tr>
-     <th>Event</th>     <?php //@todo sort by?>
-     <th>Datum</th>     <?php //@todo sort by?>
-     <th>Dauer</th>
+     <th style="text-align: left;">Event</th>     <?php //@todo sort by?>
+     <th style="text-align: right;">Datum</th>     <?php //@todo sort by?>
+     <th style="text-align: left;"></th>
+     <th style="text-align: left;">Sichtbar</th>
      <th>&nbsp;</th>
  </tr>
  <?php foreach ($albums as $album) : ?>
  <tr>
-     <td><?php echo $this->escapeHtml($album->event);?></td>
-     <td><?php echo $this->escapeHtml($album->date);?></td>
-     <td><?php echo $this->escapeHtml($album->duration);?> Tage</td>
+     <td style="text-align: left;"><?php echo $album['event'];?></td>
+     <td style="text-align: right;"><?php echo date ('d.m.', $album['timestamp']);?></td>
+     <td style="text-align: left;"><?php echo date ('Y', $album['timestamp']);?></td>
+     <th style="text-align: left;"><?php
+         if ($album['avisibility'] == 1){$visibility = 'Ja';}
+         else {$visibility = 'nein';}
+         echo $visibility;?></th>
      <td>
-         <a href="<?php echo $this->url('album/edit', array('id' => $album->id));?>"><butti>Edit</butti></a>
-         <a href="<?php echo $this->url('album/delete', array('id' => $album->id));?>"><butti>Delete</butti></a>
+         <a href="<?php echo $this->url('album/edit', array('id' => $album['aid']));?>"><butti>Edit</butti></a>
+         <a href="<?php echo $this->url('album/delete', array('id' => $album['aid']));?>"><butti>Delete</butti></a>
      </td>
  </tr>
  <?php endforeach; ?>

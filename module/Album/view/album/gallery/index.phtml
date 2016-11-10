@@ -5,24 +5,22 @@ $this->headTitle($title);
 
 <table class="table" style="width: 95%;">
  <tr>
-     <th style="width: 10%;text-align: left;">Jahr</th>
-     <th style="width: 25%;text-align: left;">Event</th>
-     <th style="width: 15%;text-align: left;">Datum</th>
-     <th style="width: 25%;text-align: left;">&nbsp;</th>
+     <th style="text-align: left;">Jahr</th>
+     <th style="text-align: left;">Event</th>
+     <th style="text-align: left;">Datum</th>
+     <th style="text-align: left;">&nbsp;</th>
      <th style="width: 25%;text-align: left;">&nbsp;</th>
  </tr>
  <?php foreach ($albums as $album) :
- if ($album['preview_pic'] !== NULL ) {
-     $preview_source = '/media/image/gallery/'.$album['folder'].'/'.$album['preview_pic'];
-} else {
-     $preview_source = '/media/image/gallery/default/default.png';
- }
-     ?>
+     $pre_path = '/media/image/gallery/';
+     if ($album['avisibility'] !== 1) {continue;}
+     $prev_src = ($album['preview_pic'] == NULL) ? $pre_path.$album['folder'].'/'.$album['preview_pic'] : $pre_path.'default/default.png';
+ ?>
  <tr>
      <td><?php echo date ('Y', $album['timestamp']); ?></td>
      <td><?php echo $album['event']; ?></td>
-     <td><?php echo date ('d.m', $album['timestamp']); ?></td>
-     <td style="text-align: center"><img class = "preview_gallery" src="<?php echo $preview_source;?>"></td>
+     <td><?php echo date ('d.m.Y', $album['timestamp']); ?></td>
+     <td style="text-align: center"><img class = "preview_gallery" src="<?php echo $prev_src;?>"></td>
      <td>
          <a href="<?php echo $this->url('gallery/small', array('id' => $album['aid']));?>"><butti>Ansehen</butti></a>
      </td>

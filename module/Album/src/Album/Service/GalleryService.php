@@ -1,11 +1,6 @@
 <?php
 namespace Album\Service;
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 08.11.2016
- * Time: 21:47
- */
+
 
 /**
  * Class GalleryService
@@ -15,6 +10,81 @@ namespace Album\Service;
  */
 Class GalleryService
 {
+    private $albumsTable;
+    private $albumImagesTable;
+    private $imagesTable;
+
+
+
+    function __construct($sm)
+    {
+        $this->albumsTable = $sm->get('Album\Model\AlbumsTable');
+        $this->albumImagesTable = $sm->get('Album\Model\AlbumImagesTable');
+        $this->imagesTable = $sm->get('Album\Model\ImagesTable');
+    }
+    public function getAllAlbums() {
+        return $this->albumsTable->fetchAllAlbums();
+    }
+
+    public function getAlbumByID($id) {
+        return $this->albumsTable->getById($id);
+    }
+
+    public function fetchWholeAlbumData($id) {
+        $albums = $this->albumsTable->getById($id);
+        $images = $this->imagesTable->getImagesByAlbumID($id);
+        return array($albums, $images);
+    }
+    public function getImageByID($id) {
+        return $this->imagesTable->getById($id);
+    }
+
+    public function updateAlbum($data) {
+        
+    }
+
+    public function updateImage($data) {}
+    
+    
+    public function addAlbum($data) {
+        
+    }
+    
+    public function addImage($data) {}
+    
+    public function deleteWholeAlbum($id) {
+        //delete album
+    }
+    
+    public function deleteImage($id) {
+        //delete from images
+    }
+    
+    public function deleteAllAlbumImages($id) {
+        $images = $this->imagesTable->getImagesByAlbumID($id);
+        foreach ($images as $image){
+            $this->imagesTable->remove ($image['id']);
+            $this->albumImagesTable->remove($id); // aber wie mach ich das??
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private $db;
     private $db_images;
 
@@ -23,8 +93,9 @@ Class GalleryService
     private $galleries = array ();
     private $images;
 
-    function __construct($sm)
+    function __construct2($sm)
     {
+
         $rootPath = getcwd();
         $this->dataPath = $rootPath.'\Data\gallery\\';
 
