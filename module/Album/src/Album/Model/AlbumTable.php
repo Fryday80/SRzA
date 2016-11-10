@@ -19,13 +19,6 @@ class AlbumTable
         return $resultSet;
     }
 
-    public function fetchAllGalleryFolder ()
-    {
-        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle Gallery Links oä.
-        return $resultSet;
-    }
-
-
     public function getAlbum($id)
     {
         $id  = (int) $id;
@@ -60,5 +53,17 @@ class AlbumTable
     public function deleteAlbum($id)
     {
         $this->tableGateway->delete(array('id' => (int) $id));
+    }
+
+    public function fetchAllGalleryFolder ()
+    {
+        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle Galleries oä.
+        return $resultSet;
+    }
+
+    public function fetchAllImages ()
+    {
+        $resultSet = $this->tableGateway->select(); //// noch anpassen auf Tabelle images oä.
+        return $resultSet;
     }
 }

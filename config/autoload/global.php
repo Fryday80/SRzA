@@ -14,7 +14,7 @@
 return array(
      'db' => array(
          'driver'         => 'Pdo',
-         'dsn'            => 'mysql:dbname=frytest;host=85.10.205.173:3306',
+         'dsn'            => 'mysql:dbname=frytest;host=85.10.205.173:3306',  //at https://db4free.net/
          'driver_options' => array(
              PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
          ),

@@ -24,11 +24,13 @@ class GalleryController extends AbstractActionController
     public function indexAction()
     {
         $t = $this->getServiceLocator()->get('MediaService');
-        $g = $this->getServiceLocator()->get('GalleryService');
-
         $albums = $t->getAlbumFolderNames();
+
+        $g = $this->getServiceLocator()->get('GalleryTable');
+        $db_albums = $g->getAlbums();
+
         $viewModel = new ViewModel(array(
-            'albums' => $albums
+            'albums' => $db_albums
         ) );
         return $viewModel;
     }
@@ -37,8 +39,13 @@ class GalleryController extends AbstractActionController
     {
         $t = $this->getServiceLocator()->get('MediaService');
         $images = $t->getAlbumFiles('2016');
+
+
+        $g = $this->getServiceLocator()->get('GalleryTable');
+        $test = $g->getImagesbyAlbumID(1);
+
         $viewModel = new ViewModel(array(
-            'images' => $images
+            'images' => $test
         ));
         $viewModel->setTemplate('Album/gallery/small.phtml');
         return $viewModel;

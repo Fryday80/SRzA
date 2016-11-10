@@ -9,6 +9,7 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\ResultSet\ResultSet;
 use Album\Service\GalleryService;
 use Album\Service\ImageService;
+use Album\Model\GalleryTable;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -45,11 +46,14 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $resultSetPrototype->setArrayObjectPrototype(new Album());
                     return new TableGateway('album', $dbAdapter, null, $resultSetPrototype);
                 },
-                'AlbumImageTableGateway' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Album());
-                    return new TableGateway('album_Images', $dbAdapter, null, $resultSetPrototype);
+                'GalleryTable' =>  function($sm) {
+                    $tableGateway = $sm->get('GalleryTableGateway');
+                    $table = new AlbumTable($tableGateway);
+                    return $table;
+                },
+                'GalleryTable' => function ($sm) {
+                    //ja kopier dir den RolePerm.... 
+                    return new GalleryTable($sm->get('Zend\Db\Adapter\Adapter'));
                 },
                 'GalleryService' => function ($sm) {
                     return new GalleryService($sm);
