@@ -62,9 +62,9 @@ Class GalleryService
     
     public function deleteAllAlbumImages($id) {
         $images = $this->imagesTable->getImagesByAlbumID($id);
+        $this->albumImagesTable->removeByAlbumID($id);
         foreach ($images as $image){
             $this->imagesTable->remove ($image['id']);
-            $this->albumImagesTable->remove($id); // aber wie mach ich das??
         }
     }
 
