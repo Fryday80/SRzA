@@ -10,7 +10,8 @@ class AccessService {
     protected $authService;
     protected $acl;
     protected $hasIdentity = false;
-    
+    protected $role;
+
     function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage) {
         $this->aclService = $aclService;
         $this->authService = $authService;
@@ -33,5 +34,11 @@ class AccessService {
     }
     function hasIdentity() {
         return $this->authService->hasIdentity();
+    }
+    function getAcl() {
+        return $this->acl;
+    }
+    function getRole() {
+        return $this->role;
     }
 }

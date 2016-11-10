@@ -8,23 +8,22 @@ use Auth\Model\ResourceTable;
 use Auth\Model\RolePermissionTable;
 use Auth\Model\UserRoleTable;
 use Auth\Service\AclService;
-use Auth\Utility\UserPassword;
+use Auth\Service\AccessService;
+use Auth\Model\User;
+use Auth\View\Helper\LoginView;
+use Auth\Model\AuthStorage;
+use Auth\View\Helper\UserInfo;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
-use Zend\Session\Container;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
-use Auth\Service\AccessService;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Stdlib\Hydrator\ObjectProperty;
-use Auth\Model\User;
 use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
-use Auth\View\Helper\UserInfo;
-use Auth\View\Helper\LoginView;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Auth\Model\AuthStorage;
+use Zend\View\Helper\Navigation\AbstractHelper;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
 {
@@ -45,10 +44,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         ), 100);
 
         $eventManager->attach('dispatch', array($this, 'checkLogin'));
-
-        // $eventManager->attachAggregate($e->getApplication()
-        // ->getServiceManager()
-        // ->get('Auth/Listener/AclListener'));
         return $this;
     }
 
@@ -138,7 +133,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
 
     public function checkLogin($e)
     {
-        return;
         $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
         $target             = $e->getTarget();
         $match              = $e->getRouteMatch();
@@ -147,48 +141,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $requestedResourse  = $controller . "-" . $action;
 
         if( !in_array($requestedResourse, $this->whitelist)){
-            var_dump($accessService->allowed($controller, $action));
             if( !$accessService->allowed($controller, $action) ){
                 return $target->redirect()->toUrl('/login');
             }
         }
-
-    }
-
-    /**
-     * deprecated
-     */
-    public function boforeDispatch(MvcEvent $event)
-    {
-        return;
-        
-        $response = $event->getResponse();
-        $controller = $event->getRouteMatch()->getParam('controller');
-        $action = $event->getRouteMatch()->getParam('action');
-        $requestedResourse = $controller . "-" . $action;
-        $serviceManager = $event->getApplication()->getServiceManager();
-        $accessService = $serviceManager->get('AccessService');
-        $request = $event->getRequest();
-        $target = $event->getTarget();
-        if (! in_array($requestedResourse, $whiteList) || $requestedResourse != 'Auth\Controller\Success-index') {
-            $status = $accessService->allowed($controller, $action);
-            if (! $status) {
-                //@todo add after login redirect
-                $requestedUrl = "";
-                if ($request->isPost()) {
-                    //  redirect 2 HTTP_REFERER
-                    $requestedUrl = $request->getHeader('referer')->getUri();
-                } else {
-                    //  redirect to requestet url
-                    $requestedUrl = $request->getRequestUri();
-                }
-                $url = '/login';
-               // $response->setHeaders($response->getHeaders()
-               //     ->addHeaderLine('Location', $url));
-               // $response->setStatusCode(302);
-               // $response->sendHeaders();
-                return $target->redirect()->toUrl('/login');
-            }
-        }
+        AbstractHelper::setDefaultAcl($accessService->getAcl());
+        AbstractHelper::setDefaultRole($accessService->getRole());
     }
 }
