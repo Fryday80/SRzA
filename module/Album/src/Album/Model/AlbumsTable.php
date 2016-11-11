@@ -45,7 +45,7 @@ class AlbumsTable extends AbstractTableGateway
         return $id;
     }
     public function remove($id) {
-        return $this->delete(array('id' => (int)$id));
+        return ($this->delete(array('id' => (int)$id)))? $id : false;  //@todo deppenfrage: geht das so
     }
 
 }

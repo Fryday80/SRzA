@@ -17,7 +17,7 @@ $this->headScript()->appendFile('/js/jgallery/js/jgallery.min.js');
     <div class="album" data-jgallery-album-title="Album 1">
         <h1>Album 1</h1>
         <?php foreach ($images as $image) : ?>
-            <a href="<?= $image['url'] ?>"><img src="<?= $image['url'] ?>" alt="Source: Pixabay.com" data-jgallery-bg-color="#03040A" data-jgallery-text-color="#F1A8FF" /></a>
+            <a href="<?= $src = "/media/image/gallery/".$album['folder']."/".$image['filename'].'.'.$image['extension']?>"><img src="<?= $src ?>" alt="Source: schwarze-ritter-augsburg.com/" data-jgallery-bg-color="#03040A" data-jgallery-text-color="#F1A8FF" /></a>
         <?php endforeach; ?>
     </div>
 </div>

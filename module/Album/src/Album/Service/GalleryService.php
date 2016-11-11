@@ -1,5 +1,6 @@
 <?php
 namespace Album\Service;
+use vakata\database\Exception;
 
 
 /**
@@ -22,6 +23,8 @@ Class GalleryService
         $this->albumImagesTable = $sm->get('Album\Model\AlbumImagesTable');
         $this->imagesTable = $sm->get('Album\Model\ImagesTable');
     }
+
+/* read ******************************** */
     public function getAllAlbums() {
         return $this->albumsTable->fetchAllAlbums();
     }
@@ -39,19 +42,52 @@ Class GalleryService
         return $this->imagesTable->getById($id);
     }
 
-    public function updateAlbum($data) {
-        
+/* add ********************************* */
+    public function addAlbum($data) {
+        return $this->albumsTable->add($data);
+    }
+    
+    public function addImage($data) {
+        if ($data['id']) {
+            return ($this->imagesTable->add($data));
+        }
+        if ($data[0]['id']){
+            foreach ($data as $image){
+                $this->imagesTable->add($image);
+            }
+        }
+        else {return false;}
     }
 
-    public function updateImage($data) {}
-    
-    
-    public function addAlbum($data) {
-        
+
+/* update ********************************* */
+    /**
+     * @param $data array of album information
+     * @return mixed $id at success or false at fail
+     */
+    public function updateAlbum($data) {
+        return $this->albumsTable->change($data['id'], $data);
     }
-    
-    public function addImage($data) {}
-    
+
+    /**
+     * Update Image or Images
+     * @param $data array with image data or array of images ([0]=> image data, [1] => image data
+     * 
+     * @return mixed $id at success or false at fail
+     */
+    public function updateImage($data) {
+        if ($data['id']) {
+            return ($this->imagesTable->change($data['id'], $data));
+        }
+        if ($data[0]['id']){
+            foreach ($data as $image){
+                $this->imagesTable->change($image['id'], $image);
+            }
+        }
+        else {return false;}
+    }
+
+/* delete ********************************* */
     public function deleteWholeAlbum($id) {
         $this->deleteAllAlbumImages($id);
         $this->albumsTable->remove($id);
@@ -59,7 +95,7 @@ Class GalleryService
     
     public function deleteImage($image_id) {
         $this->imagesTable->remove($image_id);
-        $this->albumImagesTable->removeByImageID($image_id);
+        return $this->albumImagesTable->removeByImageID($image_id);
     }
     
     public function deleteAllAlbumImages($id) {
@@ -70,154 +106,34 @@ Class GalleryService
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private $db;
-    private $db_images;
-
-    private $dataPath;
-
-    private $galleries = array ();
-    private $images;
-
-    function __construct2($sm)
-    {
-
-        $rootPath = getcwd();
-        $this->dataPath = $rootPath.'\Data\gallery\\';
-
-        $this->db = $sm->get('Album\Model\AlbumTable'); //@todo db request
-        $data = $this->readDBAlbums(); //@todo db request
-
-        $this->mappingAlbums($data); // das hatten wir ja hier schon bis hier
-
-
-        // $this->db_images = $sm->get('Album\Model\AlbumTable');  //@todo db request
-        $this->images = $this->readDBImages();
-
-        echo '<pre>';
-        echo 'galleries <br>';
-        var_dump($this->galleries);
-        echo 'images <br>';
-        var_dump($this->images);
-        echo '</pre>'; die;
-    }
-
-
-    /**
-     * Mapps folder names on db entrys
-     *
-     * checks if db is up to date
-     *
-     * @return array of matched db-folder links
-     */
-    public function getAllGalleries ()
-    {
-        return $this->galleries;
-    }
-
-    /**
-     * get all image data from all galleries
-     *
-     * @return mixed array of images
-     */
-    public function getAllGalleryImages() {
-        return $this->images;
-    }
-
-    /** get all data of gallery with id= $id
-     *
-     * @param $id
-     * @return array array with ['gallery'] = array of gallery data; and ['images'] = array of image data
-     */
-    public function getGalleryDataSetByID ($id){
-        $return_set = array ();
-        $gallery_data= $this->galleries[$id];
-        $images_data = $this->getImagesByGalleryID($id);
-        $return_set['gallery'] = $gallery_data;
-        $return_set['images'] = $images_data;
-        return $return_set;
-    }
-
-    /**
-     * mapping function
-     * @param $data array of e.g. db results
-     *
-     * sets $this->galleries
-     */
-    private function mappingAlbums ($data)
-    {
-        foreach ($data as $id)
+    private function exchangeDataArray($data){
+        if (!isset($data['aid']) && !isset($data['id']))
         {
-            if (!is_dir($this->dataPath.$id['folder'])) continue;
-            $this->galleries[$id['id']] = $id;
-        }
-    }
-
-    /**
-     * reads data from db and returns  array with
-     * [0] == folders by id; [1] folder name hash
-     */
-    private function readDBAlbums()
-    {
-        $dummy = 'on';
-        if ($dummy == 'on') {
-            $results = $this->createDummy('albums');
-        } else {
-            $results = $this->db->fetchAllGalleryFolder();
+            throw new Exception ('ids missing!!');
         }
 
-        $folders = array();
-        foreach ($results as $row) {
-            $id =  $row['id'];
-            $folders[$id] = $row;
-        }
-        return $folders;
-    }
+        $new_data = array(
+            'albums' => array(
+                'id' => $data['aid'] ?: Null,
+                'folder' => $data['folder'] ?: Null,
+                'event' => $data['event'] ?: Null,
+                'timestamp' => $data['timestamp'] ?: Null,
+                'preview_pic' => $data['preview_pic'] ?: Null,
+                'visibility' => $data['avisibility'] ?: 0
+            ),
+            'albumimage' => array(
+                'album_id' => $data['aid'] ?: Null,
+                'image_id' => $data['id'] ?: Null,
+            ),
+            'images' => array(
+                'id' => $data['id'],
+                'filename' => $data['filename'] ?: Null,
+                'extension' => $data['extension'] ?: Null,
+                'text_1' => $data['text_1'] ?: Null,
+                'text_2' => $data['text_2'] ?: Null,
+                'visibility' => $data['visibility'] ?: 0
+            ));
 
-    private function readDBImages () {
-        $dummy = 'on';
-        if ($dummy == 'on') {
-            return $this->createDummy('images');
-        } else {
-            return $this->db->fetchAllImages();
-        }
-    }
-
-    private function getImagesByGalleryID ($id) {
-        $result = array ();
-        foreach ($this->images as $image)
-            if ($image['gallery_id'] == $id) {
-                array_push($result, $image);
-            }
-        return $result;
-    }
-
-    /**
-     * @param $for 'albums' or 'images'
-     * @return array array of dummy data
-     */
-    private function createDummy ($for) {
-        if ($for == 'albums') {
-            return array ( 0 => array('id' => 1, 'folder' => '2016', 'visibility' => 1, 'event' => 'Testevent', 'timestamp' => 76742668 ));
-        }
-        else if ($for == 'images') {
-            return array ( 0 => array('id' => 1, 'gallery_id' => 1, 'name' => '2016', 'extension' => '.jpg','visibility' => 1, 'text' => 'blabla' ));
-        }
+        return $new_data;
     }
 }

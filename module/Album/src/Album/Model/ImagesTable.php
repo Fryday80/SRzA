@@ -31,13 +31,15 @@ class ImagesTable extends AbstractTableGateway
             return false;
         return $this->getLastInsertValue();
     }
+    
     public function change($id, $data) {
         if (!$this->update($data, array('id' => (int)$id)))
             return false;
         return $id;
     }
+    
     public function remove($id) {
-        return $this->delete(array('id' => (int)$id));
+        return ($this->delete(array('id' => (int)$id))) ? true : false;
     }
 
     public function getImagesByAlbumID($id)
