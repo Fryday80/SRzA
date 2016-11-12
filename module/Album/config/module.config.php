@@ -83,7 +83,7 @@ return array(
              ),
              'gallery' => array(
                  'type'    => 'segment',
-                 'may_terminate' => true,//des brauchst wenn man die gallery auch ohne eine child route benutzen will also /gallery  und nich /gallery/fullscreen oder so
+                 'may_terminate' => true,
                  'options' => array(
                      'route'    => '/gallery',
                      'defaults' => array(

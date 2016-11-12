@@ -10,6 +10,11 @@ class AlbumForm extends Form
     {
         // we want to ignore the name passed
         parent::__construct('album');
+        $general_layout = array(
+            'class' => 'width_40 margin_left_5 margin_right_15'
+            // https://framework.zend.com/manual/1.10/en/learning.form.decorators.intro.html
+        );
+        
         $this->setAttribute('action', '/album/edit');
         $this->setInputFilter(new AlbumFilter());
         $this->add(array(
@@ -19,6 +24,7 @@ class AlbumForm extends Form
         $this->add(array(
             'name' => 'folder',
             'type' => 'Text',
+            'attributes' => $general_layout,
             'options' => array(
                 'label' => 'Speicherort',
             ),
@@ -26,6 +32,7 @@ class AlbumForm extends Form
         $this->add(array(
             'name' => 'event',
             'type' => 'Text',
+            'attributes' => $general_layout,
             'options' => array(
                 'label' => 'Event',
             ),
@@ -33,6 +40,7 @@ class AlbumForm extends Form
         $this->add(array(
             'name' => 'date',
             'type' => 'Text',
+            'attributes' => $general_layout,
             'options' => array(
                 'label' => 'Datum',
             ),
@@ -40,6 +48,7 @@ class AlbumForm extends Form
         $this->add(array(
             'name' => 'preview_pic',
             'type' => 'Text',
+            'attributes' => $general_layout,
             'options' => array(
                 'label' => 'Vorschaubild',
             ),
@@ -48,15 +57,14 @@ class AlbumForm extends Form
             'name' => 'visibility',
             'type' => 'Select',
             'attributes' => array (
-                'id' => 'usernames',
+                'class' => 'width_40 margin_left_5 margin_right_15',
                 'options' => array(
                     1 => 'sichtbar',
                     0 =>'nicht sichtbar'
                 ),
             ),
-                //s'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Sichtbarkeit',
+                'label' => 'Sichtbarkeit des Albums',
                 )
         ));
         $this->add(array(
@@ -68,6 +76,7 @@ class AlbumForm extends Form
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
+            'attributes' => $general_layout,
             'attributes' => array(
                 'value' => 'Speichern',
                 'id' => 'submitbutton',

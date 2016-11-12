@@ -1,16 +1,19 @@
 <?php
 namespace Album\Controller;
 
+use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Album\Model\Album;
 use Album\Form\AlbumForm;
 use Album\Form\ImageForm;
+use Album\Form\ConfirmForm;
 
 
 class AlbumController extends AbstractActionController
 {
     protected $galleryService;
+    protected $galleryViewHelper;
 
     public function __construct($galleryService)
     {
@@ -23,7 +26,7 @@ class AlbumController extends AbstractActionController
         $viewModel = new ViewModel(array( 'albums' => $albums ) );
         return $viewModel;
     }
-    
+
     public function addAction()
     {
         $form = new AlbumForm();
@@ -58,9 +61,15 @@ class AlbumController extends AbstractActionController
             return $this->redirect()->toRoute('/album');
         }        
         $form = new AlbumForm();
-        $form->bind($album);
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
+       // $form->setData($album); //fry kin of
+        foreach ($album[0] as $name => $value){
+            $form->get($name)->setAttribute('value', $value);
+            if ($name == 'timestamp'){
+                $form->get('date')->setAttribute('value', date ('d.m.Y', $value));
+            }
+        }
         $form->setAttribute('action', '/album/edit/' . $id);
 
         if ($request->isPost()) {
@@ -69,6 +78,7 @@ class AlbumController extends AbstractActionController
                 $this->galleryService->storeAlbum ($form->getData());
                 return $this->redirect()->toRoute('album');
             }
+            dump ('not valid');
         }
         return array(
             'id' => $id,
@@ -76,89 +86,37 @@ class AlbumController extends AbstractActionController
         );
     }
 
-    public function old_editAction()
-    {
-     //   //des problem is bisal kompliziert ... liegt daran das wir hier eine extra Model classe haben (class Album).
-     //   //man kann auch einfach nur die AlbumTable benutzen ... so machs ich auch fast überall. egal
-     //   $request = $this->getRequest();
-     //   $id = (int) $this->params()->fromRoute('id', 0);
-     //   if (! $id && !$request->isPost()) {
-     //       return $this->redirect()->toRoute('album', array(
-     //           'action' => 'add'
-     //       ));
-     //   }
-     //   $album = null;
-     //   try {
-     //       $album = $this->getAlbumTable()->getAlbum($id);
-     //   } catch (\Exception $ex) {
-     //       $album = new Album(); //das hier is das problem. er braucht immer ein album hatte aber beim post keins weil keine id da war
-     //   }
-     //   $form = new AlbumForm();
-     //   $form->bind($album);//zum verständnis   durch bind ändern sich die daten in album auch wenn man die form daten ändert
-     //   $form->get('submit')->setAttribute('value', 'Edit');
-
+    public function deleteAction() {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $request = $this->getRequest();
+        if (! $id && !$request->isPost()) {
+           return $this->redirect()->toRoute('album');
+        }
         if ($request->isPost()) {
-            $data = $request->getPost();
-            $data['timestamp'] = $data['timestamp'] / 1000;
-            $form->setInputFilter($album->getInputFilter());
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $this->getAlbumTable()->saveAlbum($album);
-                
-                // Redirect to list of albums
+            $confirmed = $request->getPost('delete_confirm', 'no');
+            if ($confirmed !== 'no') {
+                $this->galleryService->deleteWholeAlbum($id);
                 return $this->redirect()->toRoute('album');
             }
-        }
-        
-        return array(
-            'id' => $id,
-            'form' => $form
-        );
-    }
-
-    public function old_deleteAction()
-    {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (! $id) {
-            return $this->redirect()->toRoute('album');
-        }
-        
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $del = $request->getPost('del', 'No');
-            
-            if ($del == 'Yes') {
-                $id = (int) $request->getPost('id');
-                $this->getAlbumTable()->deleteAlbum($id);
-            }
-            
             // Redirect to list of albums
             return $this->redirect()->toRoute('album');
         }
-        
-        return array(
-            'id' => $id,
-            'album' => $this->getAlbumTable()->getAlbum($id)
-        );
-    }
+        $form = new ConfirmForm();
+        $form->get('id')->setAttribute('value', $id);
+        $form->setAttribute('action', '/album/delete/' . $id);
 
-    public function old_getAlbumTable()
-    {
-        if (! $this->albumTable) {
-            $sm = $this->getServiceLocator();
-            $this->albumTable = $sm->get('Album\Model\AlbumTable');
+        try {
+            $album = $this->galleryService->getAlbumByID($id);
+        } catch (\Exception $ex) {
+            print ($ex);
+            return $this->redirect()->toRoute('/album');
         }
-        return $this->albumTable;
-    }
-    public function old_showAction () {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (! $id) {
-            return $this->redirect()->toRoute('album', array(
-                'action' => 'index'
-            ));
-        }
-        // load Galerieansicht mit den bildern aus: wenn möglich "Overlay/Pop-Up-Gallery" -> keine neue Seite.. nur js??
-        // $album_path = "../ftp/gallery/"
-        // $pic_path = $albumpath.$form->path
+        $event = $album[0]['event'];
+
+        return array (
+            'id' => $id,
+            'event' => $event,
+            'form' => $form
+        );
     }
 }

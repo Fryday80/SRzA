@@ -135,7 +135,7 @@ Class GalleryService
 
         $album_data = $this->exchangeDataArray($album_data);
 
-        if ($album_data['id'] == 0 ){
+        if ($album_data['id'] == '' ){
             $this->addAlbum($album_data);
         }
         else {
@@ -146,13 +146,15 @@ Class GalleryService
     private function exchangeDataArray($data){
         $int_array = array (
             'id', 'timestamp', 'visibility', 'album_id', 'image_id');
+        $exclude_array = array (
+            'validators','submit','date');
         $new_data = array();
         foreach ($data as $key => $value){
             if (in_array($key, $int_array)){
                 $value = (int) $value;
             }
 
-            if ($key !== 'submit' && $key !== 'date') {
+            if (!in_array($key, $exclude_array)) {
                 $new_data[$key] = $value;
             }
         }

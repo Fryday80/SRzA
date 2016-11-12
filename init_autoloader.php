@@ -17,18 +17,17 @@
  */
 
 //debugging
-//@todo Bugfix ---> löschen
-function dump ($varray, $marker = '##########BUGFIX######')
+function dump ($varray, $marker = '##########BUGFIX######', $trace=3)
 {
     echo $marker;
     echo ('<pre style="background-color: #0ac2d2">');
     var_dump($varray);
-    debug_print_backtrace (null, 6);
+    debug_print_backtrace (null, $trace);
     echo ('</pre>');
 
 }
-function dumpd ($varray, $marker = '##########BUGFIX######'){
-    dump ($varray, $marker);
+function dumpd ($varray, $marker = '##########BUGFIX######', $trace=3){
+    dump ($varray, $marker, $trace);
     die;
 }
 

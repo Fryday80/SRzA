@@ -8,6 +8,81 @@ class AlbumFilter extends InputFilter
 
     public function __construct()
     {
+        $this->add(array (
+            'name' => 'id',
+            'required' => false,
+            'filters' => array(
+                array(
+                    'name' => 'StripTags'
+                ),
+                array(
+                    'name' => 'Int'
+                )
+            ),
+            'validators'
+        ));
+        $this->add(array (
+            'name' => 'folder',
+            'required' => false,
+            'filters' => array(
+                array(
+                    'name' => 'StripTags'
+                ),
+            ),
+            /*
+            'validators' => array( // TODO Validator if folder exists???
+                array (
+                    
+                )
+            )  */
+        ));
+        $this->add(array (
+            'name' => 'event',
+            'required' => false,
+            'filters' => array(
+                array(
+                    'name' => 'StripTags'
+                ),
+            )
+        ));
+        $this->add(array (
+            'name' => 'timestamp',
+            'required' => false,
+            'filters' => array(
+                array(
+                    'name' => 'Int'
+                )
+            ),
+        ));
+        $this->add(array(
+            'name' => 'date',
+            'required' => false
+        ));
+        $this->add(array (
+            'name' => 'preview_pic',
+            'required' => false,
+            'filters' => array(
+                   array(
+                       'name' => 'StripTags'
+                   ),
+                   array(
+                       'name' => 'StringTrim'
+                   )
+            )
+        ));
+        $this->add(array (
+            'name' => 'visibility',
+            'required' => false,
+            'filters' => array(
+                   array(
+                       'name' => 'Int'
+                   )
+            ),
+        ));
+        $this->add(array (
+            'name' => 'date',
+            'required' => false,
+        ));
 
 
      // //  $this->add(array(

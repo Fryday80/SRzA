@@ -18,10 +18,6 @@ $this->headTitle($title);
 
 ?>
 <script>
-    $("form").addClass("text_right");
-   // $("label").addClass("width_40 text_right");
-    $("input").addClass ("width_40 margin_left_5 margin_right_15");
-    $("select").addClass ("width_40 margin_left_5 margin_right_15");
     $('#content input[name="date"]').datepicker({
         dateFormat: "dd.mm.yy",
         defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),

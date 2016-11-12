@@ -248,14 +248,21 @@ newstitel {
 .width_40 {
     width: 40%;
 }
-.text_right {
-    text-align: right;
-}
 .margin_left_5{
     margin-left: 5px;
 }
 .margin_right_15{
     margin-right: 15px;
+}
+.margin_left_auto: {
+    margin-left: auto;
+}
+.float_left {
+    float: left;
+}
+/* ------------------Zend Album Helper ---------------------------------- */
+#album {
+    text-align: right;
 }
 
 /* ----------------- UI special desing -------------------------------- */

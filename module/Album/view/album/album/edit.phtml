@@ -3,22 +3,28 @@
 $title = 'Edit Gallery';
 $this->headTitle($title);
 ?>
- <h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<?php
+$form->prepare();
+$formContent = '';
+echo $this->form()->openTag($form);
+foreach ($form as $element)
+{
+ $formContent .= $this->formrow($element) . '<br/>';
+}
 
- <?php
- $form = $this->form;
- $form->prepare();
- echo $this->form($form);
+echo $formContent;
+echo $this->form()->closeTag();
+
 ?>
-<!--
 <script>
-    $('#content input[name="date"]').datepicker({
-        dateFormat: "yy-mm-dd",
-        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
-        onSelect: function (selectedDate) {
-            var date = new Date($('#content input[name="date"]' ).val());
-            $('#content input[name="timestamp"]').val(date.getTime());
-        }
-    });
+ //datepicker
+ $('#content input[name="date"]').datepicker({
+  dateFormat: "dd.mm.yy",
+  defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
+  onSelect: function (selectedDate) {
+   var date = new Date($('#content input[name="date"]' ).val());
+   $('#content input[name="timestamp"]').val(date.getTime() / 1000);
+  }
+ });
 </script>
--->

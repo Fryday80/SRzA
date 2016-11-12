@@ -35,10 +35,9 @@ class AlbumsTable extends AbstractTableGateway
     
     //data like: array('columName' => $data['columName'] )
     public function add($data) {
-        if (!$this->insert(array(
-            'event' => $data['event']
-        )) )
-            return false;
+        if (!$this->insert($data))
+        { dumpd (($data['event']));}
+        return false;
         return $this->getLastInsertValue();
     }
     
