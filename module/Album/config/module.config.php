@@ -1,9 +1,24 @@
 <?php
+use Album\Controller\GalleryController;
+use Album\Service\GalleryService;
+use Album\Controller\AlbumController;
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Album\Controller\Album' => 'Album\Controller\AlbumController',
-            'Album\Controller\Gallery' => 'Album\Controller\GalleryController',
+           // 'Album\Controller\Album' => 'Album\Controller\AlbumController',
+           // 'Album\Controller\Gallery' => 'Album\Controller\GalleryController',
+        ),
+        'factories' => array(
+            'Album\Controller\Gallery' => function($controllerManager) {
+                $sm = $controllerManager->getServiceLocator();
+                $galleryService = $sm->get('GalleryService');
+                return new GalleryController($galleryService);
+            },
+            'Album\Controller\Album' =>  function($controllerManager) {
+                $sm = $controllerManager->getServiceLocator();
+                $galleryService = $sm->get('GalleryService');
+                return new AlbumController($galleryService);
+            },
         ),
     ),
     'view_manager' => array(
@@ -78,19 +93,6 @@ return array(
                      ),
                  ),
                  'child_routes' => array(
-                    'fullscreen' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/fullscreen[/:id]',
-                            'constraints' => array(
-                                'id' => '[0-9]+'
-                            ),
-                            'defaults' => array(
-                                'action' => 'fullscreen',
-                                'id' => '1'
-                            )
-                        )
-                    ),
                     'small' => array(
                         'type' => 'Segment',
                         'options' => array(

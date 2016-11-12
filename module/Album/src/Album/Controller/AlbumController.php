@@ -5,41 +5,37 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Album\Model\Album;
 use Album\Form\AlbumForm;
+use Album\Form\ImageForm;
+
 
 class AlbumController extends AbstractActionController
 {
+    protected $galleryService;
 
-    protected $albumTable;
+    public function __construct($galleryService)
+    {
+        $this->galleryService = $galleryService;
+    }
 
     public function indexAction()
     {
-        return new ViewModel(array(
-            'albums' => $this->getAlbumTable()->fetchAll()
-        ));
+        $albums = $this->galleryService->getAllAlbums();
+        $viewModel = new ViewModel(array( 'albums' => $albums ) );
+        return $viewModel;
     }
-
-    public function reimportAction() {
-        //mediaService import
-        //mediaService getAlbumFolderNames
-
-        //update database
-    }
+    
     public function addAction()
     {
         $form = new AlbumForm();
-        $form->get('submit')->setValue('Add');
-        
+        $operator = 'Neu';
+        $form->get('submit')->setValue($operator);
+        $form->setAttribute('action', '/album/add');
+
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $album = new Album();
-            $form->setInputFilter($album->getInputFilter());
             $form->setData($request->getPost());
-            
             if ($form->isValid()) {
-                $album->exchangeArray($form->getData());
-                $this->getAlbumTable()->saveAlbum($album);
-                
-                // Redirect to list of albums
+                $this->galleryService->storeAlbum ($form->getData());
                 return $this->redirect()->toRoute('album');
             }
         }
@@ -48,26 +44,58 @@ class AlbumController extends AbstractActionController
         );
     }
 
-    public function editAction()
-    {
-        //des problem is bisal kompliziert ... liegt daran das wir hier eine extra Model classe haben (class Album).
-        //man kann auch einfach nur die AlbumTable benutzen ... so machs ich auch fast überall. egal
+    public function editAction(){
         $request = $this->getRequest();
-        $id = (int) $this->params()->fromRoute('id', 0);
+        $id = (int) $this->params()->fromRoute('id', null);
         if (! $id && !$request->isPost()) {
-            return $this->redirect()->toRoute('album', array(
-                'action' => 'add'
-            ));
+            return $this->redirect()->toRoute('/album');
         }
         $album = null;
         try {
-            $album = $this->getAlbumTable()->getAlbum($id);
-        } catch (\Exception $ex) {
-            $album = new Album(); //das hier is das problem. er braucht immer ein album hatte aber beim post keins weil keine id da war
-        }
+            $album = $this->galleryService->getAlbumByID($id);
+        } catch (\Exception $ex) { 
+            print ($ex);
+            return $this->redirect()->toRoute('/album');
+        }        
         $form = new AlbumForm();
-        $form->bind($album);//zum verständnis   durch bind ändern sich die daten in album auch wenn man die form daten ändert
-        $form->get('submit')->setAttribute('value', 'Edit');
+        $form->bind($album);
+        $operator = 'Edit';
+        $form->get('submit')->setAttribute('value', $operator);
+        $form->setAttribute('action', '/album/edit/' . $id);
+
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $this->galleryService->storeAlbum ($form->getData());
+                return $this->redirect()->toRoute('album');
+            }
+        }
+        return array(
+            'id' => $id,
+            'form' => $form
+        );
+    }
+
+    public function old_editAction()
+    {
+     //   //des problem is bisal kompliziert ... liegt daran das wir hier eine extra Model classe haben (class Album).
+     //   //man kann auch einfach nur die AlbumTable benutzen ... so machs ich auch fast überall. egal
+     //   $request = $this->getRequest();
+     //   $id = (int) $this->params()->fromRoute('id', 0);
+     //   if (! $id && !$request->isPost()) {
+     //       return $this->redirect()->toRoute('album', array(
+     //           'action' => 'add'
+     //       ));
+     //   }
+     //   $album = null;
+     //   try {
+     //       $album = $this->getAlbumTable()->getAlbum($id);
+     //   } catch (\Exception $ex) {
+     //       $album = new Album(); //das hier is das problem. er braucht immer ein album hatte aber beim post keins weil keine id da war
+     //   }
+     //   $form = new AlbumForm();
+     //   $form->bind($album);//zum verständnis   durch bind ändern sich die daten in album auch wenn man die form daten ändert
+     //   $form->get('submit')->setAttribute('value', 'Edit');
 
         if ($request->isPost()) {
             $data = $request->getPost();
@@ -88,7 +116,7 @@ class AlbumController extends AbstractActionController
         );
     }
 
-    public function deleteAction()
+    public function old_deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
@@ -114,7 +142,7 @@ class AlbumController extends AbstractActionController
         );
     }
 
-    public function getAlbumTable()
+    public function old_getAlbumTable()
     {
         if (! $this->albumTable) {
             $sm = $this->getServiceLocator();
@@ -122,7 +150,7 @@ class AlbumController extends AbstractActionController
         }
         return $this->albumTable;
     }
-    public function showAction () {
+    public function old_showAction () {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
             return $this->redirect()->toRoute('album', array(

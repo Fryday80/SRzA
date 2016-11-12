@@ -5,7 +5,7 @@
 
 $title = 'Gallerie ';
 $this->headTitle($title);
-dump($albums);
+//dump($albums);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
  <p>
@@ -25,12 +25,12 @@ dump($albums);
      <td style="text-align: right;"><?php echo date ('d.m.', $album['timestamp']);?></td>
      <td style="text-align: left;"><?php echo date ('Y', $album['timestamp']);?></td>
      <th style="text-align: left;"><?php
-         if ($album['avisibility'] == 1){$visibility = 'Ja';}
+         if ($album['visibility'] == 1){$visibility = 'Ja';}
          else {$visibility = 'nein';}
          echo $visibility;?></th>
      <td>
-         <a href="<?php echo $this->url('album/edit', array('id' => $album['aid']));?>"><butti>Edit</butti></a>
-         <a href="<?php echo $this->url('album/delete', array('id' => $album['aid']));?>"><butti>Delete</butti></a>
+         <a href="<?php echo $this->url('album/edit', array('id' => $album['id']));?>"><butti>Edit</butti></a>
+         <a href="<?php echo $this->url('album/delete', array('id' => $album['id']));?>"><butti>Delete</butti></a>
      </td>
  </tr>
  <?php endforeach; ?>

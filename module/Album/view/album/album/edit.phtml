@@ -9,14 +9,8 @@ $this->headTitle($title);
  $form = $this->form;
  $form->prepare();
  echo $this->form($form);
-// echo $this->form()->openTag($form);
-// echo $this->formHidden($form->get('id'));
-// echo $this->formRow($form->get('event'));
-// echo $this->formRow($form->get('date'));
-// echo $this->formRow($form->get('duration'));
-// echo $this->formSubmit($form->get('submit'));
-// echo $this->form()->closeTag();
 ?>
+<!--
 <script>
     $('#content input[name="date"]').datepicker({
         dateFormat: "yy-mm-dd",
@@ -27,3 +21,4 @@ $this->headTitle($title);
         }
     });
 </script>
+-->

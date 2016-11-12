@@ -1,6 +1,7 @@
 <?php
 $title = 'Gallerie ';
 $this->headTitle($title);
+//dumpd($albums);
 ?>
 
 <table class="table" style="width: 95%;">
@@ -13,7 +14,7 @@ $this->headTitle($title);
  </tr>
  <?php foreach ($albums as $album) :
      $pre_path = '/media/image/gallery/';
-     if ($album['visibility'] !== 1) {continue;}
+     if ($album['visibility'] !== "1") {continue;}
      $prev_src = 
          ($album['preview_pic'] == NULL) ? $pre_path.'default/default.png' : $pre_path.$album['folder'].'/'.$album['preview_pic']; 
  ?>

@@ -40,12 +40,8 @@ class ResourceTable extends AbstractTableGateway
 
     public function getByID($id)
     {
-        // @todo check id for int - done - ready for check
-        if (!is_int ($id)){
-            throw new \Exception("id must be INT");
-        }
         $result = $this->select([
-            'id' => $id
+            'id' => (int)$id
         ])->toArray();
         if (count($result) < 1) {
             return null;

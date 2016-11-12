@@ -18,7 +18,7 @@ class AlbumsTable extends AbstractTableGateway
     }
 
     public function fetchAllAlbums () {
-        $row = $this->select()->current();
+        $row = $this->select();
         if (!$row)
             return false;
 
@@ -26,26 +26,30 @@ class AlbumsTable extends AbstractTableGateway
     }
     
     public function getById($id) {
-        $row = $this->select(array('id' => (int) $id))->current();
+        $row = $this->select(array('id' => (int) $id));
         if (!$row)
             return false;
         
-        return $row->getArrayCopy();
+        return $row->toArray();
     }
     
     //data like: array('columName' => $data['columName'] )
     public function add($data) {
-        if (!$this->insert($data))
+        if (!$this->insert(array(
+            'event' => $data['event']
+        )) )
             return false;
         return $this->getLastInsertValue();
     }
+    
     public function change($id, $data) {
         if (!$this->update($data, array('id' => (int)$id)))
             return false;
         return $id;
     }
+    
     public function remove($id) {
-        return ($this->delete(array('id' => (int)$id)))? $id : false;  //@todo deppenfrage: geht das so
+        return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
 }

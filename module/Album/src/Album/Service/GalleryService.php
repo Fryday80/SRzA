@@ -1,5 +1,6 @@
 <?php
 namespace Album\Service;
+
 use vakata\database\Exception;
 
 
@@ -43,10 +44,18 @@ Class GalleryService
     }
 
 /* add ********************************* */
+    /**
+     * @param $data
+     * @return mixed $id on success or bool false on fail
+     */
     public function addAlbum($data) {
         return $this->albumsTable->add($data);
     }
-    
+
+    /**
+     * @param $data
+     * @return mixed $id on single image success, bool false on fail, bool true on image array add
+     */
     public function addImage($data) {
         if ($data['id']) {
             return ($this->imagesTable->add($data));
@@ -55,6 +64,7 @@ Class GalleryService
             foreach ($data as $image){
                 $this->imagesTable->add($image);
             }
+            return true;
         }
         else {return false;}
     }
@@ -63,7 +73,7 @@ Class GalleryService
 /* update ********************************* */
     /**
      * @param $data array of album information
-     * @return mixed $id at success or false at fail
+     * @return mixed $id on success or bool false on fail
      */
     public function updateAlbum($data) {
         return $this->albumsTable->change($data['id'], $data);
@@ -73,7 +83,7 @@ Class GalleryService
      * Update Image or Images
      * @param $data array with image data or array of images ([0]=> image data, [1] => image data
      * 
-     * @return mixed $id at success or false at fail
+     * @return mixed $id on success or bool false on fail
      */
     public function updateImage($data) {
         if ($data['id']) {
@@ -83,57 +93,69 @@ Class GalleryService
             foreach ($data as $image){
                 $this->imagesTable->change($image['id'], $image);
             }
+            return true;
         }
         else {return false;}
     }
 
 /* delete ********************************* */
+    /**
+     * @param $id
+     * @return bool true on success
+     */
     public function deleteWholeAlbum($id) {
         $this->deleteAllAlbumImages($id);
         $this->albumsTable->remove($id);
+        return true;
     }
-    
+
+    /**
+     * @param $image_id
+     * @return bool true on success or false on fail
+     */
     public function deleteImage($image_id) {
         $this->imagesTable->remove($image_id);
         return $this->albumImagesTable->removeByImageID($image_id);
     }
-    
+
+    /**
+     * @param $id
+     * @return bool true on success or false on fail
+     */
     public function deleteAllAlbumImages($id) {
         $images = $this->imagesTable->getImagesByAlbumID($id);
         $this->albumImagesTable->removeByAlbumID($id);
         foreach ($images as $image){
             $this->imagesTable->remove ($image['id']);
         }
+        return true;
+    }
+    
+    public function storeAlbum ($album_data){
+
+        $album_data = $this->exchangeDataArray($album_data);
+
+        if ($album_data['id'] == 0 ){
+            $this->addAlbum($album_data);
+        }
+        else {
+            $this->updateAlbum($album_data);
+        }
     }
 
     private function exchangeDataArray($data){
-        if (!isset($data['aid']) && !isset($data['id']))
-        {
-            throw new Exception ('ids missing!!');
+        $int_array = array (
+            'id', 'timestamp', 'visibility', 'album_id', 'image_id');
+        $new_data = array();
+        foreach ($data as $key => $value){
+            if (in_array($key, $int_array)){
+                $value = (int) $value;
+            }
+
+            if ($key !== 'submit' && $key !== 'date') {
+                $new_data[$key] = $value;
+            }
         }
-
-        $new_data = array(
-            'albums' => array(
-                'id' => $data['aid'] ?: Null,
-                'folder' => $data['folder'] ?: Null,
-                'event' => $data['event'] ?: Null,
-                'timestamp' => $data['timestamp'] ?: Null,
-                'preview_pic' => $data['preview_pic'] ?: Null,
-                'visibility' => $data['avisibility'] ?: 0
-            ),
-            'albumimage' => array(
-                'album_id' => $data['aid'] ?: Null,
-                'image_id' => $data['id'] ?: Null,
-            ),
-            'images' => array(
-                'id' => $data['id'],
-                'filename' => $data['filename'] ?: Null,
-                'extension' => $data['extension'] ?: Null,
-                'text_1' => $data['text_1'] ?: Null,
-                'text_2' => $data['text_2'] ?: Null,
-                'visibility' => $data['visibility'] ?: 0
-            ));
-
         return $new_data;
     }
 }

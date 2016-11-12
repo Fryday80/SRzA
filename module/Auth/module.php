@@ -38,11 +38,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
         
-        $eventManager->attach(MvcEvent::EVENT_DISPATCH, array(
-            $this,
-            'boforeDispatch'
-        ), 100);
-
         $eventManager->attach('dispatch', array($this, 'checkLogin'));
         return $this;
     }
@@ -133,6 +128,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
 
     public function checkLogin($e)
     {
+        return;//dann kanste dran basteln
         $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
         $target             = $e->getTarget();
         $match              = $e->getRouteMatch();

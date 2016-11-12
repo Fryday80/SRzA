@@ -18,11 +18,18 @@
 
 //debugging
 //@todo Bugfix ---> löschen
-function dump ($varray){
-    echo ('<pre>'); var_dump($varray); echo ('</pre>');
+function dump ($varray, $marker = '##########BUGFIX######')
+{
+    echo $marker;
+    echo ('<pre style="background-color: #0ac2d2">');
+    var_dump($varray);
+    debug_print_backtrace (null, 6);
+    echo ('</pre>');
+
 }
-function dumpd ($varray){
-    echo ('<pre>'); var_dump($varray); echo ('</pre>');die;
+function dumpd ($varray, $marker = '##########BUGFIX######'){
+    dump ($varray, $marker);
+    die;
 }
 
 // Composer autoloading

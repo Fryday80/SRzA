@@ -245,6 +245,18 @@ newstitel {
 .width_90 {
     width: 90%;
 }
+.width_40 {
+    width: 40%;
+}
+.text_right {
+    text-align: right;
+}
+.margin_left_5{
+    margin-left: 5px;
+}
+.margin_right_15{
+    margin-right: 15px;
+}
 
 /* ----------------- UI special desing -------------------------------- */
 

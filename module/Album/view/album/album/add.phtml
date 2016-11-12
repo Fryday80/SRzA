@@ -5,21 +5,29 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
  <?php
- $form->setAttribute('action', $this->url('album', array('action' => 'add')));
  $form->prepare();
- 
- 
- // echo $this->formCollection($form);
-  echo $this->form()->openTag($form);
-  echo $this->formHidden($form->get('id'));
-  echo $this->formRow($form->get('event'));
-  echo '<br>';
-  echo $this->formRow($form->get('date'));
-  echo '<br>';
-  echo $this->formRow($form->get('duration'));
-  echo '<br>';
-  echo $this->formRow($form->get('path'));
-echo "Durchsuchen?????"; // durchsuchenknopf und/oder upload???????????
-  echo '<br>';
-  echo $this->formSubmit($form->get('submit'));
-  echo $this->form()->closeTag();
+ $formContent = '';
+ echo $this->form()->openTag($form);
+ foreach ($form as $element)
+ {
+     $formContent .= $this->formrow($element) . '<br/>';
+ }
+
+ echo $formContent;
+ echo $this->form()->closeTag();
+
+?>
+<script>
+    $("form").addClass("text_right");
+   // $("label").addClass("width_40 text_right");
+    $("input").addClass ("width_40 margin_left_5 margin_right_15");
+    $("select").addClass ("width_40 margin_left_5 margin_right_15");
+    $('#content input[name="date"]').datepicker({
+        dateFormat: "dd.mm.yy",
+        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
+        onSelect: function (selectedDate) {
+            var date = new Date($('#content input[name="date"]' ).val());
+            $('#content input[name="timestamp"]').val(date.getTime() / 1000);
+        }
+    });
+</script>

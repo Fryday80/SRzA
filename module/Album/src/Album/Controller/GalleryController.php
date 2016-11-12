@@ -8,15 +8,16 @@ class GalleryController extends AbstractActionController
 {
     protected $galleryService;
 
-    public function __construct()
+    public function __construct($galleryService)
     {
-        $this->galleryService = $this->getServiceLocator()->get('GalleryService');
+        $this->galleryService = $galleryService;
     }
 
     public function indexAction()
     {
-        $album = $this->galleryService->getAllAlbums();
-        $viewModel = new ViewModel(array( 'album' => $album ) );
+       // $this->galleryService = $this->getServiceLocator()->get('GalleryService');
+        $albums = $this->galleryService->getAllAlbums();
+        $viewModel = new ViewModel(array( 'albums' => $albums ) );
         return $viewModel;
     }
 

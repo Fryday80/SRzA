@@ -24,7 +24,7 @@ class ImagesTable extends AbstractTableGateway
 
         return $row->toArray();
     }
-    //des sind mal die 3 standart add edit delete
+    
     //data like: array('columName' => $data['columName'] )
     public function add($data) {
         if (!$this->insert($data))
