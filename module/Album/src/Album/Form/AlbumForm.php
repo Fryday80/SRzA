@@ -46,7 +46,7 @@ class AlbumForm extends Form
         ));
         $this->add(array(
             'name' => 'visibility',
-            'type' => 'Select', //@todo fry-übung selectbox bauen^^ // warte'attributes' =>  array(
+            'type' => 'Select',
             'attributes' => array (
                 'id' => 'usernames',
                 'options' => array(
