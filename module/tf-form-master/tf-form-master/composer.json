@@ -1,0 +1,22 @@
+{
+    "name": "tfountain/tf-form",
+    "description": "Better default markup for ZF's form helpers",
+    "license": "BSD-3-Clause",
+    "autoload": {
+        "psr-0": {
+            "TfForm": "src/"
+        },
+        "classmap": [
+            "./Module.php"
+        ]
+    },
+    "authors": [{
+        "name": "Tim Fountain",
+        "email": "tim@tfountain.co.uk",
+        "homepage": "http://tfountain.co.uk/",
+        "role": "developer"
+    }],
+    "require": {
+        "php": ">=5.3.3"
+    }
+}
