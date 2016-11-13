@@ -52,7 +52,7 @@ class PermissionController extends AbstractActionController
             
 
             
-            // @todo check if the role have the perm allready
+            // @todo salt check if the role have the perm allready
             foreach ($permIDs as $id) {
                 $exists = false;
                 foreach ($rolePerms as $perm) {

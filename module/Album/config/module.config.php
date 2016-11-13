@@ -5,8 +5,8 @@ use Album\Controller\AlbumController;
 return array(
     'controllers' => array(
         'invokables' => array(
-           // 'Album\Controller\Album' => 'Album\Controller\AlbumController',
-           // 'Album\Controller\Gallery' => 'Album\Controller\GalleryController',
+           // 'MemberManager\Controller\MemberManager' => 'MemberManager\Controller\AlbumController',
+           // 'MemberManager\Controller\Gallery' => 'MemberManager\Controller\GalleryController',
         ),
         'factories' => array(
             'Album\Controller\Gallery' => function($controllerManager) {

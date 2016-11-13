@@ -91,14 +91,6 @@ input {
     margin-left: auto;
     margin-right: auto;
 }
-/* #headdeko {
-    position: relative;
-    float:left;
-    width: 15%;
-    height: 110px;
-    background-image: none;
-    z-index: 100;
-} */
 
 #head {
     position: relative;
@@ -120,14 +112,13 @@ input {
     float: right;
     text-align: left;
     width: 40%;
-    width: calc(50%-90px);
+    width: calc(50% - 90px);
 }
-
 #headlinks {
     clear:both;
     position: relative;
     padding-right: 10px;
-    width: calc (100%-10px);
+    width: calc (100% - 10px);
     height: auto;
     text-align: right;
     color: black;
@@ -248,22 +239,6 @@ newstitel {
 .width_40 {
     width: 40%;
 }
-.margin_left_5{
-    margin-left: 5px;
-}
-.margin_right_15{
-    margin-right: 15px;
-}
-.margin_left_auto: {
-    margin-left: auto;
-}
-.float_left {
-    float: left;
-}
-/* ------------------Zend Album Helper ---------------------------------- */
-#album {
-    text-align: right;
-}
 
 /* ----------------- UI special desing -------------------------------- */
 
@@ -273,26 +248,3 @@ newstitel {
     background-size: contain;
     height: 15px;
 }
-
-
-/* ----------------- spielerei -------------------------------- */
-@keyframes rotate_sign {
-    0%      { }
-    20%     { transform:rotate(  0deg); }
-    40%     { transform:rotate(-30deg); }
-    60%     { transform:rotate( 30deg); }
-    80%     { transform:rotate(  0deg); }
-100%      }
-}
-
-#headdeko>img:hover {
-
-    margin-left: auto;
-    height: 170px;
-    margin-top: -10px;
-    margin-left: 5px;
-    z-index: 100;
-
-    animation-name: rotate_sign;
-    animation-duration: 3s;
-    animation-direction: alternate;

@@ -51,7 +51,7 @@ class AlbumController extends AbstractActionController
             ));
         }
         
-        // Get the Album with the specified id. An exception is thrown
+        // Get the MemberManager with the specified id. An exception is thrown
         // if it cannot be found, in which case go to the index page.
         try {
             $album = $this->getAlbumTable()->getAlbum($id);
@@ -114,7 +114,7 @@ class AlbumController extends AbstractActionController
     {
         if (! $this->albumTable) {
             $sm = $this->getServiceLocator();
-            $this->albumTable = $sm->get('Album\Model\AlbumTable');
+            $this->albumTable = $sm->get('MemberManager\Model\AlbumTable');
         }
         return $this->albumTable;
     }

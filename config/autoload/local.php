@@ -11,9 +11,21 @@
  * credentials from accidentally being committed into version control.
  */
 
+//cleanfix
+$db = 'local';
+//$db = 'server';
+if ($db == 'local'){
+return array(
+    'db' => array(
+        'username' => 'root',
+        'password' => 'usbw',
+    ),
+);
+} else {
 return array(
     'db' => array(
         'username' => 'frysql',
         'password' => 'sqlfry',
     ),
 );
+}

@@ -1,0 +1,16 @@
+::1 - - [13/Nov/2016:18:30:20 +0100] "GET /phpmyadmin/ HTTP/1.1" 200 48645
+::1 - - [13/Nov/2016:18:30:21 +0100] "GET /phpmyadmin/version_check.php?&_nocache=1479058221065105716 HTTP/1.1" 200 39
+::1 - - [13/Nov/2016:18:30:30 +0100] "GET /phpmyadmin/index.php?token=6b98af522de4ba6b40ac22f4d62f1afa&ajax_request=true&ajax_page_request=true&menuHashes=7be54ce9&_nocache=1479058230376537358 HTTP/1.1" 200 41793
+::1 - - [13/Nov/2016:18:30:30 +0100] "GET /phpmyadmin/version_check.php?&_nocache=1479058230525532785 HTTP/1.1" 200 39
+::1 - - [13/Nov/2016:18:30:42 +0100] "GET /phpmyadmin/chk_rel.php?token=6b98af522de4ba6b40ac22f4d62f1afa&ajax_request=true&ajax_page_request=true&menuHashes=7be54ce9&_nocache=1479058242040363776 HTTP/1.1" 200 9287
+::1 - - [13/Nov/2016:18:30:46 +0100] "GET /phpmyadmin/navigation.php?ajax_request=1&token=6b98af522de4ba6b40ac22f4d62f1afa&aPath=cm9vdA%3D%3D.ZnJ5dGVzdA%3D%3D&vPath=cm9vdA%3D%3D.ZnJ5dGVzdA%3D%3D&pos=0&pos2_name=&pos2_value=&searchClause=&searchClause2=&_nocache=1479058246409812125 HTTP/1.1" 200 9908
+::1 - - [13/Nov/2016:18:30:51 +0100] "GET /phpmyadmin/index.php?token=6b98af522de4ba6b40ac22f4d62f1afa&old_usr=root HTTP/1.1" 200 7976
+::1 - - [13/Nov/2016:18:30:51 +0100] "GET /phpmyadmin/phpmyadmin.css.php?server=1&token=1a14b12dd6eca1cbd9249adbd963b905&nocache=4422652636ltr HTTP/1.1" 200 88608
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /gallery HTTP/1.1" 200 5926
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /css/style.css HTTP/1.1" 304 -
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /css/layout.css HTTP/1.1" 304 -
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /css/css_actions.css HTTP/1.1" 304 -
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /css/Zend.css HTTP/1.1" 304 -
+::1 - - [13/Nov/2016:18:31:30 +0100] "GET /media/image/gallery/default/default.png HTTP/1.1" 200 35142
+::1 - - [13/Nov/2016:18:31:31 +0100] "GET /media/image/gallery/folder%202/test.jpg HTTP/1.1" 200 235
+::1 - - [13/Nov/2016:18:31:32 +0100] "GET /img/favicon.ico HTTP/1.1" 200 15086

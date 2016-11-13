@@ -20,9 +20,9 @@ Class GalleryService
 
     function __construct($sm)
     {
-        $this->albumsTable = $sm->get('Album\Model\AlbumsTable');
-        $this->albumImagesTable = $sm->get('Album\Model\AlbumImagesTable');
-        $this->imagesTable = $sm->get('Album\Model\ImagesTable');
+        $this->albumsTable = $sm->get('MemberManager\Model\AlbumsTable');
+        $this->albumImagesTable = $sm->get('MemberManager\Model\AlbumImagesTable');
+        $this->imagesTable = $sm->get('MemberManager\Model\ImagesTable');
     }
 
 /* read ******************************** */

@@ -11,15 +11,7 @@
         ?>
 <!--    CSS styles   -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                        ->prependStylesheet($this->basePath('css/jquery-ui.css'))
-                        ->prependStylesheet($this->basePath('css/jgallery.css'))
-                        ->prependStylesheet($this->basePath('css/css_actions.css'))
-                        ->prependStylesheet($this->basePath('css/ui-override.css'))
-                        ->prependStylesheet($this->basePath('css/noscript.css'))
-                        ->prependStylesheet($this->basePath('css/media.css'))
-                        ->prependStylesheet($this->basePath('css/menu.css'))
-                        ->prependStylesheet($this->basePath('css/layout.css'))
-                                           
+                        ->prependStylesheet($this->basePath('css/style.css'))
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
@@ -68,7 +60,6 @@
                     <div class="spacer_h"></div>
                 </div>
                 <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
-        		<?php //echo $this->navigation('navigation')->menu(); ?>
 
             </div>
             <script>menuapp.organizeMenu ()</script>

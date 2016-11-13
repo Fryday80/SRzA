@@ -63,13 +63,11 @@ class AlbumController extends AbstractActionController
         $form = new AlbumForm();
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
-       // $form->setData($album); //fry kin of
-        foreach ($album[0] as $name => $value){
-            $form->get($name)->setAttribute('value', $value);
-            if ($name == 'timestamp'){
-                $form->get('date')->setAttribute('value', date ('d.m.Y', $value));
-            }
-        }
+        
+        $album = $this->addDate($album);    // Field 'date' needs to be added, because it is not stored in db
+        
+        $form->populateValues($album[0]);
+
         $form->setAttribute('action', '/album/edit/' . $id);
 
         if ($request->isPost()) {
@@ -78,7 +76,7 @@ class AlbumController extends AbstractActionController
                 $this->galleryService->storeAlbum ($form->getData());
                 return $this->redirect()->toRoute('album');
             }
-            dump ('not valid');
+            dump ('not valid'); //cleanfix bugfix
         }
         return array(
             'id' => $id,
@@ -118,5 +116,17 @@ class AlbumController extends AbstractActionController
             'event' => $event,
             'form' => $form
         );
+    }
+    private function addDate ($data){
+        $return = array();
+        foreach ($data as $values){
+            foreach ($values as $key => $value){
+                $return[$key] = $value;
+                if ($key == 'timestamp'){
+                    $return['date'] = date('d.m.Y', $value);
+                }
+            }
+        }
+        return array($return);
     }
 }
