@@ -241,7 +241,7 @@
                     if ( $this.is( '.active' ) ) {
                         return;
                     }
-                    jGallery.thumbnails.setActiveAlbum( jGallery.thumbnails.$albums.filter( '[data-jgallery-album-title="' + $this.attr( 'data-jgallery-album-title' ) + '"]' ) );
+                    jGallery.thumbnails.setActiveAlbum( jGallery.thumbnails.$albums.filter( '[data-jgallery-usermanager-title="' + $this.attr( 'data-jgallery-usermanager-title' ) + '"]' ) );
                 }
             } );
             $( 'html' ).on( 'click', function(){ self.menuHide(); } );
@@ -308,7 +308,7 @@
     ThumbnailsGenerator.prototype = {
         start: function() {
             var self = this;
-            var selector = this.jGallery.isSlider() ? '.album:has(img)' : '.album:has(a:has(img))';
+            var selector = this.jGallery.isSlider() ? '.usermanager:has(img)' : '.usermanager:has(a:has(img))';
 
             $( 'body' ).append( '<div id="jGalleryTmp" style="position: absolute; top: 0; left: 0; width: 0; height: 0; z-index: -1; overflow: hidden;">' + this.$element.html() + '</div>' );
             this.$tmp = $( '#jGalleryTmp' );
@@ -326,8 +326,8 @@
         },
 
         insertAlbum: function( $this ) {
-            var strTitle = $this.is( '[data-jgallery-album-title]' ) ? $this.attr( 'data-jgallery-album-title' ) : 'MemberManager ' + this.intJ;
-            var $album = this.$thumbnailsContainerInner.append( '<div class="album" data-jgallery-album-title="' + strTitle + '"></div>' ).children( ':last-child' );
+            var strTitle = $this.is( '[data-jgallery-usermanager-title]' ) ? $this.attr( 'data-jgallery-usermanager-title' ) : 'Usermanager ' + this.intJ;
+            var $album = this.$thumbnailsContainerInner.append( '<div class="usermanager" data-jgallery-usermanager-title="' + strTitle + '"></div>' ).children( ':last-child' );
 
             if ( this.intJ === 1 ) {
                 $album.addClass( 'active' );
@@ -393,7 +393,7 @@
         this.$a = this.getElement().find( 'a' );
         this.$img = this.getElement().find( 'img' );
         this.$container = this.getElement().find( '.jgallery-container' );
-        this.$albums = this.getElement().find( '.album' ).length ? this.getElement().find( '.album' ) : this.getElement().find( '.jgallery-container-inner' ).addClass( 'active' );
+        this.$albums = this.getElement().find( '.usermanager' ).length ? this.getElement().find( '.usermanager' ) : this.getElement().find( '.jgallery-container-inner' ).addClass( 'active' );
         this.$btnNext = this.getElement().children( '.next' );
         this.$btnPrev = this.getElement().children( '.prev' );
         this.intJgalleryId = jGallery.$element.attr( 'data-jgallery-id' );
@@ -440,14 +440,14 @@
                     start: function() {},
                     success: function(){
                         self._showNextThumb();
-                        self.$a.parent( '.album:not(.active)' ).children( '.hidden' ).removeClass( 'hidden' );
+                        self.$a.parent( '.usermanager:not(.active)' ).children( '.hidden' ).removeClass( 'hidden' );
                         self.getElement().addClass( 'loaded' );
                     }
                 } );
             }
             else {
                 this._showNextThumb();
-                this.$a.parent( '.album:not(.active)' ).children( '.hidden' ).removeClass( 'hidden' );
+                this.$a.parent( '.usermanager:not(.active)' ).children( '.hidden' ).removeClass( 'hidden' );
             }
             this.$iconToggleThumbsVisibility.removeClass( 'inactive' );
         },
@@ -516,7 +516,7 @@
         reload: function() {
             this.$a = this.getElement().find( 'a' );
             this.$img = this.getElement().find( 'img' );
-            this.$albums = this.getElement().find( '.album' ).length ? this.getElement().find( '.album' ) : this.getElement().find( '.jgallery-container-inner' ).addClass( 'active' );
+            this.$albums = this.getElement().find( '.usermanager' ).length ? this.getElement().find( '.usermanager' ) : this.getElement().find( '.jgallery-container-inner' ).addClass( 'active' );
         },
 
         bindEvents: function() {
@@ -560,8 +560,8 @@
             }
             this.$albums.not( $album.get( 0 ) ).removeClass( 'active' );
             $album.addClass( 'active' );
-            this.jGallery.iconChangeAlbum.getListOfAlbums().find( '.item' ).removeClass( 'active' ).filter( '[data-jgallery-album-title="' + $album.attr( 'data-jgallery-album-title' ) + '"]' ).addClass( 'active' );
-            this.jGallery.iconChangeAlbum.setTitle( $album.attr( 'data-jgallery-album-title' ) );
+            this.jGallery.iconChangeAlbum.getListOfAlbums().find( '.item' ).removeClass( 'active' ).filter( '[data-jgallery-usermanager-title="' + $album.attr( 'data-jgallery-usermanager-title' ) + '"]' ).addClass( 'active' );
+            this.jGallery.iconChangeAlbum.setTitle( $album.attr( 'data-jgallery-usermanager-title' ) );
             this.refreshNavigation();
             if ( ! this.getElement().is( '.full-screen' ) && this.jGallery.$element.is( ':visible' ) ) {
                 this.zoom.showPhoto( $album.find( 'a' ).eq( 0 ) );
@@ -1188,13 +1188,13 @@
             this.thumbnails.changeViewToBar();
             if ( this.jGallery.booIsAlbums ) {
                 if ( this.jGallery.iconChangeAlbum.getTitle() === '' ) {
-                    albumTitle = $a.parents( '.album' ).eq( 0 ).attr( 'data-jgallery-album-title' );
+                    albumTitle = $a.parents( '.usermanager' ).eq( 0 ).attr( 'data-jgallery-usermanager-title' );
                     this.jGallery.iconChangeAlbum.setTitle( albumTitle );
-                    this.jGallery.iconChangeAlbum.$element.find( '[data-jgallery-album-title="' + albumTitle + '"]' ).addClass( 'active' );
-                    $a.parents( '.album' ).addClass( 'active' ).siblings( '.album' ).removeClass( 'active' );
+                    this.jGallery.iconChangeAlbum.$element.find( '[data-jgallery-usermanager-title="' + albumTitle + '"]' ).addClass( 'active' );
+                    $a.parents( '.usermanager' ).addClass( 'active' ).siblings( '.usermanager' ).removeClass( 'active' );
                 }
             }
-            this.thumbnails.setActiveAlbum( this.thumbnails.$albums.filter( '[data-jgallery-album-title="' + $a.parents( '[data-jgallery-album-title]' ).attr( 'data-jgallery-album-title' ) + '"]' ) );
+            this.thumbnails.setActiveAlbum( this.thumbnails.$albums.filter( '[data-jgallery-usermanager-title="' + $a.parents( '[data-jgallery-usermanager-title]' ).attr( 'data-jgallery-usermanager-title' ) + '"]' ) );
             this.thumbnails.setActiveThumb( $a );
             if ( this.$element.find( 'img.active' ).attr( 'src' ) === $a.attr( 'href' ) ) {
                 this.booLoadingInProgress = false;
@@ -1443,7 +1443,7 @@
     var jGallery = function( $this ) {
         var self = this;
 
-        this.booIsAlbums = $this.find( '.album:has(a:has(img))' ).length > 1;
+        this.booIsAlbums = $this.find( '.usermanager:has(a:has(img))' ).length > 1;
         this.intId = jGalleryId;
         this.$this = $this;
         if ( jGalleryOptions[ this.intId ].disabledOnIE8AndOlder && isInternetExplorer8AndOlder() ) {
@@ -1491,7 +1491,7 @@
             if ( jGalleryOptions[ this.intId ].disabledOnIE8AndOlder && isInternetExplorer7AndOlder() ) {
                 return;
             }
-            this.booIsAlbums = this.$this.find( '.album:has(a:has(img))' ).length > 1;
+            this.booIsAlbums = this.$this.find( '.usermanager:has(a:has(img))' ).length > 1;
             if ( jGalleryOptions[ this.intId ].reloadThumbnails ) {
                 this.reloadThumbnails();
             }
@@ -1573,9 +1573,9 @@
                 return;
             }
             if ( this.booIsAlbums ) {
-                $album = this.thumbnails.getElement().find( '.album' ).eq( jGalleryOptions[ this.intId ].autostartAtAlbum - 1 );
+                $album = this.thumbnails.getElement().find( '.usermanager' ).eq( jGalleryOptions[ this.intId ].autostartAtAlbum - 1 );
                 if ( $album.length === 0 ) {
-                    $album = this.thumbnails.getElement().find( '.album' ).eq( 0 );
+                    $album = this.thumbnails.getElement().find( '.usermanager' ).eq( 0 );
                 }
             }
             else {
@@ -1623,22 +1623,22 @@
         generateAlbumsDropdown: function() {
             var self = this;
 
-            this.$element.find( '.change-album' ).remove();
+            this.$element.find( '.change-usermanager' ).remove();
             if ( ! this.booIsAlbums ) {
                 return;
             }
             this.zoom.$container.find( '.nav-bottom > .icons' ).append( '\
-                <span class="fa fa-list-ul change-album jgallery-btn jgallery-btn-small">\
+                <span class="fa fa-list-ul change-usermanager jgallery-btn jgallery-btn-small">\
                     <span class="menu jgallery-btn"></span>\
                     <span class="title"></span>\
                 </span>\
             ' );
-            this.iconChangeAlbum = new IconChangeAlbum( self.zoom.$container.find( '.change-album' ), this );
+            this.iconChangeAlbum = new IconChangeAlbum( self.zoom.$container.find( '.change-usermanager' ), this );
             this.iconChangeAlbum.clearMenu();
             this.thumbnails.$albums.each( function() {
-                var strTitle = $( this ).attr( 'data-jgallery-album-title' );
+                var strTitle = $( this ).attr( 'data-jgallery-usermanager-title' );
 
-                self.iconChangeAlbum.appendToMenu( '<span class="item" data-jgallery-album-title="' + strTitle + '">' + strTitle + '</span>' );
+                self.iconChangeAlbum.appendToMenu( '<span class="item" data-jgallery-usermanager-title="' + strTitle + '">' + strTitle + '</span>' );
             } );
             this.thumbnails.getElement().append( this.iconChangeAlbum.getElement().outerHtml() );
             this.iconChangeAlbum = new IconChangeAlbum( this.iconChangeAlbum.getElement().add( this.thumbnails.getElement().children( ':last-child' ) ), this );
@@ -1801,7 +1801,7 @@
             jGalleryOptions[ this.intId ].slideshow && jGalleryOptions[ this.intId ].slideshowCanRandom && jGalleryOptions[ this.intId ].slideshowRandom ? this.zoom.$random.addClass( 'active' ) : this.zoom.$random.removeClass( 'active' );
 
             jGalleryOptions[ this.intId ].thumbnailsFullScreen && jGalleryOptions[ this.intId ].thumbnails ? this.zoom.$container.find( '.full-screen' ).show() : this.zoom.$container.find( '.full-screen' ).hide();
-            jGalleryOptions[ this.intId ].thumbnailsFullScreen && jGalleryOptions[ this.intId ].thumbnails ? this.zoom.$container.find( '.change-album' ).show() : this.zoom.$container.find( '.change-album' ).hide();
+            jGalleryOptions[ this.intId ].thumbnailsFullScreen && jGalleryOptions[ this.intId ].thumbnails ? this.zoom.$container.find( '.change-usermanager' ).show() : this.zoom.$container.find( '.change-usermanager' ).hide();
             jGalleryOptions[ this.intId ].canMinimalizeThumbnails && jGalleryOptions[ this.intId ].thumbnails ? this.zoom.$container.find( '.minimalize-thumbnails' ).show() : this.zoom.$container.find( '.minimalize-thumbnails' ).hide();
             jGalleryOptions[ this.intId ].hideThumbnailsOnInit && jGalleryOptions[ this.intId ].thumbnails ? this.thumbnails.hide() : this.thumbnails.show();
             jGalleryOptions[ this.intId ].titleExpanded ? this.zoom.$title.addClass( 'expanded' ) : this.zoom.$title.removeClass( 'expanded' );
@@ -1888,27 +1888,27 @@
                   text-shadow: none;\
                   text-shadow: 0 0 .15em rgba(' + arrText.r + ',' + arrText.g + ', ' + arrText.b + ',.75), 0 0 .45em rgba(' + arrText.r + ',' + arrText.g + ', ' + arrText.b + ',.5);\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .change-album .menu {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .change-usermanager .menu {\
                   background: rgb(' + arrBgAlt.r + ',' + arrBgAlt.g + ', ' + arrBgAlt.b + ');\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .zoom-container .nav-bottom .change-album > .title {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .zoom-container .nav-bottom .change-usermanager > .title {\
                   background: rgb(' + arrBgAlt.r + ',' + arrBgAlt.g + ', ' + arrBgAlt.b + ');\
                   box-shadow: 4px 0 4px rgb(' + arrBgAlt.r + ',' + arrBgAlt.g + ', ' + arrBgAlt.b + ')\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .full-screen .change-album .menu {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .full-screen .change-usermanager .menu {\
                   background: rgb(' + arrBg.r + ',' + arrBg.g + ', ' + arrBg.b + ');\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .change-album .menu .item {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .change-usermanager .menu .item {\
                   border-color: rgb(' + arrBg.r + ',' + arrBg.g + ', ' + arrBg.b + ');\
                   color: rgb(' + arrText.r + ',' + arrText.g + ', ' + arrText.b + ');\
                   background: rgb(' + arrBgAlt.r + ',' + arrBgAlt.g + ', ' + arrBgAlt.b + ');\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .full-screen .change-album .menu .item {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .full-screen .change-usermanager .menu .item {\
                   border-color: rgb(' + arrBgAlt.r + ',' + arrBgAlt.g + ', ' + arrBgAlt.b + ');\
                   background: rgb(' + arrBg.r + ',' + arrBg.g + ', ' + arrBg.b + ');\
                 }\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .change-album .menu .item.active,\
-                .jgallery[data-jgallery-id="' + this.intId + '"] .change-album .menu .item:hover {\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .change-usermanager .menu .item.active,\
+                .jgallery[data-jgallery-id="' + this.intId + '"] .change-usermanager .menu .item:hover {\
                   background: rgb(' + arrText.r + ',' + arrText.g + ', ' + arrText.b + ');\
                   color: rgb(' + arrBg.r + ',' + arrBg.g + ', ' + arrBg.b + ');\
                 }\

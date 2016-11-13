@@ -4,10 +4,7 @@ use Album\Service\GalleryService;
 use Album\Controller\AlbumController;
 return array(
     'controllers' => array(
-        'invokables' => array(
-           // 'MemberManager\Controller\MemberManager' => 'MemberManager\Controller\AlbumController',
-           // 'MemberManager\Controller\Gallery' => 'MemberManager\Controller\GalleryController',
-        ),
+        'invokables' => array( ),
         'factories' => array(
             'Album\Controller\Gallery' => function($controllerManager) {
                 $sm = $controllerManager->getServiceLocator();

@@ -1,0 +1,29 @@
+<?php
+
+$title = 'Neues Album';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <?php
+ $form->prepare();
+ $formContent = '';
+ echo $this->form()->openTag($form);
+ foreach ($form as $element)
+ {
+     $formContent .= $this->formrow($element) . '<br/>';
+ }
+
+ echo $formContent;
+ echo $this->form()->closeTag();
+
+?>
+<script>
+    $('#content input[name="date"]').datepicker({
+        dateFormat: "dd.mm.yy",
+        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
+        onSelect: function (selectedDate) {
+            var date = new Date($('#content input[name="date"]' ).val());
+            $('#content input[name="timestamp"]').val(date.getTime() / 1000);
+        }
+    });
+</script>

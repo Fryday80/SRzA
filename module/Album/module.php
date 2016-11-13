@@ -32,15 +32,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'MemberManager\Model\AlbumsTable' =>  function($sm) {
+                'Album\Model\AlbumsTable' =>  function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     return new AlbumsTable($dbAdapter);
                 },
-                'MemberManager\Model\AlbumImagesTable' => function ($sm) {
+                'Album\Model\AlbumImagesTable' => function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     return new AlbumImagesTable($dbAdapter);
                 },
-                'MemberManager\Model\ImagesTable' => function ($sm) {
+                'Album\Model\ImagesTable' => function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     return new ImagesTable($dbAdapter);
                 },

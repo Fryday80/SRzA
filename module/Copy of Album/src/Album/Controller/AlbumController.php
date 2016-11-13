@@ -34,7 +34,7 @@ class AlbumController extends AbstractActionController
                 $this->getAlbumTable()->saveAlbum($album);
                 
                 // Redirect to list of albums
-                return $this->redirect()->toRoute('album');
+                return $this->redirect()->toRoute('usermanager');
             }
         }
         return array(
@@ -46,17 +46,17 @@ class AlbumController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
-            return $this->redirect()->toRoute('album', array(
+            return $this->redirect()->toRoute('usermanager', array(
                 'action' => 'add'
             ));
         }
         
-        // Get the MemberManager with the specified id. An exception is thrown
+        // Get the Usermanager with the specified id. An exception is thrown
         // if it cannot be found, in which case go to the index page.
         try {
             $album = $this->getAlbumTable()->getAlbum($id);
         } catch (\Exception $ex) {
-            return $this->redirect()->toRoute('album', array(
+            return $this->redirect()->toRoute('usermanager', array(
                 'action' => 'index'
             ));
         }
@@ -74,7 +74,7 @@ class AlbumController extends AbstractActionController
                 $this->getAlbumTable()->saveAlbum($album);
                 
                 // Redirect to list of albums
-                return $this->redirect()->toRoute('album');
+                return $this->redirect()->toRoute('usermanager');
             }
         }
         
@@ -88,7 +88,7 @@ class AlbumController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
-            return $this->redirect()->toRoute('album');
+            return $this->redirect()->toRoute('usermanager');
         }
         
         $request = $this->getRequest();
@@ -101,12 +101,12 @@ class AlbumController extends AbstractActionController
             }
             
             // Redirect to list of albums
-            return $this->redirect()->toRoute('album');
+            return $this->redirect()->toRoute('usermanager');
         }
         
         return array(
             'id' => $id,
-            'album' => $this->getAlbumTable()->getAlbum($id)
+            'usermanager' => $this->getAlbumTable()->getAlbum($id)
         );
     }
 
@@ -114,7 +114,7 @@ class AlbumController extends AbstractActionController
     {
         if (! $this->albumTable) {
             $sm = $this->getServiceLocator();
-            $this->albumTable = $sm->get('MemberManager\Model\AlbumTable');
+            $this->albumTable = $sm->get('Usermanager\Model\AlbumTable');
         }
         return $this->albumTable;
     }

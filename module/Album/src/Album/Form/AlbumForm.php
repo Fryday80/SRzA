@@ -36,6 +36,17 @@ class AlbumForm extends Form
             'options' => array(
                 'label' => 'Event',
             ),
+            'decorators' => array(
+                //'ViewHelper',
+                //'Label' => array(
+                //    'tag' => 'dr'
+                //),
+                'HtmlTag' => array(
+                    'tag' => 'br',
+                    'openOnly' => false,
+                    'placement' => 'prepend',
+                ),
+            ),
         ));
         $this->add(array(
             'name' => 'date',
@@ -43,6 +54,17 @@ class AlbumForm extends Form
             'attributes' => $general_layout,
             'options' => array(
                 'label' => 'Datum',
+            ),
+            'decorators' => array(
+                'ViewHelper',
+                'Label' => array(
+                    'tag' => 'dr'
+                ),
+                'HtmlTag' => array(
+                    'tag' => 'br',
+                    'openOnly' => true,
+                    'placement' => 'prepend',
+                ),
             ),
         ));
         $this->add(array(

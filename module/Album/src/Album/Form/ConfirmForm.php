@@ -25,7 +25,7 @@ class ConfirmForm extends Form
                 )
             ),
             'options' => array(
-                'label' => 'Wirklich das gesamte MemberManager mit Bildern löschen?',
+                'label' => 'Wirklich das gesamte Album mit Bildern löschen?',
                 'label_attributes' => array(
                     'class'  => ''
                 ),

@@ -30,7 +30,7 @@ class GalleryController extends AbstractActionController
             'album' => $album_data[0],
             'images' => $album_data[1]
         ));
-        $viewModel->setTemplate('MemberManager/gallery/small.phtml');
+        $viewModel->setTemplate('Album/gallery/small.phtml');
         return $viewModel;
     }
 }

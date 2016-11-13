@@ -32,7 +32,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'MemberManager\Model\AlbumTable' =>  function($sm) {
+                'Usermanager\Model\AlbumTable' =>  function($sm) {
                     $tableGateway = $sm->get('AlbumTableGateway');
                     $table = new AlbumTable($tableGateway);
                     return $table;
@@ -41,7 +41,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $resultSetPrototype = new ResultSet();
                     $resultSetPrototype->setArrayObjectPrototype(new Album());
-                    return new TableGateway('album', $dbAdapter, null, $resultSetPrototype);
+                    return new TableGateway('usermanager', $dbAdapter, null, $resultSetPrototype);
                 },
             ),
         );

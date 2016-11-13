@@ -1,6 +1,6 @@
 <?php
 
-$title = 'Delete album';
+$title = 'Delete usermanager';
 $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
@@ -10,7 +10,7 @@ $this->headTitle($title);
      '<?php echo $this->escapeHtml($album->artist); ?>'?
  </p>
  <?php
- $url = $this->url('album', array(
+ $url = $this->url('usermanager', array(
      'action' => 'delete',
      'id'     => $this->id,
  ));
