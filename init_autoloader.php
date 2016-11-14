@@ -22,6 +22,8 @@ function dump ($varray, $marker = '##########BUGFIX######', $trace=3)
     echo $marker;
     echo ('<pre style="background-color: #0ac2d2">');
     var_dump($varray);
+    echo ('</pre>');
+    echo ('<pre style="background-color: #949c53">');
     debug_print_backtrace (null, $trace);
     echo ('</pre>');
 

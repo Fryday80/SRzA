@@ -15,7 +15,8 @@ Class GetauthService
     }
 
     public function getAllUsers (){
-        return $this->usertable->fetchAll();
+        $data = $this->usertable->fetchAll();
+        return $this->cleanData($data->toArray());
     }
 
     public function getUser ($id){
@@ -37,6 +38,19 @@ Class GetauthService
 
     public function xx (){}
 
-    public function xy (){}
+    private function cleanData ($data){
+        $new_data = array ();
+        $result = array ();
+        $remove_array = array('password');
 
+        foreach ($data as $count){
+            foreach ($count as $key => $value) {
+                if (!in_array($key, $remove_array)) {
+                    $new_data[$key] = $value;
+                }
+            }
+            array_push($result, $new_data);
+        }
+        return $result;
+    }
 }
