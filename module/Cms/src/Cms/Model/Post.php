@@ -49,7 +49,7 @@ class Post implements PostInterface
      */
     public function getExceptedRoles($asArray = false)
     {
-        return ($asArray)? explode(",", $this->exceptedRoles) || array("") : $this->exceptedRoles;
+        return ($asArray)? explode(",", $this->exceptedRoles) : $this->exceptedRoles;
     }
     /**
      * @param string | array $roles
