@@ -11,11 +11,15 @@ class AccessService {
     protected $acl;
     protected $hasIdentity = false;
     protected $role;
+    protected $userID;
+    protected $userName;
 
     function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage) {
         $this->aclService = $aclService;
         $this->authService = $authService;
         $this->role = $storage->getRoleName();
+        $this->userID = $storage->getUserID();
+        $this->userName = $storage->getUserName();
         $this->acl = $aclService;
         $this->acl->initAcl();
         
@@ -23,13 +27,6 @@ class AccessService {
         AbstractHelper::setDefaultRole($this->role);
     }
     function allowed($resoure, $permission) {
-        //print("<br>");
-        //print($this->role);
-        //print("<br>");
-        //print($resoure);
-        //print("<br>");
-        //print($permission);
-        //die;
         return $this->acl->isAccessAllowed($this->role, $resoure, $permission);
     }
     function hasIdentity() {
@@ -40,5 +37,11 @@ class AccessService {
     }
     function getRole() {
         return $this->role;
+    }
+    function getUserID() {
+        return $this->userID;
+    }
+    function getUserName() {
+        return $this->userName;
     }
 }
