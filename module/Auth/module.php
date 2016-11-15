@@ -29,7 +29,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
 {
     private $whitelist = array(
         'Auth\Controller\Auth-login',
-        'Auth\Controller\Auth-logout'
+        'Auth\Controller\Auth-logout',
+        'Cms\Controller\Page-index'
     );
 
     public function onBootstrap(MvcEvent $e)
@@ -42,6 +43,24 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         return $this;
     }
 
+    public function checkLogin($e)
+    {
+        $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
+        $target             = $e->getTarget();
+        $match              = $e->getRouteMatch();
+        $controller         = $match->getParam('controller');
+        $action             = $match->getParam('action');
+        $title               = $match->getParam('title');
+        $requestedResourse  = $controller . "-" . $action;
+
+        if( !in_array($requestedResourse, $this->whitelist)){
+            if( !$accessService->allowed($controller, $action) ){
+                return $target->redirect()->toUrl('/login');
+            }
+        }
+        AbstractHelper::setDefaultAcl($accessService->getAcl());
+        AbstractHelper::setDefaultRole($accessService->getRole());
+    }
     public function getAutoloaderConfig()
     {
         return array(
@@ -126,22 +145,4 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         );
     }
 
-    public function checkLogin($e)
-    {
-        return;//dann kanste dran basteln
-        $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
-        $target             = $e->getTarget();
-        $match              = $e->getRouteMatch();
-        $controller         = $match->getParam('controller');
-        $action             = $match->getParam('action');
-        $requestedResourse  = $controller . "-" . $action;
-
-        if( !in_array($requestedResourse, $this->whitelist)){
-            if( !$accessService->allowed($controller, $action) ){
-                return $target->redirect()->toUrl('/login');
-            }
-        }
-        AbstractHelper::setDefaultAcl($accessService->getAcl());
-        AbstractHelper::setDefaultRole($accessService->getRole());
-    }
 }

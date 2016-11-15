@@ -24,6 +24,11 @@ class Post implements PostInterface
     protected $content;
 
     /**
+     * @var string
+     */
+    protected $exceptedRoles;
+
+    /**
      * {@inheritDoc}
      */
     public function getId()
@@ -39,6 +44,21 @@ class Post implements PostInterface
         $this->id = $id;
     }
 
+    /**
+     * @return string
+     */
+    public function getExceptedRoles($asArray = false)
+    {
+        return ($asArray)? explode(",", $this->exceptedRoles) || array("") : $this->exceptedRoles;
+    }
+    /**
+     * @param string | array $roles
+     */
+    public function setExceptedRoles($roles)
+    {
+        //@todo if type of $roles is array then implode it with , as delimiter
+        $this->exceptedRoles = $roles;
+    }
     /**
      * {@inheritDoc}
      */

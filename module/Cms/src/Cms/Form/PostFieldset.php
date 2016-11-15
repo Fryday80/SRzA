@@ -29,6 +29,14 @@ class PostFieldset extends Fieldset
         ));
 
         $this->add(array(
+            'type' => 'textarea',
+            'name' => 'content',
+            'options' => array(
+                'label' => 'Content'
+            )
+        ));
+
+        $this->add(array(
             'type' => 'text',
             'name' => 'url',
             'options' => array(
@@ -37,10 +45,10 @@ class PostFieldset extends Fieldset
         ));
 
         $this->add(array(
-            'type' => 'textarea',
-            'name' => 'content',
+            'type' => 'text',
+            'name' => 'exceptedRoles',
             'options' => array(
-                'label' => 'Content'
+                'label' => 'Excepted Roles'
             )
         ));
 

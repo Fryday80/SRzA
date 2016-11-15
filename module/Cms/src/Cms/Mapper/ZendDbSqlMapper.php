@@ -142,9 +142,10 @@ class ZendDbSqlMapper implements PostMapperInterface
             $action = new Insert('pages');
             $action->values($postData);
         }
-        
+
         $sql = new Sql($this->dbAdapter);
         $stmt = $sql->prepareStatementForSqlObject($action);
+        dump("hier");
         $result = $stmt->execute();
         
         if ($result instanceof Result) {

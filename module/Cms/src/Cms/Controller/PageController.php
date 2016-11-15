@@ -24,8 +24,20 @@ class PageController extends AbstractActionController
              //go to homepage
              $url = 'Home';
          }
+
+         //get page data
+         $page = $this->postService->findByUrl($url);
+         $exceptRolls = $page->getExceptedRolesArray();
+         //check auth
+         $accessService = $this->getServiceLocator()->get('AccessService');
+         $role = $accessService->getRole();
+
+         if (in_array($role, $exceptRolls)) {
+            //deny
+             return $this->redirect()->toUrl('/home');
+         }
          return new ViewModel(array(
-             'page' => $this->postService->findByUrl($url)
+             'page' => $page
          ));
      }
 }

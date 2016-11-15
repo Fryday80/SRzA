@@ -50,7 +50,6 @@ class ContentController extends AbstractActionController
 
         if ($request->isPost()) {
             $this->postForm->setData($request->getPost());
-
             if ($this->postForm->isValid()) {
                 try {
                     $this->postService->savePost($this->postForm->getData());
