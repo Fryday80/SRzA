@@ -27,7 +27,7 @@ class PageController extends AbstractActionController
 
          //get page data
          $page = $this->postService->findByUrl($url);
-         $exceptRolls = $page->getExceptedRolesArray();
+         $exceptRolls = $page->getExceptedRoles(true);
          //check auth
          $accessService = $this->getServiceLocator()->get('AccessService');
          $role = $accessService->getRole();

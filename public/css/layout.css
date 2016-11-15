@@ -17,6 +17,8 @@ body {
     border-radius: 35px;
 }
 
+h1 {font-size: 20px;}
+
 a:link,
 a:visited,
 a:hover,

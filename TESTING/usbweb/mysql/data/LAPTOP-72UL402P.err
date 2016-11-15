@@ -328,3 +328,44 @@
 2016-11-13 18:26:09 13660 [Note] IPv6 is available.
 2016-11-13 18:26:09 13660 [Note]   - '::' resolves to '::';
 2016-11-13 18:26:09 13660 [Note] Server socket created on IP: '::'.
+2016-11-15 21:13:29 15800 [Note] Plugin 'FEDERATED' is disabled.
+2016-11-15 21:13:29 15800 [Note] InnoDB: The InnoDB memory heap is disabled
+2016-11-15 21:13:29 15800 [Note] InnoDB: Mutexes and rw_locks use Windows interlocked functions
+2016-11-15 21:13:29 15800 [Note] InnoDB: Compressed tables use zlib 1.2.3
+2016-11-15 21:13:29 15800 [Note] InnoDB: Not using CPU crc32 instructions
+2016-11-15 21:13:29 15800 [Note] InnoDB: Initializing buffer pool, size = 128.0M
+2016-11-15 21:13:29 15800 [Note] InnoDB: Completed initialization of buffer pool
+2016-11-15 21:13:29 15800 [Note] InnoDB: Highest supported file format is Barracuda.
+2016-11-15 21:13:29 15800 [Note] InnoDB: The log sequence numbers 1626134 and 1626134 in ibdata files do not match the log sequence number 3483939 in the ib_logfiles!
+2016-11-15 21:13:29 15800 [Note] InnoDB: Database was not shutdown normally!
+2016-11-15 21:13:29 15800 [Note] InnoDB: Starting crash recovery.
+2016-11-15 21:13:29 15800 [Note] InnoDB: Reading tablespace information from the .ibd files...
+2016-11-15 21:13:29 15800 [Note] InnoDB: Restoring possible half-written data pages 
+2016-11-15 21:13:29 15800 [Note] InnoDB: from the doublewrite buffer...
+2016-11-15 21:13:30 475c  InnoDB: Error: table 'frytest/pages'
+InnoDB: in InnoDB data dictionary has tablespace id 112,
+InnoDB: but a tablespace with that id does not exist. There is
+InnoDB: a tablespace of name frytest/pages and id 119, though. Have
+InnoDB: you deleted or moved .ibd files?
+InnoDB: Please refer to
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/innodb-troubleshooting-datadict.html
+InnoDB: for how to resolve the issue.
+2016-11-15 21:13:30 15800 [Note] InnoDB: 128 rollback segment(s) are active.
+2016-11-15 21:13:30 15800 [Note] InnoDB: Waiting for purge to start
+2016-11-15 21:13:30 3f90 InnoDB: Error: page 3 log sequence number 3503241
+InnoDB: is in the future! Current system log sequence number 3483949.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2016-11-15 21:13:30 3f90 InnoDB: Error: page 3 log sequence number 3502464
+InnoDB: is in the future! Current system log sequence number 3483949.
+InnoDB: Your database may be corrupt or you may have copied the InnoDB
+InnoDB: tablespace but not the InnoDB log files. See
+InnoDB: http://dev.mysql.com/doc/refman/5.6/en/forcing-innodb-recovery.html
+InnoDB: for more information.
+2016-11-15 21:13:30 15800 [Note] InnoDB: 5.6.13 started; log sequence number 3483939
+2016-11-15 21:13:30 15800 [Note] Server hostname (bind-address): '*'; port: 3307
+2016-11-15 21:13:30 15800 [Note] IPv6 is available.
+2016-11-15 21:13:30 15800 [Note]   - '::' resolves to '::';
+2016-11-15 21:13:30 15800 [Note] Server socket created on IP: '::'.

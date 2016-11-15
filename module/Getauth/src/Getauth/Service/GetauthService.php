@@ -16,18 +16,19 @@ Class GetauthService
 
     public function getAllUsers (){
         $data = $this->usertable->fetchAll();
+        dumpd($this->getUser(1));
         return $this->cleanData($data->toArray());
     }
 
     public function getUser ($id){
-        /*
+
         $user =  $this->usertable->getUser($id);
         $detail =  $this->usertable->getUserDetails(array('id' => $id));
         return array(
             'user' => $user,
             'detail' => $detail,
         );
-        */
+
     }
 
     public function x (){}

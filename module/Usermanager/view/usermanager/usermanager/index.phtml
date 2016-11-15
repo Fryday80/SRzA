@@ -1,0 +1,17 @@
+<?php
+//view/usermanager/usermanager/index.phtml
+
+$title = 'Usermanager ';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$viewHelper->set (array (
+    'profiles' => $profiles,
+    'test' => $test,
+));
+$viewHelper->printIndex();
+//dumpd ($viewHelper->getVar ('profiles'));
+?>
+Index of UserManager -> success!
