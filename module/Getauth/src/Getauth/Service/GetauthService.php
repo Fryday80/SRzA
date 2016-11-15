@@ -20,14 +20,14 @@ Class GetauthService
     }
 
     public function getUser ($id){
-
+        /*
         $user =  $this->usertable->getUser($id);
-        $details = $this->usertable->getUserDetails(array('id' => $id));
-        
-        return array (
+        $detail =  $this->usertable->getUserDetails(array('id' => $id));
+        return array(
             'user' => $user,
-            'details' => $details,
+            'detail' => $detail,
         );
+        */
     }
 
     public function x (){}

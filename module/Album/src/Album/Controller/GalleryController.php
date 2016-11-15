@@ -27,7 +27,7 @@ class GalleryController extends AbstractActionController
         $album_data = $this->galleryService->fetchWholeAlbumData($id);
 
         $viewModel = new ViewModel(array(
-            'album' => $album_data[0][0],
+            'album' => $album_data[0],
             'images' => $album_data[1]
         ));
         $viewModel->setTemplate('Album/gallery/small.phtml');

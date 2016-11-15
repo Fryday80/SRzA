@@ -30,4 +30,6 @@ interface PostInterface
      * @return string
      */
     public function getContent();
+
+    public function getExceptedRoles($asArray = false);
 }

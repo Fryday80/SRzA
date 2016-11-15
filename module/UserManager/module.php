@@ -3,7 +3,6 @@ namespace Usermanager;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Usermanager\Helper\ViewHelper;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -29,9 +28,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'ViewHelper' => function ($sm){
-                    return new Viewhelper;
-                }
             ),
         );
     }
