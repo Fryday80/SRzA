@@ -53,9 +53,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $title               = $match->getParam('title');
         $requestedResourse  = $controller . "-" . $action;
 
+
+        dump($controller, $action, 1);
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
-                return $target->redirect()->toUrl('/login');
+//mach mal den stackTrace raus pls
+                dump("No Permission", 'BUGGY####', 1);
+                //return $target->redirect()->toUrl('/login');
             }
         }
         AbstractHelper::setDefaultAcl($accessService->getAcl());

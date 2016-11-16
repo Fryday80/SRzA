@@ -1,6 +1,7 @@
 <?php
 namespace Usermanager\Controller;
 
+use Usermanager\Form\ShowprofileForm;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -13,9 +14,10 @@ use Profile\Form\ConfirmForm;
 */
 class UsermanagerController extends AbstractActionController
 {
-    protected $profileService;
-    protected $getAuthData;
-    protected $viewHelper;
+    private $profileService;
+    private $getAuthData;
+    private $viewHelper;
+    private $editors_array = array();
 
 
     public function __construct($profileService, $getAuthData, $viewHelper)
@@ -38,11 +40,21 @@ class UsermanagerController extends AbstractActionController
 
     public function showProfileAction ($user_id)
     {
+        $this->editors_array = array ( 'administrator', 'editor');
+        $form = new ShowprofileForm();
         $user = $this->getAuthData->getUser($user_id);
         // fry andere Profil Daten
         $allowance = $this->allowEdit($user_id, $executor = 0);
-        // add edit buttons to form dependent from $allowance;
+        if ($allowance == 'self') {
+            $form->add('editbutton');
+        }
+        if (in_array($allowance, $this->editors_array)) {
+            $form->add('editbutton');
+            $form->add('deletebutton');
+        }
+        
         return array (
+            'form' => $form,
             'user' => $user[0],
             'details' => $user[1],
         );
@@ -51,10 +63,9 @@ class UsermanagerController extends AbstractActionController
     private function allowEdit ($user_id, $executing_user)
     {
         $executing_user['user_id'] = $user_id; //testmode
-        $editors = array ( 'administrator', 'editor');
 
         $allowance =  ($user_id == $executing_user['user_id']) ? 'self' : Null;
-        $allowance =  (in_array($executing_user['role'], $editors)) ? 'editor' : $allowance;
+        $allowance =  (in_array($executing_user['role'], $this->editors_array)) ? 'editor' : $allowance;
 
         return $allowance;
     }

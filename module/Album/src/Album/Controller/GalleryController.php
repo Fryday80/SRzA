@@ -30,7 +30,8 @@ class GalleryController extends AbstractActionController
             'album' => $album_data[0][0],
             'images' => $album_data[1]
         ));
-        $viewModel->setTemplate('Album/gallery/small.phtml');
+        $viewModel->setTemplate('Album/gallery/small.phtml');//was soll die zeile den?na das template laden... ist von dir
+        //weil er standart mässig auch des file nimt 
         return $viewModel;
     }
 }

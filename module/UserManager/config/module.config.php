@@ -9,8 +9,9 @@ return array(
                 $sm = $controllerManager->getServiceLocator();
                 $profileService = $sm->get('ProfileService');
                 $getAuthData = $sm->get('GetauthService');
-                
-                return new UsermanagerController($profileService, $getAuthData);
+                $viewHelper = $sm->get('ViewHelper');
+
+                return new UsermanagerController($profileService, $getAuthData, $viewHelper);
             },
         ),
     ),

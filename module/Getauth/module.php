@@ -32,7 +32,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 'GetauthService' => function ($sm) {
                     $storage = $sm->get('Auth\Model\AuthStorage');
                     $usertable = $sm->get('Auth\Model\UserTable');
-                    return new GetauthService ($storage, $usertable);
+                    $roleTable = $sm->get('Auth\Model\RoleTable');
+                    return new GetauthService ($storage, $usertable, $roleTable);
                 },
             ),
         );

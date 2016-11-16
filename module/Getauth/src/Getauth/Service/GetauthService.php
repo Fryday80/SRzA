@@ -7,16 +7,17 @@ Class GetauthService
 {
     private $authStorage;
     private $usertable;
+    private $roleTable;
 
-    function __construct($authStorage, $usertable)
+    function __construct($authStorage, $usertable, $roleTable)
     {
         $this->authStorage = $authStorage;
         $this->usertable = $usertable;
+        $this->roleTable = $roleTable;
     }
 
     public function getAllUsers (){
         $data = $this->usertable->fetchAll();
-        dumpd($this->getUser(1));
         return $this->cleanData($data->toArray());
     }
 
