@@ -198,16 +198,15 @@
 .links {
     height: 15px;
 }
-/*
+
 @keyframes rotate_link {
-    0%      { transform:skew(  0deg); }
-    35%     { transform:skew(  20deg); }
-    100%    { transform:skew(  0deg); }
+    0%      { transform:rotate(  0deg); }
+    100%    { transform:rotate(  360deg); }
 }
 
-li:hover ~ li>img {
+a:hover>img {
     height: 15px;
     animation-name: rotate_link;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
 }
-
-*/
