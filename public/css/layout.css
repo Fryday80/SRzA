@@ -6,13 +6,13 @@
 }
 html {
     background-color: rgb(67, 12, 12);
-    background-image: url(../img/html.bg.png);
+    background-image: url( /img/html.bg.png);
     background-size: 100px;
 }
 
 body {
     margin: 60px;
-    background-image: url(../img/body.bg.png);
+    background-image: url( /img/body.bg.png);
     background-size: auto 130px;
     border-radius: 35px;
 }
@@ -34,7 +34,7 @@ ownhead {
     font-size-adjust: auto;
 }
 owntitel {
-    font-family: stylo, arial, sans-serif;
+    font-family: stylo2, arial, sans-serif;
     font-size: 25px;
     color: black;
 }
@@ -80,7 +80,10 @@ input {
 
 /* ---------------Fonts---------------------*/
 @font-face { font-family: 'stylo';
-             src: url('../fonts/hp.ttf') format('truetype'); }
+             src: url('/fonts/hp.ttf') format('truetype'); }
+
+@font-face { font-family: 'stylo2';
+             src: url('/fonts/hp2.ttf') format('truetype'); }
 
 /* -----------------Head----------------- */
 #headcontainer {
@@ -214,12 +217,12 @@ newstitel {
     color: black;
     padding-top: 10px;
     min-height: 30px;
-    background-image: url(../img/body.bg.png);
+    background-image: url(/img/body.bg.png);
     background-size: auto 100%;
 }
 
 #footimage {
-    background-image: url(../img/foot.png);
+    background-image: url(/img/foot.png);
     background-position: center top;
     background-repeat: no-repeat;
     background-size: contain;
@@ -246,10 +249,10 @@ newstitel {
 /* ----------------- UI special desing -------------------------------- */
 
 .spacer_h {
-    background-image: url(../img/uikit/decoration.h.png);
+    background-image: url( /img/uikit/decoration.h.png);
     background-repeat: repeat-x;
     background-size: contain;
-    height: 15px;
+    height: 8px;
 }
 button {
     background: none;
