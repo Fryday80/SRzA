@@ -9,7 +9,7 @@
 
 namespace Usermanager\Form;
 
-Class ShowprofileForm extends Form
+Class ProfileForm extends Form
 {
     public function __construct()
     {

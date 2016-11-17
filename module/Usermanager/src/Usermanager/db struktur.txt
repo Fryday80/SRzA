@@ -1,0 +1,55 @@
+families
+    id
+    name
+
+Title
+    id
+    user_id
+    text
+
+
+user
+    +family_id
+    +order 1 -> n
+    +vita
+    +name
+    +sure name
+    +gender
+
+job#
+    job_id
+    user_id
+
+job
+    id
+    job
+
+
+
+abonnements
+    id
+    user_id
+    type_id // welches abonnement
+    since
+    multi_id
+
+multiabo
+    id          //not unique
+    user_id
+
+abonnementTypes
+    id
+    abonnement_id
+    monthCost
+
+
+
+
+
+
+
+
+
+
+
+

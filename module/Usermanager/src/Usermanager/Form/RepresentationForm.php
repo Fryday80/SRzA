@@ -9,18 +9,15 @@
 
 namespace Usermanager\Form;
 
-Class ShowdarstellungForm extends Form
+Class RepresentationForm extends Form
 {
     public function __construct()
     {
         $this->setAttribute('method', 'post');
         // User Table
         $this->add(array(
-            'name' => 'username',
-            'type' => 'text',
-            'attributes' => array(
-                'label' => 'Benutzername'
-            )
+            'name' => 'user_id',
+            'type' => 'Hidden', 
         ));
 
 
@@ -58,10 +55,6 @@ Class ShowdarstellungForm extends Form
             'attributes' => array(
                 'label' => 'weitere Titel'
             )
-        ));
-        $this->add(array(
-            'name' => 'path_to_vita',
-            'type' => 'Hidden',
         ));
         $this->add(array(
             'name' => 'vita',

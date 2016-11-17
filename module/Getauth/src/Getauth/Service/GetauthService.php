@@ -24,7 +24,7 @@ Class GetauthService
     public function getUser ($id){
 
         $user =  $this->usertable->getUser($id);
-        $detail =  $this->usertable->getUserDetails(array('id' => $id));
+        $detail =  $this->usertable->getUserDetails(array('user.id' => $id));
         return array(
             'user' => $user,
             'detail' => $detail,
