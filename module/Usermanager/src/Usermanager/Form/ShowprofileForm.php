@@ -80,7 +80,7 @@ Class ShowprofileForm extends Form
             'name' => 'submit',
             'type' => 'Submit',
             'attributes' => array(
-                'value' => 'Darstellung ',
+                'value' => 'darstellung ',
                 'id' => 'submitbutton',
             ),
         ));
