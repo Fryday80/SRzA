@@ -1,3 +1,7 @@
+db
+
+
+
 families
     id
     name
@@ -12,8 +16,10 @@ user
     +family_id
     +order 1 -> n
     +vita
-    +name
-    +sure name
+    +realname
+    +realsurename
+    +showname
+    +showsurename
     +gender
 
 job#
@@ -40,6 +46,7 @@ multiabo
 abonnementTypes
     id
     abonnement_id
+    name
     monthCost
 
 

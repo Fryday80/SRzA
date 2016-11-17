@@ -1,5 +1,0 @@
-[Tue Nov 15 20:49:18.887226 2016] [mpm_winnt:notice] [pid 10148:tid 592] AH00455: Apache/2.4.6 (Win32) PHP/5.4.17 configured -- resuming normal operations
-[Tue Nov 15 20:49:18.887226 2016] [mpm_winnt:notice] [pid 10148:tid 592] AH00456: Apache Lounge VC10 Server built: Jul 16 2013 11:15:41
-[Tue Nov 15 20:49:18.887226 2016] [core:notice] [pid 10148:tid 592] AH00094: Command line: 'D:\\Web\\usbweb/apache2/bin/httpd_usbwv8.exe -d D:/Web/usbweb/apache2'
-[Tue Nov 15 20:49:18.895246 2016] [mpm_winnt:notice] [pid 10148:tid 592] AH00418: Parent: Created child process 14628
-[Tue Nov 15 20:49:19.662995 2016] [mpm_winnt:notice] [pid 14628:tid 732] AH00354: Child: Starting 64 worker threads.
