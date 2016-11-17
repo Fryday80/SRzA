@@ -54,7 +54,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $requestedResourse  = $controller . "-" . $action;
 
 
-        dump($controller, $action, 1);
+        //dump($controller, $action, 1);  //cleanfix bugfix
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
 //mach mal den stackTrace raus pls

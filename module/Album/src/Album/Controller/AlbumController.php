@@ -76,7 +76,7 @@ class AlbumController extends AbstractActionController
                 $this->galleryService->storeAlbum ($form->getData());
                 return $this->redirect()->toRoute('album');
             }
-            dump ('not valid'); //cleanfix bugfix
+            //dump ('not valid'); //cleanfix bugfix
         }
         return array(
             'id' => $id,

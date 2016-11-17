@@ -225,7 +225,9 @@ newstitel {
     background-image: url(/img/foot.png);
     background-position: center top;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: 100%;
+    -webkit-border-bottom-left-radius: 30px;
+    -webkit-border-bottom-right-radius: 30px;
     height: 150px;
 }
 
@@ -252,7 +254,17 @@ newstitel {
     background-image: url( /img/uikit/decoration.h.png);
     background-repeat: repeat-x;
     background-size: contain;
-    height: 8px;
+    height: 10px;
+}
+.spacer_l {
+    background-image: url( ../img/uikit/decoration.3l.png);
+    background-repeat: repeat-x;
+    background-size: contain;
+    height: 10px;
+}
+.spacer_e {
+    background: none;
+    height: 10px;
 }
 button {
     background: none;
