@@ -13,5 +13,8 @@ window.last_fixes = {
 
             $("fieldset", $(ele)).addClass('width_95');
         });
+
+        // $("ul>li>a").before ('<img class="links" src="../img/uikit/link.png">');
+        $("a").before ('<img class="links" src="/img/uikit/link.png">');
     }
 }

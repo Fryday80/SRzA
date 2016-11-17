@@ -24,7 +24,7 @@ $this->headTitle($title);
      <td><?php echo date ('d.m.Y', $album['timestamp']); ?></td>
      <td style="text-align: center"><img class = "preview_gallery" src="<?php echo $prev_src;?>"></td>
      <td>
-         <a href="<?php echo $this->url('gallery/small', array('id' => $album['id']));?>"><butti>Ansehen</butti></a>
+         <a href="<?php echo $this->url('gallery/small', array('id' => $album['id']));?>">Ansehen</a>
      </td>
  </tr>
  <?php endforeach; ?>

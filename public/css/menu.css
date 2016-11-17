@@ -195,3 +195,19 @@
     background-color: black;
     border-radius: 20px;
 }
+.links {
+    height: 15px;
+}
+/*
+@keyframes rotate_link {
+    0%      { transform:skew(  0deg); }
+    35%     { transform:skew(  20deg); }
+    100%    { transform:skew(  0deg); }
+}
+
+li:hover ~ li>img {
+    height: 15px;
+    animation-name: rotate_link;
+}
+
+*/

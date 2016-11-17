@@ -25,8 +25,8 @@ $this->headTitle($title);
          else {$visibility = 'nein';}
          echo $visibility;?></th>
      <td>
-         <a href="<?php echo $this->url('album/edit', array('id' => $album['id']));?>"><butti>Edit</butti></a>
-         <a href="<?php echo $this->url('album/delete', array('id' => $album['id']));?>"><butti>Delete</butti></a>
+         <a href="<?php echo $this->url('album/edit', array('id' => $album['id']));?>">Edit</a>
+         <a href="<?php echo $this->url('album/delete', array('id' => $album['id']));?>">Delete</a>
      </td>
  </tr>
  <?php endforeach; ?>

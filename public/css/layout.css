@@ -26,6 +26,7 @@ a:active{
     text-decoration: none;
     color: black;
 }
+
 ownhead {
     font-family: stylo, arial, sans-serif;
     color: black;
@@ -60,7 +61,7 @@ label,
 input {
     border-radius: 5px;
 }
-button,
+/*button,   */
 input {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius:5px;
@@ -249,4 +250,8 @@ newstitel {
     background-repeat: repeat-x;
     background-size: contain;
     height: 15px;
+}
+button {
+    background: none;
+    border: none;
 }
