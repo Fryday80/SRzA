@@ -10,10 +10,10 @@ if ($allowance == 'editor'): ?>
 <div style="font-size: larger">
  <br>
  <button><a href="<?php echo $this->url('album/add', array());?>">Add User</a></button>
+    <br><br>
 </div>
   <?php endif;
 
-
-echo $datatableHelper->render($profiles);
+echo $datatableHelper->render($profiles, $allowance);
 
 ?>

@@ -14,21 +14,22 @@ use Zend\View\Helper\HeadScript;
 
 Class DatatableHelper extends AbstractHelper {
 
-    private $sm;
 
     function __construct($sm)
     {
-        $vHM =  $this->sm->get('viewhelpermanager');
+        //dumpd ($this->sm->getRegisteredServices());
+        //dumpd (get_class_methods($basePath));
+        //dumpd ($basePath->getView()->basePath('/bla/bla/blub'));
+        $vHM =  $sm->get('viewhelpermanager');
         $headLink = $vHM->get('headLink');
-        $headScript = $vHM->get('headLink');
+        $headScript = $vHM->get('headScript');
         $basePath = $vHM->get('basePath');
-        $headLink->appendStylesheet($basePath->setBasePath('/libs/datatables/datatables.min.css')); //salt das $this->basePath ('blabla') bekomme ich hier noch nicht hin
-        $headScript->prependFile($basePath->setBasePath('/libs/datatables/datatables.min.js'));
+        $headLink->appendStylesheet($basePath->getView()->basePath('/libs/datatables/datatables.min.css'));
+        $headScript->prependFile($basePath->getView()->basePath('/libs/datatables/datatables.min.js'));
     }
     
-    function render($data)
+    function render($data, $allowance='')
     {
-        dumpd ($this->sm->getRegisteredServices());
         $datarow = '';
         $datahead = '';
         $i = 0;
@@ -44,18 +45,33 @@ Class DatatableHelper extends AbstractHelper {
             $datarow .= '</tr>';
             $i++;
         }
-        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\"><thead><tr>$datahead</tr></thead>";
-        $table .= "<tfoot><tr>$datahead</tr></tfoot><tbody>";
+        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
+                    <thead> <tr> $datahead </tr> </thead>
+                    <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
         $table .= $datarow;
-        $table .= '</tbody></table>';
-        $table .= '<script>';
-        $table .= '$(".display").DataTable( {';
-        $table .= '    dom: "Bfrtip",';
-        $table .= '    buttons: [';
-        $table .= '    "copy", "excel", "pdf"';
-        $table .= ']';
-        $table .= '} );';
-        $table .= '</script>';
+        $table .= '</tbody> </table>';
+        $table .= $this->getTableScript(array ('allowance' => $allowance));
         return $table;
+    }
+
+    private function getTableScript ($options){
+        $startScript = '<script>
+                        $(".display").DataTable( {';
+        $endScript   = '} );
+                        </script>';
+
+        if ($options['allowance'] == '') {
+            return $startScript.$endScript;
+        }
+        if ($options['allowance'] == 'editor' || $options['allowance'] == 'self') {
+            $tableScript  = '   dom: "lfiBrtp",
+                                buttons: [
+                                        "print", "copy", "csv", "excel", "pdf"
+                                ],
+                                select: {
+                                    style: "multi"
+                                }';
+            return $startScript.$tableScript.$endScript;
+        }
     }
 }
