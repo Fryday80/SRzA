@@ -23,7 +23,7 @@ class UsermanagerController extends AbstractActionController
     private $userTable;
 
 
-    public function __construct($userTable, $accessService, $profileService, $viewHelper)
+    public function __construct($userTable, $accessService, $profileService, $datatableHelper)
     {
         $this->userTable = $userTable;
         // cleanfix   $this->accessService = $accessService;
@@ -32,7 +32,7 @@ class UsermanagerController extends AbstractActionController
         $this->whoamI['role'] = $accessService->getRole();
         $this->whoamI['user_id'] = $accessService->getUserID();
 
-        $this->viewHelper = $viewHelper;
+        $this->datatableHelper = $datatableHelper;
         $this->userTable = $userTable;
     }
 
@@ -56,7 +56,7 @@ class UsermanagerController extends AbstractActionController
             array_push($tableData, $arr);
         }
         $viewModel = new ViewModel(array(
-            'viewHelper' => $this->viewHelper,
+            'datatableHelper' => $this->datatableHelper,
             'profiles' => $tableData,
             'allowance' => $allowance
         ));

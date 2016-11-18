@@ -13,11 +13,11 @@
 <!--    CSS styles   -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                         ->prependStylesheet($this->basePath('css/style.css'))
-                        ->prependStylesheet($this->basePath('/libs/datatables/datatables.min.css'))  //todo move to Usermanager->Helper
+                       // ->prependStylesheet($this->basePath('/libs/datatables/datatables.min.css'))  //todo move to Usermanager->Helper
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('/libs/datatables/datatables.min.js'))   //todo move to Usermanager->Helper
+         //   ->prependFile($this->basePath('/libs/datatables/datatables.min.js'))   //todo move to Usermanager->Helper
             ->prependFile($this->basePath('js/last_fixes.js'))
             ->prependFile($this->basePath('js/popup.js'))
             ->prependFile($this->basePath('js/menu.js'))
