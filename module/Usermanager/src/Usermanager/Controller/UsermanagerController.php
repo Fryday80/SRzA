@@ -14,26 +14,30 @@ use Profile\Form\ConfirmForm;
 */
 class UsermanagerController extends AbstractActionController
 {
-    private $profileService;
-    private $getAuthData;
-    private $viewHelper;
-    private $editors_array = array();
+    private $controller = 'usermanager';
+
+    private $editors_array = array ( 'administrator', 'editor');
+
     private $whoamI = array();
     /* @var $userTable \Auth\Model\User */
     private $userTable;
+
+    private $profileService;
+
+
+    private $datatableHelper;
 
 
     public function __construct($userTable, $accessService, $profileService, $datatableHelper)
     {
         $this->userTable = $userTable;
-        // cleanfix   $this->accessService = $accessService;
-        $this->profileService = $profileService;
 
         $this->whoamI['role'] = $accessService->getRole();
         $this->whoamI['user_id'] = $accessService->getUserID();
 
+        $this->profileService = $profileService;
+
         $this->datatableHelper = $datatableHelper;
-        $this->userTable = $userTable;
     }
 
     public function indexAction()
@@ -55,8 +59,10 @@ class UsermanagerController extends AbstractActionController
             );
             array_push($tableData, $arr);
         }
+
         $viewModel = new ViewModel(array(
             'datatableHelper' => $this->datatableHelper,
+            'controller' => $this->controller,
             'profiles' => $tableData,
             'allowance' => $allowance
         ));
@@ -65,7 +71,6 @@ class UsermanagerController extends AbstractActionController
 
     public function profileAction ($user_id)
     {
-        $this->editors_array = array ( 'administrator', 'editor');
         $form = new ShowprofileForm();
         $user = $this->getAuthData->getUser($user_id);
         // fry andere Profil Daten

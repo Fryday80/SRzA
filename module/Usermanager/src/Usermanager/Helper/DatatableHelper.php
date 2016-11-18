@@ -14,18 +14,14 @@ use Zend\View\Helper\HeadScript;
 
 Class DatatableHelper extends AbstractHelper {
 
+    protected $view;
+
 
     function __construct($sm)
     {
-        //dumpd ($this->sm->getRegisteredServices());
-        //dumpd (get_class_methods($basePath));
-        //dumpd ($basePath->getView()->basePath('/bla/bla/blub'));
-        $vHM =  $sm->get('viewhelpermanager');
-        $headLink = $vHM->get('headLink');
-        $headScript = $vHM->get('headScript');
-        $basePath = $vHM->get('basePath');
-        $headLink->appendStylesheet($basePath->getView()->basePath('/libs/datatables/datatables.min.css'));
-        $headScript->prependFile($basePath->getView()->basePath('/libs/datatables/datatables.min.js'));
+        $this->view = $sm->get('viewhelpermanager')->get('basePath')->getView();
+        $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
+        $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
     
     function render($data, $allowance='')
@@ -73,5 +69,19 @@ Class DatatableHelper extends AbstractHelper {
                                 }';
             return $startScript.$tableScript.$endScript;
         }
+    }
+
+    public function addButton ($controller, $action, $label, $allowance= 'not given', $link_array = array()){
+        $addUserButton = '';
+        if ($allowance == 'editor' || $allowance == 'self' || $allowance == 'not given'){
+            $addUserButton = '<div>
+                                <br>
+                                <button><a href="';
+            $addUserButton .= $this->view->url("$controller/$action", $link_array);
+            $addUserButton .= '">' . $label . '</a></button>
+                                <br><br>
+                            </div>';
+        }
+        return $addUserButton;
     }
 }

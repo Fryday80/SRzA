@@ -3,17 +3,7 @@
 
 $title = 'Usermanager ';
 $this->headTitle($title);
-?>
- <h1><?php // echo $this->escapeHtml($title); ?></h1>
-<?php
-if ($allowance == 'editor'): ?>
-<div style="font-size: larger">
- <br>
- <button><a href="<?php echo $this->url('album/add', array());?>">Add User</a></button>
-    <br><br>
-</div>
-  <?php endif;
+
+echo $datatableHelper->addButton($controller, 'add', 'User Anlegen', $allowance);
 
 echo $datatableHelper->render($profiles, $allowance);
-
-?>
