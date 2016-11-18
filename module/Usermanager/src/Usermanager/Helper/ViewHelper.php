@@ -43,11 +43,10 @@ Class ViewHelper extends AbstractHelper {
         $table .= $datarow;
         $table .= '</tbody></table>';
         $table .= '<script>';
-        $table .= 'console.log("########");';
         $table .= '$("#table").DataTable( {';
         $table .= '    dom: "Bfrtip",';
         $table .= '    buttons: [';
-        $table .= '    "copy"", "excel", "pdf"';
+        $table .= '    "copy", "excel", "pdf"';
         $table .= ']';
         $table .= '} );';
         $table .= '</script>';
