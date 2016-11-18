@@ -58,7 +58,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
 //mach mal den stackTrace raus pls
-                dump("No Permission", 'BUGGY####', 1);
+                //dump("No Permission", 'BUGGY####', 1);
                 //return $target->redirect()->toUrl('/login');
             }
         }

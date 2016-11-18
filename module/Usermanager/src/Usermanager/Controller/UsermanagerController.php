@@ -1,24 +1,18 @@
 <?php
 namespace Usermanager\Controller;
 
-use Usermanager\Form\ShowprofileForm;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-/*          fry anpassen
-use Profile\Model\Profile;
-use Profile\Form\AlbumForm;
-use Profile\Form\ImageForm;
-use Profile\Form\ConfirmForm;
+use Usermanager\Form\ProfileForm;
 
-*/
 class UsermanagerController extends AbstractActionController
 {
     private $controller = 'usermanager';
 
     private $editors_array = array ( 'administrator', 'editor');
 
-    private $whoamI = array();
+    private $whoAmI = array();
     /* @var $userTable \Auth\Model\User */
     private $userTable;
 
@@ -32,8 +26,8 @@ class UsermanagerController extends AbstractActionController
     {
         $this->userTable = $userTable;
 
-        $this->whoamI['role'] = $accessService->getRole();
-        $this->whoamI['user_id'] = $accessService->getUserID();
+        $this->whoAmI['role'] = $accessService->getRole();
+        $this->whoAmI['user_id'] = $accessService->getUserID();
 
         $this->profileService = $profileService;
 
@@ -42,8 +36,7 @@ class UsermanagerController extends AbstractActionController
 
     public function indexAction()
     {
-
-        $allowance = $this->getAllowance($this->whoamI['user_id']);
+        $allowance = $this->getAllowance($this->whoAmI['user_id']);
         $operations = array ('profile' => 'Auswählen');
         if ($allowance == 'editor') {
             $operations['delete'] =  'Löschen';
@@ -62,38 +55,51 @@ class UsermanagerController extends AbstractActionController
             array_push($tableData, $arr);
         }
 
-        $viewModel = new ViewModel(array(
+        return new ViewModel(array(
             'datatableHelper' => $this->datatableHelper,
             'controller' => $this->controller,
             'allowance' => $allowance,
             'profiles' => $tableData,
             'hidden_columns' => $hidden_columns,
         ));
-        return $viewModel;
     }
 
-    public function profileAction ($user_id)
+    public function profileAction ()
     {
-        $form = new ShowprofileForm();
-        $user = $this->getAuthData->getUser($user_id);
+        $data_set = array ();
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $allowance = $this->getAllowance($this->whoAmI['user_id']);
+
+        $form = new ProfileForm();
+
+        $user = $this->userTable->getUser($id);
+        array_push($data_set, $user);
+
         // fry andere Profil Daten
-        $allowance = $this->allowEdit($user_id, $executor = 0);
-        if ($allowance == 'self') {
-            $form->add('editbutton');
-        }
-        if (in_array($allowance, $this->editors_array)) {
-            $form->add('editbutton');
-            $form->add('deletebutton');
-        }
+        // array_push($data_set, $table_data);
+
+        $this->dataToForm($data_set, $form);
         
-        return array (
+        if ($allowance == 'self')
+        {
+            $this->changeSubmit($form);
+        }
+        if (in_array($allowance, $this->editors_array))
+        {
+            $this->changeSubmit($form);
+            $this->deleteSubmit($form);
+        }
+
+        return new ViewModel(array(
+            'datatableHelper' => $this->datatableHelper,
+            'controller' => $this->controller,
+            'allowance' => $allowance,
             'form' => $form,
-            'user' => $user[0],
-            'details' => $user[1],
-        );
+            'data_set' => $data_set,
+        ));
     }
 
-    public function deleteAction ($user_id)
+    public function deleteAction ()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         $user_to_delete = $this->userTable->getUser($id);
@@ -131,54 +137,67 @@ class UsermanagerController extends AbstractActionController
         );
     }
 
-    public function showCashAction ($user_id)
+    private function dataToForm($data_set, $form)
     {
-
-    }
-
-    public function editCashAction ($user_id)
-    {
-
-    }
-
-    public function showPresentationAction ()
-    {
-
-    }
-
-    public function editPresentationAction ($user_id)
-    {
-
-    }
-    private function dataToForm($data, $form){
-        $new = array();
-        foreach ($data as $values){
-            foreach ($values as $key => $value){
-                if (exists($form->get($key))){
-                    $form->get($key)->setValue($value);
+        foreach ($data_set as $set)
+        {
+            foreach ($set as $key => $value){
+                if (in_array($key, $this->getElementsArray($form)))
+                {
+                    $ele = $form->get($key);
+                    $ele->setValue($value);
                 }
             }
         }
-
     }
+
     private function getAllowance ($id = 0)
     {
         if ($id == 0)
         {
-            if ($this->whoamI['role'] == 'Administrator' || $this->whoamI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
+            if ($this->whoAmI['role'] == 'Administrator' || $this->whoAmI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
             {
                 return 'editor';
             }
             return;
         }
         if ($id !== 0){
-            if ($this->whoamI['role'] == 'Administrator' || $this->whoamI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
+            if ($this->whoAmI['role'] == 'Administrator' || $this->whoAmI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
             {
                 return 'editor';
             }
-            if ($id == $this->whoamI['user_id']){
+            if ($id == $this->whoAmI['user_id']){
                 return 'self';
             }
         }
+    }
+
+    private function changeSubmit($form){
+        $form->add(array(
+            'name' => 'change',
+            'type' => 'Submit',
+            'attributes' => array(
+                'value' => 'Änderungen speichern',
+            ),
+        ));
+    }
+
+    private function deleteSubmit($form){
+        $form->add(array(
+            'name' => 'delete',
+            'type' => 'Submit',
+            'attributes' => array(
+                'value' => 'Löschen',
+            ),
+        ));
+    }
+
+    public function getElementsArray($form){
+        $return = array();
+        foreach ($form->getElements() as $element){
+            $data = $element->getAttributes('name');
+            array_push($return, $data['name']);
+        }
+        return $return;
     }
 }

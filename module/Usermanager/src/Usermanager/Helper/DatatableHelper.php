@@ -57,6 +57,30 @@ Class DatatableHelper extends AbstractHelper {
         return $table;
     }
 
+    function renderForm($form)
+    {
+        $datarow = '';
+
+        foreach ($form as $element) {
+            $label = '';
+            if ($element->getLabel() !== NULL) {
+                $label = $element->getLabel();
+            }
+            $input = $this->view->formElement($element);
+            $datarow .= '<tr>';
+            $datarow .= "<td>$label</td>";
+            $datarow .= "<td>$input</td>";
+            $datarow .= '</tr>';
+        }
+        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
+                    <thead> <tr> <th>Label</th> <th>Input</th> </tr> </thead>
+                    <tfoot> <tr> <th>Label</th> <th>Input</th> </tr> </tfoot> <tbody>";
+        $table .= $datarow;
+        $table .= '</tbody> </table>';
+        $table .= $this->getTableScript();
+        return $table;
+    }
+
     private function getTableScript ($options = array ())
     {
         $startScript = '<script>
@@ -65,17 +89,19 @@ Class DatatableHelper extends AbstractHelper {
                         </script>';
 
         if ($this->allowance == 'not set') {
-            return $startScript.$endScript;
+            return $startScript . '"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],' . $endScript;
         }
         if ($this->allowance == 'editor' || $this->allowance == 'self') {
-            $tableScript  = '   dom: "lfiBrtp",
+            $tableScript  = '   "lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],
                                 buttons: [
                                         "print", "copy", "csv", "excel", "pdf"
                                 ],
                                 select: {
                                     style: "multi"
-                                }';
+                                },
+                                dom: "lfiBrtp",';
             return $startScript.$tableScript.$endScript;
+            //https://datatables.net/reference/index for preferences
         }
     }
 
