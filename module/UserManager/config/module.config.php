@@ -7,11 +7,12 @@ return array(
         'factories' => array(
             'Usermanager\Controller\Usermanager' => function($controllerManager) {
                 $sm = $controllerManager->getServiceLocator();
+                $userTable = $sm->get('Auth\Model\UserTable');
+                $accessService = $sm->get('AccessService');
                 $profileService = $sm->get('ProfileService');
-                $getAuthData = $sm->get('GetauthService');
                 $viewHelper = $sm->get('ViewHelper');
 
-                return new UsermanagerController($profileService, $getAuthData, $viewHelper);
+                return new UsermanagerController($userTable, $accessService, $profileService, $viewHelper);
             },
         ),
     ),
@@ -59,15 +60,15 @@ return array(
                             )
                         )
                     ),
-                    'edit' => array(
+                    'profile' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit[/:id]',
+                            'route' => '/profile[/:id]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                                'action' => 'edit'
+                                'action' => 'profile'
                             )
                         )
                     )

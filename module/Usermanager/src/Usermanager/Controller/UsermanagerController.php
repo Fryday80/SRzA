@@ -18,27 +18,52 @@ class UsermanagerController extends AbstractActionController
     private $getAuthData;
     private $viewHelper;
     private $editors_array = array();
+    private $whoamI = array();
+    /* @var $userTable \Auth\Model\User */
+    private $userTable;
 
 
-    public function __construct($profileService, $getAuthData, $viewHelper)
+    public function __construct($userTable, $accessService, $profileService, $viewHelper)
     {
+        $this->userTable = $userTable;
+        // cleanfix   $this->accessService = $accessService;
         $this->profileService = $profileService;
-        $this->getAuthData = $getAuthData;
+
+        $this->whoamI['role'] = $accessService->getRole();
+        $this->whoamI['user_id'] = $accessService->getUserID();
+
         $this->viewHelper = $viewHelper;
+        $this->userTable = $userTable;
     }
 
     public function indexAction()
     {
-        
-        $users = $this->getAuthData->getAllUsers();
+
+        $allowance = $this->getAllowance($this->whoamI['user_id']);
+        $operations = '<a href="#">Auswählen</a> ';
+        if ($allowance == 'editor') {
+            $operations .=  '<a href="#">Löschen</a>';
+        }
+
+        $users = $this->userTable->getUsers()->toArray();
+        $tableData = array();
+        foreach ($users as $key => $user) {
+            $arr = array(
+                'Name' => $user['name'],
+                'email' => $user['email'],
+                'Operations' => $operations,
+            );
+            array_push($tableData, $arr);
+        }
         $viewModel = new ViewModel(array(
             'viewHelper' => $this->viewHelper,
-            'profiles' => $users,
-            'test' => $var = (isset ($test) ? $test : 'test')) );
+            'profiles' => $tableData,
+            'allowance' => $allowance
+        ));
         return $viewModel;
     }
 
-    public function showProfileAction ($user_id)
+    public function profileAction ($user_id)
     {
         $this->editors_array = array ( 'administrator', 'editor');
         $form = new ShowprofileForm();
@@ -60,14 +85,42 @@ class UsermanagerController extends AbstractActionController
         );
     }
 
-    private function allowEdit ($user_id, $executing_user)
+    public function deleteAction ($user_id)
     {
-        $executing_user['user_id'] = $user_id; //testmode
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $user_to_delete = $this->userTable->getUser($id);
+        dumpd ($user_to_delete);
+        $request = $this->getRequest();
+        if (! $id && !$request->isPost()) {
+            return $this->redirect()->toRoute('usermanager');
+        }
+        if ($request->isPost()) {
+            $confirmed = $request->getPost('delete_confirm', 'no');
+            if ($confirmed !== 'no') {
+                $this->galleryService->deleteWholeAlbum($id); //fry delete action
+                return $this->redirect()->toRoute('usermanager');
+            }
+            // Redirect to list of albums
+            return $this->redirect()->toRoute('usermanager');
+        }
+        $form = new ConfirmForm();
+        $form->get('realname')->setAttribute('value', $id);
+        $form->setAttribute('action', '/usermanager/delete/' . $id);
 
-        $allowance =  ($user_id == $executing_user['user_id']) ? 'self' : Null;
-        $allowance =  (in_array($executing_user['role'], $this->editors_array)) ? 'editor' : $allowance;
+        try {
+            $album = $this->galleryService->getAlbumByID($id);
+        } catch (\Exception $ex) {
+            print ($ex);
+            return $this->redirect()->toRoute('/usermanager');
+        }
+        $event = $album[0]['event'];
 
-        return $allowance;
+        return array (
+            'viewHelper' => $this->viewHelper,
+            'id' => $id,
+            'event' => $event,
+            'form' => $form
+        );
     }
 
     public function showCashAction ($user_id)
@@ -100,122 +153,24 @@ class UsermanagerController extends AbstractActionController
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function addAction()
+    private function getAllowance ($id = 0)
     {
-        $form = new AlbumForm();
-        $operator = 'Neu';
-        $form->get('submit')->setValue($operator);
-        $form->setAttribute('action', '/usermanager/add');
-
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $this->galleryService->storeAlbum ($form->getData());
-                return $this->redirect()->toRoute('usermanager');
+        if ($id == 0)
+        {
+            if ($this->whoamI['role'] == 'Administrator' || $this->whoamI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
+            {
+                return 'editor';
+            }
+            return;
+        }
+        if ($id !== 0){
+            if ($this->whoamI['role'] == 'Administrator' || $this->whoamI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
+            {
+                return 'editor';
+            }
+            if ($id == $this->whoamI['user_id']){
+                return 'self';
             }
         }
-        return array(
-            'form' => $form
-        );
-    }
-
-    public function editAction(){
-        $request = $this->getRequest();
-        $id = (int) $this->params()->fromRoute('id', null);
-        if (! $id && !$request->isPost()) {
-            return $this->redirect()->toRoute('/usermanager');
-        }
-        $album = null;
-        try {
-            $album = $this->galleryService->getAlbumByID($id);
-        } catch (\Exception $ex) {
-            print ($ex);
-            return $this->redirect()->toRoute('/usermanager');
-        }
-        $form = new AlbumForm();
-        $operator = 'Edit';
-        $form->get('submit')->setAttribute('value', $operator);
-
-        $album = $this->addDate($album);    // Field 'date' needs to be added, because it is not stored in db
-
-        $form->populateValues($album[0]);
-
-        $form->setAttribute('action', '/usermanager/edit/' . $id);
-
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
-            if ($form->isValid()) {
-                $this->galleryService->storeAlbum ($form->getData());
-                return $this->redirect()->toRoute('usermanager');
-            }
-            dump ('not valid'); //cleanfix bugfix
-        }
-        return array(
-            'id' => $id,
-            'form' => $form
-        );
-    }
-
-    public function deleteAction() {
-        $id = (int) $this->params()->fromRoute('id', 0);
-        $request = $this->getRequest();
-        if (! $id && !$request->isPost()) {
-            return $this->redirect()->toRoute('usermanager');
-        }
-        if ($request->isPost()) {
-            $confirmed = $request->getPost('delete_confirm', 'no');
-            if ($confirmed !== 'no') {
-                $this->galleryService->deleteWholeAlbum($id);
-                return $this->redirect()->toRoute('usermanager');
-            }
-            // Redirect to list of albums
-            return $this->redirect()->toRoute('usermanager');
-        }
-        $form = new ConfirmForm();
-        $form->get('id')->setAttribute('value', $id);
-        $form->setAttribute('action', '/usermanager/delete/' . $id);
-
-        try {
-            $album = $this->galleryService->getAlbumByID($id);
-        } catch (\Exception $ex) {
-            print ($ex);
-            return $this->redirect()->toRoute('/usermanager');
-        }
-        $event = $album[0]['event'];
-
-        return array (
-            'id' => $id,
-            'event' => $event,
-            'form' => $form
-        );
-    }
-    private function addDate ($data){
-        $return = array();
-        foreach ($data as $values){
-            foreach ($values as $key => $value){
-                $return[$key] = $value;
-                if ($key == 'timestamp'){
-                    $return['date'] = date('d.m.Y', $value);
-                }
-            }
-        }
-        return array($return);
     }
 }

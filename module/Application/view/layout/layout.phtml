@@ -9,18 +9,22 @@
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
+
 <!--    CSS styles   -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
                         ->prependStylesheet($this->basePath('css/style.css'))
+                        ->prependStylesheet($this->basePath('/libs/datatables/datatables.min.css'))  //todo move to Usermanager->Helper
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
+            ->prependFile($this->basePath('/libs/datatables/datatables.min.js'))   //todo move to Usermanager->Helper
             ->prependFile($this->basePath('js/last_fixes.js'))
             ->prependFile($this->basePath('js/popup.js'))
             ->prependFile($this->basePath('js/menu.js'))
             ->prependFile($this->basePath('js/jquery-ui.min.js'))
             ->prependFile($this->basePath('js/jquery.min.js'))
     ; ?>
+
 
 </head>
 
