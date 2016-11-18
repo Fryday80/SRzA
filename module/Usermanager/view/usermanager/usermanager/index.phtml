@@ -1,9 +1,9 @@
 <?php
-//view/usermanager/usermanager/index.phtml
-
 $title = 'Usermanager ';
 $this->headTitle($title);
+$datatableHelper->setController($controller);
+$datatableHelper->setAllowance($allowance);
 
-echo $datatableHelper->addButton($controller, 'add', 'User Anlegen', $allowance);
+echo $datatableHelper->addButton('add', 'User Anlegen');
 
-echo $datatableHelper->render($profiles, $allowance);
+echo $datatableHelper->render($profiles, $hidden_columns);

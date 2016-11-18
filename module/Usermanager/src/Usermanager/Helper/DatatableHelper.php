@@ -15,6 +15,8 @@ use Zend\View\Helper\HeadScript;
 Class DatatableHelper extends AbstractHelper {
 
     protected $view;
+    public $controller;
+    public $allowance = 'not set';
 
 
     function __construct($sm)
@@ -23,8 +25,8 @@ Class DatatableHelper extends AbstractHelper {
         $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
-    
-    function render($data, $allowance='')
+
+    function render($data, $hidden_array)
     {
         $datarow = '';
         $datahead = '';
@@ -33,9 +35,14 @@ Class DatatableHelper extends AbstractHelper {
         foreach ($data as $row) {
                 $datarow .= '<tr>';
             foreach ($row as $key => $value){
-                if( $i == 0) {
+                if (in_array($key, $hidden_array)){continue;}
+                if ($key == 'Aktionen') {
+                    $value = $this->operationsToLink($value, $row['id']);
+                }
+                if ( $i == 0) {
                     $datahead .= "<td>$key</td>"; 
                 }
+
                 $datarow .= "<td>$value</td>";
             }
             $datarow .= '</tr>';
@@ -46,20 +53,21 @@ Class DatatableHelper extends AbstractHelper {
                     <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
         $table .= $datarow;
         $table .= '</tbody> </table>';
-        $table .= $this->getTableScript(array ('allowance' => $allowance));
+        $table .= $this->getTableScript();
         return $table;
     }
 
-    private function getTableScript ($options){
+    private function getTableScript ($options = array ())
+    {
         $startScript = '<script>
                         $(".display").DataTable( {';
         $endScript   = '} );
                         </script>';
 
-        if ($options['allowance'] == '') {
+        if ($this->allowance == 'not set') {
             return $startScript.$endScript;
         }
-        if ($options['allowance'] == 'editor' || $options['allowance'] == 'self') {
+        if ($this->allowance == 'editor' || $this->allowance == 'self') {
             $tableScript  = '   dom: "lfiBrtp",
                                 buttons: [
                                         "print", "copy", "csv", "excel", "pdf"
@@ -71,17 +79,50 @@ Class DatatableHelper extends AbstractHelper {
         }
     }
 
-    public function addButton ($controller, $action, $label, $allowance= 'not given', $link_array = array()){
+    public function addButton ($action, $label, $link_array = array())
+    {
+        if (!isset ($this->controller)) {dumpd ('You need to setController($controller) first!!', 'ERROR, 1');}
+
         $addUserButton = '';
-        if ($allowance == 'editor' || $allowance == 'self' || $allowance == 'not given'){
+        if ($this->allowance == 'editor' || $this->allowance == 'self' || $this->allowance == 'not set'){
             $addUserButton = '<div>
                                 <br>
                                 <button><a href="';
-            $addUserButton .= $this->view->url("$controller/$action", $link_array);
+            $addUserButton .= $this->view->url("$this->controller/$action", $link_array);
             $addUserButton .= '">' . $label . '</a></button>
                                 <br><br>
                             </div>';
         }
         return $addUserButton;
+    }
+    public function operationsToLink ($data_set, $id)
+    {
+        $return = '';
+        foreach ($data_set as $action => $label){
+            $return .= '<a href="';
+            $return .= $this->view->url("$this->controller/$action", array ('id' => $id));
+            $return .= '">' . $label . '</a> ';
+        }
+        return $return;
+    }
+
+    public function setController($controller)
+    {
+        $this->controller = $controller;
+    }
+
+    public function setAllowance($allowance)
+    {
+        $this->allowance = $allowance;
+    }
+
+    public function getController()
+    {
+        return $this->controller;
+    }
+
+    public function getAllowance()
+    {
+        return $this->allowance;
     }
 }

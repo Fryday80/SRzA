@@ -44,18 +44,20 @@ class UsermanagerController extends AbstractActionController
     {
 
         $allowance = $this->getAllowance($this->whoamI['user_id']);
-        $operations = '<a href="#">Auswählen</a> ';
+        $operations = array ('profile' => 'Auswählen');
         if ($allowance == 'editor') {
-            $operations .=  '<a href="#">Löschen</a>';
+            $operations['delete'] =  'Löschen';
         }
 
         $users = $this->userTable->getUsers()->toArray();
         $tableData = array();
+        $hidden_columns = array ('id');
         foreach ($users as $key => $user) {
             $arr = array(
-                'Name' => $user['name'],
-                'email' => $user['email'],
-                'Operations' => $operations,
+                'id'    => $user['id'],
+                'Name'  => $user['name'],
+                'eMail' => $user['email'],
+                'Aktionen' => $operations,
             );
             array_push($tableData, $arr);
         }
@@ -63,8 +65,9 @@ class UsermanagerController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'datatableHelper' => $this->datatableHelper,
             'controller' => $this->controller,
+            'allowance' => $allowance,
             'profiles' => $tableData,
-            'allowance' => $allowance
+            'hidden_columns' => $hidden_columns,
         ));
         return $viewModel;
     }
