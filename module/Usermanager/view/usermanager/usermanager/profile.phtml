@@ -4,12 +4,12 @@ $title = 'Profil';
 $this->headTitle($title);
 ?>
 
-<a href="/<?= $controller;?>">Zurück</a><br><br>
+<a href="/usermanager">Zurück</a><a href="/usermanager/show/<?= $id ?>">Darstellung</a><br><br>
 <?php
 
-echo $this->form($form);// whier haben wir garkein form :)ne
-//echo $datatableHelper->renderForm($form);
+echo $this->form()->render_center($form);
 ?>
+
 <script>
  //datepicker
  $('#content input[name="date"]').datepicker({

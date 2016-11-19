@@ -10,9 +10,8 @@ return array(
                 $userTable = $sm->get('Auth\Model\UserTable');
                 $accessService = $sm->get('AccessService');
                 $profileService = $sm->get('ProfileService');
-                $datatableHelper = $sm->get('DatatableHelper');
 
-                return new UsermanagerController($userTable, $accessService, $profileService, $datatableHelper);
+                return new UsermanagerController($userTable, $accessService, $profileService);
             },
         ),
     ),

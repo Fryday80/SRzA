@@ -159,14 +159,6 @@ Class ProfileForm extends Form
             ),
         ));
 
-        //fry cash 'n' Carry^^ other tables
-        //Submitbuttons
-        $this->add(array(
-            'name' => 'go_to_show',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Darstellung'
-            ),
-        ));
+        //fry cash 'n' Carry^^ other tables??? oder links?? 
     }
 }

@@ -3,7 +3,6 @@ namespace Usermanager;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Usermanager\Helper\DatatableHelper;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -24,15 +23,5 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
-    }
-    public function getServiceConfig()
-    {
-        return array(
-            'factories' => array(
-                'DatatableHelper' => function ($sm){
-                    return new DatatableHelper($sm);
-                }
-            ),
-        );
     }
 }

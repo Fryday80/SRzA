@@ -270,3 +270,15 @@ button {
     background: none;
     border: none;
 }
+
+.sra_table {
+    text-align: right;
+    width: 95%;
+}
+
+.sra_table>label {
+    text-align: right;
+}
+.sra_table>input {
+    text-align: center;
+}

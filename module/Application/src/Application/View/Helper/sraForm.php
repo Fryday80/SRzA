@@ -10,6 +10,7 @@ namespace Application\View\Helper;
 
 use Zend\Form\View\Helper\Form;
 use Zend\Form\FormInterface;
+use Zend\View\Helper\Doctype;
 
 class sraForm extends Form
 {
@@ -25,10 +26,10 @@ class sraForm extends Form
             $form->prepare();
         }
 
-        $formContent = '';//und die funktion hier müsst eman halt überschreiben das es 
+        $formContent = '';
 
         foreach ($form as $element) {
-            $formContent .= '<br>';//sowas machen
+            $formContent .= '<br>';
             if ($element instanceof FieldsetInterface) {
                 $formContent.= $this->getView()->formCollection($element);
             } else {
@@ -36,6 +37,64 @@ class sraForm extends Form
             }
         }
 
-        return $this->openTag($form) . $formContent . $this->closeTag();
+        return '<div style="text-align: right;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
     }
+
+    public function render_center($form)
+    {
+        if (method_exists($form, 'prepare')) {
+            $form->prepare();
+        }
+        $new_elements = array();
+        $formContent = '<br>';
+
+        foreach ($form as $element)
+        {
+            $label = '';
+            if ($element->getLabel() !== NULL) {
+                $label = $element->getLabel();
+            }
+            $input = $this->view->formElement($element);
+            $new_element = $label . '<br>' . $input . '<br><br>';
+            array_push($new_elements, $new_element);
+        }
+
+        return '<div style="text-align: center;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
+    }
+
+
+    /**
+     * Generate an opening form tag
+     *
+     * @param  null|FormInterface $form
+     * @return string
+     */
+    /*
+    public function openTag(FormInterface $form = null, $attributes = array())
+    {
+        $doctype    = $this->getDoctype();
+        $attributes = array();
+
+        if (! (Doctype::HTML5 === $doctype || Doctype::XHTML5 === $doctype)) {
+            $attributes = array(
+                'action' => '',
+                'method' => 'get',
+            );
+        }
+
+        if ($form instanceof FormInterface) {
+            $formAttributes = $form->getAttributes();
+            if (!array_key_exists('id', $formAttributes) && array_key_exists('name', $formAttributes)) {
+                $formAttributes['id'] = $formAttributes['name'];
+            }
+            $attributes = array_merge($attributes, $formAttributes);
+        }
+
+        if ($attributes) {
+            return sprintf('<form %s>', $this->createAttributesString($attributes));
+        }
+
+        return '<form>';
+    }
+    */
 }
