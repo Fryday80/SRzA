@@ -5,17 +5,17 @@
  * Date: 15.11.2016
  * Time: 09:12
  */
-namespace Usermanager\Helper;
+namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Helper\HeadLink;
 use Zend\View\Helper\HeadScript;
 
 
-Class DatatableHelper extends AbstractHelper {
+Class DataTableHelper extends AbstractHelper {
 
     protected $view;
-    public $controller;
+    public $additionalButtons = array();
     public $allowance = 'not set';
 
 
@@ -36,9 +36,9 @@ Class DatatableHelper extends AbstractHelper {
                 $datarow .= '<tr>';
             foreach ($row as $key => $value){
                 if (in_array($key, $hidden_array)){continue;}
-                if ($key == 'Aktionen') {
-                    $value = $this->operationsToLink($value, $row['id']);
-                }
+                //if ($key == 'Aktionen') {
+                //    $value = $this->operationsToLink($value, $row['id']);
+                //}
                 if ( $i == 0) {
                     $datahead .= "<td>$key</td>"; 
                 }
@@ -104,23 +104,7 @@ Class DatatableHelper extends AbstractHelper {
             //https://datatables.net/reference/index for preferences
         }
     }
-
-    public function addButton ($action, $label, $link_array = array())
-    {
-        if (!isset ($this->controller)) {dumpd ('You need to setController($controller) first!!', 'ERROR, 1');}
-
-        $addUserButton = '';
-        if ($this->allowance == 'editor' || $this->allowance == 'self' || $this->allowance == 'not set'){
-            $addUserButton = '<div>
-                                <br>
-                                <button><a href="';
-            $addUserButton .= $this->view->url("$this->controller/$action", $link_array);
-            $addUserButton .= '">' . $label . '</a></button>
-                                <br><br>
-                            </div>';
-        }
-        return $addUserButton;
-    }
+    
     public function operationsToLink ($data_set, $id)
     {
         $return = '';

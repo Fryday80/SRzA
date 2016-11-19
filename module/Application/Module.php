@@ -9,8 +9,10 @@
 
 namespace Application;
 
+use Application\View\Helper\sraForm;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Application\View\Helper\DataTableHelper;
 
 class Module
 {
@@ -34,6 +36,22 @@ class Module
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
             ),
+        );
+    }
+
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'form' => function () {
+                    return new sraForm();
+                },
+                'dataTable' => function ($sm){
+                    $parentLocator = $sm->getServiceLocator();
+                    return new DataTableHelper($parentLocator);
+                }
+
+            )
         );
     }
 }
