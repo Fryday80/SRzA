@@ -21,7 +21,7 @@ class UsermanagerController extends AbstractActionController
     private $datatableHelper;
 
 
-    public function __construct($userTable, $accessService, $profileService, $datatableHelper)
+    public function __construct($userTable, $accessService, $profileService)
     {
         $this->userTable = $userTable;
 
@@ -30,7 +30,7 @@ class UsermanagerController extends AbstractActionController
 
         $this->profileService = $profileService;
 
-        $this->datatableHelper = $datatableHelper;
+        $this->datatableHelper = 'fake';
     }
 
     public function indexAction()
@@ -38,16 +38,17 @@ class UsermanagerController extends AbstractActionController
         $allowance = $this->getAllowance();
         //$allowance = 'not set';
 
-        $operations = array ('profile' => 'Auswählen');
-
-        if ($allowance == 'editor') {
-            $operations['delete'] =  'Löschen';
-        }
+        $operations = array();
 
         $users = $this->userTable->getUsers()->toArray();
         $tableData = array();
         $hidden_columns = array ('id');
-        foreach ($users as $key => $user) {
+        foreach ($users as $user) {
+            $operations = '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
+
+            if ($allowance == 'editor') {
+                $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
+            }
             $arr = array(
                 'id'    => $user['id'],
                 'Name'  => $user['name'],
@@ -58,8 +59,6 @@ class UsermanagerController extends AbstractActionController
         }
 
         return new ViewModel(array(
-            'datatableHelper' => $this->datatableHelper,
-            'controller' => $this->controller,
             'allowance' => $allowance,
             'profiles' => $tableData,
             'hidden_columns' => $hidden_columns,

@@ -1,9 +1,14 @@
 <?php
 $title = 'Usermanager ';
 $this->headTitle($title);
-$datatableHelper->setController($controller);
-$datatableHelper->setAllowance($allowance);
+//$this->dataTable->setController($controller);
+$this->dataTable();
+$this->dataTable()->setAllowance($allowance);
+if ($allowance !== 'editor'):
+?>
+<a href="<?= $this->url('/usermanager/add', array());?>">Mitglied hinzufügen</a>
+<?php
+    endif;
 
-echo $datatableHelper->addButton('add', 'User Anlegen');
-
-echo $datatableHelper->render($profiles, $hidden_columns);
+echo $this->dataTable()->render($profiles, $hidden_columns);
+//den musst du jetzt erst wieder umbauen oder?nicht viel moment

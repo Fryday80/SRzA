@@ -6,7 +6,9 @@ $this->headTitle($title);
 
 <a href="/<?= $controller;?>">Zurück</a><br><br>
 <?php
-echo $datatableHelper->renderForm($form);
+
+echo $this->form($form);// whier haben wir garkein form :)ne
+//echo $datatableHelper->renderForm($form);
 ?>
 <script>
  //datepicker
