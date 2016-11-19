@@ -4,18 +4,9 @@ $title = 'Edit Gallery';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<div><a href="/album">zurück</a><br><br></div>
 <?php
-$form->prepare();
-$formContent = '';
-echo $this->form()->openTag($form);
-foreach ($form as $element)
-{
- $formContent .= $this->formrow($element) . '<br/>';
-}
-
-echo $formContent;
-echo $this->form()->closeTag();
-
+echo $this->form($form);
 ?>
 <script>
  //datepicker

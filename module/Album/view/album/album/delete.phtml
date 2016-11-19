@@ -5,6 +5,8 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <?php
+echo $this->form($form);
+/*
 $form->prepare();
 $formContent = '';
 echo $this->form()->openTag($form);
@@ -16,6 +18,6 @@ foreach ($form as $element)
 $new = explode('<select ', $formContent);
 $formContent = implode('<br><select ', $new);
 echo $formContent;
-echo $this->form()->closeTag();
+echo $this->form()->closeTag();  */
 ?>
 
