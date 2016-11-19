@@ -10,14 +10,13 @@ class UsermanagerController extends AbstractActionController
 {
     private $controller = 'usermanager';
 
-    private $editors_array = array ( 'administrator', 'editor');
+    private $editors_array = array ( 'Administrator', 'Profiladmin');
 
     private $whoAmI = array();
     /* @var $userTable \Auth\Model\User */
     private $userTable;
 
     private $profileService;
-
 
     private $datatableHelper;
 
@@ -36,8 +35,11 @@ class UsermanagerController extends AbstractActionController
 
     public function indexAction()
     {
-        $allowance = $this->getAllowance($this->whoAmI['user_id']);
+        $allowance = $this->getAllowance();
+        //$allowance = 'not set';
+
         $operations = array ('profile' => 'Auswählen');
+
         if ($allowance == 'editor') {
             $operations['delete'] =  'Löschen';
         }
@@ -68,7 +70,10 @@ class UsermanagerController extends AbstractActionController
     {
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
-        $allowance = $this->getAllowance($this->whoAmI['user_id']);
+
+        $allowance = $this->getAllowance($id);
+        //$allowance = 'self';
+        //$allowance = 'not set';
 
         $form = new ProfileForm();
 
@@ -80,22 +85,26 @@ class UsermanagerController extends AbstractActionController
 
         $this->dataToForm($data_set, $form);
         
-        if ($allowance == 'self')
+        if ($allowance !== 'not set')
         {
-            $this->changeSubmit($form);
-        }
-        if (in_array($allowance, $this->editors_array))
-        {
-            $this->changeSubmit($form);
-            $this->deleteSubmit($form);
+            $this->addChangeSubmit($form);
+            $form->add(array(
+                'name' => 'change_password',
+                'type' => 'Submit',
+                'attributes' => array(
+                    'value' => 'Passwort ändern'
+            ))  );
+            if ($allowance == 'editor')
+            {
+                $this->addDeleteSubmit($form);
+            }
         }
 
         return new ViewModel(array(
             'datatableHelper' => $this->datatableHelper,
             'controller' => $this->controller,
             'allowance' => $allowance,
-            'form' => $form,
-            'data_set' => $data_set,
+            'form' => $form
         ));
     }
 
@@ -137,6 +146,24 @@ class UsermanagerController extends AbstractActionController
         );
     }
 
+    public function getElementsArray($form){
+        $return = array();
+        foreach ($form->getElements() as $element){
+            $data = $element->getAttributes('name');
+            array_push($return, $data['name']);
+        }
+        return $return;
+    }
+
+    public function getAllowance ($id = NULL)
+    {   //salt n fry Roles zuteilen
+        if (in_array($this->whoAmI['role'], $this->editors_array)) return 'editor';
+
+        if ($id !== NULL && $id == $this->whoAmI['user_id']) return 'self';
+
+        return 'not set';
+    }
+
     private function dataToForm($data_set, $form)
     {
         foreach ($data_set as $set)
@@ -151,28 +178,7 @@ class UsermanagerController extends AbstractActionController
         }
     }
 
-    private function getAllowance ($id = 0)
-    {
-        if ($id == 0)
-        {
-            if ($this->whoAmI['role'] == 'Administrator' || $this->whoAmI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
-            {
-                return 'editor';
-            }
-            return;
-        }
-        if ($id !== 0){
-            if ($this->whoAmI['role'] == 'Administrator' || $this->whoAmI['role'] == 'Profiladmin') //salt n fry Roles zuteilen
-            {
-                return 'editor';
-            }
-            if ($id == $this->whoAmI['user_id']){
-                return 'self';
-            }
-        }
-    }
-
-    private function changeSubmit($form){
+    private function addChangeSubmit($form){
         $form->add(array(
             'name' => 'change',
             'type' => 'Submit',
@@ -182,7 +188,7 @@ class UsermanagerController extends AbstractActionController
         ));
     }
 
-    private function deleteSubmit($form){
+    private function addDeleteSubmit($form){
         $form->add(array(
             'name' => 'delete',
             'type' => 'Submit',
@@ -190,14 +196,5 @@ class UsermanagerController extends AbstractActionController
                 'value' => 'Löschen',
             ),
         ));
-    }
-
-    public function getElementsArray($form){
-        $return = array();
-        foreach ($form->getElements() as $element){
-            $data = $element->getAttributes('name');
-            array_push($return, $data['name']);
-        }
-        return $return;
     }
 }

@@ -69,6 +69,7 @@ Class ProfileForm extends Form
             'type' => 'Select',
             'attributes' => array(
                 'class' => 'read_only',
+                'readonly' => "TRUE",
                 'class' => 'editor',
                 'options' => array(
                     'Y' => 'active',
@@ -165,14 +166,6 @@ Class ProfileForm extends Form
             'type' => 'Submit',
             'attributes' => array(
                 'value' => 'Darstellung'
-            ),
-        ));
-        $this->add(array(
-            'name' => 'change_password',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Passwort ändern',
-                'class' => 'self editor',
             ),
         ));
     }
