@@ -26,7 +26,6 @@ Class ProfileForm extends Form
             'name' => 'membernumber',
             'type' => 'Text',
             'attributes' => array(
-                'class' => 'read_only',
                 'readonly' => "TRUE",
             ),
             'options' => array (
@@ -52,32 +51,23 @@ Class ProfileForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'gender',
-            'type' => 'Select',
+            'name' => 'birthday',
+            'type' => 'Hidden'
+        ));
+        $this->add(array(
+            'name' => 'birthday_dp',
+            'type' => 'Text',
             'attributes' => array(
-                'options' => array(
-                    'm' => 'Mann',
-                    'f' => 'Frau'
-                ),
             ),
             'options' => array (
-                'label' => 'Geschlecht',
+                'label' => 'Geburtstag'
             ),
         ));
         $this->add(array(
-            'name' => 'status',
-            'type' => 'Select',
-            'attributes' => array(
-                'class' => 'read_only',
-                'readonly' => "TRUE",
-                'class' => 'editor',
-                'options' => array(
-                    'Y' => 'active',
-                    'N' => 'inactive'
-                ),
-            ),
+            'name' => 'gender',
+            'type' => 'Text',
             'options' => array (
-                'label' => 'Status',
+                'label' => 'Geschlecht',
             ),
         ));
         $this->add(array(
@@ -95,7 +85,6 @@ Class ProfileForm extends Form
             'name' => 'created_on',
             'type' => 'Text',
             'attributes' => array(
-                'class' => 'read_only',
                 'readonly' => "TRUE",
             ),
             'options' => array (
@@ -106,7 +95,6 @@ Class ProfileForm extends Form
             'name' => 'modified_on',
             'type' => 'Text',
             'attributes' => array(
-                'class' => 'read_only',
                 'readonly' => "TRUE",
             ),
             'options' => array (

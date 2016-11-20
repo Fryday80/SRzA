@@ -101,7 +101,8 @@ class AuthController extends AbstractActionController
         if (! $this->getServiceLocator()->get('AuthService')->hasIdentity()){
             return $this->redirect()->toRoute('login');
         }
-        return array();
+        return array(
+        );
     }
     public function accessDeniedAction()
     {}

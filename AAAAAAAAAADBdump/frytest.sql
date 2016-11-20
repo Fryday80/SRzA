@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 17. Nov 2016 um 17:04
+-- Erstellungszeit: 20. Nov 2016 um 00:01
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -28,6 +28,7 @@ USE `frytest`;
 -- Tabellenstruktur für Tabelle `abonnements`
 --
 
+DROP TABLE IF EXISTS `abonnements`;
 CREATE TABLE IF NOT EXISTS `abonnements` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -43,6 +44,7 @@ CREATE TABLE IF NOT EXISTS `abonnements` (
 -- Tabellenstruktur für Tabelle `abonnementtypes`
 --
 
+DROP TABLE IF EXISTS `abonnementtypes`;
 CREATE TABLE IF NOT EXISTS `abonnementtypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `abonnement_id` int(11) NOT NULL,
@@ -57,6 +59,7 @@ CREATE TABLE IF NOT EXISTS `abonnementtypes` (
 -- Tabellenstruktur für Tabelle `album`
 --
 
+DROP TABLE IF EXISTS `album`;
 CREATE TABLE IF NOT EXISTS `album` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `event` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -81,6 +84,7 @@ INSERT INTO `album` (`id`, `event`, `timestamp`, `duration`) VALUES
 -- Tabellenstruktur für Tabelle `albumimages`
 --
 
+DROP TABLE IF EXISTS `albumimages`;
 CREATE TABLE IF NOT EXISTS `albumimages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `album_id` int(11) NOT NULL,
@@ -104,6 +108,7 @@ INSERT INTO `albumimages` (`id`, `album_id`, `image_id`) VALUES
 -- Tabellenstruktur für Tabelle `albums`
 --
 
+DROP TABLE IF EXISTS `albums`;
 CREATE TABLE IF NOT EXISTS `albums` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `folder` varchar(30) COLLATE utf8_bin NOT NULL,
@@ -130,6 +135,7 @@ INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visi
 -- Tabellenstruktur für Tabelle `families`
 --
 
+DROP TABLE IF EXISTS `families`;
 CREATE TABLE IF NOT EXISTS `families` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text COLLATE utf8_bin NOT NULL,
@@ -142,6 +148,7 @@ CREATE TABLE IF NOT EXISTS `families` (
 -- Tabellenstruktur für Tabelle `hashjob`
 --
 
+DROP TABLE IF EXISTS `hashjob`;
 CREATE TABLE IF NOT EXISTS `hashjob` (
   `job_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -153,6 +160,7 @@ CREATE TABLE IF NOT EXISTS `hashjob` (
 -- Tabellenstruktur für Tabelle `images`
 --
 
+DROP TABLE IF EXISTS `images`;
 CREATE TABLE IF NOT EXISTS `images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -179,6 +187,7 @@ INSERT INTO `images` (`id`, `filename`, `extension`, `text_1`, `text_2`, `visibi
 -- Tabellenstruktur für Tabelle `job`
 --
 
+DROP TABLE IF EXISTS `job`;
 CREATE TABLE IF NOT EXISTS `job` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job` text COLLATE utf8_bin NOT NULL,
@@ -191,6 +200,7 @@ CREATE TABLE IF NOT EXISTS `job` (
 -- Tabellenstruktur für Tabelle `multiabo`
 --
 
+DROP TABLE IF EXISTS `multiabo`;
 CREATE TABLE IF NOT EXISTS `multiabo` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -202,6 +212,7 @@ CREATE TABLE IF NOT EXISTS `multiabo` (
 -- Tabellenstruktur für Tabelle `nav`
 --
 
+DROP TABLE IF EXISTS `nav`;
 CREATE TABLE IF NOT EXISTS `nav` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_id` int(11) NOT NULL,
@@ -223,7 +234,7 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 (3, 0, 'Permissions', '/permission', 58, 29, 30),
 (4, 0, 'Users', '/user', 67, 19, 20),
 (5, 0, 'Gallery Edit', '/album', 88, 16, 17),
-(7, 0, 'Home', '/', 1, 1, 2),
+(7, 0, 'Home', '/', 4, 1, 2),
 (8, 0, 'Navigation', '/nav/sort', 73, 25, 26),
 (9, 0, 'Administration', '/#', 69, 15, 34),
 (10, 0, 'Roles', '/role', 54, 27, 28),
@@ -234,7 +245,7 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 (15, 0, 'Webmaster', '/#', 69, 22, 33),
 (16, 0, 'Angebote', '/Angebote', 66, 8, 9),
 (17, 0, 'Soziale Medien', '/Soziale-Medien', 85, 35, 36),
-(18, 0, 'Termine', '/Termine', 85, 3, 4),
+(18, 0, 'Termine', '/termine', 85, 3, 4),
 (19, 0, 'User Manager', '/usermanager', 86, 13, 14);
 
 -- --------------------------------------------------------
@@ -243,6 +254,7 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 -- Tabellenstruktur für Tabelle `pages`
 --
 
+DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` tinytext NOT NULL,
@@ -272,6 +284,7 @@ INSERT INTO `pages` (`id`, `title`, `url`, `exceptedRoles`, `content`, `updated`
 -- Tabellenstruktur für Tabelle `permission`
 --
 
+DROP TABLE IF EXISTS `permission`;
 CREATE TABLE IF NOT EXISTS `permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `permission_name` varchar(45) NOT NULL,
@@ -332,6 +345,7 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 -- Tabellenstruktur für Tabelle `resource`
 --
 
+DROP TABLE IF EXISTS `resource`;
 CREATE TABLE IF NOT EXISTS `resource` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(50) NOT NULL,
@@ -361,6 +375,7 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 -- Tabellenstruktur für Tabelle `role`
 --
 
+DROP TABLE IF EXISTS `role`;
 CREATE TABLE IF NOT EXISTS `role` (
   `rid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_name` varchar(45) NOT NULL,
@@ -385,12 +400,13 @@ INSERT INTO `role` (`rid`, `role_name`, `role_parent`, `status`) VALUES
 -- Tabellenstruktur für Tabelle `role_permission`
 --
 
+DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE IF NOT EXISTS `role_permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=193 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=194 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -491,7 +507,8 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (189, 4, 85),
 (190, 4, 88),
 (191, 4, 87),
-(192, 1, 85);
+(192, 1, 85),
+(193, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -499,6 +516,7 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 -- Tabellenstruktur für Tabelle `titel`
 --
 
+DROP TABLE IF EXISTS `titel`;
 CREATE TABLE IF NOT EXISTS `titel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -512,22 +530,28 @@ CREATE TABLE IF NOT EXISTS `titel` (
 -- Tabellenstruktur für Tabelle `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(100) NOT NULL,
   `name` varchar(255) NOT NULL,
   `password` varchar(100) NOT NULL,
   `status` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `created_on` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `modified_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_on` bigint(20) NOT NULL,
+  `modified_on` bigint(20) NOT NULL,
   `family_id` int(11) NOT NULL,
   `order` int(11) NOT NULL,
-  `vita` int(11) NOT NULL,
-  `realfirstname` int(11) NOT NULL,
-  `realname` int(11) NOT NULL,
-  `showname` int(11) NOT NULL,
-  `showsurename` int(11) NOT NULL,
-  `gender` int(11) NOT NULL,
+  `vita` text NOT NULL,
+  `realfirstname` text NOT NULL,
+  `realname` text NOT NULL,
+  `showname` text NOT NULL,
+  `showsurename` text NOT NULL,
+  `gender` enum('m','f') NOT NULL,
+  `membernumber` int(11) NOT NULL,
+  `street` text NOT NULL,
+  `zip` int(11) NOT NULL,
+  `city` text NOT NULL,
+  `birthday` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
@@ -535,10 +559,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Daten für Tabelle `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`, `family_id`, `order`, `vita`, `realfirstname`, `realname`, `showname`, `showsurename`, `gender`) VALUES
-(1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 'Y', '0000-00-00 00:00:00', '2016-10-08 18:00:20', 0, 0, 0, 0, 0, 0, 0, 0),
-(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', '0000-00-00 00:00:00', '2016-10-08 18:04:01', 0, 0, 0, 0, 0, 0, 0, 0),
-(3, 'example.3@example.com', 'example', 'd7d833534a39afbac08ec536bed7ae9eeac45638', 'Y', '0000-00-00 00:00:00', '2016-09-27 00:58:02', 0, 0, 0, 0, 0, 0, 0, 0);
+INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`, `family_id`, `order`, `vita`, `realfirstname`, `realname`, `showname`, `showsurename`, `gender`, `membernumber`, `street`, `zip`, `city`, `birthday`) VALUES
+(1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 'Y', 152151515113, 20161008200020, 0, 0, 'jhfjgfgfghgh  fgfhgnhf h ghfjgf', 'Christoph', 'Sonntag', 'Christoph', 'von Leym zu Munichen', 'm', 2, 'hkjhk', 80689, 'München', 0),
+(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', 67665564, 20161008200401, 0, 0, 'stzsghxghgfn  fxgxg  gxxf', 'gnn', '0gnxgn', '0nhghnh', '0ncnncn', 'm', 544, 'gn', 56866, 'gfxngx', 303453431),
+(3, 'example.3@example.com', 'example', 'd7d833534a39afbac08ec536bed7ae9eeac45638', 'Y', 0, 20160927025802, 0, 0, '0', '0', '0', '0', '0', '', 0, '', 0, '', 0);
 
 -- --------------------------------------------------------
 
@@ -546,6 +570,7 @@ INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, 
 -- Tabellenstruktur für Tabelle `user_role`
 --
 
+DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE IF NOT EXISTS `user_role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,

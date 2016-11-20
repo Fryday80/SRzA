@@ -5,6 +5,7 @@ use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
+use Usermanager\Form\ConfirmForm;
 
 class UsermanagerController extends AbstractActionController
 {
@@ -39,14 +40,13 @@ class UsermanagerController extends AbstractActionController
         $allowance = $this->getAllowance();
         //$allowance = 'not set';
 
-        $operations = array();
-        $jsOptions = $this->setJSOptionForDatatables($allowance);
+        $operations = '';
 
         $users = $this->userTable->getUsers()->toArray();
         $tableData = array();
         $hidden_columns = array ('id');
         foreach ($users as $user) {
-            $operations = '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
+            $operations .= '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
 
             if ($allowance == 'editor') {
                 $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
@@ -58,14 +58,14 @@ class UsermanagerController extends AbstractActionController
                 'Aktionen' => $operations,
             );
             array_push($tableData, $arr);
+            $operations ='';
         }
-        $addButton = '<a href="<?= $this->url(\'/usermanager/add\', array());?>">Mitglied hinzufügen</a>';
 
         return new ViewModel(array(
-            'jsOptions' => $jsOptions,
+            'jsOptions' => $this->setJSOptionForDatatables($allowance),
             'profiles' => $tableData,
             'hidden_columns' => $hidden_columns,
-            'addButton' => $addButton
+            'addButton' => '<a href="/usermanager/add">Mitglied hinzufügen</a>',
         ));
     }
 
@@ -75,10 +75,11 @@ class UsermanagerController extends AbstractActionController
         $id = (int) $this->params()->fromRoute('id', 0);
 
         $allowance = $this->getAllowance($id);
-        //$allowance = 'self';
+        //$allowance = 'self';     //cleanfix overrides for testing
         //$allowance = 'not set';
 
         $form = new ProfileForm();
+        $form->setAttribute('action', '/usermanager/profile/' . $id);
 
         $user = $this->userTable->getUser($id);
         array_push($data_set, $user);
@@ -87,10 +88,11 @@ class UsermanagerController extends AbstractActionController
         // array_push($data_set, $table_data);
 
         $this->dataToForm($data_set, $form);
-        
+
+        $this->makeUpForm($form);
+
         if ($allowance !== 'not set')
         {
-            $this->addChangeSubmit($form);
             $form->add(array(
                 'name' => 'change_password',
                 'type' => 'Submit',
@@ -110,11 +112,39 @@ class UsermanagerController extends AbstractActionController
         ));
     }
 
+    public function addAction ()
+    {
+        if ($this->getAllowance() == 'not set')
+            return $this->redirect()->toRoute('usermanager');
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $user_data = $request->getContent();
+            dumpd ($user_data);
+            $this->userTable->saveUser($user_data);
+        }
+        $form = new ProfileForm();
+        $form->setAttribute('action', 'usermanager/add');
+        $this->makeUpForm($form, 'self');
+        /*
+        $form->add(array(
+            'name' => 'save',
+            'type' => 'Submit',
+            'attributes' => array(
+                'value' => 'Speichern'
+            ),
+        ));
+*/
+        return array(
+            'form' => $form,
+            'back' => '<a href="/usermanager">Abbrechen und zurück</a>',
+        );
+    }
+
     public function deleteAction ()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
-        $user_to_delete = $this->userTable->getUser($id);
-        dumpd ($user_to_delete);
+
         $request = $this->getRequest();
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('usermanager');
@@ -122,35 +152,33 @@ class UsermanagerController extends AbstractActionController
         if ($request->isPost()) {
             $confirmed = $request->getPost('delete_confirm', 'no');
             if ($confirmed !== 'no') {
-                $this->galleryService->deleteWholeAlbum($id); //fry delete action
+                $this->userTable->deleteUser($id);
                 return $this->redirect()->toRoute('usermanager');
             }
             // Redirect to list of albums
             return $this->redirect()->toRoute('usermanager');
         }
         $form = new ConfirmForm();
-        $form->get('realname')->setAttribute('value', $id);
+        $form->get('id')->setAttribute('value', $id);
         $form->setAttribute('action', '/usermanager/delete/' . $id);
 
         try {
-            $album = $this->galleryService->getAlbumByID($id);
+            $user_to_delete = $this->userTable->getUser($id);
         } catch (\Exception $ex) {
             print ($ex);
             return $this->redirect()->toRoute('/usermanager');
         }
-        $event = $album[0]['event'];
+        $message = 'User >>' . $user_to_delete->name . '<< mit der Mitgliedsnummer >>' . $user_to_delete->membernumber . '<< löschen';
 
         return array (
-            'viewHelper' => $this->viewHelper,
-            'id' => $id,
-            'event' => $event,
+            'message' => $message,
             'form' => $form
         );
     }
 
     public function getElementsArray($form){
         $return = array();
-        foreach ($form->getElements() as $element){
+        foreach ($form as $element){
             $data = $element->getAttributes('name');
             array_push($return, $data['name']);
         }
@@ -168,15 +196,91 @@ class UsermanagerController extends AbstractActionController
 
     private function dataToForm($data_set, $form)
     {
+        $ts_value = '';
         foreach ($data_set as $set)
         {
             foreach ($set as $key => $value){
                 if (in_array($key, $this->getElementsArray($form)))
                 {
+                    if ($key == 'gender'){
+                        $value = ($value = 'm') ? 'Mann' : 'Frau';
+                    }
+                    if ($key == 'created_on'){
+                       $value = date ('d.m.Y', $value);
+                    }
+                    if ($key == 'modified_on'){
+                        $value = date ('d.m.Y', $value);
+                    }
+                    if ($key == 'birthday'){
+                    $ts_value = date ('d.m.Y', $value);
+                    }
                     $ele = $form->get($key);
                     $ele->setValue($value);
                 }
             }
+            $ele = $form->get('birthday_dp');
+            $ele->setValue($ts_value);
+        }
+    }
+
+    /**
+     * @param $form the form designed to view
+     * @param null $options either allowance... if not given allowance is get by method
+     * || no other case or option neede till now
+     */
+    private function makeUpForm ($form, $options = NULL){
+        $id = (int) $form->get('id')->getValue();
+        if (in_array($options, $this->allowance_result_options)) {
+            $allowance = $options;
+        } else {
+            $allowance = $this->getAllowance($id);
+        }
+
+        if ($allowance == 'self' || $allowance == 'editor') {
+            $this->makeUpSelfSet($form);
+        }
+
+        if ($allowance == 'editor') {
+            $this->makeUpEditorSet($form);
+        }
+    }
+
+    private function makeUpSelfSet ($form){
+        $this->addChangeSubmit($form);
+    }
+
+    private function makeUpEditorSet ($form){
+        $form->add(array(
+        'name' => 'status',
+        'type' => 'Select',
+        'attributes' => array(
+            'class' => 'editor',
+            'options' => array(
+                'Y' => 'active',
+                'N' => 'inactive'
+            ),
+        ),
+        'options' => array(
+            'label' => 'Status',
+        ),
+    ));
+        $form->add(array(
+            'name' => 'gender',
+            'type' => 'Select',
+            'attributes' => array(
+                'options' => array(
+                    'm' => 'Mann',
+                    'f' => 'Frau'
+                ),
+            ),
+            'options' => array (
+                'label' => 'Geschlecht',
+            ),
+        ));
+        $this->addDeleteSubmit($form);
+
+        foreach ($form as $element) {
+            $element->setAttributes(array('readonly' => 'false'));
         }
     }
 

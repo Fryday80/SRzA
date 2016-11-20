@@ -37,29 +37,37 @@ class sraForm extends Form
             }
         }
 
-        return '<div style="text-align: right;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
+        return '<div class="form" style="text-align: right;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
     }
 
     public function render_center($form)
     {
+        $style = 'style="width: 100%; text-align: center;"';
         if (method_exists($form, 'prepare')) {
             $form->prepare();
         }
         $new_elements = array();
+        $hidden_elements = array();
         $formContent = '<br>';
-
-        foreach ($form as $element)
-        {
+        foreach ($form as $element) {
+            $selector = ($element->getAttribute('type') !== 'hidden')?'new':'hidden';
+            $var = $selector . '_elements';
             $label = '';
             if ($element->getLabel() !== NULL) {
                 $label = $element->getLabel();
             }
             $input = $this->view->formElement($element);
             $new_element = $label . '<br>' . $input . '<br><br>';
-            array_push($new_elements, $new_element);
+            array_push($$var, $new_element);
+        } 
+        foreach ($new_elements as $element) {
+            $formContent .= $element;
+        }
+        foreach ($hidden_elements as $element) {
+            $formContent .= $element;
         }
 
-        return '<div style="text-align: center;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
+        return "<div $style><form $style >" . $formContent . $this->closeTag() . '</div>';
     }
 
 
@@ -69,32 +77,8 @@ class sraForm extends Form
      * @param  null|FormInterface $form
      * @return string
      */
-    /*
-    public function openTag(FormInterface $form = null, $attributes = array())
+    public function openMyTag()
     {
-        $doctype    = $this->getDoctype();
-        $attributes = array();
-
-        if (! (Doctype::HTML5 === $doctype || Doctype::XHTML5 === $doctype)) {
-            $attributes = array(
-                'action' => '',
-                'method' => 'get',
-            );
-        }
-
-        if ($form instanceof FormInterface) {
-            $formAttributes = $form->getAttributes();
-            if (!array_key_exists('id', $formAttributes) && array_key_exists('name', $formAttributes)) {
-                $formAttributes['id'] = $formAttributes['name'];
-            }
-            $attributes = array_merge($attributes, $formAttributes);
-        }
-
-        if ($attributes) {
-            return sprintf('<form %s>', $this->createAttributesString($attributes));
-        }
-
-        return '<form>';
+        return '<form >';
     }
-    */
 }
