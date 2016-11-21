@@ -3,7 +3,10 @@ use Usermanager\Controller\UsermanagerController;
 
 return array(
     'controllers' => array(
-        'invokables' => array( ),
+        'invokables' => array(
+            'Usermanager\Controller\Family' => 'Usermanager\Controller\FamilyController',
+            'Usermanager\Controller\Job' => 'Usermanager\Controller\JobController',
+        ),
         'factories' => array(
             'Usermanager\Controller\Usermanager' => function($controllerManager) {
                 $sm = $controllerManager->getServiceLocator();
