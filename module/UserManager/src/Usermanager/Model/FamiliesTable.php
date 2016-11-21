@@ -1,5 +1,5 @@
 <?php
-namespace Profile\Model;
+namespace Usermanager\Model;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
 
@@ -7,6 +7,12 @@ class FamiliesTable extends AbstractTableGateway
 {
 
     public $table = 'families';
+
+    public function __construct($adapter)
+    {
+        $this->adapter = $adapter;
+        $this->initialize();
+    }
 
     public function getAll () {
         $row = $this->select();

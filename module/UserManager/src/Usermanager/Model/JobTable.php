@@ -1,10 +1,8 @@
 <?php
 namespace Usermanager\Model;
 
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
 
 class JobTable extends AbstractTableGateway
 {
