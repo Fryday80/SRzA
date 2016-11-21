@@ -1,0 +1,14 @@
+<?php
+$title = 'Families';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('role/add');?>">Add new Family</a>
+ </p>
+
+<?php
+$this->dataTable()->setJSOptions($jsOptions);
+//echo $addButton . '<br><br>';
+echo $this->dataTable()->render($families);//, $hidden_columns);
+?>

@@ -13,7 +13,8 @@ class FamilyController extends AbstractActionController
     public function indexAction() {
         //@todo list all Families
         return new ViewModel(array(
-            'jobs' => 42,
+            'jsOptions' => 42,
+            'families' => 42,
         ));
     }
     public function addAction() {
@@ -28,7 +29,7 @@ class FamilyController extends AbstractActionController
             'job' => 42,
         ));
     }
-    public function removeAction() {
+    public function deleteAction() {
         //@todo remove Family
         return new ViewModel(array(
             'job' => 42,

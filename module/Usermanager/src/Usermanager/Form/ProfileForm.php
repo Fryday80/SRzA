@@ -22,8 +22,12 @@ Class ProfileForm extends Form
         $this->setAttribute('method', 'post');
 
         $this->add(array(
-            'name' => 'id',
+            'name' => 'idd',
             'type' => 'Hidden',
+            'options' => array (
+                'resource' => 'Usermanager\Controller\UsermanagerController',
+                'permission' => 'myPermission'
+            ),
         ));
         $this->add(array(
             'name' => 'name',
