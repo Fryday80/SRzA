@@ -9,6 +9,15 @@ $this->headTitle($title);
 
 <?php
 $this->dataTable()->setJSOptions("");
-//echo $addButton . '<br><br>';
-echo $this->dataTable()->render($families, array());
+echo $this->dataTable()->renderNew($families, array(
+    'Name' => array(
+        'key' => 'name'
+    ),
+    'Actions' => array(
+        'type' => 'custom',
+        'render' => function($dataRow) {
+            return '<a href="'.$dataRow['id'].'">Edit</a>';
+        },
+    ),
+));
 ?>
