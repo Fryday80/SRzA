@@ -28,7 +28,7 @@ class JobController extends AbstractActionController
             'job' => 42,
         ));
     }
-    public function removeAction() {
+    public function deleteAction() {
         //@todo remove job
         return new ViewModel(array(
             'job' => 42,

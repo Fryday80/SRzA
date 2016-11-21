@@ -1,17 +1,17 @@
 <?php
 namespace Auth;
 
+use Auth\Model\User;
 use Auth\Model\UserTable;
 use Auth\Model\RoleTable;
 use Auth\Model\PermissionTable;
 use Auth\Model\ResourceTable;
 use Auth\Model\RolePermissionTable;
 use Auth\Model\UserRoleTable;
+use Auth\Model\AuthStorage;
 use Auth\Service\AclService;
 use Auth\Service\AccessService;
-use Auth\Model\User;
 use Auth\View\Helper\LoginView;
-use Auth\Model\AuthStorage;
 use Auth\View\Helper\UserInfo;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;

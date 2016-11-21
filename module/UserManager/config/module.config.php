@@ -75,6 +75,106 @@ return array(
                     )
                 ),
              ),
+             'families' => array(
+                 'type'    => 'segment',
+                 'may_terminate' => true,
+                 'options' => array(
+                     'route'    => '/families',
+                     'defaults' => array(
+                         'controller' => 'Usermanager\Controller\Family',
+                         'action'     => 'index',
+                     ),
+                 ),
+
+                 'child_routes' => array(
+                     'delete' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/delete[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'delete'
+                             )
+                         )
+                     ),
+                     'add' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/add[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'add'
+                             )
+                         )
+                     ),
+                     'edit' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/edit[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'edit'
+                             )
+                         )
+                     )
+                 ),
+             ),
+             'jobs' => array(
+                 'type'    => 'segment',
+                 'may_terminate' => true,
+                 'options' => array(
+                     'route'    => '/jobs',
+                     'defaults' => array(
+                         'controller' => 'Usermanager\Controller\Job',
+                         'action'     => 'index',
+                     ),
+                 ),
+
+                 'child_routes' => array(
+                     'delete' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/delete[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'delete'
+                             )
+                         )
+                     ),
+                     'add' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/add[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'add'
+                             )
+                         )
+                     ),
+                     'edit' => array(
+                         'type' => 'Segment',
+                         'options' => array(
+                             'route' => '/edit[/:id]',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'action' => 'edit'
+                             )
+                         )
+                     )
+                 ),
+             ),
          ),
      ),
 );

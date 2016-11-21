@@ -1,0 +1,11 @@
+<?php
+$title = 'Edit Role';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$form = $this->form;
+$form->setAttribute('action', $this->url('role/edit', array('id' => $id)));
+$form->prepare();
+echo $this->form($form);

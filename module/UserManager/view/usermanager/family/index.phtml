@@ -1,0 +1,23 @@
+<?php
+$title = 'Families';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('families/add');?>">Add new Family</a>
+ </p>
+
+<?php
+$this->dataTable()->setJSOptions("");
+echo $this->dataTable()->renderNew($families, array(
+    'Name' => array(
+        'key' => 'name'
+    ),
+    'Actions' => array(
+        'type' => 'custom',
+        'render' => function($dataRow) {
+            return '<a href="'.$dataRow['id'].'">Edit</a>';
+        },
+    ),
+));
+?>

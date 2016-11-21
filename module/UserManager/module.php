@@ -1,6 +1,8 @@
 <?php
 namespace Usermanager;
 
+use Usermanager\Model\FamiliesTable;
+use Usermanager\Model\JobTable;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
@@ -23,5 +25,18 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
+    }
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Usermanager\Model\FamiliesTable' =>  function($sm) {
+                    return new FamiliesTable($sm->get('Zend\Db\Adapter\Adapter'));
+                },
+                'Usermanager\Model\JobTable' =>  function($sm) {
+                    return new JobTable($sm->get('Zend\Db\Adapter\Adapter'));
+                },
+            ),
+        );
     }
 }
