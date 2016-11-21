@@ -63,7 +63,7 @@ Class DataTableHelper extends AbstractHelper {
         $table .= $this->getTableScript($this->jsOptions);
         return $table;
     }
-    function render($data, $hidden_array)
+    function render($data, $hidden_data = array())
     {
         $datarow = '';
         $datahead = '';
@@ -72,7 +72,7 @@ Class DataTableHelper extends AbstractHelper {
         foreach ($data as $row) {
             $datarow .= '<tr>';
             foreach ($row as $key => $value){
-                if (in_array($key, $hidden_array)){continue;}
+                if (in_array($key, $hidden_data)){continue;}
                 if ( $i == 0) {
                     $datahead .= "<td>$key</td>"; 
                 }
