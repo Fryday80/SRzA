@@ -24,7 +24,7 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
 
-    function render($data, $hidden_array)
+    function render($data)
     {
         $datarow = '';
         $datahead = '';
@@ -33,7 +33,6 @@ Class DataTableHelper extends AbstractHelper {
         foreach ($data as $row) {
             $datarow .= '<tr>';
             foreach ($row as $key => $value){
-                if (in_array($key, $hidden_array)){continue;}
                 if ( $i == 0) {
                     $datahead .= "<td>$key</td>"; 
                 }

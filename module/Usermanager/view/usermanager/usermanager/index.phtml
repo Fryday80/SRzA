@@ -5,4 +5,4 @@ $this->headTitle($title);
 $this->dataTable()->setJSOptions($jsOptions);
 echo $this->url('album/edit', array('id' => 1));
 echo $addButton . '<br><br>';
-echo $this->dataTable()->render($profiles, $hidden_columns);
+echo $this->dataTable()->render($profiles);

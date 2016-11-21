@@ -30,7 +30,6 @@ class UsermanagerController extends AbstractActionController
 
         $users = $this->userTable->getUsers()->toArray();
         $tableData = array();
-        $hidden_columns = array ('id');
         foreach ($users as $user) {
             $operations .= '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
 
@@ -38,7 +37,6 @@ class UsermanagerController extends AbstractActionController
                 $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
             }
             $arr = array(
-                'id'    => $user['id'],
                 'Name'  => $user['name'],
                 'eMail' => $user['email'],
                 'Aktionen' => $operations,
@@ -53,7 +51,6 @@ class UsermanagerController extends AbstractActionController
         return new ViewModel(array(
             'jsOptions' => $this->setJSOptionForDatatables(),
             'profiles' => $tableData,
-            'hidden_columns' => $hidden_columns,
             'addButton' => $addButton,
         ));
     }
