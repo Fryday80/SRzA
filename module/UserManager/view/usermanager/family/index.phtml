@@ -8,16 +8,27 @@ $this->headTitle($title);
  </p>
 
 <?php
-$this->dataTable()->setJSOptions("");
-echo $this->dataTable()->renderNew($families, array(
-    'Name' => array(
-        'key' => 'name'
+// $this->dataTable()->setJSOptions("");   das kannste dir ja sparen wenn der String leer ist, das ist er default
+echo $this->dataTable()->render($families, array(
+    'ID' => array(
+        'type' => 'text',
+        'key' => 'id'
     ),
-    'Actions' => array(
+    'test' => array(
         'type' => 'custom',
         'render' => function($dataRow) {
-            return '<a href="'.$dataRow['id'].'">Edit</a>';
+            return $dataRow['id'].':'.$dataRow['name'];
         },
     ),
+                        'Name' => array(
+                            'type' => 'text',
+                            'key' => 'name'
+                        ),
+                        'Actions' => array(
+                            'type' => 'custom',
+                            'render' => function($dataRow) {
+                                return '<a href="'.$dataRow['id'].'">Edit</a>';
+                            },
+                        ),
 ));
 ?>
