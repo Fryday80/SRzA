@@ -251,13 +251,13 @@ newstitel {
 /* ----------------- UI special desing -------------------------------- */
 
 .spacer_h {
-    background-image: url( /img/uikit/decoration.h.png);
+    background-image: url(' /img/uikit/decoration.h.png');
     background-repeat: repeat-x;
     background-size: contain;
     height: 10px;
 }
 .spacer_l {
-    background-image: url( ../img/uikit/decoration.3l.png);
+    background-image: url(' ../img/uikit/decoration.3l.png');
     background-repeat: repeat-x;
     background-size: contain;
     height: 10px;
@@ -269,6 +269,14 @@ newstitel {
 button {
     background: none;
     border: none;
+}
+.disclaimer_button {
+    background-image: url(../img/uikit/Button.png);
+    background-size: 100% 100%;
+}
+.disclaimer_button:hover {
+    background-image: url(../img/uikit/Button.hover.png);
+    background-size: 100% 100%;
 }
 
 .sra_table {

@@ -1,20 +1,10 @@
 <?php
 
-$title = 'Neues Album';
+$title = 'Neuer User';
 $this->headTitle($title);
-?>
- <h1><?php echo $this->escapeHtml($title); ?></h1>
- <?php
- $form->prepare();
- $formContent = '';
- echo $this->form()->openTag($form);
- foreach ($form as $element)
- {
-     $formContent .= $this->formrow($element) . '<br/>';
- }
+echo $back . '<br><br>';
 
- echo $formContent;
- echo $this->form()->closeTag();
+echo $this->form()->render_center($form);
 
 ?>
 <script>
@@ -22,8 +12,7 @@ $this->headTitle($title);
         dateFormat: "dd.mm.yy",
         defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
         onSelect: function (selectedDate) {
-            var date = new Date($('#content input[name="date"]' ).val());
-            $('#content input[name="timestamp"]').val(date.getTime() / 1000);
+            var date = new Date($('#content input[name="birthday"]' ).val());
         }
     });
 </script>

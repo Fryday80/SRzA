@@ -9,8 +9,6 @@ use Usermanager\Form\ConfirmForm;
 
 class UsermanagerController extends AbstractActionController
 {
-    private $controller = 'usermanager';
-
     private $editors_array = array ( 'Administrator', 'Profiladmin');
     private $allowance_result_options = array ('not set', 'editor', 'self');
 
@@ -20,25 +18,28 @@ class UsermanagerController extends AbstractActionController
 
     private $profileService;
 
-    private $datatableHelper;
+    private $accessService;
+
+    private $owner;
 
 
     public function __construct($userTable, $accessService, $profileService)
     {
         $this->userTable = $userTable;
 
+        $this->accessService = $accessService;
+
         $this->whoAmI['role'] = $accessService->getRole();
         $this->whoAmI['user_id'] = $accessService->getUserID();
 
         $this->profileService = $profileService;
-
-        $this->datatableHelper = 'fake';
     }
 
     public function indexAction()
     {
         $allowance = $this->getAllowance();
         //$allowance = 'not set';
+
 
         $operations = '';
 
@@ -48,7 +49,7 @@ class UsermanagerController extends AbstractActionController
         foreach ($users as $user) {
             $operations .= '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
 
-            if ($allowance == 'editor') {
+            if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
                 $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
             }
             $arr = array(
@@ -60,12 +61,15 @@ class UsermanagerController extends AbstractActionController
             array_push($tableData, $arr);
             $operations ='';
         }
+        if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
+            $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
+        }
 
         return new ViewModel(array(
             'jsOptions' => $this->setJSOptionForDatatables($allowance),
             'profiles' => $tableData,
             'hidden_columns' => $hidden_columns,
-            'addButton' => '<a href="/usermanager/add">Mitglied hinzufügen</a>',
+            'addButton' => $addButton,
         ));
     }
 
@@ -73,41 +77,21 @@ class UsermanagerController extends AbstractActionController
     {
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
+        $this->owner = $this->accessService->getUserID() === $id;
 
-        $allowance = $this->getAllowance($id);
-        //$allowance = 'self';     //cleanfix overrides for testing
-        //$allowance = 'not set';
-
-        $form = new ProfileForm();
+        $form = new ProfileForm( $this->accessService, $this->owner );
         $form->setAttribute('action', '/usermanager/profile/' . $id);
 
-        $user = $this->userTable->getUser($id);
-        array_push($data_set, $user);
-
-        // fry andere Profil Daten
-        // array_push($data_set, $table_data);
-
-        $this->dataToForm($data_set, $form);
-
-        $this->makeUpForm($form);
-
-        if ($allowance !== 'not set')
-        {
-            $form->add(array(
-                'name' => 'change_password',
-                'type' => 'Submit',
-                'attributes' => array(
-                    'value' => 'Passwort ändern'
-            ))  );
-            if ($allowance == 'editor')
-            {
-                $this->addDeleteSubmit($form);
-            }
-        }
+        $user = $this->userTable->getUser($id);     //--//
+        array_push($data_set, $user);               //--//
+                                                    //--// if no other table used
+        // fry andere Profil Daten                  //--// $this->dataToForm($this->userTable->getUser($id), $form);
+        // array_push($data_set, $table_data);      //--// aber vorher data to form um ein level kürzen!!
+                                                    //--//
+        $this->dataToForm($data_set, $form);        //--//
 
         return new ViewModel(array(
-            'id' => $id,
-            'allowance' => $allowance,
+            'owner' => $this->owner,
             'form' => $form
         ));
     }
@@ -125,16 +109,6 @@ class UsermanagerController extends AbstractActionController
         }
         $form = new ProfileForm();
         $form->setAttribute('action', 'usermanager/add');
-        $this->makeUpForm($form, 'self');
-        /*
-        $form->add(array(
-            'name' => 'save',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Speichern'
-            ),
-        ));
-*/
         return array(
             'form' => $form,
             'back' => '<a href="/usermanager">Abbrechen und zurück</a>',
@@ -176,20 +150,12 @@ class UsermanagerController extends AbstractActionController
         );
     }
 
-    public function getElementsArray($form){
-        $return = array();
-        foreach ($form as $element){
-            $data = $element->getAttributes('name');
-            array_push($return, $data['name']);
-        }
-        return $return;
-    }
-
     public function getAllowance ($id = NULL)
     {   //salt n fry Roles zuteilen
-        if (in_array($this->whoAmI['role'], $this->editors_array)) return 'editor';
 
         if ($id !== NULL && $id == $this->whoAmI['user_id']) return 'self';
+        
+        if (in_array($this->whoAmI['role'], $this->editors_array)) return 'editor';
 
         return 'not set';
     }
@@ -199,20 +165,24 @@ class UsermanagerController extends AbstractActionController
         $ts_value = '';
         foreach ($data_set as $set)
         {
+            $permission = $this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit");
+
+            $timestamp_fields = array ('created_on', 'modified_on', 'birthday');
+
             foreach ($set as $key => $value){
                 if (in_array($key, $this->getElementsArray($form)))
                 {
-                    if ($key == 'gender'){
-                        $value = ($value = 'm') ? 'Mann' : 'Frau';
+                    if ($key == 'gender' && ($this->owner || $permission)){
+                        $value = ($value == 'm') ? 'Mann' : 'Frau';
                     }
-                    if ($key == 'created_on'){
-                       $value = date ('d.m.Y', $value);
-                    }
-                    if ($key == 'modified_on'){
-                        $value = date ('d.m.Y', $value);
-                    }
-                    if ($key == 'birthday'){
-                    $ts_value = date ('d.m.Y', $value);
+                    if (in_array($key, $timestamp_fields)){
+                        if ($key == 'birthday') {
+                            $ts_value = date ('d.m.Y', $value);
+                        }
+                        else
+                        {
+                            $value = date('d.m.Y', $value);
+                        }
                     }
                     $ele = $form->get($key);
                     $ele->setValue($value);
@@ -223,85 +193,14 @@ class UsermanagerController extends AbstractActionController
         }
     }
 
-    /**
-     * @param $form the form designed to view
-     * @param null $options either allowance... if not given allowance is get by method
-     * || no other case or option neede till now
-     */
-    private function makeUpForm ($form, $options = NULL){
-        $id = (int) $form->get('id')->getValue();
-        if (in_array($options, $this->allowance_result_options)) {
-            $allowance = $options;
-        } else {
-            $allowance = $this->getAllowance($id);
+    private function getElementsArray($form)
+    {
+        $return = array();
+        foreach ($form as $element){
+            $data = $element->getAttributes('name');
+            array_push($return, $data['name']);
         }
-
-        if ($allowance == 'self' || $allowance == 'editor') {
-            $this->makeUpSelfSet($form);
-        }
-
-        if ($allowance == 'editor') {
-            $this->makeUpEditorSet($form);
-        }
-    }
-
-    private function makeUpSelfSet ($form){
-        $this->addChangeSubmit($form);
-    }
-
-    private function makeUpEditorSet ($form){
-        $form->add(array(
-        'name' => 'status',
-        'type' => 'Select',
-        'attributes' => array(
-            'class' => 'editor',
-            'options' => array(
-                'Y' => 'active',
-                'N' => 'inactive'
-            ),
-        ),
-        'options' => array(
-            'label' => 'Status',
-        ),
-    ));
-        $form->add(array(
-            'name' => 'gender',
-            'type' => 'Select',
-            'attributes' => array(
-                'options' => array(
-                    'm' => 'Mann',
-                    'f' => 'Frau'
-                ),
-            ),
-            'options' => array (
-                'label' => 'Geschlecht',
-            ),
-        ));
-        $this->addDeleteSubmit($form);
-
-        foreach ($form as $element) {
-            $element->setAttributes(array('readonly' => 'false'));
-        }
-    }
-
-    private function addChangeSubmit($form){
-        $form->add(array(
-            'name' => 'change',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Änderungen speichern',
-            ),
-        ));
-    }
-
-    private function addDeleteSubmit($form){
-        $form->add(array(
-            'name' => 'delete',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Löschen',
-            ),
-        ));
+        return $return;
     }
 
     /**

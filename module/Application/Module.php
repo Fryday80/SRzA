@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -49,6 +50,10 @@ class Module
                 'dataTable' => function ($sm){
                     $parentLocator = $sm->getServiceLocator();
                     return new DataTableHelper($parentLocator);
+                },
+                'asurl' => function ($sm){
+                    $accessService = $sm->getServiceLocator()->get('AccessService');
+                    return new MyUrl($accessService);
                 }
 
             )
