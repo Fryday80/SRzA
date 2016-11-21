@@ -9,38 +9,23 @@ use Usermanager\Form\ConfirmForm;
 
 class UsermanagerController extends AbstractActionController
 {
-    private $editors_array = array ( 'Administrator', 'Profiladmin');
-    private $allowance_result_options = array ('not set', 'editor', 'self');
-
-    private $whoAmI = array();
     /* @var $userTable \Auth\Model\User */
     private $userTable;
-
-    private $profileService;
 
     private $accessService;
 
     private $owner;
 
 
-    public function __construct($userTable, $accessService, $profileService)
+    public function __construct($userTable, $accessService)
     {
         $this->userTable = $userTable;
 
         $this->accessService = $accessService;
-
-        $this->whoAmI['role'] = $accessService->getRole();
-        $this->whoAmI['user_id'] = $accessService->getUserID();
-
-        $this->profileService = $profileService;
     }
 
     public function indexAction()
     {
-        $allowance = $this->getAllowance();
-        //$allowance = 'not set';
-
-
         $operations = '';
 
         $users = $this->userTable->getUsers()->toArray();
@@ -66,7 +51,7 @@ class UsermanagerController extends AbstractActionController
         }
 
         return new ViewModel(array(
-            'jsOptions' => $this->setJSOptionForDatatables($allowance),
+            'jsOptions' => $this->setJSOptionForDatatables(),
             'profiles' => $tableData,
             'hidden_columns' => $hidden_columns,
             'addButton' => $addButton,
@@ -78,6 +63,19 @@ class UsermanagerController extends AbstractActionController
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
         $this->owner = $this->accessService->getUserID() === $id;
+        
+        if ($this->owner || $this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit"))
+        {
+            $request = $this->getRequest();
+        }
+        if ($request->isPost())
+        {
+            dumpd ('request');
+            $set_data = $request->getContent();
+            $this->formToData($set_data);
+        }
+
+        
 
         $form = new ProfileForm( $this->accessService, $this->owner );
         $form->setAttribute('action', '/usermanager/profile/' . $id);
@@ -107,6 +105,7 @@ class UsermanagerController extends AbstractActionController
             dumpd ($user_data);
             $this->userTable->saveUser($user_data);
         }
+
         $form = new ProfileForm();
         $form->setAttribute('action', 'usermanager/add');
         return array(
@@ -150,16 +149,6 @@ class UsermanagerController extends AbstractActionController
         );
     }
 
-    public function getAllowance ($id = NULL)
-    {   //salt n fry Roles zuteilen
-
-        if ($id !== NULL && $id == $this->whoAmI['user_id']) return 'self';
-        
-        if (in_array($this->whoAmI['role'], $this->editors_array)) return 'editor';
-
-        return 'not set';
-    }
-
     private function dataToForm($data_set, $form)
     {
         $ts_value = '';
@@ -170,6 +159,39 @@ class UsermanagerController extends AbstractActionController
             $timestamp_fields = array ('created_on', 'modified_on', 'birthday');
 
             foreach ($set as $key => $value){
+                if (in_array($key, $this->getElementsArray($form)))
+                {
+                    if ($key == 'gender' && ($this->owner || $permission)){
+                        $value = ($value == 'm') ? 'Mann' : 'Frau';
+                    }
+                    if (in_array($key, $timestamp_fields)){
+                        if ($key == 'birthday') {
+                            $ts_value = date ('d.m.Y', $value);
+                        }
+                        else
+                        {
+                            $value = date('d.m.Y', $value);
+                        }
+                    }
+                    $ele = $form->get($key);
+                    $ele->setValue($value);
+                }
+            }
+            $ele = $form->get('birthday_dp');
+            $ele->setValue($ts_value);
+        }
+    }
+
+    private function formToData($data)
+    {
+        dumpd ($data);
+        $ts_value = '';
+        foreach ($data as $fields)
+        {
+            $date_fields = array ('created_on', 'modified_on');
+            $datepicker_fields = array ('birthday');
+
+            foreach ($data as $key => $value){
                 if (in_array($key, $this->getElementsArray($form)))
                 {
                     if ($key == 'gender' && ($this->owner || $permission)){
@@ -204,16 +226,33 @@ class UsermanagerController extends AbstractActionController
     }
 
     /**
+     * @param $owner boolean if user is owner
      * @param $options mixed can be
      * left empty       -> returns standard setting ||
      * allowance string -> returns options set for a special allowance ||
      * options array   may look like array ('b' => '[settings]', 't')
+     * if only $options array is given method will still work!
      * @return string set of options for js plugin "datatables"
      */
-    private function setJSOptionForDatatables($options = ''){
+    private function setJSOptionForDatatables($owner = false , $options = array())
+    {
+        if (is_array ($owner))
+        {
+            $options = $owner;
+            $owner = false;
+        }
+        
+        //https://datatables.net/reference/index for preferences/documentation
+        //defaults:
+        $length = '"lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],';
+        $buttons = 'buttons: ["print", "pdf"],';
+        $list_select = 'select: { style: "multi" },';
+        $dom = '"dom": "Blfrtip",';
+        
+        //options change
         if (is_array($options))
         {
-            $allowed_options = array ('B','l','f','r','t','i','p');
+            $allowed_options = array ('b','l','f','r','t','i','p');
             $js_dom = '"dom": "';
             $js_option = '';
             foreach ($options as $key => $option)
@@ -221,38 +260,38 @@ class UsermanagerController extends AbstractActionController
                 if (!is_array($option))
                 {
                     $option = strtolower($option);
-                    $js_dom .= ((in_array($option, $allowed_options)) && ($option !== 'b'))?:'B';
+                    if (in_array($option, $allowed_options))
+                    {
+                    $js_dom .= ($option == 'b')? 'B' : $option;
+                    }
                 }
                 else
                 {
-                    $js_dom .= ((in_array($key, $allowed_options)) && ($key !== 'b'))?:'B';
+                    $option = strtolower($key);
+                    if (in_array($key, $allowed_options))
+                    {
+                        $js_dom .= ($key == 'b')? 'B' : $key;
                     $js_option .= $option . ',';
+                    }
                 }
             }
             $js_dom .= (stristr($js_dom, 't')) ? '' : 't';  //adds the t-able in the dom if not set
             $js_dom .= '",';
             $js_option = str_replace(',,', ',', $js_option);
-            $js_optionset = $js_option . $js_dom;
-            return $js_optionset;
-            //array of the options b r f i p etc...
-            // momentary no usage  //fry todo implement options selector
-            return '"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],';
+            $js_option_set = $js_option . $js_dom;
+            return $js_option_set;
         }
-        else if (in_array($options, $this->allowance_result_options)) {
-            if ($options == 'editor') {
-                // return ;  // override because same options set
-                $options = 'self';
-            } if ($options == 'self') return '    "lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],
-                                                    buttons: [
-                                                        "print", "copy", "csv", "excel", "pdf"
-                                                    ],
-                                                    select: {
-                                                        style: "multi"
-                                                    },
-                                                    "dom": "Blfrtip",';
+        // cases:
+        if ($owner)
+        {
+            return $length.$buttons.$list_select.$dom;
         }
-        else return '"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],';
+        if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit"))
+        {
 
-            //https://datatables.net/reference/index for preferences/documentation
+            $buttons = 'buttons: ["print", "copy", "csv", "excel", "pdf"],';
+            return $length.$buttons.$list_select.$dom;
+        }
+        else return $length;
     }
 }

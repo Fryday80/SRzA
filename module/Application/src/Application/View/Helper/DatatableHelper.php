@@ -56,21 +56,6 @@ Class DataTableHelper extends AbstractHelper {
         $startScript = '<script>  $(".display").DataTable( {';
         $endScript   = '} ); </script>';
         return $startScript . $options . $endScript;
-/*                      //cleanfix
-        if ($this->allowance == 'not set') {
-            return $startScript . '"lengthMenu": [ [10, 25, 50, -1], [10, 25, 50, "All"] ],' . $endScript;
-        }
-        if ($this->allowance == 'editor' || $this->allowance == 'self') {
-            $tableScript  = '   "lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],
-                                buttons: [
-                                        "print", "copy", "csv", "excel", "pdf"
-                                ],
-                                select: {
-                                    style: "multi"
-                                },
-                                dom: "lfBrtip",';
-            return $startScript.$tableScript.$endScript;
-*/
             //https://datatables.net/reference/index for preferences/documentation
     }
 

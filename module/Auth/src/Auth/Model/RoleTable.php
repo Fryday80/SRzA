@@ -71,4 +71,7 @@ class RoleTable extends AbstractTableGateway
             'rid' => $id
         ]);
     }
+    public function fetchAll(){
+        return $this->select()->toArray();
+    }
 }

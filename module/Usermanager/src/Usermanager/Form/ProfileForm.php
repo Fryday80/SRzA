@@ -167,7 +167,7 @@ Class ProfileForm extends Form
         //only with permission
         if ($accessService->allowed("Usermanger\Controller\UsermanagerController", "edit"))
         {
-            $this->editFieldset();
+            $this->editFieldset($accessService);
         }
 
 //fry cash 'n' Carry^^ other tables???
@@ -188,7 +188,7 @@ Class ProfileForm extends Form
     }
 
     
-    private function editFieldset ()
+    private function editFieldset ($accessService)
     {
         $elements = $this->getElements();
         foreach ($elements as $element)
@@ -211,18 +211,17 @@ Class ProfileForm extends Form
                 'label' => 'Status',
             ),
         ));
+        //fry todo perhaps use another permission to do this??
+        $this->remove('role_name');
+        $roles_selection = $this->roleNameOptions($accessService);
         $this->add(array(
-            'name' => 'role_name',
+            'name' => 'role_id',
             'type' => 'Select',
             'attributes' => array(
-                'options' => array(
-                    'Probemitglied'     => 'Probemitglied',
-                    'Mitglied'          => 'Mitglied',
-                    'Abteilungsleitung' => 'Abteilungsleitung'
-                ),
+                'options' => $roles_selection,
             ),
             'options' => array(
-                'label' => 'Rolle',
+                'label' => 'Rolle<br><small>[Änderungen wirken sich auf die Rechte auf der Seite aus!!]</small>',
             ),
         ));
         $this->changeBoth();
@@ -267,6 +266,14 @@ Class ProfileForm extends Form
     }
     
     private function roleNameOptions($accessService){
-        $this
+        $all_roles = $accessService->fetchAllRoles();
+        $role_names = array();
+        foreach ($all_roles as $role)
+        {
+            $rid = (int) $role['rid'];
+            $role_names[$rid] = $role['role_name'];
+        }
+        ksort($role_names);
+        return  $role_names;
     }
 }

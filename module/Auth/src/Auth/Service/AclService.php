@@ -155,4 +155,8 @@ class AclService extends Acl implements ServiceLocatorAwareInterface
     {
         echo 'Role:-' . $role . '==>' . $resource . '\\' . $permission . '<br/>';
     }
+    public function fetchAllRoles (){       //salt  other ideas??
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        return $roleTable->getUserRoles();
+    }
 }

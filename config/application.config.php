@@ -10,7 +10,6 @@ return array(
         'Album',
         //'Calendar',
         'Usermanager',
-        'Profile',
     ),
 
     // These are various options for the listeners attached to the ModuleManager

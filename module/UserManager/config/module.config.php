@@ -12,9 +12,8 @@ return array(
                 $sm = $controllerManager->getServiceLocator();
                 $userTable = $sm->get('Auth\Model\UserTable');
                 $accessService = $sm->get('AccessService');
-                $profileService = $sm->get('ProfileService');
 
-                return new UsermanagerController($userTable, $accessService, $profileService);
+                return new UsermanagerController($userTable, $accessService);
             },
         ),
     ),

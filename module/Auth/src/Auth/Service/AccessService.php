@@ -44,4 +44,7 @@ class AccessService {
     function getUserName() {
         return $this->userName;
     }
+    public function fetchAllRoles(){
+        return $this->aclService->fetchAllRoles();
+}
 }
