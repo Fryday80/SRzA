@@ -20,13 +20,13 @@ $(document).ready(function () {
             $(ele).html(e);
         });
 
-        ele = $( "<div></div>" ).dialog({
+        ele = $( "<div class='disclaimer'></div>" ).dialog({
             modal: true,
             title: "Disclaimer",
             open: function () {
-                $(".ui-dialog-titlebar-close").hide();      //entfernt das X im eck
+                $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
                 $('.ui-dialog').css({
-                    'width': $(window).width(),          //addClass geht hier nicht, das überschreibt dann nicht
+                    'width': $(window).width(),          //100% doesn't work
                     'height': 600,
                     'left': '0px',
                     'top':'0px'

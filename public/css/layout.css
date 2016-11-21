@@ -146,6 +146,9 @@ input {
     font-size: 15px;
     font-weight: 700;
 }
+small {
+    font-size: 10px;
+}
 
 
 /* -----------------hp body----------------- */
@@ -270,14 +273,6 @@ button {
     background: none;
     border: none;
 }
-.disclaimer_button {
-    background-image: url(../img/uikit/Button.png);
-    background-size: 100% 100%;
-}
-.disclaimer_button:hover {
-    background-image: url(../img/uikit/Button.hover.png);
-    background-size: 100% 100%;
-}
 
 .sra_table {
     text-align: right;
@@ -289,4 +284,18 @@ button {
 }
 .sra_table>input {
     text-align: center;
+}
+
+.disclaimer {
+    width:100%;
+}
+
+.ui-widget-content button {
+    background-image: url(../img/uikit/Button.png);
+    background-size: 100% 100%;
+}
+
+.ui-widget-content button:hover {
+    background-image: url(../img/uikit/Button.hover.png);
+    background-size: 100% 100%;
 }

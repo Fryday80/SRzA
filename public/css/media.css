@@ -6,7 +6,7 @@
 /*        height: 85px;*/
         height: 100px;
     }
-*/
+
     ownhead {
         font-size: 60px;
     }
@@ -62,7 +62,7 @@
         text-align: left;
     }
     .headdeko {
-	display: none;
+	    display: none;
 }
     .leftHead {
         float: right;
@@ -77,9 +77,10 @@
     }   
 
     #content {
-        margin-left: 50px;
+        padding-left: 0;
+        padding-top: 0;
         margin-bottom: 1%;
-        width: calc (97%-50px);
+        width: 100%;
         min-height:auto !important;
     }
 
