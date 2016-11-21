@@ -14,7 +14,7 @@ Class DataTableHelper extends AbstractHelper {
 
     protected $view;
     public $additionalButtons = array();
-    public $jsOptions = '';
+    public $jsOptions = '"lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],';
 
 
     function __construct($sm)
@@ -24,46 +24,50 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
 
-    function renderNew($data, $colums)
+    function render($data, $colums = '')
     {
-        $datarow = '';
-        $datahead = '';
-        $i = 0;
-        foreach ($data as $row) {
-            $datarow .= '<tr>';
-            foreach ($colums as $name => $value){
-                if ($i == 0) {
-                    $datahead .= "<td>$name</td>";
-                } else {
-                    if (array_key_exists('type', $value)) {
-                        $type = $value['type'];
+        if (is_array($colums)){
+            $datarow = '';
+            $datahead = '';
+            $i = 0;
+            foreach ($data as $row) {
+                $datarow .= '<tr>';
+                foreach ($colums as $name => $value){
+                    if ($i == 0) {
+                        $datahead .= "<td>$name</td>";
                     } else {
-                        $type = 'text';
+                        if (array_key_exists('type', $value)) {
+                            $type = $value['type'];
+                        } else {
+                            $type = 'text';
+                        }
+                        $cell = '';
+                        switch($type) {
+                            case 'text':
+                                $cell = $row[$value['key']];
+                                break;
+                            case 'custom':
+                                $cell = $value['render']($row);
+                                break;
+                        }
+                        $datarow .= "<td>$cell</td>";
                     }
-                    $cell = '';
-                    switch($type) {
-                        case 'text':
-                            $cell = $row[$value['key']];
-                            break;
-                        case 'custom':
-                            $cell = $value['render']($row);
-                            break;
-                    }
-                    $datarow .= "<td>$cell</td>";
                 }
+                $datarow .= '</tr>';
+                $i++;
             }
-            $datarow .= '</tr>';
-            $i++;
+            $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
+                        <thead> <tr> $datahead </tr> </thead>
+                        <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
+            $table .= $datarow;
+            $table .= '</tbody> </table>';
+            $table .= $this->getTableScript($this->jsOptions);
+            return $table;
+        } else {
+            return $this->fallback_render($data);
         }
-        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
-                    <thead> <tr> $datahead </tr> </thead>
-                    <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
-        $table .= $datarow;
-        $table .= '</tbody> </table>';
-        $table .= $this->getTableScript($this->jsOptions);
-        return $table;
     }
-    function render($data, $hidden_data = array())
+    private function fallback_render($data)
     {
         $datarow = '';
         $datahead = '';
@@ -72,7 +76,6 @@ Class DataTableHelper extends AbstractHelper {
         foreach ($data as $row) {
             $datarow .= '<tr>';
             foreach ($row as $key => $value){
-                if (in_array($key, $hidden_data)){continue;}
                 if ( $i == 0) {
                     $datahead .= "<td>$key</td>"; 
                 }
@@ -90,7 +93,11 @@ Class DataTableHelper extends AbstractHelper {
         return $table;
     }
 
-    private function getTableScript ($options = '')
+    /**
+     * @param $options string
+     * @return string of datatables js script
+     */
+    private function getTableScript ($options )
     {
         $startScript = '<script>  $(".display").DataTable( {';
         $endScript   = '} ); </script>';
@@ -98,6 +105,11 @@ Class DataTableHelper extends AbstractHelper {
             //https://datatables.net/reference/index for preferences/documentation
     }
 
+    /**
+     * @param $jsOptions string overrides default settings for datatables js script
+     *
+     * for documentation -> https://datatables.net/reference/index for preferences/documentation
+     */
     public function setJSOptions($jsOptions)
     {
         $this->jsOptions = $jsOptions;
