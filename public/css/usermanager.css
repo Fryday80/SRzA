@@ -8,3 +8,9 @@
 .row3 label {
     width: 90%;
 }
+
+.label>span,
+.input>input,
+.input>select {
+    width: 45%;
+}

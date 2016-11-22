@@ -24,9 +24,9 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
 
-    function render($data, $colums = '')
+    function render($data, $colums = false)
     {
-        if (is_array($colums)){
+        if ($colums){
             $datarow = '';
             $datahead = '';
             $i = 0;
@@ -61,7 +61,7 @@ Class DataTableHelper extends AbstractHelper {
                         <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
             $table .= $datarow;
             $table .= '</tbody> </table>';
-            $table .= $this->getTableScript($this->jsOptions);
+            //$table .= $this->getTableScript($this->jsOptions);
             return $table;
         } else {
             return $this->fallback_render($data);
@@ -89,7 +89,7 @@ Class DataTableHelper extends AbstractHelper {
                     <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
         $table .= $datarow;
         $table .= '</tbody> </table>';
-        $table .= $this->getTableScript($this->jsOptions);
+        //$table .= $this->getTableScript($this->jsOptions);
         return $table;
     }
 
@@ -97,8 +97,9 @@ Class DataTableHelper extends AbstractHelper {
      * @param $options string
      * @return string of datatables js script
      */
-    private function getTableScript ($options )
+    public function getTableScript ($options=false)
     {
+        $options = ($options)?:$this->jsOptions;
         $startScript = '<script>  $(".display").DataTable( {';
         $endScript   = '} ); </script>';
         return $startScript . $options . $endScript;

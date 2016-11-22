@@ -225,7 +225,7 @@ Class ProfileForm extends Form
                 'options' => $roles_selection,
             ),
             'options' => array(
-                'label' => 'Rolle<br><small>[Änderungen wirken sich auf die Rechte auf der Seite aus!!]</small>',
+                'label' => 'Rolle !! Änderungen wirken sich auf die Rechte auf der Seite aus!!',
             ),
         ));
         $this->changeBoth();

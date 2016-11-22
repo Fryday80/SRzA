@@ -86,6 +86,7 @@ class UsermanagerController extends AbstractActionController
         $this->dataToForm($data_set, $form);        //--//
 
         return new ViewModel(array(
+            'id' => $id,
             'owner' => $this->owner,
             'form' => $form
         ));
@@ -231,7 +232,7 @@ class UsermanagerController extends AbstractActionController
      * if only $options array is given method will still work!
      * @return string set of options for js plugin "datatables"
      */
-    private function setJSOptionForDatatables($owner = false , $options = array())
+    private function setJSOptionForDatatables($owner = false , $options = false)
     {
         if (is_array ($owner))
         {
@@ -247,7 +248,7 @@ class UsermanagerController extends AbstractActionController
         $dom = '"dom": "Blfrtip",';
         
         //options change
-        if (is_array($options))
+        if ($options)
         {
             $allowed_options = array ('b','l','f','r','t','i','p');
             $js_dom = '"dom": "';
@@ -276,7 +277,6 @@ class UsermanagerController extends AbstractActionController
             $js_dom .= '",';
             $js_option = str_replace(',,', ',', $js_option);
             $js_option_set = $js_option . $js_dom;
-            return $js_option_set;
         }
         // cases:
         if ($owner)

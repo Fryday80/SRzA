@@ -25,19 +25,22 @@ class sraForm extends Form
         if (method_exists($form, 'prepare')) {
             $form->prepare();
         }
-
         $formContent = '';
 
         foreach ($form as $element) {
-            $formContent .= '<br>';
             if ($element instanceof FieldsetInterface) {
                 $formContent.= $this->getView()->formCollection($element);
             } else {
-                $formContent.= $this->getView()->formRow($element);
+                if ($element->getLabel()!== Null) {
+                    $formContent .= '<div class="label">' . $element->getLabel() . '</div><div class="input">';
+                    $formContent .= $this->view->formElement($element) . '</div>';
+                } else {
+                    $formContent .= $this->view->formElement($element);
+                }
             }
         }
 
-        return '<div class="form" style="text-align: right;">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
+        return '<div class="form">' . $this->openTag($form) . $formContent . $this->closeTag() . '</div>';
     }
 
     public function render_center($form)
