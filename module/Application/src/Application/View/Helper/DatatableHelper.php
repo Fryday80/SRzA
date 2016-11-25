@@ -89,7 +89,7 @@ Class DataTableHelper extends AbstractHelper {
                     <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
         $table .= $datarow;
         $table .= '</tbody> </table>';
-        //$table .= $this->getTableScript($this->jsOptions);
+        $table .= $this->getTableScript($this->jsOptions);
         return $table;
     }
 
