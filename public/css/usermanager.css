@@ -1,16 +1,11 @@
-.row3 {
+.form
+{
     width: 100%;
-    text-align: center;"
-}
-.row3 input {
-    width: 90%;
-}
-.row3 label {
-    width: 90%;
 }
 
-.label>span,
-.input>input,
-.input>select {
+.label,
+.input,
+.select
+{
     width: 45%;
 }
