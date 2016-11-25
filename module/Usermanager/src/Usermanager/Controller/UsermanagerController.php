@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
 use Usermanager\Form\ConfirmForm;
+use Application\Form\Service\FormConfiguration;
 
 class UsermanagerController extends AbstractActionController
 {
@@ -57,7 +58,8 @@ class UsermanagerController extends AbstractActionController
 
     public function profileAction ()
     {
-        $field_config = array('type' => array ('select' => array('class' => 'select')));
+        $form_config = new FormConfiguration();
+        $form_config->setFieldConfig(array('type' => array ('select' => array('class' => 'select'))));
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
         $this->owner = $this->accessService->getUserID() === $id;
@@ -90,7 +92,7 @@ class UsermanagerController extends AbstractActionController
             'id' => $id,
             'owner' => $this->owner,
             'form' => $form,
-            'field_config' => $field_config
+            'form_config' => $form_config
         ));
     }
 

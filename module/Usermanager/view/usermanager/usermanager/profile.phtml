@@ -7,8 +7,7 @@ $this->headTitle($title);
 <a href="/usermanager">Zurück</a><a href="/usermanager/show/<?= $id ?>">Darstellung</a><br><br>
 <?php
 
-$this->form()->setFieldConfig($field_config);
-echo $this->form()->render($form);
+echo $this->form()->render($form, $form_config);
 //fry todo pw ändern if ($owner)...
 ?>
 

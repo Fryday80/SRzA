@@ -8,37 +8,28 @@
 
 namespace Application\View\Helper;
 
+use Application\Form\Service\FormConfiguration;
 use Zend\Form\View\Helper\Form;
 use Zend\Form\FormInterface;
 use Zend\View\Helper\Doctype;
 
 class sraForm extends Form
 {
-    private $config = array (
-        'form' => array(
-            'class' => 'form'
-        ),
-        'fields' => array(
-            'class' => 'fields',
-            'label' => array(
-                'class' => 'label'
-            ),
-            'field' => array(
-                'class' => 'input',
-            ),
-        ),
-    );
+    private $config;
 
     /**
      * Render a form from the provided $form,
      *
      * @param  FormInterface $form
-     * @param $configuration array array of Configuration
+     * @param bool|object $configurationService object instance of configurationService or nothing
      * @return string
      */
-    public function render(FormInterface $form, $configuration = false)
+    public function render(FormInterface $form, $configurationService = false)
     {
-        $this->configure($configuration);
+        if (! $configurationService) {
+            $configurationService = new FormConfiguration();
+        }
+        $this->config = $configurationService;
         if (method_exists($form, 'prepare')) 
         {
             $form->prepare();
@@ -52,7 +43,7 @@ class sraForm extends Form
             } else {
                 $type = $element->getAttribute('type');
                 if ($element->getLabel()!== Null) {
-                    $formContent .= '<div ' . $this->getFieldConfigByType('label') . '">' . $element->getLabel() . '</div><div ' . $this->getFieldConfigByType($type) . '">';
+                    $formContent .= '<div ' . $this->config->getFieldConfigByType('label') . '">' . $element->getLabel() . '</div><div ' . $this->config->getFieldConfigByType($type) . '">';
                     $formContent .= $this->view->formElement($element) . '</div>';
                 } else {
                     $formContent .= $this->view->formElement($element);         // no label => hidden element
@@ -60,7 +51,7 @@ class sraForm extends Form
             }
         }
 
-        return '<div class="' . $this->getFormConfig() . '">' . $this->openMyTag() . $formContent . $this->closeTag() . '</div>';
+        return '<div class="' . $this->config->getFormConfig() . '">' . $this->openMyTag() . $formContent . $this->closeTag() . '</div>';
     }
 
     public function render_center($form)
@@ -174,118 +165,12 @@ class sraForm extends Form
         return "<div $style><form $style >" . $formContent . $this->closeTag() . '</div>';
     }
 
-    private function configure($config=false){
-        if ($config) {
-            foreach ($config as $key => $value) {
-                if ($this->config[$key]) {
-                    $this->config[$key] = $value;
-                } else {
-                    foreach ($this->config as $part => $val) {
-                        if ($part[$key]) {
-                            $this->config[$part][$key] = $value;
-                        } else {
-                            foreach ($part as $element => $v) {
-                                if ($element[$key]) {
-                                    $this->config[$part][$element][$key] = $value;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    return;
-    }
-
-    private function getFormConfig (){
-        if (isset($this->config['form'])) {
-            $set = $this->config['form'];
-        }
-
-        $setup = '';
-        foreach ($set as $key => $value){
-            $setup .= $key . ' = "' . $value . '" ';
-        }
-        return $setup;
-    }
-
-    private function getFieldConfigByType ($type){
-        $set = array();
-        if (strtolower($type) == 'label'){
-            if (isset ($this->config['fields']['label'])){
-                $set = $this->config['fields']['label'];
-            }
-            else {
-                $set = $this->config['fields'];
-                unset ($set['field']);
-                unset ($set['label']);
-            }
-        }
-        else {
-            if (isset($this->config['fields']['field']['type'][$type])) {
-                $set = $this->config['fields']['field']['type'][$type];
-            }
-            else if (isset($this->config['fields']['field'])) {
-                $set =  $this->config['fields']['field'];
-                unset ($set['type']);
-            }
-            else if (isset($this->config['fields'])) {
-                $set = $this->config['fields'];
-                unset ($set['field']);
-                unset ($set['label']);
-            }
-            else {
-                if (isset($this->config['form'])) {
-                    $set = $this->config['form'];
-                }
-            }
-        }
-        $setup = '';
-        foreach ($set as $key => $value){
-            $setup .= $key . ' = "' . $value . '" ';
-        }
-        return $setup;
-    }
-
-    public function setConfig($config){
-        $this->configure($config);
-    }
-
-    /**
-     * @param $config array e.g.('class' => 'example')
-     */
-    public function setFormConfig ($config){
-        $this->config['form'] = $config;
-    }
-
-    /**
-     * @param $config array e.g.('class' => 'example')
-     */
-    public function setFieldsConfig ($config){
-        $this->config['fields'] = $config;
-    }
-
-    /**
-     * @param $config array e.g.('class' => 'example')
-     */
-    public function setFieldConfig ($config){
-        $this->config['fields']['field'] = $config;
-    }
-
-    /**
-     * @param $type string same as used in form e.g. 'text', 'select', 'number'
-     * @param $config array e.g.('class' => 'example')
-     */
-    public function setFieldConfigByType ($type, $config){
-        $this->config['fields']['field']['type'][$type] = $config;
-    }
-
     /**
      * Generate an opening form tag
      *
      * @return string
      */
     public function openMyTag(){
-        return '<form '. $this->getFormConfig() . '>';
+        return '<form '. $this->config->getFormConfig() . '>';
     }
 }
