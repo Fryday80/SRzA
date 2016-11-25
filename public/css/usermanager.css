@@ -1,11 +1,11 @@
-.form
+.form>form
 {
     width: 100%;
 }
 
-.label,
-.input,
-.select
+.label label,
+.input input,
+.select select
 {
-    width: 45%;
+    width: 100%;
 }

@@ -25,11 +25,6 @@ class sraForm extends Form
             ),
             'field' => array(
                 'class' => 'input',
-                'type' => array(
-                    'select' => array (
-                        'class' => 'select',
-                    )
-                ),
             ),
         ),
     );
@@ -57,7 +52,7 @@ class sraForm extends Form
             } else {
                 $type = $element->getAttribute('type');
                 if ($element->getLabel()!== Null) {
-                    $formContent .= '<div class="' . $this->getFieldConfigByType('label') . '">' . $element->getLabel() . '</div><div class="' . $this->getFieldConfigByType($type) . '">';
+                    $formContent .= '<div ' . $this->getFieldConfigByType('label') . '">' . $element->getLabel() . '</div><div ' . $this->getFieldConfigByType($type) . '">';
                     $formContent .= $this->view->formElement($element) . '</div>';
                 } else {
                     $formContent .= $this->view->formElement($element);         // no label => hidden element
@@ -282,7 +277,7 @@ class sraForm extends Form
      * @param $config array e.g.('class' => 'example')
      */
     public function setFieldConfigByType ($type, $config){
-        $this->config['field']['type'][$type] = $config;
+        $this->config['fields']['field']['type'][$type] = $config;
     }
 
     /**

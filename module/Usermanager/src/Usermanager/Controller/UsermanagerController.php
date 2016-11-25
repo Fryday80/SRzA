@@ -57,6 +57,7 @@ class UsermanagerController extends AbstractActionController
 
     public function profileAction ()
     {
+        $field_config = array('type' => array ('select' => array('class' => 'select')));
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
         $this->owner = $this->accessService->getUserID() === $id;
@@ -88,7 +89,8 @@ class UsermanagerController extends AbstractActionController
         return new ViewModel(array(
             'id' => $id,
             'owner' => $this->owner,
-            'form' => $form
+            'form' => $form,
+            'field_config' => $field_config
         ));
     }
 
