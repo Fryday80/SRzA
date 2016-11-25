@@ -6,7 +6,7 @@
  * Time: 13:06
  */
 
-namespace Application\Form\Service;
+namespace Application\Utility;
 
 
 class FormConfiguration
@@ -90,23 +90,7 @@ class FormConfiguration
 
     public function configure($config=false){
         if ($config) {
-            foreach ($config as $key => $value) {
-                if ($this->config[$key]) {
-                    $this->config[$key] = $value;
-                } else {
-                    foreach ($this->config as $part => $val) {
-                        if ($part[$key]) {
-                            $this->config[$part][$key] = $value;
-                        } else {
-                            foreach ($part as $element => $v) {
-                                if ($element[$key]) {
-                                    $this->config[$part][$element][$key] = $value;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            array_merge_recursive ($this->config, $config);
         }
         return;
     }

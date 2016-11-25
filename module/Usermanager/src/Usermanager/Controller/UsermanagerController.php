@@ -6,7 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
 use Usermanager\Form\ConfirmForm;
-use Application\Form\Service\FormConfiguration;
+use Application\Utility\FormConfiguration;
 
 class UsermanagerController extends AbstractActionController
 {
