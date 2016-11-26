@@ -2,14 +2,12 @@
 $title = 'Edit Permissions for:';
 $this->headTitle($title);
 ?>
- <h1><?php echo $this->escapeHtml($title); ?></h1>
- <table class="table" style="width:90%">
- <?php foreach ($roles as $role) : 
-    $roleName = $this->escapeHtml($role['role_name']);
-    $href = $this->url('permission/edit', array('id' => $role['rid']));
- ?>
- <tr>
-     <td><a href="<?php echo $href ?>"><?php echo $roleName ?></a></td>
- </tr>
- <?php endforeach; ?>
- </table>
+ <h1><?php echo $this->escapeHtml($title); ?></h1><br><br>
+<?php
+$permission_list = array();
+ foreach ($roles as $row => $role) {
+     $href = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
+     array_push($permission_list, array('Rolle' => $role['role_name'], 'edit' => $href));
+ }
+echo $this->dataTable()->render($permission_list);
+?>
