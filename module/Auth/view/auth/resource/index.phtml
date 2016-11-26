@@ -2,18 +2,17 @@
 $title = 'Resources';
 $this->headTitle($title);
 ?>
- <h1><?php echo $this->escapeHtml($title); ?></h1><br><br>
+ <h1><?php echo $this->escapeHtml($title); ?></h1><br>
 <?php
-$href0 = '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a>';
-$list = array(array('Name' => $href0, 'Ändern' => '', 'Löschen' => ''));
-foreach ($resources as $resource){
-    array_push ($list, array (
-        'Name' => $resource['resource_name'],
-        'Ändern' => '<a href="' .  $this->url('resource', array('action'=>'edit', 'id' => $resource['id'])) .'">Edit</a>',
-        'Löschen' => '<a href="' . $this->url('resource', array('action'=>'delete', 'id' => $resource['id'])) . '">Delete</a>'
-    ));
+echo '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a><br><br>';
+foreach ($resources as $resource => $information){
+    $resources[$resource]['href'] = '<a href="' .  $this->url('resource', array('action'=>'edit', 'id' => $resource['id'])) .'">Edit</a>';
+    $resources[$resource]['href'] .= '<a href="' . $this->url('resource', array('action'=>'delete', 'id' => $resource['id'])) . '">Delete</a>';
 }
 
-echo $this->dataTable()->render($list);
+echo $this->dataTable()->render($resources, array (
+    0 => array ( 'key' => 'resource_name', 'headline' => 'Resource'),
+    1 => array ( 'key' => 'href', 'headline' => 'Aktion')
+));
 
 ?>

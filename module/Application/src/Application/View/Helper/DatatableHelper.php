@@ -26,71 +26,48 @@ Class DataTableHelper extends AbstractHelper {
 
     function render($data, $colums = false)
     {
-        if ($colums){
             $datarow = '';
             $datahead = '';
-            $i = 0;
-            foreach ($data as $row) {
+            $datafoot = '';
+            $col = 0;
+            if (!$colums){
+                $colums = $this->fallback_Config($data);
+            }
+
+            foreach ($colums as $colum => $setting){
+                $datahead .= '<th>' . $colums[$colum]['headline'] . '</th>';
+                $datafoot .= (isset($colums[$colum]['footline'])) ? '<th>' . $colums[$colum]['headline'] . '</th>' : '<th>' . $colums[$colum]['headline'] . '</th>';
+                $col++;
+            }
+            foreach($data as $row){
                 $datarow .= '<tr>';
-                foreach ($colums as $name => $value){
-                    if ($i == 0) {
-                        $datahead .= "<td>$name</td>";
-                    } else {
-                        if (array_key_exists('type', $value)) {
-                            $type = $value['type'];
-                        } else {
-                            $type = 'text';
-                        }
-                        $cell = '';
-                        switch($type) {
-                            case 'text':
-                                $cell = $row[$value['key']];
-                                break;
-                            case 'custom':
-                                $cell = $value['render']($row);
-                                break;
-                        }
-                        $datarow .= "<td>$cell</td>";
-                    }
+                for ($i = 0; $i<$col; $i++){
+                    $key = $colums[$i]['key'];
+                    $datarow .= '<td>' . $row[$key] . '</td>';
                 }
                 $datarow .= '</tr>';
-                $i++;
             }
+
             $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
                         <thead> <tr> $datahead </tr> </thead>
-                        <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
+                        <tfoot> <tr> $datafoot </tr> </tfoot> <tbody>";
             $table .= $datarow;
             $table .= '</tbody> </table>';
-            //$table .= $this->getTableScript($this->jsOptions);
+            $table .= $this->getTableScript($this->jsOptions);
             return $table;
-        } else {
-            return $this->fallback_render($data);
-        }
     }
-    private function fallback_render($data)
-    {
-        $datarow = '';
-        $datahead = '';
-        $i = 0;
 
-        foreach ($data as $row) {
-            $datarow .= '<tr>';
-            foreach ($row as $key => $value){
-                if ( $i == 0) {
-                    $datahead .= "<td>$key</td>"; 
-                }
-                $datarow .= "<td>$value</td>";
-            }
-            $datarow .= '</tr>';
+
+    private function fallback_Config ($data){
+        $i = 0;
+        $colums = array();
+        foreach ($data[0] as $key => $value){
+            $colums[$i]['key'] = $key;
+            $colums[$i]['headline'] = $key;
+            $colums[$i]['footline'] = $key;
             $i++;
         }
-        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
-                    <thead> <tr> $datahead </tr> </thead>
-                    <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
-        $table .= $datarow;
-        $table .= '</tbody> </table>';
-        $table .= $this->getTableScript($this->jsOptions);
-        return $table;
+        return $colums;
     }
 
     /**

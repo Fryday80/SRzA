@@ -4,12 +4,11 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1><br><br>
 <?php
-$list = array();
  foreach ($roles as $row => $role) {
-     $href = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
-     array_push($list, array('Rolle' => $role['role_name'], 'edit' => $href));
+     $roles[$row]['href'] = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
  }
-
-echo $this->dataTable()->render($list);
-
+echo $this->dataTable()->render($roles, array (
+    0 => array ( 'key' => 'role_name', 'headline' => 'Rolle'),
+    1 => array ( 'key' => 'href', 'headline' => 'Aktion'),
+));
 ?>
