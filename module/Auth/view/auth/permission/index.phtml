@@ -4,10 +4,12 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1><br><br>
 <?php
-$permission_list = array();
+$list = array();
  foreach ($roles as $row => $role) {
      $href = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
-     array_push($permission_list, array('Rolle' => $role['role_name'], 'edit' => $href));
+     array_push($list, array('Rolle' => $role['role_name'], 'edit' => $href));
  }
-echo $this->dataTable()->render($permission_list);
+
+echo $this->dataTable()->render($list);
+
 ?>
