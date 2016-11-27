@@ -8,7 +8,13 @@ $this->headTitle($title);
      $roles[$row]['href'] = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
  }
 echo $this->dataTable()->render($roles, array (
-    0 => array ( 'key' => 'role_name', 'headline' => 'Rolle'),
-    1 => array ( 'key' => 'href', 'headline' => 'Aktion'),
+    'test' => 'role_name',
+    0 => array (
+        'key' => 'role_name',
+        'headline' => 'Rolle'),
+    1 => array (
+        'key' => 'href',
+        'headline' => 'Aktion'),
+
 ));
 ?>

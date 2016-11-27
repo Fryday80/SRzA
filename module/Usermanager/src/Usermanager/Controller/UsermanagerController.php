@@ -1,6 +1,7 @@
 <?php
 namespace Usermanager\Controller;
 
+use Application\Utility\TablehelperConfig;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -48,9 +49,10 @@ class UsermanagerController extends AbstractActionController
         if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
             $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
         }
+        $dataTableConfig = new TablehelperConfig($this->accessService);
 
         return new ViewModel(array(
-            'jsOptions' => $this->setJSOptionForDatatables(),
+            'jsOptions' => $dataTableConfig,
             'profiles' => $tableData,
             'addButton' => $addButton,
         ));
@@ -227,72 +229,5 @@ class UsermanagerController extends AbstractActionController
         return $return;
     }
 
-    /**
-     * @param $owner boolean if user is owner
-     * @param $options mixed can be
-     * left empty       -> returns standard setting ||
-     * allowance string -> returns options set for a special allowance ||
-     * options array   may look like array ('b' => '[settings]', 't')
-     * if only $options array is given method will still work!
-     * @return string set of options for js plugin "datatables"
-     */
-    private function setJSOptionForDatatables($owner = false , $options = false)
-    {
-        if (is_array ($owner))
-        {
-            $options = $owner;
-            $owner = false;
-        }
-        
-        //https://datatables.net/reference/index for preferences/documentation
-        //defaults:
-        $length = '"lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],';
-        $buttons = 'buttons: ["print", "pdf"],';
-        $list_select = 'select: { style: "multi" },';
-        $dom = '"dom": "Blfrtip",';
-        
-        //options change
-        if ($options)
-        {
-            $allowed_options = array ('b','l','f','r','t','i','p');
-            $js_dom = '"dom": "';
-            $js_option = '';
-            foreach ($options as $key => $option)
-            {
-                if (!is_array($option))
-                {
-                    $option = strtolower($option);
-                    if (in_array($option, $allowed_options))
-                    {
-                    $js_dom .= ($option == 'b')? 'B' : $option;
-                    }
-                }
-                else
-                {
-                    $option = strtolower($key);
-                    if (in_array($key, $allowed_options))
-                    {
-                        $js_dom .= ($key == 'b')? 'B' : $key;
-                    $js_option .= $option . ',';
-                    }
-                }
-            }
-            $js_dom .= (stristr($js_dom, 't')) ? '' : 't';  //adds the t-able in the dom if not set
-            $js_dom .= '",';
-            $js_option = str_replace(',,', ',', $js_option);
-            $js_option_set = $js_option . $js_dom;
-        }
-        // cases:
-        if ($owner)
-        {
-            return $length.$buttons.$list_select.$dom;
-        }
-        if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit"))
-        {
-
-            $buttons = 'buttons: ["print", "copy", "csv", "excel", "pdf"],';
-            return $length.$buttons.$list_select.$dom;
-        }
-        else return $length;
-    }
+    
 }
