@@ -28,32 +28,20 @@ class UsermanagerController extends AbstractActionController
 
     public function indexAction()
     {
-        $operations = '';
-
+        $addButton = '';
         $users = $this->userTable->getUsers()->toArray();
-        $tableData = array();
-        foreach ($users as $user) {
-            $operations .= '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
-
-            if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
-                $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
+        foreach ($users as $key => $user) {
+            if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "delete")) {
+                $users[$key]['allow_delete'] = true;
             }
-            $arr = array(
-                'Name'  => $user['name'],
-                'eMail' => $user['email'],
-                'Aktionen' => $operations,
-            );
-            array_push($tableData, $arr);
-            $operations ='';
         }
-        if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
+
+        if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")) {
             $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
         }
-        $dataTableConfig = new TablehelperConfig($this->accessService);
-
         return new ViewModel(array(
-            'jsOptions' => $dataTableConfig,
-            'profiles' => $tableData,
+            'jsOptions' => $this->setJSOptionForDatatables(),
+            'profiles' => $users,
             'addButton' => $addButton,
         ));
     }
@@ -72,7 +60,6 @@ class UsermanagerController extends AbstractActionController
         }
         if ($request->isPost())
         {
-            dumpd ('request');
             $set_data = $request->getContent();
             $this->formToData($set_data);
         }
@@ -106,7 +93,6 @@ class UsermanagerController extends AbstractActionController
 
         if ($request->isPost()) {
             $user_data = $request->getContent();
-            dumpd ($user_data);
             $this->userTable->saveUser($user_data);
         }
 
@@ -188,7 +174,6 @@ class UsermanagerController extends AbstractActionController
 
     private function formToData($data)
     {
-        dumpd ($data);
         $ts_value = '';
         foreach ($data as $fields)
         {

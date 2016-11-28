@@ -1,11 +1,7 @@
 <?php
 namespace Auth\Form;
 
-use Zend\Form\Element;
 use Zend\Form\Form;
-use Zend\Form\Element\Csrf;
-use Auth\Model\RoleTable;
-use Auth\Model\PermissionTable;
 
 class PermissionAddForm extends Form
 {
@@ -14,7 +10,7 @@ class PermissionAddForm extends Form
     public function __construct(Array $permTable)
     {
         parent::__construct("Role");
-        
+
         $this->permTable = $permTable;
         $this->setAttribute('method', 'post');
         

@@ -4,23 +4,20 @@ $this->headTitle($title);
 
 $this->dataTable()->setJSOptions($jsOptions);
 echo $addButton . '<br><br>';
-//echo $this->dataTable()->render($profiles);
-
-
-
-
 echo $this->dataTable()->render($profiles, array(
     'all' => true,
     'columns' => array(
-        'Name' => 'Name',
-        'eMail' => 'eMail',
-        'Aktionen' => 'Aktionen'
-        //example of type custom
-        //'Aktionen' => array(
-        //    'type' => 'custom',
-        //    'render' => function($row) {
-        //        return '<a href.....';
-        //    }
-        //)
+        'Name' => 'name',
+        'eMail' => 'email',
+        'Aktionen' => array(
+            'type' => 'custom',
+            'render' => function($row) {
+                $links = '<a href="/usermanager/profile/' . $row['id'] . '">Auswählen</a>';
+                if (array_key_exists('allow_delete', $row)) {
+                    $links .= '<a href="/usermanager/delete/' . $row['id'] . '">Löschen</a>';
+                }
+                return $links;
+            }
+        )
     )
 ));
