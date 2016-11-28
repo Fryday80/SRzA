@@ -23,8 +23,62 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
+    private function mergeConfig($conf) {
+        $defaultConf = array(
+            'all' => false,
+            'columns' => array(
+            )
+        );
+        $defaultConfColl = array(
+            'type' => 'text',
+        );
+        $conf = array_replace_recursive($defaultConf, $conf);
+        foreach ($conf['columns'] as $cName=> $cConf) {
+            if (gettype($cConf) === 'string') {
+                //set default conf
+                $conf['columns'][$cName] = $defaultConfColl;
+                $conf['columns'][$cName]['dataIndex'] = $cConf;
+            } else {
+                $conf['columns'][$cName] = array_replace_recursive($defaultConfColl, $cConf);
+            }
+        }
+        return $conf;
+    }
+    function render($data, $conf = false)
+    {
+        $conf = $this->mergeConfig($conf);
 
-    function render($data, $colums = false)
+        $datarow = '';
+        $datahead = '';
+        $i = 0;
+        foreach ($data as $row) {
+            $datarow .= '<tr>';
+            foreach ($conf['columns'] as $name => $value){
+                $datarow .= "<td>";
+                switch($value['type']) {
+                    case 'text':
+                        $datarow .= $row[$value['dataIndex']];
+                        break;
+                    case 'custom':
+                        $datarow .= $value['render']($row);
+                        break;
+                    case '':
+                        break;
+                }
+                $datarow .= "</td>";
+            }
+            $datarow .= '</tr>';
+            $i++;
+        }
+        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
+                    <thead> <tr> $datahead </tr> </thead>
+                    <tfoot> <tr> $datahead </tr> </tfoot> <tbody>";
+        $table .= $datarow;
+        $table .= '</tbody> </table>';
+        //$table .= $this->getTableScript($this->jsOptions);
+        return $table;
+    }
+    function renderOld($data, $colums = false)
     {
             $datarow = '';
             $datahead = '';
