@@ -23,23 +23,18 @@ use ZendDiagnosticsTest\TestAsset\Check\ReturnThis;
 class TablehelperConfig
 {
     private $accessService;
-    private $owner = false;
-    private $edit_permission = false;
+    private $special_1 = false;
+    private $special_2 = false;
 
-    private $ownerSettings;
-    private $editorSettings;
+    private $special_1_Settings;
+    private $special_2_Settings;
     private $data;
 
-    function __construct($accessService = false, $owner = false)
+    function __construct()
     {
-        if ($accessService){
-            $this->accessService = $accessService;
-            $this->edit_permission = $this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit");
-        }
         $this->setDefaultSettings();
 
     }
-
     /**
      * generates the string to be inserted in the js script <br>
      * uses json_encode
@@ -63,15 +58,17 @@ class TablehelperConfig
     /**
      * sets options to owner settings
      */
-    public function isOwner(){
-        $this->owner = true;
+    public function setSpecial($number){
+        $ 
+
+        this->special_1 = true;
     }
 
     /**
      * removes owner settings
      */
-    public function isNotOwner(){
-        $this->owner = false;
+    public function unsetSpecial(){
+        $this->special_1 = false;
     }
 
     /**

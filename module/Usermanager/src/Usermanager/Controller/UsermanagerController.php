@@ -1,8 +1,7 @@
 <?php
 namespace Usermanager\Controller;
 
-use Application\Utility\TablehelperConfig;
-use Zend\Http\Header\Referer;
+use Usermanager\Utility\UserDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
@@ -11,7 +10,7 @@ use Application\Utility\FormConfiguration;
 
 class UsermanagerController extends AbstractActionController
 {
-    /* @var $userTable \Auth\Model\User */
+    /* @var $userTable \Auth\Model\UserTable*/
     private $userTable;
 
     private $accessService;
@@ -28,32 +27,27 @@ class UsermanagerController extends AbstractActionController
 
     public function indexAction()
     {
-        $operations = '';
-
+        $addButton = '';
         $users = $this->userTable->getUsers()->toArray();
-        $tableData = array();
-        foreach ($users as $user) {
-            $operations .= '<a href="/usermanager/profile/' . $user['id'] . '">Auswählen</a>';
-
-            if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
-                $operations .=  '<a href="/usermanager/delete/' . $user['id'] . '">Löschen</a>';
+        foreach ($users as $key => $user) {
+            if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "delete")) {
+                $users[$key]['allow_delete'] = true;
             }
-            $arr = array(
-                'Name'  => $user['name'],
-                'eMail' => $user['email'],
-                'Aktionen' => $operations,
-            );
-            array_push($tableData, $arr);
-            $operations ='';
         }
-        if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
+
+        if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")) {
             $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
         }
-        $dataTableConfigObject = new TablehelperConfig($this->accessService);
+
+        $userTable = new UserDataTable();
+        $userTable->setData($users);
+        //todo
+        // if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")){
+        // $usertable->setSpecialView...
+        // }
 
         return new ViewModel(array(
-            'jsConfigObject' => $dataTableConfigObject,
-            'profiles' => $tableData,
+            'userDataTable' => $userTable,
             'addButton' => $addButton,
         ));
     }
@@ -72,7 +66,6 @@ class UsermanagerController extends AbstractActionController
         }
         if ($request->isPost())
         {
-            dumpd ('request');
             $set_data = $request->getContent();
             $this->formToData($set_data);
         }
@@ -100,21 +93,26 @@ class UsermanagerController extends AbstractActionController
 
     public function addAction ()
     {
-        if ($this->getAllowance() == 'not set')
-            return $this->redirect()->toRoute('usermanager');
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-            $user_data = $request->getContent();
-            dumpd ($user_data);
-            $this->userTable->saveUser($user_data);
-        }
-
-        $form = new ProfileForm();
+        $accessService = $this->getServiceLocator()->get('AccessService');
+        $form = new ProfileForm($accessService);
         $form->setAttribute('action', 'usermanager/add');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $user = new User();
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $user->exchangeArray($form->getData());
+                if (strlen($form->getData()['password']) > 4) {
+                    $userPassword = new UserPassword();
+                    $user->password = $userPassword->create($user->password);
+                }
+                $this->getUserTable()->saveUser($user);
+                return $this->redirect()->toRoute('user');
+            }
+        }
         return array(
-            'form' => $form,
-            'back' => '<a href="/usermanager">Abbrechen und zurück</a>',
+            'form' => $form
         );
     }
 
@@ -188,7 +186,6 @@ class UsermanagerController extends AbstractActionController
 
     private function formToData($data)
     {
-        dumpd ($data);
         $ts_value = '';
         foreach ($data as $fields)
         {

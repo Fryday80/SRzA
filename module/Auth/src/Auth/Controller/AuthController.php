@@ -31,7 +31,6 @@ class AuthController extends AbstractActionController
                         'email',
                         'name'
                     ));
-        var_dump($users[0]);
         return $users;
     }
 

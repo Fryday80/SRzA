@@ -24,15 +24,14 @@ class PermissionController extends AbstractActionController
         
         $perms = $rolePermTable->getPermissionsByRoleID($roleID);
         $allPerms = $permTable->getResourcePermissions();
-        
+
         $addForm = new PermissionAddForm($allPerms);
         $addForm->get('role_id')->setValue($roleID);
         $addForm->get('submit')->setValue('Add');
-        
+
         $deleteForm = new PermissionDeleteForm($perms);
         $deleteForm->get('role_id')->setValue($roleID);
         $deleteForm->get('submit')->setValue('Delete');
-        
         return array(
             'roleID' => $roleID,
             'addForm' => $addForm,

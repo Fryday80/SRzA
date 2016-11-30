@@ -24,13 +24,8 @@ class AclListener extends AbstractListenerAggregate {
     }
 
     public function checkAcl(MvcEvent $e) {
-        return $this;
-        var_dump($this->getAuthService()->getIdentity());
         $role = !$this->getAuthService()->hasIdentity() ? AclService::USER_GUEST : $this->getAuthService()->getIdentity()->getRole();
 
-//         print('<br><pre>');
-//         var_dump($e);
-//         print('</pre><br>');
         if (!$this->getAclService()->isAllowed($role, $e->getRouteMatch()->getMatchedRouteName())) {
             $e->getRouteMatch()->setParam('controller', 'Auth\Controller\Auth')
                     ->setParam('action', 'accessDenied');
