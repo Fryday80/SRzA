@@ -26,6 +26,7 @@ class UserDataTable extends DataTable
             'type' => 'text',
             'dataIndex' => 'email',
         ));
+        //das Git: Merging Master.. da sollte eig. origin master stehen.... ja wahrscheinlich weil du grade am mergen bist
         $this->add(array(
             'name' => 'Aktionen',
             'type' => 'custom',
