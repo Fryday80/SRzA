@@ -49,10 +49,10 @@ class UsermanagerController extends AbstractActionController
         if ($this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit")) {
             $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
         }
-        $dataTableConfig = new TablehelperConfig($this->accessService);
+        $dataTableConfigObject = new TablehelperConfig($this->accessService);
 
         return new ViewModel(array(
-            'jsOptions' => $dataTableConfig,
+            'jsConfigObject' => $dataTableConfigObject,
             'profiles' => $tableData,
             'addButton' => $addButton,
         ));

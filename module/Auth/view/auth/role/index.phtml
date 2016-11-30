@@ -12,7 +12,7 @@ foreach ($roles as $role => $information){
     $roles[$role]['action'] .= '<a href="' .  $this->url('role/delete', array('id' => $information['rid'])) . '">Delete</a>';
 }
 
-echo $this->dataTable()->render($roles, array(
+echo $this->dataTable()->render($roles, '', array(
     0 => array ( 'key' => 'role_name', 'headline' => 'Rolle'),
     1 => array ( 'key' => 'role_parent_name', 'headline' => 'Parent'),
     2 => array ( 'key' => 'perm', 'headline' => 'Permissions'),

@@ -19,7 +19,7 @@ foreach ($resources as $resource => $information){
     array_push($modified, $resources[$resource] );
 }
 
-echo $this->dataTable()->render($resources, array (
+echo $this->dataTable()->render($resources, '', array (
     0 => array ( 'key' => 'resource_name', 'headline' => 'Resource'),
     1 => array ( 'key' => 'href', 'headline' => 'Aktion')
 ));

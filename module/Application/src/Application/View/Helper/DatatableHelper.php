@@ -8,13 +8,17 @@
 namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
+use Application\Utility\TablehelperConfig;
 
 
 Class DataTableHelper extends AbstractHelper {
 
     protected $view;
+    
     public $additionalButtons = array();
-    public $jsOptions = '"lengthMenu": [ [25, 10, 50, -1], [25, 10, 50, "All"] ],';
+    public $jsOptions = false;
+    private $configObject = false;
+    
 
 
     function __construct($sm)
@@ -24,40 +28,55 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
 
-    function render($data, $colums = false)
+    /**
+     * creates HTML table and js script
+     * @param $data array
+     * @param false|empty|object $configObject
+     * @param false|array $colums
+     * @return string
+     */
+    function render($data, $configObject = false, $colums = false)
     {
-            $datarow = '';
-            $datahead = '';
-            $datafoot = '';
-            $col = 0;
-            if (!$colums){
-                $colums = $this->fallback_Config($data);
-            }
+        $this->jsConfigManager($configObject);
+        $datarow = '';
+        $datahead = '';
+        $datafoot = '';
+        $col = 0;
+        if (!$colums){
+            $colums = $this->fallback_Config($data);
+        }
 
-            foreach ($colums as $colum => $setting){
-                $datahead .= '<th>' . $colums[$colum]['headline'] . '</th>';
-                $datafoot .= (isset($colums[$colum]['footline'])) ? '<th>' . $colums[$colum]['headline'] . '</th>' : '<th>' . $colums[$colum]['headline'] . '</th>';
-                $col++;
+        foreach ($colums as $colum => $setting){
+            $datahead .= '<th>' . $colums[$colum]['headline'] . '</th>';
+            $datafoot .= (isset($colums[$colum]['footline'])) ? '<th>' . $colums[$colum]['headline'] . '</th>' : '<th>' . $colums[$colum]['headline'] . '</th>';
+            $col++;
+        }
+        foreach($data as $row){
+            $datarow .= '<tr>';
+            for ($i = 0; $i<$col; $i++){
+                $key = $colums[$i]['key'];
+                $datarow .= '<td>' . $row[$key] . '</td>';
             }
-            foreach($data as $row){
-                $datarow .= '<tr>';
-                for ($i = 0; $i<$col; $i++){
-                    $key = $colums[$i]['key'];
-                    $datarow .= '<td>' . $row[$key] . '</td>';
-                }
-                $datarow .= '</tr>';
-            }
+            $datarow .= '</tr>';
+        }
 
-            $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
-                        <thead> <tr> $datahead </tr> </thead>
-                        <tfoot> <tr> $datafoot </tr> </tfoot> <tbody>";
-            $table .= $datarow;
-            $table .= '</tbody> </table>';
-            $table .= $this->getTableScript($this->jsOptions);
-            return $table;
+        $table = "<table class=\"display\" cellspacing=\"0\" width=\"100%\">
+                    <thead> <tr> $datahead </tr> </thead>
+                    <tfoot> <tr> $datafoot </tr> </tfoot> <tbody>";
+        $table .= $datarow;
+        $table .= '</tbody> </table>';
+        $table .= $this->getTableScript();
+        return $table;
     }
 
 
+    /**
+     * creates the $colums variable if nothing given <br>
+     * => shows all colums
+     *
+     * @param $data array
+     * @return array
+     */
     private function fallback_Config ($data){
         $i = 0;
         $colums = array();
@@ -71,25 +90,31 @@ Class DataTableHelper extends AbstractHelper {
     }
 
     /**
-     * @param $options string
-     * @return string of datatables js script
+     * returns HTML js script for datatables helper
+     * @return string HTML string of datatables js script
      */
-    public function getTableScript ($options=false)
+    private function getTableScript ()
     {
-        $options = ($options)?:$this->jsOptions;
-        $startScript = '<script>  $(".display").DataTable( {';
-        $endScript   = '} ); </script>';
-        return $startScript . $options . $endScript;
+        $startScript = '<script>  $(".display").DataTable( ';
+        $endScript   = ' ); </script>';
+        return $startScript . $this->jsOptions . $endScript;
             //https://datatables.net/reference/index for preferences/documentation
     }
 
     /**
-     * @param $jsOptions string overrides default settings for datatables js script
-     *
-     * for documentation -> https://datatables.net/reference/index for preferences/documentation
+     * sets the js options for the js script, <br>
+     * creates a new object if none given
+     * @param epty|false|object $configObject
      */
-    public function setJSOptions($jsOptions)
-    {
-        $this->jsOptions = $jsOptions;
+    private function jsConfigManager ($configObject = false){
+        switch ($configObject){
+            case false:
+            case '':
+                $this->configObject = new TablehelperConfig();
+                break;
+            case true:
+                $this->configObject = $configObject;
+        }
+        $this->jsOptions = $this->configObject->getSetupString();
     }
 }

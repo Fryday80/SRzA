@@ -2,6 +2,5 @@
 $title = 'Usermanager ';
 $this->headTitle($title);
 
-$this->dataTable()->setJSOptions($jsOptions);
 echo $addButton . '<br><br>';
-echo $this->dataTable()->render($profiles);
+echo $this->dataTable()->render($profiles, $jsConfigObject);
