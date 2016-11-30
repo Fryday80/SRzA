@@ -1,8 +1,7 @@
 <?php
 namespace Usermanager\Controller;
 
-use Application\Utility\TablehelperConfig;
-use Zend\Http\Header\Referer;
+use Usermanager\Utility\UserDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
@@ -11,7 +10,7 @@ use Application\Utility\FormConfiguration;
 
 class UsermanagerController extends AbstractActionController
 {
-    /* @var $userTable \Auth\Model\User */
+    /* @var $userTable \Auth\Model\UserTable*/
     private $userTable;
 
     private $accessService;
@@ -39,8 +38,12 @@ class UsermanagerController extends AbstractActionController
         if ($this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")) {
             $addButton = '<a href="/usermanager/add">Mitglied hinzufügen</a>';
         }
+
+        $userTable = new UserDataTable();
+        $userTable->setData($users);
+
         return new ViewModel(array(
-            'jsOptions' => $this->setJSOptionForDatatables(),
+            'userDataTable' => $userTable,
             'profiles' => $users,
             'addButton' => $addButton,
         ));
@@ -87,20 +90,26 @@ class UsermanagerController extends AbstractActionController
 
     public function addAction ()
     {
-        if ($this->getAllowance() == 'not set')
-            return $this->redirect()->toRoute('usermanager');
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-            $user_data = $request->getContent();
-            $this->userTable->saveUser($user_data);
-        }
-
-        $form = new ProfileForm();
+        $accessService = $this->getServiceLocator()->get('AccessService');
+        $form = new ProfileForm($accessService);
         $form->setAttribute('action', 'usermanager/add');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $user = new User();
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $user->exchangeArray($form->getData());
+                if (strlen($form->getData()['password']) > 4) {
+                    $userPassword = new UserPassword();
+                    $user->password = $userPassword->create($user->password);
+                }
+                $this->getUserTable()->saveUser($user);
+                return $this->redirect()->toRoute('user');
+            }
+        }
         return array(
-            'form' => $form,
-            'back' => '<a href="/usermanager">Abbrechen und zurück</a>',
+            'form' => $form
         );
     }
 

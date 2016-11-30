@@ -2,22 +2,5 @@
 $title = 'Usermanager ';
 $this->headTitle($title);
 
-$this->dataTable()->setJSOptions($jsOptions);
 echo $addButton . '<br><br>';
-echo $this->dataTable()->render($profiles, array(
-    'all' => true,
-    'columns' => array(
-        'Name' => 'name',
-        'eMail' => 'email',
-        'Aktionen' => array(
-            'type' => 'custom',
-            'render' => function($row) {
-                $links = '<a href="/usermanager/profile/' . $row['id'] . '">Auswählen</a>';
-                if (array_key_exists('allow_delete', $row)) {
-                    $links .= '<a href="/usermanager/delete/' . $row['id'] . '">Löschen</a>';
-                }
-                return $links;
-            }
-        )
-    )
-));
+echo $this->dataTable()->render($this->userDataTable);
