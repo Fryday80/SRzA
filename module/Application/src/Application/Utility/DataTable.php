@@ -27,15 +27,16 @@ class DataTable
         //@todo validate $data
         $this->data = $data;
     }
+    
+    
+    public function setConf ($index, $value){
+        $this->configuration[$index] = $value;
+    }
 
     /**
      * set all setting at once
      * @param array $settings
      */
-    public function setConf ($index, $value){
-        $this->configuration[$index] = $value;
-    }
-
     public function setWholeConf ($settings){
         $this->configuration = array_replace_recursive($this->configuration, $settings);
     }
