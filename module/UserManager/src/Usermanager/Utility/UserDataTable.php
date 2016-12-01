@@ -14,23 +14,21 @@ use Application\Utility\DataTable;
 class UserDataTable extends DataTable
 {
     function __construct() {
-        parent::__construct($delete);
+        parent::__construct();
         
         $this->add(array(
-            'name' => 'Name',
-            'type' => 'text',
-            'dataIndex' => 'name',
+            'name' => 'name',
+            'label' => 'Name',
         ));
         $this->add(array(
-            'name' => 'eMail',
-            'type' => 'text',
-            'dataIndex' => 'email',
+            'name' => 'email',
+            'label' => 'eMail',
         ));
         $this->add(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {
-                $links = '<a href="/usermanager/profile/' . $row['id'] . '">Auswählen</a>';
+                $links = '<a href="/usermanager/showprofile/' . $row['id'] . '">Auswählen</a>';
                 if (array_key_exists('allow_delete', $row)) {
                     $links .= '<a href="/usermanager/delete/' . $row['id'] . '">Löschen</a>';
                 }

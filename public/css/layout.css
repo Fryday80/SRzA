@@ -4,13 +4,13 @@
     margin: 0;
     z-index: 5;
 }
-html {
+body {
     background-color: rgb(67, 12, 12);
     background-image: url( /img/html.bg.png);
     background-size: 100px;
 }
 
-body {
+.body {
     margin: 60px;
     background-image: url( /img/body.bg.png);
     background-size: auto 130px;

@@ -52,14 +52,34 @@ class UsermanagerController extends AbstractActionController
         ));
     }
 
-    public function profileAction ()
+    public function showprofileAction ()
+    {
+        $id = (int) $this->params()->fromRoute('id', 0);
+        $this->owner = $this->accessService->getUserID() === $id;
+        $addButton = '';
+        if ($this->owner || $this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")) {
+        $addButton .= '<a href="/usermanager/editprofile' . $id . '">edit</a>';
+        }
+
+        $user = $this->userTable->getUser($id);
+        $dataTable = new UserDataTable();
+        $dataTable->setdata($user);
+
+        return new ViewModel(array(
+            'id' => $id,
+            'user' => $dataTable,
+            'Buttons' => $addButton
+        ));
+    }
+
+    public function editprofileAction ()
     {
         $form_config = new FormConfiguration();
         $form_config->setFieldConfig(array('type' => array ('select' => array('class' => 'select'))));
         $data_set = array ();
         $id = (int) $this->params()->fromRoute('id', 0);
         $this->owner = $this->accessService->getUserID() === $id;
-        
+
         if ($this->owner || $this->accessService->allowed("Usermanger\Controller\UsermanagerController", "edit"))
         {
             $request = $this->getRequest();
@@ -70,7 +90,7 @@ class UsermanagerController extends AbstractActionController
             $this->formToData($set_data);
         }
 
-        
+
 
         $form = new ProfileForm( $this->accessService, $this->owner );
         $form->setAttribute('action', '/usermanager/profile/' . $id);
@@ -184,7 +204,7 @@ class UsermanagerController extends AbstractActionController
         }
     }
 
-    private function formToData($data)
+    private function formToData($data) //todo
     {
         $ts_value = '';
         foreach ($data as $fields)

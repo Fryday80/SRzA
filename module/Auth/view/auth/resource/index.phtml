@@ -1,22 +1,31 @@
 <?php
-$title = 'Resources';
-$this->headTitle($title);
-?>
- <h1><?php echo $this->escapeHtml($title); ?></h1><br>
-<?php
-$modified = array();
-$href = '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a><br><br>';
-array_push ($modified, array ('resource_name' => '', 'href' => $href));
+    $title = 'Resources';
+    $this->headTitle($title);
 
-//so was war jetzt im resource list /// den hatte ich als punkt 1 auf der liste k
-//buttons brauchts da ja ned, wofür? add halt ich fänds schon cool aber wenn daneben dann halt die download oder druck buttons stehen find ichs nichmehr so übersichtlich
 
-echo '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a><br><br>';
+    $modified[0] = array (
+        'resource_name' => '',
+        'href' => '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a>'
+    );
 
-foreach ($resources as $resource => $information){
-    $resources[$resource]['href'] = '<a href="' .  $this->url('resource', array('action'=>'edit', 'id' => $resource['id'])) .'">Edit</a>';
-    $resources[$resource]['href'] .= '<a href="' . $this->url('resource', array('action'=>'delete', 'id' => $resource['id'])) . '">Delete</a>';
-    array_push($modified, $resources[$resource] );
-}
-echo $this->dataTable()->render();//wahrscheinlich hast du es anders genant wie ich oder sowas
+    foreach ($resources as $resource => $information){
+        $resources[$resource]['href']  = '<a href="' .  $this->url('resource', array('action'=>'edit', 'id' => $resource['id'])) .'">Edit</a>';
+        $resources[$resource]['href'] .= '<a href="' . $this->url('resource', array('action'=>'delete', 'id' => $resource['id'])) . '">Delete</a>';
+        array_push( $modified, $resources[$resource] );
+    }
+
+
+    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+        'data' => $modified,
+        'columns' =>    array(
+            0 => array (
+                'name' => 'resource_name',
+                'label' => 'Resource'
+            ),
+            1 => array (
+                'name' => 'href',
+                'label' => 'Aktion'
+            )
+        )
+    )));
 ?>

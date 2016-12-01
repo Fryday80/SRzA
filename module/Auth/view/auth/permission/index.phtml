@@ -1,19 +1,23 @@
 <?php
 $title = 'Edit Permissions for:';
 $this->headTitle($title);
-?>
- <h1><?php echo $this->escapeHtml($title); ?></h1><br><br>
-<?php
- foreach ($roles as $row => $role) {
-     $roles[$row]['href'] = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
- }
-echo $this->dataTable()->render($roles, '', array (
-    0 => array (
-        'key' => 'role_name',
-        'headline' => 'Rolle'),
-    1 => array (
-        'key' => 'href',
-        'headline' => 'Aktion'),
 
-));
+
+    foreach ($roles as $row => $role) {
+         $roles[$row]['href'] = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
+    }
+
+    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+        'data' => $roles,
+        'columns' =>    array(
+            0 => array (
+                'name' => 'role_name',
+                'label' => 'Rolle'
+            ),
+            1 => array (
+                'name' => 'href',
+                'label' => 'Aktion'
+            )
+        )
+    )));
 ?>

@@ -1,22 +1,43 @@
 <?php
-$title = 'Roles';
-$this->headTitle($title);
-?>
- <h1><?php echo $this->escapeHtml($title); ?></h1><br>
-<?php
-echo '<a href="' .  $this->url('role/add') . '">Add new Role</a><br><br>';
+    $title = 'Roles';
+    $this->headTitle($title);
 
-foreach ($roles as $role => $information){
-    $roles[$role]['perm'] = '<a href="' .  $this->url('permission/edit', array('id' => $information['rid'])) . '">Permissions</a>';
-    $roles[$role]['action']  = '<a href="' . $this->url('role/edit', array('id' => $information['rid'])) . '">Edit</a>';
-    $roles[$role]['action'] .= '<a href="' .  $this->url('role/delete', array('id' => $information['rid'])) . '">Delete</a>';
-}
 
-echo $this->dataTable()->render($roles, '', array(
-    0 => array ( 'key' => 'role_name', 'headline' => 'Rolle'),
-    1 => array ( 'key' => 'role_parent_name', 'headline' => 'Parent'),
-    2 => array ( 'key' => 'perm', 'headline' => 'Permissions'),
-    3 => array ( 'key' => 'action', 'headline' => 'Aktion')
-));
+    $modified[0] = array(
+        'role_name' => '',
+        'role_parent_name' => '',
+        'perm' => '',
+        'href' => '<a href="' .  $this->url('role/add') . '">Add new Role</a>'
+    );
+
+    
+    foreach ($roles as $role => $information){
+        $roles[$role]['perm'] = '<a href="' .  $this->url('permission/edit', array('id' => $information['rid'])) . '">Permissions</a>';
+        $roles[$role]['href']  = '<a href="' . $this->url('role/edit', array('id' => $information['rid'])) . '">Edit</a>';
+        $roles[$role]['href'] .= '<a href="' .  $this->url('role/delete', array('id' => $information['rid'])) . '">Delete</a>';
+        array_push($modified,$roles[$role]);
+    }
+
+    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+        'data' => $modified,
+        'columns' =>    array(
+            0 => array (
+                'name' => 'role_name',
+                'label' => 'Rolle'
+            ),
+            1 => array (
+                'name' => 'role_parent_name',
+                'label' => 'Parent'
+            ),
+            2 => array (
+                'name' => 'perm',
+                'label' => 'Permissions'
+            ),
+            3 => array (
+                'name' => 'href',
+                'label' => 'Aktion'
+            )
+        )
+    )));
 
 ?>

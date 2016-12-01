@@ -8,6 +8,7 @@
 namespace Application\View\Helper;
 
 use Zend\View\Helper\AbstractHelper;
+use Application\Utility\DataTable;
 
 
 Class DataTableHelper extends AbstractHelper {
@@ -20,10 +21,23 @@ Class DataTableHelper extends AbstractHelper {
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }
     //so
+    /**
+     * @param DataTable $table
+     */
     public function render($table) {
+        //@todo check $table
+        if (!($table instanceof DataTable)) {
+            trigger_error('DataTableHelper -> render() > no object given', E_USER_ERROR);
+        }
         echo $this->renderHTML($table);
         echo $this->renderJS($table->getSetupString());
     }
+
+    /**
+     *
+     * @param DataTable $table
+     * @return string
+     */
     protected function renderHTML($table) {
         $datarow = '';
         $datahead = '';
@@ -32,9 +46,12 @@ Class DataTableHelper extends AbstractHelper {
             $datarow .= '<tr>';
             foreach ($table->columns as $name => $value){
                 $datarow .= "<td>";
+                if ($i == 0) {
+                    $datahead .= '<th>' . $value['label'] . '</th>';
+                }
                 switch($value['type']) {
                     case 'text':
-                        $datarow .= $row[$value['dataIndex']];
+                        $datarow .= $row[$value['name']];
                         break;
                     case 'custom':
                         $datarow .= $value['render']($row);
@@ -62,4 +79,26 @@ Class DataTableHelper extends AbstractHelper {
         $js .= '</script>';
         return $js;
     }
+
+//    private function mergeConfig($conf) {		 +    public function render($table) {
+//        $defaultConf = array(		 +        echo $this->renderHTML($table);
+// -            'all' => false,		 +        echo $this->renderJS($table);
+// -            'columns' => array(
+//        )
+//        -        );
+// -        $defaultConfColl = array(
+//     -            'type' => 'text',
+//     -        );
+// -        $conf = array_replace_recursive($defaultConf, $conf);
+// -        foreach ($conf['columns'] as $cName=> $cConf) {
+//            -            if (gettype($cConf) === 'string') {
+//                -                //set default conf
+//                -                $conf['columns'][$cName] = $defaultConfColl;
+//                -                $conf['columns'][$cName]['dataIndex'] = $cConf;
+//                -            } else {
+//                -                $conf['columns'][$cName] = array_replace_recursive($defaultConfColl, $cConf);
+//                -            }
+// -        }
+// -        return $conf;
+//      }
 }

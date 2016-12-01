@@ -61,15 +61,27 @@ return array(
                             )
                         )
                     ),
-                    'profile' => array(
+                    'showprofile' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/profile[/:id]',
+                            'route' => '/showprofile[/:id]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                                'action' => 'profile'
+                                'action' => 'showprofile'
+                            )
+                        )
+                    ),
+                    'editprofile' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/editprofile[/:id]',
+                            'constraints' => array(
+                                'id' => '[0-9]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'editprofile'
                             )
                         )
                     )
