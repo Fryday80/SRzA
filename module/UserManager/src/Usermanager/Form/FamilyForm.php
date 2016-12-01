@@ -11,16 +11,53 @@ class FamilyForm extends Form
         $this->setAttribute('method', 'post');
 
         $this->add(array(
-            'name' => 'id',
+            'name' => 'id', //db.user
             'type' => 'Hidden',
         ));
         $this->add(array(
-            'name' => 'name',
+            'name' => 'family_id', //db.user
+            'type' => 'Hidden',
+        ));
+        $this->add(array(
+            'name' => 'name',   //db.families
             'type' => 'text',
             'options' => array(
                 'label' => 'Family Name'
             )
         ));
+        $this->add(array(
+            'name' => 'titel', //db.titel
+            'type' => 'text',
+            'options' => array(
+                'label' => 'Titel'
+            )
+        ));
+        $this->add(array(
+            'name' => 'showname', //db.user
+            'type' => 'text',
+            'options' => array(
+                'label' => 'Vorname (Darstellung)'
+            )
+        ));
+        $this->add(array(
+            'name' => 'showsurename', //db.user
+            'type' => 'text',
+            'options' => array(
+                'label' => 'Nachname (Darstellung)'
+            )
+        ));
+        $this->add(array(
+            'name' => 'order', //db.user
+            'type' => 'Hidden',
+        ));
+        $this->add(array(
+            'name' => 'vita', //db.user
+            'type' => 'text',
+            'options' => array(
+                'label' => 'Vita (Darstellung)'
+            )
+        ));
+        
         $this->add(array(
             'name' => 'submit',
             'attributes' => array(
