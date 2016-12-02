@@ -58,7 +58,6 @@ class DataTable
                 array(25, 10, 50, -1),      //values
                 array(25, 10, 50, "All")),  //shown values
             'select' => "{ style: 'multi' }",
-            'buttons' => '',
             'dom' => array(
                 'l' => true,
                 'f' => true,
@@ -92,12 +91,14 @@ class DataTable
      * @param array|keyword $setting
      */
     public function setButtons ($setting) {
-        if (strtolower($setting) == 'all'){
-            $this->configuration['buttons'] = array("print", "copy", "csv", "excel", "pdf");
-            $this->configuration['dom'] = 'B ' . $this->configuration['dom'];
-        } else if (is_array($setting)){
-            $this->configuration['buttons'] = array_replace_recursive($this->configuration['buttons'], $setting);
-            $this->configuration['dom'] = 'B ' . $this->configuration['dom']; //todo might end up in "B B l f..."
+        if (is_array($setting)){
+            $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => $setting ) );
+            $this->jsConfig['dom']['B'] = true;
+        } elseif (strtolower($setting) == 'all'){ //if needed todo add array of possible keywords and if them through
+            $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => array( "print", "copy", "csv", "excel", "pdf") ) );
+            $this->jsConfig['dom']['B'] = true;
+        } else {
+            $this->validateDataType($setting, 'setButtons');
         }
     }
     /**
@@ -152,20 +153,13 @@ class DataTable
                 if (key_exists($validatorKey, $arrayToCheck) && !is_array($arrayToCheck['data'])) {
                     trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
                 }
-                //fix misspelling and forgottoen dom setting
-                if (key_exists ( 'buttons', $arrayToCheck ) ){
-                    if ( !key_exists ( 'dom', $arrayToCheck ) ){
-                        $arrayToCheck['dom']['B'] = true;
-                    } else {
-                        if ( key_exists ( 'b', $arrayToCheck['dom'] ) ){
-                            $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
-                            unset ($arrayToCheck['dom']['b']);
-                        }
-                    }
-                }
+                $arrayToCheck = $this->validateDOMArray($arrayToCheck);
             break;
             case 'prepareColumnConfig':
                 $validatorKey = 'name';
+            break;
+            case 'setButtons':
+                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $arrayToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
             break;
         }
 
@@ -174,7 +168,30 @@ class DataTable
         }
         return $arrayToCheck;
     }
+
+    private function validateDOMArray($arrayGivenToCheck = false){
+        if (!key_exists('jsConfig', $arrayGivenToCheck)) return $arrayGivenToCheck;
+        $arrayToCheck = ($arrayGivenToCheck) ? $arrayGivenToCheck['jsConfig'] : $this->jsConfig;
+
+        //fix misspelling and forgottoen dom setting
+        if (key_exists ( 'buttons', $arrayToCheck ) ){
+            if ( !key_exists ( 'dom', $arrayToCheck ) ){
+                $arrayToCheck['dom']['B'] = true;
+            } else {
+                if ( key_exists ( 'b', $arrayToCheck['dom'] ) ){
+                    $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
+                    unset ($arrayToCheck['dom']['b']);
+                }
+            }
+        }
+        if ($arrayGivenToCheck == false){
+            $this->jsConfig = $arrayToCheck;
+        }
+        return $arrayToCheck;
+
+    }
     private function domPrepare(){
+        $this->validateDOMArray();
         $domPrepare = '';
         $sorting_array = array ( 'B', 'l', 'f', 'r', 't', 'i', 'p');
         foreach ($sorting_array as $position => $option){
