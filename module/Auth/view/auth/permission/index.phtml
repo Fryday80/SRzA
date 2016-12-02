@@ -2,22 +2,21 @@
 $title = 'Edit Permissions for:';
 $this->headTitle($title);
 
-
-    foreach ($roles as $row => $role) {
-         $roles[$row]['href'] = '<a href="' . $this->url('permission/edit', array('id' => $role['rid'])) . '">Ändern</a>';
-    }
-
     echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
         'data' => $roles,
         'columns' =>    array(
-            0 => array (
+            array (
                 'name' => 'role_name',
                 'label' => 'Rolle'
             ),
-            1 => array (
-                'name' => 'href',
-                'label' => 'Aktion'
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function($row){
+                    $edit = '<a href="permission/edit/' . $row['rid'] . '">Ändern</a>';
+                    return $edit;
+                }
             )
         )
     )));
-?>

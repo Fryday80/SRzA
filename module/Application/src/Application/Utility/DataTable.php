@@ -20,7 +20,7 @@ class DataTable
         $this->columns = array();
         $this->setJSDefault();
 
-        //build dependency of passed arguments
+        //build dependency of passed arguments //fry erase in time
         $arguments = func_get_args();
         $i = func_num_args();
         if (method_exists($this,$function='__construct'.$i)) {

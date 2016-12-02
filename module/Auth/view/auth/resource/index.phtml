@@ -3,28 +3,24 @@
     $this->headTitle($title);
 
 
-    $modified[0] = array (
-        'resource_name' => '',
-        'href' => '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a>'
-    );
-
-    foreach ($resources as $resource => $information){
-        $resources[$resource]['href']  = '<a href="' .  $this->url('resource', array('action'=>'edit', 'id' => $resource['id'])) .'">Edit</a>';
-        $resources[$resource]['href'] .= '<a href="' . $this->url('resource', array('action'=>'delete', 'id' => $resource['id'])) . '">Delete</a>';
-        array_push( $modified, $resources[$resource] );
-    }
-
+    echo '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a><br><br>';
 
     echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
-        'data' => $modified,
+        'data' => $resources,
         'columns' =>    array(
-            0 => array (
-                'name' => 'resource_name',
+            array (
+                'name'  => 'resource_name',
                 'label' => 'Resource'
             ),
-            1 => array (
-                'name' => 'href',
-                'label' => 'Aktion'
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function($row) {
+                    $edit = '<a href="/resources/edit/'.$row['id'].'">Edit</a>';
+                    $delete = '<a href="/resources/delete/'.$row['id'].'">Delete</a>';
+                    return $edit.$delete;
+                }
             )
         )
     )));
