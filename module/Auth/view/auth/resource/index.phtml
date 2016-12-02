@@ -2,21 +2,8 @@
     $title = 'Resources';
     $this->headTitle($title);
 
-
-    echo '<a href="' .  $this->url('resource', array('action'=>'add')) . '">Add new Resource</a><br><br>';
-
     echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
         'data' => $resources,
-        'configuration' => array(
-            'buttons' => array(//bis auf einen fehler^^ dass er statt {}  "{}" macht
-                'pdf',
-                'print',
-                array(
-                    'text' => 'add',
-                    'url' => '/resource/add',//wo is jetzt da ne hässliche func in dem array
-                )
-            ),
-        ),
         'columns' =>    array(
             array (
                 'name'  => 'resource_name',
@@ -32,6 +19,21 @@
                     return $edit.$delete;
                 }
             )
-        )
+        ),
+        'jsConfig' => array(
+            'buttons' => array(
+                'pdf',
+                'print',
+                "csv", 
+                "excel",
+                array(
+                    'text' => 'add resource',
+                    'url' => '/resource/add',
+                )
+            ),
+            'dom' => array(
+                'B' => true,
+            )
+        ),
     )));
 ?>

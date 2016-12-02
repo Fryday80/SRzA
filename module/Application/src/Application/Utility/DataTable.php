@@ -13,7 +13,7 @@ class DataTable
 {
     public $data;
     public $columns;
-    public $configuration;
+    public $jsConfig;
 
     function __construct()
     {
@@ -53,14 +53,20 @@ class DataTable
         $this->configuration = array_replace_recursive($this->configuration, $settings);
     }
     private function setJSDefault(){
-        $this->configuration = array (
-            'lengthMenu' => array(array(25, 10, 50, -1), array(25, 10, 50, "All")),
+        $this->jsConfig = array (
+            'lengthMenu' => array(
+                array(25, 10, 50, -1),      //values
+                array(25, 10, 50, "All")),  //shown values
             'select' => "{ style: 'multi' }",
             'buttons' => '',
-            'dom' => 'B l f r t i p',
+            'dom' => array(
+                'l' => true,
+                'f' => true,
+                'r' => true,
+                't' => true,
+                'i' => true,
+                'p' => true)
         );
-        //predefined settings here
-
         //https://datatables.net/reference/index for preferences/documentation
     }
     /**
@@ -69,8 +75,10 @@ class DataTable
      *
      * @return string js options string
      */
-    public function getSetupString(){ // damit is die funtion schon fertig
-        $string = json_encode($this->configuration);
+    public function getSetupString(){
+        $this->domPrepare();
+
+        $string = json_encode($this->jsConfig);
         $regex = '/"\@buttonFunc:(.*)\@"/i';
         $func = 'function(){window.location = "$1";}';
         $string = preg_replace($regex, $func, $string);
@@ -88,8 +96,8 @@ class DataTable
             $this->configuration['buttons'] = array("print", "copy", "csv", "excel", "pdf");
             $this->configuration['dom'] = 'B ' . $this->configuration['dom'];
         } else if (is_array($setting)){
-            $this->configuration['buttons'] = $setting;
-            $this->configuration['dom'] = 'B ' . $this->configuration['dom'];
+            $this->configuration['buttons'] = array_replace_recursive($this->configuration['buttons'], $setting);
+            $this->configuration['dom'] = 'B ' . $this->configuration['dom']; //todo might end up in "B B l f..."
         }
     }
     /**
@@ -114,11 +122,11 @@ class DataTable
                 break;
             }
         }
-        if (isset($config['configuration'])){
-            $this->configuration = array_replace_recursive($this->configuration, $config['configuration']);
-            foreach ($this->configuration['buttons'] as $key => $value) {
-                if (is_array($value))
-                    $this->configuration['buttons'][$key]['action'] = '@buttonFunc:' . $value['url'] . '@';
+        if ( isset( $config['jsConfig'] ) ){
+            $this->jsConfig = array_replace_recursive ( $this->jsConfig, $config['jsConfig'] );
+            foreach ($this->jsConfig['buttons'] as $key => $value) {
+                if ( is_array( $value ) )
+                    $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $value['url'] . '@';
             }
         }
     }
@@ -144,6 +152,17 @@ class DataTable
                 if (key_exists($validatorKey, $arrayToCheck) && !is_array($arrayToCheck['data'])) {
                     trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
                 }
+                //fix misspelling and forgottoen dom setting
+                if (key_exists ( 'buttons', $arrayToCheck ) ){
+                    if ( !key_exists ( 'dom', $arrayToCheck ) ){
+                        $arrayToCheck['dom']['B'] = true;
+                    } else {
+                        if ( key_exists ( 'b', $arrayToCheck['dom'] ) ){
+                            $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
+                            unset ($arrayToCheck['dom']['b']);
+                        }
+                    }
+                }
             break;
             case 'prepareColumnConfig':
                 $validatorKey = 'name';
@@ -153,5 +172,14 @@ class DataTable
         if (!key_exists($validatorKey, $arrayToCheck)) {
             trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
         }
+        return $arrayToCheck;
+    }
+    private function domPrepare(){
+        $domPrepare = '';
+        $sorting_array = array ( 'B', 'l', 'f', 'r', 't', 'i', 'p');
+        foreach ($sorting_array as $position => $option){
+            $domPrepare .= ($this->jsConfig['dom'][$option] !== false) ? $option . ' ' : '';
+        }
+        $this->jsConfig['dom'] = $domPrepare;
     }
 }

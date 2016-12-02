@@ -2,10 +2,7 @@
     $title = 'Roles';
     $this->headTitle($title);
 
-
-    echo '<a href="' .  $this->url('role/add') . '">Add new Role</a><br><br>';
-
-    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+    echo $this->dataTable()->render ( new \Application\Utility\DataTable ( array (
         'data' => $roles,
         'columns' =>    array(
             array (
@@ -34,8 +31,23 @@
                     $delete = '<a href="role/delete/' . $row['rid'] . '">Delete</a>';
                     return $edit.$delete;
                 }
+            ),
+        ),
+        'jsConfig' => array(
+            'buttons' => array(
+                'pdf',
+                'print',
+                "csv",
+                "excel",
+                array(
+                    'text' => 'add role',
+                    'url' => '/role/add',
+                )
+            ),
+            'dom' => array(
+                'B' => true,
             )
-        )
-    )));
+        ),
+    ) ) );
 
 ?>
