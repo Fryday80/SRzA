@@ -1,3 +1,4 @@
 vendor/
 .idea/
 /.settings/org.eclipse.core.resources.prefs
+config/autoload/local.php

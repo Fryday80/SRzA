@@ -57,7 +57,7 @@ class DataTable
             'lengthMenu' => array(array(25, 10, 50, -1), array(25, 10, 50, "All")),
             'select' => "{ style: 'multi' }",
             'buttons' => '',
-            'dom' => 'l f r t i p',
+            'dom' => 'B l f r t i p',
         );
         //predefined settings here
 
@@ -69,10 +69,11 @@ class DataTable
      *
      * @return string js options string
      */
-    public function getSetupString(){
+    public function getSetupString(){ // damit is die funtion schon fertig
         $string = json_encode($this->configuration);
-        $string = str_replace('"{', '{', $string);  //todo better way??
-        $string = str_replace('}"', '}', $string);
+        $regex = '/"\@buttonFunc:(.*)\@"/i';
+        $func = 'function(){window.location = "$1";}';
+        $string = preg_replace($regex, $func, $string);
         return $string;
     }
     /**
@@ -91,9 +92,6 @@ class DataTable
             $this->configuration['dom'] = 'B ' . $this->configuration['dom'];
         }
     }
-    public function setLengthMenu() {}  //todo
-    public function setSelect() {}      //todo
-
     /**
      * @param array $config
      */
@@ -114,6 +112,13 @@ class DataTable
                     ));
                 }
                 break;
+            }
+        }
+        if (isset($config['configuration'])){
+            $this->configuration = array_replace_recursive($this->configuration, $config['configuration']);
+            foreach ($this->configuration['buttons'] as $key => $value) {
+                if (is_array($value))
+                    $this->configuration['buttons'][$key]['action'] = '@buttonFunc:' . $value['url'] . '@';
             }
         }
     }

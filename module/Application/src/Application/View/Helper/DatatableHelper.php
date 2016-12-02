@@ -80,25 +80,4 @@ Class DataTableHelper extends AbstractHelper {
         return $js;
     }
 
-//    private function mergeConfig($conf) {		 +    public function render($table) {
-//        $defaultConf = array(		 +        echo $this->renderHTML($table);
-// -            'all' => false,		 +        echo $this->renderJS($table);
-// -            'columns' => array(
-//        )
-//        -        );
-// -        $defaultConfColl = array(
-//     -            'type' => 'text',
-//     -        );
-// -        $conf = array_replace_recursive($defaultConf, $conf);
-// -        foreach ($conf['columns'] as $cName=> $cConf) {
-//            -            if (gettype($cConf) === 'string') {
-//                -                //set default conf
-//                -                $conf['columns'][$cName] = $defaultConfColl;
-//                -                $conf['columns'][$cName]['dataIndex'] = $cConf;
-//                -            } else {
-//                -                $conf['columns'][$cName] = array_replace_recursive($defaultConfColl, $cConf);
-//                -            }
-// -        }
-// -        return $conf;
-//      }
 }
