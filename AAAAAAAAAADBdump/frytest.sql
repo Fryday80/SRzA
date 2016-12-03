@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 20. Nov 2016 um 00:01
+-- Erstellungszeit: 03. Dez 2016 um 15:32
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -28,7 +28,6 @@ USE `frytest`;
 -- Tabellenstruktur für Tabelle `abonnements`
 --
 
-DROP TABLE IF EXISTS `abonnements`;
 CREATE TABLE IF NOT EXISTS `abonnements` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
@@ -44,7 +43,6 @@ CREATE TABLE IF NOT EXISTS `abonnements` (
 -- Tabellenstruktur für Tabelle `abonnementtypes`
 --
 
-DROP TABLE IF EXISTS `abonnementtypes`;
 CREATE TABLE IF NOT EXISTS `abonnementtypes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `abonnement_id` int(11) NOT NULL,
@@ -59,7 +57,6 @@ CREATE TABLE IF NOT EXISTS `abonnementtypes` (
 -- Tabellenstruktur für Tabelle `album`
 --
 
-DROP TABLE IF EXISTS `album`;
 CREATE TABLE IF NOT EXISTS `album` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `event` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
@@ -84,7 +81,6 @@ INSERT INTO `album` (`id`, `event`, `timestamp`, `duration`) VALUES
 -- Tabellenstruktur für Tabelle `albumimages`
 --
 
-DROP TABLE IF EXISTS `albumimages`;
 CREATE TABLE IF NOT EXISTS `albumimages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `album_id` int(11) NOT NULL,
@@ -108,7 +104,6 @@ INSERT INTO `albumimages` (`id`, `album_id`, `image_id`) VALUES
 -- Tabellenstruktur für Tabelle `albums`
 --
 
-DROP TABLE IF EXISTS `albums`;
 CREATE TABLE IF NOT EXISTS `albums` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `folder` varchar(30) COLLATE utf8_bin NOT NULL,
@@ -135,7 +130,6 @@ INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visi
 -- Tabellenstruktur für Tabelle `families`
 --
 
-DROP TABLE IF EXISTS `families`;
 CREATE TABLE IF NOT EXISTS `families` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text COLLATE utf8_bin NOT NULL,
@@ -148,7 +142,6 @@ CREATE TABLE IF NOT EXISTS `families` (
 -- Tabellenstruktur für Tabelle `hashjob`
 --
 
-DROP TABLE IF EXISTS `hashjob`;
 CREATE TABLE IF NOT EXISTS `hashjob` (
   `job_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -160,7 +153,6 @@ CREATE TABLE IF NOT EXISTS `hashjob` (
 -- Tabellenstruktur für Tabelle `images`
 --
 
-DROP TABLE IF EXISTS `images`;
 CREATE TABLE IF NOT EXISTS `images` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `filename` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -187,7 +179,6 @@ INSERT INTO `images` (`id`, `filename`, `extension`, `text_1`, `text_2`, `visibi
 -- Tabellenstruktur für Tabelle `job`
 --
 
-DROP TABLE IF EXISTS `job`;
 CREATE TABLE IF NOT EXISTS `job` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job` text COLLATE utf8_bin NOT NULL,
@@ -200,7 +191,6 @@ CREATE TABLE IF NOT EXISTS `job` (
 -- Tabellenstruktur für Tabelle `multiabo`
 --
 
-DROP TABLE IF EXISTS `multiabo`;
 CREATE TABLE IF NOT EXISTS `multiabo` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL
@@ -212,7 +202,6 @@ CREATE TABLE IF NOT EXISTS `multiabo` (
 -- Tabellenstruktur für Tabelle `nav`
 --
 
-DROP TABLE IF EXISTS `nav`;
 CREATE TABLE IF NOT EXISTS `nav` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_id` int(11) NOT NULL,
@@ -254,7 +243,6 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt
 -- Tabellenstruktur für Tabelle `pages`
 --
 
-DROP TABLE IF EXISTS `pages`;
 CREATE TABLE IF NOT EXISTS `pages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` tinytext NOT NULL,
@@ -284,13 +272,12 @@ INSERT INTO `pages` (`id`, `title`, `url`, `exceptedRoles`, `content`, `updated`
 -- Tabellenstruktur für Tabelle `permission`
 --
 
-DROP TABLE IF EXISTS `permission`;
 CREATE TABLE IF NOT EXISTS `permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=89 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -337,7 +324,12 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (85, ' guest', 21),
 (86, ' member', 21),
 (87, ' leader', 21),
-(88, ' admin', 21);
+(88, ' admin', 21),
+(89, 'index', 23),
+(90, 'profile', 23),
+(91, 'add', 23),
+(92, 'remove', 23),
+(93, 'edit', 23);
 
 -- --------------------------------------------------------
 
@@ -345,12 +337,11 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 -- Tabellenstruktur für Tabelle `resource`
 --
 
-DROP TABLE IF EXISTS `resource`;
 CREATE TABLE IF NOT EXISTS `resource` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
 
 --
 -- Daten für Tabelle `resource`
@@ -367,7 +358,8 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 (19, 'Nav\\Controller\\Nav'),
 (20, 'Cms\\Controller\\Content'),
 (21, 'Cms\\Controller\\Page'),
-(22, 'Album\\Controller\\Gallery');
+(22, 'Album\\Controller\\Gallery'),
+(23, 'Usermanager\\Controller\\Usermanager');
 
 -- --------------------------------------------------------
 
@@ -375,7 +367,6 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 -- Tabellenstruktur für Tabelle `role`
 --
 
-DROP TABLE IF EXISTS `role`;
 CREATE TABLE IF NOT EXISTS `role` (
   `rid` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_name` varchar(45) NOT NULL,
@@ -400,13 +391,12 @@ INSERT INTO `role` (`rid`, `role_name`, `role_parent`, `status`) VALUES
 -- Tabellenstruktur für Tabelle `role_permission`
 --
 
-DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE IF NOT EXISTS `role_permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=194 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=200 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -508,7 +498,13 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (190, 4, 88),
 (191, 4, 87),
 (192, 1, 85),
-(193, 1, 4);
+(193, 1, 4),
+(194, 4, 92),
+(195, 4, 93),
+(196, 4, 89),
+(197, 4, 90),
+(198, 4, 91),
+(199, 4, 54);
 
 -- --------------------------------------------------------
 
@@ -516,7 +512,6 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 -- Tabellenstruktur für Tabelle `titel`
 --
 
-DROP TABLE IF EXISTS `titel`;
 CREATE TABLE IF NOT EXISTS `titel` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
@@ -530,7 +525,6 @@ CREATE TABLE IF NOT EXISTS `titel` (
 -- Tabellenstruktur für Tabelle `users`
 --
 
-DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(100) NOT NULL,
@@ -570,7 +564,6 @@ INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, 
 -- Tabellenstruktur für Tabelle `user_role`
 --
 
-DROP TABLE IF EXISTS `user_role`;
 CREATE TABLE IF NOT EXISTS `user_role` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
