@@ -1,8 +1,8 @@
 <?php
     $title = 'Resources';
     $this->headTitle($title);
-
-    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+    
+    echo $this->dataTable()->render(new \Application\Utility\DataTable (array(
         'data' => $resources,
         'columns' =>    array(
             array (
@@ -24,7 +24,7 @@
             'buttons' => array(
                 'pdf',
                 'print',
-                "csv", 
+                "csv",
                 "excel",
                 array(
                     'text' => 'add resource',

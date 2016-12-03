@@ -15,21 +15,12 @@ class DataTable
     public $columns;
     public $jsConfig;
 
-    function __construct()
+    function __construct($config = null) //salt fry hier gibts n problem
     {
         $this->columns = array();
         $this->setJSDefault();
-
-        //build dependency of passed arguments //fry erase in time
-        $arguments = func_get_args();
-        $i = func_num_args();
-        if (method_exists($this,$function='__construct'.$i)) {
-            call_user_func_array(array($this,$function),$arguments);
-        }
-    }
-
-    function __construct1 ($config){
         if ($config !== null) {
+//        dumpd($config, 'hhh', 1); //hängt sich weg
             $this->prepareConfig($config);
         }
     }
@@ -42,15 +33,15 @@ class DataTable
         //@todo validate $data
         $this->data = $data;
     }
-    public function setConf ($index, $value){
-        $this->configuration[$index] = $value;
+    public function setJSConf ($index, $value){
+        $this->jsConfig[$index] = $value;
     }
     /**
-     * set all setting at once
+     * set all js setting at once
      * @param array $settings
      */
-    public function setWholeConf ($settings){
-        $this->configuration = array_replace_recursive($this->configuration, $settings);
+    public function setWholeJSConf ($settings){
+        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
     }
     private function setJSDefault(){
         $this->jsConfig = array (
@@ -75,6 +66,7 @@ class DataTable
      * @return string js options string
      */
     public function getSetupString(){
+
         $this->domPrepare();
 
         $string = json_encode($this->jsConfig);
@@ -84,8 +76,8 @@ class DataTable
         return $string;
     }
     /**
-     * creates the settings for the buttons <br>
-     * possible keyword 'all' <br>
+     * creates the settings for the buttons
+     * <br> possible keyword 'all' <br>
      * for array help see: <br>
      * <code>//https://datatables.net/reference/index for preferences/documentation</code>
      * @param array|keyword $setting
@@ -123,11 +115,16 @@ class DataTable
                 break;
             }
         }
-        if ( isset( $config['jsConfig'] ) ){
+
+        $config = $this->validateDOMArray($config); //fry <<simplicty>> erst schreiben, dann validieren?? denn es "validiert" hier gerade nicht wirklich
+        if ( key_exists( 'jsConfig', $config ) ){
             $this->jsConfig = array_replace_recursive ( $this->jsConfig, $config['jsConfig'] );
+
             foreach ($this->jsConfig['buttons'] as $key => $value) {
-                if ( is_array( $value ) )
-                    $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $value['url'] . '@';
+                //self made buttons:
+                if ( is_array( $value ) ){
+                    $this->insertLinkButton($value['url'], $value['text'], $key);
+                }
             }
         }
     }
@@ -145,58 +142,108 @@ class DataTable
         return $columnConf;
     }
 
-    private function validateDataType($arrayToCheck, $requestingFunction)
+    /**
+     * validates data types and throws error in case
+     * @param $dataToCheck
+     * @param $requestingFunction
+     */
+    private function validateDataType($dataToCheck, $requestingFunction)
     {
         switch ($requestingFunction) {
             case 'prepareConfig':
                 $validatorKey = 'data';
-                if (key_exists($validatorKey, $arrayToCheck) && !is_array($arrayToCheck['data'])) {
+                if (key_exists($validatorKey, $dataToCheck) && !is_array($dataToCheck['data'])) {
                     trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
                 }
-                $arrayToCheck = $this->validateDOMArray($arrayToCheck);
             break;
             case 'prepareColumnConfig':
                 $validatorKey = 'name';
             break;
             case 'setButtons':
-                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $arrayToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
+                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
             break;
         }
 
-        if (!key_exists($validatorKey, $arrayToCheck)) {
+        if (!key_exists($validatorKey, $dataToCheck)) {
             trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
         }
-        return $arrayToCheck;
     }
 
-    private function validateDOMArray($arrayGivenToCheck = false){
-        if (!key_exists('jsConfig', $arrayGivenToCheck)) return $arrayGivenToCheck;
-        $arrayToCheck = ($arrayGivenToCheck) ? $arrayGivenToCheck['jsConfig'] : $this->jsConfig;
+    /**
+     * validates given dom array of jsConfig or dom array in $this->jsConfig if no argument given
+     * <br> no argument thought for check up in ->getSetupString()
+     * @param array $arrayGivenToCheck
+     * @return array refactored array or sets $this->jsConfig if no argument was given
+     */
+    private function validateDOMArray($arrayGivenToCheck = false)
+    { //fry <<simplicty>> hier würden die hälfte der ifs entfallen
+        $finalCheck = false;
+        if (!$arrayGivenToCheck){
+            $arrayGivenToCheck = array('jsConfig' => $this->jsConfig);
+            $finalCheck = true;
+        } elseif (!key_exists('jsConfig', $arrayGivenToCheck)) return $arrayGivenToCheck;
 
-        //fix misspelling and forgottoen dom setting
-        if (key_exists ( 'buttons', $arrayToCheck ) ){
-            if ( !key_exists ( 'dom', $arrayToCheck ) ){
+        $arrayToCheck = $arrayGivenToCheck['jsConfig'];
+
+        //fix misspelling and forgotten dom setting
+        if (key_exists('buttons', $arrayToCheck)) {
+            if (!key_exists('dom', $arrayToCheck)) {
                 $arrayToCheck['dom']['B'] = true;
             } else {
-                if ( key_exists ( 'b', $arrayToCheck['dom'] ) ){
+                //checks and replaces in case that a 'b' is given in stead of 'B'
+                if (key_exists('b', $arrayToCheck['dom'])) {
                     $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
                     unset ($arrayToCheck['dom']['b']);
                 }
             }
         }
-        if ($arrayGivenToCheck == false){
-            $this->jsConfig = $arrayToCheck;
-        }
-        return $arrayToCheck;
-
+        if (!$finalCheck) return $arrayToCheck;
+        $this->jsConfig = $arrayToCheck;
     }
+
+    /**
+     * prepares the array of jsConfig for json encode
+     */
     private function domPrepare(){
         $this->validateDOMArray();
+        //rewriting in needed string
         $domPrepare = '';
-        $sorting_array = array ( 'B', 'l', 'f', 'r', 't', 'i', 'p');
+        $sorting_array = array (
+            0 => 'B',
+            1 => 'l',
+            2 => 'f',
+            3 => 'r',
+            4 => 't',
+            5 => 'i',
+            6 => 'p'
+        );
         foreach ($sorting_array as $position => $option){
-            $domPrepare .= ($this->jsConfig['dom'][$option] !== false) ? $option . ' ' : '';
+            $domPrepare .= ($this->jsConfig['dom'][$option]) ? $option . ' ' : '';
         }
         $this->jsConfig['dom'] = $domPrepare;
+    }
+
+    /**
+     * inserts self made buttons to js DataTableHelper
+     * @param string $url
+     * @param string $text
+     */
+    public function insertLinkButton($url, $text, $key = false){
+        // <external use> checks if 'buttons' is already set in any way .. if not initializes 'buttons'
+        if (!is_array($this->jsConfig['buttons']))
+        {
+            $this->jsConfig['buttons'] = array();
+        }
+        // <internal use> from prepareConfig() a key is given
+        if ($key) {
+            $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
+        }
+        // <external use> pushes new button in the buttons array
+        else {
+            array_push($this->jsConfig['buttons'], array(
+                'action'    => '@buttonFunc:' . $url . '@',
+                'text'      => $text
+            ));
+        }
     }
 }
