@@ -14,8 +14,8 @@
                 'label' => 'Aktion',
                 'type'  => 'custom',
                 'render' => function($row) {
-                    $edit = '<a href="/resources/edit/'.$row['id'].'">Edit</a>';
-                    $delete = '<a href="/resources/delete/'.$row['id'].'">Delete</a>';
+                    $edit = '<a href="/resource/edit/'.$row['id'].'">Edit</a>';
+                    $delete = '<a href="/resource/delete/'.$row['id'].'">Delete</a>';
                     return $edit.$delete;
                 }
             )
