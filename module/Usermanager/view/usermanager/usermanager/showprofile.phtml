@@ -2,12 +2,9 @@
 
 $title = 'Profil';
 $this->headTitle($title);
-?>
 
-<a href="/usermanager">Zurück</a><a href="/usermanager/show/<?= $id ?>">Darstellung</a><br><br>
-<?php
-
-echo $this->form()->render($form, $form_config);
+echo $buttons;
+echo $this->dataTable()->render($user);
 //fry todo pw ändern if ($owner)...
 ?>
 

@@ -28,11 +28,20 @@ class UserDataTable extends DataTable
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {
-                $links = '<a href="/usermanager/showprofile/' . $row['id'] . '">Auswählen</a>';
-                if (array_key_exists('allow_delete', $row)) {
-                    $links .= '<a href="/usermanager/delete/' . $row['id'] . '">Löschen</a>';
+                if (is_object( $row )){
+                    $links = '<a href="/usermanager/showprofile/' . $row->id . '">Auswählen</a>';
+                    if (array_key_exists('allow_delete', $row)) {
+                        $links .= '<a href="/usermanager/delete/' . $row->id . '">Löschen</a>';
+                    }
+                    return $links;
+
+                } else {
+                    $links = '<a href="/usermanager/showprofile/' . $row['id'] . '">Auswählen</a>';
+                    if (array_key_exists('allow_delete', $row)) {
+                        $links .= '<a href="/usermanager/delete/' . $row['id'] . '">Löschen</a>';
+                    }
+                    return $links;
                 }
-                return $links;
             }
         ));
     }

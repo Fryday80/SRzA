@@ -7,6 +7,7 @@ use Zend\View\Model\ViewModel;
 use Usermanager\Form\ProfileForm;
 use Usermanager\Form\ConfirmForm;
 use Application\Utility\FormConfiguration;
+use Application\Utility\DataTable;
 
 class UsermanagerController extends AbstractActionController
 {
@@ -48,7 +49,7 @@ class UsermanagerController extends AbstractActionController
 
         return new ViewModel(array(
             'userDataTable' => $userTable,
-            'addButton' => $addButton,
+            'buttons' => $addButton,
         ));
     }
 
@@ -56,19 +57,20 @@ class UsermanagerController extends AbstractActionController
     {
         $id = (int) $this->params()->fromRoute('id', 0);
         $this->owner = ($this->accessService->getUserID() === $id)?:false;
-        $addButton = '';
+        $addButton = '<a href="/usermanager">Zurück</a><a href="/usermanager/show/<?= $id ?>">Darstellung</a><br><br>';
         if ($this->owner || $this->accessService->allowed("Usermanager\Controller\Usermanager", "edit")) {
         $addButton .= '<a href="/usermanager/editprofile' . $id . '">edit</a>';
         }
 
         $user = $this->userTable->getUser($id);
-        $dataTable = new UserDataTable();
-        $dataTable->setdata($user);
+        $dataTable = new DataTable( array ('data' => array ( $user ) ) );
+        $dataTable->columnOff( array( 'name' => 'id' ) );
+        $dataTable->columnOff( array( 'name' => 'password' ) );
 
         return new ViewModel(array(
             'id' => $id,
             'user' => $dataTable,
-            'Buttons' => $addButton
+            'buttons' => $addButton
         ));
     }
 

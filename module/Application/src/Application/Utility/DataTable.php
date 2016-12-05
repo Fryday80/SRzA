@@ -20,7 +20,6 @@ class DataTable
         $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
-//        dumpd($config, 'hhh', 1); //hängt sich weg
             $this->prepareConfig($config);
         }
     }
@@ -218,7 +217,7 @@ class DataTable
             6 => 'p'
         );
         foreach ($sorting_array as $position => $option){
-            $domPrepare .= ($this->jsConfig['dom'][$option]) ? $option . ' ' : '';
+            $domPrepare .= (isset( $this->jsConfig['dom'][$option] )) ? $option . ' ' : '';
         }
         $this->jsConfig['dom'] = $domPrepare;
     }
@@ -244,6 +243,31 @@ class DataTable
                 'action'    => '@buttonFunc:' . $url . '@',
                 'text'      => $text
             ));
+        }
+    }
+    public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
+        if ( isset ($array['text']) ){
+            unset ( $array['text'] );
+            echo'DataTable -> columnOff: key "text" not allowed as selector';
+        }
+        foreach ($this->columns as $number => $info){
+            foreach ( $array as $key => $selected ) {
+                if ( $this->columns[$number][$key] == $selected ){
+                    unset ( $this->columns[$number] );
+                }
+        }
+        }
+    }
+    public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
+        if ( !isset ($array['name']) ){
+            trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
+        }
+        foreach ($this->columns as $number => $info){
+            foreach ( $array as $key => $selected ) {
+                if ( $this->columns[$number][$key] == $selected ){
+                    unset ( $this->columns[$number] );
+                }
+        }
         }
     }
 }

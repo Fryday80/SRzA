@@ -44,19 +44,40 @@ Class DataTableHelper extends AbstractHelper {
         $i = 0;
         foreach ($table->data as $row) {
             $datarow .= '<tr>';
-            foreach ($table->columns as $name => $value){
-                $datarow .= "<td>";
-                if ($i == 0) {
-                    $datahead .= '<th>' . $value['label'] . '</th>';
-                }
-                switch($value['type']) {
-                    case 'text':
-                        $datarow .= $row[$value['name']];
-                        break;
-                    case 'custom':
-                        $datarow .= $value['render']($row);
-                        break;
-                    case '':
+            foreach ($table->columns as $number => $value){
+                $switch = is_object($row);
+                switch ($switch) {
+                    case false:
+                        $datarow .= "<td>";
+                        if ($i == 0) {
+                            $datahead .= '<th>' . $value['label'] . '</th>';
+                        }
+                        switch ($value['type']) {
+                            case 'text':
+                                $datarow .= $row[$value['name']];
+                                break;
+                            case 'custom':
+                                $datarow .= $value['render']($row);
+                                break;
+                            case '':
+                                break;
+                        }
+                    break;
+                    case true:
+                        $datarow .= "<td>";
+                        if ($i == 0) {
+                            $datahead .= '<th>' . $value['label'] . '</th>';
+                        }
+                        switch ($value['type']) {
+                            case 'text':
+                                $datarow .= $row->$value['name'];
+                                break;
+                            case 'custom':
+                                $datarow .= $value['render']($row);
+                                break;
+                            case '':
+                                break;
+                        }
                         break;
                 }
                 $datarow .= "</td>";
