@@ -1,8 +1,9 @@
 <?php
 namespace Usermanager\Controller;
 
-use Profile\Model\FamiliesTable;
+use Usermanager\Model\FamiliesTable;
 use Usermanager\Form\FamilyForm;
+use Usermanager\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -17,18 +18,10 @@ class FamilyController extends AbstractActionController
     public function indexAction() {
         $this->familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
         $families = $this->familyTable->getAll();
-        $tableData = array();
-        //for
-        //$arr = array(
-        //    'id'    => $user['id'],
-        //    'Name'  => $user['name'],
-        //    'eMail' => $user['email'],
-        //    'Aktionen' => $operations,
-        //);
-        //array_push($tableData, $arr);
+        $famTable = new FamilyDataTable();
+        $famTable->setData($families);
         return new ViewModel(array(
-            'jsOptions' => array(),
-            'families' => $families,
+            'families' => $famTable,
         ));
     }
     public function addAction() {
@@ -69,7 +62,7 @@ class FamilyController extends AbstractActionController
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
 
-        $album = $this->addDate($album);    // Field 'date' needs to be added, because it is not stored in db
+        $album = $this->addDate($album);
 
         $form->populateValues($album[0]);
 
