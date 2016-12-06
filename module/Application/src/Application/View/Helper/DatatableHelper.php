@@ -27,7 +27,7 @@ Class DataTableHelper extends AbstractHelper {
     public function render($table) {
         //@todo check $table
         if (!($table instanceof DataTable)) {
-            trigger_error('DataTableHelper -> render() > no object given', E_USER_ERROR);
+            trigger_error('argument 1 is not a instance of DataTable', E_USER_ERROR);
         }
         echo $this->renderHTML($table);
         echo $this->renderJS($table->getSetupString());
