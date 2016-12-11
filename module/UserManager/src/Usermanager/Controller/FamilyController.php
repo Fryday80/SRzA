@@ -1,7 +1,6 @@
 <?php
 namespace Usermanager\Controller;
 
-use Usermanager\Model\FamiliesTable;
 use Usermanager\Form\FamilyForm;
 use Usermanager\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -9,15 +8,9 @@ use Zend\View\Model\ViewModel;
 
 class FamilyController extends AbstractActionController
 {
-    /* @var $familyTable FamiliesTable */
-    private $familyTable;
-
-    public function __construct() {
-    }
-
     public function indexAction() {
-        $this->familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
-        $families = $this->familyTable->getAll();
+        $familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
+        $families = $familyTable->getAll();
         $famTable = new FamilyDataTable();
         $famTable->setData($families);
         return new ViewModel(array(
@@ -33,86 +26,66 @@ class FamilyController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->familyTable= $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
+                $familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
                 $data = $form->getData();
-                $this->familyTable->change($data['is'], $data);
-                $this->galleryService->storeAlbum ($form->getData());
-                return $this->redirect()->toRoute('album');
+                $familyTable->add($data);
+                return $this->redirect()->toRoute('families');
             }
         }
         return array(
             'form' => $form
         );
     }
-
     public function editAction(){
         $request = $this->getRequest();
         $id = (int) $this->params()->fromRoute('id', null);
         if (! $id && !$request->isPost()) {
-            return $this->redirect()->toRoute('/album');
+            return $this->redirect()->toRoute('/families');
         }
-        $album = null;
-        try {
-            $album = $this->galleryService->getAlbumByID($id);
-        } catch (\Exception $ex) {
-            print ($ex);
-            return $this->redirect()->toRoute('/album');
+        $familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
+        if (!$family = $familyTable->getById($id)) {
+            return $this->redirect()->toRoute('/families');
         }
-        $form = new AlbumForm();
+        $form = new FamilyForm();
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
-
-        $album = $this->addDate($album);
-
-        $form->populateValues($album[0]);
-
-        $form->setAttribute('action', '/album/edit/' . $id);
+        $form->populateValues($family);
+        $form->setAttribute('action', '/families/edit/' . $id);
 
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->galleryService->storeAlbum ($form->getData());
-                return $this->redirect()->toRoute('album');
+                $familyTable->save($id, $form->getData());
+                return $this->redirect()->toRoute('families');
             }
-            //dump ('not valid'); //cleanfix bugfix
         }
         return array(
             'id' => $id,
             'form' => $form
         );
     }
-
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
+        if (! $id) {
+            return $this->redirect()->toRoute('families');
+        }
+        $familyTable = $this->getServiceLocator()->get("Usermanager\Model\FamiliesTable");
         $request = $this->getRequest();
-        if (! $id && !$request->isPost()) {
-            return $this->redirect()->toRoute('album');
-        }
         if ($request->isPost()) {
-            $confirmed = $request->getPost('delete_confirm', 'no');
-            if ($confirmed !== 'no') {
-                $this->galleryService->deleteWholeAlbum($id);
-                return $this->redirect()->toRoute('album');
+            $del = $request->getPost('del', 'No');
+
+            if ($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $familyTable->remove($id);
             }
-            // Redirect to list of albums
-            return $this->redirect()->toRoute('album');
-        }
-        $form = new ConfirmForm();
-        $form->get('id')->setAttribute('value', $id);
-        $form->setAttribute('action', '/album/delete/' . $id);
 
-        try {
-            $album = $this->galleryService->getAlbumByID($id);
-        } catch (\Exception $ex) {
-            print ($ex);
-            return $this->redirect()->toRoute('/album');
+            // Redirect to list of Users
+            return $this->redirect()->toRoute('families');
         }
-        $event = $album[0]['event'];
 
-        return array (
+        return array(
             'id' => $id,
-            'event' => $event,
-            'form' => $form
+            'family' => $familyTable->getById($id)
         );
     }
 }

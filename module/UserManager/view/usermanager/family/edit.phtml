@@ -6,6 +6,5 @@ $this->headTitle($title);
 
 <?php
 $form = $this->form;
-$form->setAttribute('action', $this->url('role/edit', array('id' => $id)));
 $form->prepare();
 echo $this->form($form);

@@ -3,7 +3,7 @@ namespace Usermanager\Form;
 
 use Zend\Form\Form;
 
-class JobForm extends Form
+class AboForm extends Form
 {
     public function __construct()
     {

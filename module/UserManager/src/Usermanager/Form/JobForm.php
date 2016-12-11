@@ -15,7 +15,7 @@ class JobForm extends Form
             'type' => 'Hidden',
         ));
         $this->add(array(
-            'name' => 'name',
+            'name' => 'job',
             'type' => 'text',
             'options' => array(
                 'label' => 'Job Name'

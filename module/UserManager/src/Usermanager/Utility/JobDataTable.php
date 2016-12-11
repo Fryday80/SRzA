@@ -3,21 +3,21 @@ namespace Usermanager\Utility;
 
 use Application\Utility\DataTable;
 
-class FamilyDataTable extends DataTable
+class JobDataTable extends DataTable
 {
     function __construct() {
         parent::__construct();
         
         $this->add(array(
-            'name' => 'name',
-            'label' => 'Name',
+            'name' => 'job',
+            'label' => 'Job',
         ));
         $this->add(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {
-                $links = '<a href="/families/edit/' . $row['id'] . '">Bearbeiten</a>';
-                $links .= '<a href="/families/delete/' . $row['id'] . '">Löschen</a>';
+                $links = '<a href="/jobs/edit/' . $row['id'] . '">Bearbeiten</a>';
+                $links .= '<a href="/jobs/delete/' . $row['id'] . '">Löschen</a>';
                 return $links;
             }
         ));

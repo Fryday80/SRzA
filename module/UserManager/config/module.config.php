@@ -87,6 +87,7 @@ return array(
                     )
                 ),
              ),
+
              'families' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,
@@ -137,6 +138,7 @@ return array(
                      )
                  ),
              ),
+
              'jobs' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,

@@ -26,7 +26,7 @@ Class ProfileForm extends Form
             'type' => 'Hidden',
             'options' => array (
                 'resource' => 'Usermanager\Controller\UsermanagerController',
-                'permission' => 'myPermission'
+                'permission' => 'edit'
             ),
         ));
         $this->add(array(

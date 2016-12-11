@@ -28,22 +28,22 @@ class JobTable extends AbstractTableGateway
         if (!$row)
             return false;
         
-        return $row->toArray();
+        return $row->toArray()[0];
     }
 
     public function add($data) {
-        if (!$this->insert($data))
+        if (!$this->insert(array('job' => $data['job'])))
             return false;
         return $this->getLastInsertValue();
     }
     
     public function save($id, $data) {
-        if (!$this->update($data, array('id' => (int)$id)))
+        if (!$this->update(array('job' => $data['job']), array('id' => (int)$id)))
             return false;
         return $id;
     }
     
-    public function delete($id) {
+    public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
