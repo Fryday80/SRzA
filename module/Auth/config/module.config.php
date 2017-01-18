@@ -235,7 +235,18 @@ return array(
                         'action' => 'index'
                     )
                 )
-            )
+            ),
+            'register' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/register',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Auth\Controller',
+                        'controller' => 'Auth',
+                        'action' => 'register'
+                    )
+                )
+            ),
         )
     )
 );
