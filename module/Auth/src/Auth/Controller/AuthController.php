@@ -4,6 +4,8 @@ namespace Auth\Controller;
 use Auth\Utility\UserPassword;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
+use Auth\Form\UserForm;
+use Auth\Model\User;
 
 class AuthController extends AbstractActionController
 {
@@ -45,7 +47,7 @@ class AuthController extends AbstractActionController
             if ($form->isValid()) {
                 $data = $form->getData();
         
-                // check authentication...
+                //check authentication... @todo move to AuthService
                 $userPassword = new UserPassword();
                 $encyptPass = $userPassword->create($data['password']);
         
@@ -54,7 +56,7 @@ class AuthController extends AbstractActionController
                 $authService->getAdapter()
                 ->setIdentity($data['email'])
                 ->setCredential($encyptPass);
-        
+
                 $result = $authService->authenticate();
 
                 foreach ($result->getMessages() as $message) {
@@ -105,4 +107,31 @@ class AuthController extends AbstractActionController
     }
     public function accessDeniedAction()
     {}
+
+    public function registerAction()
+    {
+        $form = new UserForm();
+        $form->get('submit')->setValue('Registrieren');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $user = new User();
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $user->exchangeArray($form->getData());
+                $user->status = "N";
+                //if (strlen($form->getData()['password']) > 4) {
+                    $userPassword = new UserPassword();
+                    $user->password = $userPassword->create($user->password);
+                //}
+
+                $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
+                $userTable->saveUser($user);
+                return $this->redirect()->toRoute('user');
+            }
+        }
+        return array(
+            'form' => $form
+        );
+    }
 }
