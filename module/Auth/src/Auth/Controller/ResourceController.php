@@ -26,7 +26,7 @@ class ResourceController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $perms = explode(',', $data['permissions']);
+                $perms = explode( ',', str_replace(" ", "", $data['permissions']) );
                 $name = $data['resource_name'];
                 //create new resource
                 $resTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
@@ -77,7 +77,7 @@ class ResourceController extends AbstractActionController
             $form->setData($formData);
             if ($form->isValid()) {
                 $postData = $request->getPost();
-                $newPerms = explode(',', $postData['permissions']);
+                $newPerms = explode(',', str_replace(" ", "", $postData['permissions']) );
                 $name = $postData['resource_name'];
                 //check if name has changed
                 if ($resource['resource_name'] != $name) {

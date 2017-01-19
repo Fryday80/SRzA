@@ -15,7 +15,6 @@ class GalleryController extends AbstractActionController
 
     public function indexAction()
     {
-       // $this->galleryService = $this->getServiceLocator()->get('GalleryService');
         $albums = $this->galleryService->getAllAlbums();
         $viewModel = new ViewModel(array( 'albums' => $albums ) );
         return $viewModel;
@@ -30,8 +29,7 @@ class GalleryController extends AbstractActionController
             'album' => $album_data[0][0],
             'images' => $album_data[1]
         ));
-        $viewModel->setTemplate('Album/gallery/small.phtml');//was soll die zeile den?na das template laden... ist von dir
-        //weil er standart mässig auch des file nimt 
+        $viewModel->setTemplate('Album/gallery/small.phtml');
         return $viewModel;
     }
 }

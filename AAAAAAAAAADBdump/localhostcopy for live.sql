@@ -3,12 +3,12 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 19. Jan 2017 um 16:04
+-- Erstellungszeit: 19. Jan 2017 um 10:27
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+SET time_zone = "+01:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -19,8 +19,8 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `frytest`
 --
-CREATE DATABASE IF NOT EXISTS `frytest` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
-USE `frytest`;
+CREATE DATABASE IF NOT EXISTS `DB2836034` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `DB2836034`;
 
 -- --------------------------------------------------------
 
@@ -50,6 +50,30 @@ CREATE TABLE IF NOT EXISTS `abonnementtypes` (
   `monthCost` decimal(10,0) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `album`
+--
+
+CREATE TABLE IF NOT EXISTS `album` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `event` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `timestamp` bigint(20) DEFAULT NULL,
+  `duration` int(11) NOT NULL DEFAULT '3',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Daten für Tabelle `album`
+--
+
+INSERT INTO `album` (`id`, `event`, `timestamp`, `duration`) VALUES
+(1, 'Testevent_1', 70457457, 5),
+(2, 'Testevent_2', 2016, 3),
+(3, 'Testevent_3', 456770, 3),
+(4, 'Testevent_4', 40564, 3);
 
 -- --------------------------------------------------------
 
@@ -97,7 +121,8 @@ CREATE TABLE IF NOT EXISTS `albums` (
 INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visibility`) VALUES
 (1, '2016', 'eventtext', 1480546800, '', 1),
 (2, 'folder 2', 'event 2', 557577678, 'test.jpg', 1),
-(3, 'filder 3', 'event 3', 596934000, 'gibts.ned', 0);
+(3, 'filder 3', 'event 3', 596934000, 'gibts.ned', 0),
+(4, 'func test_folder', 'assaas', 0, '', 0);
 
 -- --------------------------------------------------------
 
@@ -186,31 +211,32 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=21 ;
 
 --
 -- Daten für Tabelle `nav`
 --
 
 INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `permission_id`, `lft`, `rgt`) VALUES
-(1, 0, 'Users and Rights', '/user', 67, 26, 27),
-(2, 0, 'Resources', '/resource', 62, 30, 31),
-(3, 0, 'Permissions', '/permission', 58, 32, 33),
-(4, 0, 'Users', '/user', 67, 16, 17),
-(5, 0, 'Gallery Edit', '/Album', 66, 24, 25),
-(7, 0, 'Home', '/', 119, 1, 2),
-(8, 0, 'Navigation', '/nav/sort', 73, 34, 35),
-(9, 0, 'Administration', '/#', 69, 15, 20),
-(10, 0, 'Roles', '/role', 54, 28, 29),
-(11, 0, 'Content', '/cms', 69, 22, 23),
-(12, 0, 'Für Veranstalter', '/Veranstalter', 117, 9, 14),
-(13, 0, 'AGBs', '/AGB', 1, 12, 13),
+(1, 0, 'Users and Rights', '/user', 67, 11, 14),
+(2, 0, 'Resources', '/resource', 62, 26, 27),
+(3, 0, 'Permissions', '/permission', 58, 24, 25),
+(4, 0, 'Users', '/user', 67, 12, 13),
+(5, 0, 'Gallery Edit', '/album', 88, 10, 15),
+(7, 0, 'Home', '/', 1, 1, 2),
+(8, 0, 'Navigation', '/nav/sort', 73, 20, 21),
+(9, 0, 'Administration', '/#', 69, 9, 16),
+(10, 0, 'Roles', '/role', 54, 22, 23),
+(11, 0, 'Content', '/cms', 69, 18, 19),
+(12, 0, 'Für Veranstalter', '/Veranstalter', 1, 6, 7),
+(13, 0, 'AGBs', '/AGB', 1, 7, 8),
 (14, 0, 'Gallery', '/gallery', 81, 3, 4),
-(15, 0, 'Webmaster', '/#', 69, 21, 36),
-(16, 0, 'Angebote', '/Angebote', 117, 10, 11),
-(17, 0, 'Soziale Medien', '/Soziale-Medien', 1, 7, 8),
-(18, 0, 'Termine', '/termine', 1, 5, 6),
-(19, 0, 'User Manager', '/usermanager', 1, 18, 19);
+(15, 0, 'Webmaster', '/#', 69, 17, 28),
+(16, 0, 'Angebote', '/Angebote', 117, 5, 8),
+(17, 0, 'Soziale Medien', '/Soziale-Medien', 85, 35, 36),
+(18, 0, 'Termine', '/termine', 85, 3, 4),
+(19, 0, 'User Manager', '/usermanager', 86, 13, 14),
+(20, 0, 'Home', 'Home', 1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -252,7 +278,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=123 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=118 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -302,12 +328,7 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (114, 'edit', 1),
 (115, 'add', 1),
 (116, 'delete', 1),
-(117, 'onlyGuests', 1),
-(118, 'delete', 17),
-(119, 'guest', 24),
-(120, 'level1', 24),
-(121, 'level2', 24),
-(122, 'admin', 24);
+(117, 'onlyGuests', 1);
 
 -- --------------------------------------------------------
 
@@ -336,8 +357,7 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 (19, 'Nav\\Controller\\Nav'),
 (20, 'Cms\\Controller\\Content'),
 (22, 'Album\\Controller\\Gallery'),
-(23, 'Usermanager\\Controller\\Usermanager'),
-(24, 'AAAAAAA');
+(23, 'Usermanager\\Controller\\Usermanager');
 
 -- --------------------------------------------------------
 
@@ -374,7 +394,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=286 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=278 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -490,14 +510,7 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (274, 3, 94),
 (275, 3, 89),
 (276, 1, 117),
-(278, 1, 1),
-(279, 4, 118),
-(280, 4, 117),
-(281, 4, 120),
-(282, 4, 121),
-(283, 4, 122),
-(284, 4, 119),
-(285, 1, 119);
+(277, 4, 117);
 
 -- --------------------------------------------------------
 
@@ -511,6 +524,28 @@ CREATE TABLE IF NOT EXISTS `titel` (
   `text` text COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `user_role`
+--
+
+CREATE TABLE IF NOT EXISTS `user_role` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
+  `role_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Daten für Tabelle `user_role`
+--
+
+INSERT INTO `user_role` (`id`, `user_id`, `role_id`) VALUES
+(1, 1, 4),
+(2, 2, 4),
+(3, 3, 3);
 
 -- --------------------------------------------------------
 
@@ -540,7 +575,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `city` text NOT NULL,
   `birthday` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `users`
@@ -548,29 +583,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`, `family_id`, `order`, `vita`, `realfirstname`, `realname`, `showname`, `showsurename`, `gender`, `membernumber`, `street`, `zip`, `city`, `birthday`) VALUES
 (1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 'Y', 152151515113, 20161008200020, 0, 0, 'jhfjgfgfghgh  fgfhgnhf h ghfjgf', 'Christoph', 'Sonntag', 'Christoph', 'von Leym zu Munichen', 'm', 2, 'hkjhk', 80689, 'München', 0),
-(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', 67665564, 20161008200401, 0, 0, 'stzsghxghgfn  fxgxg  gxxf', 'gnn', '0gnxgn', '0nhghnh', '0ncnncn', 'm', 544, 'gn', 56866, 'gfxngx', 303453431);
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `user_role`
---
-
-CREATE TABLE IF NOT EXISTS `user_role` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(10) unsigned NOT NULL,
-  `role_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
-
---
--- Daten für Tabelle `user_role`
---
-
-INSERT INTO `user_role` (`id`, `user_id`, `role_id`) VALUES
-(1, 1, 4),
-(2, 2, 4),
-(3, 3, 3);
+(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', 67665564, 20161008200401, 0, 0, 'stzsghxghgfn  fxgxg  gxxf', 'gnn', '0gnxgn', '0nhghnh', '0ncnncn', 'm', 544, 'gn', 56866, 'gfxngx', 303453431),
+(3, 'example.3@example.com', 'example', 'd7d833534a39afbac08ec536bed7ae9eeac45638', 'Y', 0, 20160927025802, 0, 0, '0', '0', '0', '0', '0', '', 0, '', 0, '', 0);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
