@@ -3,17 +3,14 @@ $GLOBALS['nav']=$this;
 print($this->sers);
 function iter($page, $level) {
     if ($page->isVisible() &&
-        $GLOBALS['nav']->navigation()->accept($page) 
-    //    $page->isActive()
+        $GLOBALS['nav']->navigation()->accept($page)
          ) {
 
 
         echo "<li class='level_$level'>";
-        // hier müsste n if zur Sichtbarkeit hin
         echo '<a href="' . $page->getUri() . '">' . $page->getLabel() . '</a>';
         if ($page->hasPages()) {
             $nextLevel = $level + 1;
-            // hier müsste n if zur Sichtbarkeit hin
             echo '<ul class="ul_level_' . $nextLevel . ' hidden">';
             foreach ($page->getPages() as $child) {
                 iter($child, $nextLevel);
