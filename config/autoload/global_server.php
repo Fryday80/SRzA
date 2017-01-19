@@ -13,7 +13,7 @@
 
 //cleanfix
 $db = 'local test';
-//$db = 'server';
+$db = 'server';
 if ($db == 'server'){
     return array(
         'db' => array(
