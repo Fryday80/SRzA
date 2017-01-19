@@ -12,13 +12,14 @@
  */
 
 //cleanfix
-$db = 'local';
 //$db = 'server';
-if ($db == 'local'){
+$db = 'local test';
+if ($db == 'server'){
     return array(
         'db' => array(
             'driver'         => 'Pdo',
-            'dsn'            => 'mysql:dbname=frytest;host=localhost:3307',
+            //'dsn'            => 'mysql:dbname=frytest;host=85.10.205.173:3306', old test db
+            'dsn'            => 'mysql:dbname=DB2836034;host=rdbms.strato.de',
             'driver_options' => array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
             ),
@@ -34,7 +35,7 @@ if ($db == 'local'){
     return array(
         'db' => array(
             'driver'         => 'Pdo',
-            'dsn'            => 'mysql:dbname=frytest;host=85.10.205.173:3306',  //at https://db4free.net/
+            'dsn'            => 'mysql:dbname=frytest;host=localhost:3307',
             'driver_options' => array(
                 PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
             ),
