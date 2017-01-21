@@ -1,7 +1,7 @@
 <?php
     $title = 'Resources';
     $this->headTitle($title);
-    
+
     echo $this->dataTable()->render(new \Application\Utility\DataTable (array(
         'data' => $resources,
         'columns' =>    array(
@@ -20,7 +20,7 @@
                 }
             )
         ),
-        'jsConfig' => array(
+        'jsConfig' => array(                                                 //@todo salt das wird nicht eingebaut...
             'buttons' => array(
                 'pdf',
                 'print',

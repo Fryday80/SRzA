@@ -17,6 +17,7 @@ class DataTable
 
     function __construct($config = null) //salt fry hier gibts n problem
     {
+
         $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
@@ -115,14 +116,17 @@ class DataTable
             }
         }
 
-        $config = $this->validateDOMArray($config); //fry <<simplicty>> erst schreiben, dann validieren?? denn es "validiert" hier gerade nicht wirklich
-        if ( key_exists( 'jsConfig', $config ) ){
-            $this->jsConfig = array_replace_recursive ( $this->jsConfig, $config['jsConfig'] );
 
-            foreach ($this->jsConfig['buttons'] as $key => $value) {
-                //self made buttons:
-                if ( is_array( $value ) ){
-                    $this->insertLinkButton($value['url'], $value['text'], $key);
+        if ( key_exists( 'jsConfig', $config ) ){
+            $isJSConfig = $this->validateDOMArray($config['jsConfig']); //fry <<simplicty>> erst schreiben, dann validieren?? denn es "validiert" hier gerade nicht wirklich
+            if ($isJSConfig !== false) {
+                $this->jsConfig = array_replace_recursive($this->jsConfig, $isJSConfig);
+
+                foreach ($this->jsConfig['buttons'] as $key => $value) {
+                    //self made buttons:
+                    if (is_array($value)) {
+                        $this->insertLinkButton($value['url'], $value['text'], $key);
+                    }
                 }
             }
         }
@@ -174,37 +178,28 @@ class DataTable
      * @param array $arrayGivenToCheck
      * @return array refactored array or sets $this->jsConfig if no argument was given
      */
-    private function validateDOMArray($arrayGivenToCheck = false)
-    { //fry <<simplicty>> hier würden die hälfte der ifs entfallen
-        $finalCheck = false;
-        if (!$arrayGivenToCheck){
-            $arrayGivenToCheck = array('jsConfig' => $this->jsConfig);
-            $finalCheck = true;
-        } elseif (!key_exists('jsConfig', $arrayGivenToCheck)) return $arrayGivenToCheck;
-
-        $arrayToCheck = $arrayGivenToCheck['jsConfig'];
-
-        //fix misspelling and forgotten dom setting
-        if (key_exists('buttons', $arrayToCheck)) {
+    private function validateDOMArray($arrayToCheck = Null)
+    {
+        if ($arrayToCheck !== Null && key_exists('buttons', $arrayToCheck) ) {
+            //fix forgotten dom setting
             if (!key_exists('dom', $arrayToCheck)) {
                 $arrayToCheck['dom']['B'] = true;
             } else {
-                //checks and replaces in case that a 'b' is given in stead of 'B'
+                //checks & fixes misspelling -> replaces in case that a 'b' is given in stead of 'B'
                 if (key_exists('b', $arrayToCheck['dom'])) {
                     $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
                     unset ($arrayToCheck['dom']['b']);
                 }
             }
-        }
-        if (!$finalCheck) return $arrayToCheck;
-        $this->jsConfig = $arrayToCheck;
+            return $arrayToCheck;
+        } else return false;
     }
 
     /**
      * prepares the array of jsConfig for json encode
      */
     private function domPrepare(){
-        $this->validateDOMArray();
+        $this->validateDOMArray(); //@todo salt fry why ???
         //rewriting in needed string
         $domPrepare = '';
         $sorting_array = array (
