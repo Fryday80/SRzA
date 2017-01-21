@@ -25,41 +25,12 @@ class DataTable
         }
     }
 
+    /**************PUBLIC Access****************/
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
         array_push($this->columns, $columnConf);
     }
-    public function setData($data) {
-        //@todo validate $data
-        $this->data = $data;
-    }
-    public function setJSConf ($index, $value){
-        $this->jsConfig[$index] = $value;
-    }
-    /**
-     * set all js setting at once
-     * @param array $settings
-     */
-    public function setWholeJSConf ($settings){
-        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
-    }
 
-    private function setJSDefault(){
-        $this->jsConfig = array (
-            'lengthMenu' => array(
-                array(25, 10, 50, -1),      //values
-                array(25, 10, 50, "All")),  //shown values
-            'select' => "{ style: 'multi' }",
-            'dom' => array(
-                'l' => true,
-                'f' => true,
-                'r' => true,
-                't' => true,
-                'i' => true,
-                'p' => true)
-        );
-        //https://datatables.net/reference/index for preferences/documentation
-    }
     /**
      * generates the string to be inserted in the js script <br>
      * uses json_encode
@@ -76,6 +47,26 @@ class DataTable
         $string = preg_replace($regex, $func, $string);
         return $string;
     }
+
+        /**************UNUSED PUBLICS SO FAR ***************/
+
+    public function setData($data) {
+        //@todo validate $data
+        $this->data = $data;
+    }
+
+    public function setJSConf ($index, $value){
+        $this->jsConfig[$index] = $value;
+    }
+
+    /**
+     * set all js setting at once
+     * @param array $settings
+     */
+    public function setWholeJSConf ($settings){
+        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
+    }
+
     /**
      * creates the settings for the buttons
      * <br> possible keyword 'all' <br>
@@ -94,6 +85,78 @@ class DataTable
             $this->validateDataType($setting, 'setButtons');
         }
     }
+
+    /**
+     * inserts self made buttons to js DataTableHelper
+     * @param string $url
+     * @param string $text
+     */
+    public function insertLinkButton($url, $text, $key = false){
+        // <external use> checks if 'buttons' is already set in any way .. if not initializes 'buttons'
+        if (!is_array($this->jsConfig['buttons']))
+        {
+            $this->jsConfig['buttons'] = array();
+        }
+        // <internal use> from prepareConfig() a key is given
+        if ($key) {
+            $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
+        }
+        // <external use> pushes new button in the buttons array
+        else {
+            array_push($this->jsConfig['buttons'], array(
+                'action'    => '@buttonFunc:' . $url . '@',
+                'text'      => $text
+            ));
+        }
+        $this->validateDOMArray();
+    }
+
+    public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
+        if ( isset ($array['text']) ){
+            unset ( $array['text'] );
+            echo'DataTable -> columnOff: key "text" not allowed as selector';
+        }
+        foreach ($this->columns as $number => $info){
+            foreach ( $array as $key => $selected ) {
+                if ( $this->columns[$number][$key] == $selected ){
+                    unset ( $this->columns[$number] );
+                }
+            }
+        }
+    }
+
+    public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
+        if ( !isset ($array['name']) ){
+            trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
+        }
+        foreach ($this->columns as $number => $info){
+            foreach ( $array as $key => $selected ) {
+                if ( $this->columns[$number][$key] == $selected ){
+                    unset ( $this->columns[$number] );
+                }
+            }
+        }
+    }
+
+
+    /*****************PRIVATE methods******************/
+    private function setJSDefault(){
+        $this->jsConfig = array (
+            'lengthMenu' => array(
+                array(25, 10, 50, -1),      //values
+                array(25, 10, 50, "All")),  //shown values
+            'select' => "{ style: 'multi' }",
+            'dom' => array(
+                'l' => true,
+                'f' => true,
+                'r' => true,
+                't' => true,
+                'i' => true,
+                'p' => true)
+        );
+        //https://datatables.net/reference/index for preferences/documentation
+    }
+
     /**
      * @param array $config
      */
@@ -147,6 +210,30 @@ class DataTable
     }
 
     /**
+     * prepares the array of jsConfig for json encode
+     */
+    private function domPrepare(){
+        $this->validateDOMArray(); //@todo salt fry why ???
+        //rewriting in needed string
+        $domPrepare = '';
+        $sorting_array = array (
+            0 => 'B',
+            1 => 'l',
+            2 => 'f',
+            3 => 'r',
+            4 => 't',
+            5 => 'i',
+            6 => 'p'
+        );
+        foreach ($sorting_array as $position => $option){
+            $domPrepare .= (isset( $this->jsConfig['dom'][$option] )) ? $option . ' ' : '';
+        }
+        $this->jsConfig['dom'] = $domPrepare;
+    }
+
+    /***********VALIDATION********************/
+
+    /**
      * validates data types and throws error in case
      * @param $dataToCheck
      * @param $requestingFunction
@@ -159,13 +246,13 @@ class DataTable
                 if (key_exists($validatorKey, $dataToCheck) && !is_array($dataToCheck['data'])) {
                     trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
                 }
-            break;
+                break;
             case 'prepareColumnConfig':
                 $validatorKey = 'name';
-            break;
+                break;
             case 'setButtons':
                 trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
-            break;
+                break;
         }
 
         if (!key_exists($validatorKey, $dataToCheck)) {
@@ -197,75 +284,5 @@ class DataTable
         } else return false;
     }
 
-    /**
-     * prepares the array of jsConfig for json encode
-     */
-    private function domPrepare(){
-        $this->validateDOMArray(); //@todo salt fry why ???
-        //rewriting in needed string
-        $domPrepare = '';
-        $sorting_array = array (
-            0 => 'B',
-            1 => 'l',
-            2 => 'f',
-            3 => 'r',
-            4 => 't',
-            5 => 'i',
-            6 => 'p'
-        );
-        foreach ($sorting_array as $position => $option){
-            $domPrepare .= (isset( $this->jsConfig['dom'][$option] )) ? $option . ' ' : '';
-        }
-        $this->jsConfig['dom'] = $domPrepare;
-    }
 
-    /**
-     * inserts self made buttons to js DataTableHelper
-     * @param string $url
-     * @param string $text
-     */
-    public function insertLinkButton($url, $text, $key = false){
-        // <external use> checks if 'buttons' is already set in any way .. if not initializes 'buttons'
-        if (!is_array($this->jsConfig['buttons']))
-        {
-            $this->jsConfig['buttons'] = array();
-        }
-        // <internal use> from prepareConfig() a key is given
-        if ($key) {
-            $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
-        }
-        // <external use> pushes new button in the buttons array
-        else {
-            array_push($this->jsConfig['buttons'], array(
-                'action'    => '@buttonFunc:' . $url . '@',
-                'text'      => $text
-            ));
-        }
-        $this->validateDOMArray();
-    }
-    public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
-        if ( isset ($array['text']) ){
-            unset ( $array['text'] );
-            echo'DataTable -> columnOff: key "text" not allowed as selector';
-        }
-        foreach ($this->columns as $number => $info){
-            foreach ( $array as $key => $selected ) {
-                if ( $this->columns[$number][$key] == $selected ){
-                    unset ( $this->columns[$number] );
-                }
-        }
-        }
-    }
-    public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
-        if ( !isset ($array['name']) ){
-            trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
-        }
-        foreach ($this->columns as $number => $info){
-            foreach ( $array as $key => $selected ) {
-                if ( $this->columns[$number][$key] == $selected ){
-                    unset ( $this->columns[$number] );
-                }
-        }
-        }
-    }
 }
