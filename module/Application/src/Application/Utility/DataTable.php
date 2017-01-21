@@ -15,8 +15,9 @@ class DataTable
     public $columns;
     public $jsConfig;
 
-    function __construct($config = null) //salt fry hier gibts n problem
+    function __construct($config = null)
     {
+
         $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
@@ -24,40 +25,12 @@ class DataTable
         }
     }
 
+    /**************PUBLIC Access****************/
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
         array_push($this->columns, $columnConf);
     }
-    public function setData($data) {
-        //@todo validate $data
-        $this->data = $data;
-    }
-    public function setJSConf ($index, $value){
-        $this->jsConfig[$index] = $value;
-    }
-    /**
-     * set all js setting at once
-     * @param array $settings
-     */
-    public function setWholeJSConf ($settings){
-        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
-    }
-    private function setJSDefault(){
-        $this->jsConfig = array (
-            'lengthMenu' => array(
-                array(25, 10, 50, -1),      //values
-                array(25, 10, 50, "All")),  //shown values
-            'select' => "{ style: 'multi' }",
-            'dom' => array(
-                'l' => true,
-                'f' => true,
-                'r' => true,
-                't' => true,
-                'i' => true,
-                'p' => true)
-        );
-        //https://datatables.net/reference/index for preferences/documentation
-    }
+
     /**
      * generates the string to be inserted in the js script <br>
      * uses json_encode
@@ -74,6 +47,26 @@ class DataTable
         $string = preg_replace($regex, $func, $string);
         return $string;
     }
+
+        /**************UNUSED PUBLICS SO FAR ***************/
+
+    public function setData($data) {
+        //@todo validate $data
+        $this->data = $data;
+    }
+
+    public function setJSConf ($index, $value){
+        $this->jsConfig[$index] = $value;
+    }
+
+    /**
+     * set all js setting at once
+     * @param array $settings
+     */
+    public function setWholeJSConf ($settings){
+        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
+    }
+
     /**
      * creates the settings for the buttons
      * <br> possible keyword 'all' <br>
@@ -91,135 +84,6 @@ class DataTable
         } else {
             $this->validateDataType($setting, 'setButtons');
         }
-    }
-    /**
-     * @param array $config
-     */
-    private function prepareConfig($config)
-    {
-        $this->validateDataType($config, 'prepareConfig');
-
-        $this->setData($config['data']);
-        if (key_exists('columns', $config)) {
-            foreach ($config['columns'] as $key => $value) {
-                $this->add($value);
-            }
-        } else {
-            foreach ($config['data'] as $row) {
-                foreach ($row as $key => $value) {
-                    $this->add(array(
-                        'name' => $key
-                    ));
-                }
-                break;
-            }
-        }
-
-        $config = $this->validateDOMArray($config); //fry <<simplicty>> erst schreiben, dann validieren?? denn es "validiert" hier gerade nicht wirklich
-        if ( key_exists( 'jsConfig', $config ) ){
-            $this->jsConfig = array_replace_recursive ( $this->jsConfig, $config['jsConfig'] );
-
-            foreach ($this->jsConfig['buttons'] as $key => $value) {
-                //self made buttons:
-                if ( is_array( $value ) ){
-                    $this->insertLinkButton($value['url'], $value['text'], $key);
-                }
-            }
-        }
-    }
-
-    private function prepareColumnConfig($config){
-        $this->validateDataType($config, 'prepareColumnConfig');
-
-        $defaultConfColl = array(
-            'type' => 'text',
-        );
-        $columnConf = array_replace_recursive($defaultConfColl, $config);
-        if (! key_exists('label', $columnConf)) {
-            $columnConf['label'] = $columnConf['name'];
-        }
-        return $columnConf;
-    }
-
-    /**
-     * validates data types and throws error in case
-     * @param $dataToCheck
-     * @param $requestingFunction
-     */
-    private function validateDataType($dataToCheck, $requestingFunction)
-    {
-        switch ($requestingFunction) {
-            case 'prepareConfig':
-                $validatorKey = 'data';
-                if (key_exists($validatorKey, $dataToCheck) && !is_array($dataToCheck['data'])) {
-                    trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
-                }
-            break;
-            case 'prepareColumnConfig':
-                $validatorKey = 'name';
-            break;
-            case 'setButtons':
-                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
-            break;
-        }
-
-        if (!key_exists($validatorKey, $dataToCheck)) {
-            trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
-        }
-    }
-
-    /**
-     * validates given dom array of jsConfig or dom array in $this->jsConfig if no argument given
-     * <br> no argument thought for check up in ->getSetupString()
-     * @param array $arrayGivenToCheck
-     * @return array refactored array or sets $this->jsConfig if no argument was given
-     */
-    private function validateDOMArray($arrayGivenToCheck = false)
-    { //fry <<simplicty>> hier würden die hälfte der ifs entfallen
-        $finalCheck = false;
-        if (!$arrayGivenToCheck){
-            $arrayGivenToCheck = array('jsConfig' => $this->jsConfig);
-            $finalCheck = true;
-        } elseif (!key_exists('jsConfig', $arrayGivenToCheck)) return $arrayGivenToCheck;
-
-        $arrayToCheck = $arrayGivenToCheck['jsConfig'];
-
-        //fix misspelling and forgotten dom setting
-        if (key_exists('buttons', $arrayToCheck)) {
-            if (!key_exists('dom', $arrayToCheck)) {
-                $arrayToCheck['dom']['B'] = true;
-            } else {
-                //checks and replaces in case that a 'b' is given in stead of 'B'
-                if (key_exists('b', $arrayToCheck['dom'])) {
-                    $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
-                    unset ($arrayToCheck['dom']['b']);
-                }
-            }
-        }
-        if (!$finalCheck) return $arrayToCheck;
-        $this->jsConfig = $arrayToCheck;
-    }
-
-    /**
-     * prepares the array of jsConfig for json encode
-     */
-    private function domPrepare(){
-        $this->validateDOMArray();
-        //rewriting in needed string
-        $domPrepare = '';
-        $sorting_array = array (
-            0 => 'B',
-            1 => 'l',
-            2 => 'f',
-            3 => 'r',
-            4 => 't',
-            5 => 'i',
-            6 => 'p'
-        );
-        foreach ($sorting_array as $position => $option){
-            $domPrepare .= (isset( $this->jsConfig['dom'][$option] )) ? $option . ' ' : '';
-        }
-        $this->jsConfig['dom'] = $domPrepare;
     }
 
     /**
@@ -244,7 +108,9 @@ class DataTable
                 'text'      => $text
             ));
         }
+        $this->validateDOMArray();
     }
+
     public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
         if ( isset ($array['text']) ){
             unset ( $array['text'] );
@@ -255,9 +121,10 @@ class DataTable
                 if ( $this->columns[$number][$key] == $selected ){
                     unset ( $this->columns[$number] );
                 }
-        }
+            }
         }
     }
+
     public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
         if ( !isset ($array['name']) ){
             trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
@@ -267,7 +134,155 @@ class DataTable
                 if ( $this->columns[$number][$key] == $selected ){
                     unset ( $this->columns[$number] );
                 }
-        }
+            }
         }
     }
+
+
+    /*****************PRIVATE methods******************/
+    private function setJSDefault(){
+        $this->jsConfig = array (
+            'lengthMenu' => array(
+                array(25, 10, 50, -1),      //values
+                array(25, 10, 50, "All")),  //shown values
+            'select' => "{ style: 'multi' }",
+            'dom' => array(
+                'l' => true,
+                'f' => true,
+                'r' => true,
+                't' => true,
+                'i' => true,
+                'p' => true)
+        );
+        //https://datatables.net/reference/index for preferences/documentation
+    }
+
+    /**
+     * @param array $config
+     */
+    private function prepareConfig($config)
+    {
+        $this->validateDataType($config, 'prepareConfig');
+
+        $this->setData($config['data']);
+        if (key_exists('columns', $config)) {
+            foreach ($config['columns'] as $key => $value) {
+                $this->add($value);
+            }
+        } else {
+            foreach ($config['data'] as $row) {
+                foreach ($row as $key => $value) {
+                    $this->add(array(
+                        'name' => $key
+                    ));
+                }
+                break;
+            }
+        }
+
+
+        if ( key_exists( 'jsConfig', $config ) ){
+            $isJSConfig = $this->validateDOMArray($config['jsConfig']);
+            if ($isJSConfig !== false) {
+                $this->jsConfig = array_replace_recursive($this->jsConfig, $isJSConfig);
+
+                foreach ($this->jsConfig['buttons'] as $key => $value) {
+                    //self made buttons:
+                    if (is_array($value)) {
+                        $this->insertLinkButton($value['url'], $value['text'], $key);
+                    }
+                }
+            }
+        }
+    }
+
+    private function prepareColumnConfig($config){
+        $this->validateDataType($config, 'prepareColumnConfig');
+
+        $defaultConfColl = array(
+            'type' => 'text',
+        );
+        $columnConf = array_replace_recursive($defaultConfColl, $config);
+        if (! key_exists('label', $columnConf)) {
+            $columnConf['label'] = $columnConf['name'];
+        }
+        return $columnConf;
+    }
+
+    /**
+     * prepares the array of jsConfig for json encode
+     */
+    private function domPrepare(){
+        $this->validateDOMArray(); //@todo salt fry why ???
+        //rewriting in needed string
+        $domPrepare = '';
+        $sorting_array = array (
+            0 => 'B',
+            1 => 'l',
+            2 => 'f',
+            3 => 'r',
+            4 => 't',
+            5 => 'i',
+            6 => 'p'
+        );
+        foreach ($sorting_array as $position => $option){
+            $domPrepare .= (isset( $this->jsConfig['dom'][$option] )) ? $option . ' ' : '';
+        }
+        $this->jsConfig['dom'] = $domPrepare;
+    }
+
+    /***********VALIDATION********************/
+
+    /**
+     * validates data types and throws error in case
+     * @param $dataToCheck
+     * @param $requestingFunction
+     */
+    private function validateDataType($dataToCheck, $requestingFunction)
+    {
+        switch ($requestingFunction) {
+            case 'prepareConfig':
+                $validatorKey = 'data';
+                if (key_exists($validatorKey, $dataToCheck) && !is_array($dataToCheck['data'])) {
+                    trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
+                }
+                break;
+            case 'prepareColumnConfig':
+                $validatorKey = 'name';
+                break;
+            case 'setButtons':
+                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
+                break;
+        }
+
+        if (!key_exists($validatorKey, $dataToCheck)) {
+            trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
+        }
+    }
+
+    /**
+     * validates given dom array of jsConfig or dom array in $this->jsConfig if no argument given
+     * <br> no argument thought for check up in ->getSetupString()
+     * @param array $arrayGivenToCheck
+     * @return array refactored array or sets $this->jsConfig if no argument was given
+     */
+    private function validateDOMArray($atc = Null)
+    {
+        $arrayToCheck = ($atc == Null) ? $this->jsConfig : $atc;
+        if (key_exists('buttons', $arrayToCheck) ) {
+            //fix forgotten dom setting
+            if (!key_exists('dom', $arrayToCheck)) {
+                $arrayToCheck['dom']['B'] = true;
+            } else {
+                //checks & fixes misspelling -> replaces in case that a 'b' is given in stead of 'B'
+                if (key_exists('b', $arrayToCheck['dom'])) {
+                    $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
+                    unset ($arrayToCheck['dom']['b']);
+                }
+            }
+            return $arrayToCheck == $this->jsConfig ? true : $arrayToCheck;
+        } else return false;
+    }
+
+
 }

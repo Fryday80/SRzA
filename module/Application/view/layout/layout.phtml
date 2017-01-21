@@ -16,6 +16,7 @@
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
+            ->prependFile($this->basePath('js/content_fixes.js'))
             ->prependFile($this->basePath('js/last_fixes.js'))
             ->prependFile($this->basePath('js/popup.js'))
             ->prependFile($this->basePath('js/menu.js'))
@@ -99,12 +100,17 @@
         <div style="clear: both"></div>
         <div id="foot">
             <div id="foottext">
-                <span>copyright © 2016 Schwarze Ritter zu Augsburg</span>
+                <span>copyright © 2016 Schwarze Ritter zu Augsburg</span> <span class="L_spacer"> | </span>
+                <span><a href="#">Kontakt </a></span> <span class="L_spacer"> | </span>
+                <span><a href="#"> Impressum</a></span> <span class="L_spacer"> | </span>
+                <span><a class="disclaim" href="#"> Haftungsausschluss</a></span> <span class="L_spacer"> | </span>
+                <span><a class="disclaim" href="#"> Schwert und Mieder e.V.</a></span>
             </div>
             <div id="footimage"></div>
             <div class="spacer_l" style="margin: auto; width: 80%"></div>
         </div>
         <script>last_fixes.organize ()</script>
+        <script>content_fixes.veranstalter() ()</script>
         <?php echo $this->inlineScript() ?>
     </div>
 
