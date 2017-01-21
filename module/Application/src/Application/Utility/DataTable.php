@@ -15,7 +15,7 @@ class DataTable
     public $columns;
     public $jsConfig;
 
-    function __construct($config = null) //salt fry hier gibts n problem
+    function __construct($config = null)
     {
 
         $this->columns = array();
@@ -43,6 +43,7 @@ class DataTable
     public function setWholeJSConf ($settings){
         $this->jsConfig = array_replace_recursive($this->configuration, $settings);
     }
+
     private function setJSDefault(){
         $this->jsConfig = array (
             'lengthMenu' => array(
@@ -118,7 +119,7 @@ class DataTable
 
 
         if ( key_exists( 'jsConfig', $config ) ){
-            $isJSConfig = $this->validateDOMArray($config['jsConfig']); //fry <<simplicty>> erst schreiben, dann validieren?? denn es "validiert" hier gerade nicht wirklich
+            $isJSConfig = $this->validateDOMArray($config['jsConfig']);
             if ($isJSConfig !== false) {
                 $this->jsConfig = array_replace_recursive($this->jsConfig, $isJSConfig);
 
@@ -178,9 +179,10 @@ class DataTable
      * @param array $arrayGivenToCheck
      * @return array refactored array or sets $this->jsConfig if no argument was given
      */
-    private function validateDOMArray($arrayToCheck = Null)
+    private function validateDOMArray($atc = Null)
     {
-        if ($arrayToCheck !== Null && key_exists('buttons', $arrayToCheck) ) {
+        $arrayToCheck = ($atc == Null) ? $this->jsConfig : $atc;
+        if (key_exists('buttons', $arrayToCheck) ) {
             //fix forgotten dom setting
             if (!key_exists('dom', $arrayToCheck)) {
                 $arrayToCheck['dom']['B'] = true;
@@ -191,7 +193,7 @@ class DataTable
                     unset ($arrayToCheck['dom']['b']);
                 }
             }
-            return $arrayToCheck;
+            return $arrayToCheck == $this->jsConfig ? true : $arrayToCheck;
         } else return false;
     }
 
@@ -239,6 +241,7 @@ class DataTable
                 'text'      => $text
             ));
         }
+        $this->validateDOMArray();
     }
     public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
         if ( isset ($array['text']) ){
