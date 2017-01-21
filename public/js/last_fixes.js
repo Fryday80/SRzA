@@ -15,6 +15,6 @@ window.last_fixes = {
         });
 
         $(".bodycontainer a").not("#DataTables_Table_0_paginate a").prepend ('<img class="links" src="/img/uikit/link.png">');
-        $("#headlinks a").prepend ('<img class="links" src="/img/uikit/link.png">');
+        //$("#headlinks a").prepend ('<img class="links" src="/img/uikit/link.png">');
     }
 }
