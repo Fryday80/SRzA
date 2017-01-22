@@ -24,7 +24,7 @@ class UserForm extends Form
                 'label' => 'eMail',
             ),
         ));
-        
+
         $this->add(array(
             'name' => 'name',
             'type' => 'Text',
@@ -47,6 +47,13 @@ class UserForm extends Form
             'options' => array(
                 'label' => 'Password confirm',
             )
+        ));
+        $this->add(array(
+            'name' => 'status',
+            'type' => 'checkbox',
+            'options' => array(
+                'label' => 'Aktiv',
+            ),
         ));
         $this->add(array(
             'name' => 'submit',

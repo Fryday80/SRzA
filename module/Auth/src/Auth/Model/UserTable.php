@@ -23,10 +23,6 @@ class UserTable extends AbstractTableGateway
             $sql = $this->getSql();
             $select = $sql->select();
             $select->where("email = '$email'");
-//             if (count($columns) > 0) {
-//                 $select->columns($columns);
-//             }
-
             $select->join(array('userRole' => 'user_role'), 'userRole.user_id = users.id', array('role_id'), 'LEFT');
             $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
 
@@ -58,7 +54,7 @@ class UserTable extends AbstractTableGateway
         $rowset = $this->getUsersWhere(array('users.id' => $id));
         $row = $rowset->current();
         if (!$row) {
-            throw new \Exception("Could not find user with id: $id");
+            return false;
         }
         return $row;
     }
@@ -67,23 +63,14 @@ class UserTable extends AbstractTableGateway
         $rowset = $this->getUsersWhere(array('users.email' => $mail));
         $row = $rowset->current();
         if (!$row) {
-            throw new \Exception("Could not find user with mail: $mail");
+            return false;
         }
         return $row;
     }
     public function saveUser(User $user)
     {
-
-        $data = array(
-            'email' => $user->email,
-            'name' => $user->name,
-            'password'  => $user->password,
-            'sure_name' => $user->sureName,
-            'gender' => $user->gender,
-            'vita' => $user->vita,
-            'family_id' => $user->familyID,
-            'family_order' => $user->familyOrder,
-        );
+        $data = get_object_vars($user);
+        dump($data);
         $id = (int) $user->id;
         if ($id == 0) {
             $this->insert($data);
@@ -113,9 +100,6 @@ class UserTable extends AbstractTableGateway
             if (count($columns) > 0) {
                 $select->columns($columns);
             }
-
-            $select->join(array('userRole' => 'user_role'), 'userRole.user_id = users.id', array('role_id'), 'LEFT');
-            $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
 
             $users = $this->selectWith($select);
             return $users;
