@@ -16,6 +16,15 @@ class IndexController extends AbstractActionController
 {
     public function indexAction()
     {
-        return new ViewModel();
+        $messages = $this->flashMessenger()->getMessagesFromNamespace('MessagePage');
+        if (count($messages) == 0) {
+            return $this->redirect()->toRoute('home');
+        }
+        $message = explode('::', $messages[0]);
+
+        return array(
+            'title' => $message[0],
+            'message' => $message[1],
+        );
     }
 }
