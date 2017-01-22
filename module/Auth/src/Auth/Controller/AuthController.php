@@ -1,11 +1,13 @@
 <?php
 namespace Auth\Controller;
 
+use Auth\Form\EmailForm;
 use Auth\Utility\UserPassword;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
 use Auth\Form\UserForm;
 use Auth\Model\User;
+use Application\Service\TemplateTypes;
 
 class AuthController extends AbstractActionController
 {
@@ -40,14 +42,20 @@ class AuthController extends AbstractActionController
     {
         $form = new LoginForm('Login');
         $request = $this->getRequest();
-        
+
         if ($request->isPost()) {
             $form->setData($request->getPost());
        
             if ($form->isValid()) {
                 $data = $form->getData();
-        
-                //check authentication... @todo move to AuthService
+                //check if user exists
+                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+                $userDetails = $userTable->getUsersForAuth($data['email']);
+                if ($userDetails->status == 'N') {
+                    $this->flashmessenger()->addMessage("Zugang Verweigert::Dieser Account ist nicht Aktiviert", "MessagePage", 1);
+                    return $this->redirect()->toRoute('message');
+                }
+                //check authentication... @todo move to AccessService
                 $userPassword = new UserPassword();
                 $encyptPass = $userPassword->create($data['password']);
         
@@ -65,9 +73,6 @@ class AuthController extends AbstractActionController
                 }
         
                 if ($result->isValid()) {
-
-                    $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-                    $userDetails = $userTable->getUsersForAuth($data['email']);
                     $storage = $this->getSessionStorage();
                     $storage->setUserID($userDetails->id);
                     $storage->setUserName($userDetails->name);
@@ -127,11 +132,50 @@ class AuthController extends AbstractActionController
 
                 $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
                 $userTable->saveUser($user);
+                $msgService = $this->getServiceLocator()->get('MessageService');
+                $msgService->SendMailFromTemplate(TemplateTypes::SUCCESSFUL_REGISTERED, $user);
                 return $this->redirect()->toRoute('user');
             }
         }
         return array(
             'form' => $form
+        );
+    }
+    //password reset action
+    public function resetAction() {
+        $form = new EmailForm();
+        $form->get('submit')->setValue('Reset Password');
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+            if ($form->isValid()) {
+                $email = $form->getData()['email'];
+                $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
+                $user = $userTable->getUserByMail($email);
+                if (!$user) {
+                    $form->get('email')->setMessages(array('Email nicht gefunden.'));
+                } else {
+                    //create temp password
+                    $userPassword = new UserPassword();
+                    $tempPassword = $userPassword->generateRandom(8);
+                    $user->password = $userPassword->create($tempPassword);
+                    //send temp password
+                    $msgService = $this->getServiceLocator()->get('MessageService');
+                    if ($msgService->SendMailFromTemplate(TemplateTypes::RESET_PASSWORD, $user)) {
+                        //if successful send
+                        $userTable->saveUser($user);
+                        //@todo add success page
+                        return $this->redirect()->toRoute('home');
+                    }
+                    $this->flashmessenger()->addMessage("Server Error::Die nachricht konnte nicht gesendet werden. Bitte Sag dem admin bescheid", "MessagePage", 1);
+                    return $this->redirect()->toRoute('message');
+                }
+            }
+        }
+        return array(
+            'form' => $form,
+            'messages' => $this->flashMessenger()->getMessagesFromNamespace("PasswordReset")
         );
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Auth;
 
+use Application\Service\MessageService;
 use Auth\Model\User;
 use Auth\Model\UserTable;
 use Auth\Model\RoleTable;
@@ -30,6 +31,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
     private $whitelist = array(
         'Auth\Controller\Auth-login',
         'Auth\Controller\Auth-logout',
+        'Auth\Controller\Auth-reset',
         'Cms\Controller\Page-index'
     );
 

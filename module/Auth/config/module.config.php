@@ -247,6 +247,17 @@ return array(
                     )
                 )
             ),
+            'passwordReset' => array(
+                'type' => 'Literal',
+                'options' => array(
+                    'route' => '/password/reset',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Auth\Controller',
+                        'controller' => 'Auth',
+                        'action' => 'reset'
+                    )
+                )
+            ),
         )
     )
 );
