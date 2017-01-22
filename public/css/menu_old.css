@@ -1,0 +1,200 @@
+/* -----------------Navbar CSS settings----------------- */
+@media only screen {
+    .navigation {
+        list-style-type: none;
+        margin: 0 0 0 0;
+        display: block;
+    }
+
+    .navigation ul,
+    .navigation li {
+        display: block;
+        padding-top: 5px;
+        vertical-align: middle;
+        list-style-type: none;
+        font-weight: 700;
+        line-height: 30px;
+        width: 100%;
+        border-radius: 5px;
+    }
+
+    .ul_level_1 {
+        top: 40px;
+        min-width: 120px;
+        text-align: center;
+        min-height: 100%;
+        padding-bottom: 5px;
+        background-image: none;
+    }
+
+    .navigation li:hover {
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+
+    .ul_level_2 {
+        top: 40px;
+        min-width: 120px;
+        text-align: center;
+        min-height: 100%;
+        padding-bottom: 5px;
+    }
+}
+
+/* @media special desing */
+/*-----------------------------------------------------------------------------*/
+@media only screen and (min-width: 701px) and (max-width: 1200px ) {
+/*-----------------------------------------------------------------------------*/
+
+    .navframe {
+        width: 99%;
+        min-height: auto !important;
+        margin-bottom: 1%;
+        padding-left: 5px;
+    }
+    .navtitel {
+        font-size: 30px;
+    }
+    .navtitel>div {
+        display: none;
+    }
+    .navigation li {
+        list-style: none;
+        font-size: 15px;
+        line-height: normal;
+        width: inherit;
+        background-repeat: no-repeat;
+        background-image: none;
+        color: black;
+        float:left;
+        height: 30px;
+    }
+    .navigation>li {
+        width: auto;
+        margin-right: 10px;
+        position: relative;
+    }
+    .navigation a {
+        text-align: left;
+        color: black;
+    }
+
+    .navigation li:active,
+    .navigation li:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .navigation>li:active,
+    .navigation>li:hover {
+        background-color: rgb(188, 177, 144);
+    }
+    .navigation ul{
+        position: absolute;
+        text-align: center;
+	    background-color: rgb(188, 177, 144);
+    }
+
+    .ul_level_1 {
+        top: 30px;
+        min-height: 50px;
+        width: 100%;
+        margin-left: 0;
+        padding: 0;
+    }
+    .ul_level_2 {
+        top: 0px;
+        margin-left: 100%;
+        min-width: 120px;
+        min-height: 100%;
+        padding-bottom: 5px;
+    }
+}
+
+/*-----------------------------------------------------------------------------*/
+@media only screen and (max-width: 700px ) {
+/*-----------------------------------------------------------------------------*/
+    /** ------------------------------ the Frame --------------------------**/
+    .navframe{
+        color: white;
+        position: fixed ;
+        width: auto;
+        margin-left: -50px;
+        padding-right: 0;
+        z-index: 100;
+        background-image: none;
+        height: 100%;
+    }
+
+    .navtitel>owntitel,
+    .navtitel>owntitel:hover {
+	   color: white;
+    }
+    .navigation li>a {
+        color: white;
+    }
+
+    .navigation li:active>a,
+    .navigation li:hover>a,
+    .navigation li>a:active,
+    .navigation li>a:hover {
+        color: black;
+    }
+
+
+    /** ------------------------------ the navbutton --------------------------**/
+    .navbutton {
+        display: block!important;
+        width: auto;
+        padding-right: 0;
+        padding-bottom: 5px;
+    }
+    .menu_open,
+    .menu_closed {
+        width: 50px;
+    }
+    .mobileMenuCenter>.navbutton>.menu_closed {
+	   display: none;
+    }
+    .mobileMenuCenter>.navbutton>.menu_open {
+        margin-left: 45%;
+        padding: 5px;
+        display: block;
+    }
+
+    li {
+        display:block;
+    }
+
+    li:active,
+    li:hover {
+        background-image: url(../img/uikit/highlight.u.d.png);
+        background-size: 100% auto;
+        background-repeat: no-repeat;
+        background-position: top;
+    }
+
+}
+/* ---------------------------- Helper for js ------------------------------------------- */
+
+.mobileMenuCenter {
+    position:absolute;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: auto;
+    background-color: black;
+    border-radius: 20px;
+}
+.links {
+    height: 15px;
+}
+
+@keyframes rotate_link {
+    0%      { transform:rotate(  0deg); }
+    100%    { transform:rotate(  360deg); }
+}
+
+a:hover>img {
+    height: 15px;
+    animation-name: rotate_link;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+}

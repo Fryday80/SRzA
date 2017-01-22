@@ -55,13 +55,13 @@
 
 
         <div class="bodycontainer">
-
+<!--------------------- NAVIGATION -------------------------->
             <div class="navframe">
-                <div class="navbutton">
-                    <img class=menu_close src="/img/uikit/menu_button1.png">
-                    <img class="menu_open" src="/img/uikit/menu_button2.png">
+                <div class="navbutton hidden">
+                    <img class="menu_closed" src="/img/uikit/menu_button1.png">
+                    <img class="menu_open hidden" src="/img/uikit/menu_button2.png">
                 </div>
-                <div class="menuItems hidden">
+                <div class="menuItems">
                     <div class="navtitel">
                         <owntitel>Wegweiser</owntitel>
                         <div class="spacer_l"></div>
@@ -69,9 +69,9 @@
                     <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
 
                 </div>
-                <script>menuapp.organizeMenu ()</script>
             </div>
 
+<!--------------------- Content -------------------------->
             <div id="content">
                 <owntitel><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></owntitel><br>
                 <div class="spacer_e"></div>

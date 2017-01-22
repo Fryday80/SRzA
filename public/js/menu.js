@@ -1,122 +1,82 @@
-/**
-*   instant run in base html to attach sublevel Classes that spot out, witch has a sublevel
-*   adapts the view for the smallest view
-*/
-window.menuapp = {
-    organizeMenu:function menu_js() {
-    }
-}
-
+/** help:
+ * div  navframe
+ *     div .navbutton
+ *     /div
+ *     div .menuItems
+ *          div .navtitel
+ *          /div
+ *          ul  .navigation
+ *              li  .level_0
+ *                  ul  .ul_level_1
+ *                      li  .level_1
+ *                          ...
+ *                      /li
+ *                  /ul
+ *              /li
+ *          /ul
+ *     /div
+ */
 
 
 $(document).ready (function menu_handler_js () {
 
-    var menuItems = [];
-    var mode = "L";
+    function addLinkDecorators () {
+        $(".bodycontainer a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
+    }
+
+    function runL () {
+        $(".menuItems").removeClass("hidden");
+        $(".navbutton").not("hidden").addClass("hidden");
+        $(".navtitel").removeClass ("hidden");
+        $(".level_0 ul").removeClass("positionRelative");
+        $(".level_0 li").removeClass("displayBlock");
+    }
+
+    function runS () {
+        $(".menuItems").not("hidden").addClass ("hidden");
+        $(".navbutton").removeClass("hidden");
+        $(".navtitel").not("hidden").addClass ("hidden");
+        $(".level_0 ul").not("positionRelative").addClass("positionRelative");
+        $(".level_0 li").not("displayBlock").addClass("displayBlock");
+    }
+
+    function menuActionsS () {
+        if (mode == 'S') {
+            $(".menu_closed").on("click", menuToggle);
+            if ($(".menuItems").not("hidden")) {
+            }
+            function menuToggle() {
+                console.log ("hier");
+                $(".menuItems").toggleClass("hidden");
+            }
+        } else {}
+    }
 
     /**
      * Sets the mode by Viewsize
      * returns string 'L', 'M' or 'S'
      * given in var mode
      */
+    var mode ='L'
     function setMode () {
-        if(window.matchMedia('(max-width: 1200px)').matches) {
-            mode ="M";
-            $(".menuItems").removeClass ("hidden");
-            $(".navframe").removeClass ("mobileMenuCenter");
-            for(var i = 0; i < menuItems.length; i++) {
-                menuItems[i].close();
-            }
-            if(window.matchMedia('(max-width: 700px)').matches) {
-                mode = "S";
-                $(".menuItems").addClass ("hidden");
-                for(var i = 0; i < menuItems.length; i++) {
-                    menuItems[i].open();
-                }
-            }
+
+        if(window.matchMedia('(max-width: 700px)').matches) {
+            mode = "S";
+            runS();
         } else {
             mode ="L";
-            $(".menuItems").removeClass ("hidden");
-            for(var i = 0; i < menuItems.length; i++) {
-                menuItems[i].open();
-            }
-            $(".navframe").removeClass ("mobileMenuCenter");
-
+            runL();
         }
-        console.log ("view mode: "+mode);
-        console.log ($(window).innerWidth ());
-    }
-
-    function stateMachine($ele) {
-        var state = 'close';
-
-        function update() {
-            if (state == 'close') {
-                $('>ul', $ele).addClass("hidden");
-            } else {
-                $('>ul', $ele).removeClass("hidden");
-                $('.navigation').trigger('myapp.closemenus', $ele);
-            }
-        };
-        function toggle(e) {
-            state = (state == 'close')? 'open': 'close';
-            update();
-        }
-        function open(e) {
-            state = 'open';
-            update();
-        }
-        function close(e) {
-            state = 'close';
-            update();
-        }
-
-        if (mode == 'L') {
-            state = open();
-        }
-
-        $ele.on("mouseenter", function() {
-            if (mode !== 'M') return;
-            open();
-        });
-        $ele.on("mouseleave", function() {
-            if (mode !== 'M') return;
-            close();
-        });
-
-        $ele.on('myapp.closemenus', function($e) {
-            console.log($e === $ele);
-            if ($e === $ele) return;
-            state = 'close';
-            update();
-        });
-        return {
-            open: open,
-            close: close
-        };
-    }
-
-    function S_view_fix () {
-        $(".menuItems").toggleClass("hidden");
-
-        if ($(".menuItems").is(".hidden")) {
-                $(".navframe").removeClass ("mobileMenuCenter");
-            } else {
-                $(".navframe").addClass ("mobileMenuCenter");
-            }
+            console.log (mode);
+            console.log ($(window).innerWidth ());
     }
 
 
-
-    $(".navbutton").on("click", S_view_fix);
-
-    $(".navigation li").each ( function (i, element) {
-        menuItems.push(stateMachine ($(element)));
-    } );
 
     setMode ();
     $(window).resize ( function () {
         setMode ();
     });
-
-});
+    addLinkDecorators();
+    menuActionsS();
+})

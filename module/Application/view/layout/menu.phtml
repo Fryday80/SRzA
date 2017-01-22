@@ -11,7 +11,7 @@ function iter($page, $level) {
         echo '<a href="' . $page->getUri() . '">' . $page->getLabel() . '</a>';
         if ($page->hasPages()) {
             $nextLevel = $level + 1;
-            echo '<ul class="ul_level_' . $nextLevel . ' hidden">';
+            echo '<ul class="ul_level_' . $nextLevel . '">';
             foreach ($page->getPages() as $child) {
                 iter($child, $nextLevel);
             }

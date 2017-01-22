@@ -11,7 +11,7 @@ body {
 }
 
 .body {
-    margin: 60px;
+    margin: 3%;
     background-image: url( /img/body.bg.png);
     background-size: auto 130px;
     border-radius: 35px;
@@ -157,7 +157,6 @@ small {
     width: 100%;
 }
 
-.navframe,
 #content,
 .rightcontainer {
     position: relative;
@@ -165,19 +164,17 @@ small {
 
 /* -----------------colum 1 (navframe)----------------- */
 .navframe {
+    width: 100%;
     position: relative;
     text-align: center;
-    width: 15%;
     padding-top: 20px;
-    float: left;
-    min-height: 100%;
     z-index: 10;
 }
 
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 60%;
+    width: 70%;
     margin-left: 2px;
     padding-left: 5px;
     padding-top: 20px;
@@ -189,7 +186,7 @@ small {
 .rightcontainer {
     position: relative;
     float: right;
-    width: 21%;
+    width: 28%;
     text-align: center;
 /*    min-height: 100%;*/
 }
@@ -234,22 +231,6 @@ newstitel {
     height: 150px;
 }
 
-/* -----------------auxilliary classes for JQuery----------------- */
-.hidden {
-    display: none;
-}
-.mobilenavigation {
-    background-color: black;
-}
-.width_95 {
-    width: 95%;
-}
-.width_90 {
-    width: 90%;
-}
-.width_40 {
-    width: 40%;
-}
 
 /* ----------------- UI special desing -------------------------------- */
 
