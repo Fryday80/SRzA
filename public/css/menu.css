@@ -54,12 +54,11 @@
 .menu_closed {
     width: 50px;
 }
-.mobileMenuCenter>.navbutton>.menu_closed {
-}
-.mobileMenuCenter>.navbutton>.menu_open {
-    margin-left: 45%;
-    padding: 5px;
-}
+
+
+.links {
+     height: 15px;
+ }
 
 /* ---------------------------- Helper for js ------------------------------------------- */
 .positionRelative
