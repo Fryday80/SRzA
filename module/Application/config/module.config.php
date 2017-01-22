@@ -50,9 +50,27 @@ return array(
                     ),
                 ),
             ),
+
+            'message' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/message',
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller'    => 'Index',
+                        'action'        => 'index',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
+        'factories' => array(
+            'MessageService' => function($sm) {
+                $service = new \Application\Service\MessageService();
+                return $service;
+            },
+        ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
