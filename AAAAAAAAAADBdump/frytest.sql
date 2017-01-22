@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 19. Jan 2017 um 16:04
+-- Erstellungszeit: 22. Jan 2017 um 18:13
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -98,6 +98,31 @@ INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visi
 (1, '2016', 'eventtext', 1480546800, '', 1),
 (2, 'folder 2', 'event 2', 557577678, 'test.jpg', 1),
 (3, 'filder 3', 'event 3', 596934000, 'gibts.ned', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `artists`
+--
+
+CREATE TABLE IF NOT EXISTS `artists` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `family_id` int(11) NOT NULL,
+  `family_order` int(11) NOT NULL,
+  `vita` text NOT NULL,
+  `realfirstname` text NOT NULL,
+  `realname` text NOT NULL,
+  `showname` text NOT NULL,
+  `showsurename` text NOT NULL,
+  `gender` enum('m','f') NOT NULL,
+  `membernumber` int(11) NOT NULL,
+  `street` text NOT NULL,
+  `zip` int(11) NOT NULL,
+  `city` text NOT NULL,
+  `birthday` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 -- --------------------------------------------------------
 
@@ -252,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=123 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=124 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -307,7 +332,8 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (119, 'guest', 24),
 (120, 'level1', 24),
 (121, 'level2', 24),
-(122, 'admin', 24);
+(122, 'admin', 24),
+(123, 'register', 13);
 
 -- --------------------------------------------------------
 
@@ -374,7 +400,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=286 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=288 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -497,7 +523,9 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (282, 4, 121),
 (283, 4, 122),
 (284, 4, 119),
-(285, 1, 119);
+(285, 1, 119),
+(286, 4, 123),
+(287, 1, 123);
 
 -- --------------------------------------------------------
 
@@ -523,32 +551,20 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(100) NOT NULL,
   `name` varchar(255) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `status` enum('Y','N') NOT NULL DEFAULT 'Y',
+  `status` tinyint(1) NOT NULL DEFAULT '0',
   `created_on` bigint(20) NOT NULL,
   `modified_on` bigint(20) NOT NULL,
-  `family_id` int(11) NOT NULL,
-  `order` int(11) NOT NULL,
-  `vita` text NOT NULL,
-  `realfirstname` text NOT NULL,
-  `realname` text NOT NULL,
-  `showname` text NOT NULL,
-  `showsurename` text NOT NULL,
-  `gender` enum('m','f') NOT NULL,
-  `membernumber` int(11) NOT NULL,
-  `street` text NOT NULL,
-  `zip` int(11) NOT NULL,
-  `city` text NOT NULL,
-  `birthday` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `users`
 --
 
-INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`, `family_id`, `order`, `vita`, `realfirstname`, `realname`, `showname`, `showsurename`, `gender`, `membernumber`, `street`, `zip`, `city`, `birthday`) VALUES
-(1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 'Y', 152151515113, 20161008200020, 0, 0, 'jhfjgfgfghgh  fgfhgnhf h ghfjgf', 'Christoph', 'Sonntag', 'Christoph', 'von Leym zu Munichen', 'm', 2, 'hkjhk', 80689, 'München', 0),
-(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 'Y', 67665564, 20161008200401, 0, 0, 'stzsghxghgfn  fxgxg  gxxf', 'gnn', '0gnxgn', '0nhghnh', '0ncnncn', 'm', 544, 'gn', 56866, 'gfxngx', 303453431);
+INSERT INTO `users` (`id`, `email`, `name`, `password`, `status`, `created_on`, `modified_on`) VALUES
+(1, 'salt@salt.de', 'salt', '88f716c2b137f811a8ebe9ea10a7867d7b9e7622', 1, 152151515113, 20161008200020),
+(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 1, 67665564, 20161008200401),
+(3, 'boluuuu@gmail.com', 'stefan', 'ed8da3d7f461715ddeb6f9217613904b1d98d4fb', 1, 0, 0);
 
 -- --------------------------------------------------------
 
