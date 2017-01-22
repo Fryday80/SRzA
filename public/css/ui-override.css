@@ -5,6 +5,20 @@
 #ui-datepicker-div>table>thead>tr>th>span {
     color: black;
 }
+/* content fixes */
 .bgcol {
+    background-color: #9c3328;
+}
+
+/* nav sort */
+#success,
+#error
+{
+    float: left;
+    width: 50px;
+    opacity: 0;
+    background-color: #5b9909;
+}
+#error{
     background-color: #9c3328;
 }

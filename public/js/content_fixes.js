@@ -1,6 +1,5 @@
 window.content_fixes = {
     veranstalter: function style () {
-        //$(".offer").addClass("hidden");
         content_fixes.hideAll();
         $(".offerclick1").on("click", function (){
             content_fixes.hideAll();
