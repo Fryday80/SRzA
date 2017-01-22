@@ -10,15 +10,39 @@ $this->headTitle($title);
 
 <input id="save-menu" type="button" value="Save Sorting"></input>
 <input id="add-menu-item" type="button" value="Add Item"></input>
-<br>
+<div id="success">Erfolg</div>
+<div>
+<div id="error">Fehler</div>
 <div id="navTree" class="dd">
+</div>
+    <br>
 	<?php echo $this->render('navTreeEdit.phtml'); ?>
 </div>
 <script type="text/javascript">
-    $(document).ready(function(){
-    	$('.dd').nestable({
 
-        });
+    $(document).ready(function(){
+    	$('.dd').nestable({});
+
+        function animateError() {
+            var origin = $("#error").css("opacity");
+            $("#error").css("opacity", "1");
+            $("#error").animate({
+                "opacity": origin,
+
+            }, 2000, function complete() {
+
+            });
+        }
+        function animateSave() {
+            var origin = $("#success").css("opacity");
+            $("#success").css("opacity", "1");
+            $("#success").animate({
+                "opacity": origin,
+
+            }, 2000, function complete() {
+
+            });
+        }
 
         $('#save-menu').on('click', function() {
         	var data = $('.dd').nestable('serialize');
@@ -33,9 +57,11 @@ $this->headTitle($title);
                 data: data,
                 success: function (e, a) {
 					console.log(e, a);
+                    animateSave();
                 },
                 error: function (e, a) {
     				console.log(e.responseText, a);
+                    animateError();
                 }
             }).done(function( msg ) {
                 console.log(msg);

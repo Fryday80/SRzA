@@ -1,9 +1,40 @@
 /**
-*   instant run in base html to attach sublevel Classes that spot out, witch has a sublevel
+*   instant run in base html to attach sublevel Classes that spot out, wich has a sublevel
 *   adapts the view for the smallest view
 */
 window.menuapp = {
     organizeMenu:function menu_js() {
+
+        /**
+        * finds all menu items, that have sub levels
+        * @param {int} (count) starting number, usually 0
+        * @param {int} (max_level) down to e.g. 3 levels
+        * adds class "topic" to all of them
+        * adds class "top_[levelnumber]"
+        **/
+        function spotTheTopics (count, max_level) {
+
+            for (count ; count < max_level; count++) {
+                var selector = ".level_"+count;
+                var classadd = "topic top_"+count;
+                var spotHelper = $(selector).has ("ul");
+                spotHelper.each(function (index) {
+                    $(spotHelper[index]).addClass(classadd);
+                });
+            }
+        };
+
+        /**
+        * hides menuItems in S-View
+        **/
+        function menuhide_in_S () {
+            if (window.matchMedia('(max-width: 700px)').matches) {
+                $(".menuItems").addClass ("hidden");
+            }
+        }
+
+        spotTheTopics ( 0, 3 );
+        menuhide_in_S ();
     }
 }
 
@@ -43,7 +74,7 @@ $(document).ready (function menu_handler_js () {
             $(".navframe").removeClass ("mobileMenuCenter");
 
         }
-        console.log ("view mode: "+mode);
+        console.log (mode);
         console.log ($(window).innerWidth ());
     }
 

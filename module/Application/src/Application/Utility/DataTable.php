@@ -17,7 +17,6 @@ class DataTable
 
     function __construct($config = null)
     {
-
         $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
