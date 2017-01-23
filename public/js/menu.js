@@ -43,7 +43,7 @@ $(document).ready (function menu_handler_js () {
 
     function menuActionsS () {
 
-        $(".menu_closed").off();
+        $(".menu_closed").off("click", menuToggle);
         if (mode == 'S') {
             $(".menu_closed").on("click", menuToggle);
             if ($(".menuItems").not("hidden")) {

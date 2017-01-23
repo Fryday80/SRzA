@@ -3,8 +3,8 @@
 @import url(media.css);         /* Mediaquerys for Basic Layout         */
 @import url(realCss/jqueryUI/jquery-ui.css);     /* jquery UI Style                      */
 @import url(realCss/gallery/jgallery.css);      /* additional settings for the gallery  */
-@import url(realCss/siteDesign/ui-override.css);   /* ui desing overrides                  */
+@import url(realCss/siteDesign/modding.css);   /* modding like cursor                   */
 @import url(noscript.css);      /* css transformation @ no scipt        */
 @import url(realCss/Zend/Zend.css);          /* styles used in Zend                  */
 @import url(realCss/usermanager/usermanager.css);   /* styles used in Usermanager           */
-@import url(realCss/siteDesign/pimp.css);          /* styles to pimp  like cursor          */
+@import url(realCss/siteDesign/jsHelper.css);          /* js-used classes         */

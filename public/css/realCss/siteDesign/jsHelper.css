@@ -1,0 +1,48 @@
+/* -----------------auxilliary classes for JQuery----------------- */
+/*-----------------------------------------------------------------*/
+
+/* ******** general / no special usage ******** */
+.hidden
+{
+    display: none !important;
+}
+
+/* ******** nav sort ******** */
+#success,
+#error
+{
+    float: left;
+    width: 50px;
+    opacity: 0;
+    background-color: #5b9909;
+}
+#error{
+    background-color: #9c3328;
+}
+/* ******** content_fixes.js ******** */
+.bgcol {
+    background-color: #9c3328;
+}
+
+/* ******** datepicker (part of jquery-ui I think) ******** */
+.ui-datepicker {
+    background-image: url(/img/body.bg.png);
+    background-size: 100% 100%;
+}
+#ui-datepicker-div>table>thead>tr>th>span {
+    color: black;
+}
+
+/* ******** in forms (last_fixes.js) ******** */
+.width_95
+{
+    width: 95%;
+}
+.width_90
+{
+    width: 90%;
+}
+.width_40
+{
+    width: 40%;
+}
