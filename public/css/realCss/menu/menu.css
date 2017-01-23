@@ -21,7 +21,7 @@
 .navigation li:active,
 .navigation li:hover
 {
-    background-image: url(../img/uikit/highlight.u.d.png);
+    background-image: url(../../../img/uikit/highlight.u.d.png);
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: top;
