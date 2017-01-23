@@ -38,9 +38,12 @@ $(document).ready (function menu_handler_js () {
         $(".navtitel").not("hidden").addClass ("hidden");
         $(".level_0 ul").not("positionRelative").addClass("positionRelative");
         $(".level_0 li").not("displayBlock").addClass("displayBlock");
+        $(".level_0").css("background-color","#FAEBd7");
     }
 
     function menuActionsS () {
+
+        $(".menu_closed").off();
         if (mode == 'S') {
             $(".menu_closed").on("click", menuToggle);
             if ($(".menuItems").not("hidden")) {
@@ -49,7 +52,8 @@ $(document).ready (function menu_handler_js () {
                 console.log ("hier");
                 $(".menuItems").toggleClass("hidden");
             }
-        } else {}
+        } else {
+        }
     }
 
     /**
@@ -76,6 +80,7 @@ $(document).ready (function menu_handler_js () {
     setMode ();
     $(window).resize ( function () {
         setMode ();
+        menuActionsS();
     });
     addLinkDecorators();
     menuActionsS();

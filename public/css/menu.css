@@ -25,7 +25,7 @@
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: top;
-    background-color: #949c53;
+    background-color: #D2B48C;
 }
 
 .navigation li:active,
@@ -34,7 +34,7 @@
 {
     position: relative;
     display: block;
-    background-color: #949c53;
+    background-color: #D2B48C;
 }
 
 .level_0:active ul,
