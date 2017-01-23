@@ -7,7 +7,7 @@ $(document).ready(function () {
         var ele;
 
         var markup = $.ajax({
-            url: "/disclaimer.txt",
+            url: "/disclaimer.txt",    // text for disclaimer
             async: true,
             success: function(e) {
                 console.log('success');
@@ -27,7 +27,7 @@ $(document).ready(function () {
                 $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
                 $('.ui-dialog').css({
                     'width': $(window).width(),          //100% doesn't work
-                    'height': 600,
+                    'height': $(window).height(),
                     'left': '0px',
                     'top':'0px'
                 });
@@ -50,6 +50,5 @@ $(document).ready(function () {
     if(sessionStorage && !sessionStorage.getItem('isshow')){
         disclaimerPop();
     }
-    $('.disclaim').on("click", disclaimerPop);
-
+    $(".disclaim").on("click", disclaimerPop);
 });

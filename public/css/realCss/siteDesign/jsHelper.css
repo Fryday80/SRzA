@@ -20,16 +20,19 @@
     background-color: #9c3328;
 }
 /* ******** content_fixes.js ******** */
-.bgcol {
+.bgcol
+{
     background-color: #9c3328;
 }
 
 /* ******** datepicker (part of jquery-ui I think) ******** */
-.ui-datepicker {
+.ui-datepicker
+{
     background-image: url(/img/body.bg.png);
     background-size: 100% 100%;
 }
-#ui-datepicker-div>table>thead>tr>th>span {
+#ui-datepicker-div>table>thead>tr>th>span
+{
     color: black;
 }
 
@@ -46,3 +49,10 @@
 {
     width: 40%;
 }
+
+/* ************************* */
+/* *** with own css file *** */
+/* ************************* */
+/* ** popUp ** */
+/* ** gallery ** */
+/* ** menu ** */

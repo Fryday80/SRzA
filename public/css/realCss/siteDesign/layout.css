@@ -26,6 +26,10 @@ a:active{
     text-decoration: none;
     color: black;
 }
+button {
+    background: none;
+    border: none;
+}
 
 ownhead {
     font-family: stylo, arial, sans-serif;
@@ -38,8 +42,6 @@ owntitel {
     font-size: 25px;
     color: black;
 }
-
-
 
 butti {
     color: black;
@@ -61,7 +63,6 @@ label,
 input {
     border-radius: 5px;
 }
-/*button,   */
 input {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius:5px;
@@ -150,7 +151,6 @@ small {
     font-size: 10px;
 }
 
-
 /* -----------------hp body----------------- */
 .bodycontainer {
     position: relative;
@@ -167,33 +167,35 @@ small {
     width: 100%;
     position: relative;
     text-align: center;
-    padding-top: 20px;
+    padding-top: 2px;
     z-index: 10;
 }
 
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 70%;
-    margin-left: 1%;
+    width: 68%;
     padding-left: 3%;
     padding-top: 5%;
     min-height: 50%;
 
+}
+.spacer_content {
+    background: none;
+    height: 10px;
 }
 
 /* -----------------colum 3 right bar----------------- */
 .rightcontainer {
     position: relative;
     float: right;
-    width: 28%;
+    width: 27%;
     text-align: center;
-/*    min-height: 100%;*/
 }
 
 .rightbarup, .rightbardown {
     position: relative;
-    padding-left: 5px;
+    padding-left: 1%;
     padding-right: 0px;
     padding-top: 20px;
     width: 100%;
@@ -231,29 +233,14 @@ newstitel {
     height: 150px;
 }
 
-
-/* ----------------- UI special desing -------------------------------- */
-
-.spacer_h {
-    background-image: url(' /img/uikit/decoration.h.png');
-    background-repeat: repeat-x;
-    background-size: contain;
-    height: 10px;
-}
 .spacer_l {
-    background-image: url('../../../img/uikit/decoration.3l.png');
+    background-image: url("/img/uikit/decoration.3l.png");
     background-repeat: repeat-x;
     background-size: contain;
     height: 10px;
 }
-.spacer_e {
-    background: none;
-    height: 10px;
-}
-button {
-    background: none;
-    border: none;
-}
+
+
 
 .sra_table {
     text-align: right;
@@ -265,18 +252,4 @@ button {
 }
 .sra_table>input {
     text-align: center;
-}
-
-.disclaimer {
-    width:100%;
-}
-
-.ui-widget-content button {
-    background-image: url(../../../img/uikit/Button.png);
-    background-size: 100% 100%;
-}
-
-.ui-widget-content button:hover {
-    background-image: url(../../../img/uikit/Button.hover.png);
-    background-size: 100% 100%;
 }

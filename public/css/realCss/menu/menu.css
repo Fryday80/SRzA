@@ -27,6 +27,9 @@
     background-position: top;
     background-color: #D2B48C;
 }
+.level_0{
+    background-color: #FAEBd7;
+}
 
 .navigation li:active,
 .level_0:active li,
@@ -69,6 +72,28 @@
 {
     display: block !important;
 }
+
+.spacer_h {
+    background-image: url('/img/uikit/decoration.h.png');
+    background-repeat: repeat-x;
+    background-size: contain;
+    height: 10px;
+}
+.li_S_view
+{
+    margin-top: 4px;
+}
+
+.level_0_animated:hover ul
+{
+    display: block;
+
+    -webkit-animation: fadeInFromNone 0.7s ease-out;
+    -moz-animation: fadeInFromNone 0.7s ease-out;
+    -o-animation: fadeInFromNone 0.7s ease-out;
+    animation: fadeInFromNone 0.7s ease-out;
+}
+/* animation keyframe is in css_actions.css
 
 /* ---------------------------- Animations ------------------------------------------- */
 @keyframes rotate_link
