@@ -8,7 +8,9 @@ function iter($page, $level) {
 
 
         echo "<li class='level_$level'>";
-        echo '<a href="' . $page->getUri() . '">' . $page->getLabel() . '</a>';
+        echo '<a href="' . $page->getUri() . '">' . $page->getLabel();
+        echo '<div class="spacer_line"></div>';
+        echo  '</a>';
         if ($page->hasPages()) {
             $nextLevel = $level + 1;
             echo '<ul class="ul_level_' . $nextLevel . '">';

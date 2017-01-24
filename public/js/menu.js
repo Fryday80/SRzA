@@ -23,9 +23,18 @@ $(document).ready (function menu_handler_js () {
     function addLinkDecorators () {
         $(".bodycontainer a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
     }
+    
+    function menuToggle() {
+        console.log ("hier");
+        $(".menuItems").toggleClass("hidden");
+        $(".menuItems").toggleClass("s_Show");
+    }
 
     function runL () {
-        $(".menuItems").removeClass("hidden");
+        $(".menu_closed").off("click", menuToggle);
+
+        $(".menuItems").removeClass("hidden")
+            .removeClass("s_Show");                         /* //@todo fry cleanfix ? eigentlich unnötig */
         $(".navbutton").not("hidden").addClass("hidden");
         $(".navtitel").removeClass ("hidden");
         $(".level_0 ul").removeClass("positionRelative");
@@ -35,7 +44,10 @@ $(document).ready (function menu_handler_js () {
     }
 
     function runS () {
-        $(".menuItems").not("hidden").addClass ("hidden");
+        $(".menu_closed").off("click", menuToggle);
+
+        $(".menuItems").not("hidden").addClass ("hidden")
+            .removeClass("s_Show");
         $(".navbutton").removeClass("hidden");
         $(".navtitel").not("hidden").addClass ("hidden");
         $(".level_0 ul").not("positionRelative").addClass("positionRelative");
@@ -45,15 +57,9 @@ $(document).ready (function menu_handler_js () {
     }
 
     function menuActionsS () {
-
-        $(".menu_closed").off("click", menuToggle);
         if (mode == 'S') {
             $(".menu_closed").on("click", menuToggle);
             if ($(".menuItems").not("hidden")) {
-            }
-            function menuToggle() {
-                console.log ("hier");
-                $(".menuItems").toggleClass("hidden");
             }
         } else {
         }

@@ -10,8 +10,6 @@
     width: 120px;
     display: none;
     z-index: 10;
-    border-bottom: dotted;
-    border-width: thin;
 }
 .navigation>li
 {
@@ -21,7 +19,7 @@
 .navigation li:active,
 .navigation li:hover
 {
-    background-image: url(../../../img/uikit/highlight.u.d.png);
+    background-image: url(/img/uikit/highlight.u.d.png);
     background-size: 100% auto;
     background-repeat: no-repeat;
     background-position: top;
@@ -45,6 +43,11 @@
 {
     position: absolute;
 }
+li:active>a>.spacer_line,
+li:hover>a>.spacer_line
+{
+    background-image: url(/img/uikit/decoration.3line_active.png);
+}
 
 /** ------------------------------ the navbutton --------------------------**/
 .navbutton {
@@ -57,7 +60,6 @@
 .menu_closed {
     width: 50px;
 }
-
 
 .links {
      height: 15px;
@@ -74,7 +76,7 @@
 }
 
 .spacer_h {
-    background-image: url('/img/uikit/decoration.h.png');
+    background-image: url(/img/uikit/decoration.h.png);
     background-repeat: repeat-x;
     background-size: contain;
     height: 10px;
@@ -83,29 +85,23 @@
 {
     margin-top: 4px;
 }
+/* ---------------------------- animations -> css_actions.css -------------------------------- */
 
-.level_0_animated:hover ul
+.level_0_animated:hover ul,
+.s_Show
 {
     display: block;
 
-    -webkit-animation: fadeInFromNone 0.7s ease-out;
-    -moz-animation: fadeInFromNone 0.7s ease-out;
-    -o-animation: fadeInFromNone 0.7s ease-out;
-    animation: fadeInFromNone 0.7s ease-out;
-}
-/* animation keyframe is in css_actions.css
-
-/* ---------------------------- Animations ------------------------------------------- */
-@keyframes rotate_link
-{
-    0%      { transform:rotate(  0deg); }
-    100%    { transform:rotate(  360deg); }
+    -webkit-animation: fadeInFromNone 1.0s ease-out;
+    -moz-animation: fadeInFromNone 1.0s ease-out;
+    -o-animation: fadeInFromNone 1.0s ease-out;
+    animation: fadeInFromNone 1.0s ease-out;
 }
 
 a:hover>img
 {
     height: 15px;
-    animation-name: rotate_link;
+    animation-name: rotate;
     animation-duration: 1500ms;
     animation-iteration-count: infinite;
 }

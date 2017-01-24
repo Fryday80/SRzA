@@ -217,12 +217,13 @@ newstitel {
     height: 150px;
 }
 
-.spacer_l {
-    background-image: url("/img/uikit/decoration.3l.png");
+.spacer_line {
+    background-image: url(/img/uikit/decoration.3l.png);
     background-repeat: repeat-x;
     background-size: contain;
     height: 10px;
 }
+
 
 
 

@@ -1,11 +1,13 @@
 @import url(realCss/siteDesign/layout.css);         /* Basic Layout without Menu            */
 @import url(realCss/menu/menu.css);                 /* Menu Layout                          */
-@import url(media.css);                             /* Mediaquerys for Basic Layout         */
 @import url(realCss/popUp/jquery-ui.css);           /* jquery UI Style   for pop up         */
 @import url(realCss/popUp/popUp_own.css);           /* own pop up styles                    */
 @import url(realCss/gallery/jgallery.css);          /* additional settings for the gallery  */
 @import url(realCss/siteDesign/modding.css);        /* modding like cursor                  */
-@import url(noscript.css);                          /* css transformation @ no scipt        */
 @import url(realCss/Zend/Zend.css);                 /* styles used in Zend                  */
 @import url(realCss/usermanager/usermanager.css);   /* styles used in Usermanager           */
 @import url(realCss/siteDesign/jsHelper.css);       /* js-used classes                      */
+
+@import url(media.css);                             /* media queries for Basic Layout       */
+@import url(noscript.css);                          /* css transformation @ no script       */
+@import url(animations.css);                        /* css animations                       */
