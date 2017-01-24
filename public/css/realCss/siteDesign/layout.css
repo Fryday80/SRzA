@@ -43,21 +43,6 @@ owntitel {
     font-size: 25px;
     color: black;
 }
-
-butti {
-    color: black;
-    padding-left: 5px;
-    padding-right: 5px;
-    background-repeat: no-repeat;
-    background-image: url(/img/uikit/Button.png);
-    background-size: 100% 100%;
-    }
-butti:hover {
-    color: black;
-    background-repeat: no-repeat;
-    background-image: url(/img/uikit/Button.hover.png);
-    background-size: 100% 100%;
-}
 /*--------------------------Login and Logout-----------------------*/
 form,
 label,
@@ -130,8 +115,6 @@ input {
     height: auto;
     text-align: right;
     color: black;
-    /*border-bottom: 4px;
-    /border-bottom-style: ridge; */
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 }
