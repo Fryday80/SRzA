@@ -1,4 +1,8 @@
 /* ----------------- UI special desing -------------------------------- */
+.ui-dialog{
+    top: 0 !important;
+    left: 0 !important;
+}
 .ui-dialog-buttonset{
     float: none !important;
     text-align: center;

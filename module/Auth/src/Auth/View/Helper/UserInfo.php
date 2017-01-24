@@ -26,9 +26,9 @@ class UserInfo extends AbstractHelper
         } else {
             $showrole = '';
             if ($role = 'Administrator') {
-                $showrole = ' | '.$role;
+                $showrole = ' <span class="js-S-view">|</span> '.$role;
             }
-            $expression = '<span class="greets">Hallo '.$name.$showrole. '</span>';
+            $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showrole. '</span>';
             return $expression;
         }
         return $role;           //müsste er da nicht irgendwo noch die $role ausgeben???

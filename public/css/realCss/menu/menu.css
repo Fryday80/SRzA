@@ -119,6 +119,7 @@ li:hover>a>.spacer_nav_line
     border-bottom: none;
 }
 .li_border_lr{
+    display: block !important;
     border: dotted;
     border-width: thin;
     border-bottom: none;
@@ -133,6 +134,7 @@ li:hover>a>.spacer_nav_line
 .sub_level_ul {
     margin-top: 21px;
     margin-left: -1px;
+    position: relative !important;
 }
 .nbg {
     height: 600px;

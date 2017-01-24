@@ -10,7 +10,7 @@ $(document).ready(function () {
             url: "/disclaimer.txt",    // text for disclaimer
             async: true,
             success: function(e) {
-                console.log('success');
+                console.log('disclaimer pop success');
             },
             error: function(err) {
                 console.log(err);

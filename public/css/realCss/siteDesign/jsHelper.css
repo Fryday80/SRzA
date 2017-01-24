@@ -7,6 +7,15 @@
     display: none !important;
 }
 
+.js-L-view{
+    /* only in "normal" view */
+    /* used for js selection */
+}
+.js-S-view{
+    /* only in mobile view */
+    /* used for js selection */
+}
+
 /* ******** nav sort ******** */
 #success,
 #error

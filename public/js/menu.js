@@ -35,7 +35,7 @@ $(document).ready (function menu_handler_js () {
         $(".menuItems").toggleClass("hidden");
         $(".menuItems").toggleClass("s_Show");
     }
-
+    
     /**
      * unsets the classes for mobile view ("S view")
      * when resizing from small to normal view
@@ -45,26 +45,21 @@ $(document).ready (function menu_handler_js () {
         $(".menu_closed").off("click", menuToggle);
 
         /** style class changes **/
+        $(".js-L-view").removeClass("hidden");
+        $(".js-S-view").not("hidden").addClass("hidden");
+        
         $(".menuItems")
-            .removeClass("hidden")
             .removeClass("s_Show");
-
-        $(".navbutton")
-            .not("hidden").addClass("hidden");
-
-        $(".navtitel")
-            .removeClass ("hidden");
-
+        
         $(".level_0 ul")
-            .removeClass("positionRelative")
             .removeClass("sub_level_ul");
 
         $(".level_0 li")
-            .removeClass("displayBlock")
             .removeClass("li_border_lr");
 
         $(".level_0")
-            .removeClass("li_S_view level_0_S")
+            .removeClass("level_0_S")
+            .removeClass("li_S_view")
             .not("level_0_animated").addClass("level_0_animated");
 
         $(".navigation-background")
@@ -79,32 +74,27 @@ $(document).ready (function menu_handler_js () {
         $(".menu_closed").off("click", menuToggle);
 
         /** style class changes **/
+        $(".js-S-view").removeClass("hidden");
+        $(".js-L-view").not("hidden").addClass("hidden");
+        
         $(".menuItems")
-            .not("hidden").addClass ("hidden")
             .removeClass("s_Show");
-
-        $(".navbutton")
-            .removeClass("hidden");
-
-        $(".navtitel")
-            .not("hidden").addClass ("hidden");
-
+        
         $(".level_0 ul")
-            .not("positionRelative").addClass("positionRelative")
             .not("sub_level_ul").addClass("sub_level_ul");
 
         $(".level_0 li")
-            .not("displayBlock").addClass("displayBlock")
             .not("li_border_lr").addClass("li_border_lr");
 
         $(".level_0")
-            .not("li_S_view level_0_S").addClass("li_S_view level_0_S")
+            .not("li_S_view").addClass("li_S_view")
+            .not("level_0_S").addClass("level_0_S")
             .removeClass("level_0_animated");
 
         $(".navigation-background")
             .not("nbg").addClass("nbg");
     }
-
+//    @todo bugfix    view <400p width => menu crashes
     /**
      * binds the menu show-hide action
      */
