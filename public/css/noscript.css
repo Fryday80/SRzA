@@ -26,7 +26,7 @@ noscript>div {
     animation-name: nojs;
     animation-duration: 8s;
 }
-noscript>div>ownhead {
+noscript>div>.ownhead {
     color: white;
     font-size: 100px;
 }

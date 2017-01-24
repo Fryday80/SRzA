@@ -7,7 +7,7 @@
         height: 100px;
     }
 
-    ownhead {
+    .ownhead {
         font-size: 60px;
     }
     .headdeko {
@@ -91,10 +91,10 @@
         margin: 0;
         float: left;
     }
-    ownhead {
+    .ownhead {
         font-size: 40px;
     }
-    owntitel,
+    .owntitel,
     news {
         font-size: 30px;
     }
@@ -112,7 +112,7 @@
     #head {
         padding-top: 20px;
     }
-    ownhead {
+    .ownhead {
         font-size: 20px;
     }
 }

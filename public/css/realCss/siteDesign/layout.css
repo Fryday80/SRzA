@@ -32,13 +32,13 @@ button {
     border: none;
 }
 
-ownhead {
+.ownhead {
     font-family: stylo, arial, sans-serif;
     color: black;
     font-size: 68px;
     font-size-adjust: auto;
 }
-owntitel {
+.owntitel {
     font-family: stylo2, arial, sans-serif;
     font-size: 25px;
     color: black;
