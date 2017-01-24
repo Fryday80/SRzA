@@ -53,23 +53,27 @@
             <div class="spacer_line"></div>
         </div>
 
-
-        <div class="bodycontainer">
 <!--------------------- NAVIGATION -------------------------->
-            <div class="navframe">
-                <div class="navbutton hidden">
-                    <img class="menu_closed" src="/img/uikit/menu_button1.png">
+        <div class="navframe">
+            <div class="navbutton hidden">
+                <img class="menu_closed" src="/img/uikit/menu_button1.png">
+                <div class="spacer_line"></div>
+            </div>
+            <div class="menuItems">
+                <div class="navtitel">
+                    <span class="owntitel">Wegweiser</span>
                     <div class="spacer_line"></div>
                 </div>
-                <div class="menuItems">
-                    <div class="navtitel">
-                        <span class="owntitel">Wegweiser</span>
-                        <div class="spacer_line"></div>
+                <div style="position: relative">
+                    <div style="position: absolute; z-index: 10">
+                        <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
                     </div>
-                    <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
+                    <div class="navigation-background" style="position: absolute"></div>
                 </div>
             </div>
+        </div>
 <!--------------------- Content -------------------------->
+        <div class="bodycontainer">
             <div id="content">
                 <span class="owntitel"><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></span><br>
                 <div class="spacer_content"></div>

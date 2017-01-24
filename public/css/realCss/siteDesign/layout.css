@@ -137,6 +137,7 @@ small {
 
 /* -----------------hp body----------------- */
 .bodycontainer {
+    padding-top: 10px;
     position: relative;
     width: 100%;
 }

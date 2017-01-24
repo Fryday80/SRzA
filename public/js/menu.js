@@ -37,10 +37,11 @@ $(document).ready (function menu_handler_js () {
             .removeClass("s_Show");
         $(".navbutton").not("hidden").addClass("hidden");
         $(".navtitel").removeClass ("hidden");
-        $(".level_0 ul").removeClass("positionRelative");
+        $(".level_0 ul").removeClass("positionRelative sub_level_ul");
         $(".level_0 li").removeClass("displayBlock");
-        $(".level_0").removeClass("li_S_view")
+        $(".level_0").removeClass("li_S_view level_0_S")
             .not("level_0_animated").addClass("level_0_animated");
+        $(".navigation-background").removeClass("nbg");
     }
 
     function runS () {
@@ -50,10 +51,11 @@ $(document).ready (function menu_handler_js () {
             .removeClass("s_Show");
         $(".navbutton").removeClass("hidden");
         $(".navtitel").not("hidden").addClass ("hidden");
-        $(".level_0 ul").not("positionRelative").addClass("positionRelative");
+        $(".level_0 ul").not("positionRelative sub_level_ul").addClass("positionRelative sub_level_ul");
         $(".level_0 li").not("displayBlock").addClass("displayBlock");
-        $(".level_0").not("li_S_view").addClass("li_S_view")
+        $(".level_0").not("li_S_view level_0_S").addClass("li_S_view level_0_S")
             .removeClass("level_0_animated");
+        $(".navigation-background").not("nbg").addClass("nbg");
     }
 
     function menuActionsS () {
@@ -84,7 +86,7 @@ $(document).ready (function menu_handler_js () {
     setMode ();
     addLinkDecorators();
     menuActionsS();
-    
+
     $(window).resize ( function () {
         setMode ();
         menuActionsS();

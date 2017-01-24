@@ -5,16 +5,24 @@
     margin: 0 0 0 0;
     display: block;
     width: 100%;
+}
+.navigation-background {
+    height: 30px;
+    width: 100%;
+    background-color: #7a43b6;
+    z-index: 5;
     overflow-x: hidden;
+    overflow-y: visible;
     background-size: auto 10px;
     background-image: url(/img/uikit/decoration.3l.png);
     background-repeat: repeat-x;
     background-color: #FAEBd7;
     background-position: bottom left;
-
 }
 .navigation li
 {
+    height: 30px;
+    background: none;
     width: 120px;
     display: none;
     z-index: 100;
@@ -36,6 +44,13 @@
 }
 .level_0{
     background-color: #FAEBd7;
+
+}
+.level_0 li {
+    background-image: url(/img/uikit/decoration.3l.png);
+    background-size: auto 10px;
+    background-repeat: repeat-x;
+    background-position: bottom left;
 }
 
 .navigation li:active,
@@ -50,10 +65,11 @@
 .level_0:active ul,
 .level_0:hover  ul
 {
+    margin-top: 11px;
     position: absolute;
 }
-li:active>a>.spacer_line,
-li:hover>a>.spacer_line
+li:active>a>.spacer_nav_line,
+li:hover>a>.spacer_nav_line
 {
     background-image: url(/img/uikit/decoration.3line_active.png);
 }
@@ -92,14 +108,31 @@ li:hover>a>.spacer_line
 }
 .li_S_view
 {
-    margin-top: 4px;
+    margin-top: 4px !important;
+    height: 40px !important;
+    background-image: url(/img/uikit/decoration.3l.png) !important;
+    background-size: auto 10px !important;
+    background-repeat: repeat-x !important;
+    background-position: bottom left !important;
+}
+.level_0_S:active ul,
+.level_0_S:hover  ul
+{
+    margin-top: 21px;
+    position: absolute;
+}
+.sub_level_ul {
+    margin-top: 21px;
+}
+.nbg {
+    height: 600px;
 }
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 
 .level_0_animated:hover ul,
 .s_Show
 {
-    display: block;
+    display: block !important;
 
     -webkit-animation: fadeInFromNone 1.0s ease-out;
     -moz-animation: fadeInFromNone 1.0s ease-out;
