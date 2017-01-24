@@ -23,16 +23,10 @@ $(document).ready(function () {
         ele = $( "<div class='disclaimer'></div>" ).dialog({
             modal: true,
             title: "Disclaimer",
+            height: "auto",
+            width: "auto",
             open: function () {
                 $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
-                $('.ui-dialog').css({
-                    'width': $(window).width(),          //100% doesn't work
-                    'height': $(window).height(),
-                    'left': '0px',
-                    'top':'0px'
-                });
-                $(".ui-dialog-content").css({'height': '450px'});
-                $(".ui-dialog-content a:link").css({'color': 'white'});
             },
             buttons: {
                 accept: function () {

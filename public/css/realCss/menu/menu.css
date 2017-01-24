@@ -4,12 +4,20 @@
     list-style-type: none;
     margin: 0 0 0 0;
     display: block;
+    width: 100%;
+    overflow-x: hidden;
+    background-size: auto 10px;
+    background-image: url(/img/uikit/decoration.3l.png);
+    background-repeat: repeat-x;
+    background-color: #FAEBd7;
+    background-position: bottom left;
+
 }
 .navigation li
 {
     width: 120px;
     display: none;
-    z-index: 10;
+    z-index: 100;
 }
 .navigation>li
 {
@@ -19,11 +27,12 @@
 .navigation li:active,
 .navigation li:hover
 {
-    background-image: url(/img/uikit/highlight.u.d.png);
-    background-size: 100% auto;
-    background-repeat: no-repeat;
-    background-position: top;
+    background-image: url(/img/uikit/highlight.u.d.png), url(/img/uikit/decoration.3line_active.png);
+    background-size: 100% auto, auto 10px;
+    background-repeat: no-repeat, repeat-x;
+    background-position: top, bottom left;
     background-color: #D2B48C;
+
 }
 .level_0{
     background-color: #FAEBd7;

@@ -34,7 +34,7 @@ $(document).ready (function menu_handler_js () {
         $(".menu_closed").off("click", menuToggle);
 
         $(".menuItems").removeClass("hidden")
-            .removeClass("s_Show");                         /* //@todo fry cleanfix ? eigentlich unnötig */
+            .removeClass("s_Show");
         $(".navbutton").not("hidden").addClass("hidden");
         $(".navtitel").removeClass ("hidden");
         $(".level_0 ul").removeClass("positionRelative");
@@ -59,10 +59,7 @@ $(document).ready (function menu_handler_js () {
     function menuActionsS () {
         if (mode == 'S') {
             $(".menu_closed").on("click", menuToggle);
-            if ($(".menuItems").not("hidden")) {
-            }
-        } else {
-        }
+        } else { }
     }
 
     /**
@@ -84,13 +81,12 @@ $(document).ready (function menu_handler_js () {
             console.log ($(window).innerWidth ());
     }
 
-
-
     setMode ();
+    addLinkDecorators();
+    menuActionsS();
+    
     $(window).resize ( function () {
         setMode ();
         menuActionsS();
     });
-    addLinkDecorators();
-    menuActionsS();
 })
