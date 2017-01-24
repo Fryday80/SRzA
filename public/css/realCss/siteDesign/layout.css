@@ -15,6 +15,7 @@ body {
     background-image: url( /img/body.bg.png);
     background-size: auto 130px;
     border-radius: 35px;
+    background-color: #FAEBd7;
 }
 
 h1 {font-size: 20px;}
