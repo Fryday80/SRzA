@@ -114,6 +114,15 @@ li:hover>a>.spacer_nav_line
     background-size: auto 10px !important;
     background-repeat: repeat-x !important;
     background-position: bottom left !important;
+    border: dotted;
+    border-width: thin;
+    border-bottom: none;
+}
+.li_border_lr{
+    border: dotted;
+    border-width: thin;
+    border-bottom: none;
+    border-top: none;
 }
 .level_0_S:active ul,
 .level_0_S:hover  ul
@@ -123,6 +132,7 @@ li:hover>a>.spacer_nav_line
 }
 .sub_level_ul {
     margin-top: 21px;
+    margin-left: -1px;
 }
 .nbg {
     height: 600px;
