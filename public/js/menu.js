@@ -1,5 +1,5 @@
 /** help - Menu structure:
- * div  navframe
+ * div  #navframe
  *     div .navbutton
  *     /div
  *     div .menuItems
@@ -31,7 +31,6 @@ $(document).ready (function menu_handler_js () {
      * performs the menu show-hide action
      */
     function menuToggle() {
-        console.log ("hier");
         $(".menuItems").toggleClass("hidden");
         $(".menuItems").toggleClass("s_Show");
     }
@@ -41,10 +40,7 @@ $(document).ready (function menu_handler_js () {
      * when resizing from small to normal view
      */
     function runL () {
-        /** removes click event for menu button if binded (case of resize S->L) **/
-        $(".menu_closed").off("click", menuToggle);
-
-        /** style class changes **/
+         /** style class changes **/
         $(".js-L-view").removeClass("hidden");
         $(".js-S-view").not("hidden").addClass("hidden");
         
@@ -70,9 +66,6 @@ $(document).ready (function menu_handler_js () {
      * sets the classes for mobile view ("S view")
      */
     function runS () {
-        /** removes click event to avoid multiple bindings **/
-        $(".menu_closed").off("click", menuToggle);
-
         /** style class changes **/
         $(".js-S-view").removeClass("hidden");
         $(".js-L-view").not("hidden").addClass("hidden");
@@ -109,8 +102,10 @@ $(document).ready (function menu_handler_js () {
      * returns string 'L', 'M' or 'S'
      * given in var mode
      */
-    var mode ='L'
+    var mode ='L';
     function setMode () {
+        /** removes click event to avoid multiple bindings **/
+        $(".menu_closed").off("click", menuToggle);
 
         if(window.matchMedia('(max-width: 700px)').matches) {
             mode = "S";
@@ -119,8 +114,9 @@ $(document).ready (function menu_handler_js () {
             mode ="L";
             runL();
         }
-            console.log (mode);
-            console.log ($(window).innerWidth ());
+        console.log ("mode: "+mode);
+        console.log ("width: "+$(window).innerWidth ());
+        console.log ("height: "+$(window).innerHeight ());
     }
 /* ------------------ WORKING SCRIPT -------------------- */
     setMode ();

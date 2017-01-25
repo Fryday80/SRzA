@@ -15,6 +15,14 @@
     /* only in mobile view */
     /* used for js selection */
 }
+.positionRelative
+ {
+    position: relative !important;
+ }
+.displayBlock
+{
+    display: block !important;
+}
 
 /* ******** nav sort ******** */
 #success,

@@ -38,9 +38,19 @@ button {
     font-size: 68px;
     font-size-adjust: auto;
 }
-.owntitel {
+.own_text_big {
     font-family: stylo2, arial, sans-serif;
     font-size: 25px;
+    color: black;
+}
+.own_text_medium {
+    font-family: stylo2, arial, sans-serif;
+    font-size: 20px;
+    color: black;
+}
+.own_text_small {
+    font-family: stylo2, arial, sans-serif;
+    font-size: 15px;
     color: black;
 }
 /*--------------------------Login and Logout-----------------------*/
@@ -136,19 +146,14 @@ small {
 }
 
 /* -----------------hp body----------------- */
-.bodycontainer {
-    padding-top: 10px;
-    position: relative;
-    width: 100%;
-}
-
 #content,
 .rightcontainer {
     position: relative;
+    padding-top: 20px;
 }
 
 /* -----------------colum 1 (navframe)----------------- */
-.navframe {
+#navframe {
     width: 100%;
     position: relative;
     text-align: center;
@@ -165,11 +170,6 @@ small {
     min-height: 50%;
 
 }
-.spacer_content {
-    background: none;
-    height: 10px;
-}
-
 /* -----------------colum 3 right bar----------------- */
 .rightcontainer {
     position: relative;
@@ -177,7 +177,9 @@ small {
     width: 27%;
     text-align: center;
 }
-
+.rightcontainer fieldset {
+    background-color: #FAEBd7;
+}
 .rightbarup, .rightbardown {
     position: relative;
     padding-left: 1%;
@@ -204,18 +206,20 @@ newstitel {
     color: black;
     padding-top: 10px;
     min-height: 30px;
-    background-image: url(/img/body.bg.png);
-    background-size: auto 100%;
+    background-image: url(/img/uikit/decoration.3l.png);
+    background-size: auto 10px;
+    background-repeat: repeat-x;
+    background-position: top left;
 }
 
 #footimage {
     background-image: url(/img/foot.png);
     background-position: center top;
     background-repeat: no-repeat;
-    background-size: 100%;
+    background-size: cover;
     -webkit-border-bottom-left-radius: 30px;
     -webkit-border-bottom-right-radius: 30px;
-    height: 150px;
+    height: 110px;
 }
 
 .spacer_line {
@@ -228,7 +232,7 @@ newstitel {
 
 .sra_table {
     text-align: right;
-    width: 95%;
+    width: 90%;
 }
 
 .sra_table>label {
