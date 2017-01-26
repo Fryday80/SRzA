@@ -1,32 +1,29 @@
 <?php
 $GLOBALS['nav']=$this;
 print($this->sers);
-function iter($page, $level) {
-    if ($page->isVisible() &&
-        $GLOBALS['nav']->navigation()->accept($page)
-         ) {
-
-
-        echo "<li class='level_$level'>";
-        echo '<a href="' . $page->getUri() . '">' . $page->getLabel();
-       // echo '<div class="spacer_nav_line"></div>';
-        echo  '</a>';
-        if ($page->hasPages()) {
-            $nextLevel = $level + 1;
-            echo '<ul class="ul_level_' . $nextLevel . '">';
-            foreach ($page->getPages() as $child) {
-                iter($child, $nextLevel);
+if (!function_exists("createMenuHtmlRecursive") ){
+    function createMenuHtmlRecursive($page, $level) {
+        if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
+            echo "<li class='level_$level'>";
+            echo '<a href="' . $page->getUri() . '">' . $page->getLabel();
+            // echo '<div class="spacer_nav_line"></div>';
+            echo '</a>';
+            if ($page->hasPages()) {
+                $nextLevel = $level + 1;
+                echo '<ul class="ul_level_' . $nextLevel . '">';
+                foreach ($page->getPages() as $child) {
+                    createMenuHtmlRecursive($child, $nextLevel);
+                }
+                echo '</ul>';
             }
-            echo '</ul>';
+            echo '</li>';
         }
-        echo '</li>';
+        return;
     }
-    return;
 }
-
 echo '<ul class="navigation">';
 foreach($container->getPages() as $child) {
-    iter($child, 0);
+    createMenuHtmlRecursive($child, 0);
 
 }
 echo '</ul>';

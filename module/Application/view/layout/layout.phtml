@@ -66,7 +66,7 @@
                 </div>
                 <div style="position: relative">
                     <div style="position: absolute; z-index: 10">
-                        <?php echo $this->navigation('navigation')->menu()->setPartial('menu.phtml')->renderPartial(); ?>
+                        <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                     </div>
                     <div class="navigation-background" style="position: absolute"></div>
                 </div>
@@ -100,6 +100,7 @@
 <!--------------------- FOOT -------------------------->
         <div id="foot">
             <div id="foottext">
+                <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                 <span>copyright © 2016 Schwarze Ritter zu Augsburg | </span>
                 <span><a href="#">Kontakt</a> | </span>
                 <span><a href="#">Impressum</a> | </span>
