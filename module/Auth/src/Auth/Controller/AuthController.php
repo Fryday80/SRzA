@@ -42,7 +42,10 @@ class AuthController extends AbstractActionController
     {
         $form = new LoginForm('Login');
         $request = $this->getRequest();
-
+        $ref = $this->flashmessenger()->getMessagesFromNamespace('referer');
+        if (count($ref) > 0) {
+            $this->flashmessenger()->addMessage($ref[0], 'referer', 1);
+        }
         if ($request->isPost()) {
             $form->setData($request->getPost());
        
@@ -84,13 +87,17 @@ class AuthController extends AbstractActionController
                     }
                     // set storage again
                     $authService->setStorage($storage);
+
+                    if (count($ref) > 0) {
+                        return $this->redirect()->toUrl($ref[0]);
+                    }
                     return $this->redirect()->toRoute('success');
                 }
             }
         }
         return array(
             'form' => $form,
-            'messages' => $this->flashmessenger()->getMessages()
+            'messages' => $this->flashmessenger()->getMessagesFromNamespace('auth')
         );
     }
     public function logoutAction()

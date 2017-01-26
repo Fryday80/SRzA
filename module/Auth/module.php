@@ -14,8 +14,10 @@ use Auth\Service\AclService;
 use Auth\Service\AccessService;
 use Auth\View\Helper\LoginView;
 use Auth\View\Helper\UserInfo;
+use Zend\Http\Request;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\Mvc\Controller\Plugin\FlashMessenger;
 use Zend\Mvc\MvcEvent;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
@@ -47,17 +49,22 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
 
     public function checkLogin($e)
     {
-        $accessService      = $e->getApplication()->getServiceManager()->get('AccessService');
+        $serviceManager     = $e->getApplication()->getServiceManager();
+        $accessService      = $serviceManager->get('AccessService');
         $target             = $e->getTarget();
         $match              = $e->getRouteMatch();
         $controller         = $match->getParam('controller');
         $action             = $match->getParam('action');
-        $title               = $match->getParam('title');
+        $title              = $match->getParam('title');
         $requestedResourse  = $controller . "-" . $action;
-
+        /** @var FlashMessenger $flashmessanger */
+        $flashmessanger     = $e->getApplication()-> getServiceManager()->get('controllerpluginmanager')->get('flashmessenger');
+        /** @var Request $request */
+        $request            = $serviceManager->get('Request');
 
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
+                $flashmessanger->addMessage($request->getUriString(), "referer", 1);
                 return $target->redirect()->toUrl('/login');
             }
         }
