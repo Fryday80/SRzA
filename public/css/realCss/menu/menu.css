@@ -1,10 +1,67 @@
 /* -----------------Navbar CSS settings----------------- */
+/******* GENERAL *********/
 .navigation
 {
     list-style-type: none;
     margin: 0 0 0 0;
     display: block;
     width: 100%;
+}
+.level_0
+{
+    float: left;
+    display: block;
+}
+#navframe li
+{
+    min-width: 130px;
+    z-index: 100;
+}
+/******* L-View *********/
+
+.menuItems li
+{
+    padding-bottom: 11px;
+}
+.menuItems .level_0 li {
+    background-image: url(/img/uikit/decoration.3l.png);
+    background-size: auto 10px;
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    display: none;
+}
+.menuItems li:active,
+.menuItems li:hover
+{
+    background-image: url(/img/uikit/highlight.u.d.png), url(/img/uikit/decoration.3line_active.png);
+    background-size: 100% auto, auto 10px;
+    background-repeat: no-repeat, repeat-x;
+    background-position: top, bottom left;
+    background-color: #D2B48C;
+
+}
+.menuItems li:active,
+.menuItems .level_0:active li,
+.menuItems .level_0:hover  li
+{
+    position: relative;
+    display: block;
+    background-color: #D2B48C;
+}
+
+.menuItems .level_0:active ul,
+.menuItems .level_0:hover  ul
+{
+    margin-top: 11px;
+    position: absolute;
+    background-color: #D2B48C;
+}
+.navtitel{
+    height : 40px;
+    background-size: auto 10px;
+    background-image: url(/img/uikit/decoration.3l.png);
+    background-repeat: repeat-x;
+    background-position: bottom left;
 }
 .navigation-background {
     height: 30px;
@@ -18,68 +75,11 @@
     background-repeat: repeat-x;
     background-position: bottom left;
 }
-.navtitel{
-    height : 40px;
-    background-size: auto 10px;
-    background-image: url(/img/uikit/decoration.3l.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-.navigation li
-{
-    height: 30px;
+.menuItems .level_0{
     background: none;
-    width: 120px;
-    display: none;
-    z-index: 100;
-}
-.navigation>li
-{
-    float: left;
-    display: block;
-}
-.navigation li:active,
-.navigation li:hover
-{
-    background-image: url(/img/uikit/highlight.u.d.png), url(/img/uikit/decoration.3line_active.png);
-    background-size: 100% auto, auto 10px;
-    background-repeat: no-repeat, repeat-x;
-    background-position: top, bottom left;
-    background-color: #D2B48C;
-
-}
-.level_0{
-    background-color: #FAEBd7;
-
-}
-.level_0 li {
-    background-image: url(/img/uikit/decoration.3l.png);
-    background-size: auto 10px;
-    background-repeat: repeat-x;
-    background-position: bottom left;
 }
 
-.navigation li:active,
-.level_0:active li,
-.level_0:hover  li
-{
-    position: relative;
-    display: block;
-    background-color: #D2B48C;
-}
-
-.level_0:active ul,
-.level_0:hover  ul
-{
-    margin-top: 11px;
-    position: absolute;
-}
-li:active>a>.spacer_nav_line,
-li:hover>a>.spacer_nav_line
-{
-    background-image: url(/img/uikit/decoration.3line_active.png);
-}
-
+/******* S-View *********/
 /** ------------------------------ the navbutton --------------------------**/
 .navbutton {
     display: block;
@@ -91,7 +91,6 @@ li:hover>a>.spacer_nav_line
     background-repeat: repeat-x;
     background-position: bottom left;
 }
-.menu_open,
 .menu_closed {
     height: 50px;
 }
@@ -99,45 +98,47 @@ li:hover>a>.spacer_nav_line
 .links {
      height: 15px;
  }
-
-/* ---------------------------- Helper for js ------------------------------------------- */
-.li_S_view
-{
-    margin-top: 4px !important;
-    height: 40px !important;
-    background-image: url(/img/uikit/decoration.3l.png) !important;
-    background-size: auto 10px !important;
-    background-repeat: repeat-x !important;
-    background-position: bottom left !important;
-    border: dotted;
-    border-width: thin;
-    border-bottom: none;
+.mobile_menuItems .level_0 ul {
+    margin-top: 11px;
+    margin-left: -1px;
+    height: auto;
 }
-.li_border_lr{
-    display: block !important;
+.mobile_menuItems li
+{
+    position: inherit;
+    display: inline-block;
     border: dotted;
     border-width: thin;
     border-bottom: none;
     border-top: none;
+    height: auto !important;
 }
-.level_0_S:active ul,
-.level_0_S:hover  ul
-{
-    margin-top: 21px;
-    position: absolute;
+.mobile_menuItems li a{
+    text-decoration: underline;
 }
-.sub_level_ul {
-    margin-top: 21px;
-    margin-left: -1px;
-    position: relative !important;
+.mobile_menuItems .level_0:hover{
+    background-color: #ff5500;
 }
-.nbg {
+.mobile_menuItems .topics {
     height: 600px;
+    background-image: url(/img/uikit/decoration.3l.png) !important;
+    background-size: auto 10px !important;
+    background-repeat: repeat-x !important;
+    background-position: bottom left !important;
 }
+.mobile_menuItems .level_0{
+    border: dotted;
+    border-width: thin;
+    border-bottom: none;
+    background-color: #D2B48C;
+    margin-bottom: 3px;
+}
+
+
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 
-.level_0_animated:hover ul,
-.s_Show
+.menuItems .level_0_animated:hover ul,
+.mobile_menuItems .level_0_animated
 {
     display: block !important;
 

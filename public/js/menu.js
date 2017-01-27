@@ -24,15 +24,15 @@ $(document).ready (function menu_handler_js () {
      * adds the link images to all <a>
      */
     function addLinkDecorators () {
-        $(".bodycontainer a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
+        $("#navframe a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
     }
 
     /**
      * performs the menu show-hide action
      */
     function menuToggle() {
-        $(".menuItems").toggleClass("hidden");
-        $(".menuItems").toggleClass("s_Show");
+        $(".mobile_menuItems .topics").toggleClass("hidden");
+        $(".mobile_menuItems .topics").toggleClass("level_0_animated");
     }
     
     /**
@@ -43,23 +43,7 @@ $(document).ready (function menu_handler_js () {
          /** style class changes **/
         $(".js-L-view").removeClass("hidden");
         $(".js-S-view").not("hidden").addClass("hidden");
-        
-        $(".menuItems")
-            .removeClass("s_Show");
-        
-        $(".level_0 ul")
-            .removeClass("sub_level_ul");
-
-        $(".level_0 li")
-            .removeClass("li_border_lr");
-
-        $(".level_0")
-            .removeClass("level_0_S")
-            .removeClass("li_S_view")
-            .not("level_0_animated").addClass("level_0_animated");
-
-        $(".navigation-background")
-            .removeClass("nbg");
+        $(".menuItems .level_0").not("level_0_animated").addClass("level_0_animated");
     }
 
     /**
@@ -68,24 +52,8 @@ $(document).ready (function menu_handler_js () {
     function runS () {
         /** style class changes **/
         $(".js-S-view").removeClass("hidden");
-        $(".js-L-view").not("hidden").addClass("hidden");
-        
-        $(".menuItems")
-            .removeClass("s_Show");
-        
-        $(".level_0 ul")
-            .not("sub_level_ul").addClass("sub_level_ul");
-
-        $(".level_0 li")
-            .not("li_border_lr").addClass("li_border_lr");
-
-        $(".level_0")
-            .not("li_S_view").addClass("li_S_view")
-            .not("level_0_S").addClass("level_0_S")
-            .removeClass("level_0_animated");
-
-        $(".navigation-background")
-            .not("nbg").addClass("nbg");
+        $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
+        $(".mobile_menuItems .topics").removeClass("level_0_animated"); //resets the menu to closed state
     }
 //    @todo bugfix    view <400p width => menu crashes
     /**
@@ -94,7 +62,7 @@ $(document).ready (function menu_handler_js () {
     function menuActionsS () {
         if (mode == 'S') {
             $(".menu_closed").on("click", menuToggle);
-        } else { }
+        }
     }
 
     /**

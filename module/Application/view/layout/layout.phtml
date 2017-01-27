@@ -57,25 +57,29 @@
 
 <!--------------------- NAVIGATION -------------------------->
         <div id="navframe">
-            <div class="navbutton hidden js-S-view">
-                <img class="menu_closed" src="/img/uikit/menu_button1.png">
-            </div>
             <div class="menuItems js-L-view">
-                <div class="navtitel js-L-view">
+                <div class="navtitel">
                     <span class="own_text_big">Wegweiser</span>
                 </div>
-                <div style="position: relative">
+                <div class="topics" style="position: relative">
                     <div style="position: absolute; z-index: 10">
                         <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                     </div>
                     <div class="navigation-background" style="position: absolute"></div>
                 </div>
             </div>
+            <div class="mobile_menuItems hidden js-S-view">
+                <div class="navbutton">
+                    <img class="menu_closed" src="/img/uikit/menu_button1.png">
+                </div>
+                <div class="topics hidden">
+                    <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
+                </div>
+            </div>
         </div>
 <!--------------------- CONTENT -------------------------->
         <div id="content">
             <span class="own_text_big"><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></span><br>
-
             <?php echo $this->content; ?>
         </div>
 
@@ -100,7 +104,7 @@
 <!--------------------- FOOT -------------------------->
         <div id="foot">
             <div id="foottext">
-                <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
+                <?php // echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                 <span>copyright © 2016 Schwarze Ritter zu Augsburg | </span>
                 <span><a href="#">Kontakt</a> | </span>
                 <span><a href="#">Impressum</a> | </span>
