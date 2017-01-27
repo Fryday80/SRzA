@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 22. Jan 2017 um 18:13
+-- Erstellungszeit: 27. Jan 2017 um 17:19
 -- Server Version: 5.6.13
 -- PHP-Version: 5.4.17
 
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `preview_pic` text COLLATE utf8_bin,
   `visibility` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
 
 --
 -- Daten für Tabelle `albums`
@@ -102,19 +102,19 @@ INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visi
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `artists`
+-- Tabellenstruktur für Tabelle `characters`
 --
 
-CREATE TABLE IF NOT EXISTS `artists` (
+CREATE TABLE IF NOT EXISTS `characters` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `family_id` int(11) NOT NULL,
   `family_order` int(11) NOT NULL,
   `vita` text NOT NULL,
-  `realfirstname` text NOT NULL,
-  `realname` text NOT NULL,
-  `showname` text NOT NULL,
-  `showsurename` text NOT NULL,
+  `name` text NOT NULL,
+  `surename` text NOT NULL,
+  `real_name` text NOT NULL,
+  `real_surename` text NOT NULL,
   `gender` enum('m','f') NOT NULL,
   `membernumber` int(11) NOT NULL,
   `street` text NOT NULL,
@@ -122,7 +122,16 @@ CREATE TABLE IF NOT EXISTS `artists` (
   `city` text NOT NULL,
   `birthday` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
+
+--
+-- Daten für Tabelle `characters`
+--
+
+INSERT INTO `characters` (`id`, `user_id`, `family_id`, `family_order`, `vita`, `name`, `surename`, `real_name`, `real_surename`, `gender`, `membernumber`, `street`, `zip`, `city`, `birthday`) VALUES
+(1, 2, 2, 1, 'vita text', 'Bart', 'Simpson', 'Stefan', 'Schulz', 'm', 468, 'strasse', 4684, 'hier', 38484438446),
+(4, 1, 3, 1, '', 'Doctor', 'who', '', '', 'm', 0, '', 0, '', 0),
+(5, 0, 0, 0, '', '', '', '', '', 'm', 0, '', 0, '', 0);
 
 -- --------------------------------------------------------
 
@@ -134,7 +143,15 @@ CREATE TABLE IF NOT EXISTS `families` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` text COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
+
+--
+-- Daten für Tabelle `families`
+--
+
+INSERT INTO `families` (`id`, `name`) VALUES
+(2, 'Von und Zu Hälter'),
+(3, 'dsadsa');
 
 -- --------------------------------------------------------
 
@@ -183,7 +200,14 @@ CREATE TABLE IF NOT EXISTS `job` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job` text COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=3 ;
+
+--
+-- Daten für Tabelle `job`
+--
+
+INSERT INTO `job` (`id`, `job`) VALUES
+(2, 'Schmied');
 
 -- --------------------------------------------------------
 
@@ -211,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=20 ;
 
 --
 -- Daten für Tabelle `nav`
@@ -277,7 +301,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=124 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=142 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -315,11 +339,6 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (78, 'edit', 20),
 (79, 'delete', 20),
 (81, 'index', 22),
-(89, 'index', 23),
-(91, 'add', 23),
-(93, 'edit', 23),
-(94, 'showprofile', 23),
-(95, 'delete', 23),
 (96, 'edit', 17),
 (97, 'add', 17),
 (98, 'full', 22),
@@ -333,7 +352,24 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (120, 'level1', 24),
 (121, 'level2', 24),
 (122, 'admin', 24),
-(123, 'register', 13);
+(123, 'register', 13),
+(124, 'index', 25),
+(126, 'add', 25),
+(127, 'edit', 25),
+(128, 'delete', 25),
+(129, 'index', 26),
+(130, 'add', 26),
+(131, 'edit', 26),
+(132, 'delete', 26),
+(133, 'index', 27),
+(134, 'add', 27),
+(135, 'edit', 27),
+(136, 'delete', 27),
+(137, 'index', 28),
+(138, 'add', 28),
+(139, 'edit', 28),
+(140, 'delete', 28),
+(141, 'index', 29);
 
 -- --------------------------------------------------------
 
@@ -345,7 +381,7 @@ CREATE TABLE IF NOT EXISTS `resource` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
 
 --
 -- Daten für Tabelle `resource`
@@ -362,8 +398,12 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 (19, 'Nav\\Controller\\Nav'),
 (20, 'Cms\\Controller\\Content'),
 (22, 'Album\\Controller\\Gallery'),
-(23, 'Usermanager\\Controller\\Usermanager'),
-(24, 'AAAAAAA');
+(24, 'AAAAAAA'),
+(25, 'Cast\\Controller\\Manager'),
+(26, 'Cast\\Controller\\Family'),
+(27, 'Cast\\Controller\\Job'),
+(28, 'Cast\\Controller\\Character'),
+(29, 'Cast\\Controller\\Presentation');
 
 -- --------------------------------------------------------
 
@@ -400,7 +440,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=288 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=309 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -525,7 +565,28 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (284, 4, 119),
 (285, 1, 119),
 (286, 4, 123),
-(287, 1, 123);
+(287, 1, 123),
+(288, 4, 125),
+(289, 4, 126),
+(290, 4, 127),
+(291, 4, 128),
+(292, 4, 124),
+(293, 4, 114),
+(294, 4, 115),
+(295, 4, 116),
+(296, 4, 138),
+(297, 4, 139),
+(298, 4, 140),
+(299, 4, 137),
+(300, 4, 132),
+(301, 4, 129),
+(302, 4, 130),
+(303, 4, 131),
+(304, 4, 133),
+(305, 4, 134),
+(306, 4, 135),
+(307, 4, 136),
+(308, 4, 141);
 
 -- --------------------------------------------------------
 
