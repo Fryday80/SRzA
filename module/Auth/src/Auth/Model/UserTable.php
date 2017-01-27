@@ -87,7 +87,7 @@ class UserTable extends AbstractTableGateway
         $this->delete(array('id' => (int) $id));
     }
 
-    private function getUsersWhere($where = array(), $columns = array())
+    public function getUsersWhere($where = array(), $columns = array())
     {
         try {
             $sql = $this->getSql();

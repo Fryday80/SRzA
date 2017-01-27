@@ -60,7 +60,7 @@ class MediaService {
     function getAlbumFiles($albumName) {
         $albumPath = realpath($this->dataPath.'/gallery/'.$albumName);
         if (is_dir($albumPath) ) {
-            //usermanager folder exists -> read all containing files
+            //Cast folder exists -> read all containing files
             $dir = scandir($albumPath);
             $result = array();
             foreach ($dir as $key => $value) {
@@ -77,7 +77,7 @@ class MediaService {
             }
             return $result;
         }
-        //check if usermanager exists
+        //check if Cast exists
         //read files
         //return files
         return array();
