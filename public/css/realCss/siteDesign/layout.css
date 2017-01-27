@@ -36,7 +36,6 @@ button {
     font-family: stylo, arial, sans-serif;
     color: black;
     font-size: 68px;
-    font-size-adjust: auto;
 }
 .own_text_big {
     font-family: stylo2, arial, sans-serif;
@@ -108,7 +107,7 @@ input {
     float: left;
     text-align: right;
     width: 40%;
-    width: calc(50%-90px);
+    width: calc(50% - 90px);
 }
 
 .rightHead {
@@ -121,7 +120,7 @@ input {
     clear:both;
     position: relative;
     padding-right: 10px;
-    width: calc (100% - 10px);
+    width: calc(100% - 10px);
     height: auto;
     text-align: right;
     color: black;
@@ -186,16 +185,13 @@ small {
 .rightbarup, .rightbardown {
     position: relative;
     padding-left: 1%;
-    padding-right: 0px;
+    padding-right: 0;
     padding-top: 20px;
     width: 100%;
     float: right;
     height: auto;
     min-height: 20%;
     overflow: visible;
-}
-newstitel {
-    font-weight: 700;
 }
 
 /* -----------------foot----------------- */
