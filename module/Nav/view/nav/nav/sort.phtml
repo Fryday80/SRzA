@@ -8,20 +8,21 @@ $this->headTitle($title);
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 
-<input id="save-menu" type="button" value="Save Sorting"></input>
-<input id="add-menu-item" type="button" value="Add Item"></input>
+<input id="save-menu" type="button" value="Save Sorting">
+<input id="add-menu-item" type="button" value="Add Item">
+
 <div id="success">Erfolg</div>
-<div>
 <div id="error">Fehler</div>
 <div id="navTree" class="dd">
-</div>
     <br>
-	<?php echo $this->render('navTreeEdit.phtml'); ?>
+    <?php echo $this->render('navTreeEdit.phtml'); ?>
 </div>
+
+
 <script type="text/javascript">
 
     $(document).ready(function(){
-    	$('.dd-list').nestable({});
+    	$('.dd').nestable({});
 
         function animateError() {
             var origin = $("#error").css("opacity");

@@ -31,8 +31,8 @@ $(document).ready (function menu_handler_js () {
      * performs the menu show-hide action
      */
     function menuToggle() {
-        $(".mobile_menuItems .topics").toggleClass("hidden");
-        $(".mobile_menuItems .topics").toggleClass("level_0_animated");
+        $(".menu_items").toggleClass("hidden")
+            .toggleClass("animation");
     }
     
     /**
@@ -43,7 +43,6 @@ $(document).ready (function menu_handler_js () {
          /** style class changes **/
         $(".js-L-view").removeClass("hidden");
         $(".js-S-view").not("hidden").addClass("hidden");
-        $(".menuItems .level_0").not("level_0_animated").addClass("level_0_animated");
     }
 
     /**
@@ -53,7 +52,6 @@ $(document).ready (function menu_handler_js () {
         /** style class changes **/
         $(".js-S-view").removeClass("hidden");
         $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
-        $(".mobile_menuItems .topics").removeClass("level_0_animated"); //resets the menu to closed state
     }
 
     /**
@@ -61,7 +59,7 @@ $(document).ready (function menu_handler_js () {
      */
     function menuActionsS () {
         if (mode == 'S') {
-            $(".menu_closed").on("click", menuToggle);
+            $(".menu_button_img").on("click", menuToggle);
         }
     }
 
@@ -73,7 +71,7 @@ $(document).ready (function menu_handler_js () {
     var mode ='L';
     function setMode () {
         /** removes click event to avoid multiple bindings **/
-        $(".menu_closed").off("click", menuToggle);
+        $(".menu_button_img").off("click", menuToggle);
 
         if(window.matchMedia('(max-width: 700px)').matches) {
             mode = "S";

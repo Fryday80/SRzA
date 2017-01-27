@@ -89,7 +89,7 @@ input {
 }
 .headdeko {
     width: 180px;
-    z-index: 100;
+    z-index: 100 !important;
     margin-top: -70px;
     margin-left: auto;
     margin-right: auto;
@@ -125,8 +125,11 @@ input {
     height: auto;
     text-align: right;
     color: black;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+    padding-bottom: 11px;
+    background-size: auto 30px;
+    background-image: url(/img/uikit/decoration.3line.png);
+    background-repeat: repeat-x;
+    background-position: bottom left;
 }
 #headlinks>span {
     color: black;
@@ -166,7 +169,7 @@ small {
     float: left;
     width: 68%;
     padding-left: 3%;
-    padding-top: 5%;
+    padding-top: 3%;
     min-height: 50%;
 
 }
@@ -204,9 +207,9 @@ newstitel {
 
 #foottext {
     color: black;
-    padding-top: 10px;
     min-height: 30px;
-    background-image: url(/img/uikit/decoration.3l.png);
+    padding-top: 11px;
+    background-image: url(/img/uikit/decoration.3line_pure.png);
     background-size: auto 10px;
     background-repeat: repeat-x;
     background-position: top left;
@@ -223,10 +226,11 @@ newstitel {
 }
 
 .spacer_line {
-    background-image: url(/img/uikit/decoration.3l.png);
+    background-image: url(/img/uikit/decoration.3line_pure.png);
     background-repeat: repeat-x;
-    background-size: contain;
-    height: 10px;
+    background-size: auto 10px;
+    background-position: bottom left;
+    height: 11px;
 }
 
 
