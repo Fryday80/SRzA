@@ -55,7 +55,7 @@ $(document).ready (function menu_handler_js () {
         $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
         $(".mobile_menuItems .topics").removeClass("level_0_animated"); //resets the menu to closed state
     }
-//    @todo bugfix    view <400p width => menu crashes
+
     /**
      * binds the menu show-hide action
      */

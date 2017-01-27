@@ -13,6 +13,10 @@ class CharacterDataTable extends DataTable
             'label' => 'Name',
         ));
         $this->add(array(
+            'name' => 'surename',
+            'label' => 'Nachname',
+        ));
+        $this->add(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {
