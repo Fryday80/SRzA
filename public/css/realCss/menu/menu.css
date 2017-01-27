@@ -40,6 +40,7 @@
 }
 /* first level li */
 .level_0 {
+    vertical-align: top;
     position: relative;
     display: inline-block;
     width: 130px;
@@ -62,7 +63,8 @@
     padding-bottom: 11px;
     background-size: auto 30px;
     background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat;
+    background-repeat: repeat-x;
+    background-position: bottom left;
 }
 .level_0:hover,
 .level_0:active,
@@ -99,10 +101,16 @@
     .navigation {
         background: none;
     }
+    .navigation a {
+         text-decoration: underline;
+     }
     /* first level li */
     .level_0 {
         background-color: #D2B48C;
         margin-top: 3px;
+        background-repeat: repeat-x;
+        padding: 0;
+        min-height: 30px;
     }
     .level_0>ul {
         position:relative;
@@ -110,9 +118,11 @@
     }
 
     .level_0:hover,
-    .level_0:active,
-    .level_0 li:hover{
+    .level_0:active {
         background-position: top left;
+    }
+    .level_0 li:hover{
+        background-position: bottom left;
     }
     .animation {
          display: block !important;
