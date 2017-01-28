@@ -77,7 +77,7 @@ class DataTable
         if (is_array($setting)){
             $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => $setting ) );
             $this->jsConfig['dom']['B'] = true;
-        } elseif (strtolower($setting) == 'all'){ //if needed todo add array of possible keywords and if them through
+        } elseif (strtolower($setting) == 'all'){ //if needed @todo enhancement add array of possible keywords and if them through
             $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => array( "print", "copy", "csv", "excel", "pdf") ) );
             $this->jsConfig['dom']['B'] = true;
         } else {
@@ -92,14 +92,16 @@ class DataTable
      */
     public function insertLinkButton($url, $text, $key = false){
         // <external use> checks if 'buttons' is already set in any way .. if not initializes 'buttons'
-        if (!is_array($this->jsConfig['buttons']))
+        if ( !array_key_exists('buttons', $this->jsConfig) || !is_array($this->jsConfig['buttons']))
         {
             $this->jsConfig['buttons'] = array();
         }
+        
         // <internal use> from prepareConfig() a key is given
         if ($key) {
             $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
         }
+        
         // <external use> pushes new button in the buttons array
         else {
             array_push($this->jsConfig['buttons'], array(
@@ -278,8 +280,12 @@ class DataTable
                     $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
                     unset ($arrayToCheck['dom']['b']);
                 }
+                if (!key_exists('B', $arrayToCheck['dom'])){
+                    $arrayToCheck['dom']['B'] = true;
+                }
             }
-            return $arrayToCheck == $this->jsConfig ? true : $arrayToCheck;
+
+            return ($arrayToCheck == $this->jsConfig) ? true : $this->jsConfig = $arrayToCheck;
         } else return false;
     }
 

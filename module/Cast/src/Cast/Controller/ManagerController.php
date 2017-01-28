@@ -5,6 +5,7 @@ use Cast\Form\FamilyForm;
 use Cast\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Application\Utility\DataTable;
 
 class ManagerController extends AbstractActionController
 {
@@ -16,10 +17,47 @@ class ManagerController extends AbstractActionController
         $jobs = $jobTable->getAll();
         $characterTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
         $characters = $characterTable->getAll();
+        $data = array(
+            'data' => array (
+                0 => array ( 'id'=> '1', 'name'=>'families ('.count($families).')', 'link' => 'families' ),
+                1 => array ( 'id'=> '2', 'name'=>'job ('.count($jobs).')', 'link' => 'jobs' ),
+                2 => array ( 'id'=> '3', 'name'=>'characters ('.count($characters).')', 'link' => 'characters' )
+            ),
+            'columns' =>    array(
+                array (
+                    'name'  => 'name',
+                    'label' => 'Gruppen'
+                ),
+                array (
+                    'name'  => 'href',
+                    'label' => 'Aktion',
+                    'type'  => 'custom',
+                    'render' => function($row) {
+                        $edit = '<a href="/castmanager/'.$row['link'].'">Edit</a>';
+                        return $edit;
+                    }
+                )
+            ),
+            'jsConfig' => array(
+                'buttons' => array(
+                    'pdf',
+                    'print',
+                    "csv",
+                    "excel",
+                    /*array(
+                        'text' => 'add resource',
+                        'url' => '/resource/add',
+                    )*/
+                ),
+                'dom' => array(
+                    'B' => true,
+                )
+            ),
+        );
+
+        $dataTable = new DataTable($data);
         return array(
-            'familiesCount' => count($families),
-            'jobsCount' => count($jobs),
-            'charactersCount' => count($characters),
+            'dataTable' => $dataTable,
         );
     }
     public function addAction() {
