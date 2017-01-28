@@ -17,7 +17,7 @@
  */
 
 //debugging
-function dump ($varray, $marker = '##########BUGFIX######', $trace=3)
+function dump ($varray = 'Dump test', $marker = '##########BUGFIX######', $trace=3)
 {
     echo $marker;
     echo ('<pre style="background-color: #0ac2d2">');
@@ -28,7 +28,8 @@ function dump ($varray, $marker = '##########BUGFIX######', $trace=3)
     echo ('</pre>');
 
 }
-function dumpd ($varray, $marker = '##########BUGFIX######', $trace=3){
+
+function dumpd ($varray = 'Dump test', $marker = '##########BUGFIX######', $trace=3){
     dump ($varray, $marker, $trace);
     die;
 }

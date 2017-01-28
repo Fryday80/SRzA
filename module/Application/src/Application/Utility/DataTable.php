@@ -74,14 +74,15 @@ class DataTable
      * @param array $setting | keyword
      */
     public function setButtons ($setting) {
-        if (is_array($setting)){
-            $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => $setting ) );
-            $this->jsConfig['dom']['B'] = true;
-        } elseif (strtolower($setting) == 'all'){               //@enhancement if needed add array of possible keywords and if them through @todo
+        if (strtolower($setting) == 'all'){               //@enhancement if needed add array of possible keywords and if them through @todo
             $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => array( "print", "copy", "csv", "excel", "pdf") ) );
             $this->jsConfig['dom']['B'] = true;
         } else {
             $this->validateDataType($setting, 'setButtons');
+            if (is_array($setting)) {
+                $this->jsConfig = array_replace_recursive($this->jsConfig, array('buttons' => $setting));
+                $this->jsConfig['dom']['B'] = true;
+            }
         }
     }
 
@@ -96,7 +97,6 @@ class DataTable
         {
             $this->jsConfig['buttons'] = array();
         }
-        
         // <internal use> from prepareConfig() a key is given
         if ($key) {
             $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
@@ -195,8 +195,8 @@ class DataTable
         //  checks if a js configuration is given
         if ( key_exists( 'jsConfig', $config ) ){
             //  validate js configuration
-            $isJSConfig = $this->validateDOMArray($config['jsConfig']);
-            if ($isJSConfig == true) {
+            $this->validateDOMArray($config['jsConfig']);
+            if (key_exists('buttons', $this->jsConfig)) {
                 foreach ($this->jsConfig['buttons'] as $key => $value) {
                     //self made buttons:
                     if (is_array($value)) {
@@ -262,7 +262,11 @@ class DataTable
                 $validatorKey = 'name';
                 break;
             case 'setButtons':
-                trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
+                if (!is_array($dataToCheck)) {
+                    trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
+                } else {
+                    $validatorKey = 'text';
+                }
                 break;
         }
 
@@ -300,7 +304,7 @@ class DataTable
                     $arrayToCheck['dom']['B'] = true;
                 }
             }
-            array_replace_recursive($this->jsConfig, $isJSConfig);
+            $this->jsConfig = array_replace_recursive($this->jsConfig, $arrayToCheck);
             return true;
         } else return false;
     }
