@@ -86,13 +86,6 @@ input {
     position: relative;
     width: 100%;
 }
-.headdeko {
-    width: 180px;
-    z-index: 100 !important;
-    margin-top: -70px;
-    margin-left: auto;
-    margin-right: auto;
-}
 
 #head {
     position: relative;
@@ -101,6 +94,13 @@ input {
     width: 100%;
     height: 90px;  /*height + padding = height of div*/
     padding-top: 20px;
+}
+.headdeko {
+    width: 180px;
+    z-index: 100 !important;
+    margin-top: -70px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .leftHead {
@@ -129,6 +129,7 @@ input {
     background-image: url(/img/uikit/decoration.3line.png);
     background-repeat: repeat-x;
     background-position: bottom left;
+    z-index: 4;
 }
 #headlinks>span {
     color: black;

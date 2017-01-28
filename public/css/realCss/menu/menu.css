@@ -16,8 +16,9 @@
 
 /* **** menu titel **** */
 .menu_titel {
+    padding-top: 0.5%;
     text-align: center;
-    height: 45px;
+    height: 40px;
     background-size: auto 30px;
     background-image: url(/img/uikit/decoration.3line.png);
     background-repeat: repeat-x;
