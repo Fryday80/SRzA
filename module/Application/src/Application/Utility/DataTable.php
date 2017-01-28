@@ -71,13 +71,13 @@ class DataTable
      * <br> possible keyword 'all' <br>
      * for array help see: <br>
      * <code>//https://datatables.net/reference/index for preferences/documentation</code>
-     * @param array|keyword $setting
+     * @param array $setting | keyword
      */
     public function setButtons ($setting) {
         if (is_array($setting)){
             $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => $setting ) );
             $this->jsConfig['dom']['B'] = true;
-        } elseif (strtolower($setting) == 'all'){ //if needed @todo enhancement add array of possible keywords and if them through
+        } elseif (strtolower($setting) == 'all'){               //@enhancement if needed add array of possible keywords and if them through @todo
             $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => array( "print", "copy", "csv", "excel", "pdf") ) );
             $this->jsConfig['dom']['B'] = true;
         } else {
@@ -141,6 +141,9 @@ class DataTable
 
 
     /*****************PRIVATE methods******************/
+    /**
+     * sets the default before customization takes place
+     */
     private function setJSDefault(){
         $this->jsConfig = array (
             'lengthMenu' => array(
@@ -163,14 +166,22 @@ class DataTable
      */
     private function prepareConfig($config)
     {
+        //  validation for data in $config
         $this->validateDataType($config, 'prepareConfig');
 
+        //  attach the data set
         $this->setData($config['data']);
+
+        //  checks if a column configuration is given
+        //  --  //  if yes
         if (key_exists('columns', $config)) {
             foreach ($config['columns'] as $key => $value) {
                 $this->add($value);
             }
-        } else {
+        }
+
+        //  --  //  if not, each data column is made to visible column
+        else {
             foreach ($config['data'] as $row) {
                 foreach ($row as $key => $value) {
                     $this->add(array(
@@ -181,12 +192,11 @@ class DataTable
             }
         }
 
-
+        //  checks if a js configuration is given
         if ( key_exists( 'jsConfig', $config ) ){
+            //  validate js configuration
             $isJSConfig = $this->validateDOMArray($config['jsConfig']);
-            if ($isJSConfig !== false) {
-                $this->jsConfig = array_replace_recursive($this->jsConfig, $isJSConfig);
-
+            if ($isJSConfig == true) {
                 foreach ($this->jsConfig['buttons'] as $key => $value) {
                     //self made buttons:
                     if (is_array($value)) {
@@ -214,7 +224,7 @@ class DataTable
      * prepares the array of jsConfig for json encode
      */
     private function domPrepare(){
-        $this->validateDOMArray(); //@todo salt fry why ???
+        $this->validateDOMArray();
         //rewriting in needed string
         $domPrepare = '';
         $sorting_array = array (
@@ -262,30 +272,36 @@ class DataTable
     }
 
     /**
-     * validates given dom array of jsConfig or dom array in $this->jsConfig if no argument given
-     * <br> no argument thought for check up in ->getSetupString()
-     * @param array $arrayGivenToCheck
-     * @return array refactored array or sets $this->jsConfig if no argument was given
+     * validates the dom setup for buttons, if no array given $this->jsConfig
+     * <br> if buttons given: checks and fixes the DOM
+     * <br> updates the $this->jsConfig
+     * @param array $atc | $this->jsConfig if no argument was given
+     * @return bool false if no buttons set <br>or<br> true after fixing the settings for buttons
      */
     private function validateDOMArray($atc = Null)
     {
+        //  sets $this->jsConfig if no argument was given
         $arrayToCheck = ($atc == Null) ? $this->jsConfig : $atc;
+        //  are buttons in the config?
         if (key_exists('buttons', $arrayToCheck) ) {
             //fix forgotten dom setting
             if (!key_exists('dom', $arrayToCheck)) {
                 $arrayToCheck['dom']['B'] = true;
-            } else {
-                //checks & fixes misspelling -> replaces in case that a 'b' is given in stead of 'B'
+            }
+            //  if dom is set
+            else {
+                //  checks & fixes misspelling -> replaces in case that a 'b' is given in stead of 'B'
                 if (key_exists('b', $arrayToCheck['dom'])) {
                     $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
                     unset ($arrayToCheck['dom']['b']);
                 }
+                //  adds the "B" if buttons are set up but no dm entry
                 if (!key_exists('B', $arrayToCheck['dom'])){
                     $arrayToCheck['dom']['B'] = true;
                 }
             }
-
-            return ($arrayToCheck == $this->jsConfig) ? true : $this->jsConfig = $arrayToCheck;
+            array_replace_recursive($this->jsConfig, $isJSConfig);
+            return true;
         } else return false;
     }
 
