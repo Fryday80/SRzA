@@ -19,43 +19,37 @@ class ManagerController extends AbstractActionController
         $characters = $characterTable->getAll();
         $data = array(
             'data' => array (
-                0 => array ( 'id'=> '1', 'name'=>'families ('.count($families).')', 'link' => 'families' ),
-                1 => array ( 'id'=> '2', 'name'=>'job ('.count($jobs).')', 'link' => 'jobs' ),
-                2 => array ( 'id'=> '3', 'name'=>'characters ('.count($characters).')', 'link' => 'characters' )
+                0 => array (
+                    'id'=> '1',
+                    'name'=>'families ('.count($families).')',
+                    'link' => 'families'
+                ),
+                1 => array (
+                    'id'=> '2',
+                    'name'=>'jobs ('.count($jobs).')',
+                    'link' => 'jobs'
+                ),
+                2 => array (
+                    'id'=> '3',
+                    'name'=>'characters ('.count($characters).')',
+                    'link' => 'characters'
+                )
             ),
             'columns' =>    array(
                 array (
-                    'name'  => 'name',
-                    'label' => 'Gruppen'
-                ),
-                array (
                     'name'  => 'href',
-                    'label' => 'Aktion',
+                    'label' => 'Gruppen',
                     'type'  => 'custom',
                     'render' => function($row) {
-                        $edit = '<a href="/castmanager/'.$row['link'].'">Edit</a>';
+                        $edit = '<a href="/castmanager/'.$row['link'].'">'.$row['name'].'</a>';
                         return $edit;
                     }
-                )
-            ),
-            'jsConfig' => array(
-                'buttons' => array(
-                    'pdf',
-                    'print',
-                    "csv",
-                    "excel",
-                    /*array(
-                        'text' => 'add resource',
-                        'url' => '/resource/add',
-                    )*/
-                ),
-                'dom' => array(
-                    'B' => true,
                 )
             ),
         );
 
         $dataTable = new DataTable($data);
+        $dataTable->setButtons('all');
         return array(
             'dataTable' => $dataTable,
         );
