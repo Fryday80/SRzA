@@ -25,7 +25,7 @@ class DataTable
 
 /*****************PUBLIC methods**************/
     public function setData($data) {
-        //@todo validate $data ??
+        $this->validateDataType($data, 'setData');
         $this->data = $data;
     }
     public function setColumns($columns) {
@@ -70,14 +70,17 @@ class DataTable
      * @param array $setting | keyword
      */
     public function setButtons ($setting) {
-        if (strtolower($setting) == 'all'){               //@enhancement if needed add array of possible keywords and if them through @todo
-            $this->jsConfig = array_replace_recursive( $this->jsConfig, array( 'buttons' => array( "print", "copy", "csv", "excel", "pdf") ) );
-            $this->jsConfig['dom']['B'] = true;
-        } else {
+        if (is_array($setting)) {
             $this->validateDataType($setting, 'setButtons');
-            if (is_array($setting)) {
-                $this->jsConfig = array_replace_recursive($this->jsConfig, array('buttons' => $setting));
+
+            $this->jsConfig = array_replace_recursive($this->jsConfig, array('buttons' => $setting));
+            $this->jsConfig['dom']['B'] = true;
+        }else{
+            if (strtolower($setting) == 'all') {               //@enhancement if needed add array of possible keywords and if them through @todo
+                $this->jsConfig = array_replace_recursive($this->jsConfig, array('buttons' => array("print", "copy", "csv", "excel", "pdf")));
                 $this->jsConfig['dom']['B'] = true;
+            } else {
+                $this->validateDataType($setting, 'setButtons');
             }
         }
     }
@@ -168,7 +171,7 @@ class DataTable
             return $array;
         }
     }
-    
+
     private function prepareColumnConfig($config){
         $this->validateDataType($config, 'prepareColumnConfig');
 
@@ -217,7 +220,8 @@ class DataTable
      */
     private function domPrepare(){
         //fixing DOM settings
-        $this->validateDOMArray();
+        $this->fixDOMArray();
+
         //rewriting in needed string otherwise there are bugs in the view
         $domPrepare = '';
         $sorting_array = array (
@@ -255,10 +259,10 @@ class DataTable
     private function validateDataType($dataToCheck, $requestingFunction)
     {
         switch ($requestingFunction) {
-            case 'prepareConfig':
-                $validatorKey = 'data';
-                if (key_exists($validatorKey, $dataToCheck) && !is_array($dataToCheck['data'])) {
-                    trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" has to be array', E_USER_ERROR);
+            case 'setData':
+                $validatorKey = false;
+                if ( !is_array($dataToCheck) ) {
+                    trigger_error('DataTable -> ' . $requestingFunction . '() > data has to be array', E_USER_ERROR);
                 }
                 break;
             case 'prepareColumnConfig':
@@ -266,25 +270,27 @@ class DataTable
                 break;
             case 'setButtons':
                 if (!is_array($dataToCheck)) {
-                    trigger_error('DataTable -> ' . $requestingFunction . '() > "' . $dataToCheck . '" is neither a allowed keyword nor valid array', E_USER_ERROR);
+                    trigger_error('DataTable -> ' . $requestingFunction . '() > input is no allowed keyword', E_USER_ERROR);
                 } else {
                     $validatorKey = 'text';
                 }
                 break;
         }
 
-        if (!key_exists($validatorKey, $dataToCheck)) {
-            trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
+        if ($validatorKey !== false) {
+            if (!key_exists($validatorKey, $dataToCheck)) {
+                trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
+            }
         }
     }
     /**
-     * validates the dom setup for buttons, if no array given $this->jsConfig
+     * fixes the dom setup for buttons, if no array given $this->jsConfig
      * <br> if buttons given: checks and fixes the DOM
      * <br> updates the $this->jsConfig
      * @param array $atc | $this->jsConfig if no argument was given
      * @return bool false if no buttons set <br>or<br> true after fixing the settings for buttons
      */
-    private function validateDOMArray()
+    private function fixDOMArray()
     {
         //  are buttons in the config?
         if (key_exists('buttons', $this->jsConfig) ) {

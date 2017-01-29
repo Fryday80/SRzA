@@ -2,8 +2,14 @@
     text-align: center;
     width: 28%; float: left;
     margin: 1%;
-    border: double black 4px;
-    background-color: white;
+    /* border: double black 4px; */
+    background-color: #FAEBd7;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-image: url(/img/uikit/decoration.3line.png), url(/img/uikit/decoration.3line_pure.png);
+    background-size: auto 30px, auto 10px;
+    background-repeat: repeat-x, repeat-x;
+    background-position: bottom left, top left;
 }
 
 .castManagerTitel{
@@ -11,7 +17,13 @@
     font-size: large;
 }
 .castManagerDiv:hover{
-    background-color: whitesmoke;
+    background-color: #D2B48C;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    background-image: url(/img/uikit/decoration.3line_active.png), url(/img/uikit/decoration.3line_pure.png);
+    background-size: auto 30px, auto 10px;
+    background-repeat: repeat-x, repeat-x;
+    background-position: bottom left, top left;
 }
 
 /* @todo cleanfix still in use?? */
