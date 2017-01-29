@@ -96,9 +96,9 @@ input {
     padding-top: 20px;
 }
 .headdeko {
-    width: 180px;
+    height: 140%;
     z-index: 100 !important;
-    margin-top: -70px;
+    /* margin-top: -70px;*/
     margin-left: auto;
     margin-right: auto;
 }
@@ -124,11 +124,6 @@ input {
     height: auto;
     text-align: right;
     color: black;
-    padding-bottom: 11px;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
     z-index: 4;
 }
 #headlinks>span {
@@ -167,7 +162,7 @@ small {
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 68%;
+    width: 66%;
     padding-left: 3%;
     padding-top: 3%;
     min-height: 50%;
@@ -188,7 +183,7 @@ small {
     padding-left: 1%;
     padding-right: 0;
     padding-top: 20px;
-    width: 100%;
+    width: 95%;
     float: right;
     height: auto;
     min-height: 20%;
@@ -229,6 +224,32 @@ small {
     background-position: bottom left;
     height: 11px;
 }
+.box {
+    border: solid #D2B4B0 8px;
+    border-image: url("/img/uikit/border1.png") 40 repeat;
+    margin: 1%;
+    background-color: #FAEBd7;
+}
+.titel{
+    border-bottom:none;
+    margin-bottom: 0;
+    background-color: #FAEBB0;
+    background-image: url( /img/body.bg.png);
+}
+.content{
+    border-top:none;
+    background-color: #FAEBd7;
+    margin-top: 0;
+}
+/* der wird so nie genutzt
+.box_castmanager{
+
+    text-align: center;
+    width: 28%; float: left;
+}
+
+*/
+
 
 
 .sra_table {

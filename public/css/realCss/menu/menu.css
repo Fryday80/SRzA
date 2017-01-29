@@ -54,9 +54,12 @@
 .level_0>ul{
     margin-top: 10px;
     position:absolute;
-    width: 100%;
-    background-color: #D2B48C;
+    width: calc(100% - 16px);
+    background-color: #FAEBd7;
     display: none;
+    border-image: url("/img/uikit/border1.png") 40 repeat;
+    border-left: solid #D2B4B0 8px;
+    border-right: solid #D2B4B0 8px;
 }
 .level_0 li{
     display: block;
@@ -70,7 +73,7 @@
 .level_0:hover,
 .level_0:active,
 .level_0 li:hover{
-    background-color: #D2B48C;
+    background-color: #FAEBd7;
     background-size: auto 30px;
     background-image: url(/img/uikit/decoration.3line_active.png);
     background-repeat: repeat-x;
@@ -79,6 +82,10 @@
 .level_0:hover>ul,
 .level_0:active>ul{
     display:block;
+    border: solid #D2B4B0 8px;
+    border-top: none;
+    border-image: url("/img/uikit/border1.png") 40 repeat;
+    padding-bottom: 10px;
 }
 
 /* **** the link images **** */
@@ -107,15 +114,19 @@
      }
     /* first level li */
     .level_0 {
-        background-color: #D2B48C;
+        background-color: #FAEBC5;
         margin-top: 3px;
         background-repeat: repeat-x;
         padding: 0;
         min-height: 30px;
+        border: solid #D2B4B0 8px;
+        border-image: url("/img/uikit/border1.png") 40 repeat;
+        padding-bottom: 10px;
     }
     .level_0>ul {
         position:relative;
         display: block;
+        border:none;
     }
 
     .level_0:hover,

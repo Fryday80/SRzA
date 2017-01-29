@@ -5,7 +5,7 @@ $this->headTitle($title);
  <h1><?php echo $this->escapeHtml($title); ?></h1><br>
  <?php foreach ($items as $item):
      $count = $item.'Count';?>
-     <div class="castManagerDiv">
+     <div class="box box_background">
         <a href="<?php echo $this->url('castmanager/'.$item);?>">
             <div>
                 <p class="castManagerTitel">
@@ -16,6 +16,7 @@ $this->headTitle($title);
                  </p>
              </div>
         </a>
+         letzter bearbeiteter
      </div>
  <?php endforeach; ?>
 

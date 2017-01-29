@@ -6,7 +6,6 @@ if (!function_exists("createMenuHtmlRecursive") ){
         if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
             echo "<li class='level_$level'>";
             echo '<a href="' . $page->getUri() . '">' . $page->getLabel();
-            // echo '<div class="spacer_nav_line"></div>';
             echo '</a>';
             if ($page->hasPages()) {
                 $nextLevel = $level + 1;

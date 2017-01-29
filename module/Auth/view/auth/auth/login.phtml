@@ -1,19 +1,22 @@
+<div class="box titel">
+    <span class="own_text_big">Login</span>
+</div>
+<div class="box content" style="text-align: center">
+    <?php
+        $form = $this->form;
+        $form->prepare();
 
-<span class="own_text_big">Login</span>
-<div class="spacer_line"></div><br>
-<?php
-$form = $this->form;
-$form->prepare();
- 
-echo $this->form()->openTag($form);
-echo $this->formCollection($form);
-echo $this->form()->closeTag();
- 
-if ($this->messages){
-    echo '<ul>';
-    foreach($this->messages as $message)
-    {
-        echo '<li>'.$message.'</li>';
-    }
-    echo '</ul>';
-}
+        echo $this->form()->openTag($form);
+        echo $this->formCollection($form);
+        echo $this->form()->closeTag();
+
+        if ($this->messages){
+            echo '<ul>';
+            foreach($this->messages as $message)
+            {
+                echo '<li>'.$message.'</li>';
+            }
+            echo '</ul>';
+        }
+    ?>
+</div>
