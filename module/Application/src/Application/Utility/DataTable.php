@@ -8,7 +8,6 @@
 
 namespace Application\Utility;
 
-
 class DataTable
 {
     public $data;
@@ -47,23 +46,9 @@ class DataTable
         return $string;
     }
 
-        /**************UNUSED PUBLICS SO FAR ***************/
-
     public function setData($data) {
         //@todo validate $data
         $this->data = $data;
-    }
-
-    public function setJSConf ($index, $value){
-        $this->jsConfig[$index] = $value;
-    }
-
-    /**
-     * set all js setting at once
-     * @param array $settings
-     */
-    public function setWholeJSConf ($settings){
-        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
     }
 
     /**
@@ -101,7 +86,7 @@ class DataTable
         if ($key) {
             $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
         }
-        
+
         // <external use> pushes new button in the buttons array
         else {
             array_push($this->jsConfig['buttons'], array(
@@ -111,6 +96,20 @@ class DataTable
         }
         $this->validateDOMArray();
     }
+
+    /**************UNUSED PUBLICS SO FAR ***************/
+    public function setJSConf ($index, $value){
+        $this->jsConfig[$index] = $value;
+    }
+
+    /**
+     * set all js setting at once
+     * @param array $settings
+     */
+    public function setWholeJSConf ($settings){
+        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
+    }
+
 
     public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
         if ( isset ($array['text']) ){
@@ -162,6 +161,7 @@ class DataTable
     }
 
     /**
+     * validates data, sets up missing parts and puts the config data where it belongs
      * @param array $config
      */
     private function prepareConfig($config)
@@ -308,6 +308,4 @@ class DataTable
             return true;
         } else return false;
     }
-
-
 }

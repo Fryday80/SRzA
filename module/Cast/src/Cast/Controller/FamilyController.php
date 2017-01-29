@@ -13,6 +13,9 @@ class FamilyController extends AbstractActionController
         $families = $familyTable->getAll();
         $famTable = new FamilyDataTable();
         $famTable->setData($families);
+        $famTable->setButtons('all');
+        $famTable->insertLinkButton('/castmanager/families/add', 'add new familiy');
+        //$jobsTable->insertLinkButton('/castmanager', 'Zurück');
         return new ViewModel(array(
             'families' => $famTable,
         ));

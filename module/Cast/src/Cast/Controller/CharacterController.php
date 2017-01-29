@@ -15,6 +15,9 @@ class CharacterController extends AbstractActionController
         $families = $familyTable->getAll();
         $famTable = new CharacterDataTable();
         $famTable->setData($families);
+        $famTable->setButtons('all');
+        $famTable->insertLinkButton('/castmanager/characters/add', 'add new familiy');
+        //$jobsTable->insertLinkButton('/castmanager', 'Zurück');
         return new ViewModel(array(
             'families' => $famTable,
         ));
