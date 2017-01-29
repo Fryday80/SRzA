@@ -5,7 +5,6 @@ use Cast\Form\FamilyForm;
 use Cast\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Application\Utility\DataTable;
 
 class ManagerController extends AbstractActionController
 {
@@ -17,42 +16,11 @@ class ManagerController extends AbstractActionController
         $jobs = $jobTable->getAll();
         $characterTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
         $characters = $characterTable->getAll();
-        $data = array(
-            'data' => array (
-                0 => array (
-                    'id'=> '1',
-                    'name'=>'families ('.count($families).')',
-                    'link' => 'families'
-                ),
-                1 => array (
-                    'id'=> '2',
-                    'name'=>'jobs ('.count($jobs).')',
-                    'link' => 'jobs'
-                ),
-                2 => array (
-                    'id'=> '3',
-                    'name'=>'characters ('.count($characters).')',
-                    'link' => 'characters'
-                )
-            ),
-            'columns' =>    array(
-                array (
-                    'name'  => 'href',
-                    'label' => 'Gruppen',
-                    'type'  => 'custom',
-                    'render' => function($row) {
-                        $edit = '<a href="/castmanager/'.$row['link'].'">'.$row['name'].'</a>';
-                        return $edit;
-                    }
-                )
-            ),
-        );
-
-        $dataTable = new DataTable($data);
-        $dataTable->setButtons('all');
-        return array(
-            'dataTable' => $dataTable,
-        );
+        $return['items'] = array ('families', 'jobs', 'characters');
+        foreach ($return['items'] as $item){
+            $return[$item.'Count'] = count($$item);
+        }
+        return $return;
     }
     public function addAction() {
         $form = new FamilyForm();

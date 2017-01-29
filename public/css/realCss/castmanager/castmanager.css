@@ -1,0 +1,28 @@
+.castManagerDiv{
+    text-align: center;
+    width: 28%; float: left;
+    margin: 1%;
+    border: double black 4px;
+    background-color: white;
+}
+
+.castManagerTitel{
+    text-decoration: underline;
+    font-size: large;
+}
+.castManagerDiv:hover{
+    background-color: whitesmoke;
+}
+
+/* @todo cleanfix still in use?? */
+.form>form
+{
+    width: 100%;
+}
+
+.label label,
+.input input,
+.select select
+{
+    width: 100%;
+}

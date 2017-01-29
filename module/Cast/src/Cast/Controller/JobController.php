@@ -17,7 +17,7 @@ class JobController extends AbstractActionController
 
         $jobsTable->setButtons('all');
         $jobsTable->insertLinkButton('/castmanager/jobs/add', 'Add new job');
-        //$jobsTable->insertLinkButton('/castmanager', 'Zurück');
+        $jobsTable->insertLinkButton('/castmanager', 'Zurück');
 
         return new ViewModel(array(
             'jobs' => $jobsTable,

@@ -1,6 +1,19 @@
 <?php
-// $title = 'Cast Manager';
-// $this->headTitle($title);
-//echo '<h1>' .$this->escapeHtml($title). '</h1>';
+$title = 'Cast Manager';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1><br>
+ <?php foreach ($items as $item):
+     $count = $item.'Count';?>
+    <a href="<?php echo $this->url('castmanager/'.$item);?>">
+        <div class="castManagerDiv">
+            <p class="castManagerTitel">
+                <?php echo ucfirst($item);?>
+            </p>
+            <p>
+                 Entrys: <?php echo $$count;?>
+             </p>
+         </div>
+    </a>
+ <?php endforeach; ?>
 
-echo $this->dataTable()->render( $dataTable );

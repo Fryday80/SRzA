@@ -93,10 +93,17 @@ class DataTable
         $this->columnPrepare();
         $this->domPrepare();
 
-        $string = json_encode($this->jsConfig);
-        $regex = '/"\@buttonFunc:(.*)\@"/i';
-        $func = 'function(){window.location = "$1";}';
-        $string = preg_replace($regex, $func, $string);
+        $string = json_encode($this->jsConfig);$regex = '/"\@(.+?):(.+?)\@"/';
+        preg_match_all($regex, $string, $matches);
+        foreach ($matches[1] as $count => $selector ) {
+            switch($selector) {
+                case 'buttonFunc':
+                    //replace with button text
+                    $replacement = 'function(){window.location = "' . $matches[2][$count].'";}';
+                    $string = str_replace($matches[0][$count], $replacement, $string);
+                    break;
+            }
+        }
         return $string;
     }
 
@@ -147,8 +154,13 @@ class DataTable
     private function undoHumanFactor($array){
         $returnarray = [];
         if ( is_array($array) ){
+
             foreach ($array as $key => $value){
-                $returnarray[strtolower($key)] = $value;
+                if (strtolower($key) == 'jsconfig'){
+                    $returnarray['jsConfig'] = $value;
+                }else {
+                    $returnarray[strtolower($key)] = $value;
+                }
             }
             return $returnarray;
         } else {
@@ -156,7 +168,7 @@ class DataTable
             return $array;
         }
     }
-
+    
     private function prepareColumnConfig($config){
         $this->validateDataType($config, 'prepareColumnConfig');
 
