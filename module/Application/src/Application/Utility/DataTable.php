@@ -19,38 +19,49 @@ class DataTable
         $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
-            $this->prepareConfig($config);
+            $this->setupConfig($config);
         }
     }
 
-    /**************PUBLIC Access****************/
+/*****************PUBLIC methods**************/
+    public function setData($data) {
+        //@todo validate $data ??
+        $this->data = $data;
+    }
+    public function setColumns($columns) {
+        //@todo validate $data ??
+        foreach ($columns as $key => $value) {
+            $this->add($value);
+        }
+    }
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
         array_push($this->columns, $columnConf);
     }
-
-    /**
-     * generates the string to be inserted in the js script <br>
-     * uses json_encode
-     *
-     * @return string js options string
-     */
-    public function getSetupString(){
-
-        $this->domPrepare();
-
-        $string = json_encode($this->jsConfig);
-        $regex = '/"\@buttonFunc:(.*)\@"/i';
-        $func = 'function(){window.location = "$1";}';
-        $string = preg_replace($regex, $func, $string);
-        return $string;
-    }
-
-    public function setData($data) {
+    public function setJSConfig($jsConfig) {
         //@todo validate $data
-        $this->data = $data;
+        $this->jsConfig = array_replace_recursive($this->jsConfig, $jsConfig);
     }
-
+    public function addJSConfig ($index, $value){
+        $this->jsConfig = array_replace_recursive( $this->jsConfig, array($index => $value) );
+    }
+    /**
+     * inserts self made buttons to js DataTableHelper
+     * @param string $url
+     * @param string $text
+     */
+    public function insertLinkButton($url, $text){
+        // checks if 'buttons' is already set in any way .. if not initializes 'buttons'
+        if ( !array_key_exists('buttons', $this->jsConfig) || !is_array($this->jsConfig['buttons']))
+        {
+            $this->jsConfig['buttons'] = array();
+        }
+        array_push($this->jsConfig['buttons'], array(
+            'action'    => '@buttonFunc:' . $url . '@',
+            'text'      => $text,
+            'url'       => $url,  //not needed, just for uniformity in the array
+        ));
+    }
     /**
      * creates the settings for the buttons
      * <br> possible keyword 'all' <br>
@@ -70,78 +81,47 @@ class DataTable
             }
         }
     }
-
     /**
-     * inserts self made buttons to js DataTableHelper
-     * @param string $url
-     * @param string $text
+     * generates the string to be inserted in the js script <br>
+     * uses json_encode
+     *
+     * @return string js options string
      */
-    public function insertLinkButton($url, $text, $key = false){
-        // <external use> checks if 'buttons' is already set in any way .. if not initializes 'buttons'
-        if ( !array_key_exists('buttons', $this->jsConfig) || !is_array($this->jsConfig['buttons']))
-        {
-            $this->jsConfig['buttons'] = array();
-        }
-        // <internal use> from prepareConfig() a key is given
-        if ($key) {
-            $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
-        }
+    public function getSetupString(){
 
-        // <external use> pushes new button in the buttons array
-        else {
-            array_push($this->jsConfig['buttons'], array(
-                'action'    => '@buttonFunc:' . $url . '@',
-                'text'      => $text
-            ));
-        }
-        $this->validateDOMArray();
+        $this->jsPrepare();
+        $this->columnPrepare();
+        $this->domPrepare();
+
+        $string = json_encode($this->jsConfig);
+        $regex = '/"\@buttonFunc:(.*)\@"/i';
+        $func = 'function(){window.location = "$1";}';
+        $string = preg_replace($regex, $func, $string);
+        return $string;
     }
 
-    /**************UNUSED PUBLICS SO FAR ***************/
-    public function setJSConf ($index, $value){
-        $this->jsConfig[$index] = $value;
-    }
-
+/*****************PRIVATE methods******************/
     /**
-     * set all js setting at once
-     * @param array $settings
+     * validates data, sets up given parts
+     * @param array $config
      */
-    public function setWholeJSConf ($settings){
-        $this->jsConfig = array_replace_recursive($this->configuration, $settings);
-    }
+    private function setupConfig($config)
+    {
+        $config = $this->undoHumanFactor($config);
 
-
-    public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
-        if ( isset ($array['text']) ){
-            unset ( $array['text'] );
-            echo'DataTable -> columnOff: key "text" not allowed as selector';
+        if (key_exists('data', $config)){
+            $this->setData($config['data']);
         }
-        foreach ($this->columns as $number => $info){
-            foreach ( $array as $key => $selected ) {
-                if ( $this->columns[$number][$key] == $selected ){
-                    unset ( $this->columns[$number] );
-                }
-            }
+        if (key_exists('columns', $config)){
+            $this->setColumns($config['columns']);
+        }
+        if (key_exists('jsConfig', $config)){
+            $this->setJSConfig($config['jsConfig']);
         }
     }
 
-    public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
-        if ( !isset ($array['name']) ){
-            trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
-        }
-        foreach ($this->columns as $number => $info){
-            foreach ( $array as $key => $selected ) {
-                if ( $this->columns[$number][$key] == $selected ){
-                    unset ( $this->columns[$number] );
-                }
-            }
-        }
-    }
-
-
-    /*****************PRIVATE methods******************/
     /**
-     * sets the default before customization takes place
+     * sets the default @ _construct
      */
     private function setJSDefault(){
         $this->jsConfig = array (
@@ -161,49 +141,19 @@ class DataTable
     }
 
     /**
-     * validates data, sets up missing parts and puts the config data where it belongs
-     * @param array $config
-     */
-    private function prepareConfig($config)
-    {
-        //  validation for data in $config
-        $this->validateDataType($config, 'prepareConfig');
-
-        //  attach the data set
-        $this->setData($config['data']);
-
-        //  checks if a column configuration is given
-        //  --  //  if yes
-        if (key_exists('columns', $config)) {
-            foreach ($config['columns'] as $key => $value) {
-                $this->add($value);
+     * turns first level array keys into small letters
+     * @return array returns refactored array or if no array unchanged data
+     * */
+    private function undoHumanFactor($array){
+        $returnarray = [];
+        if ( is_array($array) ){
+            foreach ($array as $key => $value){
+                $returnarray[strtolower($key)] = $value;
             }
-        }
-
-        //  --  //  if not, each data column is made to visible column
-        else {
-            foreach ($config['data'] as $row) {
-                foreach ($row as $key => $value) {
-                    $this->add(array(
-                        'name' => $key
-                    ));
-                }
-                break;
-            }
-        }
-
-        //  checks if a js configuration is given
-        if ( key_exists( 'jsConfig', $config ) ){
-            //  validate js configuration
-            $this->validateDOMArray($config['jsConfig']);
-            if (key_exists('buttons', $this->jsConfig)) {
-                foreach ($this->jsConfig['buttons'] as $key => $value) {
-                    //self made buttons:
-                    if (is_array($value)) {
-                        $this->insertLinkButton($value['url'], $value['text'], $key);
-                    }
-                }
-            }
+            return $returnarray;
+        } else {
+            //@todo error warning?
+            return $array;
         }
     }
 
@@ -219,13 +169,44 @@ class DataTable
         }
         return $columnConf;
     }
-
+    /**
+     * inserts self made buttons to js DataTableHelper
+     * @param string $url
+     * @param string $text
+     * @param int    $key numeric key in buttons array
+     */
+    private function insertLinkButton_internal($url, $text, $key){
+        $this->jsConfig['buttons'][$key]['action'] = '@buttonFunc:' . $url . '@';
+        $this->jsConfig['buttons'][$key]['text'] = $text;
+    }
+/*******PREPARE readout*************/
+    /**
+     * prepares $this->columns for read out
+     * <br> if not set => each data set = one column
+     */
+    private function columnPrepare (){
+        //  checks if the column configuration is set
+        //  --  //  if yes
+        if ( count($this->columns)>0 ) { }
+        //  --  //  if not, each data column is made to visible column
+        else {
+            foreach ($this->data as $row) {
+                foreach ($row as $key => $value) {
+                    $this->add(array(
+                        'name' => $key
+                    ));
+                }
+                break;
+            }
+        }
+    }
     /**
      * prepares the array of jsConfig for json encode
      */
     private function domPrepare(){
+        //fixing DOM settings
         $this->validateDOMArray();
-        //rewriting in needed string
+        //rewriting in needed string otherwise there are bugs in the view
         $domPrepare = '';
         $sorting_array = array (
             0 => 'B',
@@ -241,8 +222,18 @@ class DataTable
         }
         $this->jsConfig['dom'] = $domPrepare;
     }
+    private function jsPrepare(){
+        if (key_exists('buttons', $this->jsConfig)) {
+            foreach ($this->jsConfig['buttons'] as $key => $value) {
+                //self made buttons:
+                if (is_array($value)) {
+                    $this->insertLinkButton_internal($value['url'], $value['text'], $key);
+                }
+            }
+        }
+    }
 
-    /***********VALIDATION********************/
+/***********VALIDATION********************/
 
     /**
      * validates data types and throws error in case
@@ -274,7 +265,6 @@ class DataTable
             trigger_error('DataTable -> ' . $requestingFunction . '() > key "' . $validatorKey . '" does not exist', E_USER_ERROR);
         }
     }
-
     /**
      * validates the dom setup for buttons, if no array given $this->jsConfig
      * <br> if buttons given: checks and fixes the DOM
@@ -282,30 +272,65 @@ class DataTable
      * @param array $atc | $this->jsConfig if no argument was given
      * @return bool false if no buttons set <br>or<br> true after fixing the settings for buttons
      */
-    private function validateDOMArray($atc = Null)
+    private function validateDOMArray()
     {
-        //  sets $this->jsConfig if no argument was given
-        $arrayToCheck = ($atc == Null) ? $this->jsConfig : $atc;
         //  are buttons in the config?
-        if (key_exists('buttons', $arrayToCheck) ) {
-            //fix forgotten dom setting
-            if (!key_exists('dom', $arrayToCheck)) {
-                $arrayToCheck['dom']['B'] = true;
+        if (key_exists('buttons', $this->jsConfig) ) {
+            //fix forgotten dom setting //can't happen so far
+            if (!key_exists('dom', $this->jsConfig)) {
+                $this->jsConfig['dom']['B'] = true;
             }
             //  if dom is set
             else {
                 //  checks & fixes misspelling -> replaces in case that a 'b' is given in stead of 'B'
-                if (key_exists('b', $arrayToCheck['dom'])) {
-                    $arrayToCheck['dom']['B'] = $arrayToCheck['dom']['b'];
-                    unset ($arrayToCheck['dom']['b']);
+                if (key_exists('b', $this->jsConfig['dom'])) {
+                    $this->jsConfig['dom']['B'] = $this->jsConfig['dom']['b'];
+                    unset ($this->jsConfig['dom']['b']);
                 }
                 //  adds the "B" if buttons are set up but no dm entry
-                if (!key_exists('B', $arrayToCheck['dom'])){
-                    $arrayToCheck['dom']['B'] = true;
+                if (!key_exists('B', $this->jsConfig['dom'])){
+                    $this->jsConfig['dom']['B'] = true;
                 }
             }
-            $this->jsConfig = array_replace_recursive($this->jsConfig, $arrayToCheck);
             return true;
         } else return false;
     }
+
+// @todo @enhancement switching single columns
+
+//   public function columnOff ($array){     //e.g. ->columnOff(array('name' => 'id'))
+//       if ( isset ($array['text']) ){
+//           unset ( $array['text'] );
+//           echo'DataTable -> columnOff: key "text" not allowed as selector';
+//       }
+//       foreach ($this->columns as $number => $info){
+//           foreach ( $array as $key => $selected ) {
+//               if ( $this->columns[$number][$key] == $selected ){
+//                   unset ( $this->columns[$number] );
+//               }
+//           }
+//       }
+//   }
+
+//   public function columnOn ($array){     //e.g. ->columnOff(array('name' => 'id'))
+//       if ( !isset ($array['name']) ){
+//           trigger_error ( 'DataTable -> columnOff: key "text" not allowed as selector', E_USER_ERROR);
+//       }
+//       foreach ($this->columns as $number => $info){
+//           foreach ( $array as $key => $selected ) {
+//               if ( $this->columns[$number][$key] == $selected ){
+//                   unset ( $this->columns[$number] );
+//               }
+//           }
+//       }
+//   }
+
+
+
+
+
+
+
+
+
 }

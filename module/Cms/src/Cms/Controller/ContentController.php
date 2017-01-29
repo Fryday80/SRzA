@@ -1,6 +1,7 @@
 <?php
 namespace Cms\Controller;
 
+use Application\Utility\DataTable;
 use Cms\Form\PostForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -22,8 +23,13 @@ class ContentController extends AbstractActionController
 
     public function indexAction()
     {
+        $posts = $this->postService->findAllPosts()->toArray();
+        $contentTable = new DataTable();
+        $contentTable->setData($posts);
+        
         return new ViewModel(array(
-            'posts' => $this->postService->findAllPosts()->toArray()
+            'posts' => $this->postService->findAllPosts()->toArray(),
+            'contentTable' => $contentTable,
         ));
     }
 
