@@ -74,15 +74,15 @@
 .level_0:active,
 .level_0 li:hover{
     background-color: #FAEBd7;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line_active.png);
+    background-size: auto 30px, auto 130px;
+    background-image: url(/img/uikit/decoration.3line_active.png), url( /img/body.bg.png);
     background-repeat: repeat-x;
     background-position: bottom left;
 }
 .level_0:hover>ul,
 .level_0:active>ul{
     display:block;
-    border: solid #D2B4B0 8px;
+    border: solid 8px;
     border-top: none;
     border-image: url("/img/uikit/border1.png") 40 repeat;
     padding-bottom: 10px;

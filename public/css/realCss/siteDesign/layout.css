@@ -12,10 +12,11 @@ body {
 
 .body {
     margin: 3%;
+    background-color: #FAEBd7;
     background-image: url( /img/body.bg.png);
     background-size: auto 130px;
-    border-radius: 35px;
-    background-color: #FAEBd7;
+    border-radius: 5px;
+    position: relative;
 }
 
 h1 {font-size: 20px;}
@@ -39,17 +40,17 @@ button {
 }
 .own_text_big {
     font-family: stylo2, arial, sans-serif;
-    font-size: 25px;
+    font-size: 1.3em;
     color: black;
 }
 .own_text_medium {
     font-family: stylo2, arial, sans-serif;
-    font-size: 20px;
+    font-size: 1em;
     color: black;
 }
 .own_text_small {
     font-family: stylo2, arial, sans-serif;
-    font-size: 15px;
+    font-size: 0.8em;
     color: black;
 }
 /*--------------------------Login and Logout-----------------------*/
@@ -96,9 +97,9 @@ input {
     padding-top: 20px;
 }
 .headdeko {
-    height: 140%;
+    height: 150%;
     z-index: 100 !important;
-    /* margin-top: -70px;*/
+    margin-top: -20px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -136,20 +137,12 @@ input {
     display: none;
 }
 .greets {
-    font-size: 15px;
+    font-size: 0.8em;
     font-weight: 700;
 }
 small {
     font-size: 10px;
 }
-
-/* -----------------hp body----------------- */
-#content,
-.rightcontainer {
-    position: relative;
-    padding-top: 20px;
-}
-
 /* -----------------colum 1 (navframe)----------------- */
 #navframe {
     width: 100%;
@@ -158,32 +151,50 @@ small {
     padding-top: 2px;
     z-index: 10;
 }
+/* -----------------hp body----------------- */
+#content,
+#rightcontainer {
+    padding-top: 1em;
+}
 
 /* -----------------colum 2 content----------------- */
 #content {
     float: left;
-    width: 66%;
-    padding-left: 3%;
-    padding-top: 3%;
-    min-height: 50%;
+    width: 70%;
+    min-height: 60%;
 
 }
+#content>.box{
+    border-left: none;
+    width: calc(100% - 8px);
+    padding-left: 1em;
+    margin-bottom: 1em;
+}
 /* -----------------colum 3 right bar----------------- */
-.rightcontainer {
-    position: relative;
+#rightcontainer {
     float: right;
-    width: 27%;
+    width: 28%;
     text-align: center;
 }
-.rightcontainer fieldset {
-    background-color: #FAEBd7;
+#rightcontainer fieldset {
+    background: none;
+    width: 99%;
+    border: none;
+    padding-bottom: 3px;
 }
-.rightbarup, .rightbardown {
+#rightcontainer>.rightbarup>.box,
+#rightcontainer>.rightbardown>.box
+{
+    border-right: none;
+    width: calc(100% - 8px);
+    margin-bottom: 1em;
+}
+.rightbarup,
+.rightbardown {
     position: relative;
-    padding-left: 1%;
     padding-right: 0;
-    padding-top: 20px;
-    width: 95%;
+    padding-bottom : 1.5%;
+    width: 100%;
     float: right;
     height: auto;
     min-height: 20%;
@@ -200,11 +211,8 @@ small {
 #foottext {
     color: black;
     min-height: 30px;
-    padding-top: 11px;
-    background-image: url(/img/uikit/decoration.3line_pure.png);
-    background-size: auto 10px;
-    background-repeat: repeat-x;
-    background-position: top left;
+    border-top: solid 8px;
+    border-image: url("/img/uikit/border1.png") 40 repeat;
 }
 
 #footimage {
@@ -212,8 +220,8 @@ small {
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
-    -webkit-border-bottom-left-radius: 30px;
-    -webkit-border-bottom-right-radius: 30px;
+    -webkit-border-bottom-left-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
     height: 110px;
 }
 
@@ -227,19 +235,21 @@ small {
 .box {
     border: solid #D2B4B0 8px;
     border-image: url("/img/uikit/border1.png") 40 repeat;
-    margin: 1%;
     background-color: #FAEBd7;
 }
 .titel{
     border-bottom:none;
-    margin-bottom: 0;
-    background-color: #FAEBB0;
-    background-image: url( /img/body.bg.png);
+    margin-bottom: 0 !important;
+    background-color: #FAEBd7;
+    width: calc(100% - 16px);
 }
 .content{
     border-top:none;
+    margin-top: 0 !important;
     background-color: #FAEBd7;
-    margin-top: 0;
+    background-image: url( /img/body.bg.png);
+    background-size: auto 130px;
+    width: calc(100% - 16px);
 }
 /* der wird so nie genutzt
 .box_castmanager{
