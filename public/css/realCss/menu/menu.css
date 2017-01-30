@@ -1,141 +1,129 @@
 /* -----------------Navbar CSS settings----------------- */
-#navframe {
-    z-index: 10;
-    padding: 0;
-    margin: 0;
-}
+@media only screen {
+    /*just to be able to hide general settings while coding :) */
 
-/* **** mobile button **** */
-.menu_button_div {
-    text-align: center;
-}
-.menu_button_img {
-    padding: 2px;
-    height: 50px;
-}
-
-/* **** menu titel **** */
-.menu_titel {
-    padding-top: 0.5%;
-    text-align: center;
-    height: 40px;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-/* **** the menu **** */
-.menu_items{
-    text-align: left;
-}
-.topics{
-    position: relative;
-}
-/* first level ul */
-.navigation {
-    background-color: #FAEBd7;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat;
-
-}
-/* first level li */
-.level_0 {
-    vertical-align: top;
-    position: relative;
-    display: inline-block;
-    width: 130px;
-    text-align: center;
-    padding-bottom: 11px;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat;
-}
-.level_0>ul{
-    margin-top: 10px;
-    position:absolute;
-    width: calc(100% - 16px);
-    background-color: #FAEBd7;
-    display: none;
-    border-image: url("/img/uikit/border1.png") 40 repeat;
-    border-left: solid #D2B4B0 8px;
-    border-right: solid #D2B4B0 8px;
-}
-.level_0 li{
-    display: block;
-    width: 100%;
-    padding-bottom: 11px;
-    background-size: auto 30px;
-    background-image: url(/img/uikit/decoration.3line.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-.level_0:hover,
-.level_0:active,
-.level_0 li:hover{
-    background-color: #FAEBd7;
-    background-size: auto 30px, auto 130px;
-    background-image: url(/img/uikit/decoration.3line_active.png), url( /img/body.bg.png);
-    background-repeat: repeat-x;
-    background-position: bottom left;
-}
-.level_0:hover>ul,
-.level_0:active>ul{
-    display:block;
-    border: solid 8px;
-    border-top: none;
-    border-image: url("/img/uikit/border1.png") 40 repeat;
-    padding-bottom: 10px;
-}
-
-/* **** the link images **** */
-.links{
-    height: 15px;
-}
-
-
-@media only screen and (max-width: 700px ){
-    #navframe {
-        z-index: 10;
-        padding: 0;
-        margin: 0;
-        text-align: left;
+    /* **** mobile button **** */
+    .menu_button_div {
+        text-align: center;
     }
+
+    .menu_button_img {
+        padding: 2px;
+        height: 50px;
+    }
+
+    /* **** menu titel **** */
+    .menu_titel {
+        padding-top: 1%;
+        padding-bottom: 1%;
+        text-align: center;
+        border-bottom: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+    }
+
     /* **** the menu **** */
-        .topics {
+    .menu_items {
+        text-align: left;
+        z-index: 10;
+    }
+
+    .topics {
         position: relative;
     }
+
     /* first level ul */
     .navigation {
-        background: none;
+        background-color: #FAEBd7;
+        border-bottom: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+        height: 23px;
+
     }
-    .navigation a {
-         text-decoration: underline;
-     }
+
     /* first level li */
     .level_0 {
-        background-color: #FAEBC5;
-        margin-top: 3px;
-        background-repeat: repeat-x;
-        padding: 0;
-        min-height: 30px;
-        border: solid #D2B4B0 8px;
-        border-image: url("/img/uikit/border1.png") 40 repeat;
-        padding-bottom: 10px;
+        vertical-align: top;
+        position: relative;
+        display: inline-block;
+        width: 130px;
+        text-align: center;
+        border-bottom: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+        height: 23px;
+        background-color: #FAEBd7;
     }
-    .level_0>ul {
-        position:relative;
+
+    .level_0 > ul {
+        margin-top: calc(0.5vw + 3px);
+        position: absolute;
+        width: 100%;
+        background-color: #FAEBd7;
+        display: none;
+    }
+
+    .level_0 li {
         display: block;
-        border:none;
+        width: calc(100% - 1vw);
+        border: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+        border-top: none;
+        background-color: #FAEBd7;
     }
 
     .level_0:hover,
-    .level_0:active {
-        background-position: top left;
+    .level_0:active,
+    .level_0 li:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-image: url("/img/uikit/border_active.png") 40 repeat;
+        border-bottom: solid 0.5vw;
     }
-    .level_0 li:hover{
-        background-position: bottom left;
+
+    .level_0:hover > ul,
+    .level_0:active > ul {
+        display: block;
     }
+
+    /* **** the link images **** */
+    .links {
+        height: 15px;
+    }
+}
+
+@media only screen and (max-width: 700px ){
+    /* **** the menu **** */
+    .menu_items{
+        height: auto;
+        margin-bottom: 5px;
+        border-top: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+    }
+    /* first level ul */
+    .navigation {
+        height: auto;
+        padding-bottom: 5px;
+    }
+    .navigation a {
+         text-decoration: underline;
+    }
+    /* first level li */
+    .level_0 {
+        margin: 2px;
+        padding: 0;
+        height:auto;
+        border: solid 0.5vw;
+        border-image: url("/img/uikit/border.png") 40 repeat;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+    .level_0>ul {
+        position:relative;
+        display: inline-block;
+    }
+    .level_0 li{
+        width: 100%;
+        border-left:none;
+        border-right:none;
+    }
+
     .animation {
          display: block !important;
 
