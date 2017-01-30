@@ -16,10 +16,10 @@
         ?>
 <!--    jquery scripts   -->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/content_fixes.js'))
-            ->prependFile($this->basePath('js/last_fixes.js'))
-            ->prependFile($this->basePath('js/popup.js'))
-            ->prependFile($this->basePath('js/menu.js'))
+            ->prependFile($this->basePath('js/fixes/content_fixes.js'))
+            ->prependFile($this->basePath('js/fixes/last_fixes.js'))
+            ->prependFile($this->basePath('js/popUp/popup.js'))
+            ->prependFile($this->basePath('js/menu/menu.js'))
             ->prependFile($this->basePath('js/jquery-ui.min.js'))
             ->prependFile($this->basePath('js/jquery.min.js'))
     ; ?>
@@ -43,8 +43,8 @@
                      <a class="ownhead" href="<?php echo $this->url('home') ?>">schwarze Ritter zu Augsburg</a>
                  </div>
                  <div class = "rightHead">
-                     <a class="disclaim" href="#"> Haftungsausschluss</a><br>
-                     <a href="#"> Impressum</a> <br>
+                     <a class="disclaim" href="#"> Haftungsausschluss</a><br class="js-L-view">
+                     <a href="#"> Impressum</a> <br class="js-L-view">
                      <a href="#">Kontakt </a>
                  </div>
             </div>
@@ -54,10 +54,10 @@
         </div>
 
 <!--------------------- NAVIGATION -------------------------->
+        <div class="menu_button_div hidden js-S-view">
+            <img class="menu_button_img" src="/img/uikit/menu_button1.png">
+        </div>
         <div id="navframe">
-            <div class="menu_button_div hidden js-S-view">
-                <img class="menu_button_img" src="/img/uikit/menu_button1.png">
-            </div>
             <div class="menu_titel js-L-view">
                 <span class="own_text_big">Wegweiser</span>
             </div>
@@ -84,6 +84,13 @@
                 <?php
                     echo $this->loginview();
                 ?>
+            </div>
+            <div id="rightbarmiddle" class="box">
+                <div id="scroller">
+                    <div class="top-fade"></div>
+                    <div class="scroller-spacer"></div>
+                    <div class="bottom-fade"></div>
+                </div>
             </div>
 
             <div class="rightbardown">

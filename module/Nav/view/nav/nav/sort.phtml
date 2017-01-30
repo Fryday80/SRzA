@@ -1,7 +1,7 @@
 <?php
 $title = 'Edit Menu';
 // $this->headLink()->prependStylesheet('/js/jstree/themes/default-dark/style.css');
-$this->headScript()->appendFile('/js/jquery.nestable.js');
+$this->headScript()->appendFile('/js/nestable/jquery.nestable.js');
 // $this->headScript()->appendFile('/js/jstree/jstree.min.js');
 $this->headTitle($title);
 ?>
@@ -11,12 +11,13 @@ $this->headTitle($title);
 <input id="save-menu" type="button" value="Save Sorting">
 <input id="add-menu-item" type="button" value="Add Item">
 
-<div id="success">Erfolg</div>
-<div id="error">Fehler</div>
+<div id="success">Erfolgreich gespeichert</div>
+<div id="error">Fehler änderungen konten nicht gespeichert werden</div>
 <div id="navTree" class="dd">
     <br>
     <?php echo $this->render('navTreeEdit.phtml'); ?>
 </div>
+<div style="clear: both"></div>
 
 
 <script type="text/javascript">
@@ -24,24 +25,24 @@ $this->headTitle($title);
     $(document).ready(function(){
     	$('.dd').nestable({});
 
-        function animateError() {
-            var origin = $("#error").css("opacity");
-            $("#error").css("opacity", "1");
-            $("#error").animate({
-                "opacity": origin,
+        function animateResponse(selector) {
+            var $elements = [$("#content>.box"),$("#navTree>.dd-list"), ( selector == 'success' ) ? $("#success") : $("#error")];
+            var background = ( selector == 'success' ) ? "green" : "red";
+            var origin_bg = [];
+            var origin_op = [];
 
-            }, 2000, function complete() {
-
-            });
-        }
-        function animateSave() {
-            var origin = $("#success").css("opacity");
-            $("#success").css("opacity", "1");
-            $("#success").animate({
-                "opacity": origin,
-
-            }, 2000, function complete() {
-
+            jQuery.each($elements, function (index, $value){
+                origin_bg[index] = $value.css("background-color");
+                origin_op[index] = $value.css("opacity")?$value.css("opacity"):"1";
+                $value.css("background-color", background)
+                    .css("opacity", "1");
+                $value.animate({
+                        "opacity": origin_op[index],
+                        "background-color": origin_bg[index]
+                    },
+                    2000,
+                    function complete() {}
+                )
             });
         }
 
@@ -58,11 +59,11 @@ $this->headTitle($title);
                 data: data,
                 success: function (e, a) {
 					console.log(e, a);
-                    animateSave();
+                    animateResponse('success');
                 },
                 error: function (e, a) {
     				console.log(e.responseText, a);
-                    animateError();
+                    animateResponse('error');
                 }
             }).done(function( msg ) {
                 console.log(msg);

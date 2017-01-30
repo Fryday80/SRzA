@@ -21,7 +21,11 @@
         width: 100%;
         font-size: 3vw;
         text-align: right;
-    }   
+        height: auto;
+    }
+    #content *{
+        box-shadow: none;
+    }
 
     #content {
         padding-left: 0;
@@ -29,6 +33,7 @@
         margin-bottom: 1%;
         width: calc(100% - 1vw);
         min-height:auto !important;
+        box-shadow: 0.5vw 0 1vw grey;
     }
 
     #rightcontainer {
@@ -48,8 +53,9 @@
     .rightbardown>.box,
     #content>.box
     {
-        width: calc(100% - 1em);
+        width: calc(100%);
         border-right: none;
         border-left:none;
+        margin: 0;
     }
 }

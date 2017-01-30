@@ -7,15 +7,20 @@
     background-repeat: repeat-x;
     background-position: bottom left;
 }
-.border{
+#border{
 
     border: solid 0.5vw;
     border-image: url("/img/uikit/border.png") 40 repeat;
 }
 
-.border:hover{
+#border:hover{
 
     border: solid 0.5vw;
     border-image: url("/img/uikit/border_active.png") 40 repeat;
     background-color: #FAEBd7;
+}
+#boxshadow{
+    box-shadow: 0.5vw 0.5vw 1vw grey;
+    box-shadow: -0.5vw 0.5vw 1vw grey;
+    box-shadow: 0.5vw 0 1vw grey;
 }

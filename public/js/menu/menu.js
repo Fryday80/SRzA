@@ -1,22 +1,3 @@
-/** help - Menu structure:
- * div  #navframe
- *     div .navbutton
- *     /div
- *     div .menuItems
- *          div .navtitel
- *          /div
- *          ul  .navigation
- *              li  .level_0
- *                  ul  .ul_level_1
- *                      li  .level_1
- *                          ...
- *                      /li
- *                  /ul
- *              /li
- *          /ul
- *     /div
- */
-
 $(document).ready (function menu_handler_js () {
 
 /* ------------------ USED FUNCTIONS -------------------- */

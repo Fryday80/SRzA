@@ -28,13 +28,12 @@
 #success,
 #error
 {
-    float: left;
-    width: 50px;
+    position: absolute;
+    margin: auto;
+    height: 50px;
+    width: 50%;
     opacity: 0;
-    background-color: #5b9909;
-}
-#error{
-    background-color: #9c3328;
+    z-index: 2000;
 }
 /* ******** content_fixes.js ******** */
 .bgcol
