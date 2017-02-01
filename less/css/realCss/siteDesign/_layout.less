@@ -108,6 +108,12 @@ input
   //background: url(/img/uikit/scroll_landscape.png);
   //background-size: 100% 100%;
 }
+.head{
+  .at-border(all);
+  .at-box-shadow(0, 1vw, 3vw, grey);
+  margin-top: 1vw;
+  .at-bg-color;
+}
 
 .rightHead
 {
@@ -126,7 +132,6 @@ input
 #headlinks {
   .clear;
   .relative;
-  padding: 0 10px 1vw 0;
   width: calc(100% ~ "-" 10px);
   height: auto;
   text-align: center;
@@ -195,6 +200,9 @@ input
   .absolute;
   margin: -85% 10.5vw;
   width: 15vw;
+  >.box{
+    .at-box-shadow(-0.7vw, 0.7vw, 3vw) !important;
+  }
 }
 /* -----------------foot----------------- */
 #foot
