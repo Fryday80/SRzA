@@ -10,9 +10,6 @@ $this->headTitle($title);
 
 <input id="save-menu" type="button" value="Save Sorting">
 <input id="add-menu-item" type="button" value="Add Item">
-
-<div id="success">Erfolgreich gespeichert</div>
-<div id="error">Fehler änderungen konten nicht gespeichert werden</div>
 <div id="navTree" class="dd">
     <br>
     <?php echo $this->render('navTreeEdit.phtml'); ?>
@@ -35,14 +32,17 @@ $this->headTitle($title);
                 origin_bg[index] = $value.css("background-color");
                 origin_op[index] = $value.css("opacity")?$value.css("opacity"):"1";
                 $value.css("background-color", background)
-                    .css("opacity", "1");
+                    .css("opacity", "1")
+                    .css("display", "block");
                 $value.animate({
                         "opacity": origin_op[index],
                         "background-color": origin_bg[index]
                     },
                     2000,
-                    function complete() {}
-                )
+                    function complete() {
+                        $value.removeAttr("style");
+                    }
+                );
             });
         }
 

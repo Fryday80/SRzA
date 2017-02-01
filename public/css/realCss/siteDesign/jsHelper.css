@@ -28,10 +28,14 @@
 #success,
 #error
 {
+    border: solid #D2B4B0 0.5vw;
+    border-image: url("/img/uikit/border.png") 40 repeat;
+    background-color: #FAEBd7;
+    display: none;
     position: absolute;
     margin: auto;
-    height: 50px;
-    width: 50%;
+    height: 100px;
+    width: calc(100% - 1vw);
     opacity: 0;
     z-index: 2000;
 }

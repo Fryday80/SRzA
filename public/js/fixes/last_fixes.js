@@ -16,9 +16,6 @@ window.last_fixes = {
             /**
              * changes in Nav Sort
              */
-            // $("#navTree>.dd-list").not("box content shadow-right").addClass("box content shadow-right")
-            //     .css ("margin-bottom", "10px");
-
 /*
             $("#scroller").simplyScroll({
                 autoMode: 'loop',
@@ -26,8 +23,7 @@ window.last_fixes = {
                 horizontal: false,
                 frameRate: 20,
                 speed: 3
-            });
-            */
+            });  */
         });
     }
 }

@@ -6,6 +6,7 @@
 body {
     background-color: rgb(67, 12, 12);
     background-image: url( /img/html.bg.png);
+    background-attachment: fixed;
     background-size: 100px;
     border-radius: 3px;
 }
@@ -221,7 +222,7 @@ small {
     background-color: #FAEBd7;
     margin-left: -1.5vw;
 }
-
+/*
 #footimage {
     background-image: url(/img/foot.png);
     background-position: center top;
@@ -231,7 +232,7 @@ small {
     -webkit-border-bottom-right-radius: 5px;
     height: 110px;
 }
-
+*/
 .spacer_line {
     background-image: url(/img/uikit/decoration.3line_pure.png);
     background-repeat: repeat-x;
@@ -279,6 +280,13 @@ small {
 .shadow-right{
     box-shadow: 0.5vw 0.5vw 1vw grey;
 }
+.shadow-slim{
+    box-shadow: 0.0vw 0.5vw 1vw grey;
+}
+.linkbox:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
 .top-fade{
     background: linear-gradient(#FAEBd7, transparent);
     height: 25%

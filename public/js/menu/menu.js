@@ -24,6 +24,7 @@ $(document).ready (function menu_handler_js () {
          /** style class changes **/
         $(".js-L-view").removeClass("hidden");
         $(".js-S-view").not("hidden").addClass("hidden");
+        $(".logging").not("log_me_out").addClass("log_me_out");
     }
 
     /**
@@ -33,6 +34,7 @@ $(document).ready (function menu_handler_js () {
         /** style class changes **/
         $(".js-S-view").removeClass("hidden");
         $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
+        $(".logging").removeClass("log_me_out");
     }
 
     /**

@@ -5,18 +5,19 @@ $this->headTitle($title);
  <h1><?php echo $this->escapeHtml($title); ?></h1><br>
  <?php foreach ($items as $item):
      $count = $item.'Count';?>
-     <div class="box box_background">
+     <div style="width: 30%; float: left; margin: 1vw;">
         <a href="<?php echo $this->url('castmanager/'.$item);?>">
-            <div>
+            <div class="box titel linkbox">
                 <p class="castManagerTitel">
                     <?php echo ucfirst($item);?>
                 </p>
-                <p>
-                     Entrys: <?php echo $$count;?>
-                 </p>
-             </div>
+            </div>
         </a>
-         letzter bearbeiteter
+        <div class="box content">
+            <p>Entrys: <?php echo $$count;?></p>
+            <p>letzter bearbeiteter</p>
+        </div>
      </div>
  <?php endforeach; ?>
+<div class="clear" style="height: 10px"></div>
 

@@ -1,13 +1,14 @@
-@import url(realCss/siteDesign/layout.css);         /* Basic Layout without Menu            */
-@import url(realCss/menu/menu.css);                 /* Menu Layout                          */
-@import url(realCss/popUp/jquery-ui.css);           /* jquery UI Style   for pop up         */
-@import url(realCss/popUp/popUp_own.css);           /* own pop up styles                    */
-@import url(realCss/gallery/jgallery.css);          /* additional settings for the gallery  */
-@import url(realCss/siteDesign/modding.css);        /* modding like cursor                  */
-@import url(realCss/Zend/Zend.css);                 /* styles used in Zend                  */
-@import url(realCss/castmanager/castmanager.css);   /* styles used in Usermanager           */
-@import url(realCss/siteDesign/jsHelper.css);       /* js-used classes                      */
+@import url(/css/realCss/siteDesign/layout.css);         /* Basic Layout without Menu            */
+@import url(/css/realCss/menu/menu.css);                 /* Menu Layout                          */
+@import url(/css/realCss/popUp/jquery-ui.css);           /* jquery UI Style   for pop up         */
+@import url(/css/realCss/popUp/popUp_own.css);           /* own pop up styles                    */
+@import url(/css/realCss/gallery/jgallery.css);          /* additional settings for the gallery  */
+@import url(/css/realCss/siteDesign/modding.css);        /* modding like cursor                  */
+@import url(/css/realCss/Zend/Zend.css);                 /* styles used in Zend                  */
+@import url(/css/realCss/castmanager/castmanager.css);   /* styles used in Usermanager           */
+@import url(/css/realCss/siteDesign/jsHelper.css);       /* js-used classes                      */
+@import url(/css/realCss/simplyscroll/jquery.simplyscroll.css);
 
-@import url(media.css);                             /* media queries for Basic Layout       */
-@import url(noscript.css);                          /* css transformation @ no script       */
-@import url(animations.css);                        /* css animations                       */
+@import url(/css/media.css);                             /* media queries for Basic Layout       */
+@import url(/css/noscript.css);                          /* css transformation @ no script       */
+@import url(/css/animations.css);                        /* css animations                       */
