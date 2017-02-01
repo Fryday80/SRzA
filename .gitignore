@@ -3,3 +3,6 @@ vendor/
 /.settings/org.eclipse.core.resources.prefs
 config/autoload/local.php
 module/src/Application/Utility/0815 array DataTable - Kopie.php
+public/fonts/backup
+public/img/backup
+public/img/uikit/backup
