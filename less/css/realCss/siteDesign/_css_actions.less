@@ -1,0 +1,58 @@
+@import "../less/css/realCss/siteDesign/_standards";
+@keyframes rotate_sign {
+    /* ----- Sign rotation ----- */
+    0%      {}
+    10%     { transform:rotate(  0deg); }
+    35%     { transform:rotate(-40deg); }
+    65%     { transform:rotate( 40deg); }
+    90%     { transform:rotate(  0deg); }
+    100%    {}
+}
+.headdeko:hover
+{
+    /* used in... */
+    /* -> head */
+    animation-name: rotate_sign;
+    animation-duration: 3s;
+    animation-direction: alternate;
+}
+.fade-style(@disp, @op){
+    display: @disp;
+    opacity: @op;
+}
+/* -- Fade in from display: none --
+-------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes fadeInFromNone
+{
+    0% { .fade-style(none, 0); }
+    1% { .fade-style(block, 0); }
+    100% { .fade-style(block, 1); }
+}
+@-moz-keyframes fadeInFromNone
+{
+    0% { .fade-style(none, 0); }
+    1% { .fade-style(block, 0); }
+    100% { .fade-style(block, 1); }
+}
+
+@-o-keyframes fadeInFromNone
+{
+    0% { .fade-style(none, 0); }
+    1% { .fade-style(block, 0); }
+    100% { .fade-style(block, 1); }
+}
+
+@keyframes fadeInFromNone
+{
+    0% { .fade-style(none, 0); }
+    1% { .fade-style(block, 0); }
+    100% { .fade-style(block, 1); }
+}
+@keyframes rotate
+{
+    /* ------- Link img rotation ----- */
+    /* used in... -> navigation menu.css */
+    0%      { transform:rotate(  0deg); }
+    100%    { transform:rotate(  360deg); }
+}

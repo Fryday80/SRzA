@@ -1,0 +1,158 @@
+@import "../less/css/realCss/siteDesign/_standards";
+/* -----------------Navbar CSS settings----------------- */
+@media only screen
+{
+  /*just to be able to hide general settings while coding :) */
+
+  /* **** mobile button **** */
+  .menu_button_div
+  {
+      text-align: center;
+      width: 100px;
+      margin: 0 auto 0 auto;
+  }
+  .menu_button_img
+  {
+      padding: 2px;
+      height: 50px;
+  }
+  /* **** menu titel **** */
+  .menu_titel
+  {
+      padding-top: 1%;
+      padding-bottom: 1%;
+      text-align: center;
+      background: url(/img/uikit/scroll_landscape.png) no-repeat;
+      background-size: 20% 90%;
+      background-position: center;
+  }
+  /* **** the menu **** */
+  .menu_items
+  {
+      text-align: left;
+      z-index: 10;
+      .at-box-shadow(0, 0.7vw);
+  }
+  .topics
+  {
+      .relative;
+  }
+  /* first level ul */
+  .navigation
+  {
+      .at-bg-color;
+      .at-border;
+      height: 23px;
+      margin-left: -1.5vw;
+      margin-right: -1.5vw;
+  }
+  /* first level li */
+  .level_0
+  {
+    vertical-align: top;
+    .relative;
+    display: inline-block;
+    width: 130px;
+    text-align: center;
+    height: 23px;
+    .at-bg-color;
+    .at-border(bottom);
+      > ul {
+          margin-top: calc(0.5vw ~"+" 3px);
+          .absolute;
+          width: 100%;
+          .at-bg-color;
+          display: none;
+      }
+    li {
+      display: block;
+      width: calc(100% ~"-" @border-double-width);
+      .at-border;
+      border-top: none;
+      .at-bg-color;
+    }
+    &:hover,
+    &:active,
+    & li:hover
+    {
+      .at-shaded-part;
+      .at-border-style-active;
+    }
+    &:hover > ul,
+    &:active > ul
+    {
+      display: block;
+    }
+  }
+  /* **** the link images **** */
+  .links
+  {
+      height: 15px !important;
+  }
+}
+
+@media only screen and (max-width: 700px)
+{
+/* **** the menu **** */
+  #navframe *
+  {
+    height: auto;
+  }
+  .menu_items
+  {
+    margin-bottom: 5px;
+    .at-border;
+  }
+  /* first level ul */
+  .navigation
+  {
+    padding-bottom: 5px;
+    a {
+      text-decoration: underline;
+    }
+  }
+  /* first level li */
+  .level_0 {
+    margin: 2px;
+    padding: 0;
+    .at-border;
+    .at-shaded-part;
+    .box-shadow-left;
+    >ul
+    {
+      .relative;
+      display: inline-block;
+    }
+    li
+    {
+      width: 100%;
+      border-left: none;
+      border-right: none;
+    };
+  }
+  .animation {
+       display: block !important;
+       -webkit-animation: fadeInFromNone 1.0s ease-out;
+       -moz-animation: fadeInFromNone 1.0s ease-out;
+       -o-animation: fadeInFromNone 1.0s ease-out;
+       animation: fadeInFromNone 1.0s ease-out;
+   }
+}
+
+/* ---------------------------- animations -> css_actions.css -------------------------------- */
+@media only screen and (min-width: 700px ) {
+  .level_0:hover > ul {
+      display: block !important;
+      -webkit-animation: fadeInFromNone 0.7s ease-out;
+      -moz-animation: fadeInFromNone 0.7s ease-out;
+      -o-animation: fadeInFromNone 0.7s ease-out;
+      animation: fadeInFromNone 0.7s ease-out;
+  }
+}
+a:hover>img
+{
+    height: 15px;
+    animation-name: rotate;
+    animation-duration: 1500ms;
+    animation-iteration-count: infinite;
+}

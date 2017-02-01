@@ -1,0 +1,55 @@
+@import "../less/css/realCss/siteDesign/_standards";
+@media only screen and (max-width: 700px) {
+    .ownhead
+    {
+        font-size: 7.5vw;
+    }
+    .headdeko
+    {
+	    display: none;
+    }
+    .leftHead
+    {
+        width: 100%;
+        text-align: center;
+    }
+
+    .rightHead
+    {
+        width: 100%;
+        font-size: 3vw;
+        text-align: right;
+        height: auto;
+    }
+    #content *
+    {
+        box-shadow: none;
+    }
+
+    #content
+    {
+        padding: 0;
+        margin-bottom: 1%;
+        width: calc(100% ~"-" @border-double-width);
+        min-height: 10px !important;
+    }
+    #rightcontainer
+    {
+        width: 100%;
+        height: auto !important;
+    }
+    #rightbarmiddle
+    {
+        display: none;
+    }
+    .rightbarup>.box,
+    .rightbardown>.box,
+    #content>.box
+    {
+        width: 100%;
+        border-right: none;
+        border-left: none;
+        margin: 0;
+        .box-shadow-bottom
+    }
+}

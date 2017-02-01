@@ -1,0 +1,64 @@
+@import "../less/css/realCss/siteDesign/_standards";
+/* -----------------auxilliary classes for JQuery----------------- */
+/*----------------------some just for switching--------------------*/
+
+/* ******** general / no special usage ******** */
+.hidden
+{
+    display: none !important;
+}
+
+.js-L-view
+{
+    /* only in "normal" view */
+    /* used for js selection */
+}
+.js-S-view
+{
+    /* only in mobile view */
+    /* used for js selection */
+}
+/* ******** nav sort ******** */
+#success,
+#error
+{
+    .box;
+    display: none;
+    position: absolute;
+    margin: auto;
+    height: 100px;
+    width: calc(100% ~"-" 1vw);
+    opacity: 0;
+    z-index: 2000;
+}
+/* ******** datepicker (part of jquery-ui I think) ******** */
+.ui-datepicker
+{
+    background-image: url(/img/body.bg.png);
+    background-size: 100% 100%;
+}
+#ui-datepicker-div>table>thead>tr>th>span
+{
+    color: black;
+}
+
+/* ******** in forms (last_fixes.js) ******** */
+.width_95
+{
+    width: 95%;
+}
+.width_90
+{
+    width: 90%;
+}
+.width_40
+{
+    width: 40%;
+}
+
+/* ************************* */
+/* *** with own css file *** */
+/* ************************* */
+/* ** popUp ** */
+/* ** gallery ** */
+/* ** menu ** */

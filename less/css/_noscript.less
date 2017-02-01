@@ -1,0 +1,29 @@
+/* ----------------- NoScript desing -------------------------------- */
+@keyframes noJS
+{
+    0%    {transform:rotate(0deg);    top: 200px; left:  30px; right:   30px; }
+    25%   {transform:rotate(20deg);   top: 150px; left:  30px; right:   30px; }
+    50%   {transform:rotate(0deg);    top: 350px; left:  50px; right:   10px; background-color: rgb(67, 12, 12); }
+    60%   {transform:rotate(0deg);    top: 450px; left: 150px; right: -120px; }
+    70%   {transform:rotate(0deg);    top: 150px; left: 250px; right: -220px; }
+    100%  {transform:rotate(-360deg); top: 200px; left:  30px; right:   30px; background-color: black; }
+}
+noscript>div
+{
+    z-index: 20;
+    position: absolute;
+    top: 200px;
+    left: 30px;
+    right: 30px;
+    padding: auto 20px auto 20px;
+    background-color: black;
+    border-radius: 20px;
+    text-align: center;
+    animation-name: noJS;
+    animation-duration: 8s;
+}
+noscript>div>.ownhead
+{
+    color: white;
+    font-size: 8vw;
+}
