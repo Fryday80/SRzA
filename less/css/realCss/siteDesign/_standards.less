@@ -1,4 +1,5 @@
 @backgroundcolor: #FAEBd7;
+@dark-color: #dbd2c9;
 @uikit: "/img/uikit";
 
 /* -----------------MODDING----------------- */
@@ -150,4 +151,25 @@ v {
 .clear
 {
   clear: both;
+}
+/* ******************************************
+auslagern**********************
+****************/
+#ui-datepicker-div {
+  .at-border(all);
+}
+.accordion
+{
+  .relative;
+  height: auto;
+  .ui-accordion-content{
+    height: auto !important;
+  }
+  span {
+    padding-left: 3vw !important;
+  }
+}
+
+#h180 .ui-accordion-content{
+  height: 180px !important;
 }

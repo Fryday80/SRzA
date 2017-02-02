@@ -29,7 +29,7 @@ $(document).ready(function () {
                 $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
             },
             buttons: {
-                accept: function () {
+                ok: function () {
                     sessionStorage.setItem('isshow', 1);
                     $(this).dialog("close");
                 }

@@ -60,6 +60,26 @@ v {
 .clear {
   clear: both;
 }
+/* ******************************************
+auslagern**********************
+****************/
+#ui-datepicker-div {
+  border: 0.5vw solid;
+  border-image: url("/img/uikit/border.png") 40 repeat;
+}
+.accordion {
+  position: relative;
+  height: auto;
+}
+.accordion .ui-accordion-content {
+  height: auto !important;
+}
+.accordion span {
+  padding-left: 3vw !important;
+}
+#h180 .ui-accordion-content {
+  height: 180px !important;
+}
 /* -----------------general Settings----------------- */
 * {
   padding: 0;
@@ -246,7 +266,6 @@ input {
   margin-top: 0.7vw;
   width: 100%;
   text-align: center;
-  box-shadow: 0 -0.7vw 1vw grey;
 }
 #foottext {
   color: black;
@@ -256,6 +275,7 @@ input {
   width: calc(100% + 2vw);
   background-color: #FAEBd7;
   margin-left: -1.5vw;
+  box-shadow: 0 0.7vw 1vw grey;
 }
 #foottext li {
   display: inline-block;
@@ -324,7 +344,7 @@ input {
     width: 20%;
     background-color: #FAEBd7;
     background-image: none;
-    box-shadow: 0 -0.8vw 1vw grey;
+    box-shadow: 0 0.8vw 1vw grey;
   }
   /* **** the menu **** */
   .menu_items {
@@ -2114,8 +2134,10 @@ body .ui-tooltip {
     padding: 10px 10px 1vw 0;
   }
   .leftHead {
-    width: 100%;
+    float: none;
+    width: 90%;
     text-align: center;
+    margin: 0 auto 0 auto;
   }
   .rightHead {
     width: 100%;
