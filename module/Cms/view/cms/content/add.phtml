@@ -11,5 +11,17 @@ echo $this->form($form);
 </div>
 <script>
     $($('#page-edit textarea')[0]).attr("id","editor");
-    CKEDITOR.replace( 'editor' );
+    CKEDITOR.replace( 'editor',{
+        allowedContent: {
+            script: true,
+            div: true,
+            $1: {
+                // This will set the default set of elements
+                elements: CKEDITOR.dtd,
+                attributes: true,
+                styles: true,
+                classes: true
+            }
+        }
+    });
 </script>

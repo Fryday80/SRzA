@@ -11,10 +11,16 @@ use Application\Service\TemplateTypes;
 
 class AuthController extends AbstractActionController
 {
+    protected $base_url;
 
     protected $form;
 
     protected $storage;
+
+    function __construct()
+    {
+        $this->base_url = 'http://'.$_SERVER['HTTP_HOST'].''/'';
+    }
 
     private function getSessionStorage()
     {
@@ -91,7 +97,11 @@ class AuthController extends AbstractActionController
                     if (count($ref) > 0) {
                         return $this->redirect()->toUrl($ref[0]);
                     }
-                    return $this->redirect()->toRoute('success');
+                    $referer = str_replace($this->base_url, "", $_SERVER['HTTP_REFERER']);
+                    $referer = ($referer == "")? 'home' : $referer;
+
+                    $this->flashmessenger()->addMessage("You've been logged in");
+                    return $this->redirect()->toUrl($referer);
                 }
             }
         }
@@ -104,9 +114,12 @@ class AuthController extends AbstractActionController
     {
         $this->getSessionStorage()->forgetMe();
         $this->getServiceLocator()->get('AuthService')->clearIdentity();
+
+        $referer = str_replace($this->base_url, "", $_SERVER['HTTP_REFERER']);
+        $referer = ($referer == "")? 'home' : $referer;
         
         $this->flashmessenger()->addMessage("You've been logged out");
-        return $this->redirect()->toRoute('home');
+        return $this->redirect()->toUrl($referer);
     }
 
     public function successAction()
