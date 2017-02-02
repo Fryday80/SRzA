@@ -74,8 +74,9 @@ auslagern**********************
 .accordion .ui-accordion-content {
   height: auto !important;
 }
-.accordion span {
-  padding-left: 3vw !important;
+.accordion .ui-state-active .ui-icon,
+.accordion .ui-state-hover .ui-icon {
+  background-image: none !important;
 }
 #h180 .ui-accordion-content {
   height: 180px !important;

@@ -162,11 +162,17 @@ auslagern**********************
 {
   .relative;
   height: auto;
-  .ui-accordion-content{
+  .ui-accordion-content
+  {
     height: auto !important;
   }
-  span {
-    padding-left: 3vw !important;
+  .ui-state-active,
+  .ui-state-hover
+  {
+    .ui-icon
+    {
+      background-image: none !important;
+    }
   }
 }
 
