@@ -21,7 +21,7 @@ class CharacterDataTable extends DataTable
             'type' => 'custom',
             'render' => function($row) {
                 $links = '<a href="/castmanager/characters/edit/' . $row['id'] . '">Bearbeiten</a>';
-                $links .= '<a href="/castmanager/characters/delete/' . $row['id'] . '">Löschen</a>';
+                $links .= ' <a href="/castmanager/characters/delete/' . $row['id'] . '">Löschen</a>';
                 return $links;
             }
         ));

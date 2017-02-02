@@ -17,7 +17,7 @@ class JobDataTable extends DataTable
             'type' => 'custom',
             'render' => function($row) {
                 $links = '<a href="/castmanager/jobs/edit/' . $row['id'] . '">Bearbeiten </a>';
-                $links .= '<a href="/castmanager/jobs/delete/' . $row['id'] . '">Löschen</a>';
+                $links .= ' <a href="/castmanager/jobs/delete/' . $row['id'] . '">Löschen</a>';
                 return $links;
             }
         ));

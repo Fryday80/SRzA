@@ -2,6 +2,7 @@
 namespace Auth\Controller;
 
 
+use Application\Utility\DataTable;
 use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
@@ -17,8 +18,30 @@ class UserController extends AbstractActionController
     }
     public function indexAction()
     {
+        $userTable = new DataTable( array( 'data' => $this->getUserTable()->getUsers()->toArray() ) );
+        $userTable->insertLinkButton('/user/add', "Neuer Benutzer");
+        $userTable->setColumns( array (
+            array (
+                'name'  => 'name',
+                'label' => 'Name'
+            ),
+            array (
+                'name'  => 'email',
+                'label' => 'eMail'
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function ($row){
+                    $edit = '<a href="user/edit/' . $row['id'] . '">Edit</a>';
+                    $delete = '<a href="user/delete/' . $row['id'] . '">Delete</a>';
+                    return $edit.' '.$delete;
+                }
+            ),
+        ) );
         return array(
-            'users' => $this->getUserTable()->getUsers()
+            'users' => $userTable
         );
     }
 

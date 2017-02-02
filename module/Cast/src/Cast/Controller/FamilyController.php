@@ -10,15 +10,14 @@ class FamilyController extends AbstractActionController
 {
     public function indexAction() {
         $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
-        $families = $familyTable->getAll();
-        $famTable = new FamilyDataTable();
-        $famTable->setData($families);
+        $famTable = new FamilyDataTable( );
+        $famTable->setData($familyTable->getAll());
         $famTable->setButtons('all');
         $famTable->insertLinkButton('/castmanager/families/add', 'add new familiy');
         $famTable->insertLinkButton('/castmanager', 'Zurück');
-        return new ViewModel(array(
+        return new ViewModel( array(
             'families' => $famTable,
-        ));
+        ) );
     }
     public function addAction() {
         $form = new FamilyForm();

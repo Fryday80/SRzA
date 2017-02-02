@@ -16,7 +16,7 @@
                 'render' => function($row) {
                     $edit = '<a href="/resource/edit/'.$row['id'].'">Edit</a>';
                     $delete = '<a href="/resource/delete/'.$row['id'].'">Delete</a>';
-                    return $edit.$delete;
+                    return $edit.' '.$delete;
                 }
             )
         ),
