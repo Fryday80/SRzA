@@ -26,6 +26,27 @@ class ContentController extends AbstractActionController
         $posts = $this->postService->findAllPosts()->toArray();
         $contentTable = new DataTable();
         $contentTable->setData($posts);
+        $contentTable->insertLinkButton('/cms/add', 'Neue Seite');
+        $contentTable->setColumns(array(
+            array(
+                'name'  => 'title',
+                'label' => 'Seitenname'
+            ),
+            array(
+                'name' => 'url',
+                'label' => 'Linkadresse'
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function($row) {
+                    $edit = '<a href="/cms/edit/'.$row['id'].'">Edit</a>';
+                    $delete = '<a href="/cms/delete/'.$row['id'].'">Delete</a>';
+                    return $edit.' '.$delete;
+                }
+            )
+        ));
         
         return new ViewModel(array(
             'posts' => $this->postService->findAllPosts()->toArray(),

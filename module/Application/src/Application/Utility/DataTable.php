@@ -10,13 +10,16 @@ namespace Application\Utility;
 
 class DataTable
 {
-    public $data;
-    public $columns;
-    public $jsConfig;
+    public $data = array();
+
+    public $columns = array();
+    
+    public $jsConfig = array();
+
+    protected $prepared = false;
 
     function __construct($config = null)
     {
-        $this->columns = array();
         $this->setJSDefault();
         if ($config !== null) {
             $this->setupConfig($config);
@@ -90,11 +93,9 @@ class DataTable
      *
      * @return string js options string
      */
-    public function getSetupString(){
-
-        $this->jsPrepare();
-        $this->columnPrepare();
-        $this->domPrepare();
+    public function getSetupString()
+    {
+        $this->prepare();
 
         $string = json_encode($this->jsConfig);$regex = '/"\@(.+?):(.+?)\@"/';
         preg_match_all($regex, $string, $matches);
@@ -108,6 +109,16 @@ class DataTable
             }
         }
         return $string;
+    }
+
+    public function prepare()
+    {
+        if ($this->prepared)return;
+        $this->jsPrepare();
+        $this->columnPrepare();
+        $this->domPrepare();
+        $this->prepared = true;
+        return;
     }
 
 /*****************PRIVATE methods******************/
@@ -156,8 +167,8 @@ class DataTable
      * */
     private function undoHumanFactor($array){
         $returnarray = [];
-        if ( is_array($array) ){
-
+        if ( is_array($array) )
+        {
             foreach ($array as $key => $value){
                 if (strtolower($key) == 'jsconfig'){
                     $returnarray['jsConfig'] = $value;
@@ -173,6 +184,7 @@ class DataTable
     }
 
     private function prepareColumnConfig($config){
+
         $this->validateDataType($config, 'prepareColumnConfig');
 
         $defaultConfColl = array(
