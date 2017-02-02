@@ -1,32 +1,4 @@
 <?php
-
 $title = 'Gallerie ';
 $this->headTitle($title);
-?>
- <p>
-     <a href="<?php echo $this->url('album/add');?>">Add new album</a><br><br>
- </p>
- <table class="table" style="width: 95%;">
- <tr>
-     <th style="text-align: left;">Event</th>
-     <th style="text-align: right;">Datum</th>
-     <th style="text-align: left;"></th>
-     <th style="text-align: left;">Sichtbar</th>
-     <th>&nbsp;</th>
- </tr>
- <?php foreach ($albums as $album) : ?>
- <tr>
-     <td style="text-align: left;"><?php echo $album['event'];?></td>
-     <td style="text-align: right;"><?php echo date ('d.m.', $album['timestamp']);?></td>
-     <td style="text-align: left;"><?php echo date ('Y', $album['timestamp']);?></td>
-     <th style="text-align: left;"><?php
-         if ($album['visibility'] == 1){$visibility = 'Ja';}
-         else {$visibility = 'nein';}
-         echo $visibility;?></th>
-     <td>
-         <a href="<?php echo $this->url('album/edit', array('id' => $album['id']));?>">Edit</a>
-         <a href="<?php echo $this->url('album/delete', array('id' => $album['id']));?>">Delete</a>
-     </td>
- </tr>
- <?php endforeach; ?>
- </table>
+echo $this->dataTable()->render($table);

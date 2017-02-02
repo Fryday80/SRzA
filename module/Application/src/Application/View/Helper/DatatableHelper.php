@@ -86,14 +86,14 @@ Class DataTableHelper extends AbstractHelper {
             $datarow .= '</tr>';
             $i++;
         }
-        $html = '<table class="display" cellspacing="0" width="100%">';
+        $html = '<br><table class="display" cellspacing="0" width="100%">';
         $html .= "<thead><tr> $datahead </tr></thead>";
         $html .= "<tfoot><tr> $datahead </tr></tfoot><tbody>";
         $html .= $datarow;
         $html .= '</tbody></table>';
         return $html;
     }
-    protected function renderJS($jsOptionString) {
+    public function renderJS($jsOptionString) {
         $js = '<script>';
         $js .= '$(".display").DataTable(';
         $js .= $jsOptionString;

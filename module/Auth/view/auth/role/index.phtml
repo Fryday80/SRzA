@@ -29,7 +29,7 @@
                 'render' => function ($row){
                     $edit = '<a href="role/edit/' . $row['rid'] . '">Edit</a>';
                     $delete = '<a href="role/delete/' . $row['rid'] . '">Delete</a>';
-                    return $edit.$delete;
+                    return $edit.' '.$delete;
                 }
             ),
         ),

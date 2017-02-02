@@ -1,6 +1,7 @@
 <?php
 namespace Album\Controller;
 
+use Application\Utility\DataTable;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -23,7 +24,43 @@ class AlbumController extends AbstractActionController
     public function indexAction()
     {
         $albums = $this->galleryService->getAllAlbums();
-        $viewModel = new ViewModel(array( 'albums' => $albums ) );
+        $albumsTable = new DataTable( array('data' => $this->galleryService->getAllAlbums() ) );
+        $albumsTable->insertLinkButton('/album/add', 'neues Album');
+        $albumsTable->setColumns( array(
+            array(
+                'name'  => 'event',
+                'label' => 'Event'
+            ),
+            array(
+               'name'   => 'cal_date',
+               'label'  => 'Datum',
+               'type'   => 'custom',
+               'render' => function ($row){
+                   $data = date ('d.m.Y', $row['timestamp']);
+                   return $data;
+               }
+            ),
+            array(
+               'name'   => 'cal_date',
+               'label'  => 'Sichtbarkeit',
+               'type'   => 'custom',
+               'render' => function ($row){
+                   $visibility = ($row['visibility'] == 1) ? 'Ja': 'nein';
+                   return $visibility;
+               }
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function ($row){
+                    $edit = '<a href="album/edit/' . $row['id'] . '">Edit</a>';
+                    $delete = '<a href="album/delete/' . $row['id'] . '">Delete</a>';
+                    return $edit.' '.$delete;
+                }
+            ),
+        ) );
+        $viewModel = new ViewModel(array( 'table' => $albumsTable ) );
         return $viewModel;
     }
 
