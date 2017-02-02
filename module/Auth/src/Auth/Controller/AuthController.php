@@ -11,16 +11,9 @@ use Application\Service\TemplateTypes;
 
 class AuthController extends AbstractActionController
 {
-    protected $base_url;
-
     protected $form;
 
     protected $storage;
-
-    function __construct()
-    {
-        $this->base_url = 'http://'.$_SERVER['HTTP_HOST'].''/'';
-    }
 
     private function getSessionStorage()
     {
@@ -97,11 +90,9 @@ class AuthController extends AbstractActionController
                     if (count($ref) > 0) {
                         return $this->redirect()->toUrl($ref[0]);
                     }
-                    $referer = str_replace($this->base_url, "", $_SERVER['HTTP_REFERER']);
-                    $referer = ($referer == "")? 'home' : $referer;
 
                     $this->flashmessenger()->addMessage("You've been logged in");
-                    return $this->redirect()->toUrl($referer);
+                    return $this->redirect()->toUrl($this->getReferer());
                 }
             }
         }
@@ -114,12 +105,9 @@ class AuthController extends AbstractActionController
     {
         $this->getSessionStorage()->forgetMe();
         $this->getServiceLocator()->get('AuthService')->clearIdentity();
-
-        $referer = str_replace($this->base_url, "", $_SERVER['HTTP_REFERER']);
-        $referer = ($referer == "")? 'home' : $referer;
         
         $this->flashmessenger()->addMessage("You've been logged out");
-        return $this->redirect()->toUrl($referer);
+        return $this->redirect()->toUrl($this->getReferer());
     }
 
     public function successAction()
@@ -197,5 +185,14 @@ class AuthController extends AbstractActionController
             'form' => $form,
             'messages' => $this->flashMessenger()->getMessagesFromNamespace("PasswordReset")
         );
+    }
+
+    //makeup reffering site to usable string
+    protected function getReferer()
+    {
+        $base_url = 'http://'.$_SERVER['HTTP_HOST'].''/'';
+        $referringPage = str_replace($base_url, "", $_SERVER['HTTP_REFERER']);
+        $referringPage = ($referringPage == "")? 'home' : $referringPage;
+        return $referringPage;
     }
 }
