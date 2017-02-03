@@ -1,11 +1,13 @@
 <?php
 namespace Cast;
 
+use Cast\Helper\CharProfile;
 use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
 use Cast\Model\JobTable;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -41,6 +43,17 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return new JobTable($sm->get('Zend\Db\Adapter\Adapter'));
                 },
             ),
+        );
+    }
+
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'CharProfile' => function (ServiceLocatorInterface $serviceLocator) {
+                    return new CharProfile();
+                }
+            )
         );
     }
 }

@@ -6,6 +6,7 @@ return array(
             'Cast\Controller\Character'     => 'Cast\Controller\CharacterController',
             'Cast\Controller\Family'        => 'Cast\Controller\FamilyController',
             'Cast\Controller\Job'           => 'Cast\Controller\JobController',
+            'Cast\Controller\Cast'           => 'Cast\Controller\CastController',
         ),
 //        'factories' => array(
 //            'Cast\Controller\Cast' => function($controllerManager) {
@@ -193,6 +194,19 @@ return array(
                  ),
              ),
 
+             'cast' => array(
+                 'type'    => 'segment',
+                 'may_terminate' => true,
+                 'options' => array(
+                     'route'    => '/cast',
+                     'defaults' => array(
+                         'controller' => 'Cast\Controller\Cast',
+                         'action'     => 'index',
+                     ),
+                 ),
+
+                 'child_routes' => array()
+             ),
 
          ),
      ),
