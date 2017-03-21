@@ -27,5 +27,7 @@ $this->headTitle($title);
          <a href="<?php echo $this->url('gallery/small', array('id' => $album['id']));?>">Ansehen</a>
      </td>
  </tr>
- <?php endforeach; ?>
+ <?php endforeach;
+// echo $this->dataTable()->renderJS( new \Application\Utility\DataTable() );
+ ?>
  </table>

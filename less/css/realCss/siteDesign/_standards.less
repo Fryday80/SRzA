@@ -1,5 +1,8 @@
 @backgroundcolor: #FAEBd7;
 @dark-color: #dbd2c9;
+@js-lib: "/libs/jquery-ui/";
+@js-css-file: "jquery-ui.css";
+@js-css: "@{js-lib}@{js-css-file}" ;
 @uikit: "/img/uikit";
 
 /* -----------------MODDING----------------- */
@@ -155,27 +158,32 @@ v {
 /* ******************************************
 auslagern**********************
 ****************/
-#ui-datepicker-div {
-  .at-border(all);
-}
-.accordion
-{
-  .relative;
-  height: auto;
-  .ui-accordion-content
-  {
-    height: auto !important;
-  }
-  .ui-state-active,
-  .ui-state-hover
-  {
-    .ui-icon
-    {
-      background-image: none !important;
-    }
-  }
-}
 
-#h180 .ui-accordion-content{
-  height: 180px !important;
+ .cast li{
+   list-style: none;
+ }
+.cast .big {
+  width: 80%;
+  margin: 0.5vw auto 0.5vw auto;
+  padding: 5px;
+  text-align: center;
+  .box-shadow-right;
+}
+.cast .small {
+  width: 80%;
+  margin: 0 auto 0 auto;
+  overflow-y: hidden;
+  .box-shadow-right;
+  &:hover li{
+    .at-shaded-part;
+  }
+}
+.cast .tross {
+  display: inline-block;
+  height: auto;
+}
+.cast .tross>li {
+  float: left;
+  padding: 10px;
+  min-width: 150px;
 }

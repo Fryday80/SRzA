@@ -1,42 +1,21 @@
-<style>
-    .cast li{
-        list-style: none;
-    }
-    .cast .big {
-        width: 80%;
-        margin: 0 auto 0 auto;
-        padding: 5px;
-        text-align: center;
-    }
-    .cast .small {
-        width: 80%;
-        margin: 0 auto 0 auto;
-        overflow-y: hidden;
-    }
-    .cast .tross {
-        display: inline-block;
-        height: auto;
-    }
-    .cast .tross>li {
-        float: left;
-        padding: 10px;
-        min-width: 150px;
-    }
-</style>
 
 <div class="cast">
     <h1>Besetztung</h1>
     <?php foreach ($this->chars as $char): ?>
         <div class="box big">
-            <?php echo $this->CharProfile()->small($char); ?>
+            <a href="/<?php echo $char['id']; ?>">
+                <?php echo $this->CharProfile()->small($char);?>
+            </a>
             <br>
             <p>Tross</p>
             <ul class="tross">
                 <?php for($i = 0; $i < 5; $i++): ?>
                     <li>
-                        <div class="box small">
-                            <?php echo $this->CharProfile()->small($this->chars[1]); ?>
-                        </div>
+                        <a href="/<?php echo $this->chars[$i][id]; ?>">
+                            <div class="box small">
+                                <?php echo $this->CharProfile()->small($this->chars[1]); ?>
+                            </div>
+                        </a>
                     </li>
                 <?php endfor; ?>
             </ul>

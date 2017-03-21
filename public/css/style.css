@@ -63,23 +63,33 @@ v {
 /* ******************************************
 auslagern**********************
 ****************/
-#ui-datepicker-div {
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
+.cast li {
+  list-style: none;
 }
-.accordion {
-  position: relative;
+.cast .big {
+  width: 80%;
+  margin: 0.5vw auto 0.5vw auto;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 0.5vw 0.5vw 0.5vw grey;
+}
+.cast .small {
+  width: 80%;
+  margin: 0 auto 0 auto;
+  overflow-y: hidden;
+  box-shadow: 0.5vw 0.5vw 0.5vw grey;
+}
+.cast .small:hover li {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.cast .tross {
+  display: inline-block;
   height: auto;
 }
-.accordion .ui-accordion-content {
-  height: auto !important;
-}
-.accordion .ui-state-active .ui-icon,
-.accordion .ui-state-hover .ui-icon {
-  background-image: none !important;
-}
-#h180 .ui-accordion-content {
-  height: 180px !important;
+.cast .tross > li {
+  float: left;
+  padding: 10px;
+  min-width: 150px;
 }
 /* -----------------general Settings----------------- */
 * {
@@ -2324,3 +2334,21 @@ noscript > div > .ownhead {
   }
 }
 /* css animations                       */
+#ui-datepicker-div {
+  border: 0.5vw solid;
+  border-image: url("/img/uikit/border.png") 40 repeat;
+}
+.accordion {
+  position: relative;
+  height: auto;
+}
+.accordion .ui-accordion-content {
+  height: auto !important;
+}
+.accordion .ui-state-active .ui-icon,
+.accordion .ui-state-hover .ui-icon {
+  background-image: none !important;
+}
+#h180 .ui-accordion-content {
+  height: 180px !important;
+}
