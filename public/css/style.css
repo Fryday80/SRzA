@@ -27,12 +27,15 @@ v {
   background-image: url(/img/body.bg.png);
   background-size: auto 130px;
   background-color: #FAEBd7;
+  border-radius: 5px;
 }
 .titel {
   border-bottom: none;
   margin-bottom: 0 !important;
   background-image: none;
   width: calc(100% - 1vw);
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
 }
 .content {
   border-top: none;
@@ -41,15 +44,17 @@ v {
   background-size: auto 130px;
   background-color: #FAEBd7;
   width: calc(100% - 1vw);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 .box-shadow-left {
-  box-shadow: -0.5vw 0.5vw 0.5vw grey;
+  box-shadow: 0 0.5vw 0.5vw grey;
 }
 .box-shadow-right {
   box-shadow: 0.5vw 0.5vw 0.5vw grey;
 }
 .box-shadow-bottom {
-  box-shadow: 0 0.5vw 0.5vw grey;
+  box-shadow: 0.5vw 0.5vw 0.5vw grey;
 }
 .relative {
   position: relative;
@@ -102,8 +107,9 @@ body {
 }
 .body {
   margin: 3%;
-  background: #FAEBd7 url(/img/body.bg.png);
+  background-image: url(/img/body.bg.png);
   background-size: auto 130px;
+  background-color: #FAEBd7;
   border-radius: 5px;
   position: relative;
 }
@@ -140,19 +146,6 @@ button {
   font-family: bodytext, arial, sans-serif;
   color: black;
   font-size: 1vw;
-}
-/*--------------------------Login and Logout-----------------------*/
-form,
-label,
-input {
-  border-radius: 5px;
-}
-input {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  text-align: center;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 .logoutbutton {
   height: 30px;
@@ -192,6 +185,7 @@ input {
   box-shadow: 0 1vw 3vw grey;
   margin-top: 1vw;
   background-color: #FAEBd7;
+  border-radius: 5px;
 }
 .rightHead {
   float: right;
@@ -279,6 +273,7 @@ input {
   text-align: center;
 }
 #foottext {
+  border-radius: 5px;
   color: black;
   min-height: 30px;
   border: 0.5vw solid;
@@ -308,7 +303,7 @@ input {
   width: 100%;
   margin-bottom: 1em;
   margin-right: -1.1vw;
-  box-shadow: -0.5vw 0.5vw 0.5vw grey;
+  box-shadow: 0 0.5vw 0.5vw grey;
 }
 .linkbox:hover {
   background-color: rgba(0, 0, 0, 0.1);
@@ -374,6 +369,7 @@ input {
     height: 23px;
     margin-left: -1.5vw;
     margin-right: -1.5vw;
+    border-radius: 5px;
   }
   /* first level li */
   .level_0 {
@@ -441,7 +437,7 @@ input {
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: rgba(0, 0, 0, 0.1);
-    box-shadow: -0.5vw 0.5vw 0.5vw grey;
+    box-shadow: 0 0.5vw 0.5vw grey;
   }
   .level_0 > ul {
     position: relative;
@@ -2101,6 +2097,7 @@ body .ui-tooltip {
   background-image: url(/img/body.bg.png);
   background-size: auto 130px;
   background-color: #FAEBd7;
+  border-radius: 5px;
   display: none;
   position: absolute;
   margin: auto;
@@ -2133,6 +2130,27 @@ body .ui-tooltip {
 /* ** popUp ** */
 /* ** gallery ** */
 /* ** menu ** */
+/* js-used classes                      */
+form,
+label,
+input {
+  border-radius: 5px;
+}
+input {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+input:hover {
+  background-image: url(/img/body.bg.png);
+}
+input:-webkit-autofill {
+  background-color: #f00 !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
 /* js-used classes                      */
 @media only screen and (max-width: 700px) {
   .ownhead {
@@ -2179,7 +2197,7 @@ body .ui-tooltip {
     border-right: none;
     border-left: none;
     margin: 0;
-    box-shadow: 0 0.5vw 0.5vw grey;
+    box-shadow: 0.5vw 0.5vw 0.5vw grey;
   }
 }
 /* media queries for Basic Layout       */
