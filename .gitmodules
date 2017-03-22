@@ -1,6 +1,3 @@
-[submodule "public/libs/RichFilemanager"]
-	path = public/libs/RichFilemanager
-	url = http://github.com/servocoder/RichFilemanager.git
 [submodule "public/libs/rich-filemanager"]
 	path = public/libs/rich-filemanager
-	url = https://github.com/salt42/RichFilemanager
+	url = https://github.com/Fryday80/RichFilemanager
