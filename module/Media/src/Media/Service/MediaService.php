@@ -1,16 +1,71 @@
 <?php
 namespace Media\Service;
+const DATA_PATH = '\data';
+const DATA_UPLOAD_PATH  = '\Upload';
 
+class MediaItem {
+    public $name;
+    public $type;
+    public $fullPath;
+    public $dirPath;
+    public $path;
+    public $size;
+
+    function __construct($path) {
+        if (is_dir($path)) {
+            //@todo handle as dir or error
+        } else {
+            $pathInfo = pathinfo($path);
+            $this->name = $pathInfo['filename'];
+            $this->type = $pathInfo['extension'];
+            $this->dirPath = $pathInfo['dirname'];
+        }
+    }
+}
 class MediaService {
     protected $dataPath;
     protected $uploadPath;
 
     function __construct() {
         $rootPath = getcwd();
-        $this->dataPath = $rootPath.'\Data';
-        $this->uploadPath = $rootPath.'\Upload';
+        $this->dataPath = $rootPath.DATA_PATH;
+        $this->uploadPath = $rootPath.DATA_UPLOAD_PATH;
     }
 
+    function getImportPreview() {
+        $path = $this->uploadPath;
+        $files = $this->readUploadFolder($path);
+        $errors = [];
+        $result = [];
+
+        foreach ($files as $file) {
+            $realPath = realpath($file['fullPath']);
+            $targetPath = $this->dataPath.$file['path'].$file['name'];
+            array_push($result, new MediaItem($realPath));
+            /*
+            if ($file['type'] == 'folder') {
+                //check if folder exist in data folder
+                if (is_dir($targetPath)) {
+                    //exists allready -> go on recursive
+                    $this->import($realPath);
+                } else {
+                    //do not exists -> move hole folder
+                    rename($realPath, $targetPath);
+                }
+            } else {
+                if (!file_exists($targetPath)) {
+                    //move file to target
+                    rename($realPath, $targetPath);
+                } else {
+                    array_push($errors, array(
+                        'msg' => 'File exists allready',
+                        'file' =>$file
+                    ));
+                }
+            }*/
+        }
+        return $result;
+    }
     function import($path = null) {
         if ($path == null) $path = $this->uploadPath;
         $files = $this->readUploadFolder($path);

@@ -2,9 +2,10 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Media\Controller\List' => 'Media\Controller\ListController',
-            'Media\Controller\Upload' => 'Media\Controller\UploadController',
-            'Media\Controller\File' => 'Media\Controller\FileController',
+            'Media\Controller\List'         => 'Media\Controller\ListController',
+            'Media\Controller\Upload'       => 'Media\Controller\UploadController',
+            'Media\Controller\File'         => 'Media\Controller\FileController',
+            'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
         )
     ),
     'view_manager' => array(
@@ -17,24 +18,47 @@ return array(
             'media' => array(
                 'type' => 'literal',
                 'options' => array(
-                    'route'    => '/media',
-                    'defaults' => array(
+                    'route'     => '/media',
+                    'defaults'  => array(
                         '__NAMESPACE__' => 'Media\Controller',
-                        'controller' => 'List',
-                        'action'     => 'index',
+                        'controller'    => 'List',
+                        'action'        => 'index',
                     ),
                 ),
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'download' => array(
-                        'type' => 'regex',
-                        'options' => array(
-                            'regex' => '/download(?<path>\/.*)',
-                            'defaults' => array(
-                                'controller' => 'file',
-                                'action' => 'download',
+                'child_routes'  => array(
+                    'filebrowser'  => array(
+                        'type'  => 'literal',
+                        'options'   => array(
+                            'route'     => '/filebrowser',
+                            'defaults'  => array(
+                                'controller'    => 'FileBrowser',
+                                'action'        => 'index',
                             ),
-                            'spec' => '/path%path%'
+                        ),
+                        'may_terminate' => true,
+                        'child_routes'  => array(
+                            'action'     => array(
+                                'type'     => 'Literal',
+                                'options'   => array(
+                                    'route' => '/action',
+                                    'defaults'  => array(
+                                        'controller'    => 'FileBrowser',
+                                        'action'        => 'action',
+                                    ),
+                                ),
+                            ),
+                        )
+                    ),
+                    'download'  => array(
+                        'type'  => 'regex',
+                        'options'   => array(
+                            'regex'     => '/download(?<path>\/.*)',
+                            'defaults'  => array(
+                                'controller'    => 'file',
+                                'action'        => 'download',
+                            ),
+                            'spec'  => '/path%path%'
                         ),
                     ),
                     'image' => array(

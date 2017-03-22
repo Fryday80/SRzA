@@ -9,13 +9,14 @@ class ListController extends AbstractActionController  {
     public function indexAction()
     {
         //show a file browser
-        /*
-        $fileTable = $this->getServiceLocator()->get('Media\Model\FileTable');
-        $files = $fileTable->getAllFolders();
+
+        $mediaSerivce = $this->getServiceLocator()->get('MediaService');
+        $files = $mediaSerivce->getImportPreview();
+        //dumpd($files);
         return array(
             'files' => $files,
-            'jsonFiles' => json_encode($files)
+            //'jsonFiles' => json_encode($files)
         );
-        */
+
     }
 }

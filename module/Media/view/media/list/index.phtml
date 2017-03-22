@@ -11,18 +11,13 @@ $this->headTitle($title);
 </p>
 <table class="table" style="width:90%">
     <tr>
-        <th>path</th>
         <th>name</th>
-        <th>&nbsp;</th>
+        <th>path</th>
     </tr>
  <?php foreach ($files as $file) : ?>
      <tr>
-         <td><?php echo $this->escapeHtml($file['path']);?></td>
-         <td><?php echo $this->escapeHtml($file['name']);?></td>
-         <td>
-             <a href="<?php echo $this->url('cms/edit', array('id' => $file['id']));?>">Edit</a>
-             <a href="<?php echo $this->url('cms/delete', array('id' => $file['id']));?>">Delete</a>
-         </td>
+         <td><?php echo $this->escapeHtml($file->name);?></td>
+         <td><?php echo $this->escapeHtml($file->name);?></td>
      </tr>
  <?php endforeach; ?>
 </table>
