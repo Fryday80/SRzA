@@ -107,20 +107,20 @@ v
 {
   border: @width @style;
 }
+
 .at-border( @where: all, @width: 0.5vw, @style: solid, @status: normal)
 {
   .help-border(@width, @style, @where);
   .at-border-style(@status);
 }
+
 .at-border-style(@status: normal) when (@status = normal){
   border-image: url("@{uikit}/@{border-pic}") @border-cut-pixels @border-pic-display-style;
 }
 .at-border-style(@status: normal) when (@status = active){
   border-image: url("@{uikit}/@{border-pic-active}") @border-cut-pixels @border-pic-display-style;
 }
-.at-border-style-active(){
-  border-image: url("@{uikit}/@{border-pic-active}") @border-cut-pixels @border-pic-display-style;
-}
+
 /* ************* BOXES *************/
 .box
 {
