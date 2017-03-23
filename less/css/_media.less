@@ -1,17 +1,39 @@
 @import "../less/css/realCss/siteDesign/_standards";
 @media only screen and (max-width: 700px) {
+
+    /* ------------------- vars --------------------------- */
+
+    .at-central-container(){
+        margin: 1vw -1.5vw 0 -1.5vw;
+        .at-central-reset;
+    }
+    .at-central-reset()
+    {
+        width: initial;
+        float: none;
+    }
+
+
+    /* ----------------- hide elements -------------------- */
+
+    .headdeko,
+    #rightbarmiddle
+    {
+        .at-hide;
+    }
+
+    /* --------------------- style ------------------------ */
+
     .ownhead
     {
         font-size: 7.5vw;
     }
-    .headdeko
-    {
-	    display: none;
-    }
+
     #headlinks
     {
         padding: 10px 10px 1vw 0;
     }
+
     .leftHead
     {
         float: none;
@@ -27,6 +49,7 @@
         text-align: right;
         height: auto;
     }
+
     #content *
     {
         box-shadow: none;
@@ -34,28 +57,23 @@
 
     #content
     {
-        padding: 0;
-        margin-bottom: 1%;
-        width: calc(100% ~"-" @border-double-width);
+        padding: 3px;
         min-height: 10px !important;
+        .at-central-container;
     }
     #rightcontainer
     {
-        width: 100%;
         height: auto !important;
+        .at-central-container;
+        .box
+        {
+            margin-bottom: 0;
+        }
     }
-    #rightbarmiddle
+
+    .rightbarup,
+    .rightbardown
     {
-        display: none;
-    }
-    .rightbarup>.box,
-    .rightbardown>.box,
-    #content>.box
-    {
-        width: 100%;
-        border-right: none;
-        border-left: none;
-        margin: 0;
-        .box-shadow-bottom
+        .at-central-reset;
     }
 }
