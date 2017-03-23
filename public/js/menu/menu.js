@@ -5,7 +5,8 @@ $(document).ready (function menu_handler_js () {
      * adds the link images to all <a>
      */
     function addLinkDecorators () {
-        $("#navframe a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
+        //$("#navframe a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
+        //$("#navframe a").not("#DataTables_Table_0_paginate a").prepend('<img class="links" " src="/img/uikit/link.svg">');
     }
 
     /**

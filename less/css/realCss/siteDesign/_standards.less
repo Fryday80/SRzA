@@ -1,16 +1,19 @@
 @body-color: rgb(67,12,12);
-//@body-color: #E86975;
-//@body-color: #B04743;
-//@body-color: #4F79AE;
 @backgroundcolor: #FAEBd7;
-//@backgroundcolor: #FFD480;
-//@backgroundcolor: #FFCE8C;
 @dark-color: #dbd2c9;
 @js-lib: "/libs/jquery-ui/";
 @js-css-file: "jquery-ui.css";
 @js-css: "@{js-lib}@{js-css-file}" ;
 @uikit: "/img/uikit";
 @background-image: url( /img/body.bg.png);
+
+
+//@todo border neu, shadow nur ein style+ menu und footer(nur nach unten), shadow hover ( weniger weit ), innenschatten
+//@body-color: #E86975;
+//@body-color: #B04743;
+//@body-color: #4F79AE;
+//@backgroundcolor: #FFD480;
+//@backgroundcolor: #FFCE8C;
 
 /* -----------------MODDING----------------- */
 /*-------------------------------------------*/
@@ -25,7 +28,6 @@
   font-family: 'headline';
   src: url('/fonts/hp.ttf') format('truetype');
 }
-
 @font-face
 {
   font-family: 'bodytext';
@@ -36,21 +38,27 @@
   font-family: 'vendor';
   src: url('/fonts/hp3.ttf') format('truetype');
 }
-v {
+v
+{
   font-family: vendor, arial, sans-serif;
 }
-.headfont(@hfont-size: 5.5vw, @hfont-color: black){
+.headfont(@hfont-size: 5.5vw, @hfont-color: black)
+{
   font-family: headline, arial, sans-serif;
   color: @hfont-color;
   font-size: @hfont-size;
-
 }
 .font1(@font1-size: 1vw, @font1-color: black){
   font-family: bodytext, arial, sans-serif;
   color: @font1-color;
   font-size: @font1-size;
 }
-
+/* --------- backgroundstyling ------------ */
+.at-arrow-bg(){
+  background-image: url(/img/uikit/link2.svg);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
 .at-bg-color() {
   background-color: @backgroundcolor;
 }
@@ -74,6 +82,7 @@ v {
 .at-shaded-part() {
   background-color: rgba(0, 0, 0, 0.1);
 }
+/* ---- Border --- */
 .help-border(@width, @style, @where) when (@where = top)
 {
   border-top: @width @style;
@@ -112,48 +121,56 @@ v {
 .box
 {
   .at-border;
-  .at-bg-img;
+  .at-bg-color;
   border-radius: 5px;
+  box-shadow: @inner-shadow;
+  .at-box-shadow;
 }
 .titel
 {
-  border-bottom: none;
-  margin-bottom: 0 !important;
+  box-shadow: none;
   background-image: none;
-  width: calc(100% ~"-" @border-double-width);
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  border: none;
+  margin: 1vw;
+  padding: 0;
+  margin-bottom: 0;
+  border-radius: 0;
+  .at-arrow-bg;
 }
 .content
 {
-  border-top: none;
-  margin-top: 0 !important;
   .at-bg-img;
-  width: calc(100% ~"-" @border-double-width);
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border: none;
+  margin: 1vw;
+  padding: 0.5vw;
+  margin-top: 0;
+  box-shadow: none;
+  border-radius: 15px;
 }
 
-@box-shadow-standard-x: 0.5vw;
-@box-shadow-standard-y: 0.5vw;
-@box-shadow-standard-fade: 0.5vw;
-@box-shadow-standard-color: grey;
+.linkbox
+{
+  .at-hover;
+}
+
+/* ------ shadows ------- */
+@box-shadow-standard-x: 0.35vw;
+@box-shadow-standard-y: 0.35vw;
+@box-shadow-standard-fade: 0.8vw;
+@box-shadow-standard-color: darkgrey;
+
+@inner-shadow: inset 0 0 1vw 0 rgba(41,41,41,.5);
 
 .at-box-shadow(@box-shadow_x: @box-shadow-standard-x, @box-shadow_y: @box-shadow-standard-y, @box-shadow_fade: @box-shadow-standard-fade, @box-shadow_c:@box-shadow-standard-color)
 {
-    box-shadow: @box-shadow_x @box-shadow_y @box-shadow_fade @box-shadow_c;
-}
-.box-shadow-left{
-  //.at-box-shadow(-0.5vw);
-  .at-box-shadow(0);
-}
-.box-shadow-right{
-  .at-box-shadow;
+    box-shadow: @box-shadow_x @box-shadow_y @box-shadow_fade @box-shadow_c, @inner-shadow;
+  //box-shadow: 10px -7px 15px darkgray, lightgreen 0px 0px 3px inset;
 }
 .box-shadow-bottom{
-  //.at-box-shadow(0)
-  .at-box-shadow;
+  .at-box-shadow(0);
 }
+
+//* ------ Helpers ------ */
 .at-no-padding(){
   padding: 0;
 }
@@ -170,6 +187,7 @@ v {
 {
   clear: both;
 }
+
 /* ******************************************
 auslagern**********************
 ****************/
@@ -182,13 +200,13 @@ auslagern**********************
   margin: 0.5vw auto 0.5vw auto;
   padding: 5px;
   text-align: center;
-  .box-shadow-right;
+  .at-box-shadow;
 }
 .cast .small {
   width: 80%;
   margin: 0 auto 0 auto;
   overflow-y: hidden;
-  .box-shadow-right;
+  .at-box-shadow;
   &:hover li{
     .at-shaded-part;
   }

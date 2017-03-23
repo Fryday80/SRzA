@@ -1,22 +1,24 @@
-<div class="box titel">
-    <span class="own_text_big">Login</span>
-</div>
-<div class="box content" style="text-align: center">
-    <?php
-        $form = $this->form;
-        $form->prepare();
+<div class="rightbarup box">
+    <div class="box titel">
+        <span class="own_text_big">Login</span>
+    </div>
+    <div class="box content" style="text-align: center">
+        <?php
+            $form = $this->form;
+            $form->prepare();
 
-        echo $this->form()->openTag($form);
-        echo $this->formCollection($form);
-        echo $this->form()->closeTag();
+            echo $this->form()->openTag($form);
+            echo $this->formCollection($form);
+            echo $this->form()->closeTag();
 
-        if ($this->messages){
-            echo '<ul>';
-            foreach($this->messages as $message)
-            {
-                echo '<li>'.$message.'</li>';
+            if ($this->messages){
+                echo '<ul>';
+                foreach($this->messages as $message)
+                {
+                    echo '<li>'.$message.'</li>';
+                }
+                echo '</ul>';
             }
-            echo '</ul>';
-        }
-    ?>
+        ?>
+    </div>
 </div>

@@ -1,7 +1,8 @@
 <?php
 namespace Media\Controller;
+//mach mal deinen rein
 
-require_once('G:\Projects\christoph\SRzA\public\libs\rich-filemanager\connectors\php\filemanager.php');
+require_once(getcwd().'\public\libs\rich-filemanager\connectors\php\filemanager.php');
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
