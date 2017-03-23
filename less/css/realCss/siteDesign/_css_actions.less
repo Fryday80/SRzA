@@ -1,58 +1,63 @@
 @import "../less/css/realCss/siteDesign/_standards";
-@keyframes rotate_sign {
-    /* ----- Sign rotation ----- */
+/* --------------- sign shaking ------
+----------------------------------- */
+@shake-degree: 40deg;
+.at-shake()
+{
     0%      {}
-    10%     { transform:rotate(  0deg); }
-    35%     { transform:rotate(-40deg); }
-    65%     { transform:rotate( 40deg); }
-    90%     { transform:rotate(  0deg); }
+    5%      { transform:rotate(  0deg); }
+    35%     { transform:rotate(-@shake-degree); }
+    65%     { transform:rotate( @shake-degree); }
+    95%     { transform:rotate(  0deg); }
     100%    {}
+}
+@keyframes shake_sing {
+    .at-shake;
 }
 .headdeko:hover
 {
-    /* used in... */
-    /* -> head */
-    animation-name: rotate_sign;
+    /* used in... -> head */
+    animation-name: shake_sing;
     animation-duration: 3s;
     animation-direction: alternate;
 }
+
+/* -- Fade in from display: none --
+-------------------------------- */
 .fade-style(@disp, @op){
     display: @disp;
     opacity: @op;
 }
-/* -- Fade in from display: none --
--------------------------------- */
+.at-fade-action()
+{
+    0% { .fade-style(none, 0); }
+    0.5% { .fade-style(block, 0); }
+    100% { .fade-style(block, 1); }
+}
 /* used in... -> navigation menu.css */
 @-webkit-keyframes fadeInFromNone
 {
-    0% { .fade-style(none, 0); }
-    1% { .fade-style(block, 0); }
-    100% { .fade-style(block, 1); }
+    .at-fade-action;
 }
 @-moz-keyframes fadeInFromNone
 {
-    0% { .fade-style(none, 0); }
-    1% { .fade-style(block, 0); }
-    100% { .fade-style(block, 1); }
+    .at-fade-action;
 }
-
 @-o-keyframes fadeInFromNone
 {
-    0% { .fade-style(none, 0); }
-    1% { .fade-style(block, 0); }
-    100% { .fade-style(block, 1); }
+    .at-fade-action;
 }
-
 @keyframes fadeInFromNone
 {
-    0% { .fade-style(none, 0); }
-    1% { .fade-style(block, 0); }
-    100% { .fade-style(block, 1); }
+    .at-fade-action;
 }
+
+/* ------- Link img rotation ----- */
+/*
 @keyframes rotate
 {
-    /* ------- Link img rotation ----- */
-    /* used in... -> navigation menu.css */
+    // used in... -> navigation menu.css ---- no more
     0%      { transform:rotate(  0deg); }
     100%    { transform:rotate(  360deg); }
 }
+*/

@@ -312,6 +312,23 @@ button {
   height: 10px;
 }
 */
+/* ******** feedbacks e.g. nav sort ******** */
+#success,
+#error {
+  border: 0.5vw solid;
+  border-image: url("/img/uikit/border.png") 40 repeat;
+  background-color: #FAEBd7;
+  border-radius: 5px;
+  box-shadow: inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+  display: none;
+  position: absolute;
+  margin: auto;
+  height: 100px;
+  width: calc(100% - 1vw);
+  opacity: 0;
+  z-index: 2000;
+}
 /* --- #scroller helper ----- */
 .top-fade {
   background: linear-gradient(#FAEBd7, transparent);
@@ -327,7 +344,7 @@ button {
 /* Basic Layout without Menu            */
 /* -----------------Navbar CSS settings----------------- */
 @media only screen {
-  /*just to be able to hide general settings while coding :) */
+  /* media query is just to be able to hide general settings while coding :) */
   /* **** mobile button **** */
   .menu_button_div {
     text-align: center;
@@ -2088,31 +2105,17 @@ body .ui-tooltip {
 .hidden {
   display: none !important;
 }
-.js-L-view {
-  /* only in "normal" view */
-  /* used for js selection */
+/* used for js selection
+.js-L-view
+{
+    // only in "normal" view
 }
-.js-S-view {
-  /* only in mobile view */
-  /* used for js selection */
+.js-S-view
+{
+    // only in mobile view
+
 }
-/* ******** nav sort ******** */
-#success,
-#error {
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
-  background-color: #FAEBd7;
-  border-radius: 5px;
-  box-shadow: inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-  display: none;
-  position: absolute;
-  margin: auto;
-  height: 100px;
-  width: calc(100% - 1vw);
-  opacity: 0;
-  z-index: 2000;
-}
+
 /* ******** datepicker (part of jquery-ui I think) ******** */
 .ui-datepicker {
   background-image: url(/img/body.bg.png);
@@ -2185,15 +2188,15 @@ input:-webkit-autofill {
     text-align: right;
     height: auto;
   }
-  #content * {
-    box-shadow: none;
-  }
   #content {
     padding: 3px;
     min-height: 10px !important;
     margin: 1vw -1.5vw 0 -1.5vw;
     width: initial;
     float: none;
+  }
+  #content * {
+    box-shadow: none;
   }
   #rightcontainer {
     height: auto !important;
@@ -2270,9 +2273,10 @@ noscript > div > .ownhead {
   font-size: 8vw;
 }
 /* css transformation @ no script       */
-@keyframes rotate_sign {
-  /* ----- Sign rotation ----- */
-  10% {
+/* --------------- sign shaking ------
+----------------------------------- */
+@keyframes shake_sing {
+  5% {
     transform: rotate(0deg);
   }
   35% {
@@ -2281,14 +2285,13 @@ noscript > div > .ownhead {
   65% {
     transform: rotate(40deg);
   }
-  90% {
+  95% {
     transform: rotate(0deg);
   }
 }
 .headdeko:hover {
-  /* used in... */
-  /* -> head */
-  animation-name: rotate_sign;
+  /* used in... -> head */
+  animation-name: shake_sing;
   animation-duration: 3s;
   animation-direction: alternate;
 }
@@ -2300,7 +2303,7 @@ noscript > div > .ownhead {
     display: none;
     opacity: 0;
   }
-  1% {
+  0.5% {
     display: block;
     opacity: 0;
   }
@@ -2314,7 +2317,7 @@ noscript > div > .ownhead {
     display: none;
     opacity: 0;
   }
-  1% {
+  0.5% {
     display: block;
     opacity: 0;
   }
@@ -2328,7 +2331,7 @@ noscript > div > .ownhead {
     display: none;
     opacity: 0;
   }
-  1% {
+  0.5% {
     display: block;
     opacity: 0;
   }
@@ -2342,7 +2345,7 @@ noscript > div > .ownhead {
     display: none;
     opacity: 0;
   }
-  1% {
+  0.5% {
     display: block;
     opacity: 0;
   }
@@ -2351,16 +2354,15 @@ noscript > div > .ownhead {
     opacity: 1;
   }
 }
-@keyframes rotate {
-  /* ------- Link img rotation ----- */
-  /* used in... -> navigation menu.css */
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+/* ------- Link img rotation ----- */
+/*
+@keyframes rotate
+{
+    // used in... -> navigation menu.css ---- no more
+    0%      { transform:rotate(  0deg); }
+    100%    { transform:rotate(  360deg); }
 }
+*/
 /* css animations                       */
 #ui-datepicker-div {
   border: 0.5vw solid;
