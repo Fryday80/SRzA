@@ -1,7 +1,10 @@
 <?php
 namespace Album\Service;
 
-use vakata\database\Exception;
+
+use Album\Model\AlbumModel;
+use Media\Service\MediaService;
+
 
 
 /**
@@ -12,24 +15,47 @@ use vakata\database\Exception;
  */
 Class GalleryService
 {
-    private $albumsTable;
-    private $albumImagesTable;
-    private $imagesTable;
-
+    /**
+     * @var MediaService
+     */
+    private $mediaService;
+    private $galleryPath = "/gallery";
 
 
     function __construct($sm)
     {
-        $this->albumsTable = $sm->get('Album\Model\AlbumsTable');
-        $this->albumImagesTable = $sm->get('Album\Model\AlbumImagesTable');
-        $this->imagesTable = $sm->get('Album\Model\ImagesTable');
+        $this->mediaService = $sm->get('MediaService');
     }
 
-/* read ******************************** */
+
+
     public function getAllAlbums() {
-        return $this->albumsTable->fetchAllAlbums();
+        $result = array();
+        $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
+        foreach ($galleryDirs as $key => $value) {
+            $fileName = '/album.conf';
+            if ($this->mediaService->fileExists($value['path'].$fileName) ) {
+                $album_conf = parse_ini_file($value['fullPath'].$fileName, TRUE)['Album'];
+
+                array_push($result, new AlbumModel($album_conf['Album']['name'], $album_conf['Album']['description'], []));
+            }
+        }
+        return $result;
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+    /* read ******************************** */
     public function getAlbumByID($id) {
         return $this->albumsTable->getById($id);
     }

@@ -16,6 +16,7 @@ class GalleryController extends AbstractActionController
     public function indexAction()
     {
         $albums = $this->galleryService->getAllAlbums();
+        dump($albums);
         $viewModel = new ViewModel(array( 'albums' => $albums ) );
         return $viewModel;
     }

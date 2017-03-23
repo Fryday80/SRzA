@@ -39,16 +39,38 @@ return array(
                         'may_terminate' => true,
                         'child_routes'  => array(
                             'action'     => array(
-                                'type'     => 'Literal',
+                                'type'     => 'regex',
                                 'options'   => array(
-                                    'route' => '/action',
+                                    'regex' => '/action(?<path>.*)',
                                     'defaults'  => array(
                                         'controller'    => 'FileBrowser',
                                         'action'        => 'action',
                                     ),
+                                    'spec'  => '/path%path%'
                                 ),
                             ),
                         )
+                    ),
+                    'filebrowserembedded'  => array(
+                        'type'  => 'literal',
+                        'options'   => array(
+                            'route'     => '/efilebrowser',
+                            'defaults'  => array(
+                                'controller'    => 'FileBrowser',
+                                'action'        => 'embedded',
+                            ),
+                        ),
+                    ),
+                    'file'  => array(
+                        'type'  => 'regex',
+                        'options'   => array(
+                            'regex'     => '/file(?<path>\/.*)',
+                            'defaults'  => array(
+                                'controller'    => 'file',
+                                'action'        => 'file',
+                            ),
+                            'spec'  => '/path%path%'
+                        ),
                     ),
                     'download'  => array(
                         'type'  => 'regex',

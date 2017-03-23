@@ -6,6 +6,20 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 class FileController extends AbstractActionController  {
 
+    public function fileAction()
+    {
+        $path = $this->params('path');
+        $fileContent =  file_get_contents('Data' . $path);
+        $response = $this->getResponse();
+        $response->setContent($fileContent);
+        $response
+            ->getHeaders()
+            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+            ->addHeaderLine('Content-Type', 'image/jpg')
+            ->addHeaderLine('Content-Length', mb_strlen($fileContent));
+
+        return $response;
+    }
     public function imageAction()
     {
         $path = $this->params('path');

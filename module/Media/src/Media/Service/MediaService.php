@@ -32,6 +32,29 @@ class MediaService {
         $this->uploadPath = $rootPath.DATA_UPLOAD_PATH;
     }
 
+    function getFolderNames($path) {
+        $rootPath = realpath($this->dataPath.'/'.$path);
+        $dir = scandir($rootPath);
+        $result = array();
+        foreach ($dir as $key => $value) {
+            if ($value == '.' || $value == '..') continue;
+            if( is_dir ($rootPath.'/'.$value) ) {
+                array_push($result, array('name' => $value, 'path' => $path.'/'.$value, 'fullPath' => $rootPath.'/'.$value) );
+            }
+        }
+        return $result;
+    }
+
+    function fileExists($path) {
+        $filePath = realpath($this->dataPath.'/'.$path);
+        if (is_file($filePath)) {
+            return true;
+        }
+        return false;
+    }
+
+
+
     function getImportPreview() {
         $path = $this->uploadPath;
         $files = $this->readUploadFolder($path);
