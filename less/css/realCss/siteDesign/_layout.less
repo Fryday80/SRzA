@@ -187,12 +187,32 @@ button
   padding: 0;
 }
 
+/* --- #scroller helper ----- */
+
+@scroller-height: 200px;
+@fade-scope: 0.25 * @scroller-height;
 #scroller
 {
+  height: @scroller-height;
   width: 100%;
-  height: 100%;
-  background-color: #00b3ee;
-  background-color: #4F79AE;
+//  background-color: #4F79AE;
+//  margin-top: -@fade-scope;
+//}
+//.top-fade
+//{
+//  background: linear-gradient(@backgroundcolor, transparent);
+//  height: @fade-scope;
+//}
+//
+//.bottom-fade
+//{
+//  background: linear-gradient(transparent, @backgroundcolor);
+//  height:  @fade-scope;
+//}
+//
+//.scroller-spacer
+//{
+//  height: (@scroller-height - (2 * @fade-scope));
 }
 
 .log_me_out
@@ -252,23 +272,4 @@ button
   width: calc(100% ~"-" 1vw);
   opacity: 0;
   z-index: 2000;
-}
-
-/* --- #scroller helper ----- */
-@fade-scope: 25%;
-.top-fade
-{
-  background: linear-gradient(@backgroundcolor, transparent);
-  height: @fade-scope;
-}
-
-.bottom-fade
-{
-  background: linear-gradient(transparent, @backgroundcolor);
-  height:  @fade-scope;
-}
-
-.scroller-spacer
-{
-  height: (100%-(2*@fade-scope));
 }

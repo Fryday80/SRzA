@@ -235,11 +235,10 @@ button {
   height: 200px;
   padding: 0;
 }
+/* --- #scroller helper ----- */
 #scroller {
+  height: 200px;
   width: 100%;
-  height: 100%;
-  background-color: #00b3ee;
-  background-color: #4F79AE;
 }
 .log_me_out {
   position: absolute;
@@ -304,18 +303,6 @@ button {
   width: calc(100% - 1vw);
   opacity: 0;
   z-index: 2000;
-}
-/* --- #scroller helper ----- */
-.top-fade {
-  background: linear-gradient(#FAEBd7, transparent);
-  height: 25%;
-}
-.bottom-fade {
-  background: linear-gradient(transparent, #FAEBd7);
-  height: 25%;
-}
-.scroller-spacer {
-  height: 50%;
 }
 /* Menu Layout */
 /* -----------------Navbar CSS settings----------------- */
@@ -464,6 +451,300 @@ button {
     animation: fadeInFromNone 0.7s ease-out;
   }
 }
+/* styles used in Zend */
+/* ------------------Zend Form Styles ---------------------------------- */
+#album {
+  text-align: right;
+}
+.margin_left_5 {
+  margin-left: 5px;
+}
+.margin_right_15 {
+  margin-right: 15px;
+}
+.margin_left_auto {
+  margin-left: auto;
+}
+.float_left {
+  float: left;
+}
+/* js-used classes */
+/* -----------------auxilliary classes for JQuery----------------- */
+/*----------------------some just for switching--------------------*/
+/* ******** general / no special usage ******** */
+.hidden {
+  display: none !important;
+}
+/* ******** datepicker (part of jquery-ui I think) ******** */
+.ui-datepicker {
+  background-image: url('/img/body.bg.png');
+  background-size: 100% 100%;
+}
+#ui-datepicker-div > table > thead > tr > th > span {
+  color: black;
+}
+/* ******** in forms (last_fixes.js) ******** */
+.width_95 {
+  width: 95%;
+}
+.width_90 {
+  width: 90%;
+}
+.width_40 {
+  width: 40%;
+}
+/* ************************* */
+/* *** with own css file *** */
+/* ************************* */
+/* ** popUp ** */
+/* ** gallery ** */
+/* ** menu ** */
+/* *** special subpages design *** */
+.cast li {
+  list-style: none;
+}
+.cast .big {
+  width: 80%;
+  margin: 0.5vw auto 0.5vw auto;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+}
+.cast .small {
+  width: 80%;
+  margin: 0 auto 0 auto;
+  overflow-y: hidden;
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+}
+.cast .small:hover li {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.cast .tross {
+  display: inline-block;
+  height: auto;
+}
+.cast .tross > li {
+  float: left;
+  padding: 10px;
+  min-width: 150px;
+}
+form,
+label,
+input {
+  border-radius: 5px;
+}
+input {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  text-align: center;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+input:hover {
+  background-image: url('/img/body.bg.png');
+}
+input:-webkit-autofill {
+  background-color: #f00 !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
+/* media queries for Basic Layout */
+@media only screen and (max-width: 700px) {
+  /* ------------------- vars --------------------------- */
+  /* ----------------- hide elements -------------------- */
+  .headdeko,
+  #rightbarmiddle {
+    display: none;
+  }
+  /* ----------------- fonts -------------------- */
+  .own_text_big,
+  .own_text_medium {
+    font-size: 15px;
+  }
+  /* --------------------- style ------------------------ */
+  .ownhead {
+    font-size: 7.5vw;
+  }
+  #headlinks {
+    padding: 10px 10px 1vw 0;
+  }
+  .leftHead {
+    float: none;
+    width: 90%;
+    text-align: center;
+    margin: 0 auto 0 auto;
+  }
+  .rightHead {
+    display: none;
+  }
+  #content {
+    padding: 3px;
+    min-height: 10px !important;
+    margin: 1vw -1.5vw 0 -1.5vw;
+    width: initial;
+    float: none;
+  }
+  #content * {
+    box-shadow: none;
+  }
+  #rightcontainer {
+    height: auto !important;
+    margin: 1vw -1.5vw 0 -1.5vw;
+    width: initial;
+    float: none;
+  }
+  #rightcontainer .at-box {
+    margin-bottom: 0;
+  }
+  .rightbarup,
+  .rightbardown {
+    width: initial;
+    float: none;
+  }
+}
+/* css transformation @ no script */
+/* ----------------- NoScript desing -------------------------------- */
+@keyframes noJS {
+  0% {
+    transform: rotate(0deg);
+    top: 200px;
+    left: 30px;
+    right: 30px;
+  }
+  25% {
+    transform: rotate(20deg);
+    top: 150px;
+    left: 30px;
+    right: 30px;
+  }
+  50% {
+    transform: rotate(0deg);
+    top: 350px;
+    left: 50px;
+    right: 10px;
+    background-color: #430c0c;
+  }
+  60% {
+    transform: rotate(0deg);
+    top: 450px;
+    left: 150px;
+    right: -120px;
+  }
+  70% {
+    transform: rotate(0deg);
+    top: 150px;
+    left: 250px;
+    right: -220px;
+  }
+  100% {
+    transform: rotate(-360deg);
+    top: 200px;
+    left: 30px;
+    right: 30px;
+    background-color: black;
+  }
+}
+noscript > div {
+  z-index: 20;
+  position: absolute;
+  top: 200px;
+  left: 30px;
+  right: 30px;
+  padding: auto 20px auto 20px;
+  background-color: black;
+  border-radius: 20px;
+  text-align: center;
+  animation-name: noJS;
+  animation-duration: 8s;
+}
+noscript > div > .ownhead {
+  color: white;
+  font-size: 8vw;
+}
+/* css animations */
+/* --------------- sign shaking ------
+----------------------------------- */
+@keyframes shake_sing {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+.headdeko:hover {
+  /* used in... -> head */
+  animation-name: shake_sing;
+  animation-duration: 3s;
+  animation-direction: alternate;
+}
+/* -- Fade in from display: none --
+-------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  0.5% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+@-moz-keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  0.5% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+@-o-keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  0.5% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+@keyframes fadeInFromNone {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  0.5% {
+    display: block;
+    opacity: 0;
+  }
+  100% {
+    display: block;
+    opacity: 1;
+  }
+}
+/* js overrides */
+/* overrides for js css */
 /* jquery UI Style   for pop up */
 /*! jQuery UI - v1.11.1 - 2014-08-13
 * http://jqueryui.com
@@ -2051,301 +2332,29 @@ body .ui-tooltip {
   height: 75px;
   border-radius: 10%;
 }
-/* styles used in Zend */
-/* ------------------Zend Form Styles ---------------------------------- */
-#album {
-  text-align: right;
-}
-.margin_left_5 {
-  margin-left: 5px;
-}
-.margin_right_15 {
-  margin-right: 15px;
-}
-.margin_left_auto {
-  margin-left: auto;
-}
-.float_left {
-  float: left;
-}
-/* js-used classes */
-/* -----------------auxilliary classes for JQuery----------------- */
-/*----------------------some just for switching--------------------*/
-/* ******** general / no special usage ******** */
-.hidden {
-  display: none !important;
-}
-/* ******** datepicker (part of jquery-ui I think) ******** */
-.ui-datepicker {
-  background-image: url('/img/body.bg.png');
-  background-size: 100% 100%;
-}
-#ui-datepicker-div > table > thead > tr > th > span {
-  color: black;
-}
-/* ******** in forms (last_fixes.js) ******** */
-.width_95 {
-  width: 95%;
-}
-.width_90 {
-  width: 90%;
-}
-.width_40 {
-  width: 40%;
-}
-/* ************************* */
-/* *** with own css file *** */
-/* ************************* */
-/* ** popUp ** */
-/* ** gallery ** */
-/* ** menu ** */
-/* *** special subpages design *** */
-.cast li {
-  list-style: none;
-}
-.cast .big {
-  width: 80%;
-  margin: 0.5vw auto 0.5vw auto;
-  padding: 5px;
-  text-align: center;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-}
-.cast .small {
-  width: 80%;
-  margin: 0 auto 0 auto;
-  overflow-y: hidden;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-}
-.cast .small:hover li {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.cast .tross {
-  display: inline-block;
-  height: auto;
-}
-.cast .tross > li {
-  float: left;
-  padding: 10px;
-  min-width: 150px;
-}
-form,
-label,
-input {
-  border-radius: 5px;
-}
-input {
-  background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-  text-align: center;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-input:hover {
-  background-image: url('/img/body.bg.png');
-}
-input:-webkit-autofill {
-  background-color: #f00 !important;
-  background-image: none !important;
-  color: #000000 !important;
-}
+/* datepicker */
 #ui-datepicker-div {
   border: 0.5vw solid;
   border-image: url("/img/uikit/border.png") 40 repeat;
 }
-/* media queries for Basic Layout */
-@media only screen and (max-width: 700px) {
-  /* ------------------- vars --------------------------- */
-  /* ----------------- hide elements -------------------- */
-  .headdeko,
-  #rightbarmiddle {
-    display: none;
-  }
-  /* ----------------- fonts -------------------- */
-  .own_text_big,
-  .own_text_medium {
-    font-size: 15px;
-  }
-  /* --------------------- style ------------------------ */
-  .ownhead {
-    font-size: 7.5vw;
-  }
-  #headlinks {
-    padding: 10px 10px 1vw 0;
-  }
-  .leftHead {
-    float: none;
-    width: 90%;
-    text-align: center;
-    margin: 0 auto 0 auto;
-  }
-  .rightHead {
-    display: none;
-  }
-  #content {
-    padding: 3px;
-    min-height: 10px !important;
-    margin: 1vw -1.5vw 0 -1.5vw;
-    width: initial;
-    float: none;
-  }
-  #content * {
-    box-shadow: none;
-  }
-  #rightcontainer {
-    height: auto !important;
-    margin: 1vw -1.5vw 0 -1.5vw;
-    width: initial;
-    float: none;
-  }
-  #rightcontainer .at-box {
-    margin-bottom: 0;
-  }
-  .rightbarup,
-  .rightbardown {
-    width: initial;
-    float: none;
-  }
+/* simplyscroll */
+.simply-scroll-clip {
+  overflow-y: hidden !important;
+  height: 200px !important;
+  width: 100% !important;
 }
-/* css transformation @ no script */
-/* ----------------- NoScript desing -------------------------------- */
-@keyframes noJS {
-  0% {
-    transform: rotate(0deg);
-    top: 200px;
-    left: 30px;
-    right: 30px;
-  }
-  25% {
-    transform: rotate(20deg);
-    top: 150px;
-    left: 30px;
-    right: 30px;
-  }
-  50% {
-    transform: rotate(0deg);
-    top: 350px;
-    left: 50px;
-    right: 10px;
-    background-color: #430c0c;
-  }
-  60% {
-    transform: rotate(0deg);
-    top: 450px;
-    left: 150px;
-    right: -120px;
-  }
-  70% {
-    transform: rotate(0deg);
-    top: 150px;
-    left: 250px;
-    right: -220px;
-  }
-  100% {
-    transform: rotate(-360deg);
-    top: 200px;
-    left: 30px;
-    right: 30px;
-    background-color: black;
-  }
+.simply-scroll-clip li {
+  width: 100% !important;
 }
-noscript > div {
-  z-index: 20;
-  position: absolute;
-  top: 200px;
-  left: 30px;
-  right: 30px;
-  padding: auto 20px auto 20px;
-  background-color: black;
-  border-radius: 20px;
-  text-align: center;
-  animation-name: noJS;
-  animation-duration: 8s;
+.simply-scroll-clip * {
+  border: none !important;
 }
-noscript > div > .ownhead {
-  color: white;
-  font-size: 8vw;
+.vert {
+  width: 100% !important;
 }
-/* css animations */
-/* --------------- sign shaking ------
------------------------------------ */
-@keyframes shake_sing {
-  5% {
-    transform: rotate(0deg);
-  }
-  35% {
-    transform: rotate(-40deg);
-  }
-  65% {
-    transform: rotate(40deg);
-  }
-  95% {
-    transform: rotate(0deg);
-  }
-}
-.headdeko:hover {
-  /* used in... -> head */
-  animation-name: shake_sing;
-  animation-duration: 3s;
-  animation-direction: alternate;
-}
-/* -- Fade in from display: none --
--------------------------------- */
-/* used in... -> navigation menu.css */
-@-webkit-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@-moz-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@-o-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
+.vert .simply-scroll-list li img {
+  margin-left: auto;
+  margin-right: auto;
 }
 /*  // <--- un-comment / * for usage
 @import "css/_preLaunch";    /*erase unused elements for pre launch */

@@ -12,14 +12,16 @@
 
 <!----  CSS styles   ---->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                        ->prependStylesheet($this->basePath('/libs/jquery-ui/jquery-ui.css'))
                         ->prependStylesheet($this->basePath('css/style.css'))
+                        ->prependStylesheet($this->basePath('/libs/simplyscrollV2/jquery.simplyscroll.css'))
+                        ->prependStylesheet($this->basePath('/libs/jquery-ui/jquery-ui.css'))
         ?>
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()
             ->prependFile($this->basePath('js/fixes/last_fixes.js'))
             ->prependFile($this->basePath('libs/popUp/popup.js'))
             ->prependFile($this->basePath('js/menu/menu.js'))
+            ->prependFile($this->basePath('libs/simplyscrollV2/jquery.simplyscroll.js'))
             ->prependFile($this->basePath('js/jquery-ui.min.js'))
             ->prependFile($this->basePath('js/jquery.min.js'))
     ; ?>
@@ -94,15 +96,15 @@
                     echo $this->loginview();
                 ?>
             </div>
-            <div id="rightbarmiddle" class="box">
-                <div id="scroller">
+            <box id="rightbarmiddle">
+                <div>
                     <div class="top-fade"></div>
                     <div class="scroller-spacer">
-                        under construction<br>comming soon
+                        <?php echo $this->randomImage()->scroller(); ?>
                     </div>
                     <div class="bottom-fade"></div>
                 </div>
-            </div>
+            </box>
 
             <box class="rightbardown">
                 <boxtitel>
