@@ -2376,10 +2376,5 @@ noscript > div > .ownhead {
   border: 0.5vw solid;
   border-image: url("/img/uikit/border.png") 40 repeat;
 }
-.accordion {
-  position: relative;
-}
-.accordion .ui-state-active .ui-icon,
-.accordion .ui-state-hover .ui-icon {
-  background-image: none !important;
-}
+/*  // <--- un-comment / * for usage
+@import "css/_preLaunch";    /*erase unused elements for pre launch */
