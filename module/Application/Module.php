@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\Utility\JSCoder;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\ModuleRouteListener;
@@ -54,6 +55,9 @@ class Module
                 'asurl' => function ($sm){
                     $accessService = $sm->getServiceLocator()->get('AccessService');
                     return new MyUrl($accessService);
+                },
+                'jsCoder' => function() {
+                    return new JSCoder();
                 }
 
             )

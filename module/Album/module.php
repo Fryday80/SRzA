@@ -1,6 +1,7 @@
 <?php
 namespace Album;
 
+use Album\Utility\RandomImageHelper;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Album\Model\AlbumsTable;
@@ -48,6 +49,18 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return new GalleryService($sm);
                 },
             ),
+        );
+    }
+    public function getViewHelperConfig()
+    {
+        return array(
+            'factories' => array(
+                'randomImage' => function ($sm){
+                    $galleryService = $sm->getServiceLocator()->get('GalleryService');
+                    return new RandomImageHelper($galleryService);
+                }
+
+            )
         );
     }
 }
