@@ -95,6 +95,7 @@ class MediaService {
             $pathInfo = pathinfo($path);
             $item->name = $pathInfo['filename'];
             $item->type = $pathInfo['extension'];
+            $item->livePath = "/media/image/".$path;
 //            $item->parentPath = $pathInfo['dirname'];
         } else {
             //@todo error file not found
