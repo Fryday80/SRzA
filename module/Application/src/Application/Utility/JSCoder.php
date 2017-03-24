@@ -54,8 +54,8 @@ class JSCoder
                 'script' => '',
             ),
             'example' => array (
-                'css' => function() {$this->headLink()->prependStylesheet('path to css file');},
-                'jsFile' => function() {$this->headScript()->appendFile('path to css file');},
+                'css' => '', //function() {$this->headLink()->prependStylesheet('path to css file');},
+                'jsFile' => '', //function() {$this->headScript()->appendFile('path to css file');},
                 'script' => '',
             ),
         );

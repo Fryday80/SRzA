@@ -36,16 +36,8 @@ class RandomImageHelper
     }
 
     function createRandoms(){
-        $allAlbums = $this->galleryService->getAllAlbums();
-        $allPics = array();
-        foreach ($allAlbums as $album){
-            //todo only guest pics
-            array_push($allPics, $album->loadImages());
-        }
-        $pics = count($allPics);
-        $randomPics = array_rand ($pics, 3 );
-        $this->randomPic1 = $randomPics[0];
-        $this->randomPic2 = $randomPics[1];
-        $this->randomPic3 = $randomPics[2];
+        $this->randomPic1 = $this->galleryService->getRandomImage($count = 1);
+        $this->randomPic2 = $this->galleryService->getRandomImage($count = 1);
+        $this->randomPic3 = $this->galleryService->getRandomImage($count = 1);
     }
 }
