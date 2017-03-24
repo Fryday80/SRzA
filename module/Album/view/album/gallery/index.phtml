@@ -17,7 +17,7 @@ $this->headTitle($title);
             <td><?php //echo date ('Y', $album['timestamp']); ?></td>
             <td><?php echo $album->getName(); ?></td>
             <td><?php //echo date ('d.m.Y', $album['timestamp']); ?></td>
-            <td style="text-align: center"><img class = "preview_gallery" src="<?php echo $album->getPreviewUrl();?>"></td>
+            <td style="text-align: center"><img class="preview_gallery" src="<?php echo $album->getPreviewUrl();?>"></td>
             <td>
                 <a href="<?php echo $this->url('gallery/small', array('id' => basename($album->getPath()) ));?>">Ansehen</a>
             </td>
