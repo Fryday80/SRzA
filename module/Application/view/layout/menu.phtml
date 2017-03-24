@@ -4,9 +4,10 @@ print($this->sers);
 if (!function_exists("createMenuHtmlRecursive") ){
     function createMenuHtmlRecursive($page, $level) {
         if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
-            echo "<li class='level_$level'>";
-            echo '<a href="' . $page->getUri() . '">' . $page->getLabel();
-            echo '</a>';
+            echo
+                '<a href="' . $page->getUri() . '">' .
+                    "<li class='level_$level'>" .
+                            $page->getLabel();
             if ($page->hasPages()) {
                 $nextLevel = $level + 1;
                 echo '<ul class="ul_level_' . $nextLevel . '">';
@@ -15,7 +16,7 @@ if (!function_exists("createMenuHtmlRecursive") ){
                 }
                 echo '</ul>';
             }
-            echo '</li>';
+            echo '</li></a>';
         }
         return;
     }
