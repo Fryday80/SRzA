@@ -10,6 +10,7 @@ namespace Album\Utility;
 
 
 use Album\Service\GalleryService;
+use Zend\View\Helper\AbstractHelper;
 
 /**
  * Class RandomImageHelper <br>
@@ -17,16 +18,13 @@ use Album\Service\GalleryService;
  *
  * @package Album\Utility
  */
-class RandomImageHelper
+class RandomImageHelper extends AbstractHelper
 {
     /**
      * @var GalleryService
      */
     private $galleryService;
-
-    public $randomPic1;
-    public $randomPic2;
-    public $randomPic3;
+    private $result;
 
 
     function __construct($galleryService)
@@ -35,9 +33,29 @@ class RandomImageHelper
         $this->createRandoms();
     }
 
-    function createRandoms(){
-        $this->randomPic1 = $this->galleryService->getRandomImage($count = 1);
-        $this->randomPic2 = $this->galleryService->getRandomImage($count = 1);
-        $this->randomPic3 = $this->galleryService->getRandomImage($count = 1);
+    function createRandoms()
+    {
+        $this->result = $this->galleryService->getRandomImage($count = 3);
+    }
+
+    function scroller()
+    {
+        $return = '  <ul id="scroller" >';
+        foreach ($this->result as $picture)
+        {
+            $return .= '<li style="text-align: center;">
+                            <img src="' . $picture->livePath . '" style="width: 100%; margin-left: auto; margin-right: auto;">
+                        </li>';
+        }
+        $return .= '</ul>
+                   <script> $("#scroller").simplyScroll({
+                                autoMode: \'loop\', 
+                                customClass: \'vert\',
+                                orientation: \'vertical\',
+                                frameRate: 20,
+                                speed: 3
+                            });
+                    </script>';
+        return $return;
     }
 }
