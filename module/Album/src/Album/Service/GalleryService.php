@@ -31,18 +31,24 @@ Class GalleryService
 
     public function getAllAlbums() {
         $result = array();
+        $fileName = '/album.conf';
         $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
         foreach ($galleryDirs as $key => $value) {
-            $fileName = '/album.conf';
             if ($this->mediaService->fileExists($value['path'].$fileName) ) {
-                $album_conf = parse_ini_file($value['fullPath'].$fileName, TRUE)['Album'];
-
-                array_push($result, new AlbumModel($album_conf['Album']['name'], $album_conf['Album']['description'], []));
+                array_push($result, new AlbumModel($value['path'], $this->mediaService) );
             }
         }
         return $result;
     }
-
+    public function getAlbum($path) {
+        $path = $this->galleryPath.'/'.$path;
+        $fileName = '/album.conf';
+        if ($this->mediaService->fileExists($path.$fileName) ) {
+            $album = new AlbumModel($path, $this->mediaService);
+            $album->loadImages();
+            return $album;
+        }
+    }
 
 
 

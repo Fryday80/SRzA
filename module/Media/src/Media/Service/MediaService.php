@@ -7,20 +7,12 @@ class MediaItem {
     public $name;
     public $type;
     public $fullPath;
-    public $dirPath;
+    public $parentPath;
     public $path;
+    public $livePath;
     public $size;
 
-    function __construct($path) {
-        if (is_dir($path)) {
-            //@todo handle as dir or error
-        } else {
-            $pathInfo = pathinfo($path);
-            $this->name = $pathInfo['filename'];
-            $this->type = $pathInfo['extension'];
-            $this->dirPath = $pathInfo['dirname'];
-        }
-    }
+    function __construct() {}
 }
 class MediaService {
     protected $dataPath;
@@ -52,6 +44,80 @@ class MediaService {
         }
         return false;
     }
+
+    function getFileContent($path) {
+        $filePath = realpath($this->dataPath.'/'.$path);
+        if (is_file($filePath)) {
+            return file_get_contents($filePath);
+        }
+        return false;
+    }
+    function parseIniFile($iniPath, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL) {
+        $iniPath = realpath($this->dataPath.'/'.$iniPath);
+        if (is_file($iniPath)) {
+            return parse_ini_file($iniPath, $process_sections, $scanner_mode);
+        }
+        return false;
+    }
+
+    /**
+     * @param $path string
+     * @return MediaItem
+     */
+    function getItems($path) {
+        $fullPath = realpath($this->dataPath.'/'.$path);
+        $result = array();
+        if (is_dir($fullPath)) {
+           // $rootItem = $this->loadItem($path);
+            $dir = scandir($fullPath);
+            foreach ($dir as $key => $value) {
+                if ($value == '.' || $value == '..') continue;
+                $item = $this->loadItem($path.'/'.$value);
+                array_push($result, $item);
+            }
+            return $result;
+        } else {
+            //@todo error
+            return [];
+        }
+    }
+
+    private function loadItem($path) {
+        $fullPath = realpath($this->dataPath.'/'.$path);
+        $item = new MediaItem();
+        $item->fullPath = $fullPath;
+        $item->path = $path;
+        if (is_dir($fullPath)) {
+            $item->name = basename($path);
+            $item->type = 'folder';
+//            $item->parentPath = realpath(path . '/..');
+        } else if (file_exists($fullPath)){
+            $pathInfo = pathinfo($path);
+            $item->name = $pathInfo['filename'];
+            $item->type = $pathInfo['extension'];
+//            $item->parentPath = $pathInfo['dirname'];
+        } else {
+            //@todo error file not found
+        }
+        return $item;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -95,7 +95,7 @@ return array(
                         'options' => array(
                             'route' => '/small[/:id]',
                             'constraints' => array(
-                                'id' => '[0-9]+'
+                              //  'id' => '[*]+'
                             ),
                             'defaults' => array(
                                 'action' => 'small',
