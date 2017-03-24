@@ -33,7 +33,9 @@ Class GalleryService
         $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
         foreach ($galleryDirs as $key => $value) {
             if ($this->mediaService->fileExists($value['path'].$fileName) ) {
-                array_push($result, new AlbumModel($value['path'], $this->mediaService) );
+                $a = new AlbumModel($value['path'], $this->mediaService);
+                $a->loadImages();
+                array_push($result,  $a);
             }
         }
         return $result;

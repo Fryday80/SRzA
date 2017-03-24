@@ -63,7 +63,7 @@ class AlbumModel implements \Iterator
     }
     public function getItemByName($name) {
         foreach ($this->images as $key => $value) {
-            if ($value->name.$value->type == $name) {
+            if ($value->name.'.'.$value->type == $name) {
                 return $value;
             }
         }
@@ -74,14 +74,13 @@ class AlbumModel implements \Iterator
      * @return MediaItem|null
      */
     public function getPreviewItem() {
-        if ($this->previewItem == null)
+        if ($this->previewItem == null) {
             $this->previewItem = $this->getItemByName($this->options['Album']['preview']);
+        }
         return $this->previewItem;
     }
     public function getPreviewUrl() {
-        $this->getPreviewItem();
-        if (!$this->previewItem) return "/img/favicon.png";
-        return $this->previewItem;
+        return (!$this->getPreviewItem())? '/img/favicon.png': $this->previewItem->livePath;
     }
     public function getPath() {
         return $this->path;
