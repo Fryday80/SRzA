@@ -1,8 +1,8 @@
 <h1>Edit Content</h1>
 <div id="page-edit">
 <?php
-// $this->headLink()->prependStylesheet('/js/jstree/themes/default-dark/style.css');
-$this->headScript()->appendFile('/js/ckeditor/ckeditor.js');
+// $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
+$this->headScript()->appendFile('/libs/ckeditor/ckeditor.js');
 $form = $this->form;
 $form->setAttribute('action', $this->url('cms/edit', array(), true));
 $form->prepare();
