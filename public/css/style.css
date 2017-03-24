@@ -1,8 +1,18 @@
+/* positioning */
+.relative {
+  position: relative;
+}
+.absolute {
+  position: absolute;
+}
+.clear {
+  clear: both;
+}
 /* -----------------MODDING----------------- */
 /*-------------------------------------------*/
 /* ---------------- Cursor ----------------- */
 * {
-  cursor: url(/img/fun/knights-glove.png), default;
+  cursor: url('/img/modding/knights-glove.png'), default;
 }
 /* ---------------Fonts---------------------*/
 @font-face {
@@ -20,14 +30,6 @@
 v {
   font-family: vendor, arial, sans-serif;
 }
-/* --------- backgroundstyling ------------ */
-.at-hover-and-active:hover,
-.at-hover-and-active:active {
-  background-color: rgba(0, 0, 0, 0.1);
-  /*fallback*/
-  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
-}
-/* ---- Border --- */
 /* ************* BOXES *************/
 .box,
 box {
@@ -49,13 +51,13 @@ boxtitel {
   padding: 0;
   margin-bottom: 0;
   border-radius: 0;
-  background-image: url(/img/uikit/link2.svg);
+  background-image: url('/img/uikit/arrow.svg');
   background-size: 100% 100%;
   background-repeat: no-repeat;
   display: block;
 }
 boxcontent {
-  background-image: url(/img/body.bg.png);
+  background-image: url('/img/body.bg.png');
   background-size: auto 130px;
   background-color: #FAEBd7;
   border: none;
@@ -75,59 +77,20 @@ boxcontent {
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
 }
-.relative {
-  position: relative;
-}
-.absolute {
-  position: absolute;
-}
-.clear {
-  clear: both;
-}
-/* ******************************************
-auslagern**********************
-****************/
-.cast li {
-  list-style: none;
-}
-.cast .big {
-  width: 80%;
-  margin: 0.5vw auto 0.5vw auto;
-  padding: 5px;
-  text-align: center;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-}
-.cast .small {
-  width: 80%;
-  margin: 0 auto 0 auto;
-  overflow-y: hidden;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
-}
-.cast .small:hover li {
-  background-color: rgba(0, 0, 0, 0.1);
-}
-.cast .tross {
-  display: inline-block;
-  height: auto;
-}
-.cast .tross > li {
-  float: left;
-  padding: 10px;
-  min-width: 150px;
-}
+/* Basic Layout without Menu */
 /* -----------------general Settings----------------- */
 * {
   padding: 0;
   margin: 0;
 }
 body {
-  background: #430c0c url(/img/html.bg.png) fixed;
+  background: #430c0c url('/img/html.bg.png') fixed;
   background-size: 100px;
 }
 .body {
   border-radius: 5px;
   margin: 3%;
-  background-image: url(/img/body.bg.png);
+  background-image: url('/img/body.bg.png');
   background-size: auto 130px;
   background-color: #FAEBd7;
   position: relative;
@@ -354,7 +317,7 @@ button {
 .scroller-spacer {
   height: 50%;
 }
-/* Basic Layout without Menu            */
+/* Menu Layout */
 /* -----------------Navbar CSS settings----------------- */
 @media only screen {
   /* media query is just to be able to hide general settings while coding :) */
@@ -497,7 +460,7 @@ button {
     animation: fadeInFromNone 0.7s ease-out;
   }
 }
-/* Menu Layout                          */
+/* jquery UI Style   for pop up */
 /*! jQuery UI - v1.11.1 - 2014-08-13
 * http://jqueryui.com
 * Includes: core.css, accordion.css, autocomplete.css, button.css, datepicker.css, dialog.css, draggable.css, menu.css, progressbar.css, resizable.css, selectable.css, selectmenu.css, slider.css, sortable.css, spinner.css, tabs.css, tooltip.css, theme.css
@@ -2053,7 +2016,7 @@ body .ui-tooltip {
   /* support: IE8 */
   border-radius: 8px;
 }
-/* jquery UI Style   for pop up         */
+/* own pop up styles */
 /* ----------------- UI special desing -------------------------------- */
 .ui-dialog {
   top: 0 !important;
@@ -2078,13 +2041,13 @@ body .ui-tooltip {
   height: 75% !important;
   font-size: medium !important;
 }
-/* own pop up styles                    */
+/* additional settings for the gallery */
 /******************** CSS for Gallery Index Page *********************/
 .preview_gallery {
   height: 75px;
   border-radius: 10%;
 }
-/* additional settings for the gallery  */
+/* styles used in Zend */
 /* ------------------Zend Form Styles ---------------------------------- */
 #album {
   text-align: right;
@@ -2101,27 +2064,16 @@ body .ui-tooltip {
 .float_left {
   float: left;
 }
-/* styles used in Zend                  */
+/* js-used classes */
 /* -----------------auxilliary classes for JQuery----------------- */
 /*----------------------some just for switching--------------------*/
 /* ******** general / no special usage ******** */
 .hidden {
   display: none !important;
 }
-/* used for js selection
-.js-L-view
-{
-    // only in "normal" view
-}
-.js-S-view
-{
-    // only in mobile view
-
-}
-
 /* ******** datepicker (part of jquery-ui I think) ******** */
 .ui-datepicker {
-  background-image: url(/img/body.bg.png);
+  background-image: url('/img/body.bg.png');
   background-size: 100% 100%;
 }
 #ui-datepicker-div > table > thead > tr > th > span {
@@ -2143,7 +2095,35 @@ body .ui-tooltip {
 /* ** popUp ** */
 /* ** gallery ** */
 /* ** menu ** */
-/* js-used classes                      */
+/* *** special subpages design *** */
+.cast li {
+  list-style: none;
+}
+.cast .big {
+  width: 80%;
+  margin: 0.5vw auto 0.5vw auto;
+  padding: 5px;
+  text-align: center;
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+}
+.cast .small {
+  width: 80%;
+  margin: 0 auto 0 auto;
+  overflow-y: hidden;
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+}
+.cast .small:hover li {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.cast .tross {
+  display: inline-block;
+  height: auto;
+}
+.cast .tross > li {
+  float: left;
+  padding: 10px;
+  min-width: 150px;
+}
 form,
 label,
 input {
@@ -2157,14 +2137,18 @@ input {
   padding-right: 5px;
 }
 input:hover {
-  background-image: url(/img/body.bg.png);
+  background-image: url('/img/body.bg.png');
 }
 input:-webkit-autofill {
   background-color: #f00 !important;
   background-image: none !important;
   color: #000000 !important;
 }
-/* js-used classes                      */
+#ui-datepicker-div {
+  border: 0.5vw solid;
+  border-image: url("/img/uikit/border.png") 40 repeat;
+}
+/* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
   /* ------------------- vars --------------------------- */
   /* ----------------- hide elements -------------------- */
@@ -2218,7 +2202,7 @@ input:-webkit-autofill {
     float: none;
   }
 }
-/* media queries for Basic Layout       */
+/* css transformation @ no script */
 /* ----------------- NoScript desing -------------------------------- */
 @keyframes noJS {
   0% {
@@ -2277,7 +2261,7 @@ noscript > div > .ownhead {
   color: white;
   font-size: 8vw;
 }
-/* css transformation @ no script       */
+/* css animations */
 /* --------------- sign shaking ------
 ----------------------------------- */
 @keyframes shake_sing {
@@ -2358,11 +2342,6 @@ noscript > div > .ownhead {
     display: block;
     opacity: 1;
   }
-}
-/* css animations                       */
-#ui-datepicker-div {
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
 }
 /*  // <--- un-comment / * for usage
 @import "css/_preLaunch";    /*erase unused elements for pre launch */

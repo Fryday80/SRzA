@@ -1,46 +1,86 @@
-@body-color: rgb(67,12,12);
-@backgroundcolor: #FAEBd7;
-@dark-color: #dbd2c9;
-@js-lib: "/libs/jquery-ui/";
-@js-css-file: "jquery-ui.css";
-@js-css: "@{js-lib}@{js-css-file}" ;
-@uikit: "/img/uikit";
-@background-image: url( /img/body.bg.png);
-
-.at-hide()
-{
-  display: none;
-}
-
-//@todo border neu, shadow nur ein style+ menu und footer(nur nach unten), shadow hover ( weniger weit ), innenschatten
+//saves
 //@body-color: #E86975;
 //@body-color: #B04743;
 //@body-color: #4F79AE;
 //@backgroundcolor: #FFD480;
 //@backgroundcolor: #FFCE8C;
 
+//snippets of unknown origin
+//@js-lib: "/libs/jquery-ui/";
+//@js-css-file: "jquery-ui.css";
+//@js-css: "@{js-lib}@{js-css-file}" ;
+
+//todo s
+//@todo border neu, shadow nur ein style+ menu und footer(nur nach unten), shadow hover ( weniger weit ), innenschatten
+
+// JETZT GEHTS LOOOOOS
+
+
+// colors -----------------------------------------------------------------------------------
+@body-color: rgb(67,12,12);
+@backgroundcolor: #FAEBd7;
+@dark-color: #dbd2c9;
+
+// paths ------------------------------------------------------------------------------------
+@img-path: "/img/";
+@uikit-path: "/img/uikit/";
+@fonts-path: "/fonts/";
+@modding: "/img/modding/";
+
+// images -----------------------------------------------------------------------------------
+@background-image: url('@{img-path}body.bg.png');
+@html-background-image: url('@{img-path}html.bg.png');
+@background-arrow: url('@{uikit-path}arrow.svg');
+@border-picture-normal: url("@{uikit-path}border.png");
+@border-picture-active: url("@{uikit-path}border_active.png");
+
+// modding ----------------------------------------------------------------------------------
+@cursor: url('@{modding}knights-glove.png');
+
+/* positioning */
+.relative{
+  position: relative;
+}
+.absolute{
+  position: absolute;
+}
+.clear
+{
+  clear: both;
+}
+
+// hide and show ----------------------------------------------------------------------------
+.at-hide()
+{
+  display: none;
+}
+.at-show(@mod: block)
+{
+  display: @mod;
+}
+
 /* -----------------MODDING----------------- */
 /*-------------------------------------------*/
 /* ---------------- Cursor ----------------- */
 *
 {
-  cursor: url(/img/fun/knights-glove.png), default;
+  cursor: @cursor, default;
 }
 /* ---------------Fonts---------------------*/
 @font-face
 {
   font-family: 'headline';
-  src: url('/fonts/hp.ttf') format('truetype');
+  src: url('@{fonts-path}hp.ttf') format('truetype');
 }
 @font-face
 {
   font-family: 'bodytext';
-  src: url('/fonts/hp2.ttf') format('truetype');
+  src: url('@{fonts-path}hp2.ttf') format('truetype');
 }
 @font-face
 {
   font-family: 'vendor';
-  src: url('/fonts/hp3.ttf') format('truetype');
+  src: url('@{fonts-path}hp3.ttf') format('truetype');
 }
 v
 {
@@ -57,9 +97,9 @@ v
   color: @font1-color;
   font-size: @font1-size;
 }
-/* --------- backgroundstyling ------------ */
+// backgroundstyling ------------------------------------------------------------------------
 .at-arrow-bg(){
-  background-image: url(/img/uikit/link2.svg);
+  background-image: @background-arrow;
   background-size: 100% 100%;
   background-repeat: no-repeat;
 }
@@ -84,58 +124,58 @@ v
     .at-hover-effect;
   }
 }
-.at-hover-and-active{
+.at-hover-and-active(){
   &:hover,
   &:active{
     .at-hover-effect;
   }
 }
 
-@border-pic: border.png;
-@border-pic-active: border_active.png;
+// border -------------------------------------------------------------------------------
 @border-cut-pixels: 40;
 @border-pic-display-style: repeat;
 @border-width: 0.5vw;
 @border-double-width: 2*@border-width;
-/* ---- Border --- */
-.help-border(@width, @style, @where) when (@where = top)
+
+.helper-border(@width, @style, @where) when (@where = top)
 {
   border-top: @width @style;
 }
-.help-border(@width, @style, @where) when (@where = right)
+.helper-border(@width, @style, @where) when (@where = right)
 {
   border-right: @width @style;
 }
-.help-border(@width, @style, @where) when (@where = bottom)
+.helper-border(@width, @style, @where) when (@where = bottom)
 {
   border-bottom: @width @style;
 }
-.help-border(@width, @style, @where) when (@where = left)
+.helper-border(@width, @style, @where) when (@where = left)
 {
   border-left: @width @style;
 }
-.help-border(@width, @style, @where) when (@where = all)
+.helper-border(@width, @style, @where) when (@where = all)
 {
   border: @width @style;
 }
 
-.at-border( @where: all, @width: 0.5vw, @style: solid, @status: normal)
-{
-  .help-border(@width, @style, @where);
-  .at-border-style(@status);
-}
-
 .at-border-style(@status: normal) when (@status = normal){
-  border-image: url("@{uikit}/@{border-pic}") @border-cut-pixels @border-pic-display-style;
+  border-image: @border-picture-normal @border-cut-pixels @border-pic-display-style;
 }
 .at-border-style(@status: normal) when (@status = active){
-  border-image: url("@{uikit}/@{border-pic-active}") @border-cut-pixels @border-pic-display-style;
+  border-image: @border-picture-active @border-cut-pixels @border-pic-display-style;
+}
+
+
+.at-border( @where: all, @width: 0.5vw, @style: solid, @status: normal)
+{
+  .helper-border(@width, @style, @where);
+  .at-border-style(@status);
 }
 
 /* ************* BOXES *************/
 .at-box()
 {
-  display: block;
+  .at-show;
   margin-bottom: 2vw;
   .at-border;
   .at-bg-color;
@@ -158,7 +198,7 @@ boxtitel
   margin-bottom: 0;
   border-radius: 0;
   .at-arrow-bg;
-  display: block;
+  .at-show;
 }
 boxcontent
 {
@@ -169,7 +209,7 @@ boxcontent
   margin-top: 0;
   box-shadow: none;
   border-radius: 15px;
-  display: block;
+  .at-show;
 }
 
 .linkbox
@@ -188,59 +228,7 @@ boxcontent
 .at-box-shadow(@box-shadow_x: @box-shadow-standard-x, @box-shadow_y: @box-shadow-standard-y, @box-shadow_fade: @box-shadow-standard-fade, @box-shadow_c:@box-shadow-standard-color)
 {
     box-shadow: @box-shadow_x @box-shadow_y @box-shadow_fade @box-shadow_c, @inner-shadow;
-  //box-shadow: 10px -7px 15px darkgray, lightgreen 0px 0px 3px inset;
 }
 .box-shadow-bottom{
   .at-box-shadow(0);
-}
-
-//* ------ Helpers ------ */
-.at-no-padding(){
-  padding: 0;
-}
-.at-no-margin(){
-  margin: 0;
-}
-.relative{
-  position: relative;
-}
-.absolute{
-  position: absolute;
-}
-.clear
-{
-  clear: both;
-}
-
-/* ******************************************
-auslagern**********************
-****************/
-
- .cast li{
-   list-style: none;
- }
-.cast .big {
-  width: 80%;
-  margin: 0.5vw auto 0.5vw auto;
-  padding: 5px;
-  text-align: center;
-  .at-box-shadow;
-}
-.cast .small {
-  width: 80%;
-  margin: 0 auto 0 auto;
-  overflow-y: hidden;
-  .at-box-shadow;
-  &:hover li{
-    .at-shaded-part;
-  }
-}
-.cast .tross {
-  display: inline-block;
-  height: auto;
-}
-.cast .tross>li {
-  float: left;
-  padding: 10px;
-  min-width: 150px;
 }

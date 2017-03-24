@@ -1,4 +1,3 @@
-@import "../less/css/realCss/siteDesign/_standards";
 /* -----------------general Settings----------------- */
 *
 {
@@ -8,7 +7,7 @@
 
 body
 {
-    background: @body-color url(/img/html.bg.png) fixed;
+    background: @body-color @html-background-image fixed;
     background-size: 100px;
 }
 
@@ -221,7 +220,7 @@ button
 
   li
   {
-    display: inline-block;
+    .at-show(inline-block);
     vertical-align: sub;
     .at-hover;
   }
