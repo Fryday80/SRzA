@@ -60,9 +60,9 @@
         </div>
         <div id="navframe">
             <div class="menu_titel js-L-view">
-                <div class="navsign box">
+                <box class="navsign">
                     <span class="own_text_big">Wegweiser</span>
-                </div>
+                </box>
             </div>
             <div class="overlayShadow menu_items js-L-view">
                 <div class="topics">
@@ -72,15 +72,14 @@
         </div>
 <!----  CONTENT   ---->
     <!----  content   ---->
-        <div id="content" class="box">
-
+        <box id="content">
             <boxtitel>
                 <span class="own_text_big"><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></span><br>
             </boxtitel>
             <boxcontent>
                 <?php echo $this->content; ?>
             </boxcontent>
-        </div>
+        </box>
     <!----  rightbar   ---->
         <div id="rightcontainer">
             <div class="rightbarup">
