@@ -29,7 +29,9 @@
 <!----  NO SCRIPT   ---->
         <noscript>
             <div>
-                <span class="ownhead">Java Script aktivieren um diese Seite zu erleben!</span>
+                <span class="ownhead">
+                    Java Script aktivieren um diese Seite zu erleben!
+                </span>
             </div>
         </noscript>
 <!----  HEAD   ---->
@@ -48,7 +50,9 @@
                  </div>
             </div>
             <div id="headlinks">
-                <span class="own_text_big js-S-view" style="text-align: left"><?php $greet = $this->userinfo(); if ($greet != '') {echo $greet;} ?></span>
+                <span class="own_text_big js-S-view" style="text-align: left">
+                    <?php $greet = $this->userinfo(); if ($greet != '') {echo $greet;} ?>
+                </span>
             </div>
         </div>
 <!----  FEEDBACK   ---->
@@ -74,7 +78,10 @@
     <!----  content   ---->
         <box id="content">
             <boxtitel>
-                <span class="own_text_big"><?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?></span><br>
+                <span class="own_text_big">
+                    <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
+                </span>
+                <br />
             </boxtitel>
             <boxcontent>
                 <?php echo $this->content; ?>
@@ -114,7 +121,7 @@
 <!----  FOOT   ---->
         <div id="foot">
             <div class="overlayShadow">
-                <div id="foottext">
+                <box id="foottext">
                     <?php // echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                     <ul>
                         <li>copyright © <v>F&S 2016</v> & Schwarze Ritter zu Augsburg | </li>
@@ -123,7 +130,7 @@
                         <li><a class="disclaim" href="#disclaim">Haftungsausschluss</a> | </li>
                         <li><a href="http://www.schwert-und-mieder.de/">Schwert und Mieder e.V.</a></li>
                     </ul>
-                </div>
+                </box>
             </div>
             <div style="height: 20px;"></div>
         </div>
