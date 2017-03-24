@@ -124,15 +124,18 @@ v
 /* ************* BOXES *************/
 .at-box()
 {
+  display: block;
+  margin-bottom: 2vw;
   .at-border;
   .at-bg-color;
   border-radius: 5px;
-  box-shadow: @inner-shadow;
   .at-box-shadow;
+  box-shadow: @inner-shadow;
 }
 .box,
 box{
   .at-box;
+  .relative;
 }
 boxtitel
 {
