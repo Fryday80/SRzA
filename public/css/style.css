@@ -21,6 +21,12 @@ v {
   font-family: vendor, arial, sans-serif;
 }
 /* --------- backgroundstyling ------------ */
+.at-hover-and-active:hover,
+.at-hover-and-active:active {
+  background-color: rgba(0, 0, 0, 0.1);
+  /*fallback*/
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
+}
 /* ---- Border --- */
 /* ************* BOXES *************/
 .box,
@@ -62,6 +68,8 @@ boxcontent {
 }
 .linkbox:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  /*fallback*/
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
 }
 /* ------ shadows ------- */
 .box-shadow-bottom {
@@ -163,6 +171,8 @@ button {
 }
 .logoutbutton:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  /*fallback*/
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
 }
 .overlayShadow {
   box-shadow: 0 0.7vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
@@ -289,13 +299,8 @@ button {
   text-align: center;
 }
 #foottext {
-  border-radius: 5px;
-  color: black;
   min-height: 30px;
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
   width: calc(100% + 2vw);
-  background-color: #FAEBd7;
   margin-left: -1.5vw;
 }
 #foottext li {
@@ -304,6 +309,8 @@ button {
 }
 #foottext li:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  /*fallback*/
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
 }
 /************************boxes*******************/
 /** boxes see _standards **/
@@ -351,6 +358,7 @@ button {
 /* -----------------Navbar CSS settings----------------- */
 @media only screen {
   /* media query is just to be able to hide general settings while coding :) */
+  /* **** navigation sign **** */
   .navsign {
     margin: 0 auto 0 auto;
     width: 20%;
@@ -423,15 +431,13 @@ button {
   .level_0:active,
   .level_0 li:hover {
     background-color: rgba(0, 0, 0, 0.1);
+    /*fallback*/
+    background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
     border-image: url("/img/uikit/border_active.png") 40 repeat;
   }
   .level_0:hover > ul,
   .level_0:active > ul {
     display: block;
-  }
-  /* **** the link images **** */
-  .links {
-    height: 15px !important;
   }
 }
 /* ******************* MOBILE VIEW aka S-View *********************** */
@@ -491,16 +497,6 @@ button {
     animation: fadeInFromNone 0.7s ease-out;
   }
 }
-/*
-a:hover>img
-{
-    height: 15px;
-    animation-name: rotate;
-    animation-duration: 1500ms;
-    animation-iteration-count: infinite;
-}
-/*
-*/
 /* Menu Layout                          */
 /*! jQuery UI - v1.11.1 - 2014-08-13
 * http://jqueryui.com
@@ -2073,6 +2069,8 @@ body .ui-tooltip {
 }
 .ui-widget-content button:hover {
   background-color: rgba(0, 0, 0, 0.1);
+  /*fallback*/
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
 }
 /* ----------------- pop up div design -------------------- */
 .disclaimer {
@@ -2361,16 +2359,6 @@ noscript > div > .ownhead {
     opacity: 1;
   }
 }
-/* ------- Link img rotation ----- */
-/*
-@keyframes rotate
-{
-    // used in... -> navigation menu.css ---- no more
-    0%      { transform:rotate(  0deg); }
-    100%    { transform:rotate(  360deg); }
-}
-/*
-*/
 /* css animations                       */
 #ui-datepicker-div {
   border: 0.5vw solid;

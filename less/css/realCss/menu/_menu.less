@@ -3,6 +3,8 @@
 @media only screen
 {
   /* media query is just to be able to hide general settings while coding :) */
+
+  /* **** navigation sign **** */
   .navsign{
     margin: 0 auto 0 auto;
     width: 20%;
@@ -48,9 +50,6 @@
       .at-border;
       height: 23px;
       border-radius: 5px;
-    li
-    {
-    }
   }
   /* first level li */
   .level_0
@@ -81,7 +80,7 @@
     &:active,
     & li:hover
     {
-      .at-shaded-part;
+      .at-hover-effect;
       .at-border-style(active);
     }
     &:hover > ul,
@@ -90,11 +89,11 @@
       display: block;
     }
   }
-  /* **** the link images **** */
-  .links
-  {
-      height: 15px !important;
-  }
+  ///* **** the link images **** */
+  //.links
+  //{
+  //    height: 15px !important;
+  //}
 }
 /* ******************* MOBILE VIEW aka S-View *********************** */
 @media only screen and (max-width: 700px)
@@ -160,13 +159,10 @@
       animation: fadeInFromNone 0.7s ease-out;
   }
 }
-/*
-a:hover>img
-{
-    height: 15px;
-    animation-name: rotate;
-    animation-duration: 1500ms;
-    animation-iteration-count: infinite;
-}
-/*
-*/
+//a:hover>img
+//{
+//    height: 15px;
+//    animation-name: rotate;
+//    animation-duration: 1500ms;
+//    animation-iteration-count: infinite;
+//}

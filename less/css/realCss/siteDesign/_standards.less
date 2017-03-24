@@ -71,9 +71,23 @@ v
   background-size: auto 130px;
   .at-bg-color;
 }
+.at-shaded-part() {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.at-hover-effect(){
+  .at-shaded-part; /*fallback*/
+  //background: linear-gradient(transparent, rgba(0, 0, 0, 0.5), transparent);
+  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
+}
 .at-hover() {
   &:hover{
-    background-color: rgba(0, 0, 0, 0.1);
+    .at-hover-effect;
+  }
+}
+.at-hover-and-active{
+  &:hover,
+  &:active{
+    .at-hover-effect;
   }
 }
 
@@ -83,9 +97,6 @@ v
 @border-pic-display-style: repeat;
 @border-width: 0.5vw;
 @border-double-width: 2*@border-width;
-.at-shaded-part() {
-  background-color: rgba(0, 0, 0, 0.1);
-}
 /* ---- Border --- */
 .help-border(@width, @style, @where) when (@where = top)
 {
