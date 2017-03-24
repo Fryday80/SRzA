@@ -9,17 +9,21 @@ CKEDITOR.editorConfig = function( config ) {
 	config.uiColor = '#AADC6E';
     config.filebrowserBrowseUrl = "/media/filebrowser";
     config.extraPlugins = 'iframedialog';
-    config.allowedContent = {
-        script: true,
-            div: true,
-            $1: {
-            // This will set the default set of elements
-            elements: CKEDITOR.dtd,
-                attributes: true,
-                styles: true,
-                classes: true
-        }
-    }
+    config.allowedContent = true;
+    // {
+    //     script: true,
+    //         div: true,
+    //         accordion: true,
+    //         box: true,
+    //
+    //         $1: {
+    //         // This will set the default set of elements
+    //         elements: CKEDITOR.dtd,
+    //             attributes: true,
+    //             styles: true,
+    //             classes: true
+    //     }
+    // }
 };
 CKEDITOR.on('dialogDefinition', function (event)
 {

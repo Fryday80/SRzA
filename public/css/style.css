@@ -246,7 +246,6 @@ button {
 .rightbarup,
 .rightbardown {
   position: relative;
-  padding: 0 0 1.5% 0;
   width: 100%;
   float: right;
   height: auto;
@@ -265,7 +264,7 @@ button {
 }
 .log_me_out {
   position: absolute;
-  margin: -85% 10.5vw;
+  margin: -85% 11.5vw;
   width: 15vw;
   border: 0.5vw solid;
   border-image: url("/img/uikit/border.png") 40 repeat;
@@ -495,6 +494,7 @@ a:hover>img
     animation-duration: 1500ms;
     animation-iteration-count: infinite;
 }
+/*
 */
 /* Menu Layout                          */
 /*! jQuery UI - v1.11.1 - 2014-08-13
@@ -2362,6 +2362,7 @@ noscript > div > .ownhead {
     0%      { transform:rotate(  0deg); }
     100%    { transform:rotate(  360deg); }
 }
+/*
 */
 /* css animations                       */
 #ui-datepicker-div {
@@ -2370,15 +2371,8 @@ noscript > div > .ownhead {
 }
 .accordion {
   position: relative;
-  height: auto;
-}
-.accordion .ui-accordion-content {
-  height: auto !important;
 }
 .accordion .ui-state-active .ui-icon,
 .accordion .ui-state-hover .ui-icon {
   background-image: none !important;
-}
-#h180 .ui-accordion-content {
-  height: 180px !important;
 }
