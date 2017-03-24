@@ -319,8 +319,8 @@ button {
 }
 /* Menu Layout */
 /* -----------------Navbar CSS settings----------------- */
+/* media query is just to be able to hide general settings while coding :) */
 @media only screen {
-  /* media query is just to be able to hide general settings while coding :) */
   /* **** navigation sign **** */
   .navsign {
     margin: 0 auto 0 auto;
@@ -401,6 +401,10 @@ button {
   .level_0:hover > ul,
   .level_0:active > ul {
     display: block;
+  }
+  /* **** the link images **** */
+  .links {
+    height: 15px !important;
   }
 }
 /* ******************* MOBILE VIEW aka S-View *********************** */
