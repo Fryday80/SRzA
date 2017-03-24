@@ -13,6 +13,8 @@ class AlbumModel implements \Iterator
     /** @var array */
     private $images = [];
     private $position = 0;
+    /* @var MediaItem $previewItem */
+    private $previewItem;
     private $options = [
         'Album' => [
             'name' => 'New Album',
@@ -37,7 +39,14 @@ class AlbumModel implements \Iterator
         $this->options = array_replace_recursive($this->options, $options);
     }
     public function loadImages() {
-        $this->images = $this->mediaService->getItems($this->path);
+        $items = $this->mediaService->getItems($this->path);
+        $result = [];
+        foreach ($items as $key => $value) {
+            if ($value->type != 'folder' && $value->type != 'conf') {
+                array_push($result, $value);
+            }
+        }
+        $this->images = $result;
     }
     public function getName() {
         return $this->options['Album']['name'];
@@ -45,11 +54,34 @@ class AlbumModel implements \Iterator
     public function getDescription() {
         return $this->options['Album']['description'];
     }
-    public function getPreview() {
-        return $this->options['Album']['preview'];
+    public function getRandomItem() {
+        if (count($this->images) == 0) {
+            return null;
+        }
+        $randomIndex = rand(0, count($this->images) -1);
+        return $this->images[$randomIndex];
+    }
+    public function getItemByName($name) {
+        foreach ($this->images as $key => $value) {
+            if ($value->name.$value->type == $name) {
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @return MediaItem|null
+     */
+    public function getPreviewItem() {
+        if ($this->previewItem == null)
+            $this->previewItem = $this->getItemByName($this->options['Album']['preview']);
+        return $this->previewItem;
     }
     public function getPreviewUrl() {
-        return $this->options['Album']['preview'];
+        $this->getPreviewItem();
+        if (!$this->previewItem) return "/img/favicon.png";
+        return $this->previewItem;
     }
     public function getPath() {
         return $this->path;
