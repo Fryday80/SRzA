@@ -12,9 +12,9 @@
 
 <!----  CSS styles   ---->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                        ->prependStylesheet($this->basePath('css/style.css'))
                         ->prependStylesheet($this->basePath('/libs/simplyscrollV2/jquery.simplyscroll.css'))
                         ->prependStylesheet($this->basePath('/libs/jquery-ui/jquery-ui.css'))
+                        ->prependStylesheet($this->basePath('css/style.css'))
         ?>
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()

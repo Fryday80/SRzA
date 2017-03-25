@@ -34,7 +34,7 @@ class AlbumModel implements \Iterator
         if ($options == null) {
             //@todo check if nessesery options are present
             $fileName = '/album.conf';
-            $options = $this->mediaService->parseIniFile($path.$fileName, TRUE, INI_SCANNER_TYPED);
+            $options = $this->mediaService->parseIniFile($path.$fileName, TRUE);
         }
         $this->options = array_replace_recursive($this->options, $options);
     }
