@@ -18,13 +18,16 @@ use Zend\View\Helper\AbstractHelper;
 class JSCoder // needed?     extends AbstractHelper
 {
     private $jsModules = array();
-    private $jsData = array();
+    /** JSModule
+     * @package Application\/JSCoder
+     */
+    private $jsData;
     private $registration;
 
     public function __construct()
     {
         /**JSRegistration
-         * @package Application\/JSCoder
+         * @package Application\JSCoder
          */
         $this->registration =  new JSRegistration();
         $this->jsModules = $this->registration->get();
@@ -58,19 +61,19 @@ class JSCoder // needed?     extends AbstractHelper
     
     private function renderData()
     {
-        $this->jsData['script'] = $this->completeScript();
+        $script = $this->completeScript();
         //todo create the htmlcode
 
-        echo '<style>' . /* data of */ $this->jsData['css'] . '</style>';
-        echo '<style>' . /* data of */ $this->jsData['override'] . '</style>';
-        echo '<script>' . $this->jsData['script'] . '</script>';
+        echo '<style>' . /* data of */ $this->jsData->css . '</style>';
+        echo '<style>' . /* data of */ $this->jsData->override . '</style>';
+        echo '<script>' . $script . '</script>';
     }
 
     private function completeScript()
     {
         //todo implement json encoding
         //todo implement "inside script" in "script"
-        return $readyScript = $this->jsData['script'];
+        return $readyScript = $this->jsData->script;
     }
 
     /**
@@ -83,7 +86,7 @@ class JSCoder // needed?     extends AbstractHelper
         ($jsModule == 'none')?: $this->prepare( $jsModule );
         // todo string or array depending of missing json implementation
         //meanwhile string is used
-        $this->jsData['insideCode'] = $options;
+        $this->jsData->options = $options;
     }
 
     /**
