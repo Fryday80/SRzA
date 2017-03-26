@@ -57,7 +57,7 @@ Class JSRegistration
         
         'insideCode' => false,
         'insideCodeValue' => 'todo',
-    ),
+    )
 // ---- example ----------------- for each js code...
 //    $this->lib[]= new JSModul (array(
 //        'name' => 'xy',
@@ -76,5 +76,14 @@ Class JSRegistration
 //    ),
 // ----- example end -----------------------------------------
     );
+    }
+    public function setNewStandardOption ( $jsModule, $option )
+    {
+        $i = 0;
+        while ($this->lib[$i])
+        {
+            ($this->lib[$i]['name'] !== $jsModule)?: $this->lib[$i]->setNewStandardOption($option);
+            $i++;
+        }
     }
 }

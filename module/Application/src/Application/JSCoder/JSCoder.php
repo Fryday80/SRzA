@@ -7,52 +7,91 @@
  */
 
 namespace Application\JSCoder;
+use Zend\View\Helper\AbstractHelper;
 
 /**JSCoder <br>
+ * View Helper
  * jsCode() returns css and js code for usage in html
  *
  * @package Application\Utility
  */
-class JSCoder
+class JSCoder // needed?     extends AbstractHelper
 {
-    private $jsWidgets;
+    private $jsModules = array();
+    private $jsData = array();
+    private $registration;
 
-    function __construct()
+    public function __construct()
     {
         /**JSRegistration
          * @package Application\/JSCoder
          */
-        $this->jsWidgets = (new JSRegistration())->get();
+        $this->registration =  new JSRegistration();
+        $this->jsModules = $this->registration->get();
     }
-    public function jsCode( $jsWidget )
-    {
-        $jsData = $this->getData( $jsWidget );
-        $this->render( $jsData );
-    }
-    
-    private function render($jsData)
-    {
-        //todo create the htmlcode
-    }
-    
-    private function getData( $jsWidget )
-    {
-        $jsData = array();
-        $jsWidget = $this->errorCheck( $jsWidget );
 
-        $jsData['jsFile'] ( $this->jsWidgets[$jsWidget]['jsFile'] ) ? $this->jsWidgets[$jsWidget]['jsFile'] : '';
-        
-        $jsData['cssPath'] ( $this->jsWidgets[$jsWidget]['ownCss'] ) ? $this->jsWidgets[$jsWidget]['cssPath'] : '';
-        $jsData['overridePath'] ( $this->jsWidgets[$jsWidget]['override'] ) ? $this->jsWidgets[$jsWidget]['overridePath'] : '';
-        
-        $jsData['script'] ( $this->jsWidgets[$jsWidget]['script'] ) ? $this->jsWidgets[$jsWidget]['script'] : '';
-        $jsData['insideCodeValue'] ( $this->jsWidgets[$jsWidget]['insideCode'] ) ? $this->jsWidgets[$jsWidget]['insideCodeValue'] : '';
-        
-        return $jsData;
-    }
-    private function errorCheck( $jsWidget )
+    /**
+     * called method for outputting the html Code
+     */
+    public function render( $jsModule, $options = '' )
     {
-        return ( array_key_exists($jsWidget, $this->jsWidgets) ) ? $this->jsWidgets[$jsWidget] : $this->errorMessage();
+        $this->getData( $jsModule );
+        ($options !== '')?: $this->changeOptions( $options );
+
+        $this->renderData();
+    }
+    
+    public function setNewStandardOption ( $jsModule, $option )
+    {
+        $this->registration->setNewStandardOption ( $jsModule, $option );
+    }
+    
+    private function renderData()
+    {
+        $this->jsData['script'] = $this->completeScript();
+        //todo create the htmlcode
+
+        echo '<style>' . /* data of */ $this->jsData['css'] . '</style>';
+        echo '<style>' . /* data of */ $this->jsData['override'] . '</style>';
+        echo '<script>' . $this->jsData['script'] . '</script>';
+    }
+
+    private function completeScript()
+    {
+        //todo implement json encoding
+        //todo implement "inside script" in "script"
+        return $readyScript = $this->jsData['script'];
+    }
+
+    /**
+     * change given options / "insideCode"
+     * @param $options options
+     * @param string $jsModule selection of the js module
+     */
+    public function changeOptions( $options, $jsModule = 'none' )
+    {
+        ($jsModule == 'none')?: $this->getData( $jsModule );
+        // todo string or array depending of missing json implementation
+        //meanwhile string is used
+        $this->jsData['insideCode'] = $options;
+    }
+    
+    private function getData( $jsModule )
+    {
+        $jsModule = $this->errorCheck( $jsModule );
+
+        $this->jsData['jsFile'] ( $this->jsModules[$jsModule]['jsFile'] ) ? $this->jsModules[$jsModule]['jsFile'] : '';
+        
+        $this->jsData['cssPath'] ( $this->jsModules[$jsModule]['ownCss'] ) ? $this->jsModules[$jsModule]['cssPath'] : '';
+        $this->jsData['overridePath'] ( $this->jsModules[$jsModule]['override'] ) ? $this->jsModules[$jsModule]['overridePath'] : '';
+        
+        $this->jsData['script'] ( $this->jsModules[$jsModule]['script'] ) ? $this->jsModules[$jsModule]['script'] : '';
+        $this->jsData['insideCodeValue'] ( $this->jsModules[$jsModule]['insideCode'] ) ? $this->jsModules[$jsModule]['insideCodeValue'] : '';
+    }
+    
+    private function errorCheck( $jsModule )
+    {
+        return ( array_key_exists($jsModule, $this->jsModules) ) ? $this->jsModules[$jsModule] : $this->errorMessage();
     }
     private function errorMessage()
     {

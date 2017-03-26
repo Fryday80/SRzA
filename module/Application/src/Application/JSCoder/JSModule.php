@@ -29,8 +29,8 @@ class JSModule {
     public $override;
     public $overridePath;
     public $script;
-    public $insideCode;
-    public $insideCodeValue;
+    public $optionCode;
+    public $optionCodeValue;
     
     public function __construct(array $data) 
     {
@@ -39,5 +39,10 @@ class JSModule {
         {
             $this->$key = $value;
         }
+    }
+    public function setNewStandardOption($option)
+    {
+        $this->optionCode = true;
+        $this->optionCode = $option;
     }
 }
