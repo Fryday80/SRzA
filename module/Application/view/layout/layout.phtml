@@ -28,6 +28,20 @@
 </head>
 <body>
     <div class="body box">
+        <?php
+            // set default values
+            if (!isset($this->showSidebar)) {
+                $this->showSidebar = true;
+            }
+
+            //und in den controllern kann man dann sagen
+            //$this->layout()->setVariable('showSidebar', false);
+            //was sau cool is :)
+
+            if ($this->showSidebar) {
+                echo '<h1>show sidebar</h1>';
+            }
+        ?>
 <!----  NO SCRIPT   ---->
         <noscript>
             <div>
@@ -85,7 +99,7 @@
         <box id="content">
             <boxtitel>
                 <span class="own_text_big">
-                    <?php //echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
+                    <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
                 </span>
                 <br />
             </boxtitel>

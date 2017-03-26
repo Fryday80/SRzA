@@ -22,6 +22,7 @@ class GalleryController extends AbstractActionController
 
     public function smallAction()
     {
+        $this->layout()->setVariable('showSidebar', false);
         $request = $this->getRequest();
         $id = $this->params()->fromRoute('id', null);
         $album_data = $this->galleryService->getAlbum($id);

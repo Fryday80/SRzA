@@ -39,7 +39,7 @@ class PageController extends AbstractActionController
              return $this->redirect()->toUrl('/home');
          }
          return new ViewModel(array(
-             'page' => $page
+             'page' => $page,
          ));
      }
 }
