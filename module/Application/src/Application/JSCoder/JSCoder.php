@@ -32,10 +32,13 @@ class JSCoder // needed?     extends AbstractHelper
 
     /**
      * called method for outputting the html Code
+     *
+     * @param string $jsModule name of the js module
+     * @param string $options optional override of the options, only one option possible //todo perhaps extend for multiple options
      */
     public function render( $jsModule, $options = '' )
     {
-        $this->getData( $jsModule );
+        $this->prepare( $jsModule );
         ($options !== '')?: $this->changeOptions( $options );
 
         $this->renderData();
@@ -77,31 +80,35 @@ class JSCoder // needed?     extends AbstractHelper
      */
     public function changeOptions( $options, $jsModule = 'none' )
     {
-        ($jsModule == 'none')?: $this->getData( $jsModule );
+        ($jsModule == 'none')?: $this->prepare( $jsModule );
         // todo string or array depending of missing json implementation
         //meanwhile string is used
         $this->jsData['insideCode'] = $options;
     }
-    
-    private function getData( $jsModule )
-    {
-        $jsModule = $this->errorCheck( $jsModule );
 
-        $this->jsData['jsFile'] ( $this->jsModules[$jsModule]['jsFile'] ) ? $this->jsModules[$jsModule]['jsFile'] : '';
-        
-        $this->jsData['cssPath'] ( $this->jsModules[$jsModule]['ownCss'] ) ? $this->jsModules[$jsModule]['cssPath'] : '';
-        $this->jsData['overridePath'] ( $this->jsModules[$jsModule]['override'] ) ? $this->jsModules[$jsModule]['overridePath'] : '';
-        
-        $this->jsData['script'] ( $this->jsModules[$jsModule]['script'] ) ? $this->jsModules[$jsModule]['script'] : '';
-        $this->jsData['insideCodeValue'] ( $this->jsModules[$jsModule]['insideCode'] ) ? $this->jsModules[$jsModule]['insideCodeValue'] : '';
-    }
-    
-    private function errorCheck( $jsModule )
+    /**
+     * prepare data of given module
+     *
+     * @param string $jsModule name of the js module
+     */
+    private function prepare( $jsModule )
     {
-        return ( array_key_exists($jsModule, $this->jsModules) ) ? $this->jsModules[$jsModule] : $this->errorMessage();
+        ( $this->validation( $jsModule ) )?
+            $this->jsData = $this->jsModules[$jsModule]
+            : $this->errorMessage();
+    }
+
+    /**
+     * validation of the module
+     * @param string $jsModule
+     * @return bool
+     */
+    private function validation( $jsModule )
+    {
+        return ( array_key_exists($jsModule, $this->jsModules) );
     }
     private function errorMessage()
     {
-        return dumpd ('this widget is not registered in or managed by JSCoder', 'js usage error', 0); //todo replace dumpd to error trigger
+        dumpd ('this widget is not registered in or managed by JSCoder', 'js usage error', 0); //todo replace dumpd to error trigger
     }
 }
