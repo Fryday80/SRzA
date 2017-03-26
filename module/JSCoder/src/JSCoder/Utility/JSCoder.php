@@ -7,6 +7,7 @@
  */
 
 namespace JSCoder\Utility;
+
 use JSCoder\Config\JSRegistration;
 use Zend\View\Helper\AbstractHelper;
 
