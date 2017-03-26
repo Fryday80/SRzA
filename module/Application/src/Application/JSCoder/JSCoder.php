@@ -24,13 +24,13 @@ class JSCoder // needed?     extends AbstractHelper
     private $jsData;
     private $registration;
 
-    public function __construct()
+    public function __construct(JSRegistration $registration)
     {
         /**JSRegistration
          * @package Application\JSCoder
          */
-        $this->registration =  new JSRegistration();
-        $this->jsModules = $this->registration->get();
+        $this->registration =  $registration;
+        $this->jsModules = $this->registration->lib; // ->get() returns the same
     }
 
     /**
@@ -39,7 +39,7 @@ class JSCoder // needed?     extends AbstractHelper
      * @param string $jsModule name of the js module
      * @param string $options optional override of the options, only one option possible //todo perhaps extend for multiple options
      */
-    public function render( $jsModule, $options = '' )
+    public function render( $jsModule, $options = '' )  //lieber "script"? render ist ja nicht 100% richtig, da die daten ja nicht dabei sind... oder
     {
         $this->prepare( $jsModule );
         ($options !== '')?: $this->changeOptions( $options );
@@ -64,8 +64,10 @@ class JSCoder // needed?     extends AbstractHelper
         $script = $this->completeScript();
         //todo create the htmlcode
 
+        echo /* todo right way */ $this->jsData->jsFile;
         echo '<style>' . /* data of */ $this->jsData->css . '</style>';
         echo '<style>' . /* data of */ $this->jsData->override . '</style>';
+
         echo '<script>' . $script . '</script>';
     }
 

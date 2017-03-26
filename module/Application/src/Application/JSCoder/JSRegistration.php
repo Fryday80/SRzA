@@ -25,6 +25,11 @@ Class JSRegistration
     {
         $this->registration();
     }
+
+    /**
+     * method to get $this->lib
+     * @return array $this->lib array of JSModule objects
+     */
     public function get()
     {
         return $this->lib;
@@ -36,7 +41,7 @@ Class JSRegistration
      */
     private function registration()
     {
-    $this->lib[]= new JSModule (array(
+    $this->lib[] = new JSModule (array(
         'name' => 'accordion',
         'jsFile' => '/libs/ckeditor/ckeditor.js',
         
@@ -44,7 +49,7 @@ Class JSRegistration
         'css' => '/libs/ckeditor/content.css',
         
         'hasOverride' => false,
-        'overridePath' => 'string (path to override file)',
+        'override' => 'string (path to override file)',
         
         'script' => '$(function() {
                                     $("accordion").each(function(i, ele) {

@@ -58,14 +58,14 @@ class Module
                     $accessService = $sm->getServiceLocator()->get('AccessService');
                     return new MyUrl($accessService);
                 },
-                'jsCoder' => function() {
-                    return new JSCoder();
-                },
-                'jsRegistration' => function() {
-                    return new JSRegistration();
-                },
-                'jsModule' => function() {
-                    return new JSModule();
+                'jsModule' => function() {          // I think this is not needed
+                    return new JSModule();          // I think this is not needed
+                },                                  // I think this is not needed
+                'jsRegistration' => function() {    // I think this is not needed
+                    return new JSRegistration();    // I think this is not needed
+                },                                  // I think this is not needed
+                'jsCoder' => function($sm) {
+                    return new JSCoder( new JSRegistration() );
                 }
 
             )
