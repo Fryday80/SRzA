@@ -5,6 +5,34 @@
  */
 chdir(dirname(__DIR__));
 
+
+
+
+//tracy debug
+
+require 'vendor/tracy/tracy/src/tracy.php';
+use Tracy\Debugger;
+
+Debugger::enable();
+Debugger::$strictMode = true;
+
+require 'vendor/zarganwar/performance-panel/src/Panel.php';
+require 'vendor/zarganwar/performance-panel/src/Register.php';
+
+//use Zarganwar\PerformancePanel\Register;
+use Zarganwar\PerformancePanel;
+
+Debugger::getBar()->addPanel(new PerformancePanel\Panel());
+
+
+
+
+
+
+
+
+
+
 // Decline static file requests back to the PHP built-in webserver
 if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
     return false;

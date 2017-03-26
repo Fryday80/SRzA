@@ -10,6 +10,7 @@ namespace Album\Utility;
 
 
 use Album\Service\GalleryService;
+use Zarganwar\PerformancePanel\Register;
 use Zend\View\Helper\AbstractHelper;
 
 /**
@@ -35,23 +36,44 @@ class RandomImageHelper extends AbstractHelper
 
     function createRandoms()
     {
+        Register::add("create randoms");
         $this->result = $this->galleryService->getRandomImage($count = 3);
+        Register::add("after created randoms");
     }
 
     function scroller()
     {
-        $return = '  <ul id="scroller" >';
+        Register::add("start scroller");
+        $id = 'S_'.uniqid();
+        $return = '
+            <style>
+                .simple-slide-show {
+                    position: relative;
+                    overflow: hidden;
+                    width: 100%;
+                    height: 100%;
+                }
+                .simple-slide-show img {
+                    position: absolute;
+                    top: 0px;
+                    left: 0px;
+                    z-index: 1;
+                }
+                .simple-slide-show img.active {
+                    z-index: 3;
+                }
+            </style>
+        ';
+        $return .= '  <div id="'.$id.'" >';
         foreach ($this->result as $picture)
         {
-            $return .= '<li style="text-align: center;">
-                            <img src="' . $picture->livePath . '" style="width: 100%; margin-left: auto; margin-right: auto;">
-                        </li>';
+            $return .= '<img src="' . $picture->livePath . '">';
         }
-        $return .= '</ul>
-                   <script> $("#scroller").simplyScroll({
-                                autoMode: \'loop\', 
-                                customClass: \'vert\',
-                                orientation: \'vertical\',
+        $return .= '</div><script>
+                            $("#'.$id.'").simpleSlideShow({
+                                autoMode: "loop", 
+                                customClass: "vert",
+                                orientation: "vertical",
                                 frameRate: 20,
                                 speed: 3
                             });
