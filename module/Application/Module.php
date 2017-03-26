@@ -9,7 +9,9 @@
 
 namespace Application;
 
-use Application\Utility\JSCoder;
+use Application\JSCoder\JSModule;
+use Application\JSCoder\JSRegistration;
+use Application\JSCoder\JSCoder;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\ModuleRouteListener;
@@ -58,6 +60,12 @@ class Module
                 },
                 'jsCoder' => function() {
                     return new JSCoder();
+                },
+                'jsRegistration' => function() {
+                    return new JSRegistration();
+                },
+                'jsModule' => function() {
+                    return new JSModule();
                 }
 
             )
