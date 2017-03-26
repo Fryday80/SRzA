@@ -8,6 +8,18 @@
 
 namespace Application\JSCoder;
 
+/**
+ * Class JSModule
+ *
+ * JSModule is the Object for an js module/snipped used
+ *
+ * especially for the ones you only use once in a while
+ * or just on some pages
+ * 
+ * usage in JSRegistration.php == class JSRegistration
+ *
+ * @package Application\JSCoder
+ */
 class JSModule {
     public $dataArray; // provides the whole data array
     

@@ -8,6 +8,15 @@
 
 namespace Application\JSCoder;
 
+/**
+ * Class JSRegistration
+ *
+ * enter data for used js modules/snippets here
+ *
+ * usage in JSCoder.php == class JSCoder
+ *
+ * @package Application\JSCoder
+ */
 Class JSRegistration
 {
     public $lib;
@@ -20,6 +29,11 @@ Class JSRegistration
     {
         return $this->lib;
     }
+
+    /**
+     * enter data here
+     * out-commented example appended
+     */
     private function registration()
     {
     $this->lib[]= new JSModule (array(
@@ -44,7 +58,7 @@ Class JSRegistration
         'insideCode' => false,
         'insideCodeValue' => 'todo',
     ),
-//        for each js code...
+// ---- example ----------------- for each js code...
 //    $this->lib[]= new JSModul (array(
 //        'name' => 'xy',
 //        'jsFile' => 'path',
@@ -60,6 +74,7 @@ Class JSRegistration
 //        'insideCode' => true,
 //        'insideCodeValue' => 'e.g. backgroundcolor: black,',
 //    ),
+// ----- example end -----------------------------------------
     );
     }
 }
