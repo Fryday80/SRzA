@@ -40,10 +40,10 @@ Class JSRegistration
         'name' => 'accordion',
         'jsFile' => '/libs/ckeditor/ckeditor.js',
         
-        'ownCss' => true,
-        'cssPath' => '/libs/ckeditor/content.css',
+        'hasCss' => true,
+        'css' => '/libs/ckeditor/content.css',
         
-        'override' => false,
+        'hasOverride' => false,
         'overridePath' => 'string (path to override file)',
         
         'script' => '$(function() {
@@ -55,34 +55,34 @@ Class JSRegistration
                                     })
                                 });',
         
-        'insideCode' => false,
-        'insideCodeValue' => 'todo',
+        'hasOptions' => false,
+        'options' => 'todo',
     )
 // ---- example ----------------- for each js code...
 //    $this->lib[]= new JSModul (array(
 //        'name' => 'xy',
 //        'jsFile' => 'path',
 
-//        'ownCss' => true,
-//        'cssPath' => 'location of css',
+//        'hasCss' => true,
+//        'css' => 'location of css',
 
-//        'override' => true,
-//        'overridePath' => 'string (path to override file)',
+//        'hasOverride' => true,
+//        'override' => 'string (path to override file)',
 
-//        'code' => 'string without <script> or empty "" ',
+//        'script' => 'string without <script> or empty "" ',
 
-//        'insideCode' => true,
-//        'insideCodeValue' => 'e.g. backgroundcolor: black,',
+//        'hasOptions' => true,
+//        'options' => 'e.g. backgroundcolor: black,',
 //    ),
 // ----- example end -----------------------------------------
     );
     }
-    public function setNewStandardOption ( $jsModule, $option )
+    public function setNewStandardSettings($jsModule, $settings, $setting = 'options')
     {
         $i = 0;
         while ($this->lib[$i])
         {
-            ($this->lib[$i]['name'] !== $jsModule)?: $this->lib[$i]->setNewStandardOption($option);
+            ($this->lib[$i]['name'] !== $jsModule)?: $this->lib[$i]->setNewStandardSettings($settings, $setting);
             $i++;
         }
     }

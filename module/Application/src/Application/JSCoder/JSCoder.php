@@ -41,9 +41,9 @@ class JSCoder // needed?     extends AbstractHelper
         $this->renderData();
     }
     
-    public function setNewStandardOption ( $jsModule, $option )
+    public function setNewStandardSetting ( $jsModule, $settings, $setting = 'options' )
     {
-        $this->registration->setNewStandardOption ( $jsModule, $option );
+        $this->registration->setNewStandardSettings ( $jsModule, $settings, $setting );
     }
     
     private function renderData()

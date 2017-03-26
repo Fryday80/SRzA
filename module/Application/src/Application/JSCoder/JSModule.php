@@ -24,13 +24,13 @@ class JSModule {
     public $dataArray; // provides the whole data array
     
     public $name;
-    public $ownCss;
-    public $cssPath;
+    public $hasCss = false;   //bool
+    public $css;
+    public $hasOverride = false;   //bool
     public $override;
-    public $overridePath;
     public $script;
-    public $optionCode;
-    public $optionCodeValue;
+    public $hasOptions = false;   //bool
+    public $options;
     
     public function __construct(array $data) 
     {
@@ -40,9 +40,32 @@ class JSModule {
             $this->$key = $value;
         }
     }
-    public function setNewStandardOption($option)
+    public function setNewStandardSettings($settings, $setting = 'options')
     {
-        $this->optionCode = true;
-        $this->optionCode = $option;
+        //todo validation of data
+        $switch = '';
+        $settingKey = 'options';
+        switch (strtolower($setting)){
+            case 'name':
+                $settingKey = 'name';
+                breake;
+            case 'css':
+                $switch = 'hasCss';
+                $settingKey = 'css';
+                breake;
+            case 'override':
+                $switch = 'hasOverride';
+                $settingKey = 'override';
+                breake;
+            case 'script':
+                $settingKey = 'script';
+                breake;
+            case 'options':
+                $switch = 'hasOptions';
+                breake;
+        }
+
+        ($switch == '') ?: $this->$switch = true;
+        $this->$settingKey = $settings;
     }
 }
