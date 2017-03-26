@@ -1,6 +1,7 @@
 <?php
 namespace Cms\Controller;
 
+use Auth\Service\AccessService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Cms\Service\PostServiceInterface;
@@ -11,10 +12,12 @@ class PageController extends AbstractActionController
       * @var \Cms\Service\PostServiceInterface
       */
      protected $postService;
+     protected $accessService;
 
-     public function __construct(PostServiceInterface $postService)
+     public function __construct(PostServiceInterface $postService, AccessService $accessService)
      {
          $this->postService = $postService;
+         $this->accessService = $accessService;
      }
 
      public function indexAction()
@@ -29,8 +32,7 @@ class PageController extends AbstractActionController
          $page = $this->postService->findByUrl($url);
          $exceptRolls = $page->getExceptedRoles(true);
          //check auth
-         $accessService = $this->getServiceLocator()->get('AccessService');
-         $role = $accessService->getRole();
+         $role = $this->accessService->getRole();
 
          if (in_array($role, $exceptRolls)) {
             //deny

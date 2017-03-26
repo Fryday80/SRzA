@@ -18,6 +18,7 @@ class PageControllerFactory implements FactoryInterface
     {
         $realServiceLocator = $serviceLocator->getServiceLocator();
         $postService        = $realServiceLocator->get('Cms\Service\PostServiceInterface');
-        return new PageController($postService);
+        $accessService      = $realServiceLocator->get('AccessService');
+        return new PageController($postService, $accessService);
     }
 }

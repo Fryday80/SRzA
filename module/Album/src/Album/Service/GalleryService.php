@@ -61,18 +61,15 @@ Class GalleryService
         if (count($galleryDirs) == 0) return [];
         $randomIndex = rand(0, count($galleryDirs) -1);
         $album = $galleryDirs[$randomIndex];
-        //if (!$album) return [];
+        if (!$album) return [];
+        if (count($album) <= $count) {
+            return $album->getAllImages();
+        }
+        $allImages = $album->getAllImages();
+        shuffle($allImages);
         $result = [];
         for($i = 0; $i < $count; $i++) {
-            $item = $album->getRandomItem();
-            fl('PW Page Object');
-            fl($i);
-            if (!$item) break;
-            if(!in_array($item, $result)) {
-                array_push($result, $item);
-            } else {
-                $i--;
-            }
+            array_push($result, $allImages[$i]);
         }
         Register::add("getRandomImage end");
         return $result;

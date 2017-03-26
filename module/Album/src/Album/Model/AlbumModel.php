@@ -5,7 +5,7 @@ namespace Album\Model;
 use Media\Service\MediaItem;
 use Media\Service\MediaService;
 
-class AlbumModel implements \Iterator
+class AlbumModel implements \Iterator, \Countable
 {
     /* @var MediaService $mediaService */
     private $mediaService;
@@ -54,14 +54,17 @@ class AlbumModel implements \Iterator
     public function getDescription() {
         return $this->options['Album']['description'];
     }
-    public function getRandomItem() {
+    public function getAllImages() {
+        return $this->images;
+    }
+    public function getRandomImage() {
         if (count($this->images) == 0) {
             return null;
         }
         $randomIndex = rand(0, count($this->images) -1);
         return $this->images[$randomIndex];
     }
-    public function getItemByName($name) {
+    public function getImageByName($name) {
         foreach ($this->images as $key => $value) {
             if ($value->name.'.'.$value->type == $name) {
                 return $value;
@@ -75,7 +78,7 @@ class AlbumModel implements \Iterator
      */
     public function getPreviewItem() {
         if ($this->previewItem == null) {
-            $this->previewItem = $this->getItemByName($this->options['Album']['preview']);
+            $this->previewItem = $this->getImageByName($this->options['Album']['preview']);
         }
         return $this->previewItem;
     }
@@ -110,4 +113,17 @@ class AlbumModel implements \Iterator
         return isset($this->images[$this->position]);
     }
 
+    /**
+     * Count elements of an object
+     * @link http://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * </p>
+     * <p>
+     * The return value is cast to an integer.
+     * @since 5.1.0
+     */
+    public function count()
+    {
+        return count($this->images);
+    }
 }

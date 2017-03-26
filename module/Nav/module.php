@@ -31,7 +31,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'navigation' => 'Nav\Factory\MainNavigationFactory',
+                //'navigation' => 'Nav\Factory\MainNavigationFactory',
                 'Nav\Model\NavTable' => function ($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new NavTable($dbAdapter);

@@ -7,7 +7,7 @@ use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AclService extends Acl implements ServiceLocatorAwareInterface
+class AclService extends Acl
 {
 
     const DEFAULT_ROLE = 'guest';
@@ -26,16 +26,9 @@ class AclService extends Acl implements ServiceLocatorAwareInterface
 
     protected $commonPermission;
 
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator)
+    public function __construct($sm)
     {
-        $this->serviceLocator = $serviceLocator;
-        
-        return $this;
-    }
-
-    public function getServiceLocator()
-    {
-        return $this->serviceLocator;
+        $this->serviceLocator = $sm;
     }
 
     public function initAcl()
@@ -135,19 +128,19 @@ class AclService extends Acl implements ServiceLocatorAwareInterface
 
     protected function _getAllRoles()
     {
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
         return $roleTable->getUserRoles();
     }
 
     protected function _getAllResources()
     {
-        $resourceTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
+        $resourceTable = $this->serviceLocator->get("Auth\Model\ResourceTable");
         return $resourceTable->getAllResources();
     }
 
     protected function _getRolePermissions()
     {
-        $rolePermissionTable = $this->getServiceLocator()->get("Auth\Model\RolePermissionTable");
+        $rolePermissionTable = $this->serviceLocator->get("Auth\Model\RolePermissionTable");
         return $rolePermissionTable->getRolePermissions();
     }
     
@@ -156,7 +149,7 @@ class AclService extends Acl implements ServiceLocatorAwareInterface
         echo 'Role:-' . $role . '==>' . $resource . '\\' . $permission . '<br/>';
     }
     public function fetchAllRoles (){       //salt  other ideas??
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
         return $roleTable->getUserRoles();
     }
 }

@@ -14,7 +14,7 @@ return array(
     'controllers' => array(
         'factories' => array(
             'Cms\Controller\Content' => 'Cms\Factory\ContentControllerFactory',
-            'Cms\Controller\Page' => 'Cms\Factory\PageControllerFactory'
+            'Cms\Controller\Page' => 'Cms\Factory\PageControllerFactory',
         )
     ),
     'router' => array(

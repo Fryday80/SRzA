@@ -72,7 +72,11 @@
             </div>
             <div class="overlayShadow menu_items js-L-view">
                 <div class="topics">
-                    <?php echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
+                    <?php
+                    echo $this->navigation('navigation')
+                        ->menu()
+                        ->setPartial('layout/menu.phtml')
+                        ->renderPartial(); ?>
                 </div>
             </div>
         </div>
@@ -81,7 +85,7 @@
         <box id="content">
             <boxtitel>
                 <span class="own_text_big">
-                    <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
+                    <?php //echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
                 </span>
                 <br />
             </boxtitel>

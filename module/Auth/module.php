@@ -128,7 +128,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     return new AccessService($aclService, $authService, $storage);
                 },
                 'Auth\AclService' => function ($serviceManager) {
-                    return new AclService();
+                    return new AclService($serviceManager);
                 },
                 'Auth\Model\UserTable' => function ($serviceManager) {
                     $resultSetPrototype = new HydratingResultSet();
