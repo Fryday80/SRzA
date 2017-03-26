@@ -40,6 +40,12 @@ class JSModule {
             $this->$key = $value;
         }
     }
+
+    /**
+     * override standard settings
+     * @param mixed $settings the settings
+     * @param string $setting selector for the setting
+     */
     public function setNewStandardSettings($settings, $setting = 'options')
     {
         //todo validation of data

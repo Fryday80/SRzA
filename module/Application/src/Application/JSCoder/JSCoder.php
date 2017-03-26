@@ -40,7 +40,14 @@ class JSCoder // needed?     extends AbstractHelper
 
         $this->renderData();
     }
-    
+
+    /**
+     * change a js module setting standard
+     *
+     * @param string $jsModule  name of the js module as given in JSRegistration
+     * @param mixed $settings   the settings
+     * @param string $setting   keyword of the setting, default = "options"
+     */
     public function setNewStandardSetting ( $jsModule, $settings, $setting = 'options' )
     {
         $this->registration->setNewStandardSettings ( $jsModule, $settings, $setting );
@@ -64,8 +71,8 @@ class JSCoder // needed?     extends AbstractHelper
     }
 
     /**
-     * change given options / "insideCode"
-     * @param $options options
+     * change given options / "insideCode" temporarily
+     * @param mixed $options options
      * @param string $jsModule selection of the js module
      */
     public function changeOptions( $options, $jsModule = 'none' )

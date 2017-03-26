@@ -77,6 +77,13 @@ Class JSRegistration
 // ----- example end -----------------------------------------
     );
     }
+
+    /**
+     * Change the standard settings of a js module
+     * @param string $jsModule the module name as given
+     * @param mixed $settings the settings
+     * @param string $setting the option to change. standard is "options"
+     */
     public function setNewStandardSettings($jsModule, $settings, $setting = 'options')
     {
         $i = 0;
