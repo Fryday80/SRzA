@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace JSCoder;
 
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
@@ -24,10 +24,10 @@ class Module
         $moduleRouteListener->attach($eventManager);
         date_default_timezone_set ("Europe/Berlin");
     }
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
+//    public function getConfig()
+//    {
+//        return include __DIR__ . '/config/module.config.php';
+//    }
 
     public function getAutoloaderConfig()
     {
@@ -44,24 +44,13 @@ class Module
     {
         return array(
             'factories' => array(
-                'form' => function () {
-                    return new sraForm();
-                },
-                'dataTable' => function ($sm){
-                    $parentLocator = $sm->getServiceLocator();
-                    return new DataTableHelper($parentLocator);
-                },
-                'asurl' => function ($sm){
-                    $accessService = $sm->getServiceLocator()->get('AccessService');
-                    return new MyUrl($accessService);
-                },
                 'jsModule' => function() {          // I think this is not needed
                     return new JSModule();          // I think this is not needed
                 },                                  // I think this is not needed
                 'jsRegistration' => function() {    // I think this is not needed
                     return new JSRegistration();    // I think this is not needed
                 },                                  // I think this is not needed
-                'jsCoder' => function($sm) {
+                'jsCoder' => function() {
                     return new JSCoder( new JSRegistration() );
                 }
 

@@ -6,7 +6,8 @@
  * Time: 00:26
  */
 
-namespace Application\JSCoder;
+namespace JSCoder\Utility;
+use JSCoder\Config\JSRegistration;
 use Zend\View\Helper\AbstractHelper;
 
 /**JSCoder <br>

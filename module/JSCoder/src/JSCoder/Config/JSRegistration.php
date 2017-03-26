@@ -6,7 +6,9 @@
  * Time: 13:22
  */
 
-namespace Application\JSCoder;
+namespace JSCoder\Config;
+
+use JSCoder\Model\JSModule;
 
 /**
  * Class JSRegistration

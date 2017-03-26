@@ -6,7 +6,7 @@
  * Time: 13:22
  */
 
-namespace Application\JSCoder;
+namespace JSCoder\Model;
 
 /**
  * Class JSModule
