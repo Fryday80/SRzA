@@ -39,7 +39,7 @@ class JSCoder // needed?     extends AbstractHelper
      * @param string $jsModule name of the js module
      * @param string $options optional override of the options, only one option possible //todo perhaps extend for multiple options
      */
-    public function render( $jsModule, $options = '' )  //lieber "script"? render ist ja nicht 100% richtig, da die daten ja nicht dabei sind... oder
+    public function render( $jsModule, $options = '' )  //lieber "script"? render ist ja nicht 100% richtig, da die daten ja nicht dabei sind... oder?
     {
         $this->prepare( $jsModule );
         ($options !== '')?: $this->changeOptions( $options );
