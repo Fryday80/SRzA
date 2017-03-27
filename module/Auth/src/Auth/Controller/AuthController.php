@@ -190,7 +190,7 @@ class AuthController extends AbstractActionController
     //makeup reffering site to usable string
     protected function getReferer()
     {
-        $base_url = 'http://'.$_SERVER['HTTP_HOST'].''/'';
+        $base_url = 'http://' . $_SERVER['HTTP_HOST'] . '/';
         $referringPage = str_replace($base_url, "", $_SERVER['HTTP_REFERER']);
         $referringPage = ($referringPage == "")? 'home' : $referringPage;
         return $referringPage;

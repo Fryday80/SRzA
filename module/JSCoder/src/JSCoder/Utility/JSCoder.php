@@ -8,7 +8,7 @@
 
 namespace JSCoder\Utility;
 
-use JSCoder\Config\JSRegistration;
+use JSCoder\Interfaces\IJSCodeConfigFactory;
 use Zend\View\Helper\AbstractHelper;
 
 /**JSCoder <br>
@@ -17,22 +17,23 @@ use Zend\View\Helper\AbstractHelper;
  *
  * @package Application\Utility
  */
-class JSCoder // needed?     extends AbstractHelper
+class JSCoder extends AbstractHelper
 {
     private $jsModules = array();
     /** JSModule
      * @package Application\/JSCoder
      */
     private $jsData;
-    private $registration;
-
-    public function __construct(JSRegistration $registration)
+    
+    public function __construct($config)
     {
-        /**JSRegistration
-         * @package Application\JSCoder
-         */
-        $this->registration =  $registration;
-        $this->jsModules = $this->registration->lib; // ->get() returns the same
+        $this->jsModules = $config->get();
+    }
+
+    public function head ( $jsModule ){
+        $this->prepare( $jsModule );
+
+        return $this->renderHead();
     }
 
     /**
@@ -41,43 +42,34 @@ class JSCoder // needed?     extends AbstractHelper
      * @param string $jsModule name of the js module
      * @param string $options optional override of the options, only one option possible //todo perhaps extend for multiple options
      */
-    public function render( $jsModule, $options = '' )  //lieber "script"? render ist ja nicht 100% richtig, da die daten ja nicht dabei sind... oder?
+    public function script( $jsModule, $options = '' )
     {
         $this->prepare( $jsModule );
         ($options !== '')?: $this->changeOptions( $options );
-
-        $this->renderData();
+        
+        return $this->renderScript();
     }
 
-    /**
-     * change a js module setting standard
-     *
-     * @param string $jsModule  name of the js module as given in JSRegistration
-     * @param mixed $settings   the settings
-     * @param string $setting   keyword of the setting, default = "options"
-     */
-    public function setNewStandardSetting ( $jsModule, $settings, $setting = 'options' )
-    {
-        $this->registration->setNewStandardSettings ( $jsModule, $settings, $setting );
-    }
-    
-    private function renderData()
+    private function renderScript()
     {
         $script = $this->completeScript();
-        //todo create the htmlcode
+        return ( ( $script ) ? '<script>' . $script . '</script>' : '');
+    }
 
-        echo /* todo right way */ $this->jsData->jsFile;
-        echo '<style>' . /* data of */ $this->jsData->css . '</style>';
-        echo '<style>' . /* data of */ $this->jsData->override . '</style>';
+    private function renderHead(){
+        $return = '';
 
-        echo '<script>' . $script . '</script>';
+        $return .= ( $this->jsData['jsFile'] ) ? '<script type="text/javascript" src="' . $this->jsData['jsFile'] . '"></script>' : '';
+        $return .= ( $this->jsData['hasCss'] ) ? '<link href="' . $this->jsData['css'] . '" media="screen" rel="stylesheet" type="text/css">' : '';
+        $return .= ( $this->jsData['hasOverride'] ) ? '<link href="' . $this->jsData['override'] . '" media="screen" rel="stylesheet" type="text/css">' : '';
+        return $return;
     }
 
     private function completeScript()
     {
         //todo implement json encoding
         //todo implement "inside script" in "script"
-        return $readyScript = $this->jsData->script;
+        return $readyScript = $this->jsData['script'];
     }
 
     /**
@@ -85,12 +77,12 @@ class JSCoder // needed?     extends AbstractHelper
      * @param mixed $options options
      * @param string $jsModule selection of the js module
      */
-    public function changeOptions( $options, $jsModule = 'none' )
+    private function changeOptions( $options, $jsModule = 'none' )
     {
         ($jsModule == 'none')?: $this->prepare( $jsModule );
         // todo string or array depending of missing json implementation
         //meanwhile string is used
-        $this->jsData->options = $options;
+        $this->jsData['options'] = $options;
     }
 
     /**
@@ -116,6 +108,6 @@ class JSCoder // needed?     extends AbstractHelper
     }
     private function errorMessage()
     {
-        dumpd ('this widget is not registered in or managed by JSCoder', 'js usage error', 0); //todo replace dumpd to error trigger
+        dump ('this widget is not registered in or managed by JSCoder'); //todo replace dump to error trigger
     }
 }

@@ -548,6 +548,9 @@ input:-webkit-autofill {
   background-image: none !important;
   color: #000000 !important;
 }
+form > * {
+  display: list-item;
+}
 /* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
   /* ------------------- vars --------------------------- */
@@ -2356,5 +2359,5 @@ body .ui-tooltip {
   margin-left: auto;
   margin-right: auto;
 }
-/*  // <--- un-comment / * for usage
+/* //<--- un-comment / * for usage
 @import "css/_preLaunch";    /*erase unused elements for pre launch */

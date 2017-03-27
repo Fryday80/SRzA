@@ -36,33 +36,13 @@ class RandomImageHelper extends AbstractHelper
 
     function createRandoms()
     {
-        Register::add("create randoms");
         $this->result = $this->galleryService->getRandomImage($count = 3);
-        Register::add("after created randoms");
     }
 
     function scroller()
     {
-        Register::add("start scroller");
         $id = 'S_'.uniqid();
-        $return = '
-            <style>
-                .simple-slide-show {
-                    position: relative;
-                    overflow: hidden;
-                    width: 100%;
-                    height: 100%;
-                }
-                .simple-slide-show img {
-                    position: absolute;
-                    top: 0px;
-                    left: 0px;
-                    z-index: 1;
-                }
-                .simple-slide-show img.active {
-                    z-index: 3;
-                }
-            </style>
+        $return = '<link href="/libs/simpleSlideShow/simpleSlideShow.css" rel="stylesheet" type="text/css">
         ';
         $return .= '  <div id="'.$id.'" >';
         foreach ($this->result as $picture)
