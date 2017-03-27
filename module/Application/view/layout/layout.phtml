@@ -32,21 +32,15 @@
 if (!isset($this->showSidebar)) {
     $this->showSidebar = true;
 }
-    $sidebarHide = ($this->showSidebar) ? '' : 'class = "hidden"';
-    $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
+//und in den controllern kann man dann sagen
+//$this->layout()->setVariable('showSidebar', false);
+//was sau cool is :)
+
+$sidebarHide = ($this->showSidebar) ? '' : 'class = "hidden"';
+$fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
 ?>
 <body>
     <div class="body box">
-        <?php
-
-            //und in den controllern kann man dann sagen
-            //$this->layout()->setVariable('showSidebar', false);
-            //was sau cool is :)
-
-            if ($this->showSidebar) {
-                echo '<h1>show sidebar</h1>';
-            }
-        ?>
 <!----  NO SCRIPT   ---->
         <noscript>
             <div>
@@ -135,6 +129,11 @@ if (!isset($this->showSidebar)) {
                     </iframe>  --->
                 </boxcontent>
             </box>
+            <?php
+            if ($this->showSidebar) {
+                echo '<h1>show sidebar</h1>';
+            }
+            ?>
          </div>
         <div class="clear"></div>
 <!----  FOOT   ---->
