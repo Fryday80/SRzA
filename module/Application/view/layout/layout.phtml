@@ -27,12 +27,17 @@
     ;
     ?>
 </head>
+<?php
+// set default values
+//if (!isset($this->showSidebar)) {
+//$this->showSidebar = true;
+//
+//$sidebarHide = ($this->showSidebar) ? '' : 'class = "hidden"';
+//$fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
+?>
 <body>
     <div class="body box">
         <?php
-            // set default values
-            if (!isset($this->showSidebar)) {
-                $this->showSidebar = true;
             }
 
             //und in den controllern kann man dann sagen
@@ -97,7 +102,7 @@
         </div>
 <!----  CONTENT   ---->
     <!----  content   ---->
-        <box id="content">
+        <box id="content" <?php echo $fullWidth; ?> >
             <boxtitel>
                 <span class="own_text_big">
                     <?php echo $this->navigation('navigation')->breadcrumbs()->setMinDepth(0)->renderStraight();//$this->contentTitle ?>
@@ -109,20 +114,14 @@
             </boxcontent>
         </box>
     <!----  rightbar   ---->
-        <div id="rightcontainer">
+        <div id="rightcontainer" <?php echo $sidebarHide; ?> >
             <div class="rightbarup">
                 <?php
                     echo $this->loginview();
                 ?>
             </div>
             <box id="rightbarmiddle">
-                <div>
-                    <div class="top-fade"></div>
-                    <div class="scroller-spacer">
-                        <?php echo $this->randomImage()->scroller(); ?>
-                    </div>
-                    <div class="bottom-fade"></div>
-                </div>
+                    <?php echo $this->randomImage()->scroller(); ?>
             </box>
 
             <box class="rightbardown">

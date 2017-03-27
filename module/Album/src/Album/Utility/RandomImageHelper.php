@@ -44,7 +44,6 @@ class RandomImageHelper extends AbstractHelper
         $id = 'S_'.uniqid();
         $return = '<link href="/libs/simpleSlideShow/simpleSlideShow.css" rel="stylesheet" type="text/css">';
         $return .= '  <div id="'.$id.'" >';
-//        $return = '  <div id="'.$id.'" >'; //hard code style = "height:100%; width: 100%"
         foreach ($this->result as $picture)
         {
             $return .= '<img src="' . $picture->livePath . '" >'; //hard code style = "position: absolute; top: 0; left: 0;"

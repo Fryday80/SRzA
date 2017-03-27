@@ -241,7 +241,7 @@ button {
   width: 100%;
 }
 .scroller-spacer {
-  height: 200px;
+  height: 100%;
 }
 .log_me_out {
   position: absolute;
