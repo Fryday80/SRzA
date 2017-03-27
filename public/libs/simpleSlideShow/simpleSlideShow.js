@@ -18,6 +18,9 @@
 
             var clientWidth = ele.clientWidth,
                 clientHeight = ele.clientHeight;
+            var clientWidth = this.$element.parent().width(),      //das hier läuft, weiß ned obs schön ist
+                clientHeight = this.$element.parent().height();    //das hier läuft, weiß ned obs schön ist
+            console.log(clientHeight);                             //das hier läuft, weiß ned obs schön ist
 
             this.$element.children("img").each(function(i){
                 var width = this.naturalWidth,
