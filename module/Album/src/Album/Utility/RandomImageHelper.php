@@ -46,7 +46,7 @@ class RandomImageHelper extends AbstractHelper
         $return .= '  <div id="'.$id.'" >';
         foreach ($this->result as $picture)
         {
-            $return .= '<img src="' . $picture->livePath . '" >'; //hard code style = "position: absolute; top: 0; left: 0;"
+            $return .= '<img src="' . $picture->livePath . '" >';
         }
         $return .= '</div><script>
                             $("#'.$id.'").simpleSlideShow({
