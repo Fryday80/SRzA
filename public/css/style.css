@@ -483,30 +483,9 @@ button {
 .hidden {
   display: none !important;
 }
-/* ******** datepicker (part of jquery-ui I think) ******** */
-.ui-datepicker {
-  background-image: url('/img/body.bg.png');
-  background-size: 100% 100%;
-}
-#ui-datepicker-div > table > thead > tr > th > span {
-  color: black;
-}
-/* ******** in forms (last_fixes.js) ******** */
-.width_95 {
-  width: 95%;
-}
-.width_90 {
-  width: 90%;
-}
-.width_40 {
-  width: 40%;
-}
-/* ************************* */
-/* *** with own css file *** */
-/* ************************* */
-/* ** popUp ** */
-/* ** gallery ** */
-/* ** menu ** */
+/****** switches *******/
+/* .js-L-view */
+/* .js-S-view */
 /* *** special subpages design *** */
 .cast li {
   list-style: none;
@@ -558,6 +537,16 @@ input:-webkit-autofill {
 }
 form > * {
   display: list-item;
+}
+/* ******** in forms (last_fixes.js) ******** */
+.width_95 {
+  width: 95%;
+}
+.width_90 {
+  width: 90%;
+}
+.width_40 {
+  width: 40%;
 }
 /* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
@@ -754,10 +743,8 @@ noscript > div > .ownhead {
     opacity: 1;
   }
 }
-/* js overrides */
-/* temporary included js css */
-/* overrides for js css */
-/* jquery UI Style   for pop up */
+/* *** js styles used global */
+/* jquery UI Style   for pop up, datepicker ... */
 /*! jQuery UI - v1.11.1 - 2014-08-13
 * http://jqueryui.com
 * Includes: core.css, accordion.css, autocomplete.css, button.css, datepicker.css, dialog.css, draggable.css, menu.css, progressbar.css, resizable.css, selectable.css, selectmenu.css, slider.css, sortable.css, spinner.css, tabs.css, tooltip.css, theme.css
@@ -2313,60 +2300,3 @@ body .ui-tooltip {
   /* support: IE8 */
   border-radius: 8px;
 }
-/* own pop up styles */
-/* ----------------- UI special desing -------------------------------- */
-.ui-dialog {
-  top: 0 !important;
-  left: 0 !important;
-}
-.ui-dialog-buttonset {
-  float: none !important;
-  text-align: center;
-}
-.ui-widget-content button {
-  background-color: #FAEBd7;
-  width: 60px;
-}
-.ui-widget-content button:hover {
-  background-color: rgba(0, 0, 0, 0.1);
-  /*fallback*/
-  background: radial-gradient(rgba(0, 0, 0, 0.5), transparent);
-}
-/* ----------------- pop up div design -------------------- */
-.disclaimer {
-  width: 100%;
-  height: 75% !important;
-  font-size: medium !important;
-}
-/* additional settings for the gallery */
-/******************** CSS for Gallery Index Page *********************/
-.preview_gallery {
-  height: 75px;
-  border-radius: 10%;
-}
-/* datepicker */
-#ui-datepicker-div {
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
-}
-/* simplyscroll */
-.simply-scroll-clip {
-  overflow-y: hidden !important;
-  height: 200px !important;
-  width: 100% !important;
-}
-.simply-scroll-clip li {
-  width: 100% !important;
-}
-.simply-scroll-clip * {
-  border: none !important;
-}
-.vert {
-  width: 100% !important;
-}
-.vert .simply-scroll-list li img {
-  margin-left: auto;
-  margin-right: auto;
-}
-/* //<--- un-comment / * for usage
-@import "css/_preLaunch";    /*erase unused elements for pre launch */
