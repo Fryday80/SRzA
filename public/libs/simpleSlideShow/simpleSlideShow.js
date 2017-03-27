@@ -13,15 +13,15 @@
         this.interval = null;
 
         this.init = function() {
-            this.$element.addClass(".simple-slide-show");
+            this.$element.addClass("simple-slide-show");
             $('img:first', this.$element).addClass("active");
 
             var clientWidth = ele.clientWidth,
                 clientHeight = ele.clientHeight;
 
-            this.$element.children("img").each(function(i, e){
-                var width = $(this).width(),
-                    height = $(this).height();
+            this.$element.children("img").each(function(i){
+                var width = this.naturalWidth,
+                    height = this.naturalHeight;
 
                 if (width < height) {
                     $(this).width(clientWidth);
