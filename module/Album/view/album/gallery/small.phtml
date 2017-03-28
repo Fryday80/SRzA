@@ -6,12 +6,29 @@ $this->headScript()->appendFile('/libs/jgallery/js/jgallery.min.js');
 ?>
 <script type="text/javascript">
     $(document).ready(function() {
+        var setHeight = ( $( window ).height() ) * 4 / 5;;
+        $( window ).resize( function () {
+            setHeight = ( $( window ).height() ) * 4 / 5;
+        });
         $( '#gallery' ).jGallery( {
             'mode': 'standard',
             'autostart': true,
             'canClose': false,
             'backgroundColor': '#AFA08D',
             'textColor': '#000',
+            'height': setHeight+'px',
+            'slideshow': true,
+            'slideshowAutostart': false,
+            'slideshowCanRandom': true,
+            'slideshowRandom': false,
+            'slideshowInterval': '5s',
+            'transition': 'rotateCarouselTopOut_rotateCarouselTopIn', //http://jgallery.jakubkowalczyk.pl/documentation
+            'transitionBackward': 'rotateCarouselBottomOut_rotateCarouselBottomIn',
+            'transitionCols': 8,
+            'transitionRows': 8,
+            'transitionWaveDirection': 'backward',
+            'title': true,  //If set as 'true', in bottom area of zoomed photo will be shown title from alt attribute of img(only when 'title' has been set as true).
+                            //Possible values: true false
         });
     } );
 </script>
