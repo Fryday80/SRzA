@@ -1,40 +1,38 @@
 <?php echo $this->doctype(); ?>
-
 <html>
 <head>
+<!----  Meta & Titel   ---->
     <meta charset="utf-8">
-        <?php echo $this->headTitle('Schwarze Ritter zu Augsburg') ?>
+    <?php echo $this->headTitle('Schwarze Ritter zu Augsburg');
 
-        <?php echo $this->headMeta()
-            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
-        ?>
-
+        echo $this->headMeta()
+                        ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+                        ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ; ?>
 <!----  CSS styles   ---->
-    <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+    <?php echo $this->headLink( array( 'rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico' ) )
                         ->prependStylesheet($this->basePath('libs/jquery-ui/jquery-ui.css'))
                         ->prependStylesheet($this->basePath('css/style.css'))
         ?>
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/accordion/accordion.js'))
-            ->prependFile($this->basePath('js/popUp/popUp.js'))
-            ->prependFile($this->basePath('js/menu/menu.js'))
-            ->prependFile($this->basePath('libs/simpleSlideShow/simpleSlideShow.js'))
-            ->prependFile($this->basePath('js/jquery/ui/jquery-ui.min.js'))
-            ->prependFile($this->basePath('js/jquery/jquery.min.js'))
-    ;
-    ?>
+                        ->prependFile($this->basePath('js/accordion/accordion.js'))
+                        ->prependFile($this->basePath('libs/simpleSlideShow/simpleSlideShow.js'))
+                        ->prependFile($this->basePath('js/menu/menu.js'))
+                        ->prependFile($this->basePath('js/popUp/popUp.js'))
+                        ->prependFile($this->basePath('js/jquery/ui/jquery-ui.min.js'))
+                        ->prependFile($this->basePath('js/jquery/jquery.min.js'))
+    ; ?>
 </head>
 <?php
-// set default values
-if (!isset($this->showSidebar)) {
-    $this->showSidebar = true;
-}
-// usage in controller:
-//$this->layout()->setVariable('showSidebar', false);
+    // set default values
+    if (!isset($this->showSidebar)) {
+        $this->showSidebar = true;
+    }
+    // usage in controller:
+    //$this->layout()->setVariable('showSidebar', false);
 
-$fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
+    $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
 ?>
 <body>
     <div class="body box">
@@ -103,15 +101,11 @@ $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
                 <?php echo $this->content; ?>
             </boxcontent>
         </box>
-        <?php
-        if ($this->showSidebar):
-        ?>
+        <?php if ($this->showSidebar): ?>
         <!----  rightbar   ---->
             <div id="rightcontainer">
                 <div class="rightbarup">
-                    <?php
-                        echo $this->loginview();
-                    ?>
+                    <?php echo $this->loginview(); ?>
                 </div>
                 <box id="rightbarmiddle">
                         <?php echo $this->randomImage()->scroller(); ?>
@@ -130,15 +124,12 @@ $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
                     </boxcontent>
                 </box>
              </div>
-        <?php
-            endif;
-        ?>
+        <?php endif; ?>
         <div class="clear"></div>
 <!----  FOOT   ---->
         <div id="foot">
             <div class="overlayShadow">
                 <box id="foottext">
-                    <?php // echo $this->navigation('navigation')->menu()->setPartial('layout/menu.phtml')->renderPartial(); ?>
                     <ul>
                         <li>copyright © <v>F&S 2016</v> & Schwarze Ritter zu Augsburg | </li>
                         <li><a href="#mail">Kontakt</a> | </li>
