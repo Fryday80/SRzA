@@ -48,7 +48,7 @@ class RandomImageHelper extends AbstractHelper
         {
             $return .= '<img src="' . $picture->livePath . '" >';
         }
-        $return .= '</div><script>
+        $return .= '<div class="simple-slide-show-overlay"></div></div><script>
                             $("#'.$id.'").simpleSlideShow({
                                 autoMode: "loop", 
                                 customClass: "vert",
