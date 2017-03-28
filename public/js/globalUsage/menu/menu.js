@@ -1,13 +1,4 @@
 $(document).ready (function menu_handler_js () {
-
-/* ------------------ USED FUNCTIONS -------------------- */
-    /**
-     * adds the link images to all <a>
-     */
-    function addLinkDecorators () {
-        $("#navframe li").not("#DataTables_Table_0_paginate a").prepend('<img class="links" src="/img/uikit/link.png">');
-    }
-
     /**
      * performs the menu show-hide action
      */
@@ -70,7 +61,6 @@ $(document).ready (function menu_handler_js () {
     }
 /* ------------------ WORKING SCRIPT -------------------- */
     setMode ();
-    addLinkDecorators();
     menuActionsS();
 
     $(window).resize ( function () {
