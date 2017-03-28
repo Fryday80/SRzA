@@ -1,11 +1,19 @@
 <?php
-$GLOBALS['nav']=$this;
-print($this->sers);
+$GLOBALS['nav'] = $this;
+
 if (!function_exists("createMenuHtmlRecursive") ){
+
+    function linkImage ( $level ) {
+        $linkImgSrc  = "/img/uikit/link.png";
+        
+        return ( $level == 0 ) ? '<img src="' . $linkImgSrc . '" class="links">' : '';
+    };
+
     function createMenuHtmlRecursive($page, $level) {
         if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
             echo
                 '<a href="' . $page->getUri() . '">' .
+                linkImage($level) .
                     "<li class='level_$level'>" .
                             $page->getLabel();
             if ($page->hasPages()) {
