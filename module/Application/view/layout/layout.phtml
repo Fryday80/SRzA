@@ -17,12 +17,12 @@
         ?>
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()
-            ->prependFile($this->basePath('js/fixes/last_fixes.js'))
-            ->prependFile($this->basePath('libs/popUp/popup.js'))
+            ->prependFile($this->basePath('js/accordion/accordion.js'))
+            ->prependFile($this->basePath('js/popUp/popUp.js'))
             ->prependFile($this->basePath('js/menu/menu.js'))
             ->prependFile($this->basePath('libs/simpleSlideShow/simpleSlideShow.js'))
-            ->prependFile($this->basePath('js/jquery-ui.min.js'))
-            ->prependFile($this->basePath('js/jquery.min.js'))
+            ->prependFile($this->basePath('js/jquery/ui/jquery-ui.min.js'))
+            ->prependFile($this->basePath('js/jquery/jquery.min.js'))
     ;
     ?>
 </head>
@@ -150,7 +150,7 @@ $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
             </div>
             <div style="height: 20px;"></div>
         </div>
-        <script>last_fixes.organize ()</script>
+<!--        <script>last_fixes.organize ()</script>-->
         <?php echo $this->inlineScript() ?>
     </div>
 

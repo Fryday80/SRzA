@@ -22,20 +22,18 @@ input:-webkit-autofill {
   background-image:none !important;
   color: #000000 !important;
 }
-form > *
+form *
 {
     display: list-item;
+  list-style: none;
 }
-/* ******** in forms (last_fixes.js) ******** */
-.width_95
-{
-  width: 95%;
-}
-.width_90
-{
-  width: 90%;
-}
-.width_40
-{
-  width: 40%;
+.rightbarup form *{
+  text-align: center;
+
+  label,
+  input {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
 }

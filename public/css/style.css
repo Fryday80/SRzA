@@ -213,12 +213,19 @@ button {
   margin-left: -1.5vw !important;
   margin-right: -1.5vw !important;
 }
+#content {
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
+}
 /* -----------------colum 3 right bar----------------- */
 #rightcontainer {
   float: right;
   width: 29%;
   text-align: center;
   margin: 2vw -1vw 0 0;
+}
+#rightcontainer box,
+#rightcontainer .box {
+  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0 0 1vw 0 rgba(41, 41, 41, 0.5);
 }
 #rightcontainer fieldset {
   background: none;
@@ -535,18 +542,18 @@ input:-webkit-autofill {
   background-image: none !important;
   color: #000000 !important;
 }
-form > * {
+form * {
   display: list-item;
+  list-style: none;
 }
-/* ******** in forms (last_fixes.js) ******** */
-.width_95 {
-  width: 95%;
+.rightbarup form * {
+  text-align: center;
 }
-.width_90 {
+.rightbarup form * label,
+.rightbarup form * input {
+  margin-left: auto;
+  margin-right: auto;
   width: 90%;
-}
-.width_40 {
-  width: 40%;
 }
 /* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
