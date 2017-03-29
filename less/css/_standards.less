@@ -37,6 +37,13 @@
 @border-picture-normal: url("@{uikit-path}border.png");
 @border-picture-active: url("@{uikit-path}border_active.png");
 
+// border -------------------------------------------------------------------------------
+@border-cut-pixels: 40;
+@border-pic-display-style: repeat;
+@border-width: 0.5vw;
+@border-double-width: 2*@border-width;
+
+
 //@body-background-size: auto 130px;
 @body-background-size: '';
 
@@ -143,10 +150,6 @@ v
 }
 
 // border -------------------------------------------------------------------------------
-@border-cut-pixels: 40;
-@border-pic-display-style: repeat;
-@border-width: 0.5vw;
-@border-double-width: 2*@border-width;
 
 .helper-border(@width, @style, @where) when (@where = top)
 {

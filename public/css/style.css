@@ -341,7 +341,7 @@ button {
     border-image: url("/img/uikit/border.png") 40 repeat;
   }
   .level_0 a {
-    width: 95%;
+    width: 100%;
   }
   .level_0 > ul {
     position: absolute;
@@ -369,7 +369,7 @@ button {
     display: block;
   }
   /* **** the link images **** */
-  .links {
+  .linkPic {
     height: 15px !important;
     opacity: 0.5;
   }
@@ -377,11 +377,12 @@ button {
 /* ******************* MOBILE VIEW aka S-View *********************** */
 @media only screen and (max-width: 700px) {
   /* **** the menu **** */
-  #navframe * {
+  .topics * {
     height: auto;
   }
-  #navframe * li {
-    min-height: 35px;
+  .topics a,
+  .topics li {
+    min-height: 40px;
   }
   .menu_items {
     margin-bottom: 5px;
@@ -402,7 +403,7 @@ button {
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+    box-shadow: 0.35vw 0.35vw 0.8vw darkgrey;
   }
   .level_0 > ul {
     position: relative;
@@ -412,6 +413,10 @@ button {
     width: 100%;
     border-left: none;
     border-right: none;
+  }
+  .level_0 a {
+    margin-left: 0;
+    border: none;
   }
   .animation {
     display: block !important;

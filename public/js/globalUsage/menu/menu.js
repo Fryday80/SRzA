@@ -38,6 +38,7 @@ $(document).ready (function menu_handler_js () {
             $(".js-S-view").not("hidden").addClass("hidden");
             $(".logging").removeClass("box")
                 .not("log_me_out").addClass("log_me_out");
+            $('.navigation .linkPic').removeClass("hidden");
         }
 
         /**
@@ -49,6 +50,7 @@ $(document).ready (function menu_handler_js () {
             $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
             $(".logging").removeClass("log_me_out")
                 .not("box").addClass("box");
+            $('.navigation .linkPic').not("hidden").addClass("hidden");
         }
         
         
