@@ -89,8 +89,8 @@ $(document).ready (function menu_handler_js () {
             $('*', this).css('z-index', zIndex);
         }
         function remove(){
-            $('ul.navigation').removeAttr("style");
-            $('ul.navigation li').removeAttr("style");
+            $("ul.navigation").removeAttr("style");
+            $("ul.navigation li").removeAttr("style");
             $(ele).off("mouseover", up);
             $(ele).off("mouseout", down);
         }
