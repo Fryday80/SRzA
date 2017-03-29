@@ -8,6 +8,9 @@ use Zend\Mvc\Controller\AbstractActionController;
 class FileController extends AbstractActionController  {
     public function fileAction()
     {
+        /** @var FmHelper */
+        $helper = new FmHelper();
+
         $path = $this->params('path');
         $fileContent =  file_get_contents('Data' . $path);
         $response = $this->getResponse();
@@ -15,7 +18,7 @@ class FileController extends AbstractActionController  {
         $response
             ->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-            ->addHeaderLine('Content-Type', 'image/jpg')
+            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
             ->addHeaderLine('Content-Length', mb_strlen($fileContent));
 
         return $response;

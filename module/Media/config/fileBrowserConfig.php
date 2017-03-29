@@ -137,6 +137,7 @@ $config = [
             "txt",
             "csv",
             "md",
+            "conf"
         ],
     ],
     /**
