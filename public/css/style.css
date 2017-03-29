@@ -337,7 +337,6 @@ button {
     width: 130px;
     text-align: center;
     height: 23px;
-    background-color: #FAEBd7;
     border-bottom: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
   }
