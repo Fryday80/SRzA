@@ -1,9 +1,0 @@
-.success,
-.error
-{
-    margin: auto;
-    height: 300px;
-    width: 100% !important;
-    opacity: 0;
-    z-index: 2000;
-}
