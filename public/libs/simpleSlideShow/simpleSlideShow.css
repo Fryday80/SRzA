@@ -23,7 +23,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 15;
+    z-index: 6;
     /*box-shadow: inset 0 0 7vw 0 rgba(41, 0, 0, 0.5);*/
     /*box-shadow: inset 0px 0px 2vw 20px rgba(41, 0, 0, 0.5);*/
     box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
