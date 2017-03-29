@@ -5,14 +5,14 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
- <p>Are you sure that you want to delete '<?php echo $this->escapeHtml($item->label); ?>' ?
+ <p>Are you sure that you want to delete '<?php echo $this->escapeHtml($item['label']); ?>' ?
  </p>
  <?php
  $url = $this->url('nav/delete', array('id' => $this->id));
  ?>
  <form action="<?php echo $url; ?>" method="post">
  <div>
-     <input type="hidden" name="id" value="<?php echo (int) $item->id; ?>" />
+     <input type="hidden" name="id" value="<?php echo $id; ?>" />
      <input type="submit" name="del" value="Yes" />
      <input type="submit" name="del" value="No" />
  </div>

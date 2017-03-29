@@ -78,6 +78,13 @@ $this->headTitle($title);
         	$(this).parent('.dd3-content').toggleClass('dd-expanded');
             //console.log($(this).parent('.dd3-content') );
         });
+        $('.dd-delete').on('click', function(e) {
+            var $parent = $(this).parent('.dd3-content');
+            var id = $(".dd-details>form>input[name=id]", $parent).val();
+            var getUrl = window.location;
+            var url = getUrl.protocol + "//" + getUrl.host + "/nav/delete/"+ id;
+            window.location = url;
+        });
     });
 </script>
 

@@ -181,10 +181,10 @@ class NavController extends AbstractActionController
                 $navTable->deleteByID($id);
             }
             
-            // Redirect to list of albums
+            // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
-        
+        bdump($navTable->getItem($id));
         return array(
             'id' => $id,
             'item' => $navTable->getItem($id)
