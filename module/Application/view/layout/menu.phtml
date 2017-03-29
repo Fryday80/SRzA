@@ -5,17 +5,17 @@ if (!function_exists("createMenuHtmlRecursive") ){
 
     function linkImage ( $level ) {
         $linkImgSrc  = "/img/uikit/link.png";
-        
+
         return ( $level == 0 ) ? '<img src="' . $linkImgSrc . '" class="links">' : '';
     };
 
     function createMenuHtmlRecursive($page, $level) {
         if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
-            echo
-                '<a href="' . $page->getUri() . '">' .
+            echo "<li class='level_$level'>" .
+                '<a href="' . $page->getUri() . '" class="level_' . $level .'" style="width:100%;">' .
                 linkImage($level) .
-                    "<li class='level_$level'>" .
-                            $page->getLabel();
+                $page->getLabel() .
+                '</a>';
             if ($page->hasPages()) {
                 $nextLevel = $level + 1;
                 echo '<ul class="ul_level_' . $nextLevel . '">';
@@ -24,7 +24,7 @@ if (!function_exists("createMenuHtmlRecursive") ){
                 }
                 echo '</ul>';
             }
-            echo '</li></a>';
+            echo '</li>';
         }
         return;
     }

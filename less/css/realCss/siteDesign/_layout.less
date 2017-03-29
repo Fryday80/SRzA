@@ -144,7 +144,6 @@ button
   .relative;
   text-align: center;
   padding-top: 2px;
-  z-index: 10;
 }
 /* -----------------hp body----------------- */
 /* -----------------colum 2 content----------------- */
@@ -156,7 +155,6 @@ button
 }
 .fullWidth{
   width: calc( 100% ~"+" 2vw) !important;
-  //width: 100% !important;
   margin-left: -1.5vw !important;
   margin-right: -1.5vw !important;
 }
@@ -170,10 +168,6 @@ button
   width: 29%;
   text-align: center;
   margin: 2vw -1vw 0 0;
-  box,
-  .box {
-    .at-box-shadow(0);
-  }
 
   fieldset{
     background: none;
@@ -234,6 +228,7 @@ button
   min-height: 30px;
   width: calc(100% ~"+" 2vw);
   margin-left: -1.5vw;
+  box-shadow: @special-inner-shadow;
 
   li
   {
@@ -242,20 +237,6 @@ button
     .at-hover;
   }
 }
-
-/************************boxes*******************/
-/** boxes see _standards **/
-
-
-/*********design helper****************/
-/*
-.spacer_line
-{
-  background: url("@{uikit}/decoration.3line_pure.png") repeat-x bottom left;
-  background-size: auto 10px;
-  height: 10px;
-}
-*/
 
 /* ******** feedbacks e.g. nav sort ******** */
 #success,

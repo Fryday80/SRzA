@@ -1,4 +1,8 @@
 $(document).ready (function menu_handler_js () {
+    "use strict";
+
+    var mode ='L';
+
     /**
      * performs the menu show-hide action
      */
@@ -22,7 +26,6 @@ $(document).ready (function menu_handler_js () {
      * 'S' = mobile view
      * given in var mode
      */
-    var mode ='L';
     function setMode () {
         /**
          * unsets the classes for mobile view ("S view")
@@ -49,7 +52,7 @@ $(document).ready (function menu_handler_js () {
         
         
         /** removes click event to avoid multiple bindings **/
-        $(".menu_button_img").off("click", menuToggle);
+        $(".menu_button_img").off("click",  menuToggle);
 
         if(window.matchMedia('(max-width: 700px)').matches) {
             mode = "S";
