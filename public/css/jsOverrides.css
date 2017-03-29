@@ -72,7 +72,7 @@ v {
 }
 /* ******** datepicker (part of jquery-ui I think) ******** */
 .ui-datepicker {
-  background-image: url('/img/body.bg.png');
+  background-image: none;
   background-size: 100% 100%;
 }
 #ui-datepicker-div > table > thead > tr > th > span {

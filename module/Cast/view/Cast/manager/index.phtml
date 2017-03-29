@@ -4,20 +4,21 @@ $this->headTitle($title);
 ?>
  <h1><?php echo $this->escapeHtml($title); ?></h1><br>
  <?php foreach ($items as $item):
+
      $count = $item.'Count';?>
-     <div style="width: 30%; float: left; margin: 1vw;">
-        <a href="<?php echo $this->url('castmanager/'.$item);?>">
-            <div class="box titel linkbox">
-                <p class="castManagerTitel">
-                    <?php echo ucfirst($item);?>
-                </p>
-            </div>
-        </a>
-        <boxcontent>
-            <p>Entrys: <?php echo $$count;?></p>
-            <p>letzter bearbeiteter</p>
-        </div>
-     </div>
+     <a href="<?php echo $this->url('castmanager/'.$item);?>">
+         <box class= "castmanager">
+                <div class="titel linkbox">
+                    <p class="castManagerTitel">
+                        <?php echo ucfirst($item);?>
+                    </p>
+                </div>
+            <boxcontent>
+                <p>Entrys: <?php echo $$count;?></p>
+                <p>letzter bearbeiteter</p>
+            </boxcontent>
+        </box>
+     </a>
  <?php endforeach; ?>
 <div class="clear" style="height: 10px"></div>
 

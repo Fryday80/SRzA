@@ -92,7 +92,6 @@ button
 .headdeko
 {
   float: left;
-  z-index: 100 !important;
   width: 8vw;
 }
 
@@ -134,7 +133,15 @@ button
   width: calc(100% ~ "-" 10px);
   height: auto;
   text-align: center;
-  z-index: 4;
+}
+
+/* ----------------- feedback ------------------------- */
+/* other styling in libs/feedback/feedback.css */
+.success,
+.error
+{
+  display: none;
+  position: absolute;
 }
 
 /* -----------------colum 1 (navframe)----------------- */
@@ -236,18 +243,4 @@ button
     vertical-align: sub;
     .at-hover;
   }
-}
-
-/* ******** feedbacks e.g. nav sort ******** */
-#success,
-#error
-{
-  .at-box;
-  .at-hide;
-  .absolute;
-  margin: auto;
-  height: 100px;
-  width: calc(100% ~"-" 1vw);
-  opacity: 0;
-  z-index: 2000;
 }

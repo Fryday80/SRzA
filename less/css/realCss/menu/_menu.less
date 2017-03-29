@@ -2,14 +2,14 @@
 /* media query is just to be able to hide general settings while coding :) */
 @media only screen
 {
-  #navframe
-  {
-    z-index: 10;
-    *
-    {
-      z-index: 9;
-    }
-  }
+  //#navframe
+  //{
+  //  z-index: 10;
+  //  *
+  //  {
+  //    z-index: 9;
+  //  }
+  //}
   /* **** navigation sign **** */
   .navsign{
     margin: 0 auto 0 auto;
@@ -41,7 +41,7 @@
   .menu_items
   {
       text-align: left;
-      z-index: 10;
+      //z-index: 10;
   }
   .topics
   {
@@ -68,13 +68,18 @@
     height: 23px;
     .at-bg-color;
     .at-border(bottom);
-      > ul {
-          //margin-top: calc(@border-width  ~"+" 3px);
-          .absolute;
-          width: 100%;
-          .at-bg-color;
-          .at-hide;
-      }
+
+    a {
+      width: 95%;
+    }
+    > ul {
+        //margin-top: calc(@border-width  ~"+" 3px);
+        .absolute;
+        width: 100%;
+        .at-bg-color;
+        .at-hide;
+        z-index: 10;
+    }
     li {
       .at-show;
       width: calc(100% ~"-" (2*@border-width));

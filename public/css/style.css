@@ -61,8 +61,8 @@ boxtitel {
   display: block;
 }
 boxcontent {
-  background-image: url('/img/body.bg.png');
-  background-size: auto 130px;
+  background-image: none;
+  background-size: '';
   border: none;
   margin: 1vw;
   padding: 0.5vw;
@@ -89,8 +89,8 @@ body {
 .body {
   border-radius: 5px;
   margin: 3%;
-  background-image: url('/img/body.bg.png');
-  background-size: auto 130px;
+  background-image: none;
+  background-size: '';
   background-color: #FAEBd7;
   position: relative;
 }
@@ -151,7 +151,6 @@ button {
 }
 .headdeko {
   float: left;
-  z-index: 100 !important;
   width: 8vw;
 }
 .leftHead {
@@ -187,7 +186,13 @@ button {
   width: calc(100% - 10px);
   height: auto;
   text-align: center;
-  z-index: 4;
+}
+/* ----------------- feedback ------------------------- */
+/* other styling in libs/feedback/feedback.css */
+.success,
+.error {
+  display: none;
+  position: absolute;
 }
 /* -----------------colum 1 (navframe)----------------- */
 #navframe {
@@ -279,34 +284,10 @@ button {
 #foottext li:hover {
   box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
 }
-/* ******** feedbacks e.g. nav sort ******** */
-#success,
-#error {
-  display: block;
-  margin-bottom: 2vw;
-  border: 0.5vw solid;
-  border-image: url("/img/uikit/border.png") 40 repeat;
-  background-color: #FAEBd7;
-  border-radius: 5px;
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
-  display: none;
-  position: absolute;
-  margin: auto;
-  height: 100px;
-  width: calc(100% - 1vw);
-  opacity: 0;
-  z-index: 2000;
-}
 /* Menu Layout */
 /* -----------------Navbar CSS settings----------------- */
 /* media query is just to be able to hide general settings while coding :) */
 @media only screen {
-  #navframe {
-    z-index: 10;
-  }
-  #navframe * {
-    z-index: 9;
-  }
   /* **** navigation sign **** */
   .navsign {
     margin: 0 auto 0 auto;
@@ -334,7 +315,6 @@ button {
   /* **** the menu **** */
   .menu_items {
     text-align: left;
-    z-index: 10;
   }
   .topics {
     position: relative;
@@ -361,11 +341,15 @@ button {
     border-bottom: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
   }
+  .level_0 a {
+    width: 95%;
+  }
   .level_0 > ul {
     position: absolute;
     width: 100%;
     background-color: #FAEBd7;
     display: none;
+    z-index: 10;
   }
   .level_0 li {
     display: block;
@@ -504,9 +488,16 @@ button {
   padding: 10px;
   min-width: 150px;
 }
+.castmanager {
+  width: 30%;
+  float: left;
+  margin: 1vw;
+}
 form * {
   display: list-item;
   list-style: none;
+}
+label {
   text-align: center;
 }
 input {
@@ -520,7 +511,7 @@ input {
   width: 90%;
 }
 input:hover {
-  background-image: url('/img/body.bg.png');
+  background-image: none;
 }
 input:-webkit-autofill {
   background-color: #f00 !important;

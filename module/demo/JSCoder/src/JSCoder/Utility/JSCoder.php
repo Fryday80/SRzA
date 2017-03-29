@@ -60,8 +60,8 @@ class JSCoder extends AbstractHelper
         $return = '';
 
         $return .= ( $this->jsData['jsFile'] ) ? '<script type="text/javascript" src="' . $this->jsData['jsFile'] . '"></script>' : '';
-        $return .= ( $this->jsData['hasCss'] ) ? '<link href="' . $this->jsData['css'] . '" media="screen" rel="stylesheet" type="text/css">' : '';
-        $return .= ( $this->jsData['hasOverride'] ) ? '<link href="' . $this->jsData['override'] . '" media="screen" rel="stylesheet" type="text/css">' : '';
+        $return .= ( $this->jsData['hasCss'] ) ? '<link href="' . $this->jsData['css'] . '" rel="stylesheet" type="text/css">' : '';
+        $return .= ( $this->jsData['hasOverride'] ) ? '<link href="' . $this->jsData['override'] . '" rel="stylesheet" type="text/css">' : '';
         return $return;
     }
 

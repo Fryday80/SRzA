@@ -30,11 +30,15 @@
 @modding: "/img/modding/";
 
 // images -----------------------------------------------------------------------------------
-@background-image: url('@{img-path}body.bg.png');
+//@background-image: url('@{img-path}body.bg.png');
+@background-image: none;
 @html-background-image: url('@{img-path}html.bg.png');
 @background-arrow: url('@{uikit-path}arrow.svg');
 @border-picture-normal: url("@{uikit-path}border.png");
 @border-picture-active: url("@{uikit-path}border_active.png");
+
+//@body-background-size: auto 130px;
+@body-background-size: '';
 
 // modding ----------------------------------------------------------------------------------
 @cursor: url('@{modding}knights-glove.png');
@@ -110,11 +114,11 @@ v
 }
 .at-bg-img-no-col(){
   background-image: @background-image;
-  background-size: auto 130px;
+  background-size: @body-background-size;
 }
 .at-bg-img(){
   background-image: @background-image;
-  background-size: auto 130px;
+  background-size: @body-background-size;
   .at-bg-color;
 }
 .at-shaded-part() {

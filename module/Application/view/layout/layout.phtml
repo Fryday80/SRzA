@@ -11,18 +11,22 @@
         ; ?>
 <!----  CSS styles   ---->
     <?php echo $this->headLink( array( 'rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico' ) )
+                        ->prependStylesheet($this->basePath('libs/feedback/css/feedback.css'))
                         ->prependStylesheet($this->basePath('libs/jquery-ui/jquery-ui.css'))
                         ->prependStylesheet($this->basePath('css/style.css'))
         ?>
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()
+                        ->prependFile($this->basePath('libs/feedback/js/feedback.js'))
                         ->prependFile($this->basePath('js/globalUsage/accordion/accordion.js'))
                         ->prependFile($this->basePath('libs/simpleSlideShow/simpleSlideShow.js'))
                         ->prependFile($this->basePath('js/globalUsage/menu/menu.js'))
                         ->prependFile($this->basePath('js/globalUsage/popUp/popUp.js'))
                         ->prependFile($this->basePath('js/globalUsage/jquery/ui/jquery-ui.min.js'))
                         ->prependFile($this->basePath('js/globalUsage/jquery/jquery.min.js'))
-    ; ?>
+    ;
+//    echo $this->feedback()->startUp();
+    ?>
 </head>
 <?php
     // set default values
@@ -66,8 +70,8 @@
             </div>
         </div>
 <!----  FEEDBACK   ---->
-        <div id="success">Aktion Erfolgreich</div>
-        <div id="error">Aktion Misslungen / Fehler</div>
+        <box class = "success">Aktion Erfolgreich</box>
+        <box class = "error">Aktion Misslungen / Fehler</box>
 <!----  NAVIGATION   ---->
         <div class="menu_button_div hidden js-S-view">
             <img class="menu_button_img" src="/img/uikit/menu_button.png">

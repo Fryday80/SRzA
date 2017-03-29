@@ -23,7 +23,7 @@ $this->headTitle($title);
     	$('.dd').nestable({});
 
         function animateResponse(selector) {
-            var $elements = [$("#content>.box"),$("#navTree>.dd-list"), ( selector == 'success' ) ? $("#success") : $("#error")];
+            var $elements = [$("#content>.box"),$("#navTree>.dd-list"), ( selector == 'success' ) ? $(".success") : $(".error")];
             var background = ( selector == 'success' ) ? "green" : "red";
             var origin_bg = [];
             var origin_op = [];
