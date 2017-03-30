@@ -22,30 +22,6 @@ $this->headTitle($title);
     $(document).ready(function(){
     	$('.dd').nestable({});
 
-        function animateResponse(selector) {
-            var $elements = [$("#content>.box"),$("#navTree>.dd-list"), ( selector == 'success' ) ? $(".success") : $(".error")];
-            var background = ( selector == 'success' ) ? "green" : "red";
-            var origin_bg = [];
-            var origin_op = [];
-
-            jQuery.each($elements, function (index, $value){
-                origin_bg[index] = $value.css("background-color");
-                origin_op[index] = $value.css("opacity")?$value.css("opacity"):"1";
-                $value.css("background-color", background)
-                    .css("opacity", "1")
-                    .css("display", "block");
-                $value.animate({
-                        "opacity": origin_op[index],
-                        "background-color": origin_bg[index]
-                    },
-                    2000,
-                    function complete() {
-                        $value.removeAttr("style");
-                    }
-                );
-            });
-        }
-
         $('#save-menu').on('click', function() {
         	var data = $('.dd').nestable('serialize');
         	data = JSON.stringify(data);
@@ -59,11 +35,11 @@ $this->headTitle($title);
                 data: data,
                 success: function (e, a) {
 					console.log(e, a);
-                    animateResponse('success');
+                    feedback.success('Neue Sortierung gespeichert, oder hast du etwas anderes erwartet?');
                 },
                 error: function (e, a) {
     				console.log(e.responseText, a);
-                    animateResponse('error');
+                    feedback.error('Fehler, bitte hauen Sie ihren Kopf gegen die Wand^^');
                 }
             }).done(function( msg ) {
                 console.log(msg);
