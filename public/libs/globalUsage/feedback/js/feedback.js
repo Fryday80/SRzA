@@ -17,7 +17,8 @@ function animateFeedbackResponse(selector, message) {
 
     // declarations with standards:
     var background = ( selector == "success" ) ? "green" : "red",
-        message = message || "";
+        message = message || "",
+        feedbackDuration = 3000;
 
     /**
      * construct the feedback box
@@ -79,7 +80,7 @@ function animateFeedbackResponse(selector, message) {
                 "opacity": origin_op[index],
                 "background-color": origin_bg[index]
             },
-            3000,
+            feedbackDuration,
             function complete() {
                 $value.removeAttr("style");
                 $('.feedbackMessage').removeAttr("style");
