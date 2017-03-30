@@ -50,7 +50,7 @@ $(document).ready (function menu_handler_js () {
             $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
             $(".logging").removeClass("log_me_out")
                 .not("box").addClass("box");
-            $('.navigation .linkPic').not("hidden").addClass("hidden");
+            $(".navigation .linkPic").not("hidden").addClass("hidden");
         }
         
         
@@ -75,7 +75,7 @@ $(document).ready (function menu_handler_js () {
             liWidth = parseInt( $('ul.navigation li').css('width') ),
             difference = bodyWidth-ulWidth,
             ele = $('.navigation li');
-        selector = '(max-width: ' + ((ItemCount*liWidth)+difference) + 'px)';
+        selector = '(max-width: ' + ( ( ItemCount*liWidth ) + difference ) + 'px)';
 
         function getProperty() {
             var $ul = $("<ul class='navigation'></ul>").hide().appendTo("body");
