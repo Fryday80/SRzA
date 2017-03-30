@@ -42,9 +42,11 @@ class RandomImageHelper extends AbstractHelper
     function scroller()
     {
         $id = 'S_'.uniqid();
-        // ScriptFile in header
+        $baseFiles = '/libs/globalUsage/simpleSlideShow/simpleSlideShow';
+        // ScriptFile
+        $return = '<script type="text/javascript" src="' . $baseFiles . '.js"></script>';
         // CSS
-        $return = '<link href="/libs/globalUsage/simpleSlideShow/simpleSlideShow.css" rel="stylesheet" type="text/css">';
+        $return .= '<link href="' . $baseFiles . '.css" rel="stylesheet" type="text/css">';
         // DOM
         $return .= '  <div id="'.$id.'" >';
         foreach ($this->result as $picture)
