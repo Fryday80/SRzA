@@ -1,19 +1,4 @@
-/* positioning */
-.relative {
-  position: relative;
-}
-.absolute {
-  position: absolute;
-}
-.clear {
-  clear: both;
-}
-/* -----------------MODDING----------------- */
-/*-------------------------------------------*/
-/* ---------------- Cursor ----------------- */
-* {
-  cursor: url('/img/modding/knights-glove.png'), default;
-}
+/* fonts */
 /* ---------------Fonts---------------------*/
 @font-face {
   font-family: 'headline';
@@ -27,12 +12,20 @@
   font-family: 'vendor';
   src: url('/fonts/hp3.ttf') format('truetype');
 }
-v {
-  font-family: vendor, arial, sans-serif;
-}
+/* positioning */
 /* ------ shadows ------- */
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+}
+/* -----------------MODDING----------------- */
+/*-------------------------------------------*/
+/* ---------------- Cursor ----------------- */
+* {
+  cursor: url('/img/modding/knights-glove.png'), default;
+}
+/* ----------- publisher's vendor ----------- */
+v {
+  font-family: vendor, arial, sans-serif;
 }
 /* box design */
 /* ************* BOXES *************/
@@ -127,6 +120,16 @@ button {
   font-family: bodytext, arial, sans-serif;
   color: black;
   font-size: 1vw;
+}
+/* ---- positioning ---- */
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+.clear {
+  clear: both;
 }
 .logoutbutton {
   height: 30px;

@@ -1,41 +1,10 @@
 /* positioning */
-.relative {
-  position: relative;
-}
-.absolute {
-  position: absolute;
-}
-.clear {
-  clear: both;
-}
-/* -----------------MODDING----------------- */
-/*-------------------------------------------*/
-/* ---------------- Cursor ----------------- */
-* {
-  cursor: url('/img/modding/knights-glove.png'), default;
-}
-/* ---------------Fonts---------------------*/
-@font-face {
-  font-family: 'headline';
-  src: url('/fonts/hp.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'bodytext';
-  src: url('/fonts/hp2.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'vendor';
-  src: url('/fonts/hp3.ttf') format('truetype');
-}
-v {
-  font-family: vendor, arial, sans-serif;
-}
 /* ------ shadows ------- */
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
-/* temporary included js css */
 /* overrides for js css */
+/* -------------------- */
 /* own pop up styles */
 /* ----------------- UI special desing -------------------------------- */
 .ui-dialog {
