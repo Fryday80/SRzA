@@ -10,15 +10,21 @@
  */
 function animateFeedbackResponse(selector, message) {
     // declarations
-    var $elements = [],
+    var selection,
+        $feedbackBox,
+        appendToHTML,
+        feedbackText,
+        background,
+        $elements = [],
         origin_bg = [],
         origin_op = [],
-        $feedbackBox,
-        background,
         feedbackDuration;
 
     // standards:
-    background = ( selector == "success" ) ? "green" : "red";
+    selection = '.'+selector;
+    appendToHTML = "body";
+    feedbackText =  ( selector == "success" ) ? "success" : "error";
+    background =    ( selector == "success" ) ? "green" : "red";
     message = message || "";
     feedbackDuration = 3000;
 
@@ -29,8 +35,7 @@ function animateFeedbackResponse(selector, message) {
      * @returns {*|jQuery}  new constructed element
      */
     function createFeedbackBoxes (selector){
-        var feedbackText = (selector == 'success')?'success':'error';
-        $feedbackBox = $('<box class = "'+selector+'"><div class="feedbackMessage"></div></box>').appendTo("body");
+        $feedbackBox = $('<div class = "'+selector+' box"><div class="feedbackMessage"></div></div>').appendTo(appendToHTML);
 
         $('.feedbackMessage').html(feedbackText);
     }
@@ -45,8 +50,8 @@ function animateFeedbackResponse(selector, message) {
      * @param selector  string either 'success' or 'error'
      * @param message   string of new message
      */
-    function changeMessage(selector, message) {
-        $('.feedbackMessage', '.'+selector).html(message);
+    function changeMessage(selection, message) {
+        $('.feedbackMessage', selection).html(message);
     }
 
     /**
@@ -59,14 +64,14 @@ function animateFeedbackResponse(selector, message) {
      * insert custom feedback text if given
      */
     if (!(message == "")) {
-        changeMessage(selector, message);
+        changeMessage(selection, message);
     }
     /**
      * create array of elements, where the animation is used
      *
      * @type {*[]}
      */
-    $elements.push ( $(('.'+selector)) );
+    $elements.push ( $(selection) );
     // additional elements without class "success" or "error"
     $elements.push( $(".body.box") );
 
