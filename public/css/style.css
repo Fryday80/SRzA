@@ -250,9 +250,11 @@ button {
   height: 100%;
 }
 .log_me_out {
-  position: absolute;
-  margin: -85% 11.5vw;
-  width: 15vw;
+  position: fixed;
+  top: 0;
+  right: 0;
+  margin: 0;
+  width: 18vw;
   display: block;
   margin-bottom: 2vw;
   border: 0.5vw solid;
@@ -260,6 +262,8 @@ button {
   background-color: #FAEBd7;
   border-radius: 5px;
   box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  min-height: 11vw;
+  max-height: 17.5vw;
 }
 /* -----------------foot----------------- */
 #foot {
