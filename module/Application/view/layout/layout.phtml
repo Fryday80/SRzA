@@ -105,9 +105,11 @@
         <?php if ($this->showSidebar): ?>
         <!----  rightbar   ---->
             <div id="rightcontainer">
+        <?php endif; ?>
                 <div class="rightbarup">
                     <?php echo $this->loginview(); ?>
                 </div>
+        <?php if ($this->showSidebar): ?>
                 <box id="rightbarmiddle">
                         <?php echo $this->randomImage()->scroller(); ?>
                 </box>
