@@ -1,9 +1,18 @@
 .success,
 .error
 {
+    display: none;
+    opacity: 0;
+    top: 20%;
+    position: absolute;
     margin: auto;
     height: 300px;
     width: 100% !important;
-    opacity: 0;
     z-index: 2000;
+}
+.feedbackMessage{
+    margin: auto;
+    margin-top: 50px;
+    width: 50%;
+    text-align: center;
 }

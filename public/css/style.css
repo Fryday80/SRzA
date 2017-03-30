@@ -188,12 +188,6 @@ button {
   text-align: center;
 }
 /* ----------------- feedback ------------------------- */
-/* other styling in libs/feedback/feedback.css */
-.success,
-.error {
-  display: none;
-  position: absolute;
-}
 /* -----------------colum 1 (navframe)----------------- */
 #navframe {
   width: 100%;
@@ -342,6 +336,7 @@ button {
   }
   .level_0 a {
     width: 100%;
+    display: block;
   }
   .level_0 > ul {
     position: absolute;
@@ -349,6 +344,7 @@ button {
     background-color: #FAEBd7;
     display: none;
     z-index: 10;
+    left: 0;
   }
   .level_0 li {
     display: block;
@@ -429,7 +425,7 @@ button {
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 @media only screen and (min-width: 700px) {
   .level_0:hover > ul {
-    display: block !important;
+    display: inline-block !important;
     -webkit-animation: fadeInFromNone 0.7s ease-out;
     -moz-animation: fadeInFromNone 0.7s ease-out;
     -o-animation: fadeInFromNone 0.7s ease-out;

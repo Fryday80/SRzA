@@ -62,6 +62,7 @@
 
     a {
       width: 100%;
+      display: block;
     }
     > ul {
         //margin-top: calc(@border-width  ~"+" 3px);
@@ -70,6 +71,7 @@
         .at-bg-color;
         .at-hide;
         z-index: 10;
+        left: 0;
     }
     li {
       .at-show;
@@ -165,7 +167,7 @@
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 @media only screen and (min-width: 700px ) {
   .level_0:hover > ul {
-      display: block !important;
+      display: inline-block !important;
       -webkit-animation: fadeInFromNone 0.7s ease-out;
       -moz-animation: fadeInFromNone 0.7s ease-out;
       -o-animation: fadeInFromNone 0.7s ease-out;
