@@ -13,12 +13,14 @@ function animateFeedbackResponse(selector, message) {
     var $elements = [],
         origin_bg = [],
         origin_op = [],
-        $feedbackBox;
+        $feedbackBox,
+        background,
+        feedbackDuration;
 
-    // declarations with standards:
-    var background = ( selector == "success" ) ? "green" : "red",
-        message = message || "",
-        feedbackDuration = 3000;
+    // standards:
+    background = ( selector == "success" ) ? "green" : "red";
+    message = message || "";
+    feedbackDuration = 3000;
 
     /**
      * construct the feedback box
