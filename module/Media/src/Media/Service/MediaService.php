@@ -107,7 +107,6 @@ class MediaService {
         $fullPath = realpath($this->dataPath.'/'.$path);
         $result = array();
         if (is_dir($fullPath)) {
-           // $rootItem = $this->loadItem($path);
             $dir = scandir($fullPath);
             foreach ($dir as $key => $value) {
                 if ($value == '.' || $value == '..') continue;
@@ -121,11 +120,24 @@ class MediaService {
         }
     }
 
+    /**
+     * @param $path string
+     * @return MediaItem|null
+     */
+    public function getItem($path) {
+        $fullPath = realpath($this->dataPath.'/'.$path);
+        if (!$fullPath) {
+            return null;
+        }
+
+        return $this->loadItem($path);
+    }
+
     public function createFileResponse($path, $response) {
         $fullPath = realpath($this->dataPath.'/'.$path);
-        if(!$this->checkPermission($path)) {
-            return $response->setHttpResponseCode(404);
-        }
+//        if(!$this->checkPermission($path)) {
+//            return $response->setHttpResponseCode(404);
+//        }
         /** @var FmHelper */
         $helper = new FmHelper();
 
@@ -146,18 +158,26 @@ class MediaService {
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
         $dir = dirname($fullPath);
+        $roles = $this->accessService->getAcl()->fetchAllRoles();
+        bdump($roles);
         $role = $this->accessService->getRole();
         if ($isDir) {
             $meta = $this->getFolderMeta($path);
-            if ($meta && isset($meta['Restrictions']) ) {
-                if (isset($meta['Restrictions']['folder'])) {
-                    if (in_array($role, $meta['Restrictions']['folder']) ) {
-                        //@not allowed
-                        return false;
+            if ($meta && isset($meta['Permissions']) ) {
+                $readable = 0;
+                $writable = 0;
+                if (isset($meta['Permissions']['folderRead'])) {
+                    if (in_array($role, $meta['Permissions']['folderRead']) ) {
+                        $readable = 1;
                     }
                 }
+                if (isset($meta['Permissions']['folderWrite'])) {
+                    if (in_array($role, $meta['Permissions']['folderWrite']) ) {
+                        $writable = 1;
+                    }
+                }
+                return ['readable' => $readable, 'writable' => $writable];
             }
-            return true;
         } else {
             $meta = $this->getFolderMeta($path);
             if ($meta && isset($meta['Restrictions']) ) {
@@ -168,10 +188,8 @@ class MediaService {
                     }
                 }
             }
-            return true;
         }
-
-        return true;
+        return ['readable' => 0, 'writable' => 0];
     }
 
     private function parseIniFile($iniPath) {
@@ -190,6 +208,10 @@ class MediaService {
         return false;
     }
 
+    /**
+     * @param $path
+     * @return MediaItem|null
+     */
     private function loadItem($path) {
         $path = $this->cleanPath($path);
         $fullPath = realpath($this->dataPath.'/'.$path);
@@ -207,6 +229,7 @@ class MediaService {
             $item->livePath = $this->cleanPath("/media/file/".$path);
 //            $item->parentPath = $pathInfo['dirname'];
         } else {
+            return null;
             //@todo error file not found
         }
         return $item;

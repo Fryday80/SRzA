@@ -67,6 +67,12 @@ class AclService extends Acl
         return false;
     }
 
+    public function fetchAllRoles () {
+        //@todo add caching
+        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
+        return $roleTable->getUserRoles();
+    }
+
     protected function _addRoles()
     {
         $this->addRole(new Role(self::DEFAULT_ROLE));
@@ -147,9 +153,5 @@ class AclService extends Acl
     private function debugAcl($role, $resource, $permission)
     {
         echo 'Role:-' . $role . '==>' . $resource . '\\' . $permission . '<br/>';
-    }
-    public function fetchAllRoles (){       //salt  other ideas??
-        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
-        return $roleTable->getUserRoles();
     }
 }
