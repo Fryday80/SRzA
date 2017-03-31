@@ -1,17 +1,21 @@
 <?php
 namespace Media\Controller;
 
+use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Media\Utility\FmHelper;
 use Media\Utility\LocalUploadHandler;
 
 class FileBrowserController extends AbstractActionController  {
+
+    /**
+     * @var $mediaService MediaService
+     */
     private $mediaService;
 
-    function __construct($mediaService)
+    function __construct()
     {
-        $this->mediaService = $mediaService;
     }
 
 
@@ -25,6 +29,7 @@ class FileBrowserController extends AbstractActionController  {
         return array();
     }
     public function actionAction() {
+        $this->mediaService = $this->getServiceLocator()->get('MediaService');
         $this->initFileBrowser();
 //        $fm = getFileBrowserFor($dataDir);
         $this->handleRequest();
@@ -304,6 +309,11 @@ class FileBrowserController extends AbstractActionController  {
         $target_path = $this->get['path'];
         $target_fullpath = $this->getFullPath($target_path, true);
         //Log::info('opening folder "' . $target_fullpath . '"');
+        return json_encode($this->mediaService->getItems($target_path));
+
+
+
+
 
         if(!is_dir($target_fullpath)) {
             $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
