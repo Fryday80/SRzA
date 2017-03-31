@@ -196,7 +196,6 @@ button {
   position: relative;
   text-align: center;
   padding-top: 2px;
-  z-index: 10;
 }
 /* -----------------hp body----------------- */
 /* -----------------colum 2 content----------------- */
@@ -205,7 +204,6 @@ button {
   width: 70%;
   min-height: 60%;
   margin: 2vw 0 0 -1vw;
-  z-index: 10;
 }
 .fullWidth {
   width: calc(100% + 2vw) !important;
@@ -340,7 +338,6 @@ button {
     width: 100%;
     background-color: #FAEBd7;
     display: none;
-    z-index: 10;
     left: 0;
   }
   .level_0 li {
@@ -438,7 +435,6 @@ button {
   box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
   min-height: 11vw;
   max-height: 17.5vw;
-  z-index: 7;
 }
 /* styles used in Zend */
 /* ------------------Zend Form Styles ---------------------------------- */
@@ -467,6 +463,27 @@ button {
 /****** switches *******/
 /* .js-L-view */
 /* .js-S-view */
+/* z-indexing */
+.body {
+  z-index: 1;
+}
+#headcontainer,
+#rightcontainer,
+#foot {
+  z-index: 1;
+}
+.log_me_out {
+  z-index: 10;
+}
+#content {
+  z-index: 20;
+}
+#navframe {
+  z-index: 30;
+}
+noscript {
+  z-index: 40;
+}
 /* *** special subpages design *** */
 .cast li {
   list-style: none;
@@ -623,7 +640,6 @@ input:-webkit-autofill {
   }
 }
 noscript > div {
-  z-index: 20;
   position: absolute;
   top: 200px;
   left: 30px;
