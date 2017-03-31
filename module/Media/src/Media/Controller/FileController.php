@@ -6,13 +6,7 @@ use Media\Utility\FmHelper;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class FileController extends AbstractActionController  {
-    private $mediaService;
-
-    function __construct($mediaService)
-    {
-        $this->mediaService = $mediaService;
-    }
-
+    
     public function fileAction()
     {
         /** @var FmHelper */

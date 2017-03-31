@@ -7,6 +7,13 @@ use Media\Utility\FmHelper;
 use Media\Utility\LocalUploadHandler;
 
 class FileBrowserController extends AbstractActionController  {
+    private $mediaService;
+
+    function __construct($mediaService)
+    {
+        $this->mediaService = $mediaService;
+    }
+
 
     public function indexAction() {
         $viewModel = new ViewModel();
