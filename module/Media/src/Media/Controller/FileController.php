@@ -15,37 +15,47 @@ class FileController extends AbstractActionController  {
 
     public function fileAction()
     {
-        /** @var FmHelper */
-        $helper = new FmHelper();
-
+        $mediaService = $this->getServiceLocator()->get('MediaService');
         $path = $this->params('path');
-        $fileContent =  file_get_contents('Data' . $path);
-        $response = $this->getResponse();
-        $response->setContent($fileContent);
-        $response
-            ->getHeaders()
-            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
-            ->addHeaderLine('Content-Length', mb_strlen($fileContent));
+        return $mediaService->createFileResponse($path, $this->getResponse());
 
-        return $response;
+
+//        /** @var FmHelper */
+//        $helper = new FmHelper();
+//
+//        $path = $this->params('path');
+//        $fileContent =  file_get_contents('Data' . $path);
+//        $response = $this->getResponse();
+//        $response->setContent($fileContent);
+//        $response
+//            ->getHeaders()
+//            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+//            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
+//            ->addHeaderLine('Content-Length', mb_strlen($fileContent));
+//
+//        return $response;
     }
     public function imageAction()
     {
-        /** @var FmHelper */
-        $helper = new FmHelper();
-
+        $mediaService = $this->getServiceLocator()->get('MediaService');
         $path = $this->params('path');
-        $fileContent =  file_get_contents('Data' . $path);
-        $response = $this->getResponse();
-        $response->setContent($fileContent);
-        $response
-            ->getHeaders()
-            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
-            ->addHeaderLine('Content-Length', strlen($fileContent));
+        return $mediaService->createFileResponse($path, $this->getResponse() );
 
-        return $response;
+
+//        /** @var FmHelper */
+//        $helper = new FmHelper();
+//
+//        $path = $this->params('path');
+//        $fileContent =  file_get_contents('Data' . $path);
+//        $response = $this->getResponse();
+//        $response->setContent($fileContent);
+//        $response
+//            ->getHeaders()
+//            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+//            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
+//            ->addHeaderLine('Content-Length', strlen($fileContent));
+//
+//        return $response;
     }
     public function downloadAction() {
         $path = $this->params('path');
