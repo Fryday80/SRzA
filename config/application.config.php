@@ -8,7 +8,6 @@ return array(
         'Media',
         'Nav',
         'Album',
-        //'Calendar',
         'Cast',
     ),
 

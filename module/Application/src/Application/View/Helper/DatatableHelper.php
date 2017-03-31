@@ -43,16 +43,16 @@ Class DataTableHelper extends AbstractHelper {
         $datarow = '';
         $datahead = '';
         $i = 0;
+
         foreach ($table->data as $row) {
             $datarow .= '<tr>';
             foreach ($table->columns as $number => $value){
                 $switch = is_object($row);
+                $datarow .= "<td>";
                 switch ($switch) {
                     case false:
-                        $datarow .= "<td>";
-                        if ($i == 0) {
-                            $datahead .= '<th>' . $value['label'] . '</th>';
-                        }
+                        $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
+
                         switch ($value['type']) {
                             case 'text':
                                 $datarow .= $row[$value['name']];
@@ -65,7 +65,6 @@ Class DataTableHelper extends AbstractHelper {
                         }
                     break;
                     case true:
-                        $datarow .= "<td>";
                         if ($i == 0) {
                             $datahead .= '<th>' . $value['label'] . '</th>';
                         }
@@ -86,20 +85,16 @@ Class DataTableHelper extends AbstractHelper {
             $datarow .= '</tr>';
             $i++;
         }
-        $html = '<br><table class="display" cellspacing="0" width="100%">';
-        $html .= "<thead><tr> $datahead </tr></thead>";
-        $html .= "<tfoot><tr> $datahead </tr></tfoot><tbody>";
-        $html .= $datarow;
-        $html .= '</tbody></table>';
-        return $html;
+
+        return '<br><table class="display" cellspacing="0" width="100%">' .
+                "<thead><tr>$datahead</tr></thead>" .
+                "<tfoot><tr>$datahead</tr></tfoot>" .
+                "<tbody>$datarow</tbody></table>";
     }
     public function renderJS($jsOptionString) {
-        $js = '<script>';
-        $js .= '$(".display").DataTable(';
-        $js .= $jsOptionString;
-        $js .= ');';
-        $js .= '</script>';
-        return $js;
+        return '<script>
+                    $(".display").DataTable(' . $jsOptionString . ');
+                </script>';
     }
 
 }

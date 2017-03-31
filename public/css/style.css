@@ -190,7 +190,6 @@ button {
   height: auto;
   text-align: center;
 }
-/* ----------------- feedback ------------------------- */
 /* -----------------colum 1 (navframe)----------------- */
 #navframe {
   width: 100%;
@@ -210,9 +209,6 @@ button {
   width: calc(100% + 2vw) !important;
   margin-left: -1.5vw !important;
   margin-right: -1.5vw !important;
-}
-#content {
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
 /* -----------------colum 3 right bar----------------- */
 #rightcontainer {

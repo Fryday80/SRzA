@@ -6,6 +6,13 @@ return array(
             'Media\Controller\Upload'       => 'Media\Controller\UploadController',
             'Media\Controller\File'         => 'Media\Controller\FileController',
             'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
+        ),
+        'factories' => array(
+            'Media\Controller\FileController' => function($controllerManager) {
+                $sm = $controllerManager->getServiceLocator();
+                $mediaService = $sm->get('MediaService');
+                return new \Media\Controller\FileController($mediaService);
+            }
         )
     ),
     'view_manager' => array(

@@ -1,7 +1,7 @@
 /**
  * Created by Fry on 29.03.2017.
  */
-
+(function(){
 /**
  * animates the feedback response on ".success" or ".error" elements dependent from value of var selector
  *
@@ -115,3 +115,4 @@ window.feedback = {
         $(document).ready(animateFeedbackResponse('error', newFeedbackMessage))
     }
 }
+})();
