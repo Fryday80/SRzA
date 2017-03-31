@@ -9,9 +9,6 @@ class FileController extends AbstractActionController  {
 
     private $mediaService;
 
-    public function __construct($mediaService){
-        $this->mediaService = $mediaService;
-    }
 
     public function fileAction()
     {
