@@ -12,10 +12,11 @@ if (!function_exists("createMenuHtmlRecursive") ){
     function createMenuHtmlRecursive($page, $level) {
         if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
             echo "<li class='level_$level'>" .
-                '<a href="' . $page->getUri() . '" class="level_' . $level .'">' .
+                '<a href="' . $page->getUri() . '" class="level_' . $level .'_a">' .
+                '<p>' .
                 linkImage($level) .
                 $page->getLabel() .
-                '</a>';
+                '</p></a>';
             if ($page->hasPages()) {
                 $nextLevel = $level + 1;
                 echo '<ul class="ul_level_' . $nextLevel . '">';

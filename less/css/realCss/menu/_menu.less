@@ -1,3 +1,5 @@
+@menu-padding: 3px;
+
 /* -----------------Navbar CSS settings----------------- */
 /* media query is just to be able to hide general settings while coding :) */
 @media only screen
@@ -52,20 +54,26 @@
   /* first level li */
   .level_0
   {
-    vertical-align: top;
     .relative;
     .at-show(inline-block);
     width: 130px;
     text-align: center;
     height: 23px;
     .at-border(bottom);
+    .at-bg-color;
 
     a {
+      text-align: center;
+      background: none;
       width: 100%;
       display: block;
+      border-bottom: none;
+    }
+    p {
+       padding-top: 2px;
     }
     > ul {
-        //margin-top: calc(@border-width  ~"+" 3px);
+        margin-top: @border-width;
         .absolute;
         width: 100%;
         .at-bg-color;
@@ -78,7 +86,6 @@
       width: calc(100% ~"-" (2*@border-width));
       .at-border;
       border-top: none;
-      .at-bg-color;
     }
     &:hover,
     &:active,
@@ -103,55 +110,51 @@
 /* ******************* MOBILE VIEW aka S-View *********************** */
 @media only screen and (max-width: 700px)
 {
+  // vars -----------
+  @finger-height: 40px;
+
 /* **** the menu **** */
-  .topics
-  {
-    * {
-      height: auto;
-    }
-    a,
-    li
-    {
-      min-height: 40px;
-    }
-  }
   .menu_items
   {
     margin-bottom: 5px;
     .at-border;
   }
-  /* first level ul */
-  .navigation
+
+  .topics    // = div where the <ul><li> structure begins
   {
+    *
+    {
+      height: auto;
+    }
+  }
+
+  .navigation     // = first <ul>
+  {
+    .relative;
     padding-bottom: 5px;
     a
     {
       text-decoration: underline;
-    }
-  }
-  /* first level li */
-  .level_0 {
-    margin: 2px;
-    padding: 0;
-    .at-border;
-    .at-shaded-part;
-    .at-box-outer-shadow;
-    >ul
-    {
-      .relative;
-      display: inline-block;
+      min-height: @finger-height;
     }
     li
     {
-      width: 100%;
-      border-left: none;
-      border-right: none;
+      vertical-align: top;
+      min-height: @finger-height;
     }
-    a
-    {
-      //width: calc(100% ~"-" (2*@border-width));
-      margin-left: 0;
-      border: none;
+  }
+
+  .level_0 {    // first level <li>
+    margin: 2px;
+      .at-border;
+      .at-shaded-part;
+      .at-box-outer-shadow;
+    > ul {
+      .relative;
+      display: inline-block;
+    }
+    p {
+      padding-top: 10px;
     }
   }
 
