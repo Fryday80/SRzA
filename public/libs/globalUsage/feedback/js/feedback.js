@@ -76,7 +76,6 @@ function animateFeedbackResponse(selector, message) {
     $elements.push( $(".body.box") );
 
     jQuery.each($elements, function (index, $value) {
-        console.log($value);
         origin_bg[index] = $value.css("background-color");
         origin_op[index] = $value.css("opacity") ? $value.css("opacity") : "1";
         $('.feedbackMessage').css("background", "linear-gradient(to right, "+background+" , lightgrey, "+background+")");
