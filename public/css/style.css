@@ -234,6 +234,7 @@ button {
   overflow: visible;
 }
 #rightbarmiddle {
+  /* height of simpleSlideShow.js */
   height: 18vw;
   padding: 0;
 }
