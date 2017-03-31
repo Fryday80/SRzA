@@ -33,8 +33,7 @@ class AlbumModel implements \Iterator, \Countable
         $this->mediaService = $mediaService;
         if ($options == null) {
             //@todo check if nessesery options are present
-            $fileName = '/album.conf';
-            $options = $this->mediaService->parseIniFile($path.$fileName, TRUE);
+            $options = $this->mediaService->getFolderMeta($path);
         }
         $this->options = array_replace_recursive($this->options, $options);
     }
