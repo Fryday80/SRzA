@@ -112,7 +112,6 @@ $(document).ready (function menu_handler_js () {
         else {
             remove();
         }
-        console.log(ulHeight);
     }
 /* ------------------ WORKING SCRIPT -------------------- */
     setMode ();

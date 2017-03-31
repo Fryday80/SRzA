@@ -234,7 +234,8 @@ button {
   overflow: visible;
 }
 #rightbarmiddle {
-  height: 200px;
+  /* height of simpleSlideShow.js */
+  height: 18vw;
   padding: 0;
 }
 /* --- #scroller helper ----- */

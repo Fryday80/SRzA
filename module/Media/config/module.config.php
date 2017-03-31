@@ -8,10 +8,10 @@ return array(
             'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
         ),
         'factories' => array(
-            'Media\Controller\FileController' => function($controllerManager) {
+            'Media\Controller\FileBrowserController' => function($controllerManager) {
                 $sm = $controllerManager->getServiceLocator();
                 $mediaService = $sm->get('MediaService');
-                return new \Media\Controller\FileController($mediaService);
+                return new \Media\Controller\FileBrowserController($mediaService);
             }
         )
     ),
