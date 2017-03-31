@@ -46,38 +46,19 @@ Class DataTableHelper extends AbstractHelper {
 
         foreach ($table->data as $row) {
             $datarow .= '<tr>';
-            foreach ($table->columns as $number => $value){
-                $switch = is_object($row);
-                $datarow .= "<td>";
-                switch ($switch) {
-                    case false:
-                        $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
 
-                        switch ($value['type']) {
-                            case 'text':
-                                $datarow .= $row[$value['name']];
-                                break;
-                            case 'custom':
-                                $datarow .= $value['render']($row);
-                                break;
-                            case '':
-                                break;
-                        }
-                    break;
-                    case true:
-                        if ($i == 0) {
-                            $datahead .= '<th>' . $value['label'] . '</th>';
-                        }
-                        switch ($value['type']) {
-                            case 'text':
-                                $datarow .= $row->$value['name'];
-                                break;
-                            case 'custom':
-                                $datarow .= $value['render']($row);
-                                break;
-                            case '':
-                                break;
-                        }
+            foreach ($table->columns as $number => $value){
+                $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
+                $datarow .= "<td>";
+                
+                switch ($value['type']) {
+                    case 'text':
+                        $datarow .= (is_object($row)) ? $datarow .= $row->$value['name'] : $row[$value['name']];
+                        break;
+                    case 'custom':
+                        $datarow .= $value['render']($row);
+                        break;
+                    case '':
                         break;
                 }
                 $datarow .= "</td>";
@@ -92,9 +73,8 @@ Class DataTableHelper extends AbstractHelper {
                 "<tbody>$datarow</tbody></table>";
     }
     public function renderJS($jsOptionString) {
-        return '<script>
-                    $(".display").DataTable(' . $jsOptionString . ');
-                </script>';
+        return '<script>' .
+                    "$('.display').DataTable( $jsOptionString )" .
+                '</script>';
     }
-
 }
