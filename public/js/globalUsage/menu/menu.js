@@ -13,15 +13,6 @@ $(document).ready (function menu_handler_js () {
     }
 
     /**
-     * binds the menu show-hide action
-     */
-    function menuActionsS () {
-        if (mode == 'S') {
-            $(".menu_button_img").on("click", menuToggle);
-        }
-    }
-
-    /**
      * Sets the mode by Viewsize
      * returns string 'L' or 'S'
      * 'S' = mobile view
@@ -51,9 +42,9 @@ $(document).ready (function menu_handler_js () {
             $(".logging").removeClass("log_me_out")
                 .not("box").addClass("box");
             $(".navigation .linkPic").not("hidden").addClass("hidden");
+            $(".menu_items").removeClass("animation");
         }
-        
-        
+
         /** removes click event to avoid multiple bindings **/
         $(".menu_button_img").off("click",  menuToggle);
 
@@ -63,6 +54,15 @@ $(document).ready (function menu_handler_js () {
         } else {
             mode ="L";
             runL();
+        }
+    }
+
+    /**
+     * binds the menu show-hide action
+     */
+    function menuActionsS () {
+        if (mode == 'S') {
+            $(".menu_button_img").on("click", menuToggle);
         }
     }
 
