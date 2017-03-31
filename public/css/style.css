@@ -312,7 +312,6 @@ button {
   }
   /* first level li */
   .level_0 {
-    vertical-align: top;
     position: relative;
     display: inline-block;
     width: 130px;
@@ -320,12 +319,20 @@ button {
     height: 23px;
     border-bottom: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
+    background-color: #FAEBd7;
   }
   .level_0 a {
+    text-align: center;
+    background: none;
     width: 100%;
     display: block;
+    border-bottom: none;
+  }
+  .level_0 p {
+    padding-top: 2px;
   }
   .level_0 > ul {
+    margin-top: 0.5vw;
     position: absolute;
     width: 100%;
     background-color: #FAEBd7;
@@ -339,7 +346,6 @@ button {
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
     border-top: none;
-    background-color: #FAEBd7;
   }
   .level_0:hover,
   .level_0:active,
@@ -360,29 +366,28 @@ button {
 /* ******************* MOBILE VIEW aka S-View *********************** */
 @media only screen and (max-width: 700px) {
   /* **** the menu **** */
-  .topics * {
-    height: auto;
-  }
-  .topics a,
-  .topics li {
-    min-height: 40px;
-  }
   .menu_items {
     margin-bottom: 5px;
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
   }
-  /* first level ul */
+  .topics * {
+    height: auto;
+  }
   .navigation {
+    position: relative;
     padding-bottom: 5px;
   }
   .navigation a {
     text-decoration: underline;
+    min-height: 40px;
   }
-  /* first level li */
+  .navigation li {
+    vertical-align: top;
+    min-height: 40px;
+  }
   .level_0 {
     margin: 2px;
-    padding: 0;
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: rgba(0, 0, 0, 0.1);
@@ -392,14 +397,8 @@ button {
     position: relative;
     display: inline-block;
   }
-  .level_0 li {
-    width: 100%;
-    border-left: none;
-    border-right: none;
-  }
-  .level_0 a {
-    margin-left: 0;
-    border: none;
+  .level_0 p {
+    padding-top: 10px;
   }
   .animation {
     display: block !important;
