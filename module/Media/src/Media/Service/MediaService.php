@@ -1,7 +1,13 @@
 <?php
 namespace Media\Service;
+use Auth\Service\AccessService;
+use Media\Utility\FmHelper;
 const DATA_PATH = '\data';
 const DATA_UPLOAD_PATH  = '\Upload';
+
+
+
+
 
 class MediaItem {
     public $name;
@@ -11,26 +17,62 @@ class MediaItem {
     public $path;
     public $livePath;
     public $size;
+    public $extension = '';
+    public $readable  = 1;
+    public $writable  = 1;
+    public $created   = '';
+    public $modified  = '';
+    public $timestamp = '';
 
     function __construct() {}
 }
 class MediaService {
     protected $dataPath;
     protected $uploadPath;
+    protected $accessService;
+    private $metaCache;
 
-    function __construct() {
+    function __construct(AccessService $accessService) {
+        $this->accessService = $accessService;
         $rootPath = getcwd();
         $this->dataPath = $rootPath.DATA_PATH;
         $this->uploadPath = $rootPath.DATA_UPLOAD_PATH;
-    }
+        $this->metaCache = [];
+        bdump($this->getItems("/"));
 
+    }
+    //@todo need to be replaced by getItems -- only used in galleryService.
+    /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
+     * @param $path
+     * @return array
+     */
     function getFolderNames($path) {
         $rootPath = realpath($this->dataPath.'/'.$path);
+        //check folder restrictions
+        $meta = $this->getFolderMeta($path);
+        if ($meta && isset($meta['Restrictions']) ) {
+            if (isset($meta['Restrictions']['folder'])) {
+                if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
+                    //@not allowed
+                    return [];
+                }
+            }
+        }
         $dir = scandir($rootPath);
         $result = array();
         foreach ($dir as $key => $value) {
             if ($value == '.' || $value == '..') continue;
             if( is_dir ($rootPath.'/'.$value) ) {
+                //check folder restrictions in /folder/folder.conf
+                $meta = $this->getFolderMeta($path.'/'.$value);
+                if ($meta && isset($meta['Restrictions']) ) {
+                    if (isset($meta['Restrictions']['folder'])) {
+                        if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
+                            //@not allowed
+                            continue;
+                        }
+                    }
+                }
                 array_push($result, array('name' => $value, 'path' => $path.'/'.$value, 'fullPath' => $rootPath.'/'.$value) );
             }
         }
@@ -52,17 +94,14 @@ class MediaService {
         }
         return false;
     }
-    function parseIniFile($iniPath, $process_sections = false, $scanner_mode = INI_SCANNER_NORMAL) {
-        $iniPath = realpath($this->dataPath.'/'.$iniPath);
-        if (is_file($iniPath)) {
-            return parse_ini_file($iniPath, $process_sections, $scanner_mode);
-        }
-        return false;
+
+    function getFolderMeta($path) {
+        return $this->parseIniFile($path);
     }
 
     /**
      * @param $path string
-     * @return MediaItem
+     * @return MediaItem[]
      */
     function getItems($path) {
         $fullPath = realpath($this->dataPath.'/'.$path);
@@ -82,7 +121,77 @@ class MediaService {
         }
     }
 
+    public function createFileResponse($path, $response) {
+        $fullPath = realpath($this->dataPath.'/'.$path);
+        if(!$this->checkPermission($path)) {
+            return $response->setHttpResponseCode(404);
+        }
+        /** @var FmHelper */
+        $helper = new FmHelper();
+
+        $fileContent =  file_get_contents('Data' . $path);
+        $response->setContent($fileContent);
+        $response
+            ->getHeaders()
+            ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
+            ->addHeaderLine('Content-Length', strlen($fileContent));
+
+        return $response;
+    }
+
+    public function checkPermission($path) {
+        $fullPath = realpath($this->dataPath.'/'.$path);
+        if (!$fullPath) return false;
+        $isDir = is_dir($fullPath);
+        $file = basename($fullPath);
+        $dir = dirname($fullPath);
+        $role = $this->accessService->getRole();
+        if ($isDir) {
+            $meta = $this->getFolderMeta($path);
+            if ($meta && isset($meta['Restrictions']) ) {
+                if (isset($meta['Restrictions']['folder'])) {
+                    if (in_array($role, $meta['Restrictions']['folder']) ) {
+                        //@not allowed
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            $meta = $this->getFolderMeta($path);
+            if ($meta && isset($meta['Restrictions']) ) {
+                if (isset($meta['Restrictions']['folder'])) {
+                    if (in_array($role, $meta['Restrictions']['folder']) ) {
+                        //@not allowed
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        return true;
+    }
+
+    private function parseIniFile($iniPath) {
+        $iniPath .= '/folder.conf';
+        $process_sections = true;
+        $scanner_mode = INI_SCANNER_TYPED;
+        $iniPath = realpath($this->dataPath.'/'.$iniPath);
+        if (in_array($iniPath, $this->metaCache)) {
+            return $this->metaCache[$iniPath];
+        }
+        if (is_file($iniPath)) {
+            $ini = parse_ini_file($iniPath, $process_sections, $scanner_mode);
+            $this->metaCache[$iniPath] = $ini;
+            return $ini;
+        }
+        return false;
+    }
+
     private function loadItem($path) {
+        $path = $this->cleanPath($path);
         $fullPath = realpath($this->dataPath.'/'.$path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
@@ -95,7 +204,7 @@ class MediaService {
             $pathInfo = pathinfo($path);
             $item->name = $pathInfo['filename'];
             $item->type = $pathInfo['extension'];
-            $item->livePath = "/media/image/".$path;
+            $item->livePath = $this->cleanPath("/media/file/".$path);
 //            $item->parentPath = $pathInfo['dirname'];
         } else {
             //@todo error file not found
@@ -104,13 +213,18 @@ class MediaService {
     }
 
 
-
-
-
-
-
-
-
+    /**
+     * Clean path string to remove multiple slashes, etc.
+     * @param string $string
+     * @return $string
+     */
+    private function cleanPath($string) {
+        // replace backslashes (windows separators)
+        $string = str_replace("\\", "/", $string);
+        // remove multiple slashes
+        $string = preg_replace('#/+#', '/', $string);
+        return $string;
+    }
 
 
 

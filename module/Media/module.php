@@ -38,7 +38,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return $table;
                 },
                 'MediaService' => function ($sm) {
-                    return new MediaService();
+                    return new MediaService($sm->get('AccessService'));
                 }
             )
         );
