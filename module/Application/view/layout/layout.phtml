@@ -19,7 +19,7 @@
     <?php echo $this->headScript()
                         ->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
                         ->prependFile($this->basePath('js/globalUsage/accordion/accordion.js'))
-//                        ->prependFile($this->basePath('libs/globalUsage/simpleSlideShow/simpleSlideShow.js'))
+                        ->prependFile($this->basePath('js/globalUsage/logOutDesigner/logOutDesigner.js'))
                         ->prependFile($this->basePath('js/globalUsage/menu/menu.js'))
                         ->prependFile($this->basePath('js/globalUsage/popUp/popUp.js'))
                         ->prependFile($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.min.js'))
@@ -111,7 +111,7 @@
                 </div>
         <?php if ($this->showSidebar): ?>
                 <box id="rightbarmiddle">
-                        <?php echo $this->randomImage()->scroller(); ?>
+<!--                        --><?php //echo $this->randomImage()->scroller(); ?>
                 </box>
 
                 <box class="rightbardown">
