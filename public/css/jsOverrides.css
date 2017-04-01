@@ -48,3 +48,7 @@
   color: black;
 }
 /* simplyscroll */
+/* accordion */
+accordion span span {
+  display: none !important;
+}
