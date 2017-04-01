@@ -402,10 +402,10 @@ button {
   }
   .animation {
     display: block !important;
-    -webkit-animation: fadeInFromNone 1s ease-out;
-    -moz-animation: fadeInFromNone 1s ease-out;
-    -o-animation: fadeInFromNone 1s ease-out;
-    animation: fadeInFromNone 1s ease-out;
+    -webkit-animation: slideInFromNone2 2s ease-out;
+    -moz-animation: slideInFromNone2 2s ease-out;
+    -o-animation: slideInFromNone2 2s ease-out;
+    animation: slideInFromNone2 2s ease-out;
   }
 }
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
@@ -820,7 +820,42 @@ noscript > div > .ownhead {
     max-height: 75px;
   }
 }
-/* -- Slide in from display: none --
+/* -- Slide in 2 for mobile View from display: none --
+-------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes slideInFromNone2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+@-moz-keyframes slideInFromNone2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+@-o-keyframes slideInFromNone2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+@keyframes slideInFromNone2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+/* -- blur in from display: none --
 -------------------------------- */
 /* used in... -> navigation menu.css */
 @-webkit-keyframes blurIn {

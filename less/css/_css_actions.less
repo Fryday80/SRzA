@@ -97,8 +97,35 @@
 {
     .at-slide-action;
 }
+/* -- Slide in 2 for mobile View from display: none --
+-------------------------------- */
+.slide-style2(@op){
+    max-height: @op;
+}
+.at-slide-action2()
+{
+    from { .slide-style2(0); }
+    to { .slide-style2(1200px); }
+}
+/* used in... -> navigation menu.css */
+@-webkit-keyframes slideInFromNone2
+{
+    .at-slide-action2;
+}
+@-moz-keyframes slideInFromNone2
+{
+    .at-slide-action2;
+}
+@-o-keyframes slideInFromNone2
+{
+    .at-slide-action2;
+}
+@keyframes slideInFromNone2
+{
+    .at-slide-action2;
+}
 
-/* -- Slide in from display: none --
+/* -- blur in from display: none --
 -------------------------------- */
 .blur-style(@op){
     opacity: @op;
