@@ -410,12 +410,17 @@ button {
 }
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 @media only screen and (min-width: 700px) {
-  .level_0:hover > ul {
-    display: inline-block !important;
-    -webkit-animation: fadeInFromNone 0.7s ease-out;
-    -moz-animation: fadeInFromNone 0.7s ease-out;
-    -o-animation: fadeInFromNone 0.7s ease-out;
-    animation: fadeInFromNone 0.7s ease-out;
+  .level_0:hover > ul li {
+    -webkit-animation: slideInFromNone 1.5s ease-in;
+    -moz-animation: slideInFromNone 1.5s ease-in;
+    -o-animation: slideInFromNone 1.5s ease-in;
+    animation: slideInFromNone 1.5s ease-in;
+  }
+  .level_0:hover > ul li > a > p {
+    -webkit-animation: blurIn 1s ease-in;
+    -moz-animation: blurIn 1s ease-in;
+    -o-animation: blurIn 1s ease-in;
+    animation: blurIn 1s ease-in;
   }
 }
 /* login and logout view */
@@ -658,6 +663,48 @@ noscript > div > .ownhead {
 /* css animations */
 /* --------------- sign shaking ------
 ----------------------------------- */
+@-webkit-keyframes shake_sing {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+@-moz-keyframes shake_sing {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+@-o-keyframes shake_sing {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
 @keyframes shake_sing {
   5% {
     transform: rotate(0deg);
@@ -674,9 +721,10 @@ noscript > div > .ownhead {
 }
 .headdeko:hover {
   /* used in... -> head */
-  animation-name: shake_sing;
-  animation-duration: 3s;
-  animation-direction: alternate;
+  -webkit-animation: shake_sing 3s alternate;
+  -moz-animation: shake_sing 3s alternate;
+  -o-animation: shake_sing 3s alternate;
+  animation: shake_sing 3s alternate;
 }
 /* -- Fade in from display: none --
 -------------------------------- */
@@ -734,6 +782,76 @@ noscript > div > .ownhead {
   }
   100% {
     display: block;
+    opacity: 1;
+  }
+}
+/* -- Slide in from display: none --
+-------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes slideInFromNone {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+@-moz-keyframes slideInFromNone {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+@-o-keyframes slideInFromNone {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+@keyframes slideInFromNone {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+/* -- Slide in from display: none --
+-------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
 }

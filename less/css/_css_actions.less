@@ -1,7 +1,16 @@
+// helper classes
+.at-animation(@name; @duration; @option: ease-in)
+{
+    -webkit-animation: @name @duration @option;
+    -moz-animation: @name @duration @option;
+    -o-animation: @name @duration @option;
+    animation: @name @duration @option;
+}
+
 /* --------------- sign shaking ------
 ----------------------------------- */
-@shake-degree: 40deg;
-.at-shake()
+
+.at-shake(@shake-degree: 40deg)
 {
     0%      {}
     5%      { transform:rotate(  0deg); }
@@ -10,15 +19,25 @@
     95%     { transform:rotate(  0deg); }
     100%    {}
 }
+@-webkit-keyframes shake_sing
+{
+    .at-shake;
+}
+@-moz-keyframes shake_sing
+{
+    .at-shake;
+}
+@-o-keyframes shake_sing
+{
+    .at-shake;
+}
 @keyframes shake_sing {
     .at-shake;
 }
 .headdeko:hover
 {
     /* used in... -> head */
-    animation-name: shake_sing;
-    animation-duration: 3s;
-    animation-direction: alternate;
+    .at-animation(shake_sing; 3s; alternate);
 }
 
 /* -- Fade in from display: none --
@@ -49,6 +68,62 @@
 @keyframes fadeInFromNone
 {
     .at-fade-action;
+}
+
+/* -- Slide in from display: none --
+-------------------------------- */
+.slide-style(@op){
+    max-height: @op;
+}
+.at-slide-action()
+{
+    from { .slide-style(0); }
+    to { .slide-style(75px); }
+}
+/* used in... -> navigation menu.css */
+@-webkit-keyframes slideInFromNone
+{
+    .at-slide-action;
+}
+@-moz-keyframes slideInFromNone
+{
+    .at-slide-action;
+}
+@-o-keyframes slideInFromNone
+{
+    .at-slide-action;
+}
+@keyframes slideInFromNone
+{
+    .at-slide-action;
+}
+
+/* -- Slide in from display: none --
+-------------------------------- */
+.blur-style(@op){
+    opacity: @op;
+}
+.at-blur-action()
+{
+    from { .blur-style(0); }
+    to { .blur-style(1); }
+}
+/* used in... -> navigation menu.css */
+@-webkit-keyframes blurIn
+{
+    .at-blur-action;
+}
+@-moz-keyframes blurIn
+{
+    .at-blur-action;
+}
+@-o-keyframes blurIn
+{
+    .at-blur-action;
+}
+@keyframes blurIn
+{
+    .at-blur-action;
 }
 //
 // /* ------- Link img rotation ----- */

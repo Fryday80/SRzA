@@ -156,23 +156,23 @@
     }
   }
 
-  .animation {
+  .animation
+  {
        display: block !important;
-       -webkit-animation: fadeInFromNone 1.0s ease-out;
-       -moz-animation: fadeInFromNone 1.0s ease-out;
-       -o-animation: fadeInFromNone 1.0s ease-out;
-       animation: fadeInFromNone 1.0s ease-out;
+    .at-animation(fadeInFromNone; 1.0s; ease-out);
    }
 }
 
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
-@media only screen and (min-width: 700px ) {
-  .level_0:hover > ul {
-      display: inline-block !important;
-      -webkit-animation: fadeInFromNone 0.7s ease-out;
-      -moz-animation: fadeInFromNone 0.7s ease-out;
-      -o-animation: fadeInFromNone 0.7s ease-out;
-      animation: fadeInFromNone 0.7s ease-out;
+@media only screen and (min-width: 700px )
+{
+  .level_0:hover > ul li
+  {
+    .at-animation(slideInFromNone; 1.5s; ease-in);
+    > a > p
+    {
+      .at-animation(blurIn; 1s; ease-in);
+    }
   }
 }
 //a:hover>img
