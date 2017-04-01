@@ -10,6 +10,11 @@
 }
 noscript>div
 {
+    .relative;
+    z-index: 1000;
+}
+noscript>div>div
+{
     position: absolute;
     top: 200px;
     left: 30px;
@@ -21,7 +26,7 @@ noscript>div
     animation-name: noJS;
     animation-duration: 8s;
 }
-noscript>div>.ownhead
+noscript>div>div>.ownhead
 {
     color: white;
     font-size: 8vw;
