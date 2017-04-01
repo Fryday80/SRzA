@@ -2,10 +2,12 @@
 namespace Media\Service;
 use Auth\Service\AccessService;
 use Media\Utility\FmHelper;
+use Zend\Http\Response;
+
+
 const DATA_PATH = '\data';
-const DATA_UPLOAD_PATH  = '\Upload';
-
-
+const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
+const NOT_FOUND_IMAGE = 'public/img/imgNotFound.png';
 
 
 
@@ -18,8 +20,8 @@ class MediaItem {
     public $livePath;
     public $size;
     public $extension = '';
-    public $readable  = 1;
-    public $writable  = 1;
+    public $readable  = 0;
+    public $writable  = 0;
     public $created   = '';
     public $modified  = '';
     public $timestamp = '';
@@ -28,7 +30,6 @@ class MediaItem {
 }
 class MediaService {
     protected $dataPath;
-    protected $uploadPath;
     protected $accessService;
     private $metaCache;
 
@@ -36,10 +37,10 @@ class MediaService {
         $this->accessService = $accessService;
         $rootPath = getcwd();
         $this->dataPath = $rootPath.DATA_PATH;
-        $this->uploadPath = $rootPath.DATA_UPLOAD_PATH;
         $this->metaCache = [];
-        bdump($this->getItems("/"));
-
+        $this->getItems('verein/sm');
+        $this->getItems('verein/sm');
+        $this->getItems('verein/sm');
     }
     //@todo need to be replaced by getItems -- only used in galleryService.
     /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
@@ -133,33 +134,67 @@ class MediaService {
         return $this->loadItem($path);
     }
 
+    /**
+     * @param $path string
+     * @param $response Response
+     * @return Response
+     */
     public function createFileResponse($path, $response) {
-        $fullPath = realpath($this->dataPath.'/'.$path);
-//        if(!$this->checkPermission($path)) {
-//            return $response->setHttpResponseCode(404);
-//        }
-        /** @var FmHelper */
-        $helper = new FmHelper();
-
-        $fileContent =  file_get_contents('Data' . $path);
+        $fullPath = realpath($this->dataPath.$path);
+        if (!$fullPath || !is_file($fullPath)) {
+            if ($this->isImage($path)) {
+                $fullPath = realpath(NOT_FOUND_IMAGE);
+                $fileContent =  file_get_contents($fullPath);
+                $response->setContent($fileContent);
+                $response
+                    ->getHeaders()
+                    ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                    ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($fullPath))
+                    ->addHeaderLine('Content-Length', strlen($fileContent));
+            }
+            return $response->setStatusCode(403, 2);
+        }
+        if(!$this->getPermission($path)['readable']) {
+            if ($this->isImage($path)) {
+                $fullPath = realpath(NOT_ALLOWED_IMAGE);
+                $fileContent =  file_get_contents($fullPath);
+                $response->setContent($fileContent);
+                $response
+                    ->getHeaders()
+                    ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                    ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($fullPath))
+                    ->addHeaderLine('Content-Length', strlen($fileContent));
+            }
+            return $response->setStatusCode(404);
+        }
+        $fileContent =  file_get_contents($fullPath);
         $response->setContent($fileContent);
         $response
             ->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-            ->addHeaderLine('Content-Type', $helper->mime_type_by_extension($path))
+            ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($path))
             ->addHeaderLine('Content-Length', strlen($fileContent));
 
         return $response;
     }
 
-    public function checkPermission($path) {
+    public function isImage($path) {
+        $mime = FmHelper::mime_type_by_extension($path);
+        $imagesMime = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/svg+xml",
+        ];
+        return in_array($mime, $imagesMime);
+    }
+    public function getPermission($path) {
         $fullPath = realpath($this->dataPath.'/'.$path);
         if (!$fullPath) return false;
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
         $dir = dirname($fullPath);
-        $roles = $this->accessService->getAcl()->fetchAllRoles();
-        bdump($roles);
         $role = $this->accessService->getRole();
         if ($isDir) {
             $meta = $this->getFolderMeta($path);
@@ -180,32 +215,60 @@ class MediaService {
             }
         } else {
             $meta = $this->getFolderMeta($path);
-            if ($meta && isset($meta['Restrictions']) ) {
-                if (isset($meta['Restrictions']['folder'])) {
-                    if (in_array($role, $meta['Restrictions']['folder']) ) {
-                        //@not allowed
-                        return false;
+            if ($meta && isset($meta['Permissions']) ) {
+                $readable = 0;
+                $writable = 0;
+                if (isset($meta['Permissions']['allRead'])) {
+                    if (in_array($role, $meta['Permissions']['allRead']) ) {
+                        $readable = 1;
                     }
                 }
+                if (isset($meta['Permissions']['allWrite'])) {
+                    if (in_array($role, $meta['Permissions']['allWrite']) ) {
+                        $writable = 1;
+                    }
+                }
+                //file permission exeptions
+                if ($meta && isset($meta['FileRestrictions']) ) {
+                    if (isset($meta['FileRestrictions'][$role.'Read'])) {
+                        if (in_array($file, $meta['FileRestrictions'][$role.'Read']) ) {
+                            $readable = 0;
+                        }
+                    }
+                    if (isset($meta['FileRestrictions'][$role.'Write'])) {
+                        if (in_array($file, $meta['FileRestrictions'][$role.'Write']) ) {
+                            $writable = 0;
+                        }
+                    }
+                }
+
+                return ['readable' => $readable, 'writable' => $writable];
             }
         }
         return ['readable' => 0, 'writable' => 0];
     }
 
-    private function parseIniFile($iniPath) {
-        $iniPath .= '/folder.conf';
+    private function parseIniFile($objectivePath) {
+        $iniDir = realpath($this->dataPath.'/'.$objectivePath);
+        if (!is_dir($iniDir)) {
+            $iniDir = dirname($iniDir);
+        }
+        $iniPath = $iniDir.'/folder.conf';
         $process_sections = true;
         $scanner_mode = INI_SCANNER_TYPED;
-        $iniPath = realpath($this->dataPath.'/'.$iniPath);
         if (in_array($iniPath, $this->metaCache)) {
             return $this->metaCache[$iniPath];
         }
+        $ini = [];
         if (is_file($iniPath)) {
             $ini = parse_ini_file($iniPath, $process_sections, $scanner_mode);
             $this->metaCache[$iniPath] = $ini;
-            return $ini;
+        } else {
+            $ini = $this->parseIniFile(dirname($objectivePath));
+            unset($ini['FileRestrictions']);
+            $this->metaCache[$iniPath] = $ini;
         }
-        return false;
+        return $ini;
     }
 
     /**
@@ -213,11 +276,18 @@ class MediaService {
      * @return MediaItem|null
      */
     private function loadItem($path) {
+        //@todo add caching
         $path = $this->cleanPath($path);
+
+        $permission = $this->getPermission($path);
+
+
         $fullPath = realpath($this->dataPath.'/'.$path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
         $item->path = $path;
+        $item->readable = $permission['readable'];
+        $item->writable = $permission['writable'];
         if (is_dir($fullPath)) {
             $item->name = basename($path);
             $item->type = 'folder';

@@ -1,6 +1,7 @@
 <?php
 namespace Media\Controller;
 
+use Media\Service\MediaItem;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -299,55 +300,97 @@ class FileBrowserController extends AbstractActionController  {
         ];
     }
 
+    public function convertMediaItems($mediaItems) {
+        if (!is_array($mediaItems)) {
+            $mediaItems = [$mediaItems];
+        }
+        /** @var $item MediaItem */
+        $files = [];
+        foreach ($mediaItems as $item) {
+            if ($item->type == 'folder') {
+                $model = $this->folder_model;
+                $model['id'] = $item->path;
+                $model['attributes']['name'] = $item->name;
+                $model['attributes']['path'] = $item->path;
+                $model['attributes']['readable'] = $item->readable;
+                $model['attributes']['writable'] = $item->writable;
+                $model['attributes']['created'] = $item->created;
+                $model['attributes']['modified'] = $item->modified;
+                $model['attributes']['timestamp'] = $item->timestamp;
+                array_push($files, $model);
+            } else {
+                $model = $this->file_model;
+                $model['id'] = $item->path;
+                $model['attributes']['name'] = $item->name.'.'.$item->type;
+                $model['attributes']['extension'] = $item->type;
+                $model['attributes']['path'] = $item->path;
+                $model['attributes']['readable'] = $item->readable;
+                $model['attributes']['writable'] = $item->writable;
+                $model['attributes']['created'] = $item->created;
+                $model['attributes']['modified'] = $item->modified;
+                $model['attributes']['timestamp'] = $item->timestamp;
+                $model['attributes']['height'] = 0;
+                $model['attributes']['width'] = 0;
+                $model['attributes']['size'] = $item->size;
+                array_push($files, $model);
+            }
+        }
+        return $files;
+    }
     /**
      * @inheritdoc
      */
     public function actionGetFolder()
     {
-        $files_list = [];
-        $response_data = [];
         $target_path = $this->get['path'];
-        $target_fullpath = $this->getFullPath($target_path, true);
-        //Log::info('opening folder "' . $target_fullpath . '"');
-        return json_encode($this->mediaService->getItems($target_path));
+        return $this->convertMediaItems($this->mediaService->getItems($target_path));
 
 
 
 
 
-        if(!is_dir($target_fullpath)) {
-            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
-        }
 
-        // check if folder is readable
-        if(!$this->has_system_permission($target_fullpath, ['r'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
 
-        if(!$handle = @opendir($target_fullpath)) {
-            $this->error(sprintf($this->lang('UNABLE_TO_OPEN_DIRECTORY'), $target_path));
-        } else {
-            while (false !== ($file = readdir($handle))) {
-                if($file != "." && $file != "..") {
-                    array_push($files_list, $file);
-                }
-            }
-            closedir($handle);
 
-            foreach($files_list as $file) {
-                $file_path = $target_path . $file;
-                if(is_dir($target_fullpath . $file)) {
-                    $file_path .= '/';
-                }
-
-                $item = $this->get_file_info($file_path);
-                if($this->filter_output($item)) {
-                    $response_data[] = $item;
-                }
-            }
-        }
-
-        return $response_data;
+//        $files_list = [];
+//        $response_data = [];
+//        $target_path = $this->get['path'];
+//        $target_fullpath = $this->getFullPath($target_path, true);
+//        //Log::info('opening folder "' . $target_fullpath . '"');
+//
+//        if(!is_dir($target_fullpath)) {
+//            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
+//        }
+//
+//        // check if folder is readable
+//        if(!$this->has_system_permission($target_fullpath, ['r'])) {
+//            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
+//        }
+//
+//        if(!$handle = @opendir($target_fullpath)) {
+//            $this->error(sprintf($this->lang('UNABLE_TO_OPEN_DIRECTORY'), $target_path));
+//        } else {
+//            while (false !== ($file = readdir($handle))) {
+//                if($file != "." && $file != "..") {
+//                    array_push($files_list, $file);
+//                }
+//            }
+//            closedir($handle);
+//
+//            foreach($files_list as $file) {
+//                $file_path = $target_path . $file;
+//                if(is_dir($target_fullpath . $file)) {
+//                    $file_path .= '/';
+//                }
+//
+//                $item = $this->get_file_info($file_path);
+//                if($this->filter_output($item)) {
+//                    $response_data[] = $item;
+//                }
+//            }
+//        }
+//
+//        return $response_data;
     }
 
     protected function setParams()
@@ -446,7 +489,7 @@ class FileBrowserController extends AbstractActionController  {
     public function getvar($var, $sanitize = true)
     {
         if(!isset($_GET[$var]) || $_GET[$var]=='') {
-            $this->error(sprintf($this->lang('INVALID_VAR'),$var));
+            $this->error(sprintf($this->lang('INVALID_VAR').' -- '.$var,$var));
         } else {
             if($sanitize) {
                 $this->get[$var] = $this->sanitize($_GET[$var]);
