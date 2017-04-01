@@ -1,6 +1,8 @@
 <?php
 namespace Media\Controller;
 
+use Media\Service\ERROR_TYPES;
+use Media\Service\MediaException;
 use Media\Service\MediaItem;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -307,9 +309,10 @@ class FileBrowserController extends AbstractActionController  {
         /** @var $item MediaItem */
         $files = [];
         foreach ($mediaItems as $item) {
+            if (!$item) continue;
             if ($item->type == 'folder') {
                 $model = $this->folder_model;
-                $model['id'] = $item->path;
+                $model['id'] = $item->path.'/';
                 $model['attributes']['name'] = $item->name;
                 $model['attributes']['path'] = $item->path;
                 $model['attributes']['readable'] = $item->readable;
@@ -317,6 +320,7 @@ class FileBrowserController extends AbstractActionController  {
                 $model['attributes']['created'] = $item->created;
                 $model['attributes']['modified'] = $item->modified;
                 $model['attributes']['timestamp'] = $item->timestamp;
+                //$model['attributes']['capabilities'] = ['select'];
                 array_push($files, $model);
             } else {
                 $model = $this->file_model;
@@ -337,12 +341,14 @@ class FileBrowserController extends AbstractActionController  {
         }
         return $files;
     }
+
     /**
-     * @inheritdoc
+     * @return array
      */
     public function actionGetFolder()
     {
         $target_path = $this->get['path'];
+        //@todo implement error handling
         return $this->convertMediaItems($this->mediaService->getItems($target_path));
 
 
@@ -392,6 +398,345 @@ class FileBrowserController extends AbstractActionController  {
 //
 //        return $response_data;
     }
+
+    /**
+     * @return array
+     */
+    public function actionGetFile()
+    {
+        $target_path = $this->get['path'];
+        $files = $this->convertMediaItems($this->mediaService->getItems($target_path));
+        if (count($files) > 0) {
+            return $files[0];
+        }
+
+
+
+
+
+
+//        $target_path = $this->get['path'];
+//        $target_fullpath = $this->getFullPath($target_path, true);
+//        //Log::info('opening file "' . $target_fullpath . '"');
+//
+//        if(is_dir($target_fullpath)) {
+//            $this->error(sprintf($this->lang('FORBIDDEN_ACTION_DIR')));
+//        }
+//
+//        // check if the name is not in "excluded" list
+//        if(!$this->is_allowed_name($target_fullpath, false)) {
+//            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
+//        }
+//
+//        // check if file is readable
+//        if(!$this->has_system_permission($target_fullpath, ['r'])) {
+//            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
+//        }
+//
+//        return $this->get_file_info($target_path);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionAddFolder()
+    {
+        $targetPath = $this->get['path'];
+        $targetName = $this->get['name'];
+        $fullPath = $targetPath.$targetName;
+
+        if(is_dir($this->mediaService->isDir($fullPath))) {
+            $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), $targetName));
+        }
+        $item = $this->mediaService->createFolder($fullPath);
+        if ($item instanceof MediaException) {
+            switch($item->code) {
+                case ERROR_TYPES::NO_WRITE_PERMISSION:
+                    $this->error(sprintf($this->lang('NOT_ALLOWED'), $targetName));
+                    break;
+                case ERROR_TYPES::FOLDER_EXISTS_ALREADY:
+                    $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), $targetName));
+                    break;
+                case ERROR_TYPES::PARENT_NOT_EXISTS:
+                    $this->error(sprintf($this->lang('UNABLE_TO_CREATE_DIRECTORY'), $targetName));
+                    break;
+                case ERROR_TYPES::FORBIDDEN_NAME:
+                    $this->error(sprintf($this->lang('FORBIDDEN_NAME'), $targetName));
+                    break;
+//                case ERROR_TYPES::NO_SYSTEM_WRITE_PERMISSION:
+//                    $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM'), $targetName));
+//                    break;
+            }
+        }
+        return $this->convertMediaItems($item)[0];
+    }
+
+    /**
+     * @return array
+     */
+    public function actionUpload()
+    {
+        $target_path = $this->post['path'];
+        $target_fullpath = $this->getFullPath($target_path, true);
+        //Log::info('uploading to "' . $target_fullpath . '"');
+
+        // check if file is writable
+        if(!$this->has_system_permission($target_fullpath, ['w'])) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
+        }
+
+        //check permission
+        if ($this->mediaService->getPermission($target_path)['writable'] == 0) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+//        if(!$this->hasPermission('upload')) {
+//            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+//        }
+
+        $content = $this->initUploader([
+            'upload_dir' => $target_fullpath,
+        ])->post(false);
+
+        $response_data = [];
+        $files = isset($content[$this->config['upload']['paramName']]) ?
+            $content[$this->config['upload']['paramName']] : null;
+        // there is only one file in the array as long as "singleFileUploads" is set to "true"
+        if ($files && is_array($files) && is_object($files[0])) {
+            $file = $files[0];
+            if(isset($file->error)) {
+                $this->error($file->error);
+            } else {
+                $relative_path = $this->cleanPath('/' . $target_path . '/' . $file->name);
+                $item = $this->get_file_info($relative_path);
+                $response_data[] = $item;
+            }
+        } else {
+            $this->error(sprintf($this->lang('ERROR_UPLOADING_FILE')));
+        }
+
+        return $response_data;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function actionRename()
+    {
+        $path = $this->get['old'];
+        $newName = $this->get['new'];
+        $item = $this->mediaService->renameItem($path, $newName);
+        if ($item instanceof MediaException) {
+            switch($item->code) {
+                case ERROR_TYPES::FOLDER_ALREADY_EXISTS:
+                    $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), $newName));
+                    break;
+                case ERROR_TYPES::FILE_ALREADY_EXISTS:
+                    $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), $newName));
+                    break;
+                case ERROR_TYPES::ERROR_RENAMING_FOLDER:
+                    $this->error(sprintf($this->lang('ERROR_RENAMING_DIRECTORY'), $newName));
+                    break;
+                case ERROR_TYPES::ERROR_RENAMING_FILE:
+                    $this->error(sprintf($this->lang('ERROR_RENAMING_FILE'), $newName));
+                    break;
+                case ERROR_TYPES::NO_WRITE_PERMISSION:
+                    $this->error(sprintf($this->lang('NOT_ALLOWED'), $newName));
+                    break;
+                case ERROR_TYPES::FORBIDDEN_CHAR_SLASH:
+                    $this->error(sprintf($this->lang('FORBIDDEN_CHAR_SLASH'), $newName));
+                    break;
+                default:
+                    $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM'), $newName));
+                    break;
+            }
+        }
+        return $this->convertMediaItems($item)[0];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function actionCopy()
+    {
+        $source_path = $this->get['source'];
+        $suffix = (substr($source_path, -1, 1) == '/') ? '/' : '';
+        $tmp = explode('/', trim($source_path, '/'));
+        $filename = array_pop($tmp); // file name or new dir name
+
+        $target_input = $this->get['target'];
+        $target_path = $target_input . '/';
+        $target_path = $this->expandPath($target_path, true);
+
+        $source_fullpath = $this->getFullPath($source_path, true);
+        $target_fullpath = $this->getFullPath($target_path, true);
+        $new_fullpath = $target_fullpath . $filename . $suffix;
+        //Log::info('copying "' . $source_fullpath . '" to "' . $new_fullpath . '"');
+
+        if(!$this->hasPermission('copy')) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+
+        if(!is_dir($target_fullpath)) {
+            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
+        }
+
+        // check system permissions
+        if(!$this->has_system_permission($source_fullpath, ['r']) || !$this->has_system_permission($target_fullpath, ['w'])) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
+        }
+
+        // check if not requesting main FM userfiles folder
+        if($this->is_root_folder($source_fullpath)) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+
+        // check if the name is not in "excluded" list
+        if (!$this->is_allowed_name($target_fullpath, true) ||
+            !$this->is_allowed_name($source_fullpath, is_dir($source_fullpath))
+        ) {
+            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
+        }
+
+        // check if file already exists
+        if (file_exists($new_fullpath)) {
+            if(is_dir($new_fullpath)) {
+                $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
+            } else {
+                $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
+            }
+        }
+
+        // move file or folder
+        if(!FmHelper::copyRecursive($source_fullpath, $new_fullpath)) {
+            if(is_dir($source_fullpath)) {
+                $this->error(sprintf($this->lang('ERROR_COPYING_DIRECTORY'), $filename, $target_input));
+            } else {
+                $this->error(sprintf($this->lang('ERROR_COPYING_FILE'), $filename, $target_input));
+            }
+        } else {
+            //Log::info('moved "' . $source_fullpath . '" to "' . $new_fullpath . '"');
+            $old_thumbnail = $this->get_thumbnail_path($source_fullpath);
+
+            // move thumbnail file or thumbnails folder if exists
+            if(file_exists($old_thumbnail)) {
+                $new_thumbnail = $this->get_thumbnail_path($new_fullpath);
+                // delete old thumbnail(s) if destination folder does not exist
+                if(file_exists(dirname($new_thumbnail))) {
+                    FmHelper::copyRecursive($old_thumbnail, $new_thumbnail);
+                }
+            }
+        }
+
+        $relative_path = $this->cleanPath('/' . $target_path . '/' . $filename . $suffix);
+        return $this->get_file_info($relative_path);
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function actionMove()
+    {
+        $source_path = $this->get['old'];
+        $suffix = (substr($source_path, -1, 1) == '/') ? '/' : '';
+        $tmp = explode('/', trim($source_path, '/'));
+        $filename = array_pop($tmp); // file name or new dir name
+
+        $target_input = $this->get['new'];
+        $target_path = $target_input . '/';
+        $target_path = $this->expandPath($target_path, true);
+
+        $source_fullpath = $this->getFullPath($source_path, true);
+        $target_fullpath = $this->getFullPath($target_path, true);
+        $new_fullpath = $target_fullpath . $filename . $suffix;
+        //Log::info('moving "' . $source_fullpath . '" to "' . $new_fullpath . '"');
+
+        if(!$this->hasPermission('move')) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+
+        if(!is_dir($target_fullpath)) {
+            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
+        }
+
+        // check system permissions
+        if(!$this->has_system_permission($source_fullpath, ['r']) || !$this->has_system_permission($target_fullpath, ['w'])) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
+        }
+
+        // check if not requesting main FM userfiles folder
+        if($this->is_root_folder($source_fullpath)) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+
+        // check if the name is not in "excluded" list
+        if (!$this->is_allowed_name($target_fullpath, true) ||
+            !$this->is_allowed_name($source_fullpath, is_dir($source_fullpath))
+        ) {
+            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
+        }
+
+        // check if file already exists
+        if (file_exists($new_fullpath)) {
+            if(is_dir($new_fullpath)) {
+                $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
+            } else {
+                $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
+            }
+        }
+
+        // should be retrieved before rename operation
+        $old_thumbnail = $this->get_thumbnail_path($source_fullpath);
+
+        // move file or folder
+        if(!rename($source_fullpath, $new_fullpath)) {
+            if(is_dir($source_fullpath)) {
+                $this->error(sprintf($this->lang('ERROR_MOVING_DIRECTORY'), $filename, $target_input));
+            } else {
+                $this->error(sprintf($this->lang('ERROR_MOVING_FILE'), $filename, $target_input));
+            }
+        } else {
+            //Log::info('moved "' . $source_fullpath . '" to "' . $new_fullpath . '"');
+
+            // move thumbnail file or thumbnails folder if exists
+            if(file_exists($old_thumbnail)) {
+                $new_thumbnail = $this->get_thumbnail_path($new_fullpath);
+                // delete old thumbnail(s) if destination folder does not exist
+                if(file_exists(dirname($new_thumbnail))) {
+                    rename($old_thumbnail, $new_thumbnail);
+                } else {
+                    is_dir($old_thumbnail) ? $this->unlinkRecursive($old_thumbnail) : unlink($old_thumbnail);
+                }
+            }
+        }
+
+        $relative_path = $this->cleanPath('/' . $target_path . '/' . $filename . $suffix);
+        return $this->get_file_info($relative_path);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     protected function setParams()
     {
@@ -742,20 +1087,6 @@ class FileBrowserController extends AbstractActionController  {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function setFileRoot($path, $mkdir = false) {
         if($this->config['options']['serverRoot'] === true) {
             $this->dynamic_fileroot = $path;
@@ -796,358 +1127,8 @@ class FileBrowserController extends AbstractActionController  {
         ]);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function actionGetFile()
-    {
-        $target_path = $this->get['path'];
-        $target_fullpath = $this->getFullPath($target_path, true);
-        //Log::info('opening file "' . $target_fullpath . '"');
-
-        if(is_dir($target_fullpath)) {
-            $this->error(sprintf($this->lang('FORBIDDEN_ACTION_DIR')));
-        }
-
-        // check if the name is not in "excluded" list
-        if(!$this->is_allowed_name($target_fullpath, false)) {
-            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-        }
-
-        // check if file is readable
-        if(!$this->has_system_permission($target_fullpath, ['r'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        return $this->get_file_info($target_path);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actionUpload()
-    {
-        $target_path = $this->post['path'];
-        $target_fullpath = $this->getFullPath($target_path, true);
-        //Log::info('uploading to "' . $target_fullpath . '"');
-
-        // check if file is writable
-        if(!$this->has_system_permission($target_fullpath, ['w'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        if(!$this->hasPermission('upload')) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        $content = $this->initUploader([
-            'upload_dir' => $target_fullpath,
-        ])->post(false);
-
-        $response_data = [];
-        $files = isset($content[$this->config['upload']['paramName']]) ?
-            $content[$this->config['upload']['paramName']] : null;
-        // there is only one file in the array as long as "singleFileUploads" is set to "true"
-        if ($files && is_array($files) && is_object($files[0])) {
-            $file = $files[0];
-            if(isset($file->error)) {
-                $this->error($file->error);
-            } else {
-                $relative_path = $this->cleanPath('/' . $target_path . '/' . $file->name);
-                $item = $this->get_file_info($relative_path);
-                $response_data[] = $item;
-            }
-        } else {
-            $this->error(sprintf($this->lang('ERROR_UPLOADING_FILE')));
-        }
-
-        return $response_data;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actionAddFolder()
-    {
-        $target_path = $this->get['path'];
-        $target_fullpath = $this->getFullPath($target_path, true);
-
-        $target_name = $this->get['name'];
-        $folder_name = $this->normalizeString(trim($target_name, '/'));
-        $new_fullpath = $target_fullpath . '/'. $folder_name . '/';
-        //Log::info('adding folder "' . $new_fullpath . '"');
-
-        if(is_dir($new_fullpath)) {
-            $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), $target_name));
-        }
-
-        // check if the name is not in "excluded" list
-        if(!$this->is_allowed_name($folder_name, true)) {
-            $this->error(sprintf($this->lang('FORBIDDEN_NAME'), $target_name));
-        }
-
-        if(!mkdir($new_fullpath, 0755)) {
-            $this->error(sprintf($this->lang('UNABLE_TO_CREATE_DIRECTORY'), $target_name));
-        }
-
-        $relative_path = $this->cleanPath('/' . $target_path . '/' . $folder_name . '/');
-        return $this->get_file_info($relative_path);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actionRename()
-    {
-        $suffix = '';
-
-        if(substr($this->get['old'], -1, 1) == '/') {
-            $this->get['old'] = substr($this->get['old'], 0, (strlen($this->get['old'])-1));
-            $suffix = '/';
-        }
-        $tmp = explode('/', $this->get['old']);
-        $filename = $tmp[(sizeof($tmp)-1)];
-
-        $new_path = substr($this->get['old'], 0, strripos($this->get['old'], '/' . $filename));
-        $new_name = $this->normalizeString($this->get['new'], ['.', '-']);
-        $new_relative_path = $this->cleanPath('/' . $new_path . '/' . $new_name . $suffix);
-
-        $old_file = $this->getFullPath($this->get['old'], true) . $suffix;
-        $new_file = $this->getFullPath($new_path, true) . '/' . $new_name . $suffix;
-        //Log::info('renaming "' . $old_file . '" to "' . $new_file . '"');
-
-        if(!$this->hasPermission('rename')) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        // forbid to change path during rename
-        if(strrpos($this->get['new'], '/') !== false) {
-            $this->error(sprintf($this->lang('FORBIDDEN_CHAR_SLASH')));
-        }
-
-        // check if file is writable
-        if(!$this->has_system_permission($old_file, ['w'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        // check if not requesting main FM userfiles folder
-        if($this->is_root_folder($old_file)) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        // check if file extension is consistent to the security Policy settings
-        if(is_file($old_file)) {
-            if (!$this->config['security']['allowChangeExtensions']) {
-                $ext_old = strtolower(pathinfo($old_file, PATHINFO_EXTENSION));
-                $ext_new = strtolower(pathinfo($new_file, PATHINFO_EXTENSION));
-                if($ext_old !== $ext_new) {
-                    $this->error(sprintf($this->lang('FORBIDDEN_CHANGE_EXTENSION')));
-                }
-            }
-            if (!$this->is_allowed_file_type($new_file)) {
-                $this->error(sprintf($this->lang('INVALID_FILE_TYPE')));
-            }
-        }
-
-        // check if the name is not in "excluded" list
-        if(!$this->is_allowed_name($old_file, $suffix === '/')) {
-            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-        }
-        if(!$this->is_allowed_name($new_name, $suffix === '/')) {
-            $this->error(sprintf($this->lang('FORBIDDEN_NAME'), $new_name));
-        }
-
-        if(file_exists($new_file)) {
-            if($suffix === '/' && is_dir($new_file)) {
-                $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), $new_name));
-            }
-            if($suffix === '' && is_file($new_file)) {
-                $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), $new_name));
-            }
-        }
-
-        if(!rename($old_file, $new_file)) {
-            if(is_dir($old_file)) {
-                $this->error(sprintf($this->lang('ERROR_RENAMING_DIRECTORY'), $filename, $new_name));
-            } else {
-                $this->error(sprintf($this->lang('ERROR_RENAMING_FILE'), $filename, $new_name));
-            }
-        } else {
-            //Log::info('renamed "' . $old_file . '" to "' . $new_file . '"');
-
-            // for image only - rename thumbnail if original image was successfully renamed
-            if(!is_dir($new_file)) {
-                $new_thumbnail = $this->get_thumbnail_path($new_file);
-                $old_thumbnail = $this->get_thumbnail_path($old_file);
-                if(file_exists($old_thumbnail)) {
-                    rename($old_thumbnail, $new_thumbnail);
-                }
-            }
-        }
-
-        return $this->get_file_info($new_relative_path);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function actionCopy()
-    {
-        $source_path = $this->get['source'];
-        $suffix = (substr($source_path, -1, 1) == '/') ? '/' : '';
-        $tmp = explode('/', trim($source_path, '/'));
-        $filename = array_pop($tmp); // file name or new dir name
-
-        $target_input = $this->get['target'];
-        $target_path = $target_input . '/';
-        $target_path = $this->expandPath($target_path, true);
-
-        $source_fullpath = $this->getFullPath($source_path, true);
-        $target_fullpath = $this->getFullPath($target_path, true);
-        $new_fullpath = $target_fullpath . $filename . $suffix;
-        //Log::info('copying "' . $source_fullpath . '" to "' . $new_fullpath . '"');
-
-        if(!$this->hasPermission('copy')) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        if(!is_dir($target_fullpath)) {
-            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
-        }
-
-        // check system permissions
-        if(!$this->has_system_permission($source_fullpath, ['r']) || !$this->has_system_permission($target_fullpath, ['w'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        // check if not requesting main FM userfiles folder
-        if($this->is_root_folder($source_fullpath)) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        // check if the name is not in "excluded" list
-        if (!$this->is_allowed_name($target_fullpath, true) ||
-            !$this->is_allowed_name($source_fullpath, is_dir($source_fullpath))
-        ) {
-            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-        }
-
-        // check if file already exists
-        if (file_exists($new_fullpath)) {
-            if(is_dir($new_fullpath)) {
-                $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
-            } else {
-                $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
-            }
-        }
-
-        // move file or folder
-        if(!FmHelper::copyRecursive($source_fullpath, $new_fullpath)) {
-            if(is_dir($source_fullpath)) {
-                $this->error(sprintf($this->lang('ERROR_COPYING_DIRECTORY'), $filename, $target_input));
-            } else {
-                $this->error(sprintf($this->lang('ERROR_COPYING_FILE'), $filename, $target_input));
-            }
-        } else {
-            //Log::info('moved "' . $source_fullpath . '" to "' . $new_fullpath . '"');
-            $old_thumbnail = $this->get_thumbnail_path($source_fullpath);
-
-            // move thumbnail file or thumbnails folder if exists
-            if(file_exists($old_thumbnail)) {
-                $new_thumbnail = $this->get_thumbnail_path($new_fullpath);
-                // delete old thumbnail(s) if destination folder does not exist
-                if(file_exists(dirname($new_thumbnail))) {
-                    FmHelper::copyRecursive($old_thumbnail, $new_thumbnail);
-                }
-            }
-        }
-
-        $relative_path = $this->cleanPath('/' . $target_path . '/' . $filename . $suffix);
-        return $this->get_file_info($relative_path);
-    }
 
 
-    /**
-     * @inheritdoc
-     */
-    public function actionMove()
-    {
-        $source_path = $this->get['old'];
-        $suffix = (substr($source_path, -1, 1) == '/') ? '/' : '';
-        $tmp = explode('/', trim($source_path, '/'));
-        $filename = array_pop($tmp); // file name or new dir name
-
-        $target_input = $this->get['new'];
-        $target_path = $target_input . '/';
-        $target_path = $this->expandPath($target_path, true);
-
-        $source_fullpath = $this->getFullPath($source_path, true);
-        $target_fullpath = $this->getFullPath($target_path, true);
-        $new_fullpath = $target_fullpath . $filename . $suffix;
-        //Log::info('moving "' . $source_fullpath . '" to "' . $new_fullpath . '"');
-
-        if(!$this->hasPermission('move')) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        if(!is_dir($target_fullpath)) {
-            $this->error(sprintf($this->lang('DIRECTORY_NOT_EXIST'), $target_path));
-        }
-
-        // check system permissions
-        if(!$this->has_system_permission($source_fullpath, ['r']) || !$this->has_system_permission($target_fullpath, ['w'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        // check if not requesting main FM userfiles folder
-        if($this->is_root_folder($source_fullpath)) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        // check if the name is not in "excluded" list
-        if (!$this->is_allowed_name($target_fullpath, true) ||
-            !$this->is_allowed_name($source_fullpath, is_dir($source_fullpath))
-        ) {
-            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-        }
-
-        // check if file already exists
-        if (file_exists($new_fullpath)) {
-            if(is_dir($new_fullpath)) {
-                $this->error(sprintf($this->lang('DIRECTORY_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
-            } else {
-                $this->error(sprintf($this->lang('FILE_ALREADY_EXISTS'), rtrim($target_input, '/') . '/' . $filename));
-            }
-        }
-
-        // should be retrieved before rename operation
-        $old_thumbnail = $this->get_thumbnail_path($source_fullpath);
-
-        // move file or folder
-        if(!rename($source_fullpath, $new_fullpath)) {
-            if(is_dir($source_fullpath)) {
-                $this->error(sprintf($this->lang('ERROR_MOVING_DIRECTORY'), $filename, $target_input));
-            } else {
-                $this->error(sprintf($this->lang('ERROR_MOVING_FILE'), $filename, $target_input));
-            }
-        } else {
-            //Log::info('moved "' . $source_fullpath . '" to "' . $new_fullpath . '"');
-
-            // move thumbnail file or thumbnails folder if exists
-            if(file_exists($old_thumbnail)) {
-                $new_thumbnail = $this->get_thumbnail_path($new_fullpath);
-                // delete old thumbnail(s) if destination folder does not exist
-                if(file_exists(dirname($new_thumbnail))) {
-                    rename($old_thumbnail, $new_thumbnail);
-                } else {
-                    is_dir($old_thumbnail) ? $this->unlinkRecursive($old_thumbnail) : unlink($old_thumbnail);
-                }
-            }
-        }
-
-        $relative_path = $this->cleanPath('/' . $target_path . '/' . $filename . $suffix);
-        return $this->get_file_info($relative_path);
-    }
 
     /**
      * @inheritdoc

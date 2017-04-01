@@ -9,7 +9,36 @@ const DATA_PATH = '\data';
 const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
 const NOT_FOUND_IMAGE = 'public/img/imgNotFound.png';
 
+const ERROR_STRINGS = [
+    'No read permission',
+    'No write permission',
+    'Folder exists already',
+    'File exists already',
+    'File not found',
+    'Folder not found',
+    "Parent Folder doesn't exists",
+    'Forbidden name',
+    'MediaItem not found',
+    "Can't rename Folder",
+    "Can't rename File",
+    //next is 11
+    "The use of '/' is forbidden in the directory or file name.",
 
+];
+abstract class ERROR_TYPES {
+    const NO_READ_PERMISSION = 0;
+    const NO_WRITE_PERMISSION = 1;
+    const FOLDER_ALREADY_EXISTS = 2;
+    const FILE_ALREADY_EXISTS = 3;
+    const FILE_NOT_FOUND = 4;
+    const FOLDER_NOT_FOUND = 5;
+    const PARENT_NOT_EXISTS = 6;
+    const FORBIDDEN_NAME = 7;
+    const MEDIA_ITEM_NOT_FOUND = 8;
+    const ERROR_RENAMING_FOLDER = 9;
+    const ERROR_RENAMING_FILE = 10;
+    const FORBIDDEN_CHAR_SLASH = 11;
+}
 
 class MediaItem {
     public $name;
@@ -27,6 +56,16 @@ class MediaItem {
     public $timestamp = '';
 
     function __construct() {}
+}
+class MediaException {
+    public $code;
+    public $msg;
+    public $path;
+    function __construct($code, $path) {
+        $this->msg = ERROR_STRINGS[$code];
+        $this->code = $code;
+        $this->path = $path;
+    }
 }
 class MediaService {
     protected $dataPath;
@@ -48,7 +87,7 @@ class MediaService {
      * @return array
      */
     function getFolderNames($path) {
-        $rootPath = realpath($this->dataPath.'/'.$path);
+        $rootPath = $this->realPath($path);
         //check folder restrictions
         $meta = $this->getFolderMeta($path);
         if ($meta && isset($meta['Restrictions']) ) {
@@ -81,15 +120,81 @@ class MediaService {
     }
 
     function fileExists($path) {
-        $filePath = realpath($this->dataPath.'/'.$path);
+        $filePath = $this->realPath($path);
         if (is_file($filePath)) {
             return true;
         }
         return false;
     }
 
+    function isDir($path) {
+        $filePath = $this->realPath($path);
+        if (is_dir($filePath)) {
+            return true;
+        }
+        return false;
+    }
+
+    function createFolder($path) {
+        //check if the parent folder exists
+        if (!$this->isDir(dirname($path))) {
+            return new MediaException(ERROR_TYPES::PARENT_NOT_EXISTS, $path);
+        }
+        //check if exists already
+        if ($this->isDir($path)) {
+            return new MediaException(ERROR_TYPES::FOLDER_ALREADY_EXISTS, $path);
+        }
+        //check if permission is granted
+        $perm = $this->getPermission(dirname($path));
+        if ($perm['writable'] == 0) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        }
+        //create new folder
+        $realPath = $this->cleanPath($this->dataPath.'/'.$path);
+        mkdir($realPath);
+        //return newly created folder item
+        return $this->getItem($path);
+
+    }
+
+    function renameItem($path, $newName) {
+        $item = $this->getItem($path);
+        if ($item instanceof MediaException) {
+            return $item;
+        }
+
+        if ($item->writable == 0) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        }
+
+        // forbid to change path during rename
+        if(strrpos($newName, '/') !== false) {
+            return new MediaException(ERROR_TYPES::FORBIDDEN_CHAR_SLASH, $newName);
+        }
+
+        $parentPath = dirname($item->fullPath).'/';
+        $targetPath = $this->cleanPath($parentPath.$newName);
+
+        if(file_exists($targetPath)) {
+            if (is_dir($targetPath)) {
+                return new MediaException(ERROR_TYPES::FOLDER_ALREADY_EXISTS, $path);
+            } else {
+                return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $path);
+            }
+        }
+        if(!rename($item->fullPath, $targetPath)) {
+            if (is_dir($item->fullPath)) {
+                return new MediaException(ERROR_TYPES::ERROR_RENAMING_FOLDER, $path);
+            } else {
+                return new MediaException(ERROR_TYPES::ERROR_RENAMING_FILE, $path);
+            }
+        }
+        //@todo remove item from item cache, when cache is implemented :)
+        return $this->loadItem($targetPath);
+    }
+
     function getFileContent($path) {
-        $filePath = realpath($this->dataPath.'/'.$path);
+        $filePath = $this->realPath($path);
         if (is_file($filePath)) {
             return file_get_contents($filePath);
         }
@@ -105,7 +210,7 @@ class MediaService {
      * @return MediaItem[]
      */
     function getItems($path) {
-        $fullPath = realpath($this->dataPath.'/'.$path);
+        $fullPath = $this->realPath($path);
         $result = array();
         if (is_dir($fullPath)) {
             $dir = scandir($fullPath);
@@ -126,9 +231,9 @@ class MediaService {
      * @return MediaItem|null
      */
     public function getItem($path) {
-        $fullPath = realpath($this->dataPath.'/'.$path);
+        $fullPath = $this->realPath($path);
         if (!$fullPath) {
-            return null;
+            return new MediaException(ERROR_TYPES::MEDIA_ITEM_NOT_FOUND, $path);
         }
 
         return $this->loadItem($path);
@@ -189,9 +294,14 @@ class MediaService {
         ];
         return in_array($mime, $imagesMime);
     }
+
+    /**
+     * @param $path
+     * @return array with 2 items readable and writable values are 0 and 1
+     */
     public function getPermission($path) {
-        $fullPath = realpath($this->dataPath.'/'.$path);
-        if (!$fullPath) return false;
+        $fullPath = $this->realPath($path);
+        if (!$fullPath) return ['readable' => 0, 'writable' => 0];
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
         $dir = dirname($fullPath);
@@ -247,9 +357,15 @@ class MediaService {
         }
         return ['readable' => 0, 'writable' => 0];
     }
+    private function realPath($path) {
+        $realPath = realpath($this->dataPath.'/'.$path);
+        if (!$realPath)
+            $realPath = realpath($path);
 
+        return $realPath;
+    }
     private function parseIniFile($objectivePath) {
-        $iniDir = realpath($this->dataPath.'/'.$objectivePath);
+        $iniDir = $this->realPath($objectivePath);
         if (!is_dir($iniDir)) {
             $iniDir = dirname($iniDir);
         }
@@ -281,8 +397,7 @@ class MediaService {
 
         $permission = $this->getPermission($path);
 
-
-        $fullPath = realpath($this->dataPath.'/'.$path);
+        $fullPath = $this->realpath($path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
         $item->path = $path;
@@ -299,8 +414,7 @@ class MediaService {
             $item->livePath = $this->cleanPath("/media/file/".$path);
 //            $item->parentPath = $pathInfo['dirname'];
         } else {
-            return null;
-            //@todo error file not found
+            return new MediaException(ERROR_TYPES::MEDIA_ITEM_NOT_FOUND, $path);
         }
         return $item;
     }
