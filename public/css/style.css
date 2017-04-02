@@ -81,7 +81,7 @@ body {
 }
 .body {
   border-radius: 5px;
-  margin: 3%;
+  margin: 3vw;
   background-image: none;
   background-size: '';
   background-color: #FAEBd7;
@@ -424,6 +424,55 @@ button {
   }
 }
 /* login and logout view */
+.login {
+  position: relative;
+  width: 100%;
+  float: right;
+  height: auto;
+  min-height: 20%;
+  overflow: visible;
+  min-height: 2px;
+}
+.login {
+  position: absolute;
+  top: 0;
+  right: 5vw;
+  width: 10vw;
+  height: 5vw;
+  overflow-y: hidden;
+}
+.login > boxtitel {
+  margin-top: 0;
+}
+.login > boxcontent {
+  opacity: 0;
+}
+.login:hover,
+.login:active {
+  width: 20vw;
+  z-index: 20;
+  height: 15vw;
+  -webkit-animation: logInAnimation 1.5s ease-in;
+  -moz-animation: logInAnimation 1.5s ease-in;
+  -o-animation: logInAnimation 1.5s ease-in;
+  animation: logInAnimation 1.5s ease-in;
+}
+.login:hover > boxcontent,
+.login:active > boxcontent {
+  opacity: 1;
+  -webkit-animation: logInAnimation2 2.5s ease-in;
+  -moz-animation: logInAnimation2 2.5s ease-in;
+  -o-animation: logInAnimation2 2.5s ease-in;
+  animation: logInAnimation2 2.5s ease-in;
+}
+.login:hover > boxtitel,
+.login:active > boxtitel {
+  margin-top: 1vw;
+  -webkit-animation: logInAnimation3 2s ease;
+  -moz-animation: logInAnimation3 2s ease;
+  -o-animation: logInAnimation3 2s ease;
+  animation: logInAnimation3 2s ease;
+}
 .log_me_out {
   overflow-y: auto;
   position: fixed;
@@ -440,6 +489,127 @@ button {
   box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
   min-height: 11vw;
   max-height: 17.5vw;
+}
+.logout > boxtitel {
+  text-align: center;
+}
+/* ---------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes logInAnimation {
+  from {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+}
+@-moz-keyframes logInAnimation {
+  from {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+}
+@-o-keyframes logInAnimation {
+  from {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+}
+@keyframes logInAnimation {
+  from {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+}
+/* ------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes logInAnimation2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-moz-keyframes logInAnimation2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-o-keyframes logInAnimation2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes logInAnimation2 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* ------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes logInAnimation3 {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
+@-moz-keyframes logInAnimation3 {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
+@-o-keyframes logInAnimation3 {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
+@keyframes logInAnimation3 {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
 }
 /* styles used in Zend */
 /* ------------------Zend Form Styles ---------------------------------- */
@@ -2450,8 +2620,5 @@ body .ui-tooltip {
   filter: alpha(opacity=60);
   /* support: IE8 */
   border-radius: 8px;
-}
-.rightbardown {
-  display: none;
 }
 /*erase unused elements for pre launch */

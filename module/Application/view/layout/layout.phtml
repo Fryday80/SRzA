@@ -107,13 +107,8 @@
         <?php if ($this->showSidebar): ?>
         <!----  rightbar   ---->
             <div id="rightcontainer">
-        <?php endif; ?>
-                <div class="rightbarup">
-                    <?php echo $this->loginview(); ?>
-                </div>
-        <?php if ($this->showSidebar): ?>
                 <box id="rightbarmiddle">
-<!--                        --><?php //echo $this->randomImage()->scroller(); ?>
+                        <?php echo $this->randomImage()->scroller(); ?>
                 </box>
 
                 <box class="rightbardown">
@@ -128,6 +123,11 @@
                         </iframe>  --->
                     </boxcontent>
                 </box>
+                <?php endif; ?>
+                <div class="rightbarup">
+                    <?php echo $this->loginview(); ?>
+                </div>
+                <?php if ($this->showSidebar): ?>
              </div>
         <?php endif; ?>
         <div class="clear"></div>
