@@ -6,23 +6,36 @@ use Zend\Http\Response;
 
 
 const DATA_PATH = '\data';
+const TRASH_BIN_PATH = '\_trash';
 const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
 const NOT_FOUND_IMAGE = 'public/img/imgNotFound.png';
 
 const ERROR_STRINGS = [
     'No read permission',
     'No write permission',
-    'Folder exists already',
-    'File exists already',
+    'Folder already exists',
+    'File already exists',
     'File not found',
     'Folder not found',
-    "Parent Folder doesn't exists",
+    "Parent folder doesn't exists",
     'Forbidden name',
     'MediaItem not found',
-    "Can't rename Folder",
-    "Can't rename File",
-    //next is 11
-    "The use of '/' is forbidden in the directory or file name.",
+    "Can't rename folder",
+    "Can't rename file",//i = 10
+    "The use of '/' is forbidden in the directory or file name",
+    "Destination folder not found",
+    'No write permission in destination folder',
+    'Destination already exists',
+    "Can't move folder",
+    "Can't move file",
+    "Can't delete folder",
+    "Can't delete file",
+    "Can't copying folder",
+    "Can't copying file",//i = 20
+    "Can't reading file",
+    "Can't writing file",
+    "Can't read folders",
+    "Can't write to folder",
 
 ];
 abstract class ERROR_TYPES {
@@ -38,6 +51,19 @@ abstract class ERROR_TYPES {
     const ERROR_RENAMING_FOLDER = 9;
     const ERROR_RENAMING_FILE = 10;
     const FORBIDDEN_CHAR_SLASH = 11;
+    const TARGET_FOLDER_NOT_FOUND = 12;
+    const TARGET_NO_WRITE_PERMISSION = 13;
+    const TARGET_ALREADY_EXISTS = 14;
+    const ERROR_MOVING_FOLDER = 15;
+    const ERROR_MOVING_FILE = 16;
+    const ERROR_DELETE_FOLDER = 17;
+    const ERROR_DELETE_FILE = 18;
+    const ERROR_COPYING_FOLDER = 19;
+    const ERROR_COPYING_FILE = 20;
+    const ERROR_READING_FILE = 21;
+    const ERROR_WRITING_FILE = 22;
+    const CAN_NOT_READ_FOLDER = 23;
+    const CAN_NOT_WRITE_FOLDER = 24;
 }
 
 class MediaItem {
@@ -193,14 +219,201 @@ class MediaService {
         return $this->loadItem($targetPath);
     }
 
-    function getFileContent($path) {
-        $filePath = $this->realPath($path);
-        if (is_file($filePath)) {
-            return file_get_contents($filePath);
+    /**
+     * @param $path
+     * @param $targetPath path of the target folder NOT the full path of the target item
+     * @return MediaItem|MediaException|null
+     */
+    function moveItem($path, $targetPath) {
+        $item = $this->getItem($path);
+        if ($item instanceof MediaException) {
+            return $item;
         }
-        return false;
+
+        $targetParentItem = $this->getItem($targetPath);
+        if ($targetParentItem instanceof MediaException) {
+            return new MediaException(ERROR_TYPES::TARGET_FOLDER_NOT_FOUND, $targetPath);
+        }
+
+        if ($item->writable == 0) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        }
+        if ($targetParentItem->writable == 0) {
+            return new MediaException(ERROR_TYPES::TARGET_NO_WRITE_PERMISSION, $targetPath);
+        }
+        if ($item->type == 'folder') {
+            $fullTargetPath = $this->cleanPath($targetParentItem->fullPath . '/' . $item->name);
+        } else {
+            $fullTargetPath = $this->cleanPath($targetParentItem->fullPath . '/' . $item->name . '.' . $item->type);
+        }
+
+        if ($item->type == 'folder') {
+            if(is_dir($fullTargetPath) ) {
+                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetPath.'/'.$item->name);
+            }
+        } else {
+            if(file_exists($fullTargetPath) ) {
+                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetPath.'/'.$item->name.'.'.$item->type);
+            }
+        }
+
+        if(!rename($item->fullPath, $fullTargetPath)) {
+            if (is_dir($item->fullPath)) {
+                return new MediaException(ERROR_TYPES::ERROR_MOVING_FOLDER, $path);
+            } else {
+                return new MediaException(ERROR_TYPES::ERROR_MOVING_FILE, $path);
+            }
+        }
+        //@todo move item in item cache, when cache is implemented :)
+        return $this->loadItem($targetPath.'/'.$item->name.'.'.$item->type);
+    }
+    function copyItem($path, $targetParentPath) {
+        $item = $this->getItem($path);
+        if ($item instanceof MediaException)
+            return $item;
+
+        $targetParentItem = $this->loadItem($targetParentPath);
+        if ($targetParentItem instanceof MediaException)
+            return $item;
+
+        if ($item->readable == 0) {
+            return new MediaException(ERROR_TYPES::NO_READ_PERMISSION, $path);
+        }
+        if ($targetParentItem->writable == 0) {
+            return new MediaException(ERROR_TYPES::TARGET_NO_WRITE_PERMISSION, $targetParentPath.'/'.$item->name);
+        }
+
+        $targetPath = null;
+        if (dirname($item->fullPath) == $targetParentItem->fullPath ) {
+            //if source and target in same folder. postfix copy with "(n)"
+            $i = 1;
+            if ($item->type == 'folder') {
+                do {
+                    $targetPath = $targetParentItem->fullPath . '/' . $item->name . ' ('.$i.')';
+                    $i++;
+                } while(is_dir($targetPath));
+            }else {
+                do {
+                    $targetPath = $targetParentItem->fullPath . '/' . $item->name . '.' . $item->type . ' ('.$i.')';
+                    $i++;
+                } while(is_file($targetPath));
+            }
+        } else {
+            if ($item->type == 'folder') {
+                $targetPath = $targetParentItem->fullPath . '/' . $item->name;
+            } else {
+                $targetPath = $targetParentItem->fullPath . '/' . $item->name . '.' . $item->type;
+            }
+        }
+
+//        if (is_dir($path)) {
+//            if(is_dir($targetPath) ) {
+//                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetParentPath.'/'.$item->name);
+//            }
+//        } else {
+//            if(file_exists($targetPath) ) {
+//                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetParentPath.'/'.$item->name.'.'.$item->type);
+//            }
+//        }
+        // move file or folder
+        if(!$this->copyRecursive($item->fullPath, $targetPath)) {
+            if(is_dir($item->fullPath)) {
+                return new MediaException(ERROR_TYPES::ERROR_COPYING_FOLDER, $path);
+            } else {
+                return new MediaException(ERROR_TYPES::ERROR_COPYING_FILE, $path);
+            }
+        }
+        return $this->getItem($targetPath);
     }
 
+    function deleteItem($path) {
+        $item = $this->getItem($path);
+        if ($item instanceof MediaException)
+            return $item;
+
+
+        if ($item->writable == 0) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        }
+        $trashPath = $this->realPath(TRASH_BIN_PATH);
+        if (strncmp($item->fullPath, $trashPath, strlen($trashPath)) !== 0) {
+            //not in trash bin -> move it
+            if (!is_dir($this->realPath($trashPath))) {
+                mkdir($this->realPath($trashPath));
+            }
+            $trashPathWithName = '';
+            if ($item->type == 'folder') {
+                $trashPathWithName = $trashPath.'/'.$item->name;
+                $i = 1;
+                //if name already taken, add a number
+                while(is_dir($trashPathWithName)) {
+                    $trashPathWithName = $trashPath . '/' . $item->name . ' ('.$i.')';
+                    $i++;
+                }
+            } else {
+                $trashPathWithName = $trashPath . '/' . $item->name . '.' . $item->type;
+                $i = 1;
+                //if name already taken, add a number
+                while(file_exists($trashPathWithName)) {
+                    $trashPathWithName = $trashPath . '/' . $item->name . ' ('.$i.').' . $item->type;
+                    $i++;
+                }
+            }
+
+            if(!rename($item->fullPath, $trashPathWithName)) {
+                if (is_dir($item->fullPath)) {
+                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FOLDER, $path);
+                } else {
+                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FILE, $path);
+                }
+            }
+        } else {
+            if(!unlink($item->fullPath)) {
+                if (is_dir($item->fullPath)) {
+                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FOLDER, $path);
+                } else {
+                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FILE, $path);
+                }
+            }
+        }
+        return $item;
+    }
+
+    function getFileContent($path) {
+        $item = $this->loadItem($path);
+        if ($item instanceof MediaException) {
+            return $item;
+        }
+        if ($item->type == 'folder') {
+            return new MediaException(ERROR_TYPES::CAN_NOT_READ_FOLDER, $path);
+        }
+        if ($item->readable == 0) {
+            return new MediaException(ERROR_TYPES::NO_READ_PERMISSION, $path);
+        }
+        try {
+            return file_get_contents($item->fullPath);
+        } catch (\Exception $e) {
+            return new MediaException(ERROR_TYPES::ERROR_READING_FILE, $path);
+        }
+    }
+
+    function setFileContent($path, $content) {
+        $item = $this->loadItem($path);
+        if ($item instanceof MediaException) {
+            return $item;
+        }
+        if ($item->type == 'folder') {
+            return new MediaException(ERROR_TYPES::CAN_NOT_WRITE_FOLDER, $path);
+        }
+        if ($item->writable == 0) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        }
+        try {
+            return file_put_contents($item->fullPath, $content, LOCK_EX);
+        } catch (\Exception $e) {
+            return new MediaException(ERROR_TYPES::ERROR_WRITING_FILE, $path);
+        }
+    }
     function getFolderMeta($path) {
         return $this->parseIniFile($path);
     }
@@ -209,7 +422,7 @@ class MediaService {
      * @param $path string
      * @return MediaItem[]
      */
-    function getItems($path) {
+    public function getItems($path) {
         $fullPath = $this->realPath($path);
         $result = array();
         if (is_dir($fullPath)) {
@@ -302,15 +515,17 @@ class MediaService {
     public function getPermission($path) {
         $fullPath = $this->realPath($path);
         if (!$fullPath) return ['readable' => 0, 'writable' => 0];
+        $sysPerms = $this->getSystemPermission($fullPath);
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
         $dir = dirname($fullPath);
         $role = $this->accessService->getRole();
+        $readable = 0;
+        $writable = 0;
+
         if ($isDir) {
             $meta = $this->getFolderMeta($path);
             if ($meta && isset($meta['Permissions']) ) {
-                $readable = 0;
-                $writable = 0;
                 if (isset($meta['Permissions']['folderRead'])) {
                     if (in_array($role, $meta['Permissions']['folderRead']) ) {
                         $readable = 1;
@@ -321,13 +536,10 @@ class MediaService {
                         $writable = 1;
                     }
                 }
-                return ['readable' => $readable, 'writable' => $writable];
             }
         } else {
             $meta = $this->getFolderMeta($path);
             if ($meta && isset($meta['Permissions']) ) {
-                $readable = 0;
-                $writable = 0;
                 if (isset($meta['Permissions']['allRead'])) {
                     if (in_array($role, $meta['Permissions']['allRead']) ) {
                         $readable = 1;
@@ -351,17 +563,34 @@ class MediaService {
                         }
                     }
                 }
-
-                return ['readable' => $readable, 'writable' => $writable];
             }
         }
-        return ['readable' => 0, 'writable' => 0];
+        return ['readable' => ($sysPerms['r'] == 0)? 0: $readable,
+                'writable' => ($sysPerms['w'] == 0)? 0: $writable];
+    }
+    /**
+     * Check if system permission is granted
+     * @param string $filepath
+     * @return array
+     */
+    private function getSystemPermission($filepath)
+    {
+        $readable = 0;
+        $writable = 0;
+        if(is_readable($filepath)) {
+            $readable = 1;
+        }
+        if(is_writable($filepath)) {
+            $writable = 1;
+        }
+        return ['r' => $readable, 'w' => $writable];
     }
     private function realPath($path) {
         $realPath = realpath($this->dataPath.'/'.$path);
         if (!$realPath)
             $realPath = realpath($path);
-
+        if ($realPath)
+            $realPath = $this->cleanPath($realPath);
         return $realPath;
     }
     private function parseIniFile($objectivePath) {
@@ -389,7 +618,7 @@ class MediaService {
 
     /**
      * @param $path
-     * @return MediaItem|null
+     * @return MediaItem|MediaException|null
      */
     private function loadItem($path) {
         //@todo add caching
@@ -433,165 +662,48 @@ class MediaService {
         return $string;
     }
 
+    /**
+     * Copies a single file, symlink or a whole directory.
+     * In case of directory it will be copied recursively.
+     *
+     * @param $source
+     * @param $target
+     * @return bool
+     */
+    private function copyRecursive($source, $target) {
+        // handle symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $target);
+        }
 
+        // copy a single file
+        if (is_file($source)) {
+            return copy($source, $target);
+        }
 
+        // make target directory
+        if (!is_dir($target)) {
+            mkdir($target, 0755);
+        }
 
+        $handle = opendir($source);
+        // loop through the directory
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+            $from = $source . DIRECTORY_SEPARATOR . $file;
+            $to = $target . DIRECTORY_SEPARATOR . $file;
 
+            if (is_file($from)) {
+                copy($from, $to);
+            } else {
+                // recursive copy
+                $this->copyRecursive($from, $to);
+            }
+        }
+        closedir($handle);
 
-
-
-
-//
-//
-//    function getImportPreview() {
-//        $path = $this->uploadPath;
-//        $files = $this->readUploadFolder($path);
-//        $errors = [];
-//        $result = [];
-//
-//        foreach ($files as $file) {
-//            $realPath = realpath($file['fullPath']);
-//            $targetPath = $this->dataPath.$file['path'].$file['name'];
-//            array_push($result, new MediaItem($realPath));
-//            /*
-//            if ($file['type'] == 'folder') {
-//                //check if folder exist in data folder
-//                if (is_dir($targetPath)) {
-//                    //exists allready -> go on recursive
-//                    $this->import($realPath);
-//                } else {
-//                    //do not exists -> move hole folder
-//                    rename($realPath, $targetPath);
-//                }
-//            } else {
-//                if (!file_exists($targetPath)) {
-//                    //move file to target
-//                    rename($realPath, $targetPath);
-//                } else {
-//                    array_push($errors, array(
-//                        'msg' => 'File exists allready',
-//                        'file' =>$file
-//                    ));
-//                }
-//            }*/
-//        }
-//        return $result;
-//    }
-//    function import($path = null) {
-//        if ($path == null) $path = $this->uploadPath;
-//        $files = $this->readUploadFolder($path);
-//        $errors = [];
-//        foreach ($files as $file) {
-//            $realPath = realpath($file['fullPath']);
-//            $targetPath = $this->dataPath.$file['path'].$file['name'];
-//            if ($file['type'] == 'folder') {
-//                //check if folder exist in data folder
-//                if (is_dir($targetPath)) {
-//                    //exists allready -> go on recursive
-//                    $this->import($realPath);
-//                } else {
-//                    //do not exists -> move hole folder
-//                    rename($realPath, $targetPath);
-//                }
-//            } else {
-//                if (!file_exists($targetPath)) {
-//                    //move file to target
-//                    rename($realPath, $targetPath);
-//                } else {
-//                    array_push($errors, array(
-//                        'msg' => 'File exists allready',
-//                        'file' =>$file
-//                    ));
-//                }
-//            }
-//        }
-//        return $errors;
-//    }
-//    function getAlbumFolderNames() {
-//        $albumPath = realpath($this->dataPath.'/gallery/');
-//        $dir = scandir($albumPath);
-//        $result = array();
-//        foreach ($dir as $key => $value) {
-//            if ($value == '.' || $value == '..') continue;
-//            if( is_dir ($albumPath.'/'.$value) ) {
-//                array_push($result, $value);
-//            }
-//        }
-//        return $result;
-//    }
-//    /**
-//     * @param {string} $albumName or better the folder name where the images life in
-//     * @return {array} array with all images and there paths'
-//     */
-//    function getAlbumFiles($albumName) {
-//        $albumPath = realpath($this->dataPath.'/gallery/'.$albumName);
-//        if (is_dir($albumPath) ) {
-//            //Cast folder exists -> read all containing files
-//            $dir = scandir($albumPath);
-//            $result = array();
-//            foreach ($dir as $key => $value) {
-//                if ($value == '.' || $value == '..') continue;
-//                $relPath = str_replace($this->dataPath, '', $albumPath);
-//                $relPath = str_replace("\\", "/", $relPath);
-//                $fileInfo = pathinfo($relPath.'/'.$value);
-//                if ($relPath == '') $relPath = '/';
-//                $type = (is_dir($albumPath.'\\'.$value))? 'folder': 'file';
-//                $fileInfo['url'] = '/media/image'.$relPath.'/'.$value;
-//                $fileInfo['fullPath'] = $albumPath.'\\'.$value;
-//
-//                array_push($result, $fileInfo);
-//            }
-//            return $result;
-//        }
-//        //check if Cast exists
-//        //read files
-//        //return files
-//        return array();
-//    }
-//
-//    /**
-//     * @param $path absolute path to folder
-//     * @return array array with the folder content
-//     */
-//    private function readUploadFolder($path) {
-//        $dir = scandir($path);
-//        $result = array();
-//        foreach ($dir as $key => $value) {
-//            if ($value == '.' || $value == '..') continue;
-//            $relPath = str_replace($this->uploadPath, '', $path);
-//            if ($relPath == '') $relPath = '/';
-//            $type = (is_dir($path.'\\'.$value))? 'folder': 'file';
-//            array_push($result, array(
-//                'name' => $value,
-//                'path' => $relPath,
-//                'fullPath' => $path.'\\'.$value,
-//                'type' => $type
-//            ));
-//        }
-//        return $result;
-//    }
-//    /**
-//     * returns a multidimensional array with folders
-//     */
-//    function getAllFolders() {
-//        return array(
-//            'name',
-//            'path',
-//            'folders' => array(
-//                'name',
-//                'path',
-//                'folders' => array())
-//        );
-//    }
-//    /**
-//     * @param {string} $path relative path to the data folder
-//     */
-//    function getFolder($path) {
-//        //path exists
-//        //load folder.perm
-//        //check permission   permission template = recource is media  privileg is /path/to/folder
-//        //if no permission ?? redirect to login ?? or return false
-//        //return array with file paths'
-//    }
-
+        return true;
+    }
 }
