@@ -1,24 +1,39 @@
 
 $(document).ready(function () {
-    // var parent = $("div.rightbarup");
+    var loginmodified= false;
         
     function loggingMover(){
-        // temporary styling will be out sourced to css
-        $(".log_me_out").appendTo("body")
-            .css("position", "absolute");
-        $("box.login").appendTo("body");
+        if( !(window.matchMedia('(max-width: 700px)').matches) ) {
+            // temporary styling will be out sourced to css
+            $(".log_me_out").appendTo("body")
+                .css("position", "absolute");
+            $("box.login").appendTo("body");
 
-        // real desingner function
-        $("box.login").on("click", function(){
-            $("box.login").toggleClass("login-active");
-        });
-        $("box.login").on("mouseout", function(){
-            $("box.login").not(".login-inactive").addClass("login-inactive");
-        });
+            // real desingner function
+            $("box.login").off("click");
+            $("box.login").on("click", function () {
+                $("box.login").toggleClass("login-active");
+            });
+            $("box.login").on("mouseout", function () {
+                $("box.login").not(".login-inactive").addClass("login-inactive");
+            });
+            loginmodified = true;
+        }
     }
 
-    if( !(window.matchMedia('(max-width: 700px)').matches) )
-    {
+    function setBack (){
+        if( (window.matchMedia('(max-width: 700px)').matches) && loginmodified == true) {
+            $(".log_me_out").appendTo(".rightbarup")
+                .removeAttr("style");
+            $("box.login").appendTo(".rightbarup")
+                .removeClass("login-active")
+                .removeClass("login-inactive");
+        }
+    }
+
+    loggingMover();
+    $(window).resize(function(){
         loggingMover();
-    }
+        setBack();
+    });
 });

@@ -5,191 +5,177 @@
 // .loggin {
 //    used for js selection of logout box in menu.js
 //  }
-@login-height: 15vw;
-.login
-{
-  .rightbarup;
-  min-height: 2px;
-}
+@login-height: 20vw;
 
-.login
-{
-  position: absolute;
-  top: 0;
-  right: 5vw;
-  width: 10vw;
-  height: 5vw;
-  overflow-y: hidden;
+  //.login {
+  //  .rightbarup;
+  //  min-height: 2px;
+  //}
+@media only screen and (min-width: 700px) {
+  .login {
+    position: absolute;
+    top: 0;
+    right: 5vw;
+    width: 10vw;
+    height: 5vw;
 
-  > boxtitel
-  {
-    margin-top: 0;
+    > boxtitel {
+      margin-top: 0;
+    }
+    > boxcontent {
+      opacity: 0;
+      padding-top: 2.5vw;
+    }
   }
-  > boxcontent
-  {
-    opacity: 0;
+
+  .login-inactive {
+    .at-animation(logInAnimation-out; 0.5s; ease-in);
   }
-}
 
-.login-inactive
-{
-  .at-animation(logInAnimation-out; 0.5s; ease-in);
-}
-
-
-
-.login:hover,
-.login:active
-{
-  .login-active;
-}
-.login-active
-{
-  width: 20vw;
-  z-index: 20;
-  height: @login-height;
-  .at-animation(logInAnimation; 1.5s; ease-in);
-  > boxcontent
-  {
-    opacity: 1;
-    .at-animation(logInAnimation2;2.5s;ease-in);
+  .login:hover,
+  .login:active {
+    .login-active;
   }
-  > boxtitel
-  {
-    margin-top: 1vw;
-    .at-animation(logInAnimation3,2s, ease)
+
+  .login-active {
+    width: 20vw;
+    z-index: 20;
+    height: @login-height;
+    .at-animation(logInAnimation; 1.5s; ease-in);
+    > boxcontent {
+      opacity: 1;
+      .at-animation(logInAnimation2; 2.5s; ease-in);
+    }
+    > boxtitel {
+      margin-top: 1vw;
+      .at-animation(logInAnimation3, 2s, ease)
+    }
   }
-}
 
-.log_me_out
-{
-  overflow-y: auto;
-  position: fixed;
-  top: 0;
-  right: 0;
-  margin: 0;
-  width: 18vw;
-  .at-box;
-  min-height: 11vw;
-  max-height: 17.5vw;
-}
-.logout
-{
-  > boxtitel
-  {
-    text-align: center;
+  .log_me_out {
+    overflow-y: auto;
+    position: fixed;
+    top: 0;
+    right: 0;
+    margin: 0;
+    width: 18vw;
+    .at-box;
+    min-height: 11vw;
+    max-height: 17.5vw;
   }
-}
 
-/* ---------------------------------- */
-.logInAnimation-style(@1; @2; @3){
-  width: @1;
-  z-index: @2;
-  height: @3;
-}
-.at-logInAnimation-action()
-{
-  from { .logInAnimation-style(10vw;1;2.8vw); }
-  to { .logInAnimation-style(20vw;20; @login-height); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes logInAnimation
-{
-  .at-logInAnimation-action;
-}
-@-moz-keyframes logInAnimation
-{
-  .at-logInAnimation-action;
-}
-@-o-keyframes logInAnimation
-{
-  .at-logInAnimation-action;
-}
-@keyframes logInAnimation
-{
-  .at-logInAnimation-action;
-}
+  .logout {
+    > boxtitel {
+      text-align: center;
+    }
+  }
 
-/* ---------------------------------- */
-.logInAnimation-out-style(@1; @2; @3){
-  width: @1;
-  z-index: @2;
-  height: @3;
-}
-.at-logInAnimation-out-action()
-{
-  from { .logInAnimation-out-style(20vw;20; @login-height); }
-  to { .logInAnimation-out-style(10vw;1;2.8vw); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes logInAnimation-out
-{
-  .at-logInAnimation-out-action;
-}
-@-moz-keyframes logInAnimation-out
-{
-  .at-logInAnimation-out-action;
-}
-@-o-keyframes logInAnimation-out
-{
-  .at-logInAnimation-out-action;
-}
-@keyframes logInAnimation-out
-{
-  .at-logInAnimation-out-action;
-}
+  /* ---------------------------------- */
+  .logInAnimation-style(@1; @2; @3) {
+    width: @1;
+    z-index: @2;
+    height: @3;
+  }
+  .at-logInAnimation-action() {
+    from {
+      .logInAnimation-style(10vw; 1; 2.8vw);
+    }
+    to {
+      .logInAnimation-style(20vw; 20; @login-height);
+    }
+  }
+  /* used in... -> navigation menu.css */
+  @-webkit-keyframes logInAnimation {
+    .at-logInAnimation-action;
+  }
+  @-moz-keyframes logInAnimation {
+    .at-logInAnimation-action;
+  }
+  @-o-keyframes logInAnimation {
+    .at-logInAnimation-action;
+  }
+  @keyframes logInAnimation {
+    .at-logInAnimation-action;
+  }
+
+  /* ---------------------------------- */
+  .logInAnimation-out-style(@1; @2; @3) {
+    width: @1;
+    z-index: @2;
+    height: @3;
+  }
+  .at-logInAnimation-out-action() {
+    from {
+      .logInAnimation-out-style(20vw; 20; @login-height);
+    }
+    to {
+      .logInAnimation-out-style(10vw; 1; 2.8vw);
+    }
+  }
+  /* used in... -> navigation menu.css */
+  @-webkit-keyframes logInAnimation-out {
+    .at-logInAnimation-out-action;
+  }
+  @-moz-keyframes logInAnimation-out {
+    .at-logInAnimation-out-action;
+  }
+  @-o-keyframes logInAnimation-out {
+    .at-logInAnimation-out-action;
+  }
+  @keyframes logInAnimation-out {
+    .at-logInAnimation-out-action;
+  }
 
 
-/* ------------------------------- */
-.logInAnimation2-style(@1){
-  opacity: @1;
-}
-.at-logInAnimation2-action()
-{
-  from { .logInAnimation2-style(0); }
-  to { .logInAnimation2-style(1); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes logInAnimation2
-{
-  .at-logInAnimation2-action;
-}
-@-moz-keyframes logInAnimation2
-{
-  .at-logInAnimation2-action;
-}
-@-o-keyframes logInAnimation2
-{
-  .at-logInAnimation2-action;
-}
-@keyframes logInAnimation2
-{
-  .at-logInAnimation2-action;
-}
+  /* ------------------------------- */
+  .logInAnimation2-style(@1) {
+    opacity: @1;
+  }
+  .at-logInAnimation2-action() {
+    from {
+      .logInAnimation2-style(0);
+    }
+    to {
+      .logInAnimation2-style(1);
+    }
+  }
+  /* used in... -> navigation menu.css */
+  @-webkit-keyframes logInAnimation2 {
+    .at-logInAnimation2-action;
+  }
+  @-moz-keyframes logInAnimation2 {
+    .at-logInAnimation2-action;
+  }
+  @-o-keyframes logInAnimation2 {
+    .at-logInAnimation2-action;
+  }
+  @keyframes logInAnimation2 {
+    .at-logInAnimation2-action;
+  }
 
-/* ------------------------------- */
-.logInAnimation3-style(@1){
-  margin-top: @1;
-}
-.at-logInAnimation3-action()
-{
-  0% { .logInAnimation3-style(0); }
-  100% { .logInAnimation3-style(1vw); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes logInAnimation3
-{
-  .at-logInAnimation3-action;
-}
-@-moz-keyframes logInAnimation3
-{
-  .at-logInAnimation3-action;
-}
-@-o-keyframes logInAnimation3
-{
-  .at-logInAnimation3-action;
-}
-@keyframes logInAnimation3
-{
-  .at-logInAnimation3-action;
+  /* ------------------------------- */
+  .logInAnimation3-style(@1) {
+    margin-top: @1;
+  }
+  .at-logInAnimation3-action() {
+    0% {
+      .logInAnimation3-style(0);
+    }
+    100% {
+      .logInAnimation3-style(1vw);
+    }
+  }
+  /* used in... -> navigation menu.css */
+  @-webkit-keyframes logInAnimation3 {
+    .at-logInAnimation3-action;
+  }
+  @-moz-keyframes logInAnimation3 {
+    .at-logInAnimation3-action;
+  }
+  @-o-keyframes logInAnimation3 {
+    .at-logInAnimation3-action;
+  }
+  @keyframes logInAnimation3 {
+    .at-logInAnimation3-action;
+  }
 }
