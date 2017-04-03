@@ -447,6 +447,12 @@ button {
 .login > boxcontent {
   opacity: 0;
 }
+.login-inactive {
+  -webkit-animation: logInAnimation-out 0.5s ease-in;
+  -moz-animation: logInAnimation-out 0.5s ease-in;
+  -o-animation: logInAnimation-out 0.5s ease-in;
+  animation: logInAnimation-out 0.5s ease-in;
+}
 .login:hover,
 .login:active {
   width: 20vw;
@@ -467,6 +473,29 @@ button {
 }
 .login:hover > boxtitel,
 .login:active > boxtitel {
+  margin-top: 1vw;
+  -webkit-animation: logInAnimation3 2s ease;
+  -moz-animation: logInAnimation3 2s ease;
+  -o-animation: logInAnimation3 2s ease;
+  animation: logInAnimation3 2s ease;
+}
+.login-active {
+  width: 20vw;
+  z-index: 20;
+  height: 15vw;
+  -webkit-animation: logInAnimation 1.5s ease-in;
+  -moz-animation: logInAnimation 1.5s ease-in;
+  -o-animation: logInAnimation 1.5s ease-in;
+  animation: logInAnimation 1.5s ease-in;
+}
+.login-active > boxcontent {
+  opacity: 1;
+  -webkit-animation: logInAnimation2 2.5s ease-in;
+  -moz-animation: logInAnimation2 2.5s ease-in;
+  -o-animation: logInAnimation2 2.5s ease-in;
+  animation: logInAnimation2 2.5s ease-in;
+}
+.login-active > boxtitel {
   margin-top: 1vw;
   -webkit-animation: logInAnimation3 2s ease;
   -moz-animation: logInAnimation3 2s ease;
@@ -541,6 +570,56 @@ button {
     width: 20vw;
     z-index: 20;
     height: 15vw;
+  }
+}
+/* ---------------------------------- */
+/* used in... -> navigation menu.css */
+@-webkit-keyframes logInAnimation-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+}
+@-moz-keyframes logInAnimation-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+}
+@-o-keyframes logInAnimation-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
+  }
+}
+@keyframes logInAnimation-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    height: 15vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    height: 2.8vw;
   }
 }
 /* ------------------------------- */

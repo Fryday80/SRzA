@@ -20,6 +20,7 @@
   width: 10vw;
   height: 5vw;
   overflow-y: hidden;
+
   > boxtitel
   {
     margin-top: 0;
@@ -30,10 +31,19 @@
   }
 }
 
+.login-inactive
+{
+  .at-animation(logInAnimation-out; 0.5s; ease-in);
+}
+
 
 
 .login:hover,
 .login:active
+{
+  .login-active;
+}
+.login-active
 {
   width: 20vw;
   z-index: 20;
@@ -50,7 +60,6 @@
     .at-animation(logInAnimation3,2s, ease)
   }
 }
-
 
 .log_me_out
 {
@@ -100,6 +109,37 @@
 {
   .at-logInAnimation-action;
 }
+
+/* ---------------------------------- */
+.logInAnimation-out-style(@1; @2; @3){
+  width: @1;
+  z-index: @2;
+  height: @3;
+}
+.at-logInAnimation-out-action()
+{
+  from { .logInAnimation-out-style(20vw;20; @login-height); }
+  to { .logInAnimation-out-style(10vw;1;2.8vw); }
+}
+/* used in... -> navigation menu.css */
+@-webkit-keyframes logInAnimation-out
+{
+  .at-logInAnimation-out-action;
+}
+@-moz-keyframes logInAnimation-out
+{
+  .at-logInAnimation-out-action;
+}
+@-o-keyframes logInAnimation-out
+{
+  .at-logInAnimation-out-action;
+}
+@keyframes logInAnimation-out
+{
+  .at-logInAnimation-out-action;
+}
+
+
 /* ------------------------------- */
 .logInAnimation2-style(@1){
   opacity: @1;
