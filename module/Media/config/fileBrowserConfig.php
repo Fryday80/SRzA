@@ -92,7 +92,7 @@ $config = [
          * Default value "false".
          * Allow users to download a Zip archive of a specific folder and contents (including subfolders).
          */
-        "allowFolderDownload" => false,
+        "allowFolderDownload" => true,
         /**
          * Default value "false".
          * Allow users to change extension when renaming files.

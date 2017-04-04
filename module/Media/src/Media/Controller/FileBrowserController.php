@@ -568,31 +568,7 @@ class FileBrowserController extends AbstractActionController  {
             return $this->convertMediaItems($item)[0];
         }
 
-die;
-//        $target_path = $this->get['path'];
-//        $target_fullpath = $this->getFullPath($target_path, true);
-//        //Log::info('deleting "' . $target_fullpath . '"');
-//
-//        if(!$this->hasPermission('delete')) {
-//            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-//        }
-//
-//        // check if file is writable
-//        if(!$this->has_system_permission($target_fullpath, ['w'])) {
-//            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-//        }
-//
-//        // check if not requesting main FM userfiles folder
-//        if($this->is_root_folder($target_fullpath)) {
-//            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-//        }
-//
-//        // check if the name is not in "excluded" list
-//        if(!$this->is_allowed_name($target_path, is_dir($target_fullpath))) {
-//            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-//        }
-//
-//        $item = $this->get_file_info($target_path);
+        die;
 //        $thumbnail_path = $this->get_thumbnail_path($target_fullpath);
 //
 //        if(is_dir($target_fullpath)) {
@@ -612,8 +588,6 @@ die;
 //                unlink($thumbnail_path);
 //            }
 //        }
-//
-//        return $item;
     }
 
 
@@ -896,7 +870,76 @@ die;
         exit;
     }
 
+    /**
+     * @return array|mixed
+     */
+    public function actionDownload()
+    {
+        $targetPath = $this->get['path'];
 
+        $item = $this->mediaService->getItem($targetPath);
+        if ($item instanceof MediaException) {
+            /** @var $item MediaException */
+            $this->error($item->msg, $item->path);
+            return $this->convertMediaItems($item)[0];
+        }
+
+        if ($item->readable == 0) {
+            $this->error(sprintf($this->lang('NOT_ALLOWED')));
+        }
+
+        if($item->type == 'folder') {
+            // check if permission is granted
+            if($this->config['security']['allowFolderDownload'] == false ) {
+                $this->error(sprintf($this->lang('NOT_ALLOWED')));
+            }
+            //@todo ?? check if not requesting data-root folder
+        }
+
+        if($this->isAjaxRequest()) {
+            return $this->convertMediaItems($item);
+        } else {
+            $destinationPath = $item->fullPath;
+            if($item->type == 'folder') {
+                // if Zip archive is created
+                $zipItem = $this->mediaService->zipFile($item->fullPath);
+                if ($zipItem instanceof MediaException) {
+                    /** @var $item MediaException */
+                    $this->error($item->msg, $item->path);
+                    return $this->convertMediaItems($item)[0];
+                }
+                $destinationPath = $zipItem->fullPath;
+            }
+            $fileSize = $this->get_real_filesize($destinationPath);
+            header('Content-Description: File Transfer');
+            header('Content-Type: ' . FmHelper::mime_content_type($destinationPath));
+            header('Content-Disposition: attachment; filename="' . basename($destinationPath) . '"');
+            header('Content-Transfer-Encoding: binary');
+            header('Content-Length: ' . $fileSize);
+            // handle caching
+            header('Pragma: public');
+            header('Expires: 0');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+
+            // read file by chunks to handle large files
+            // if you face an issue while downloading large files yet, try the following solution:
+            // https://github.com/servocoder/RichFilemanager/issues/78
+
+            $chunk_size = 5 * 1024 * 1024;
+            if ($chunk_size && $fileSize > $chunk_size) {
+                $handle = fopen($destinationPath, 'rb');
+                while (!feof($handle)) {
+                    echo fread($handle, $chunk_size);
+                    @ob_flush();
+                    @flush();
+                }
+                fclose($handle);
+            } else {
+                readfile($destinationPath);
+            }
+            exit;
+        }
+    }
 
 
 
@@ -1026,89 +1069,6 @@ die;
         exit();
     }
 
-
-    /**
-     * @inheritdoc
-     */
-    public function actionDownload()
-    {
-        $target_path = $this->get['path'];
-        $target_fullpath = $this->getFullPath($target_path, true);
-        $is_dir_target = is_dir($target_fullpath);
-        //Log::info('downloading "' . $target_fullpath . '"');
-
-        if(!$this->hasPermission('download')) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED')));
-        }
-
-        // check if file is writable
-        if(!$this->has_system_permission($target_fullpath, ['w'])) {
-            $this->error(sprintf($this->lang('NOT_ALLOWED_SYSTEM')));
-        }
-
-        // check if the name is not in "excluded" list
-        if(!$this->is_allowed_name($target_fullpath, $is_dir_target)) {
-            $this->error(sprintf($this->lang('INVALID_DIRECTORY_OR_FILE')));
-        }
-
-        if($is_dir_target) {
-            // check if permission is granted
-            if($this->config['security']['allowFolderDownload'] == false ) {
-                $this->error(sprintf($this->lang('NOT_ALLOWED')));
-            }
-
-            // check if not requesting main FM userfiles folder
-            if($this->is_root_folder($target_fullpath)) {
-                $this->error(sprintf($this->lang('NOT_ALLOWED')));
-            }
-        }
-
-        if($this->isAjaxRequest()) {
-            return $this->get_file_info($target_path);
-        } else {
-            if($is_dir_target) {
-                $destination_path = sys_get_temp_dir().'/fm_'.uniqid().'.zip';
-
-                // if Zip archive is created
-                if($this->zipFile($target_fullpath, $destination_path, true)) {
-                    $target_fullpath = $destination_path;
-                } else {
-                    $this->error($this->lang('ERROR_CREATING_ZIP'));
-                }
-            }
-            $file_size = $this->get_real_filesize($target_fullpath);
-
-            header('Content-Description: File Transfer');
-            header('Content-Type: ' . mime_content_type($target_fullpath));
-            header('Content-Disposition: attachment; filename="' . basename($target_fullpath) . '"');
-            header('Content-Transfer-Encoding: binary');
-            header('Content-Length: ' . $file_size);
-            // handle caching
-            header('Pragma: public');
-            header('Expires: 0');
-            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-
-            // read file by chunks to handle large files
-            // if you face an issue while downloading large files yet, try the following solution:
-            // https://github.com/servocoder/RichFilemanager/issues/78
-
-            $chunk_size = 5 * 1024 * 1024;
-            if ($chunk_size && $file_size > $chunk_size) {
-                $handle = fopen($target_fullpath, 'rb');
-                while (!feof($handle)) {
-                    echo fread($handle, $chunk_size);
-                    @ob_flush();
-                    @flush();
-                }
-                fclose($handle);
-            } else {
-                readfile($target_fullpath);
-            }
-
-            //Log::info('downloaded "' . $target_fullpath . '"');
-            exit;
-        }
-    }
 
     /**
      * @inheritdoc
@@ -1569,55 +1529,6 @@ die;
 
 
 
-
-    /**
-     * Creates a zip file from source to destination
-     * @param  	string $source Source path for zip
-     * @param  	string $destination Destination path for zip
-     * @param  	boolean $includeFolder If true includes the source folder also
-     * @return 	boolean
-     * @link	http://stackoverflow.com/questions/17584869/zip-main-folder-with-sub-folder-inside
-     */
-    public function zipFile($source, $destination, $includeFolder = false)
-    {
-        if (!extension_loaded('zip') || !file_exists($source)) {
-            return false;
-        }
-
-        $zip = new ZipArchive();
-        if (!$zip->open($destination, ZIPARCHIVE::CREATE)) {
-            return false;
-        }
-
-        $source = str_replace('\\', '/', realpath($source));
-        $folder = $includeFolder ? basename($source) . '/' : '';
-
-        if (is_dir($source) === true) {
-            // add file to prevent empty archive error on download
-            $zip->addFromString('fm.txt', "This archive has been generated by Rich Filemanager : https://github.com/servocoder/RichFilemanager/");
-
-            $files = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-
-            foreach ($files as $file) {
-                $file = str_replace('\\', '/', realpath($file));
-
-                if (is_dir($file) === true) {
-                    $path = str_replace($source . '/', '', $file . '/');
-                    $zip->addEmptyDir($folder . $path);
-                } else if (is_file($file) === true) {
-                    $path = str_replace($source . '/', '', $file);
-                    $zip->addFile($file, $folder . $path);
-                }
-            }
-        } else if (is_file($source) === true) {
-            $zip->addFile($source, $folder . basename($source));
-        }
-
-        return $zip->close();
-    }
 
     /**
      * Check if system permission is granted
