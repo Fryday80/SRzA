@@ -270,7 +270,7 @@ class MediaService {
             }
         }
         //@todo move item in item cache, when cache is implemented :)
-        return $this->loadItem($targetPath.'/'.$item->name.'.'.$item->type);
+        return $this->getItem($fullTargetPath);
     }
     function copyItem($path, $targetParentPath) {
         $item = $this->getItem($path);

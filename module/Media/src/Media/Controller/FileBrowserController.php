@@ -706,15 +706,15 @@ class FileBrowserController extends AbstractActionController  {
             $this->error($item->msg, $item->path);
         } else {
             // move thumbnail file or thumbnails folder if exists
-            if(file_exists($oldThumbnail)) {
-                $new_thumbnail = $this->get_thumbnail_path($item->fullPath);
-                // delete old thumbnail(s) if destination folder does not exist
-                if(file_exists(dirname($new_thumbnail))) {
-                    rename($oldThumbnail, $new_thumbnail);
-                } else {
-                    is_dir($oldThumbnail) ? $this->unlinkRecursive($oldThumbnail) : unlink($oldThumbnail);
-                }
-            }
+//            if(file_exists($oldThumbnail)) {
+//                $new_thumbnail = $this->get_thumbnail_path($item->fullPath);
+//                // delete old thumbnail(s) if destination folder does not exist
+//                if(file_exists(dirname($new_thumbnail))) {
+//                    rename($oldThumbnail, $new_thumbnail);
+//                } else {
+//                    is_dir($oldThumbnail) ? $this->unlinkRecursive($oldThumbnail) : unlink($oldThumbnail);
+//                }
+//            }
         }
         return $this->convertMediaItems($item)[0];
     }
