@@ -107,11 +107,11 @@
         <?php if ($this->showSidebar): ?>
         <!----  rightbar   ---->
             <div id="rightcontainer">
-                <box id="rightbarmiddle">
+                <box id="rightbarSlider">
                         <?php echo $this->randomImage()->scroller(); ?>
                 </box>
 
-                <box class="rightbardown">
+                <box class="rightbarUp">
                     <boxtitel>
                         <span class="own_text_medium">Termine</span><br>
                     </boxtitel>
@@ -124,7 +124,7 @@
                     </boxcontent>
                 </box>
                 <?php endif; ?>
-                <div class="rightbarup">
+                <div class="rightbarDown">
                     <?php echo $this->loginview(); ?>
                 </div>
                 <?php if ($this->showSidebar): ?>

@@ -23,9 +23,9 @@ $(document).ready(function () {
 
     function setBack (){
         if( (window.matchMedia('(max-width: 700px)').matches) && loginmodified == true) {
-            $(".log_me_out").appendTo(".rightbarup")
+            $(".log_me_out").appendTo(".rightbarDown")
                 .removeAttr("style");
-            $("box.login").appendTo(".rightbarup")
+            $("box.login").appendTo(".rightbarDown")
                 .removeClass("login-active")
                 .removeClass("login-inactive");
         }
