@@ -79,17 +79,6 @@ return array(
                             'spec'  => '/path%path%'
                         ),
                     ),
-                    'download'  => array(
-                        'type'  => 'regex',
-                        'options'   => array(
-                            'regex'     => '/download(?<path>\/.*)',
-                            'defaults'  => array(
-                                'controller'    => 'file',
-                                'action'        => 'download',
-                            ),
-                            'spec'  => '/path%path%'
-                        ),
-                    ),
                     'image' => array(
                         'type' => 'regex',
                         'options' => array(
