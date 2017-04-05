@@ -10,6 +10,8 @@
      *      crossFade: bool,
      * }} SimpleSettings
      */
+
+    /** @var SimpleSettings */
     var defaultOptions = {
         intervalTime: 8000,
         fadeInTime: 2000,
@@ -21,13 +23,12 @@
     };
 
     /**
-     *
      * @param ele
      * @param {SimpleSettings} settings
      * @constructor
      */
     function SimpleSlideShow(ele, settings) {
-        var self = this,
+        let self = this,
             clientWidth,
             clientHeight;
         /** @type {jQuery}  */
@@ -51,10 +52,18 @@
                     });
                 }
             });
+            $(window).resize(this.resize.bind(this));
+                        
             this.interval = setInterval(this.fadeToNext.bind(this), this.settings.intervalTime);
             this.fadeToNext();
         }
-
+        this.resize = function() {
+            $('img', this.$element).each(function(key, value) {
+                clientWidth = ele.clientWidth;
+                clientHeight = ele.clientHeight;
+                this.fitImageSize(value);
+            }.bind(this));
+        }
         this.fitImageSize = function(ele) {
             // var width = ele.naturalWidth,
             //     height = ele.naturalHeight;

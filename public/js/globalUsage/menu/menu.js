@@ -125,4 +125,4 @@ $(document).ready (function menu_handler_js () {
         setMode ();
         menuRowDesigner();
     });
-})
+});
