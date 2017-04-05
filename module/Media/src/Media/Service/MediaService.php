@@ -303,6 +303,9 @@ class MediaService {
         if ($item instanceof MediaException)
             return $item;
 
+        if (!$this->checkFolderPermissions($path, true)) {
+            return new MediaException(ERROR_TYPES::NO_READ_PERMISSION, $path);
+        }
         $targetParentItem = $this->loadItem($targetParentPath);
         if ($targetParentItem instanceof MediaException)
             return $item;
@@ -337,15 +340,6 @@ class MediaService {
             }
         }
 
-//        if (is_dir($path)) {
-//            if(is_dir($targetPath) ) {
-//                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetParentPath.'/'.$item->name);
-//            }
-//        } else {
-//            if(file_exists($targetPath) ) {
-//                return new MediaException(ERROR_TYPES::TARGET_ALREADY_EXISTS, $targetParentPath.'/'.$item->name.'.'.$item->type);
-//            }
-//        }
         // move file or folder
         if(!$this->copyRecursive($item->fullPath, $targetPath)) {
             if(is_dir($item->fullPath)) {
