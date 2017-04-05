@@ -7,8 +7,8 @@ use RecursiveIteratorIterator;
 use Zend\Http\Response;
 use ZipArchive;
 
-const DATA_PATH = '\Data';
-const TRASH_BIN_PATH = '\_trash';
+const DATA_PATH = '/Data';
+const TRASH_BIN_PATH = '/_trash';
 const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
 const NOT_FOUND_IMAGE = 'public/img/imgNotFound.png';
 
@@ -113,7 +113,9 @@ class MediaService {
     function __construct(AccessService $accessService) {
         $this->accessService = $accessService;
         $rootPath = getcwd();
+        bdump($rootPath);
         $this->dataPath = $rootPath.DATA_PATH;
+        bdump($this->dataPath);
         $this->metaCache = [];
     }
     //@todo need to be replaced by getItems -- only used in galleryService.

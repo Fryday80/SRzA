@@ -33,8 +33,9 @@ CKEDITOR.on('dialogDefinition', function (event)
     var dialogObj;
     var _fm,
         _fmModel;
-
-    CKEDITOR.dialog.addIframe("fileManager", "test title", "", 400, 400, function(e) {}, {
+    var width = $(".body").width();
+    var height = $(window).height()*0.6;
+    CKEDITOR.dialog.addIframe("fileManager", "Server durchsuchen", "", width, height, function(e) {}, {
         resizable: CKEDITOR.DIALOG_RESIZE_BOTH,
         onOk : function()
         {

@@ -3,6 +3,7 @@ namespace Album\Service;
 
 
 use Album\Model\AlbumModel;
+use Media\Service\MediaException;
 use Media\Service\MediaService;
 use Zarganwar\PerformancePanel\Register;
 
@@ -31,10 +32,14 @@ Class GalleryService
         //@todo album chaching
         $result = array();
         $fileName = '/folder.conf';
-        $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
+//        $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
+        $galleryDirs = $this->mediaService->getItems($this->galleryPath);
+        if ($galleryDirs instanceof MediaException) {
+            return $galleryDirs;
+        }
         foreach ($galleryDirs as $key => $value) {
-            if ($this->mediaService->fileExists($value['path'].$fileName) ) {
-                $a = new AlbumModel($value['path'], $this->mediaService);
+            if ($this->mediaService->fileExists($value->path.'/'.$fileName) ) {
+                $a = new AlbumModel($value->path, $this->mediaService);
                 $a->loadImages();
                 array_push($result,  $a);
             }

@@ -109,7 +109,7 @@ class FileBrowserController extends AbstractActionController  {
 
     private function initFileBrowser() {
         $dataPath = getcwd() . '/data';
-        $this->config = require_once(getcwd().'\module\Media\config\fileBrowserConfig.php');
+        $this->config = require_once(getcwd().'/module/Media/config/fileBrowserConfig.php');
         $this->config['options']['fileRoot'] = $dataPath;
 
         // fix display non-latin chars correctly
