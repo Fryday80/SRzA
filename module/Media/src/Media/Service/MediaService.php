@@ -272,7 +272,7 @@ class MediaService {
 
         if ($item->type == 'folder') {
             if (!$this->checkFolderPermissions($item->path, false, true)) {
-                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
             }
             $fullTargetPath = $this->cleanPath($targetParentItem->fullPath . '/' . $item->name);
         } else {
@@ -308,7 +308,7 @@ class MediaService {
             return $item;
 
         if (!$this->checkFolderPermissions($path, true)) {
-            return new MediaException(ERROR_TYPES::NO_READ_PERMISSION, $path);
+            return new MediaException(ERROR_TYPES::NO_READ_PERMISSION_IN_CHILDS, $path);
         }
         $targetParentItem = $this->loadItem($targetParentPath);
         if ($targetParentItem instanceof MediaException)
@@ -609,7 +609,7 @@ class MediaService {
 
         if ($item->type == 'folder') {
             if (!$this->checkFolderPermissions($path, true)) {
-                return new MediaException(ERROR_TYPES::NO_READ_PERMISSION);
+                return new MediaException(ERROR_TYPES::NO_READ_PERMISSION_IN_CHILDS);
             }
         } else {
             if ($item->readable == 0) {
