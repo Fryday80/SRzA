@@ -711,10 +711,10 @@ button {
   .topBox.login:hover > boxcontent,
   .topBox.login:active > boxcontent {
     opacity: 1;
-    -webkit-animation: blur-in 0.8s ease-in;
-    -moz-animation: blur-in 0.8s ease-in;
-    -o-animation: blur-in 0.8s ease-in;
-    animation: blur-in 0.8s ease-in;
+    -webkit-animation: blurIn 0.8s ease-in;
+    -moz-animation: blurIn 0.8s ease-in;
+    -o-animation: blurIn 0.8s ease-in;
+    animation: blurIn 0.8s ease-in;
   }
   .topBox.login:hover > boxtitel,
   .topBox.login:active > boxtitel {
@@ -735,10 +735,10 @@ button {
   }
   .topBox.login-active > boxcontent {
     opacity: 1;
-    -webkit-animation: blur-in 0.8s ease-in;
-    -moz-animation: blur-in 0.8s ease-in;
-    -o-animation: blur-in 0.8s ease-in;
-    animation: blur-in 0.8s ease-in;
+    -webkit-animation: blurIn 0.8s ease-in;
+    -moz-animation: blurIn 0.8s ease-in;
+    -o-animation: blurIn 0.8s ease-in;
+    animation: blurIn 0.8s ease-in;
   }
   .topBox.login-active > boxtitel {
     margin-top: 1vw;
