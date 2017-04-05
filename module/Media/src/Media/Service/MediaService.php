@@ -40,6 +40,8 @@ const ERROR_STRINGS = [
     "Can't write to folder",
     "No ZIP extension",
     "Error while zipping",
+    'No read permission in sub folders',
+    'No write permission in sub folders',
 
 ];
 abstract class ERROR_TYPES {
@@ -70,6 +72,8 @@ abstract class ERROR_TYPES {
     const CAN_NOT_WRITE_FOLDER = 24;
     const NO_ZIP_EXTENSION = 25;
     const ERROR_IN_ZIP = 26;
+    const NO_READ_PERMISSION_IN_CHILDS = 27;
+    const NO_WRITE_PERMISSION_IN_CHILDS = 28;
 
 
 }
@@ -356,8 +360,14 @@ class MediaService {
         if ($item instanceof MediaException)
             return $item;
 
-        if ($item->writable == 0) {
-            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+        if ($item->type == 'folder') {
+            if (!$this->checkFolderPermissions($path, false, true)) {
+                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
+            }
+        } else {
+            if ($item->writable == 0) {
+                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+            }
         }
         $trashPath = $this->realPath(TRASH_BIN_PATH);
 
