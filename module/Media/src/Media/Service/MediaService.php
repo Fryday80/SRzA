@@ -150,6 +150,10 @@ class MediaService {
         return $result;
     }
 
+    /**
+     * @param $path
+     * @return bool
+     */
     function fileExists($path) {
         $filePath = $this->realPath($path);
         if (is_file($filePath)) {
@@ -158,12 +162,32 @@ class MediaService {
         return false;
     }
 
+    /**
+     * @param $path
+     * @return bool
+     */
     function isDir($path) {
         $filePath = $this->realPath($path);
         if (is_dir($filePath)) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param $path
+     * @return bool
+     */
+    public function isImage($path) {
+        $mime = FmHelper::mime_type_by_extension($path);
+        $imagesMime = [
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "image/bmp",
+            "image/svg+xml",
+        ];
+        return in_array($mime, $imagesMime);
     }
 
     function createFolder($path) {
@@ -504,18 +528,6 @@ class MediaService {
         return $response;
     }
 
-    public function isImage($path) {
-        $mime = FmHelper::mime_type_by_extension($path);
-        $imagesMime = [
-            "image/jpeg",
-            "image/png",
-            "image/gif",
-            "image/bmp",
-            "image/svg+xml",
-        ];
-        return in_array($mime, $imagesMime);
-    }
-
     /**
      * @param $path
      * @return array with 2 items readable and writable values are 0 and 1
@@ -590,6 +602,17 @@ class MediaService {
         $includeFolder = true;
         $item = $this->getItem($path);
         $source = $item->fullPath;
+
+        if ($item->type == 'folder') {
+            if (!$this->checkFolderPermissions($path, true)) {
+                return new MediaException(ERROR_TYPES::NO_READ_PERMISSION);
+            }
+        } else {
+            if ($item->readable == 0) {
+                return new MediaException(ERROR_TYPES::NO_READ_PERMISSION);
+            }
+        }
+
         $destination = sys_get_temp_dir().'/SRzA_'.uniqid().'.zip';
 
         if (!extension_loaded('zip') || !file_exists($source)) {
