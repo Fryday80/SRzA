@@ -1,170 +1,156 @@
 // helper classes
-.at-animation(@name; @duration; @option: ease-in)
-{
-    -webkit-animation: @name @duration @option;
-    -moz-animation: @name @duration @option;
-    -o-animation: @name @duration @option;
-    animation: @name @duration @option;
+// usage in class or id or...
+.at-animation(@arguments) {
+    -webkit-animation: @arguments;
+    -moz-animation: @arguments;
+    -o-animation: @arguments;
+    animation: @arguments;
 }
 
-/* remove animation */
-@-webkit-keyframes none{}
-@-moz-keyframes none{}
-@-o-keyframes none{}
-@keyframes none {}
+//creating animations
+.keyframes(@name; @arguments) {
+    @-moz-keyframes @name { @arguments(); }
+    @-webkit-keyframes @name { @arguments(); }
+    @keyframes @name { @arguments(); }
+}
 
+//      sample
+// /* ------------------------- */
+//.animation{
+//    @name: ;
+//    .ani-style(@1) {
+//      setting: @1;
+//    }
+//    .ani-action(){
+//
+//    }
+//    /* animation used in ... -> */
+//    .keyframes(@name; { .ani-action });
+//}
 
-/* --------------- sign shaking ------
------------------------------------ */
-
-.at-shake(@shake-degree: 40deg)
-{
-    0%      {}
-    5%      { transform:rotate(  0deg); }
-    35%     { transform:rotate(-@shake-degree); }
-    65%     { transform:rotate( @shake-degree); }
-    95%     { transform:rotate(  0deg); }
-    100%    {}
-}
-@-webkit-keyframes shake_sing
-{
-    .at-shake;
-}
-@-moz-keyframes shake_sing
-{
-    .at-shake;
-}
-@-o-keyframes shake_sing
-{
-    .at-shake;
-}
-@keyframes shake_sing {
-    .at-shake;
+ /* --------- Animations ------------ */
+.animation {
+    /* ----------- sign shaking ----------
+    ----------------------------------- */
+    @name: shake_sign;
+    .ani-action(@shake-degree: 40deg) {
+        0% {        }
+        5% { transform: rotate(0deg); }
+        35% { transform: rotate(-@shake-degree); }
+        65% { transform: rotate(@shake-degree); }
+        95% { transform: rotate(0deg); }
+        100% {        }
+    }
+    .keyframes(@name; { .ani-action });
 }
 .headdeko:hover
 {
     /* used in... -> head */
-    .at-animation(shake_sing; 3s; alternate);
+    .at-animation(shake_sing 3s alternate);
 }
 
-/* -- Fade in from display: none --
--------------------------------- */
-.fade-style(@disp, @op){
-    display: @disp;
-    opacity: @op;
-}
-.at-fade-action()
-{
-    0% { .fade-style(none, 0); }
-    0.5% { .fade-style(block, 0); }
-    100% { .fade-style(block, 1); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes fadeInFromNone
-{
-    .at-fade-action;
-}
-@-moz-keyframes fadeInFromNone
-{
-    .at-fade-action;
-}
-@-o-keyframes fadeInFromNone
-{
-    .at-fade-action;
-}
-@keyframes fadeInFromNone
-{
-    .at-fade-action;
+.animation {
+    /* -- blur in from display: none --
+    -------------------------------- */
+    @name: blurIn;
+    .ani-style(@op) {
+        opacity: @op;
+    }
+    .ani-action() {
+        from {
+            .ani-style(0);
+        }
+        to {
+            .ani-style(1);
+        }
+    }
+    /* used in... -> navigation menu.css */
+    .keyframes (@name; { .ani-action });
 }
 
-/* -- Slide in from display: none --
--------------------------------- */
-.slide-style(@op){
-    max-height: @op;
+/* -- navigation animations -- */
+ /* ------------------------- */
+.animation{
+    @name: slideInFromTop;
+    .ani-style(@1) {
+        max-height: @1;
+    }
+    .ani-action(){
+        from {.ani-style(0)}
+        to {.ani-style(75px)}
+    }
+    /* animation used in ... -> navigation */
+    .keyframes(@name; { .ani-action });
 }
-.at-slide-action()
-{
-    from { .slide-style(0); }
-    to { .slide-style(75px); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes slideInFromNone
-{
-    .at-slide-action;
-}
-@-moz-keyframes slideInFromNone
-{
-    .at-slide-action;
-}
-@-o-keyframes slideInFromNone
-{
-    .at-slide-action;
-}
-@keyframes slideInFromNone
-{
-    .at-slide-action;
-}
-/* -- Slide in 2 for mobile View from display: none --
--------------------------------- */
-.slide-style2(@op){
-    max-height: @op;
-}
-.at-slide-action2()
-{
-    from { .slide-style2(0); }
-    to { .slide-style2(1200px); }
-}
-/* used in... -> navigation menu.css */
-@-webkit-keyframes slideInFromNone2
-{
-    .at-slide-action2;
-}
-@-moz-keyframes slideInFromNone2
-{
-    .at-slide-action2;
-}
-@-o-keyframes slideInFromNone2
-{
-    .at-slide-action2;
-}
-@keyframes slideInFromNone2
-{
-    .at-slide-action2;
+ /* ------------------------- */
+.animation{
+    @name: slideInFromTop2;
+    .ani-style(@1) {
+        max-height: @1;
+    }
+    .ani-action(){
+        from {.ani-style(0)}
+        to {.ani-style(1200px)}
+    }
+    /* animation used in ... -> navigation Mobile-View */
+    .keyframes(@name; { .ani-action });
 }
 
-/* -- blur in from display: none --
--------------------------------- */
-.blur-style(@op){
-    opacity: @op;
+
+/* ---------------------------------- */
+.animation {
+    @name: logIn-animate-slide-in;
+    .ani-style(@1; @2; @3) {
+        width: @1;
+        z-index: @2;
+        max-height: @3;
+    }
+    .ani-action() {
+        from {
+            .ani-style(10vw; 1; 2.8vw);
+        }
+        to {
+            .ani-style(20vw; 20; @login-max-height);
+        }
+    }
+    /* used in... -> login_logout.css */
+    .keyframes(@name; { .ani-action });
 }
-.at-blur-action()
-{
-    from { .blur-style(0); }
-    to { .blur-style(1); }
+
+/* -- login logout animations -- */
+/* ---------------------------------- */
+.animation {
+    @name: logIn-animate-slide-out;
+    .ani-style(@1; @2; @3) {
+        width: @1;
+        z-index: @2;
+        max-height: @3;
+    }
+    .ani-action() {
+        from {
+            .ani-style(20vw; 20; @login-max-height);
+        }
+        to {
+            .ani-style(10vw; 1; 2.8vw);
+        }
+    }
+    /* used in... -> login_logout.css */
+    .keyframes(@name; { .ani-action });
 }
-/* used in... -> navigation menu.css */
-@-webkit-keyframes blurIn
-{
-    .at-blur-action;
+/* ------------------------------- */
+.animation {
+    @name: logIn-animate-boxtitle-margin;
+    .ani-style(@1) {
+        margin-top: @1;
+    }
+    .ani-action() {
+        0% {
+            .ani-style(0);
+        }
+        100% {
+            .ani-style(1vw);
+        }
+    }
+    /* used in... -> login_logout.css */
+    .keyframes(@name; { .ani-action });
 }
-@-moz-keyframes blurIn
-{
-    .at-blur-action;
-}
-@-o-keyframes blurIn
-{
-    .at-blur-action;
-}
-@keyframes blurIn
-{
-    .at-blur-action;
-}
-//
-// /* ------- Link img rotation ----- */
-//
-//@keyframes rotate
-//{
-//    // used in... -> navigation menu.css ---- no more
-//    0%      { transform:rotate(  0deg); }
-//    100%    { transform:rotate(  360deg); }
-//}

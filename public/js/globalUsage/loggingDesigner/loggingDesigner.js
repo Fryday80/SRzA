@@ -7,7 +7,8 @@ $(document).ready(function () {
             // temporary styling will be out sourced to css
             $(".log_me_out").appendTo("body")
                 .css("position", "absolute");
-            $("box.login").appendTo("body");
+            $(".rightbarDown box.login").appendTo("body")
+                .addClass("topBox");
 
             // real desingner function
             $("box.login").off("click");
@@ -24,7 +25,7 @@ $(document).ready(function () {
     function setBack (){
         if( (window.matchMedia('(max-width: 700px)').matches) && loginmodified == true) {
             $(".log_me_out").appendTo(".rightbarDown")
-                .removeAttr("style");
+                    .removeAttr("style");
             $("box.login").appendTo(".rightbarDown")
                 .removeClass("login-active")
                 .removeClass("login-inactive");

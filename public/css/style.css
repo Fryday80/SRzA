@@ -17,6 +17,256 @@
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
+/* css animations */
+/* --------- Animations ------------ */
+.animation {
+  /* ----------- sign shaking ----------
+    ----------------------------------- */
+}
+@-moz-keyframes shake_sign {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+@-webkit-keyframes shake_sign {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+@keyframes shake_sign {
+  5% {
+    transform: rotate(0deg);
+  }
+  35% {
+    transform: rotate(-40deg);
+  }
+  65% {
+    transform: rotate(40deg);
+  }
+  95% {
+    transform: rotate(0deg);
+  }
+}
+.headdeko:hover {
+  /* used in... -> head */
+  -webkit-animation: shake_sing 3s alternate;
+  -moz-animation: shake_sing 3s alternate;
+  -o-animation: shake_sing 3s alternate;
+  animation: shake_sing 3s alternate;
+}
+.animation {
+  /* -- blur in from display: none --
+    -------------------------------- */
+  /* used in... -> navigation menu.css */
+}
+@-moz-keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes blurIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* -- navigation animations -- */
+/* ------------------------- */
+.animation {
+  /* animation used in ... -> navigation */
+}
+@-moz-keyframes slideInFromTop {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+@-webkit-keyframes slideInFromTop {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+@keyframes slideInFromTop {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 75px;
+  }
+}
+/* ------------------------- */
+.animation {
+  /* animation used in ... -> navigation Mobile-View */
+}
+@-moz-keyframes slideInFromTop2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+@-webkit-keyframes slideInFromTop2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+@keyframes slideInFromTop2 {
+  from {
+    max-height: 0;
+  }
+  to {
+    max-height: 1200px;
+  }
+}
+/* ---------------------------------- */
+.animation {
+  /* used in... -> login_logout.css */
+}
+@-moz-keyframes logIn-animate-slide-in {
+  from {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+}
+@-webkit-keyframes logIn-animate-slide-in {
+  from {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+}
+@keyframes logIn-animate-slide-in {
+  from {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+  to {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+}
+/* -- login logout animations -- */
+/* ---------------------------------- */
+.animation {
+  /* used in... -> login_logout.css */
+}
+@-moz-keyframes logIn-animate-slide-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+}
+@-webkit-keyframes logIn-animate-slide-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+}
+@keyframes logIn-animate-slide-out {
+  from {
+    width: 20vw;
+    z-index: 20;
+    max-height: 20vw;
+  }
+  to {
+    width: 10vw;
+    z-index: 1;
+    max-height: 2.8vw;
+  }
+}
+/* ------------------------------- */
+.animation {
+  /* used in... -> login_logout.css */
+}
+@-moz-keyframes logIn-animate-boxtitle-margin {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
+@-webkit-keyframes logIn-animate-boxtitle-margin {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
+@keyframes logIn-animate-boxtitle-margin {
+  0% {
+    margin-top: 0;
+  }
+  100% {
+    margin-top: 1vw;
+  }
+}
 /* -----------------MODDING----------------- */
 /*-------------------------------------------*/
 /* ---------------- Cursor ----------------- */
@@ -315,7 +565,7 @@ button {
   .level_0 {
     position: relative;
     display: inline-block;
-    width: 130px;
+    width: 140px;
     text-align: center;
     height: 23px;
     border-bottom: 0.5vw solid;
@@ -402,19 +652,19 @@ button {
   }
   .animation {
     display: block !important;
-    -webkit-animation: slideInFromNone2 1s ease-out;
-    -moz-animation: slideInFromNone2 1s ease-out;
-    -o-animation: slideInFromNone2 1s ease-out;
-    animation: slideInFromNone2 1s ease-out;
+    -webkit-animation: slideInFromTop2 1s ease-out;
+    -moz-animation: slideInFromTop2 1s ease-out;
+    -o-animation: slideInFromTop2 1s ease-out;
+    animation: slideInFromTop2 1s ease-out;
   }
 }
 /* ---------------------------- animations -> css_actions.css -------------------------------- */
 @media only screen and (min-width: 700px) {
   .level_0:hover > ul li {
-    -webkit-animation: slideInFromNone 0.2s ease-in;
-    -moz-animation: slideInFromNone 0.2s ease-in;
-    -o-animation: slideInFromNone 0.2s ease-in;
-    animation: slideInFromNone 0.2s ease-in;
+    -webkit-animation: slideInFromTop 0.2s ease-in;
+    -moz-animation: slideInFromTop 0.2s ease-in;
+    -o-animation: slideInFromTop 0.2s ease-in;
+    animation: slideInFromTop 0.2s ease-in;
   }
   .level_0:hover > ul li > a > p {
     -webkit-animation: blurIn 0.3s ease-in;
@@ -425,74 +675,77 @@ button {
 }
 /* login and logout view */
 @media only screen and (min-width: 700px) {
-  .login {
+  .topBox {
+    /* styles only the logIn box top-right */
+  }
+  .topBox.login {
     position: absolute;
     top: 0;
     right: 3vw;
     width: 10vw;
     max-height: 20vw;
   }
-  .login > boxtitel {
+  .topBox.login > boxtitel {
     margin-top: 0;
   }
-  .login > boxcontent {
+  .topBox.login > boxcontent {
     opacity: 0;
     padding-top: 2.5vw;
   }
-  .login-inactive {
-    -webkit-animation: logInAnimation-out 0.5s ease-in;
-    -moz-animation: logInAnimation-out 0.5s ease-in;
-    -o-animation: logInAnimation-out 0.5s ease-in;
-    animation: logInAnimation-out 0.5s ease-in;
+  .topBox.login-inactive {
+    -webkit-animation: logIn-animate-slide-out 0.5s ease-in;
+    -moz-animation: logIn-animate-slide-out 0.5s ease-in;
+    -o-animation: logIn-animate-slide-out 0.5s ease-in;
+    animation: logIn-animate-slide-out 0.5s ease-in;
   }
-  .login:hover,
-  .login:active {
+  .topBox.login:hover,
+  .topBox.login:active {
     width: 20vw;
     z-index: 20;
     max-height: 20vw;
-    -webkit-animation: logInAnimation 0.3s ease-in;
-    -moz-animation: logInAnimation 0.3s ease-in;
-    -o-animation: logInAnimation 0.3s ease-in;
-    animation: logInAnimation 0.3s ease-in;
+    -webkit-animation: logIn-animate-slide-in 0.3s ease-in;
+    -moz-animation: logIn-animate-slide-in 0.3s ease-in;
+    -o-animation: logIn-animate-slide-in 0.3s ease-in;
+    animation: logIn-animate-slide-in 0.3s ease-in;
   }
-  .login:hover > boxcontent,
-  .login:active > boxcontent {
+  .topBox.login:hover > boxcontent,
+  .topBox.login:active > boxcontent {
     opacity: 1;
-    -webkit-animation: logInAnimation2 0.8s ease-in;
-    -moz-animation: logInAnimation2 0.8s ease-in;
-    -o-animation: logInAnimation2 0.8s ease-in;
-    animation: logInAnimation2 0.8s ease-in;
+    -webkit-animation: blur-in 0.8s ease-in;
+    -moz-animation: blur-in 0.8s ease-in;
+    -o-animation: blur-in 0.8s ease-in;
+    animation: blur-in 0.8s ease-in;
   }
-  .login:hover > boxtitel,
-  .login:active > boxtitel {
+  .topBox.login:hover > boxtitel,
+  .topBox.login:active > boxtitel {
     margin-top: 1vw;
-    -webkit-animation: logInAnimation3 0.3s ease;
-    -moz-animation: logInAnimation3 0.3s ease;
-    -o-animation: logInAnimation3 0.3s ease;
-    animation: logInAnimation3 0.3s ease;
+    -webkit-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    -moz-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    -o-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    animation: logIn-animate-boxtitle-margin 0.3s ease;
   }
-  .login-active {
+  .topBox.login-active {
     width: 20vw;
     z-index: 20;
     max-height: 20vw;
-    -webkit-animation: logInAnimation 0.3s ease-in;
-    -moz-animation: logInAnimation 0.3s ease-in;
-    -o-animation: logInAnimation 0.3s ease-in;
-    animation: logInAnimation 0.3s ease-in;
+    -webkit-animation: logIn-animate-slide-in 0.3s ease-in;
+    -moz-animation: logIn-animate-slide-in 0.3s ease-in;
+    -o-animation: logIn-animate-slide-in 0.3s ease-in;
+    animation: logIn-animate-slide-in 0.3s ease-in;
   }
-  .login-active > boxcontent {
+  .topBox.login-active > boxcontent {
     opacity: 1;
-    -webkit-animation: logInAnimation2 0.8s ease-in;
-    -moz-animation: logInAnimation2 0.8s ease-in;
-    -o-animation: logInAnimation2 0.8s ease-in;
-    animation: logInAnimation2 0.8s ease-in;
+    -webkit-animation: blur-in 0.8s ease-in;
+    -moz-animation: blur-in 0.8s ease-in;
+    -o-animation: blur-in 0.8s ease-in;
+    animation: blur-in 0.8s ease-in;
   }
-  .login-active > boxtitel {
+  .topBox.login-active > boxtitel {
     margin-top: 1vw;
-    -webkit-animation: logInAnimation3 0.3s ease;
-    -moz-animation: logInAnimation3 0.3s ease;
-    -o-animation: logInAnimation3 0.3s ease;
-    animation: logInAnimation3 0.3s ease;
+    -webkit-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    -moz-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    -o-animation: logIn-animate-boxtitle-margin 0.3s ease;
+    animation: logIn-animate-boxtitle-margin 0.3s ease;
   }
   .log_me_out {
     overflow-y: auto;
@@ -513,174 +766,6 @@ button {
   }
   .logout > boxtitel {
     text-align: center;
-  }
-  /* ---------------------------------- */
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation {
-    from {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-    to {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-  }
-  @-moz-keyframes logInAnimation {
-    from {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-    to {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-  }
-  @-o-keyframes logInAnimation {
-    from {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-    to {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-  }
-  @keyframes logInAnimation {
-    from {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-    to {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-  }
-  /* ---------------------------------- */
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation-out {
-    from {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-    to {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-  }
-  @-moz-keyframes logInAnimation-out {
-    from {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-    to {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-  }
-  @-o-keyframes logInAnimation-out {
-    from {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-    to {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-  }
-  @keyframes logInAnimation-out {
-    from {
-      width: 20vw;
-      z-index: 20;
-      max-height: 20vw;
-    }
-    to {
-      width: 10vw;
-      z-index: 1;
-      max-height: 2.8vw;
-    }
-  }
-  /* ------------------------------- */
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation2 {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @-moz-keyframes logInAnimation2 {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @-o-keyframes logInAnimation2 {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  @keyframes logInAnimation2 {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  /* ------------------------------- */
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation3 {
-    0% {
-      margin-top: 0;
-    }
-    100% {
-      margin-top: 1vw;
-    }
-  }
-  @-moz-keyframes logInAnimation3 {
-    0% {
-      margin-top: 0;
-    }
-    100% {
-      margin-top: 1vw;
-    }
-  }
-  @-o-keyframes logInAnimation3 {
-    0% {
-      margin-top: 0;
-    }
-    100% {
-      margin-top: 1vw;
-    }
-  }
-  @keyframes logInAnimation3 {
-    0% {
-      margin-top: 0;
-    }
-    100% {
-      margin-top: 1vw;
-    }
   }
 }
 /* styles used in Zend */
@@ -905,237 +990,6 @@ noscript > div > div {
 noscript > div > div > .ownhead {
   color: white;
   font-size: 8vw;
-}
-/* css animations */
-/* remove animation */
-/* --------------- sign shaking ------
------------------------------------ */
-@-webkit-keyframes shake_sing {
-  5% {
-    transform: rotate(0deg);
-  }
-  35% {
-    transform: rotate(-40deg);
-  }
-  65% {
-    transform: rotate(40deg);
-  }
-  95% {
-    transform: rotate(0deg);
-  }
-}
-@-moz-keyframes shake_sing {
-  5% {
-    transform: rotate(0deg);
-  }
-  35% {
-    transform: rotate(-40deg);
-  }
-  65% {
-    transform: rotate(40deg);
-  }
-  95% {
-    transform: rotate(0deg);
-  }
-}
-@-o-keyframes shake_sing {
-  5% {
-    transform: rotate(0deg);
-  }
-  35% {
-    transform: rotate(-40deg);
-  }
-  65% {
-    transform: rotate(40deg);
-  }
-  95% {
-    transform: rotate(0deg);
-  }
-}
-@keyframes shake_sing {
-  5% {
-    transform: rotate(0deg);
-  }
-  35% {
-    transform: rotate(-40deg);
-  }
-  65% {
-    transform: rotate(40deg);
-  }
-  95% {
-    transform: rotate(0deg);
-  }
-}
-.headdeko:hover {
-  /* used in... -> head */
-  -webkit-animation: shake_sing 3s alternate;
-  -moz-animation: shake_sing 3s alternate;
-  -o-animation: shake_sing 3s alternate;
-  animation: shake_sing 3s alternate;
-}
-/* -- Fade in from display: none --
--------------------------------- */
-/* used in... -> navigation menu.css */
-@-webkit-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@-moz-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@-o-keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-@keyframes fadeInFromNone {
-  0% {
-    display: none;
-    opacity: 0;
-  }
-  0.5% {
-    display: block;
-    opacity: 0;
-  }
-  100% {
-    display: block;
-    opacity: 1;
-  }
-}
-/* -- Slide in from display: none --
--------------------------------- */
-/* used in... -> navigation menu.css */
-@-webkit-keyframes slideInFromNone {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 75px;
-  }
-}
-@-moz-keyframes slideInFromNone {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 75px;
-  }
-}
-@-o-keyframes slideInFromNone {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 75px;
-  }
-}
-@keyframes slideInFromNone {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 75px;
-  }
-}
-/* -- Slide in 2 for mobile View from display: none --
--------------------------------- */
-/* used in... -> navigation menu.css */
-@-webkit-keyframes slideInFromNone2 {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 1200px;
-  }
-}
-@-moz-keyframes slideInFromNone2 {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 1200px;
-  }
-}
-@-o-keyframes slideInFromNone2 {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 1200px;
-  }
-}
-@keyframes slideInFromNone2 {
-  from {
-    max-height: 0;
-  }
-  to {
-    max-height: 1200px;
-  }
-}
-/* -- blur in from display: none --
--------------------------------- */
-/* used in... -> navigation menu.css */
-@-webkit-keyframes blurIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@-moz-keyframes blurIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@-o-keyframes blurIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes blurIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 /* *** js styles used global */
 /* jquery UI Style   for pop up, datepicker ... */

@@ -55,7 +55,7 @@
   {
     .relative;
     .at-show(inline-block);
-    width: 130px;
+    width: 140px;
     text-align: center;
     height: 23px;
     .at-border(bottom);
@@ -159,7 +159,7 @@
   .animation
   {
        display: block !important;
-    .at-animation(slideInFromNone2; 1.0s; ease-out);
+    .at-animation(slideInFromTop2 1.0s ease-out);
    }
 }
 
@@ -168,10 +168,10 @@
 {
   .level_0:hover > ul li
   {
-    .at-animation(slideInFromNone; 0.2s; ease-in);
+    .at-animation(slideInFromTop 0.2s ease-in);
     > a > p
     {
-      .at-animation(blurIn; 0.3s; ease-in);
+      .at-animation(blurIn 0.3s ease-in);
     }
   }
 }

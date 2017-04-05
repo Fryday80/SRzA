@@ -3,48 +3,50 @@
 
 // behavior when logged in:
 // .loggin {
-//    used for js selection of logout box in logOutDesigner.js
+//    used for js selection of logout box in loggingDesigner.js
 //  }
 @login-max-height: 20vw;
 
 @media only screen and (min-width: 700px) {
-  .login {
-    position: absolute;
-    top: 0;
-    right: 3vw;
-    width: 10vw;
-    max-height: @login-max-height;
+  .topBox {   /* styles only the logIn box top-right */
+    &.login {
+      position: absolute;
+      top: 0;
+      right: 3vw;
+      width: 10vw;
+      max-height: @login-max-height;
 
-    > boxtitel {
-      margin-top: 0;
+      > boxtitel {
+        margin-top: 0;
+      }
+      > boxcontent {
+        opacity: 0;
+        padding-top: 2.5vw;
+      }
     }
-    > boxcontent {
-      opacity: 0;
-      padding-top: 2.5vw;
+
+    &.login-inactive {
+      .at-animation(logIn-animate-slide-out 0.5s ease-in);
     }
-  }
 
-  .login-inactive {
-    .at-animation(logInAnimation-out; 0.5s; ease-in);
-  }
-
-  .login:hover,
-  .login:active {
-    .login-active;
-  }
-
-  .login-active {
-    width: 20vw;
-    z-index: 20;
-    max-height: @login-max-height;
-    .at-animation(logInAnimation; 0.3s; ease-in);
-    > boxcontent {
-      opacity: 1;
-      .at-animation(logInAnimation2; 0.8s; ease-in);
+    &.login:hover,
+    &.login:active {
+      .login-active;
     }
-    > boxtitel {
-      margin-top: 1vw;
-      .at-animation(logInAnimation3, 0.3s, ease)
+
+    &.login-active {
+      width: 20vw;
+      z-index: 20;
+      max-height: @login-max-height;
+      .at-animation(logIn-animate-slide-in 0.3s ease-in);
+      > boxcontent {
+        opacity: 1;
+        .at-animation(blur-in 0.8s ease-in);
+      }
+      > boxtitel {
+        margin-top: 1vw;
+        .at-animation(logIn-animate-boxtitle-margin 0.3s ease)
+      }
     }
   }
 
@@ -64,114 +66,5 @@
     > boxtitel {
       text-align: center;
     }
-  }
-
-  /* ---------------------------------- */
-  .logInAnimation-style(@1; @2; @3) {
-    width: @1;
-    z-index: @2;
-    max-height: @3;
-  }
-  .at-logInAnimation-action() {
-    from {
-      .logInAnimation-style(10vw; 1; 2.8vw);
-    }
-    to {
-      .logInAnimation-style(20vw; 20; @login-max-height);
-    }
-  }
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation {
-    .at-logInAnimation-action;
-  }
-  @-moz-keyframes logInAnimation {
-    .at-logInAnimation-action;
-  }
-  @-o-keyframes logInAnimation {
-    .at-logInAnimation-action;
-  }
-  @keyframes logInAnimation {
-    .at-logInAnimation-action;
-  }
-
-  /* ---------------------------------- */
-  .logInAnimation-out-style(@1; @2; @3) {
-    width: @1;
-    z-index: @2;
-    max-height: @3;
-  }
-  .at-logInAnimation-out-action() {
-    from {
-      .logInAnimation-out-style(20vw; 20; @login-max-height);
-    }
-    to {
-      .logInAnimation-out-style(10vw; 1; 2.8vw);
-    }
-  }
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation-out {
-    .at-logInAnimation-out-action;
-  }
-  @-moz-keyframes logInAnimation-out {
-    .at-logInAnimation-out-action;
-  }
-  @-o-keyframes logInAnimation-out {
-    .at-logInAnimation-out-action;
-  }
-  @keyframes logInAnimation-out {
-    .at-logInAnimation-out-action;
-  }
-
-
-  /* ------------------------------- */
-  .logInAnimation2-style(@1) {
-    opacity: @1;
-  }
-  .at-logInAnimation2-action() {
-    from {
-      .logInAnimation2-style(0);
-    }
-    to {
-      .logInAnimation2-style(1);
-    }
-  }
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation2 {
-    .at-logInAnimation2-action;
-  }
-  @-moz-keyframes logInAnimation2 {
-    .at-logInAnimation2-action;
-  }
-  @-o-keyframes logInAnimation2 {
-    .at-logInAnimation2-action;
-  }
-  @keyframes logInAnimation2 {
-    .at-logInAnimation2-action;
-  }
-
-  /* ------------------------------- */
-  .logInAnimation3-style(@1) {
-    margin-top: @1;
-  }
-  .at-logInAnimation3-action() {
-    0% {
-      .logInAnimation3-style(0);
-    }
-    100% {
-      .logInAnimation3-style(1vw);
-    }
-  }
-  /* used in... -> navigation menu.css */
-  @-webkit-keyframes logInAnimation3 {
-    .at-logInAnimation3-action;
-  }
-  @-moz-keyframes logInAnimation3 {
-    .at-logInAnimation3-action;
-  }
-  @-o-keyframes logInAnimation3 {
-    .at-logInAnimation3-action;
-  }
-  @keyframes logInAnimation3 {
-    .at-logInAnimation3-action;
   }
 }
