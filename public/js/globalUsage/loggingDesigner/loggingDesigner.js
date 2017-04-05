@@ -11,12 +11,12 @@ $(document).ready(function () {
                 .addClass("topBox");
 
             // real desingner function
-            $("box.login").off("click");
-            $("box.login").on("click", function () {
-                $("box.login").toggleClass("login-active");
+            $("box.login.topBox").off("click");
+            $("box.login.topBox").on("click", function () {
+                $("box.login.topBox").toggleClass("login-active");
             });
-            $("box.login").on("mouseout", function () {
-                $("box.login").not(".login-inactive").addClass("login-inactive");
+            $("box.login.topBox").on("mouseout", function () {
+                $("box.login.topBox").not(".login-inactive").addClass("login-inactive");
             });
             loginmodified = true;
         }
