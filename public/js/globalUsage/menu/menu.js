@@ -1,7 +1,7 @@
 $(document).ready (function menu_handler_js () {
     "use strict";
 
-    var mode ='L',
+    var mode ='browser',
         ulHeight = parseInt( $('ul.navigation').css('height') );
 
     /**
@@ -9,59 +9,52 @@ $(document).ready (function menu_handler_js () {
      */
     function menuToggle() {
         $(".menu_items").toggleClass("hidden")
-            .toggleClass("animation");
+            .toggleClass("mobile-animation");
     }
 
     /**
-     * Sets the mode by Viewsize
-     * returns string 'L' or 'S'
-     * 'S' = mobile view
-     * given in var mode
+     * Sets the mode by view size
+     * sets mode to "browser" || "mobile"
+     * and runs designing script
      */
     function setMode () {
-        /**
-         * unsets the classes for mobile view ("S view")
-         * when resizing from small to normal view
-         */
-        function runL () {
+        /** resets the browser style, when resized **/
+        function runBrowser () {
             /** style class changes **/
             $(".js-L-view").removeClass("hidden");
             $(".js-S-view").not("hidden").addClass("hidden");
-            $(".logging").removeClass("box")
-                .not("log_me_out").addClass("log_me_out");
             $('.navigation .linkPic').removeClass("hidden");
         }
 
-        /**
-         * sets the classes for mobile view ("S view")
+        /** sets the mobile style or
+         * resets the menu to closed state @resize
          */
-        function runS () {
+        function runMobile () {
             /** style class changes **/
             $(".js-S-view").removeClass("hidden");
             $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
-            $(".logging").removeClass("log_me_out")
-                .not("box").addClass("box");
             $(".navigation .linkPic").not("hidden").addClass("hidden");
-            $(".menu_items").removeClass("animation");
         }
 
         /** removes click event to avoid multiple bindings **/
         $(".menu_button_img").off("click",  menuToggle);
+        /** removes the animation to avoid view bugs when resized in open state or to normal view **/
+        $(".menu_items").removeClass("mobile-animation");
 
         if(window.matchMedia('(max-width: 700px)').matches) {
-            mode = "S";
-            runS();
+            mode = "mobile";
+            runMobile();
         } else {
-            mode ="L";
-            runL();
+            mode ="browser";
+            runBrowser();
         }
     }
 
     /**
      * binds the menu show-hide action
      */
-    function menuActionsS () {
-        if (mode == 'S') {
+    function menuActionsMobile () {
+        if (mode == 'mobile') {
             $(".menu_button_img").on("click", menuToggle);
         }
     }
@@ -115,12 +108,12 @@ $(document).ready (function menu_handler_js () {
     }
 /* ------------------ WORKING SCRIPT -------------------- */
     setMode ();
-    menuActionsS();
+    menuActionsMobile();
     countItems();
 
     $(window).resize ( function () {
         setMode ();
-        menuActionsS();
+        menuActionsMobile();
         countItems();
     });
 })
