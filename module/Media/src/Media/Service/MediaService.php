@@ -182,7 +182,9 @@ class MediaService {
         }
         //create new folder
         $realPath = $this->cleanPath($this->dataPath.'/'.$path);
-        mkdir($realPath);
+//        $oldmask = umask(0);
+        mkdir($realPath, 0777);
+//        umask($oldmask);
         //return newly created folder item
         return $this->getItem($path);
 
@@ -336,13 +338,13 @@ class MediaService {
         if ($item instanceof MediaException)
             return $item;
 
-
         if ($item->writable == 0) {
             return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
         }
         $trashPath = $this->realPath(TRASH_BIN_PATH);
+
+        //if item is not in trash bin -> move it there
         if (strncmp($item->fullPath, $trashPath, strlen($trashPath)) !== 0) {
-            //not in trash bin -> move it
             if (!is_dir($this->realPath($trashPath))) {
                 mkdir($this->realPath($trashPath));
             }
@@ -373,6 +375,7 @@ class MediaService {
                 }
             }
         } else {
+
             if(!unlink($item->fullPath)) {
                 if (is_dir($item->fullPath)) {
                     return new MediaException(ERROR_TYPES::ERROR_DELETE_FOLDER, $path);
