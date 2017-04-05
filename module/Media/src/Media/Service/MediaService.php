@@ -113,9 +113,7 @@ class MediaService {
     function __construct(AccessService $accessService) {
         $this->accessService = $accessService;
         $rootPath = getcwd();
-        bdump($rootPath);
         $this->dataPath = $rootPath.DATA_PATH;
-        bdump($this->dataPath);
         $this->metaCache = [];
     }
     //@todo need to be replaced by getItems -- only used in galleryService.

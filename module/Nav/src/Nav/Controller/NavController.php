@@ -184,7 +184,6 @@ class NavController extends AbstractActionController
             // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
-        bdump($navTable->getItem($id));
         return array(
             'id' => $id,
             'item' => $navTable->getItem($id)
