@@ -583,7 +583,7 @@ button {
     padding-top: 2px;
   }
   .level_0 > ul {
-    margin-top: 0.5vw;
+    margin-top: calc(0.5vw + 2px);
     position: absolute;
     width: 100%;
     background-color: #FAEBd7;

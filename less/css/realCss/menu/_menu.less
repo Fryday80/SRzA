@@ -68,11 +68,12 @@
       display: block;
       border-bottom: none;
     }
+    @p-padding: 2px;
     p {
-       padding-top: 2px;
+       padding-top: @p-padding;
     }
     > ul {
-        margin-top: @border-width;
+        margin-top: calc(@border-width~"+" @p-padding);
         .absolute;
         width: 100%;
         .at-bg-color;
