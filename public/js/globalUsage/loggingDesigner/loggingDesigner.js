@@ -1,6 +1,6 @@
 
 $(document).ready(function () {
-    var loginmodified= false;
+    var loginmodified = false;
         
     function loggingMover(){
         if( !(window.matchMedia('(max-width: 700px)').matches) ) {
