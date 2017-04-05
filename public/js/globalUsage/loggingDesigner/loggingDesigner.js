@@ -5,7 +5,7 @@ $(document).ready(function () {
     function loggingMover(){
         if( !(window.matchMedia('(max-width: 700px)').matches) ) {
             // temporary styling will be out sourced to css
-            $(".log_me_out").appendTo("body")
+            $(".logout").appendTo("body")
                 .css("position", "absolute");
             $(".rightbarDown box.login").appendTo("body")
                 .addClass("topBox");
@@ -23,10 +23,9 @@ $(document).ready(function () {
     }
 
     function setBack (){
-        if( (window.matchMedia('(max-width: 700px)').matches) && loginmodified == true) {
-            $(".log_me_out").appendTo(".rightbarDown")
-                    .removeAttr("style");
-            $("box.login").appendTo(".rightbarDown")
+        if( (window.matchMedia('(max-width: 700px)').matches)) {
+            $(".logging").appendTo(".rightbarDown")
+                .removeAttr("style")
                 .removeClass("login-active")
                 .removeClass("login-inactive");
         }
