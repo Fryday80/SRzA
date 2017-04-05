@@ -242,15 +242,15 @@ class MediaService {
             return new MediaException(ERROR_TYPES::TARGET_FOLDER_NOT_FOUND, $targetPath);
         }
 
-        if ($item->writable == 0) {
-            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
-        }
-        if ($targetParentItem->writable == 0) {
-            return new MediaException(ERROR_TYPES::TARGET_NO_WRITE_PERMISSION, $targetPath);
-        }
         if ($item->type == 'folder') {
+            if (!$this->checkFolderPermissions($item->path, false, true)) {
+                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+            }
             $fullTargetPath = $this->cleanPath($targetParentItem->fullPath . '/' . $item->name);
         } else {
+            if ($item->writable == 0) {
+                return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $path);
+            }
             $fullTargetPath = $this->cleanPath($targetParentItem->fullPath . '/' . $item->name . '.' . $item->type);
         }
 
@@ -579,9 +579,10 @@ class MediaService {
 
     /**
      * Creates a zip file from source
-     * @param  	string $source Source path for zip
-     * @return 	MediaItem|MediaException
-     * @link	http://stackoverflow.com/questions/17584869/zip-main-folder-with-sub-folder-inside
+     * @param $path
+     * @return MediaException|MediaItem
+     * @internal param string $source Source path for zip
+     * @link    http://stackoverflow.com/questions/17584869/zip-main-folder-with-sub-folder-inside
      */
 
     public function zipFile($path)
@@ -646,6 +647,62 @@ class MediaService {
             $writable = 1;
         }
         return ['r' => $readable, 'w' => $writable];
+    }
+
+    /**
+     * Check recursive folder permissions
+     * @param $path
+     * @param bool $read
+     * @param bool $write
+     * @return bool
+     */
+    private function checkFolderPermissions($path, $read = true, $write = true) {
+        $realPath = $this->realPath($path);
+        if (!$realPath) {
+            //@todo return MediaException
+            return false;
+        }
+        return $this->recursiveCheckFolderPermissions($realPath, $read, $write);
+    }
+
+    /**
+     * Check recursive folder permissions
+     * @param $path
+     * @param bool $read
+     * @param bool $write
+     * @return bool
+     */
+    private function recursiveCheckFolderPermissions($path, $read, $write) {
+        if(!is_dir($path) ) {
+            return false;
+        }
+
+        $dir = scandir($path);
+        $role = $this->accessService->getRole();
+        $meta = $this->getFolderMeta($path);
+        if ($meta && isset($meta['Permissions']) ) {
+            if (isset($meta['Permissions']['folderRead'])) {
+                if ($read && !in_array($role, $meta['Permissions']['folderRead']) ) {
+                    return false;
+                }
+            }
+            if (isset($meta['Permissions']['folderWrite'])) {
+                if ($write && !in_array($role, $meta['Permissions']['folderWrite']) ) {
+                    return false;
+                }
+            }
+        }
+
+        foreach ($dir as $key => $value) {
+            if ($value == '.' || $value == '..') continue;
+            $valuePath = $path.'/'.$value;
+            if( is_dir ($valuePath) ) {
+                if (!$this->recursiveCheckFolderPermissions($valuePath, $read, $write)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     private function realPath($path) {
         $realPath = realpath($this->dataPath.'/'.$path);
