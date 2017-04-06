@@ -48,7 +48,7 @@ Class GalleryService
     }
 
     public function getAlbum($name) {
-        $path = $this->galleryPath.'/'.$name;
+        $path = 'media/file'.$this->galleryPath.'/'.$name;
         if ($this->mediaService->getFolderMeta($path) && isset($this->mediaService->getFolderMeta($path)['Album'])) {
             $album = new AlbumModel($path, $this->mediaService);
             $album->loadImages();
