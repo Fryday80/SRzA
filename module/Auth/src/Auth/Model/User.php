@@ -8,6 +8,7 @@ class User
     public $name;
     public $password;
     public $status;
+    public $role_name;
 
     public function exchangeArray($data)
     {
@@ -16,6 +17,7 @@ class User
         $this->name         = (! empty($data['name']))          ? $data['name']         : $this->name;
         $this->password     = (! empty($data['password']))      ? $data['password']     : $this->password;
         $this->status       = (! empty($data['status']))        ? $data['status']       : $this->status;
+        $this->role_name    = (! empty($data['role_name']))     ? $data['role_name']    : $this->role_name;
     }
 
     public function getArrayCopy()

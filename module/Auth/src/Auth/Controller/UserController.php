@@ -90,6 +90,7 @@ class UserController extends AbstractActionController
             return $this->redirect()->toRoute('user');
         }
         $form = new UserForm();
+        $form = $this->addRole($form);
         $form->setData($user->getArrayCopy());
         $form->get('submit')->setAttribute('value', 'Edit');
         
@@ -108,7 +109,7 @@ class UserController extends AbstractActionController
                 return $this->redirect()->toRoute('user');
             }
         }
-        
+
         return array(
             'id' => $id,
             'form' => $form
@@ -147,5 +148,22 @@ class UserController extends AbstractActionController
             $this->userTable = $sm->get('Auth\Model\UserTable');
         }
         return $this->userTable;
+    }
+    private function addRole ($form){
+        $form->add(array(
+            'name' => 'role_name',
+            'type' => 'Zend\Form\Element\MultiCheckbox',
+            'options' => array(
+                'value_options' => array(
+                    '0' => 'Member',
+                    '1' => 'Spartenleitung',
+                    '2' => 'Vorstand',
+                    '3' => 'Administrator',
+                ),
+        )),
+            array(
+                'priority' => 5, // Increase value to move to top of form
+            ));
+        return $form;
     }
 }

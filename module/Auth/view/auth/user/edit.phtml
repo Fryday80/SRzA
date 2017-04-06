@@ -9,6 +9,7 @@ $this->headTitle($title);
  $form = $this->form;
  $form->setAttribute('action', $this->url('user/edit', array('id' => $this->id)));
  $form->prepare();
+
  echo $this->form($form);
  
 //  echo $this->form()->openTag($form);

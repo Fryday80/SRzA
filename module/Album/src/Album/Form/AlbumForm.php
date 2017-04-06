@@ -95,14 +95,19 @@ class AlbumForm extends Form
             )
         );
 
-        $this->add(array(
-            'name' => 'submit',
-            'type' => 'Submit',
-            'attributes' => $general_layout,
-            'attributes' => array(
-                'value' => 'Speichern',
-                'id' => 'submitbutton',
+        $this->add(
+            array(
+                'name' => 'submit',
+                'type' => 'Submit',
+                'attributes' => $general_layout,
+                'attributes' => array(
+                    'value' => 'Speichern',
+                    'id' => 'submitbutton',
+                ),
             ),
-        ));
+            array(
+                'priority' => 1, // Increase value to move to top of form
+            )
+        );
     }
 }
