@@ -85,6 +85,8 @@ class UserTable extends AbstractTableGateway
     public function deleteUser($id)
     {
         $this->delete(array('id' => (int) $id));
+        //@todo remove roles with user_id = $id
+        //@todo remove characters from cast
     }
 
     public function getUsersWhere($where = array(), $columns = array())
@@ -100,6 +102,10 @@ class UserTable extends AbstractTableGateway
             if (count($columns) > 0) {
                 $select->columns($columns);
             }
+
+            $select->join(array('userRole' => 'user_role'),'userRole.user_id = users.id',
+                array('role_id'), 'LEFT');
+            $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
 
             $users = $this->selectWith($select);
             return $users;

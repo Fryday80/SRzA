@@ -7,15 +7,39 @@
 # you're doing.
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "scotch/box"
-    config.vm.network "private_network", ip: "192.168.33.10"
+    config.vm.box = "chrislentz/trusty64-lamp"
+    #config.vm.network "private_network", ip: "192.168.33.10"
+    config.vm.network "public_network"
     config.vm.hostname = "SRzA"
     config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
+    #config.vm.synced_folder '.', '/var/www', nfs: true
+
+       config.vm.provider "virtualbox" do |v|
+          v.memory = 2048
+          v.cpus = 3
+        end
 
     # Optional NFS. Make sure to remove other synced_folder line too
     #config.vm.synced_folder ".", "/var/www", :nfs => { :mount_options => ["dmode=777","fmode=666"] }
 
-
+   # config.vm.provider "virtualbox" do |v|
+   #   host = RbConfig::CONFIG['host_os']
+#
+   #   # Give VM 1/4 system memory
+   #   if host =~ /darwin/
+   #     # sysctl returns Bytes and we need to convert to MB
+   #     mem = `sysctl -n hw.memsize`.to_i / 1024
+   #   elsif host =~ /linux/
+   #     # meminfo shows KB and we need to convert to MB
+   #     mem = `grep 'MemTotal' /proc/meminfo | sed -e 's/MemTotal://' -e 's/ kB//'`.to_i
+   #   elsif host =~ /mswin|mingw|cygwin/
+   #     # Windows code via https://github.com/rdsubhas/vagrant-faster
+   #     mem = `wmic computersystem Get TotalPhysicalMemory`.split[1].to_i / 1024
+   #   end
+#
+   #   mem = mem / 1024 / 4
+   #   v.customize ["modifyvm", :id, "--memory", mem]
+   # end
 
 
    # config.vm.provision "shell", inline: <<-SHELL

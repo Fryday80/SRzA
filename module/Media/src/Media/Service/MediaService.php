@@ -42,6 +42,7 @@ const ERROR_STRINGS = [
     "Error while zipping",
     'No read permission in sub folders',
     'No write permission in sub folders',
+    'Folder is not in data path',
 
 ];
 abstract class ERROR_TYPES {
@@ -74,7 +75,7 @@ abstract class ERROR_TYPES {
     const ERROR_IN_ZIP = 26;
     const NO_READ_PERMISSION_IN_CHILDS = 27;
     const NO_WRITE_PERMISSION_IN_CHILDS = 28;
-
+    const ERROR_FOLDER_NOT_IN_DATA_PATH = 29;
 
 }
 
@@ -113,7 +114,7 @@ class MediaService {
     function __construct(AccessService $accessService) {
         $this->accessService = $accessService;
         $rootPath = getcwd();
-        $this->dataPath = $rootPath.DATA_PATH;
+        $this->dataPath = $this->cleanPath($rootPath.DATA_PATH);
         $this->metaCache = [];
     }
     //@todo need to be replaced by getItems -- only used in galleryService.
@@ -494,7 +495,7 @@ class MediaService {
      * @return Response
      */
     public function createFileResponse($path, $response) {
-        $fullPath = realpath($this->dataPath.$path);
+        $fullPath = $this->realPath($path);
         if (!$fullPath || !is_file($fullPath)) {
             if ($this->isImage($path)) {
                 $fullPath = realpath(NOT_FOUND_IMAGE);
@@ -549,6 +550,9 @@ class MediaService {
 
         if ($isDir) {
             $meta = $this->getFolderMeta($path);
+            if ($meta instanceof MediaException) {
+                return ['readable' => 0, 'writable' => 0];
+            }
             if ($meta && isset($meta['Permissions']) ) {
                 if (isset($meta['Permissions']['folderRead'])) {
                     if (in_array($role, $meta['Permissions']['folderRead']) ) {
@@ -563,6 +567,9 @@ class MediaService {
             }
         } else {
             $meta = $this->getFolderMeta($path);
+            if ($meta instanceof MediaException) {
+                return ['readable' => 0, 'writable' => 0];
+            }
             if ($meta && isset($meta['Permissions']) ) {
                 if (isset($meta['Permissions']['allRead'])) {
                     if (in_array($role, $meta['Permissions']['allRead']) ) {
@@ -707,6 +714,9 @@ class MediaService {
         $dir = scandir($path);
         $role = $this->accessService->getRole();
         $meta = $this->getFolderMeta($path);
+        if ($meta instanceof MediaException) {
+            return false;
+        }
         if ($meta && isset($meta['Permissions']) ) {
             if (isset($meta['Permissions']['folderRead'])) {
                 if ($read && !in_array($role, $meta['Permissions']['folderRead']) ) {
@@ -739,28 +749,49 @@ class MediaService {
             $realPath = $this->cleanPath($realPath);
         return $realPath;
     }
+
+    /**
+     *
+     * @param $path
+     * @return bool
+     */
+    private function isInDataFolder($path) {
+        //wenn der pfad nicht im dataPath ist dann false
+        if (strpos($path, $this->dataPath) === false) {
+            return false;
+        }
+        return true;
+    }
+    /**
+     * @param $objectivePath muss ein absoluter pfad sein
+     * @return array|MediaException
+     */
     private function parseIniFile($objectivePath) {
-        $iniDir = realpath($objectivePath);
-        if (!is_dir($iniDir)) {
-            $iniDir = dirname($iniDir);
+        if (!is_dir($objectivePath)) {
+            $objectivePath = dirname($objectivePath);
         }
-        if (strpos($iniDir, $this->dataPath) === false) {
-            return [];
+        if (!$this->isInDataFolder($objectivePath)) {
+            return new MediaException(ERROR_TYPES::ERROR_FOLDER_NOT_IN_DATA_PATH, $objectivePath);
         }
-        $iniPath = $iniDir.'/folder.conf';
+        $dir = $objectivePath;
+        $objectivePath = $objectivePath.'/folder.conf';
+//        var_dump($objectivePath);die;//ich muss weg bis in 20 min :)kk
         $process_sections = true;
         $scanner_mode = INI_SCANNER_TYPED;
-        if (in_array($iniPath, $this->metaCache)) {
-            return $this->metaCache[$iniPath];
+        if (in_array($objectivePath, $this->metaCache)) {
+            return $this->metaCache[$objectivePath];
         }
         $ini = [];
-        if (is_file($iniPath)) {
-            $ini = parse_ini_file($iniPath, $process_sections, $scanner_mode);
-            $this->metaCache[$iniPath] = $ini;
+        if (is_file($objectivePath)) {
+            $ini = parse_ini_file($objectivePath, $process_sections, $scanner_mode);
+            $this->metaCache[$objectivePath] = $ini;
         } else {
-            $ini = $this->parseIniFile(dirname($objectivePath));
+            $ini = $this->parseIniFile(dirname($dir));
+            if ($ini instanceof MediaException) {
+                return $ini;
+            }
             unset($ini['FileRestrictions']);
-            $this->metaCache[$iniPath] = $ini;
+            $this->metaCache[$objectivePath] = $ini;
         }
         return $ini;
     }

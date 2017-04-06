@@ -10,9 +10,9 @@
             <ul class="tross">
                 <?php for($i = 0; $i < 5; $i++): ?>
                     <li>
-                        <a href="/<?php echo $this->chars[$i][id]; ?>">
+                        <a href="/<?php echo $this->chars[$i]['id']; ?>">
                             <div class="box small">
-                                <?php echo $this->CharProfile()->small($this->chars[1]); ?>
+                                <?php echo $this->CharProfile()->small($this->chars[$i]); ?>
                             </div>
                         </a>
                     </li>

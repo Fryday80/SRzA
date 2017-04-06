@@ -18,7 +18,9 @@ class UserController extends AbstractActionController
     }
     public function indexAction()
     {
-        $userTable = new DataTable( array( 'data' => $this->getUserTable()->getUsers()->toArray() ) );
+        $data = $this->getUserTable()->getUsers()->toArray();
+        bdump($data);
+        $userTable = new DataTable( array( 'data' => $data ));
         $userTable->insertLinkButton('/user/add', "Neuer Benutzer");
         $userTable->setColumns( array (
             array (
@@ -28,6 +30,10 @@ class UserController extends AbstractActionController
             array (
                 'name'  => 'email',
                 'label' => 'eMail'
+            ),
+            array (
+                'name'  => 'role_name',
+                'label' => 'Rolle'
             ),
             array (
                 'name'  => 'href',

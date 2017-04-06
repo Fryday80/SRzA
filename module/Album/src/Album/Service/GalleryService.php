@@ -31,14 +31,13 @@ Class GalleryService
     public function getAllAlbums() {
         //@todo album chaching
         $result = array();
-        $fileName = '/folder.conf';
-//        $galleryDirs = $this->mediaService->getFolderNames($this->galleryPath);
         $galleryDirs = $this->mediaService->getItems($this->galleryPath);
         if ($galleryDirs instanceof MediaException) {
             return $galleryDirs;
         }
         foreach ($galleryDirs as $key => $value) {
-            if ($this->mediaService->fileExists($value->path.'/'.$fileName) ) {
+            $meta = $this->mediaService->getFolderMeta($value->path);
+            if (is_array($meta) && isset($meta['Album'])) {
                 $a = new AlbumModel($value->path, $this->mediaService);
                 $a->loadImages();
                 array_push($result,  $a);
@@ -48,13 +47,18 @@ Class GalleryService
     }
 
     public function getAlbum($name) {
-        $path = 'media/file'.$this->galleryPath.'/'.$name;
-        if ($this->mediaService->getFolderMeta($path) && isset($this->mediaService->getFolderMeta($path)['Album'])) {
+        $path = $this->galleryPath.'/'.$name;
+        $meta = $this->mediaService->getFolderMeta($path);
+        if (is_array($meta) && isset($meta['Album'])) {
             $album = new AlbumModel($path, $this->mediaService);
             $album->loadImages();
             return $album;
         } else {
-            dump("path not exists  -  ". $path);
+            if ($meta instanceof MediaException) {
+                dump($meta->msg);
+            } else {
+                dump("path not exists  -  " . $path);
+            }
             return null;
         }
     }

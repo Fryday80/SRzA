@@ -36,7 +36,7 @@ class AlbumController extends AbstractActionController
                'label'  => 'Datum',
                'type'   => 'custom',
                'render' => function ($row){
-                   $data = date ('d.m.Y', $row['timestamp']);
+                   $data = date ('d.m.Y', $row->timestamp);
                    return $data;
                }
             ),
@@ -45,7 +45,7 @@ class AlbumController extends AbstractActionController
                'label'  => 'Sichtbarkeit',
                'type'   => 'custom',
                'render' => function ($row){
-                   $visibility = ($row['visibility'] == 1) ? 'Ja': 'nein';
+                   $visibility = ($row->visibility == 1) ? 'Ja': 'nein';
                    return $visibility;
                }
             ),
@@ -54,12 +54,13 @@ class AlbumController extends AbstractActionController
                 'label' => 'Aktion',
                 'type'  => 'custom',
                 'render' => function ($row){
-                    $edit = '<a href="album/edit/' . $row['id'] . '">Edit</a>';
-                    $delete = '<a href="album/delete/' . $row['id'] . '">Delete</a>';
+                    $edit = '<a href="album/edit/' . $row->id . '">Edit</a>';
+                    $delete = '<a href="album/delete/' . $row->id . '">Delete</a>';
                     return $edit.' '.$delete;
                 }
             ),
         ) );
+        bdump($albumsTable);
         $viewModel = new ViewModel(array( 'table' => $albumsTable ) );
         return $viewModel;
     }
