@@ -404,14 +404,14 @@ class MediaService {
                 }
             }
         } else {
-
-            if(!unlink($item->fullPath)) {
-                if (is_dir($item->fullPath)) {
-                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FOLDER, $path);
-                } else {
-                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FILE, $path);
-                }
-            }
+            $this->deleteRecursive($item->fullPath);
+//            if(!unlink($item->fullPath)) {
+//                if (is_dir($item->fullPath)) {
+//                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FOLDER, $path);
+//                } else {
+//                    return new MediaException(ERROR_TYPES::ERROR_DELETE_FILE, $path);
+//                }
+//            }
         }
         return $item;
     }
@@ -751,7 +751,6 @@ class MediaService {
     }
 
     /**
-     *
      * @param $path
      * @return bool
      */
@@ -885,5 +884,24 @@ class MediaService {
         closedir($handle);
 
         return true;
+    }
+
+    /**
+     * deletes hard without permission check
+     * @todo add error handling
+     * @param $realPath
+     */
+    private function deleteRecursive($realPath) {
+        if (is_dir($realPath)){
+            $files = glob($realPath.'/*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
+            foreach ($files as $file)
+            {
+                $this->deleteRecursive( $file );
+            }
+
+            rmdir($realPath);
+        } elseif (is_file($realPath)) {
+            unlink($realPath);
+        }
     }
 }
