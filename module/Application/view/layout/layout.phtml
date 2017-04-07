@@ -18,12 +18,12 @@
 <!----  jquery scripts   ---->
     <?php echo $this->headScript()
                         ->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
-                        ->prependFile($this->basePath('js/globalUsage/accordion/accordion.js'))
-                        ->prependFile($this->basePath('js/globalUsage/loggingDesigner/loggingDesigner.js'))
-                        ->prependFile($this->basePath('js/globalUsage/menu/menu.js'))
-                        ->prependFile($this->basePath('js/globalUsage/popUp/popUp.js'))
+                        ->prependFile($this->basePath(  'js/globalUsage/accordion/accordion.js'))
+                        ->prependFile($this->basePath(  'js/globalUsage/loggingDesigner/loggingDesigner.js'))
+                        ->prependFile($this->basePath(  'js/globalUsage/menu/menu.js'))
+                        ->prependFile($this->basePath(  'js/globalUsage/popUp/popUp.js'))
                         ->prependFile($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.min.js'))
-                        ->prependFile($this->basePath('js/globalUsage/jquery/jquery-3.2.0.min.js'))
+                        ->prependFile($this->basePath(  'js/globalUsage/jquery/jquery-3.2.0.min.js'))
     ;
 //    echo $this->feedback()->startUp();
     ?>
@@ -34,7 +34,7 @@
         $this->showSidebar = true;
     }
     // usage in controller:
-    //$this->layout()->setVariable('showSidebar', false);
+    // $this->layout()->setVariable('showSidebar', false);
 
     $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
 ?>
