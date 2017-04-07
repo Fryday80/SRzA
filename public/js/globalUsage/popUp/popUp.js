@@ -3,15 +3,14 @@ $(document).ready(function () {
 
 //    sessionStorage.clear(); // for testing reasons
 
-    /** remove the href of the no js fallback **/
+    /** remove the href event default of the no js fallback **/
     function removeNoScriptFallback (){
-        $(".disclaim").removeAttr("href");
-        $(".impressum").removeAttr("href");
-    }
-    
-    function appendNoScriptFallback (){
-        $(".disclaim :not(:has('href'))").setAttribute("href", "/disclaimer");
-        $(".impressum :not(:has('href'))").setAttribute("href", "/impressum");
+        $(".disclaim").click(function( event ) {
+            event.preventDefault();
+        });
+        $(".impressum").click(function( event ) {
+            event.preventDefault();
+        });
     }
     
 
@@ -87,7 +86,6 @@ $(document).ready(function () {
                 openPopup(title, content, buttons, popUpClass);
             },
             error: function(err) {
-                appendNoScriptFallback;
                 console.log(err);
             }
         });
