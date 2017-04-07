@@ -6,9 +6,15 @@ use Auth\Form\Filter\UserFilter;
 
 class UserForm extends Form
 {
-    public function __construct($name = null)
+    private $allRoles;
+    private $roles;
+    private $role;
+    public function __construct($roles = null, $role = null)
     {
         parent::__construct('User');
+        $this->allRoles = $roles;
+        $this->role = $role;
+//        bdump($roles);
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new UserFilter());
 
@@ -70,6 +76,17 @@ class UserForm extends Form
             array(
                 'priority' => 11, // Increase value to move to top of form
             ));
+        if ($roles) {
+            $this->add(array(
+                'name' => 'role_id',
+                'type' => 'Zend\Form\Element\Select',
+                'attributes' => array(),
+                'options' => array(
+                    'label' => 'role',
+                    'value_options' => $this->getRolesForSelect(),
+                )
+            ));
+        }
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
@@ -81,5 +98,27 @@ class UserForm extends Form
             array(
                 'priority' => 1, // Increase value to move to top of form
             ));
+    }
+    private function getRolesForSelect() {
+        if (!$this->roles) {
+            $this->roles = [];
+            $this->getParents($this->allRoles, $this->role);
+            $this->roles = array_reverse($this->roles);
+        }
+        $selectData = array();
+
+        foreach ($this->roles as $role) {
+            $selectData[$role['rid']] = $role['role_name'];
+        }
+        return $selectData;
+    }
+
+    private function getParents($data, $role) {
+        foreach ($data as $roleData) {
+            if ($roleData['role_name'] == $role) {
+                array_push($this->roles, $roleData);
+                $this->getParents($data, $roleData['role_parent_name'], $this->roles);
+            }
+        }
     }
 }

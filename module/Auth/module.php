@@ -134,13 +134,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     $resultSetPrototype = new HydratingResultSet();
                     $resultSetPrototype->setHydrator(new ObjectProperty());
                     $resultSetPrototype->setObjectPrototype(new User());
-                    return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $resultSetPrototype);
+                    return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $resultSetPrototype, $serviceManager);
                 },
                 'Auth\Model\RoleTable' => function ($serviceManager) {
                     return new RoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Auth\Model\UserRoleTable' => function ($serviceManager) {
-                    return new UserRoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
                 },
                 'Auth\Model\PermissionTable' => function ($serviceManager) {
                     return new PermissionTable($serviceManager->get('Zend\Db\Adapter\Adapter'));

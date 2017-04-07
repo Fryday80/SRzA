@@ -4,6 +4,7 @@ namespace Auth\Service;
 use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
+use Zend\Permissions\Acl\Role\Registry;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -76,13 +77,11 @@ class AclService extends Acl
     protected function _addRoles()
     {
         $this->addRole(new Role(self::DEFAULT_ROLE));
-        
         if (! empty($this->roles)) {
             foreach ($this->roles as $role) {
                 $roleName = $role['role_name'];
                 if (! $this->hasRole($roleName)) {
-                    //                              use $role['role_parent_name']
-                    $this->addRole(new Role($roleName), self::DEFAULT_ROLE);
+                    $this->addRole(new Role($roleName), ($role['role_parent_name'])? $role['role_parent_name']: self::DEFAULT_ROLE);
                 }
             }
         }
@@ -153,5 +152,21 @@ class AclService extends Acl
     private function debugAcl($role, $resource, $permission)
     {
         echo 'Role:-' . $role . '==>' . $resource . '\\' . $permission . '<br/>';
+    }
+
+    /**
+     * Returns the Role registry for this ACL
+     *
+     * If no Role registry has been created yet, a new default Role registry
+     * is created and returned.
+     *
+     * @return Registry
+     */
+    public function getRoleRegistry()
+    {
+        if (null === $this->roleRegistry) {
+            $this->roleRegistry = new Registry();
+        }
+        return $this->roleRegistry;
     }
 }

@@ -3,10 +3,12 @@ namespace Auth\Controller;
 
 
 use Application\Utility\DataTable;
+use Auth\Service\AccessService;
 use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Permissions\Acl\Role\GenericRole;
 
 class UserController extends AbstractActionController
 {
@@ -18,8 +20,9 @@ class UserController extends AbstractActionController
     }
     public function indexAction()
     {
-        $data = $this->getUserTable()->getUsers()->toArray();
-        bdump($data);
+        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+        $data = $userTable->getUsers()->toArray();
+
         $userTable = new DataTable( array( 'data' => $data ));
         $userTable->insertLinkButton('/user/add', "Neuer Benutzer");
         $userTable->setColumns( array (
@@ -53,7 +56,17 @@ class UserController extends AbstractActionController
 
     public function addAction()
     {
-        $form = new UserForm();
+        /**
+         * @var $accessService AccessService
+         */
+        $accessService = $this->getServiceLocator()->get("AccessService");
+        $userRole = $accessService->getRole();
+
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->getUserRoles();
+
+
+        $form = new UserForm($allRoles, $userRole);
         $form->get('submit')->setValue('Add');
         
         $request = $this->getRequest();
@@ -66,7 +79,8 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $this->getUserTable()->saveUser($user);
+                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+                $userTable->saveUser($user);
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -81,16 +95,21 @@ class UserController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('user');
         }
-        
-        // Get the users with the specified id. An exception is thrown
-        // if it cannot be found, in which case go to the index page.
+
+        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
         try {
-            $user = $this->getUserTable()->getUser($id);
+            $user = $userTable->getUser($id);
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('user');
         }
-        $form = new UserForm();
-        $form = $this->addRole($form);
+
+        $accessService = $this->getServiceLocator()->get("AccessService");
+        $userRole = $accessService->getRole();
+
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->getUserRoles();
+
+        $form = new UserForm($allRoles, $userRole);
         $form->setData($user->getArrayCopy());
         $form->get('submit')->setAttribute('value', 'Edit');
         
@@ -103,7 +122,7 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $this->getUserTable()->saveUser($user);
+                $userTable->saveUser($user);
                 
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
@@ -128,42 +147,18 @@ class UserController extends AbstractActionController
             
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->getUserTable()->deleteUser($id);
+                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+                $userTable->deleteUser($id);
             }
             
             // Redirect to list of Users
             return $this->redirect()->toRoute('user');
         }
+        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
         
         return array(
             'id' => $id,
-            'user' => $this->getUserTable()->getUser($id)
+            'user' => $userTable->getUser($id)
         );
-    }
-
-    public function getUserTable()
-    {
-        if (! $this->userTable) {
-            $sm = $this->getServiceLocator();
-            $this->userTable = $sm->get('Auth\Model\UserTable');
-        }
-        return $this->userTable;
-    }
-    private function addRole ($form){
-        $form->add(array(
-            'name' => 'role_name',
-            'type' => 'Zend\Form\Element\MultiCheckbox',
-            'options' => array(
-                'value_options' => array(
-                    '0' => 'Member',
-                    '1' => 'Spartenleitung',
-                    '2' => 'Vorstand',
-                    '3' => 'Administrator',
-                ),
-        )),
-            array(
-                'priority' => 5, // Increase value to move to top of form
-            ));
-        return $form;
     }
 }

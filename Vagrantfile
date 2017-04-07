@@ -7,17 +7,15 @@
 # you're doing.
 Vagrant.configure("2") do |config|
 
-    config.vm.box = "chrislentz/trusty64-lamp"
-    #config.vm.network "private_network", ip: "192.168.33.10"
-    config.vm.network "public_network"
+    config.vm.box = "scotch/box"
+    config.vm.network "private_network", ip: "192.168.33.10"
     config.vm.hostname = "SRzA"
     config.vm.synced_folder ".", "/var/www", :mount_options => ["dmode=777", "fmode=666"]
-    #config.vm.synced_folder '.', '/var/www', nfs: true
 
-       config.vm.provider "virtualbox" do |v|
-          v.memory = 2048
-          v.cpus = 3
-        end
+   config.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 2
+    end
 
     # Optional NFS. Make sure to remove other synced_folder line too
     #config.vm.synced_folder ".", "/var/www", :nfs => { :mount_options => ["dmode=777","fmode=666"] }

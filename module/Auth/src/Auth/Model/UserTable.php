@@ -6,16 +6,22 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\ResultSet\ResultSetInterface;
+use Zend\ServiceManager\ServiceManager;
 
 class UserTable extends AbstractTableGateway
 {
 
     public $table = 'users';
+    /**
+     * @var ServiceManager ServiceManager
+     */
+    public $serviceManager;
     
-    public function __construct(Adapter $adapter, ResultSetInterface $resultSetPrototype)
+    public function __construct(Adapter $adapter, ResultSetInterface $resultSetPrototype, ServiceManager $serviceManager)
     {
         $this->adapter = $adapter;
         $this->resultSetPrototype = $resultSetPrototype;
+        $this->serviceManager = $serviceManager;
         $this->initialize();
     }
     public function getUsersForAuth($email) {
@@ -23,9 +29,7 @@ class UserTable extends AbstractTableGateway
             $sql = $this->getSql();
             $select = $sql->select();
             $select->where("email = '$email'");
-            $select->join(array('userRole' => 'user_role'), 'userRole.user_id = users.id', array('role_id'), 'LEFT');
-            $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
-
+            $select->join(array('role' => 'role'), 'users.role_id = role.rid', array('role_name'), 'LEFT');
             $user = $this->selectWith($select)->current();
             if (!$user) {
                 throw new \Exception("Could not find user with email: $email");
@@ -70,7 +74,7 @@ class UserTable extends AbstractTableGateway
     public function saveUser(User $user)
     {
         $data = get_object_vars($user);
-        dump($data);
+        unset($data['role_name']);
         $id = (int) $user->id;
         if ($id == 0) {
             $this->insert($data);
@@ -85,7 +89,6 @@ class UserTable extends AbstractTableGateway
     public function deleteUser($id)
     {
         $this->delete(array('id' => (int) $id));
-        //@todo remove roles with user_id = $id
         //@todo remove characters from cast
     }
 
@@ -102,10 +105,7 @@ class UserTable extends AbstractTableGateway
             if (count($columns) > 0) {
                 $select->columns($columns);
             }
-
-            $select->join(array('userRole' => 'user_role'),'userRole.user_id = users.id',
-                array('role_id'), 'LEFT');
-            $select->join(array('role' => 'role'), 'userRole.role_id = role.rid', array('role_name'), 'LEFT');
+            $select->join(array('role' => 'role'), 'users.role_id = role.rid', array('role_name'), 'LEFT');
 
             $users = $this->selectWith($select);
             return $users;
