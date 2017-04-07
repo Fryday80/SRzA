@@ -72,7 +72,10 @@
     p {
        padding-top: @p-padding;
     }
-    > ul {
+    > ul
+    //,
+    //> ul > li > ul
+    {
         margin-top: calc(@border-width~"+" @p-padding);
         .absolute;
         width: 100%;
@@ -95,6 +98,9 @@
     }
     &:hover > ul,
     &:active > ul
+    //,
+    //&:hover > ul > li > ul,
+    //&:active > ul > li > ul
     {
       .at-show;
     }
