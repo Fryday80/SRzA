@@ -67,10 +67,10 @@
 }
 .headdeko:hover {
   /* used in... -> head */
-  -webkit-animation: shake_sing 3s alternate;
-  -moz-animation: shake_sing 3s alternate;
-  -o-animation: shake_sing 3s alternate;
-  animation: shake_sing 3s alternate;
+  -webkit-animation: shake_sign 3s alternate;
+  -moz-animation: shake_sign 3s alternate;
+  -o-animation: shake_sign 3s alternate;
+  animation: shake_sign 3s alternate;
 }
 .animation {
   /* -- blur in from display: none --
