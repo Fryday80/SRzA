@@ -29,6 +29,9 @@
     ?>
 </head>
 <?php
+    $disclaimLink = '<a class="disclaim" href="/disclaimer"> Haftungsausschluss</a>';
+    $impressumLink = '<a class="impressum" href="/impressum"> Impressum</a>';
+    $contactLink = '<a href="#mail">Kontakt </a>';
     // set default values
     if (!isset($this->showSidebar)) {
         $this->showSidebar = true;
@@ -60,9 +63,7 @@
                      </div>
                  </div>
                  <div class = "rightHead">
-                     <a class="disclaim" href="#disclaim"> Haftungsausschluss</a><br class="js-L-view" />
-                     <a class="impressum" href="#impressum"> Impressum</a> <br class="js-L-view" />
-                     <a href="#mail">Kontakt </a>
+                     <?php echo $disclaimLink . '<br class="js-L-view" />' . $impressumLink . '<br class="js-L-view" />' .  $contactLink; ?>
                  </div>
             </div>
             <div id="headlinks">
@@ -137,9 +138,9 @@
                 <box id="foottext">
                     <ul>
                         <li>copyright © <v>F&S 2016</v> & Schwarze Ritter zu Augsburg | </li>
-                        <li><a href="#mail">Kontakt</a> | </li>
-                        <li><a class="impressum" href="#impressum">Impressum</a> | </li>
-                        <li><a class="disclaim" href="#disclaim">Haftungsausschluss</a> | </li>
+                        <li><?php echo $contactLink; ?> | </li>
+                        <li><?php echo $impressumLink; ?> | </li>
+                        <li><?php echo $disclaimLink; ?> | </li>
                         <li><a href="http://www.schwert-und-mieder.de/">Schwert und Mieder e.V.</a></li>
                     </ul>
                 </box>

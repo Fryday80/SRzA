@@ -3,6 +3,10 @@ $(document).ready(function () {
 
 //    sessionStorage.clear(); // for testing reasons
 
+    function removeNoScriptFallback (){
+        $(".disclaim").removeAttr("href");
+        $(".impressum").removeAttr("href");
+    }
     function disclaimerPop (popup) {
         var ele,
             popupType,
@@ -81,6 +85,7 @@ $(document).ready(function () {
     if(sessionStorage && !sessionStorage.getItem('isshow')){
         disclaimerPop();
     }
+    removeNoScriptFallback();
     $(".disclaim").on("click", function () {
         disclaimerPop("disclaimer");
     });
