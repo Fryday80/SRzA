@@ -8,7 +8,7 @@ CKEDITOR.editorConfig = function( config ) {
 	config.language = 'de';
 	config.uiColor = '#AADC6E';
     config.filebrowserBrowseUrl = "/media/filebrowser";
-    config.extraPlugins = 'iframedialog,accordion';
+    config.extraPlugins = 'iframedialog';
     config.allowedContent = true;
     // {
     //     script: true,
