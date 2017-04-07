@@ -3,93 +3,115 @@ $(document).ready(function () {
 
 //    sessionStorage.clear(); // for testing reasons
 
+    /** remove the href of the no js fallback **/
     function removeNoScriptFallback (){
         $(".disclaim").removeAttr("href");
         $(".impressum").removeAttr("href");
     }
-    function disclaimerPop (popup) {
-        var ele,
-            popupType,
-            text,
-            boxtitel,
-            usedClass;
+    
+    function appendNoScriptFallback (){
+        $(".disclaim :not(:has('href'))").setAttribute("href", "/disclaimer");
+        $(".impressum :not(:has('href'))").setAttribute("href", "/impressum");
+    }
+    
 
-        if (popup == 'disclaimer') {
-            text = "/disclaimer.txt";
-            usedClass = popup;
-            boxtitel = "Disclaimer";
-            popupType = "ok-deny";
-        }
-        if (popup == 'impressum') {
-            text = "/impressum.txt";
-            usedClass = popup;
-            boxtitel = "Impressum";
-            popupType = "ok";
-        }
+    /**
+     * 
+     * @param title     string
+     * @param content   string
+     * @param buttons   e.g. {ok: functionXY, deny: functionYX}
+     * @param popUpClass string
+     * 
+     * @return open dialog
+     */
+    function openPopup(title, content, buttons, popUpClass) {
+        let ele,
+            usedClass = popUpClass || "popUp",
+            buttonSetup = buttons || {ok: closeButton};
 
-        var markup = $.ajax({
-            url: text,    // text for disclaimer
+        ele = $( "<div class='"+usedClass+"'></div>" )
+            .html(content)
+            .dialog({
+                modal: true,
+                title: title,
+                height: "auto",
+                width: "auto",
+                open: onOpen,
+                buttons: buttonSetup
+            });
+    }
+
+    /**
+     * removes X-button from title bar
+     * to force decision via buttons
+     */
+    function onOpen() {
+        $(".ui-dialog-titlebar-close").hide();
+    }
+
+    /**
+     * close dialog
+     */
+    function closeButton(){
+        sessionStorage.setItem('isshow', 1);
+        $(this).dialog("close");
+    }
+
+    /**
+     * redirect to google
+     * e.g. if disclaimer is denied
+     */
+    function denyButtonToGoogle() {
+        var url = "http://www.google.de";
+        window.location = url;
+    }
+
+    /**
+     * 
+     * @param url       string .. guess what of an url
+     * @param buttons   e.g. {ok: functionXY, deny: functionYX}
+     * @param popUpClass string
+     * 
+     * @return opens dialog set up with url content
+     */
+    function openPopUpByUrl (url, buttons, popUpClass) {
+        var title,
+            content;
+        $.ajax({
+            url: url,
             async: true,
-            success: function(e) {
-                // console.log('disclaimer pop success');
+            json: true,
+            success: function (e){
+                title = e.title;
+                content = (e.success)? e.content : e.error;
+                openPopup(title, content, buttons, popUpClass);
             },
             error: function(err) {
+                appendNoScriptFallback;
                 console.log(err);
             }
         });
-        markup.done(function (e){
-            $(ele).html(e);
-        });
-
-        if (popupType == "ok-deny"){
-            ele = $( "<div class='"+usedClass+"'></div>" )
-                .dialog({
-                    modal: true,
-                    title: boxtitel,
-                    height: "auto",
-                    width: "auto",
-                    open: function () {
-                        $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
-                    },
-                    buttons: {
-                        ok: function () {
-                            sessionStorage.setItem('isshow', 1);
-                            $(this).dialog("close");
-                        }
-                        ,
-                            deny: function () {
-                                var url = "http://www.google.de";
-                                window.location = url;
-                            }
-                    }
-                });
-        }
-        if (popupType == "ok") {
-            ele = $( "<div class='"+usedClass+"'></div>" )
-                .dialog({
-                    modal: true,
-                    title: boxtitel,
-                    height: "auto",
-                    width: "auto",
-                    open: function () {
-                        $(".ui-dialog-titlebar-close").hide();      //removes  X in corner
-                    },
-                    buttons: {
-                        ok: function () {
-                            $(this).dialog("close");
-                        }
-                    }
-                });
-        }
     }
+
+    /** run dialog for disclaimer */
+    function disclaimerPop() {
+        openPopUpByUrl('/disclaimer', {ok: closeButton, deny: denyButtonToGoogle}, 'disclaimer');
+    }
+
+    /** run dialog for impressum */
+    function impressumPop(){
+        openPopUpByUrl('/impressum', {ok: closeButton},'impressum');
+    }
+
     if(sessionStorage && !sessionStorage.getItem('isshow')){
         disclaimerPop();
     }
+
     removeNoScriptFallback();
     $(".disclaim").on("click", function () {
-        disclaimerPop("disclaimer");
+        disclaimerPop();
     });
     $(".impressum").on("click", function () {
-        disclaimerPop("impressum");
+        impressumPop();
     });
 });

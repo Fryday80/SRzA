@@ -104,6 +104,9 @@ return array(
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+        'strategies' => array(
+            'ViewJsonStrategy',//bin mir nich sicher ... könnte sein das dann nur noch json geht ^
+        ),
     ),
     // Placeholder for console routes
     'console' => array(
