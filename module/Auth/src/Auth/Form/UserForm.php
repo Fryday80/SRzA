@@ -85,6 +85,9 @@ class UserForm extends Form
                     'label' => 'role',
                     'value_options' => $this->getRolesForSelect(),
                 )
+            ),
+            array(
+                'priority' => 2, // Increase value to move to top of form
             ));
         }
         $this->add(array(

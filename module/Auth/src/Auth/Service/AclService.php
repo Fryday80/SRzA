@@ -11,7 +11,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class AclService extends Acl
 {
 
-    const DEFAULT_ROLE = 'guest';
+    const DEFAULT_ROLE = 'Guest';
 
     protected $_roleTableObject;
 
