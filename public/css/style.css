@@ -2618,3 +2618,7 @@ body .ui-tooltip {
   /* support: IE8 */
   border-radius: 8px;
 }
+.rightbarUp {
+  display: none;
+}
+/*erase unused elements for pre launch */
