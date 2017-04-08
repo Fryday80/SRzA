@@ -41,6 +41,7 @@ class AlbumModel implements \Iterator, \Countable
         $items = $this->mediaService->getItems($this->path);
         $result = [];
         foreach ($items as $key => $value) {
+            if ($value->readable == 0) continue;
             if ($value->type != 'folder' && $value->type != 'conf') {
                 array_push($result, $value);
             }

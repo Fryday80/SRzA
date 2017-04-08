@@ -36,6 +36,7 @@ Class GalleryService
             return $galleryDirs;
         }
         foreach ($galleryDirs as $key => $value) {
+            if ($value->readable == 0) continue;
             $meta = $this->mediaService->getFolderMeta($value->path);
             if (is_array($meta) && isset($meta['Album'])) {
                 $a = new AlbumModel($value->path, $this->mediaService);
