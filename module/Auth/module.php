@@ -46,7 +46,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $eventManager->attach('dispatch', array($this, 'checkLogin'));
         return $this;
     }
-    cddc
 
     public function checkLogin($e)
     {
