@@ -36,7 +36,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         'Auth\Controller\Auth-reset',
         'Cms\Controller\Page-index'
     );
-    hier test
 
     public function onBootstrap(MvcEvent $e)
     {
@@ -47,6 +46,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $eventManager->attach('dispatch', array($this, 'checkLogin'));
         return $this;
     }
+    cddc
 
     public function checkLogin($e)
     {
