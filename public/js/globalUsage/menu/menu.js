@@ -1,9 +1,12 @@
 $(document).ready (function menu_handler_js () {
     "use strict";
 
-    var mode ='browser',
-        resized = false,
+    var state,
         ulHeight = parseInt( $('ul.navigation').css('height') );
+    state = {
+        mode: 'browser',
+        resized: false,
+    }
 
     /**
      * performs the menu show-hide action
@@ -44,7 +47,7 @@ $(document).ready (function menu_handler_js () {
             $(".menu_button_img").on("click", menuToggle);
         }
 
-        if(resized) {
+        if(state.resized) {
             /** removes click event to avoid multiple bindings **/
             $(".menu_button_img").off("click", menuToggle);
             /** removes the animation to avoid view bugs when resized in open state or to normal view **/
@@ -52,12 +55,12 @@ $(document).ready (function menu_handler_js () {
         }
 
         if(window.matchMedia('(max-width: 700px)').matches) {
-            mode = "mobile";
+            state.mode = "mobile";
             runMobileDesign();
             menuActionsMobile();
         } else {
-            mode ="browser";
-            if(resized) {
+            state.mode ="browser";
+            if(state.resized) {
                 runBrowserDesign();
             }
         }
@@ -95,7 +98,7 @@ $(document).ready (function menu_handler_js () {
 
         if (window.matchMedia('(min-width: 700px)').matches) {
             /** to avoid view bugs when started in mobile view **/
-            if(resized){
+            if(state.resized){
                 getPropertys();
             }
             if (window.matchMedia(selector).matches) {
@@ -105,13 +108,13 @@ $(document).ready (function menu_handler_js () {
                 $(ele).on("mouseout", down);
             }
             else {
-                if(resized) {
+                if(state.resized) {
                     removeStyles();
                 }
             }
         }
         else {
-            if(resized) {
+            if(state.resized) {
                 removeStyles();
             }
         }
@@ -121,7 +124,7 @@ $(document).ready (function menu_handler_js () {
     menuRowDesigner();
 
     $(window).resize ( function () {
-        resized = true;
+        state.resized = true;
         setMode ();
         menuRowDesigner();
     });

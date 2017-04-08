@@ -1,7 +1,10 @@
 
 $(document).ready(function () {
-    var loggingFunctionSet = false,
-        htmlModified = false;
+    var state;
+    state = {
+        htmlModified: false,
+        loggingFunctionSet: false,
+    };
 
     /**
      * append css actions and functionality (css slide actions, stay open on click)
@@ -10,14 +13,14 @@ $(document).ready(function () {
      * and changes it's state
      */
     function loggingFunction(){
-        if (!loggingFunctionSet) {
+        if (!state.loggingFunctionSet) {
             $("box.login.topBox").on("click", function () {
                 $("box.login.topBox").toggleClass("login-active");
             });
             $("box.login.topBox").on("mouseout", function () {
                 $("box.login.topBox").not(".login-inactive").addClass("login-inactive");
             });
-            loggingFunctionSet = true;
+            state.loggingFunctionSet = true;
         }
     }
 
@@ -28,9 +31,9 @@ $(document).ready(function () {
      * and changes it's state
      */
     function resetLoggingFunction (){
-        if(loggingFunctionSet) {
+        if(state.loggingFunctionSet) {
             $("box.login.topBox").off("click");
-            loggingFunctionSet = false;
+            state.loggingFunctionSet = false;
         }
     }
 
@@ -40,11 +43,11 @@ $(document).ready(function () {
      * and changes it's state
      */
     function setBrowserHTML(){
-        if (!htmlModified) {
+        if (!state.htmlModified) {
             $(".logout").appendTo("body");
             $(".rightbarDown box.login").appendTo("body")
                 .addClass("topBox");
-            htmlModified = true;
+            state.htmlModified = true;
         }
     }
 
@@ -54,11 +57,11 @@ $(document).ready(function () {
      * and changes it's state
      */
     function setMobileHTML (){
-        if (htmlModified) {
+        if (state.htmlModified) {
             $(".logging").appendTo(".rightbarDown")
                 .removeClass("login-active")
                 .removeClass("login-inactive");
-            htmlModified = false;
+            state.htmlModified = false;
         }
     }
 
