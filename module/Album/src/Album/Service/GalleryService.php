@@ -69,6 +69,14 @@ Class GalleryService
         Register::add("getRandomImage start");
         $galleryDirs = $this->getAllAlbums();
         if (count($galleryDirs) == 0) return [];
+        bdump($galleryDirs);
+        foreach ($galleryDirs as $key => $value){
+            if($value->getPath() == '/gallery/default'){
+                unset ($galleryDirs[$key]);
+            }
+        }
+        bdump($galleryDirs);
+
         $randomIndex = rand(0, count($galleryDirs) -1);
         $album = $galleryDirs[$randomIndex];
         if (!$album) return [];
