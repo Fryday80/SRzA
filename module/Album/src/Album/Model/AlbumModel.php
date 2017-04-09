@@ -20,10 +20,6 @@ class AlbumModel implements \Iterator, \Countable
             'name' => 'New Album',
             'description' => '',
             'preview' => '',
-            'member-only' => false
-        ],
-        "Restrictions" => [
-            "all" => false
         ]
     ];
 
@@ -87,9 +83,6 @@ class AlbumModel implements \Iterator, \Countable
     }
     public function getPath() {
         return $this->path;
-    }
-    public function isMemberOnly() {
-        return $this->options['Album']['member-only'];
     }
 
     ///////////////// iterator interface /////////////////////////////
