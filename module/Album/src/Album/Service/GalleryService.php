@@ -28,7 +28,7 @@ Class GalleryService
         $this->mediaService = $sm->get('MediaService');
     }
 
-    public function getAllAlbums() {
+    public function getAllAlbums($exclude=false) {
         //@todo album chaching
         $result = array();
         $galleryDirs = $this->mediaService->getItems($this->galleryPath);
@@ -37,6 +37,7 @@ Class GalleryService
         }
         foreach ($galleryDirs as $key => $value) {
             if ($value->readable == 0) continue;
+            if ($exclude !== false && strpos($value->path, $exclude) !== false) continue;
             $meta = $this->mediaService->getFolderMeta($value->path);
             if (is_array($meta) && isset($meta['Album'])) {
                 $a = new AlbumModel($value->path, $this->mediaService);
@@ -67,15 +68,8 @@ Class GalleryService
     public function getRandomImage($count = 1) {
         //get random album
         Register::add("getRandomImage start");
-        $galleryDirs = $this->getAllAlbums();
+        $galleryDirs = $this->getAllAlbums('default');
         if (count($galleryDirs) == 0) return [];
-        bdump($galleryDirs);
-        foreach ($galleryDirs as $key => $value){
-            if($value->getPath() == '/gallery/default'){
-                unset ($galleryDirs[$key]);
-            }
-        }
-        bdump($galleryDirs);
 
         $randomIndex = rand(0, count($galleryDirs) -1);
         $album = $galleryDirs[$randomIndex];
