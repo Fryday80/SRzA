@@ -38,8 +38,14 @@ Class GalleryService
         foreach ($galleryDirs as $key => $value) {
             if ($value->readable == 0) continue;
             $meta = $this->mediaService->getFolderMeta($value->path);
+            if ($meta instanceof MediaException) {
+                //@todo trigger system warning $meta->msg;
+                continue;
+            }
             if (is_array($meta) && isset($meta['Album'])) {
                 $a = new AlbumModel($value->path, $this->mediaService);
+                //@todo check if album is created
+                if (!($a instanceof AlbumModel))continue;
                 $a->loadImages();
                 array_push($result,  $a);
             }
