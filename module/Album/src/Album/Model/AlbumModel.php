@@ -18,8 +18,10 @@ class AlbumModel implements \Iterator, \Countable
     private $options = [
         'Album' => [
             'name' => 'New Album',
-            'description' => '',
-            'preview' => '',
+            'description'   => '',
+            'preview'       => '',
+            'date'         => '',
+            'dateTo'         => '',
         ]
     ];
 
@@ -28,10 +30,11 @@ class AlbumModel implements \Iterator, \Countable
         $this->path = $path;
         $this->mediaService = $mediaService;
         if ($options == null) {
-            //@todo check if nessesery options are present
+            // @todo check if necessary options are present
+            return null;
             $options = $this->mediaService->getFolderMeta($path);
         }
-        $this->options = array_replace_recursive($this->options, $options);
+        $this->options = array_replace_recursive($this->options, $options);//ja is einfach ohne check und passt auch
     }
     public function loadImages() {
         $items = $this->mediaService->getItems($this->path);
@@ -49,6 +52,18 @@ class AlbumModel implements \Iterator, \Countable
     }
     public function getDescription() {
         return $this->options['Album']['description'];
+    }
+    public function getDate() {
+        $return = array();
+        if ($this->options['Album']['date'] !== ''){
+            $return['date']   = $this->options['Album']['date'];
+            $return['oneDay'] = true;
+        }
+        if($this->options['Album']['dateTo'] !==''){
+            $return['oneDay'] = false;
+            $return['dateTo'] = $this->options['Album']['dateTo'];
+        }
+        return $return;
     }
     public function getAllImages() {
         return $this->images;
