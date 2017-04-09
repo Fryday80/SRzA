@@ -923,11 +923,15 @@ noscript {
 form * {
   display: list-item;
   list-style: none;
+  margin-bottom: 1vw;
 }
-label {
+form label {
   text-align: center;
 }
-input {
+form label > span {
+  margin-bottom: 0.5vw;
+}
+form input {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   text-align: center;
@@ -937,10 +941,14 @@ input {
   margin-right: auto;
   width: 90%;
 }
-input:hover {
+form input:hover {
   background-image: none;
 }
-input:-webkit-autofill {
+form select {
+  margin-left: auto;
+  margin-right: auto;
+}
+form input:-webkit-autofill {
   background-color: #f00 !important;
   background-image: none !important;
   color: #000000 !important;
