@@ -14,7 +14,6 @@ class UserForm extends Form
         parent::__construct('User');
         $this->allRoles = $roles;
         $this->role = $role;
-//        bdump($roles);
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new UserFilter());
 

@@ -124,6 +124,7 @@ class AuthController extends AbstractActionController
     public function registerAction()
     {
         $form = new UserForm();
+        $form->remove('status');
         $form->get('submit')->setValue('Registrieren');
 
         $request = $this->getRequest();
@@ -133,12 +134,10 @@ class AuthController extends AbstractActionController
             if ($form->isValid()) {
                 $user->exchangeArray($form->getData());
                 $user->status = "N";
-                //if (strlen($form->getData()['password']) > 4) {
-                    $userPassword = new UserPassword();
-                    $user->password = $userPassword->create($user->password);
-                //}
-
+                $userPassword = new UserPassword();
+                $user->password = $userPassword->create($user->password);
                 $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
+                $user->status = false;
                 $userTable->saveUser($user);
                 $msgService = $this->getServiceLocator()->get('MessageService');
                 $msgService->SendMailFromTemplate(TemplateTypes::SUCCESSFUL_REGISTERED, $user);
