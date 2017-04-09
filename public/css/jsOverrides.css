@@ -28,6 +28,11 @@
   height: 75% !important;
   font-size: medium !important;
 }
+/* data tables */
+table.dataTable tr:hover > td,
+table.dataTable tr:hover > td {
+  background-color: #9fa8da !important;
+}
 /* additional settings for the gallery */
 /******************** CSS for Gallery Index Page *********************/
 .preview_gallery {
