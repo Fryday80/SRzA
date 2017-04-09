@@ -14,10 +14,6 @@ $(document).ready (function menu_handler_js () {
       *         resizeAction: state.resizeAction}} State
      */
     /** @var State*/
-
-    //des ding is nur bei js classen kann man extend machen und ganz simple erben aber des geht hier auch
-    //noch anbei diese variante hier ein object zu erstellen hat noch nen vorteil. es ist singelton (is klar?jo)
-        //nur erben wäre ja trotzdem ürgendwie schön oder?
     var state = {
         mode: 'browser',
         changeMode: function ( modus ) {
@@ -31,7 +27,7 @@ $(document).ready (function menu_handler_js () {
         },
         resized: false,
         resizeAction: function () {
-                state.resized = true;
+                this.resized = true;
         }
     };
 
