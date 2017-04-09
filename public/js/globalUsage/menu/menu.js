@@ -1,12 +1,39 @@
 $(document).ready (function menu_handler_js () {
     "use strict";
 
-    var state,
-        ulHeight = parseInt( $('ul.navigation').css('height') );
-    state = {
+
+    var ulHeight = parseInt( $('ul.navigation').css('height') );
+
+    /**
+     *
+     * @typedef {{ mode: string,
+      *         changeMode: state.changeMode,
+      *         browserMode: state.browserMode,
+      *         mobileMode: state.mobileMode,
+      *         resized: boolean,
+      *         resizeAction: state.resizeAction}} State
+     */
+    /** @var State*/
+
+    //des ding is nur bei js classen kann man extend machen und ganz simple erben aber des geht hier auch
+    //noch anbei diese variante hier ein object zu erstellen hat noch nen vorteil. es ist singelton (is klar?jo)
+        //nur erben wäre ja trotzdem ürgendwie schön oder?
+    var state = {
         mode: 'browser',
+        changeMode: function ( modus ) {
+            this.mode = modus;
+        },
+        browserMode: function () {
+            this.mode = 'browser';
+        },
+        mobileMode: function () {
+            this.mode = 'mobile';
+        },
         resized: false,
-    }
+        resizeAction: function () {
+                state.resized = true;
+        }
+    };
 
     /**
      * performs the menu show-hide action
@@ -55,11 +82,11 @@ $(document).ready (function menu_handler_js () {
         }
 
         if(window.matchMedia('(max-width: 700px)').matches) {
-            state.mode = "mobile";
+            state.changeMode("mobile");
             runMobileDesign();
             menuActionsMobile();
         } else {
-            state.mode ="browser";
+            state.changeMode("browser");
             if(state.resized) {
                 runBrowserDesign();
             }
@@ -67,33 +94,41 @@ $(document).ready (function menu_handler_js () {
     }
 
     function menuRowDesigner() {
-        var selector,
-            ItemCount = $('.navigation li.level_0').length,
-            zIndex = $('ul.navigation ul').css('z-index'),
-            bodyWidth = parseInt( $('body').css('width')),
-            ulWidth = parseInt( $('ul.navigation').css('width') ),
-            liWidth = parseInt( $('ul.navigation li').css('width') ),
-            difference = bodyWidth-ulWidth,
-            ele = $('.navigation li');
+        var Designer;
+        
+        Designer = {
+            selector : '',
+            ItemCount : $('.navigation li.level_0').length,
+            zIndex : $('ul.navigation ul').css('z-index'),
+            bodyWidth : parseInt($('body').css('width')),
+            ulWidth : parseInt($('ul.navigation').css('width')),
+            ulHeight: ulHeight,
+            liWidth : parseInt($('ul.navigation li').css('width')),
+            difference : "",
+            ele : $('.navigation li'),
+        };
 
-        selector = '(max-width: ' + ( ( ItemCount*liWidth ) + difference ) + 'px)';
+        Designer.difference = Designer.bodyWidth - Designer.ulWidth,
+        Designer.selector = '(max-width: ' +
+            ( ( Designer.ItemCount*Designer.liWidth ) + Designer.difference )
+            + 'px)';
 
         function getPropertys() {
             var $ul = $("<ul class='navigation'></ul>").hide().appendTo("body");
-            ulHeight = parseInt( $ul.css("height") );
+            Designer.ulHeight = parseInt( $ul.css("height") );
             $ul.remove();
         }
         function up (){
             $('*', this).css('z-index', 12);
         }
         function down(){
-            $('*', this).css('z-index', zIndex);
+            $('*', this).css('z-index', Designer.zIndex);
         }
         function removeStyles(){
             $("ul.navigation").removeAttr("style");
             $("ul.navigation li").removeAttr("style");
-            $(ele).off("mouseover", up);
-            $(ele).off("mouseout", down);
+            $(Designer.ele).off("mouseover", up);
+            $(Designer.ele).off("mouseout", down);
         }
 
         if (window.matchMedia('(min-width: 700px)').matches) {
@@ -101,11 +136,11 @@ $(document).ready (function menu_handler_js () {
             if(state.resized){
                 getPropertys();
             }
-            if (window.matchMedia(selector).matches) {
-                $('ul.navigation').css('height', 'calc('+(2*ulHeight)+'px + 0.5vw)')
-                    .css('height', 'calc('+(2*ulHeight)+'px + 0.5vw)');
-                $(ele).on("mouseover", up);
-                $(ele).on("mouseout", down);
+            if (window.matchMedia(Designer.selector).matches) {
+                $('ul.navigation').css('height', 'calc('+(2*Designer.ulHeight)+'px + 0.5vw)')
+                    .css('height', 'calc('+(2*Designer.ulHeight)+'px + 0.5vw)');
+                $(Designer.ele).on("mouseover", up);
+                $(Designer.ele).on("mouseout", down);
             }
             else {
                 if(state.resized) {
@@ -124,7 +159,7 @@ $(document).ready (function menu_handler_js () {
     menuRowDesigner();
 
     $(window).resize ( function () {
-        state.resized = true;
+        state.resizeAction();
         setMode ();
         menuRowDesigner();
     });
