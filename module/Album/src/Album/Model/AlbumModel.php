@@ -20,8 +20,9 @@ class AlbumModel implements \Iterator, \Countable
             'name' => 'New Album',
             'description'   => '',
             'preview'       => '',
-            'date'         => '',
-            'dateTo'         => '',
+            'date'          => '',
+            'dateTo'        => '',
+            'year'          => ''
         ]
     ];
 
@@ -31,10 +32,10 @@ class AlbumModel implements \Iterator, \Countable
         $this->mediaService = $mediaService;
         if ($options == null) {
             // @todo check if necessary options are present
-            return null;
             $options = $this->mediaService->getFolderMeta($path);
         }
-        $this->options = array_replace_recursive($this->options, $options);//ja is einfach ohne check und passt auch
+        $this->options = array_replace_recursive($this->options, $options);
+        $this->fixDate();
     }
     public function loadImages() {
         $items = $this->mediaService->getItems($this->path);
@@ -55,15 +56,18 @@ class AlbumModel implements \Iterator, \Countable
     }
     public function getDate() {
         $return = array();
-        if ($this->options['Album']['date'] !== ''){
-            $return['date']   = $this->options['Album']['date'];
-            $return['oneDay'] = true;
-        }
+        $return['date'] = $this->options['Album']['date'];
+        $return['dateString']   = $this->options['Album']['date'];
+        $return['oneDay'] = true;
         if($this->options['Album']['dateTo'] !==''){
             $return['oneDay'] = false;
             $return['dateTo'] = $this->options['Album']['dateTo'];
+            $return['dateString'] = $return['date']. ' - ' . $return['dateTo'];
         }
         return $return;
+    }
+    public function getYear(){
+        return $this->options['Album']['year'];
     }
     public function getAllImages() {
         return $this->images;
@@ -98,6 +102,59 @@ class AlbumModel implements \Iterator, \Countable
     }
     public function getPath() {
         return $this->path;
+    }
+
+    /**
+     * validates the dates (date, dateTo) to [dd.mm.yyyy]
+     * sets the year [yyyy]
+     */
+    private function fixDate(){
+        $replace = array (',', '-', '/');
+        $this->options['Album']['date'] = str_replace($replace, '.', $this->options['Album']['date']);
+        $this->options['Album']['dateTo'] = str_replace($replace, '.', $this->options['Album']['dateTo']);
+        $this->options['Album']['year'] = $this->refactorYear($this->options['Album']['date']);
+
+        $dateCheck = array ('date','dateTo');
+        foreach ($dateCheck as $value) {
+            if ($this->options['Album'][$value] !== '' && $this->checkYear($this->options['Album'][$value])) {
+                $parts = explode('.', $this->options['Album'][$value]);
+                $last = count($parts) - 1;
+                $replacement = '';
+                for ($i = 0; $i < $last; $i++) {
+                    $replacement .= $parts[$i] . '.';
+                }
+                $replacement .= $this->refactorYear($this->options['Album'][$value]);
+                $this->options['Album'][$value] = $replacement;
+            }
+        }
+    }
+
+    /**
+     * @param string $date
+     * @return string year "yyyy"
+     */
+    private function refactorYear($date){
+        $parts = explode('.', $date );
+        $last = count($parts)-1;
+        $year = $parts[$last];
+        // if no entry
+        if ( $year == '' ) {
+            $year = date('Y');
+        }
+        // change short yy -> yyyy
+        $year = (strlen($year) == 4) ? $year : substr(date('Y'), 0, 2).$year;
+        return $year;
+    }
+
+    /**
+     * @param string $date
+     * @return bool true if given date has format "yy" else false
+     */
+    private function checkYear($date){
+        $parts = explode('.', $date);
+        $i = count($parts) -1;
+        $refYear = $this->refactorYear($date);
+        return ( $parts[$i] !== $refYear ) ?: false;
     }
 
     ///////////////// iterator interface /////////////////////////////
