@@ -16,7 +16,7 @@
         intervalTime: 8000,
         fadeInTime: 2000,
         fadeOutTime: 1500,
-        sizeMultiplier: 1.2,
+        sizeMultiplier: 0.9,
         randomRotation: true,
         maxRotationAngle: 10,
         crossFade: false,
@@ -65,11 +65,14 @@
             }.bind(this));
         }
         this.fitImageSize = function(ele) {
-            // var width = ele.naturalWidth,
-            //     height = ele.naturalHeight;
+            var width = ele.width,
+                height = ele.height;
 
-            $(ele).height(clientHeight * this.settings.sizeMultiplier);
-
+            if( width > height ) {
+                $(ele).height(clientHeight * this.settings.sizeMultiplier);
+            } else {
+                $(ele).width(clientWidth * this.settings.sizeMultiplier);
+            }
             // if (width < height) {
             //     $(ele).width(clientWidth);
             // } else {
