@@ -19,6 +19,7 @@
 @backgroundcolor: #FAEBd7;
 @dark-color: #dbd2c9;
 @darker: #AFA08D;
+@text-shadow-color: #f3ffff;
 
 
 // paths ------------------------------------------------------------------------------------
@@ -52,3 +53,16 @@
 // scroller = slide show
 @scroller-height: 200px;
 @fade-scope: 0.25 * @scroller-height;
+
+// ------ shadows -------
+@box-shadow-standard-x: 0.35vw;
+@box-shadow-standard-y: 0.35vw;
+@box-shadow-standard-fade: 0.8vw;
+@box-shadow-standard-color: darkgrey;
+
+//@inner-shadow: inset 0 0 1vw 0 rgba(41,41,41,.5);
+@inner-shadow-depth: 8vw;
+@inner-shadow-color: rgba(41, 0, 0, 0.5);
+@inner-shadow: inset 0px 0px @inner-shadow-depth 0px @inner-shadow-color;
+
+@special-inner-shadow: inset 0px 0px 2vw 0px @inner-shadow-color;
