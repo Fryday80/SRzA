@@ -10,17 +10,18 @@ $this->headTitle($title);
         <th style="text-align: left;">&nbsp;</th>
         <th style="width: 25%;text-align: left;">&nbsp;</th>
     </tr>
-    <?php foreach ($albums as $album) : ?>
+    <?php foreach ($albums as $album) :
+        $date = $album->getDate(); ?>
         <tr>
-            <td><?php //echo date ('Y', $album['timestamp']); ?></td>
+            <td><?php echo $album->getYear(); ?></td>
             <td><?php echo $album->getName(); ?></td>
-            <td><?php //echo date ('d.m.Y', $album['timestamp']); ?></td>
+            <td><?php echo $date['dateString']; ?></td>
             <td style="text-align: center"><img class="preview_gallery" src="<?php echo $album->getPreviewUrl();?>"></td>
             <td>
                 <a href="<?php echo $this->url('gallery/small', array('id' => basename($album->getPath()) ));?>">Ansehen</a>
             </td>
         </tr>
     <?php endforeach;
-    // echo $this->dataTable()->renderJS( new \Application\Utility\DataTable() );
+//     echo $this->dataTable()->renderJS( new \Application\Utility\DataTable() );
     ?>
 </table>
