@@ -142,7 +142,7 @@ class AlbumModel implements \Iterator, \Countable
             $year = date('Y');
         }
         // change short yy -> yyyy
-        $year = (strlen($year) == 4) ? $year : substr(date('Y'), 0, 2).$year;
+        $year = (strlen($year) == 4) ? $year : (strlen($year) == 2) ? substr(date('Y'), 0, 2).$year : $year;
         return $year;
     }
 
