@@ -10,12 +10,11 @@ $this->headTitle($title);
         <th style="text-align: left;">&nbsp;</th>
         <th style="width: 25%;text-align: left;">&nbsp;</th>
     </tr>
-    <?php foreach ($albums as $album) :
-        $date = $album->getDate(); ?>
+    <?php foreach ($albums as $album) : ?>
         <tr>
             <td><?php echo $album->getYear(); ?></td>
             <td><?php echo $album->getName(); ?></td>
-            <td><?php echo $date['dateString']; ?></td>
+            <td><?php echo $album->getDate()['dateString']; ?></td>
             <td style="text-align: center"><img class="preview_gallery" src="<?php echo $album->getPreviewUrl();?>"></td>
             <td>
                 <a href="<?php echo $this->url('gallery/small', array('id' => basename($album->getPath()) ));?>">Ansehen</a>
