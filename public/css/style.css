@@ -15,7 +15,7 @@
 /* positioning */
 /* ------ shadows ------- */
 .box-shadow-bottom {
-  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
 /* css animations */
 /* --------- Animations ------------ */
@@ -357,7 +357,7 @@ box {
   border-image: url("/img/uikit/border.png") 40 repeat;
   background-color: #FAEBd7;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
   position: relative;
 }
 boxtitel {
@@ -460,7 +460,7 @@ button {
   box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
 }
 .overlayShadow {
-  box-shadow: 0 0.7vw 0.8vw darkgrey, inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 0.7vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
 /* -----------------Head----------------- */
 #headcontainer {
@@ -488,7 +488,7 @@ button {
   margin-left: 1%;
 }
 .head {
-  box-shadow: 0 1vw 3vw grey, inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 1vw 3vw grey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
   margin-top: 1vw;
   background-color: #FAEBd7;
   border-radius: 5px;
@@ -833,7 +833,7 @@ button {
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: #FAEBd7;
     border-radius: 5px;
-    box-shadow: inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
     min-height: 11vw;
     max-height: 17.5vw;
   }
@@ -898,13 +898,13 @@ noscript {
   margin: 0.5vw auto 0.5vw auto;
   padding: 5px;
   text-align: center;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
 .cast .small {
   width: 80%;
   margin: 0 auto 0 auto;
   overflow-y: hidden;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 8vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
 .cast .small:hover li {
   background-color: rgba(0, 0, 0, 0.1);
