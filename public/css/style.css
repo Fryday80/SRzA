@@ -394,6 +394,7 @@ boxcontent {
 * {
   padding: 0;
   margin: 0;
+  text-shadow: 1px 1px #f3ffff;
 }
 body {
   background: #430c0c url('/img/html.bg.png') fixed;
@@ -420,6 +421,10 @@ a:active {
 button {
   background: none;
   border: none;
+}
+h1,
+title {
+  text-shadow: 1px 1px #f3ffff;
 }
 .ownhead {
   font-family: headline, arial, sans-serif;
@@ -572,6 +577,7 @@ button {
 }
 /* -----------------foot----------------- */
 #foot {
+  text-shadow: 1px 1px #f3ffff;
   position: relative;
   margin-top: 0.7vw;
   width: 100%;
