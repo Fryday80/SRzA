@@ -425,21 +425,25 @@ button {
   font-family: headline, arial, sans-serif;
   color: black;
   font-size: 5.5vw;
+  text-shadow: 2px 2px #f3ffff;
 }
 .own_text_big {
   font-family: bodytext, arial, sans-serif;
   color: black;
   font-size: 2vw;
+  text-shadow: 1px 1px #f3ffff;
 }
 .own_text_medium {
   font-family: bodytext, arial, sans-serif;
   color: black;
   font-size: 1.5vw;
+  text-shadow: 1px 1px #f3ffff;
 }
 .own_text_small {
   font-family: bodytext, arial, sans-serif;
   color: black;
   font-size: 1vw;
+  text-shadow: 1px 1px #f3ffff;
 }
 /* ---- positioning ---- */
 .absolute {
@@ -975,9 +979,9 @@ form input:-webkit-autofill {
   }
   .leftHead {
     float: none;
-    width: 90%;
+    width: 104%;
     text-align: center;
-    margin: 0 auto 0 auto;
+    margin: 0 auto 0 -2%;
   }
   .rightHead {
     display: none;
@@ -1005,6 +1009,13 @@ form input:-webkit-autofill {
   .rightbarUp {
     width: initial;
     float: none;
+  }
+}
+/* media queries for Layout with own less*/
+@media only screen and (max-width: 700px) {
+  /* forms */
+  input.btn.btn-primary {
+    height: 40px;
   }
 }
 /* css transformation @ no script */
