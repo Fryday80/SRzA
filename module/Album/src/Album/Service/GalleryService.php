@@ -45,7 +45,7 @@ Class GalleryService
             if (is_array($meta) && isset($meta['Album'])) {
                 $a = new AlbumModel($value->path, $this->mediaService);
                 //@todo check if album is created
-                if (!($a instanceof AlbumModel))continue;
+                if (!($a instanceof AlbumModel)) continue;
                 $a->loadImages();
                 array_push($result,  $a);
             }
@@ -90,15 +90,6 @@ Class GalleryService
         Register::add("getRandomImage end");
         return $result;
     }
-
-
-
-
-
-
-
-
-
 
 
 
