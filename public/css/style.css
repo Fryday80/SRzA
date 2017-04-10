@@ -1010,12 +1010,16 @@ form input:-webkit-autofill {
     width: initial;
     float: none;
   }
+  /* bigger size for thumbs*/
+  button {
+    min-height: 35px;
+  }
 }
 /* media queries for Layout with own less*/
 @media only screen and (max-width: 700px) {
   /* forms */
   input.btn.btn-primary {
-    height: 40px;
+    min-height: 35px;
   }
 }
 /* css transformation @ no script */
