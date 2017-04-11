@@ -34,7 +34,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         'Auth\Controller\Auth-login',
         'Auth\Controller\Auth-logout',
         'Auth\Controller\Auth-reset',
-        'Cms\Controller\Page-index'
     );
 
     public function onBootstrap(MvcEvent $e)

@@ -43,16 +43,14 @@ class NavTable extends AbstractTableGateway
                 n.id,
                 n.label,
                 n.uri,
-                n.permission_id,
-                res.resource_name AS resource,
-                perm.permission_name AS privilege,
+                n.min_role_id,
+                role.role_name AS role_name,
+                role.rid AS role_id,
 
                 COUNT(*)-1 AS level,
                 ROUND ((n.rgt - n.lft - 1) / 2) AS offspring
                 FROM nav AS n, nav AS p
-
-                INNER JOIN permission as perm ON permission_id = perm.id
-                INNER JOIN resource as res ON perm.resource_id = res.id
+                INNER JOIN role ON min_role_id = role.rid
 
                 WHERE n.lft BETWEEN p.lft AND p.rgt
                 GROUP BY n.lft

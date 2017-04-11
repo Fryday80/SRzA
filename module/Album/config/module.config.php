@@ -84,7 +84,7 @@ return array(
                  'options' => array(
                      'route'    => '/gallery',
                      'defaults' => array(
-                        '__NAMESPACE__' => 'Album\Controller',
+                         '__NAMESPACE__' => 'Album\Controller',
                          'controller' => 'Gallery',
                          'action'     => 'index',
                      ),

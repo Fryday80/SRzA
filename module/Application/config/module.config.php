@@ -8,60 +8,57 @@
  */
 
 return array(
+
+    'controllers' => array(
+        'invokables' => array(
+            'Application\Controller\Page' => 'Application\Controller\PageController',
+        )
+    ),
     'router' => array(
         'routes' => array(
-            //'home' => array(
-            //    'type' => 'Zend\Mvc\Router\Http\Literal',
-            //    'options' => array(
-            //        'route'    => '/',
-            //        'defaults' => array(
-            //            'controller' => 'Application\Controller\Index',
-            //            'action'     => 'index',
-            //        ),
-            //    ),
-            //),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
+            'website' => array(
+                'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/application',
+                    'route'    => '/website',
+                    'constraints' => array(),
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
+//                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller'    => 'Application\Controller\Page',
+                        'action'        => 'dashboard',
                     ),
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'default' => array(
-                        'type'    => 'Segment',
+                    'dashboard' => array(
+                        'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route' => '/dashboard',
+                            'constraints' => array(),
+                            'defaults' => array(
+                                'action' => 'dashboard',
+                            )
+                        )
+                    ),
+                    'settings' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/delete[/:id]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+'
                             ),
                             'defaults' => array(
-                            ),
-                        ),
+                                'action' => '',
+                                'id' => '[0-9]+'
+                            )
+                        )
                     ),
                 ),
             ),
 
-            'message' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/message',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
-                    ),
-                ),
-            ),
+
+
+
+
         ),
     ),
     'service_manager' => array(
@@ -97,7 +94,7 @@ return array(
         'exception_template'       => 'error/index',
         'template_map' => array(
             'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            'application/index/index' => __DIR__ . '/../view/dashboard/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
         ),
