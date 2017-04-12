@@ -41,6 +41,30 @@ class CacheService
         return $this->exists($name);
     }
 
+    public function clearCache($name) {
+        if (!$name) {
+            //@todo clear hole cache  -> recursive folder and files delete giebts schon im mediaService da kannste klauen
+        }
+        if (!$this->exists($name))
+            return false;
+        //@todo check if $name is a file or a folder
+        if(is_dir($name)){
+            $this->unsetFolder($name);
+            return;
+        }
+        //damit man auch ganze namespaces auf einmal löschen kann so clearCache('nav/main') wobei das letzte element immer das file sein könnte
+        //is bisal eigenartig // kk schaff ich
+
+        $this->unsetFile($name);
+    }
+    private function unsetFile($name){
+        unlink($this->realPath($name));
+    }
+
+    private function unsetFolder($name){
+        unlink($this->realPath($name));
+    }
+
     private function exists($name) {
         return file_exists($this->realPath($name));
     }
@@ -50,7 +74,7 @@ class CacheService
 
         $content = file_get_contents($this->realPath($name));
         if ($serialize)
-            $content = json_decode($content);
+            $content = json_decode($content, true);
 
         return $content;
     }
