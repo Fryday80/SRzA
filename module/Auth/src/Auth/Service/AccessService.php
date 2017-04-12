@@ -13,6 +13,7 @@ class AccessService {
     protected $role;
     protected $userID;
     protected $userName;
+    protected $userIP;
 
     function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage) {
         $this->aclService = $aclService;
@@ -20,6 +21,7 @@ class AccessService {
         $this->role = $storage->getRoleName();
         $this->userID = $storage->getUserID();
         $this->userName = $storage->getUserName();
+        $this->userIP = $storage->getIP();
         $this->acl = $aclService;
         $this->acl->initAcl();
         
@@ -69,6 +71,13 @@ class AccessService {
      */
     function getUserName() {
         return $this->userName;
+    }
+
+    /**
+     * @return int|mixed
+     */
+    function getUserIP() {
+        return $this->userIP;
     }
 
     /**

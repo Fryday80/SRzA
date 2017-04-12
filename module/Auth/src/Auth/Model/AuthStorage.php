@@ -66,4 +66,14 @@ class AuthStorage extends Session
     public function setRoleName($id) {
         $this->session->offsetSet('roleName', $id);
     }
+
+    public function getIP() {
+        if ($this->session->offsetExists('ip')) {
+            return $this->session->offsetGet('ip');
+        }
+        return null;
+    }
+    public function setIP($ip) {
+        $this->session->offsetSet('ip', $ip);
+    }
 }

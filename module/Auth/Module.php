@@ -1,7 +1,6 @@
 <?php
 namespace Auth;
 
-use Application\Service\MessageService;
 use Auth\Model\User;
 use Auth\Model\UserTable;
 use Auth\Model\RoleTable;
@@ -46,24 +45,30 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         return $this;
     }
 
-    public function checkLogin($e)
+    public function checkLogin(MvcEvent $e)
     {
+        /** @var Request $request */
         $serviceManager     = $e->getApplication()->getServiceManager();
+        /** @var AccessService $accessService */
         $accessService      = $serviceManager->get('AccessService');
+        $request            = $e->getRequest();
+        $clientIP           = $request->getServer('REMOTE_ADDR');
         $target             = $e->getTarget();
         $match              = $e->getRouteMatch();
         $controller         = $match->getParam('controller');
         $action             = $match->getParam('action');
         $title              = $match->getParam('title');
-        $requestedResourse  = $controller . "-" . $action;
+        $requestedResourse  = $controller . '-' . $action;
         /** @var FlashMessenger $flashmessanger */
         $flashmessanger     = $e->getApplication()-> getServiceManager()->get('controllerpluginmanager')->get('flashmessenger');
-        /** @var Request $request */
-        $request            = $serviceManager->get('Request');
 
+        if ($action != 'logout' && $accessService->hasIdentity() && $clientIP != $accessService->getUserIP()) {
+            //SID hijacked log as website event and logout
+            return $target->redirect()->toUrl('/logout');
+        }
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
-                $flashmessanger->addMessage($request->getUriString(), "referer", 1);
+                $flashmessanger->addMessage($request->getUriString(), 'referer', 1);
                 return $target->redirect()->toUrl('/login');
             }
         }

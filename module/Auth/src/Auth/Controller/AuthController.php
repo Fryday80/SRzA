@@ -3,6 +3,7 @@ namespace Auth\Controller;
 
 use Auth\Form\EmailForm;
 use Auth\Utility\UserPassword;
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
 use Auth\Form\UserForm;
@@ -41,6 +42,7 @@ class AuthController extends AbstractActionController
     {
         $form = new LoginForm('Login');
         $request = $this->getRequest();
+        $ip = $request->getServer('REMOTE_ADDR');
         $ref = $this->flashmessenger()->getMessagesFromNamespace('referer');
         if (count($ref) > 0) {
             $this->flashmessenger()->addMessage($ref[0], 'referer', 1);
@@ -60,12 +62,13 @@ class AuthController extends AbstractActionController
                 //check authentication... @todo move to AccessService
                 $userPassword = new UserPassword();
                 $encyptPass = $userPassword->create($data['password']);
-        
+
+                /** @var AuthenticationService $authService */
                 $authService = $this->getServiceLocator()->get('AuthService');
         
                 $authService->getAdapter()
-                ->setIdentity($data['email'])
-                ->setCredential($encyptPass);
+                    ->setIdentity($data['email'])
+                    ->setCredential($encyptPass);
 
                 $result = $authService->authenticate();
 
@@ -80,6 +83,7 @@ class AuthController extends AbstractActionController
                     $storage->setUserName($userDetails->name);
                     $storage->setRoleID($userDetails->role_id);
                     $storage->setRoleName($userDetails->role_name);
+                    $storage->setIP($ip);
                     // check if it has rememberMe :
                     if ($request->getPost('rememberme') == 1) {
                         $storage->setRememberMe(1);
