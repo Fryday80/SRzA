@@ -1,6 +1,7 @@
 <?php
 namespace Nav\Controller;
 
+use Application\Service\CacheService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Nav\Form\NavForm;
 use Zend\Json\Json;
@@ -9,6 +10,12 @@ class NavController extends AbstractActionController
 {
 
     protected $albumTable;
+
+    /**
+     * @var $cacheService CacheService
+     */
+    private $cacheService;
+    private $cache;
 
     public function indexAction()
     {
@@ -24,6 +31,7 @@ class NavController extends AbstractActionController
 
     public function addAction()
     {
+        $this->getCache();
         $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
         $allPerms = $permTable->getResourcePermissions();
@@ -51,6 +59,9 @@ class NavController extends AbstractActionController
             if ($form->isValid()) {
                 $data = $form->getData();
                 $navTable->append($data);
+                //clear Cache
+                $this->cacheService->clearCache('nav/main');
+                // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
         }
@@ -61,6 +72,7 @@ class NavController extends AbstractActionController
 
     public function editAction()
     {
+        $this->getCache();
         $itemID = (int) $this->params('id');
         if (! $itemID) {
             return $this->redirect()->toRoute('nav/sort');
@@ -91,6 +103,9 @@ class NavController extends AbstractActionController
                     'uri' => $data['uri'],
                     'permission_id' => $data['permission_id']
                 ), $data['id']);
+                //clear Cache
+                $this->cacheService->clearCache('nav/main');
+                // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
         }
@@ -102,6 +117,7 @@ class NavController extends AbstractActionController
 
     public function sortAction()
     {
+        $this->getCache();
         $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
         $allPerms = $permTable->getResourcePermissions();
         $form = new NavForm($allPerms);
@@ -165,6 +181,7 @@ class NavController extends AbstractActionController
 
     public function deleteAction()
     {
+        $this->getCache();
         // check for param id
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
@@ -180,7 +197,8 @@ class NavController extends AbstractActionController
                 $id = (int) $request->getPost('id');
                 $navTable->deleteByID($id);
             }
-            
+            //clear Cache
+            $this->cacheService->clearCache('nav/main');
             // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
@@ -188,5 +206,16 @@ class NavController extends AbstractActionController
             'id' => $id,
             'item' => $navTable->getItem($id)
         );
+    }
+
+    /**
+     * get the CacheService
+     * sets the nav cache in $this->cache
+     */
+    private function getCache() {
+        if (!$this->cacheService) {
+            $this->cacheService = $this->getServiceLocator()->get('CacheService');
+            $this->cache = $this->cacheService->getCache('nav/main');
+        }
     }
 }
