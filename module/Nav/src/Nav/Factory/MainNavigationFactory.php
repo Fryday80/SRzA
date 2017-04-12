@@ -1,25 +1,28 @@
 <?php
 namespace Nav\Factory;
 
-use RecursiveArrayIterator;
-use RecursiveIteratorIterator;
+use Application\Service\CacheService;
 use Zend\Http\Request;
 use Zend\Navigation\Service\AbstractNavigationFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zarganwar\PerformancePanel\Register;
+
 
 class MainNavigationFactory extends AbstractNavigationFactory
 {
-    /**
-     * @var
-     */
     private $router;
-
+    /**
+     * @var $cache CacheService
+     */
+    private $cache;
+    
     protected function getName()
     {
         return 'Main';
     }
     protected function getPages(ServiceLocatorInterface $serviceLocator)
     {
+        $this->cache = $serviceLocator->get('CacheService');
         if (null === $this->pages) {
             $this->loadPages($serviceLocator);
         }
@@ -31,17 +34,22 @@ class MainNavigationFactory extends AbstractNavigationFactory
             $request = new Request();
             $request->setUri($value['uri']);
 
-            $routeMatch = $this->router->match( $request );
-            if($routeMatch !== null ) {
-                $namespace = $routeMatch->getParam('__NAMESPACE__');
-                $controller = $routeMatch->getParam('controller');
-                $action = $routeMatch->getParam('action');
-                if ($namespace == null) {
-                    $items[$i]['resource'] = $controller;
-                } else {
-                    $items[$i]['resource'] = $namespace.'\\'.$controller;
+            if ($value['role_id'] == 0) {
+                $items[$i]['resource'] = 'Role';
+                $items[$i]['privilege'] = $value['role_name'];
+            }else {
+                $routeMatch = $this->router->match( $request );
+                if($routeMatch !== null ) {
+                    $namespace = $routeMatch->getParam('__NAMESPACE__');
+                    $controller = $routeMatch->getParam('controller');
+                    $action = $routeMatch->getParam('action');
+                    if ($namespace == null) {
+                        $items[$i]['resource'] = $controller;
+                    } else {
+                        $items[$i]['resource'] = $namespace.'\\'.$controller;
+                    }
+                    $items[$i]['privilege'] = $action;
                 }
-                $items[$i]['privilege'] = $action;
             }
             if (isset($value['pages']) && is_array($value['pages'])) {
                 $this->prepareData($value['pages']);
@@ -49,21 +57,21 @@ class MainNavigationFactory extends AbstractNavigationFactory
         }
     }
     private function loadPages(ServiceLocatorInterface $serviceLocator) {
+        Register::add("loadPages start");
         if (null === $this->pages) {
-            if (file_exists('/dsa.dsa')) {
-                //@todo load from cache
+            if ($this->cache->hasCache('nav/main')) {
+                $this->pages = $this->cache->getCache('nav/main');
             } else {
                 $this->router     = $serviceLocator->get('Router');
                 $navTable   = $serviceLocator->get('Nav\Model\NavTable');
                 $nav = $navTable->getNav(0);
-                bdump($nav);
-
-                $a = $this->prepareData($nav);
+                $this->prepareData($nav);
                 $this->pages = $nav;
-                bdump($nav);
-                //@todo write to cache
+
+                $this->cache->setCache('nav/main', $nav);
             }
         }
+        Register::add("loadPages start");
     }
 }
 
