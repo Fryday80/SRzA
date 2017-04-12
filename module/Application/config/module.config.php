@@ -67,6 +67,10 @@ return array(
                 $service = new \Application\Service\MessageService();
                 return $service;
             },
+            'CacheService' => function($sm) {
+                $service = new \Application\Service\CacheService();
+                return $service;
+            },
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
