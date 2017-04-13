@@ -21,7 +21,6 @@ class AuthController extends AbstractActionController
         if (! $this->storage) {
             $this->storage = $this->getServiceLocator()->get('Auth\Model\AuthStorage');
         }
-        
         return $this->storage;
     }
 

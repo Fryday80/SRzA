@@ -9,6 +9,10 @@
 
 namespace Application;
 
+use Application\Model\ActiveUsers;
+use Application\Model\PageHits;
+use Application\Model\SystemLog;
+use Application\Service\StatisticService;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\ModuleRouteListener;
@@ -36,6 +40,32 @@ class Module
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
+            ),
+        );
+    }
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'StatisticService' => function ( $sm ) {
+                    return new StatisticService( $sm );
+                },
+            ),
+            // models:
+            'factories' => array(
+                'Application\Model\ActiveUsers' => function ( $serviceManager ) {
+                    return new ActiveUsers( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                },
+            ),
+            'factories' => array(
+                'Application\Model\PageHits' => function ( $serviceManager ) {
+                    return new PageHits( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                },
+            ),
+            'factories' => array(
+                'Application\Model\SystemLog' => function ( $serviceManager ) {
+                    return new SystemLog( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                },
             ),
         );
     }

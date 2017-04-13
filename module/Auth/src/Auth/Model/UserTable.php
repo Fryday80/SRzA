@@ -34,6 +34,7 @@ class UserTable extends AbstractTableGateway
             if (!$user) {
                 throw new \Exception("Could not find user with email: $email");
             }
+            bdump($user);
             return $user;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
