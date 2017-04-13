@@ -33,9 +33,9 @@ class NavController extends AbstractActionController
     {
         $this->getCache();
         $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
-        $allPerms = $permTable->getResourcePermissions();
-        $form = new NavForm($allPerms);
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->fetchAll();
+        $form = new NavForm($allRoles);
         $form->get('submit')->setValue('Add');
         
         $config = $this->getServiceLocator()->get('Config');
@@ -86,9 +86,9 @@ class NavController extends AbstractActionController
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('nav/sort');
         }
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
-        $allPerms = $permTable->getResourcePermissions();
-        $form = new NavForm($allPerms);
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->fetchAll();
+        $form = new NavForm($allRoles);
         // $form->get('permission_id')->setValue($navItem['permission_id']);
         $form->get('submit')->setValue('Edit');
         
@@ -118,9 +118,9 @@ class NavController extends AbstractActionController
     public function sortAction()
     {
         $this->getCache();
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
-        $allPerms = $permTable->getResourcePermissions();
-        $form = new NavForm($allPerms);
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->fetchAll();
+        $form = new NavForm($allRoles);
         $form->get('submit')->setValue('Edit');
         
         $NavTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
