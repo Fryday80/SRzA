@@ -14,8 +14,10 @@ class AccessService {
     protected $userID;
     protected $userName;
     protected $userIP;
+    public $session;
 
     function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage) {
+        $this->session = $storage;
         $this->aclService = $aclService;
         $this->authService = $authService;
         $this->role = $storage->getRoleName();

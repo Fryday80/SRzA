@@ -15,7 +15,6 @@ use Application\Model\SystemLog;
 use Application\Service\StatisticService;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
-use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
 use Application\View\Helper\DataTableHelper;
 
@@ -23,11 +22,9 @@ class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
-        $eventManager        = $e->getApplication()->getEventManager();
+        $eventManager = $e->getApplication()->getEventManager();
         $statsService = $e->getApplication()->getServiceManager()->get('StatisticService');
         $eventManager->attach('dispatch', array($statsService, 'onDispatch'));
-//        $moduleRouteListener = new ModuleRouteListener();
-//        $moduleRouteListener->attach($eventManager);
         date_default_timezone_set ("Europe/Berlin");
         return $this;
     }
@@ -53,23 +50,16 @@ class Module
                 'StatisticService' => function ( $sm ) {
                     return new StatisticService( $sm );
                 },
-            ),
-            // models:
-            'factories' => array(
                 'Application\Model\ActiveUsers' => function ( $serviceManager ) {
                     return new ActiveUsers( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
-            ),
-            'factories' => array(
                 'Application\Model\PageHits' => function ( $serviceManager ) {
                     return new PageHits( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
-            ),
-            'factories' => array(
                 'Application\Model\SystemLog' => function ( $serviceManager ) {
                     return new SystemLog( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
-            ),
+            )
         );
     }
 

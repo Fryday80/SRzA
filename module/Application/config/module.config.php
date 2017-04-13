@@ -81,7 +81,7 @@ return array(
         ),
     ),
     'translator' => array(
-        'locale' => 'en_US',
+        'locale' => 'de_DE',
         'translation_file_patterns' => array(
             array(
                 'type'     => 'gettext',
@@ -106,7 +106,7 @@ return array(
             __DIR__ . '/../view',
         ),
         'strategies' => array(
-            'ViewJsonStrategy',//bin mir nich sicher ... könnte sein das dann nur noch json geht ^
+            'ViewJsonStrategy',
         ),
     ),
     // Placeholder for console routes

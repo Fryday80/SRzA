@@ -39,12 +39,23 @@ class StatisticService
     }
 
     public function onDispatch(MvcEvent $e) {
+        $ip = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
+        $a = $this->sm->get('AccessService');
+        $sid = $a->session->getManager()->getId();
+        bdump($ip);
+        bdump($sid);
         //@todo update activeUsers DB
         //@todo update pageHits DB
-        //über des mvcEvent kommt man an fast alle infos glaub ich
-        bdump($e->getApplication()->getRequest());
-        $ip = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
-
     }
 
+    /**
+     * @param $type string
+     * @param $title string
+     * @param $msg string
+     * @param $data mixed (serializable)
+     */
+    public static function log($type, $title, $msg, $data) {
+        //@todo serialize $data
+        //@todo write to DB
+    }
 }

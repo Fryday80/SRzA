@@ -12,7 +12,9 @@ class AuthStorage extends Session
             $this->session->getManager()->rememberMe($time);
         }
     }
-
+    public function getManager() {
+        return $this->session->getManager();
+    }
     public function forgetMe()
     {
         $this->session->offsetSet('userId', -1);
