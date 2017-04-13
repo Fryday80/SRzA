@@ -14,36 +14,32 @@ use Zend\Db\Adapter\Adapter;
 class ActiveUsers extends AbstractTableGateway
 {
 
-    public $table = '';
-    private $storetime = 'z.b. 2 Monate';
-    private $activeUser = array(        //theorie zum bauen
-        'user_id' => '',                // so ein array bauen und dann damit handeln, oder was haste vor?
-        'active' => false,              // das thema kann man ja auf x weisen angehen..
-        'last_sid' => '',
-        'dbRows' => array('$rows'),
-    );
+    public $table = 'active_users';
+    public $activeUsers;
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function getBySID($sid){
-        $row = $this->select(array('sid' => (int) $sid));
-        if (!$row)
-            return false;
-
-        return $row->toArray()[0];
+    public function updateActive($data, $storeTime) {
+        $lease = $data['last_action_time']-$storeTime;
+        $prepare = $this->prepareData($data);
+        if ($prepare == NULL)return;
+        $sqlItems = $prepare[0];
+        $sqlValues = $prepare[1];
+        $query = "REPLACE INTO active_users ($sqlItems)
+                      VALUES ($sqlValues);
+                      DELETE FROM active_users WHERE last_action_time < $lease;";
+        $this->adapter->query($query, array());
     }
-    private function updateActive($data) {
-        //@todo hier brauchts eigentlich nur eine public funktion
-        //@todo wenn es einen eintrag mit dieser sid giebt dann updaten
-        //@todo ansonsten eine neue zeile
-        //@todo deleteOlderThan
-        //@todo am coolsten wäre es wenn man des in ein sql packen könnte (da giebts paar wege glaub ich aber all sql mässig)
-
-        //@todo und mach noch ne spalte rein mit userID sonst können wir keine anzeige machen wer gerade on ist
+    private function fetchData(){
+        return $this->getWhere();
     }
+
+
+
+
     private function add($data){
         if (!$this->insert(array('sid' => $data['sid'])))
             return false;
@@ -60,12 +56,57 @@ class ActiveUsers extends AbstractTableGateway
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
-    private function deleteOlderThan($dataSet){
-        foreach ($dataSet as $key => $data){
-            $age = /* processed */$data['lastActionTime'];
-            if ( $age > $this->storetime ){
-                $this->remove($data['id']);
+    private function prepareData($data){
+        $required = array(
+            'ip' => false,
+            'sid' => false,
+            'user_id' => false,
+            'last_action_time' => false,
+            'last_action_url' => false
+        );
+        $sqlItems ='';
+        $sqlValues = '';
+
+        foreach ($data as $key => $value){
+            if (array_key_exists( $key, $required )){
+                $required[$key] = true;
             }
+            $sqlItems .= $key . ", ";
+            if (is_int($value)) {
+                $sqlValues .= $value. ", ";
+            } else {
+                $sqlValues .= "'$value', ";
+            }
+        }
+        $sqlItems = substr($sqlItems, 0, -2);
+        $sqlValues = substr($sqlValues, 0, -2);
+        if (in_array(false, $required))return NULL;
+        return array($sqlItems, $sqlValues);
+    }
+    private function getWhere($where = array(), $columns = array())
+    {
+        try {
+            $sql = $this->getSql();
+            $select = $sql->select();
+
+            if (count($where) > 0) {
+                $select->where($where);
+            }
+
+            if (count($columns) > 0) {
+                $select->columns($columns);
+            }
+//            $select->join(array(
+//                'parent' => $this->table
+//            ),
+//                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
+//            );
+
+
+            $activeUsers = $this->selectWith($select);
+            return $activeUsers;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 }
