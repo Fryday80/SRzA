@@ -86,7 +86,7 @@ class RoleTable extends AbstractTableGateway
         $this->permissionTable->remove($this->navRolesResourceID, $data['roleName'] );
         $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['roleName'] );
         $this->rolePermissionTable->delete($id, $permID);
-        
+
         $this->permissionTable->add($this->navRolesResourceID, $data['roleName'] );
         $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['roleName'] );
         $this->rolePermissionTable->deletePermission($id, $permID);
@@ -152,7 +152,6 @@ class RoleTable extends AbstractTableGateway
             if (count($where) > 0) {
                 $select->where($where);
             }
-
             if (count($columns) > 0) {
                 $select->columns($columns);
             }
@@ -162,9 +161,8 @@ class RoleTable extends AbstractTableGateway
                 'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
             );
 
-
-            $roles = $this->selectWith($select);
-            return $roles;
+            $results = $this->selectWith($select);
+            return $results;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }

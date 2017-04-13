@@ -15,7 +15,7 @@ class ActiveUsers extends AbstractTableGateway
 {
 
     public $table = 'active_users';
-    public $activeUsers;
+    private $activeUsers;
 
     public function __construct(Adapter $adapter)
     {
@@ -25,7 +25,7 @@ class ActiveUsers extends AbstractTableGateway
     public function updateActive($data, $storeTime) {
         $lease = $data['last_action_time']-$storeTime;
         $prepare = $this->prepareData($data);
-        if ($prepare == NULL)return;
+        if ($prepare == NULL)return; //@todo error msg "data missing"
         $sqlItems = $prepare[0];
         $sqlValues = $prepare[1];
         $query = "REPLACE INTO active_users ($sqlItems)
@@ -33,27 +33,8 @@ class ActiveUsers extends AbstractTableGateway
                       DELETE FROM active_users WHERE last_action_time < $lease;";
         $this->adapter->query($query, array());
     }
-    private function fetchData(){
+    public function getActiveUsers(){
         return $this->getWhere();
-    }
-
-
-
-
-    private function add($data){
-        if (!$this->insert(array('sid' => $data['sid'])))
-            return false;
-        return $this->getLastInsertValue();
-    }
-
-
-    private function save($sid, $data) {
-        if (!$this->update(array('sid' => $data['sid']), array('sid' => (int)$sid)))
-            return false;
-        return $sid;
-    }
-    private function remove($id) {
-        return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
     private function prepareData($data){
@@ -92,7 +73,6 @@ class ActiveUsers extends AbstractTableGateway
             if (count($where) > 0) {
                 $select->where($where);
             }
-
             if (count($columns) > 0) {
                 $select->columns($columns);
             }
@@ -101,23 +81,11 @@ class ActiveUsers extends AbstractTableGateway
 //            ),
 //                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
 //            );
-
-
-            $activeUsers = $this->selectWith($select);
-            return $activeUsers;
+            
+            $results = $this->selectWith($select);
+            return $results;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
     }
 }
-
-//@todo man kann ja ne db machen mit
-//@todo id,ip,sid,lastActionTime,lastActionUrl
-//@todo und ne hashTable id, sid, au_id oder so (ggf + ph_id + sl_id falls du da noch was willst)
-//@todo dann kannste ->get( ActiveUserDBTable, where ( hashTable.au_id (sid = $sid) ) ) // absolut falscher string aber du weißt was ich meine
-
-//          tabelle 1: activeUsers (id,ip,sid,userID,lastActionTime,lastActionUrl)
-
-//  für activeUsers brauchst du ne funktion die alle einträge löscht wo lastActionTime schon alter als x ist
-//  und updaten anhand der sid
-//  session id
