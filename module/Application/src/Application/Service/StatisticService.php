@@ -11,6 +11,7 @@ namespace Application\Service;
 use Application\Model\ActiveUsers;
 use Application\Model\PageHits;
 use Application\Model\SystemLog;
+use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
 
 
@@ -37,27 +38,29 @@ class StatisticService
 
     public function onRedirectNoPerm(){}
     public function onDispatch(MvcEvent $e) {
-        //Dummy data until all works fine
-        $data = array (
-            'ip' => '8.8.8.8',
-            'sid' => '24-7-dev',
-            'user_id' => 42,
-            'last_action_time' => time(),
-            'last_action_url' => '/dev',
-            'action_data' => '$_SERVER',
-        );
+        /** @var  $a AccessService*/
         $a = $this->sm->get('AccessService');
+        $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
+        $now = time();
+        $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
+        $referrer = $serverPHPData['HTTP_REFERER'];
+        $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
+        $redirect = $serverPHPData['REDIRECT_STATUS']; //set if redirected
 
-        $data['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
-        $data['sid'] = $a->session->getManager()->getId();
-        $actionData = $e->getApplication()->getRequest()->getServer()->toArray();
-        //@todo erase unused data from $actionData
-        $actionData = array ('bli' => 'bla', 'blubber' => 'blubb');
-        $data['action_data'] = $actionData;
+        // active users data
+        $activeUserData['last_action_time'] = $now;
+        $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
+        $activeUserData['sid'] = $a->session->getManager()->getId();
+        $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : $a->getUserID();
+        $activeUserData['action_data'] = array();
+        $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $serverPHPData['HTTP_REFERER'];
+        //@todo erase unused data from $serverPHPData if wanted
+        array_push($activeUserData['action_data'], $serverPHPData);
 
-        $this->activeUsers->updateActive($data, $this->keepUserActive);
-//        $this->activeUsers->getActiveUsers();  // for testing
         //@todo update pageHits DB
+
+        $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
+//        $this->activeUsers->getActiveUsers();  // for testing
     }
 
     public function getActiveUsers()

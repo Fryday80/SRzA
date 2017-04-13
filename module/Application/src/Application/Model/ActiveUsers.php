@@ -13,7 +13,6 @@ use Zend\Db\Adapter\Adapter;
 
 class ActiveUsers extends AbstractTableGateway
 {
-
     public $table = 'active_users';
 
     public function __construct(Adapter $adapter)
@@ -24,11 +23,9 @@ class ActiveUsers extends AbstractTableGateway
     public function updateActive($data, $storeTime) {
         $leaseTime = $data['last_action_time']-$storeTime;
         $prepare = $this->prepareData($data);
-        if ($prepare == NULL)return; //@todo error msg "data missing"
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
-        $query = "REPLACE INTO active_users ($queryItems)
-                      VALUES ($queryValues);
+        $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);
                       DELETE FROM active_users WHERE last_action_time < $leaseTime;";
         $this->adapter->query($query, array());
     }
@@ -41,27 +38,18 @@ class ActiveUsers extends AbstractTableGateway
         return $return;
     }
 
-    /** Prepare data and check for required table columns
+    /** Prepare data for query
      *
      * @param array $data
      * @return array|null [0] = sql columns line up, [1] = the fitting sql VALUES
      */
-    private function prepareData($data){
-        $requiredColumns = array(
-            'ip' => false,
-            'sid' => false,
-            'user_id' => false,
-            'last_action_time' => false,
-            'last_action_url' => false
-        );
+    private function prepareData($data)
+    {
         $queryItems ='';
         $queryValues = '';
 
         //create SQL items and values line up
         foreach ($data as $key => $value){
-            if (array_key_exists( $key, $requiredColumns )){
-                $requiredColumns[$key] = true;
-            }
             $queryItems .= $key . ", ";
 
             if ($key == 'action_data'){
@@ -73,12 +61,10 @@ class ActiveUsers extends AbstractTableGateway
                 $queryValues .= "'$value', ";
             }
         }
+        
         $queryItems = substr($queryItems, 0, -2);
         $queryValues = substr($queryValues, 0, -2);
 
-        // all required given?
-        if (in_array(false, $requiredColumns))return NULL;
-        // then:
         return array($queryItems, $queryValues);
     }
 
