@@ -1,14 +1,19 @@
 <?php
 namespace Nav\Form;
 
+use Auth\Model\RoleTable;
 use Zend\Form\Form;
 
 class NavForm extends Form
 {
-    public function __construct(Array $permTable)
+    /** @var  $roleTable RoleTable */
+    private $allRoles;
+    private $cached = false;
+
+    public function __construct(Array $allRoles)
     {
         parent::__construct('Nav');
-        $this->permTable = $permTable;
+        $this->allRoles = $allRoles;
         //$this->setInputFilter(new ResourceFilter());
         $this->add(array(
             'name' => 'id',
@@ -54,10 +59,30 @@ class NavForm extends Form
     public function getPermissionsForSelect()
     {
         $selectData = array();
+        $megalomaniac = 'Administrator';
+        $rearranged = array();
+        $hash = array();
+        $return = array();
 
-        foreach ($this->permTable as $res) {
-            $selectData[$res['id']] = $res['resource_name'] . ' - ' . $res['permission_name'];
+        if (!$this->cached) {
+            foreach ($this->allRoles as $key => $role) {
+                $rearranged[$role['role_name']] = $role;
+                $hash[$role['rid']] = $role['role_name'];
+            }
+            $return[count($rearranged)] = $rearranged[$megalomaniac];
+
+            for ($i = count($rearranged)-1; $i > 0; $i--) {
+                $return[$i-1] = $rearranged [ $hash[$i] ];
+            }
+
+            foreach ($return as $role) {
+                $selectData[$role['rid']] = $role['role_name'];
+            }
+            $this->allRoles = $selectData;
+//  @todo implement cache ---> $this->cached = true;
         }
-        return $selectData;
+        bdump($this->allRoles);
+
+        return $this->allRoles;
     }
 }
