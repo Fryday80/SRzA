@@ -1,11 +1,16 @@
 <?php
 namespace Auth\Controller;
 
+use Nav\Service\NavService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\RoleForm;
 
 class RoleController extends AbstractActionController
 {
+
+    /** @var  $navService NavService */
+    private $navService = false;
+    
     public function indexAction()
     {
         //list all roles
@@ -16,6 +21,7 @@ class RoleController extends AbstractActionController
     }
     public function addAction()
     {
+        $this->getNavService();
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new RoleForm($roleTable);
         $form->get('submit')->setValue('Add');
@@ -26,6 +32,7 @@ class RoleController extends AbstractActionController
                 $data = $form->getData();
                 //if role_parent == 0 then set to null
                 $roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
+                $this->navService->addRole($data['role_name']);
                 return $this->redirect()->toRoute('role');
             } else {
                 
@@ -37,6 +44,7 @@ class RoleController extends AbstractActionController
     }
     public function editAction()
     {
+        $this->getNavService();
         $id = $this->params('id');
         //@todo verify id
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
@@ -53,6 +61,8 @@ class RoleController extends AbstractActionController
                     'role_name' => $data['role_name'],
                     'role_parent'=> $data['role_parent']
                 ), $data['rid']);
+                $this->navService->removeRole($data['rid']);
+                $this->navService->addRole($data['role_name']);
                 return $this->redirect()->toRoute('role');
             }
         }
@@ -63,6 +73,7 @@ class RoleController extends AbstractActionController
     }
     public function deleteAction()
     {
+        $this->getNavService();
         $id = (int) $this->params()->fromRoute('id', 0);
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $role = $roleTable->getRoleByID($id);
@@ -79,11 +90,20 @@ class RoleController extends AbstractActionController
                 $id = (int) $request->getPost('id');
                 $roleTable->deleteByID($id);
             }
+            $this->navService->removeRole($id);
            return $this->redirect()->toRoute('role');
         }
         return array(
             'id' => $id,
             'rolename' => $role['role_name']
         );
+    }
+    /**
+     * get the NavService
+     */
+    private function getNavService() {
+        if (!$this->navService) {
+            $this->navService = $this->getServiceLocator()->get('NavService');
+        }
     }
 }

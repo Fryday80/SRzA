@@ -2,6 +2,7 @@
 namespace Nav\Controller;
 
 use Application\Service\CacheService;
+use Nav\Service\NavService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Nav\Form\NavForm;
 use Zend\Json\Json;
@@ -11,10 +12,8 @@ class NavController extends AbstractActionController
 
     protected $albumTable;
 
-    /**
-     * @var $cacheService CacheService
-     */
-    private $cacheService;
+    /** @var $cacheService CacheService */
+    private $cacheService = false;
     private $cache;
 
     public function indexAction()
@@ -32,6 +31,7 @@ class NavController extends AbstractActionController
     public function addAction()
     {
         $this->getCache();
+        $this->getNavService();
         $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new NavForm($roleTable->fetchAllSorted());
@@ -72,6 +72,7 @@ class NavController extends AbstractActionController
     public function editAction()
     {
         $this->getCache();
+        $this->getNavService();
         $itemID = (int) $this->params('id');
         if (! $itemID) {
             return $this->redirect()->toRoute('nav/sort');
@@ -116,6 +117,7 @@ class NavController extends AbstractActionController
     public function sortAction()
     {
         $this->getCache();
+        $this->getNavService();
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new NavForm($roleTable->fetchAllSorted());
         $form->get('submit')->setValue('Edit');
@@ -179,6 +181,7 @@ class NavController extends AbstractActionController
     public function deleteAction()
     {
         $this->getCache();
+        $this->getNavService();
         // check for param id
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {

@@ -1,6 +1,7 @@
 <?php
 namespace Nav;
 
+use Nav\Service\NavService;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Nav\Model\NavTable;
@@ -36,7 +37,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
                     $table = new NavTable($dbAdapter);
                     return $table;
-                }
+                },
+                'NavService' => function ($sm) {
+                    return new NavService($sm);
+                },
             )
         );
     }

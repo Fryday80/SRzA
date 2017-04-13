@@ -16,10 +16,10 @@ use Auth\Model\RoleTable;
 
 class NavService
 {
-    /** @var  $roleTable RoleTable */
-    /** @var $permissionTable PermissionTable */
-    /** @var $resourceTable ResourceTable */
-    /** @var $rolePermissionTable RolePermissionTable */
+    /** @var $roleTable             RoleTable           */
+    /** @var $permissionTable       PermissionTable     */
+    /** @var $resourceTable         ResourceTable       */
+    /** @var $rolePermissionTable   RolePermissionTable */
     private $roleTable;
     private $permissionTable;
     private $resourceTable;
@@ -33,4 +33,7 @@ class NavService
         $this->resourceTable = $sm->get('Auth\Model\ResourceTable');
         $this->rolePermissionTable = $sm->get('Auth\Model\RolePermissionTable');
     }
+    public function addRole($role_name){}
+    public function updateRole($rid){}
+    public function removeRole($rid){}
 }
