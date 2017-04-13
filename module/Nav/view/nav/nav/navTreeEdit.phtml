@@ -150,7 +150,7 @@
         $form->get('id')->setValue($page['id']);
         $form->get('label')->setValue($page['label']);
         $form->get('uri')->setValue($page['uri']);
-        $form->get('permission_id')->setValue($page['permission_id']);
+        $form->get('min_role_id')->setValue($page['min_role_id']);
 
         $form->prepare();
         return $ctx->form($form);

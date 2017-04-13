@@ -38,7 +38,7 @@ class NavForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'permission_id',
+            'name' => 'min_role_id',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(
             ),

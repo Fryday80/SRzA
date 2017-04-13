@@ -77,39 +77,11 @@ class NavTable extends AbstractTableGateway
             'menu_id'       => 0,
             'label'         => $data['label'],
             'uri'           => $data['uri'],
-            'permission_id' => $data['permission_id'],
+            'min_role_id'   => $data['rid'],
             'lft'           => $maxRgt + 1,
             'rgt'           => $maxRgt + 2
         ]);
         return $this->lastInsertValue;
-    }
-    public function add($data, $lft) {
-        return 'function not used try append instad';
-//         UPDATE nav SET rgt=rgt+2 WHERE rgt >= $RGT;
-//         UPDATE nav SET lft=lft+2 WHERE lft > $RGT;
-//         INSERT INTO nav (label,lft,rgt) VALUES ('Halbaffen', $RGT, $RGT +1);
-
-        $rgt = 2;
-        $label = 'testLabel';
-        $uri = 'user/add';
-
-        $sql = $this->sql;
-        $update = $sql->update();
-        $update->set(['rgt' => new \Zend\Db\Sql\Expression("rgt + 2")]);
-        $update->where("rgt >= $rgt");
-        $this->executeUpdate($update);
-        
-        $update->set(['lft' => new \Zend\Db\Sql\Expression("lft + 2")]);
-        $update->where("lft > $rgt");
-        $this->executeUpdate($update);
-
-        $this->insert([
-            'menu_id'   => 0,
-            'label'     => $label,
-            'rui'       => $uri,
-            'lft'       => $rgt,
-            'rgt'       => $rgt + 1
-        ]);
     }
     public function updateNesting($row) {
         $id = $row['id'];
