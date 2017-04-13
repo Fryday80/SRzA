@@ -61,8 +61,7 @@ class RoleController extends AbstractActionController
                     'role_name' => $data['role_name'],
                     'role_parent'=> $data['role_parent']
                 ), $data['rid']);
-                $this->navService->removeRole($data['rid']);
-                $this->navService->addRole($data['role_name']);
+                $this->navService->updateRole($data['rid'], $data['role_name']);
                 return $this->redirect()->toRoute('role');
             }
         }

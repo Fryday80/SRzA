@@ -48,6 +48,16 @@ class ResourceTable extends AbstractTableGateway
         }
         return $result[0];
     }
+    public function getByName($name)
+    {
+        $result = $this->select([
+            'resource_name' => $name
+        ])->toArray();
+        if (count($result) < 1) {
+            return null;
+        }
+        return $result[0];
+    }
 
     public function add($name)
     {
