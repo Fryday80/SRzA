@@ -11,6 +11,7 @@ class RoleTable extends AbstractTableGateway
 {
 
     public $table = 'role';
+    private $sorted = false;
     
     public function __construct(Adapter $adapter)
     {
@@ -73,5 +74,29 @@ class RoleTable extends AbstractTableGateway
     }
     public function fetchAll(){
         return $this->select()->toArray();
+    }
+    public function fetchAllSorted(){
+        if (!$this->sorted) {
+            $megalomaniac = 'Administrator';
+            $rearranged = array();
+            $hash = array();
+            $return = array();
+
+            $all = $this->fetchAll();
+            foreach ($all as $key => $role) {
+                $rearranged[$role['role_name']] = $role;
+                $hash[$role['rid']] = $role['role_name'];
+            }
+            $return[count($rearranged)] = $rearranged[$megalomaniac];
+
+            for ($i = count($rearranged) - 1; $i > 0; $i--) {
+                $return[$i - 1] = $rearranged [$hash[$i]];
+            }
+
+            foreach ($return as $role) {
+                $this->sorted[$role['rid']] = $role['role_name'];
+            }
+        }
+        return $this->sorted;
     }
 }
