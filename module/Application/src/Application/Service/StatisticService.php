@@ -17,17 +17,11 @@ use Zend\Mvc\MvcEvent;
 class StatisticService
 {
     private $sm;
-    /**
-     * @var $activeUsers ActiveUsers
-     */
+    /** @var $activeUsers ActiveUsers */
+    /** @var $pageHits PageHits */
+    /** @var $systemLog SystemLog */
     private $activeUsers ;
-    /**
-     * @var $pageHits PageHits
-     */
     private $pageHits;
-    /**
-     * @var $systemLog SystemLog
-     */
     private $systemLog;
 
     function __construct($sm)

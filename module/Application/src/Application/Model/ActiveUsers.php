@@ -15,6 +15,7 @@ class ActiveUsers extends AbstractTableGateway
 {
 
     public $table = '';
+    private $storetime = 'z.b. 2 Monate';
 
     public function __construct(Adapter $adapter)
     {
@@ -49,8 +50,25 @@ class ActiveUsers extends AbstractTableGateway
             return false;
         return $sid;
     }
-    public function deleteOlderThan($age){}
+    public function remove($id) {
+        return ($this->delete(array('id' => (int)$id)))? $id : false;
+    }
+
+    private function deleteOlderThan($dataSet){
+        foreach ($dataSet as $sidKey => $data){
+            $age = /* processed */$data['lastActionTime'];
+            if ( $age > $this->storetime ){
+                $this->remove($data['id']);
+            }
+        }
+    }
 }
+
+//@todo man kann ja ne db machen mit
+//@todo id,ip,sid,lastActionTime,lastActionUrl
+//@todo und ne hashTable id, sid, au_id oder so (ggf + ph_id + sl_id falls du da noch was willst)
+//@todo dann kannste ->get( ActiveUserDBTable, where ( hashTable.au_id (sid = $sid) ) ) // absolut falscher string aber du weißt was ich meine
+
 //          tabelle 1: activeUsers (id,ip,sid,lastActionTime,lastActionUrl)
 
 //  für activeUsers brauchst du ne funktion die alle einträge löscht wo lastActionTime schon alter als x ist
