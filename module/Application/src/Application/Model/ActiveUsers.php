@@ -15,7 +15,6 @@ class ActiveUsers extends AbstractTableGateway
 {
 
     public $table = 'active_users';
-    private $activeUsers;
 
     public function __construct(Adapter $adapter)
     {
@@ -23,47 +22,72 @@ class ActiveUsers extends AbstractTableGateway
         $this->initialize();
     }
     public function updateActive($data, $storeTime) {
-        $lease = $data['last_action_time']-$storeTime;
+        $leaseTime = $data['last_action_time']-$storeTime;
         $prepare = $this->prepareData($data);
         if ($prepare == NULL)return; //@todo error msg "data missing"
-        $sqlItems = $prepare[0];
-        $sqlValues = $prepare[1];
-        $query = "REPLACE INTO active_users ($sqlItems)
-                      VALUES ($sqlValues);
-                      DELETE FROM active_users WHERE last_action_time < $lease;";
+        $queryItems = $prepare[0];
+        $queryValues = $prepare[1];
+        $query = "REPLACE INTO active_users ($queryItems)
+                      VALUES ($queryValues);
+                      DELETE FROM active_users WHERE last_action_time < $leaseTime;";
         $this->adapter->query($query, array());
     }
     public function getActiveUsers(){
-        return $this->getWhere();
+        $return = $this->getWhere()->toArray();
+        // unserialize serialized data
+        foreach ($return as $key => $row ) {
+            $imploded = unserialize($row['serialized_columns']);
+            foreach ($imploded as $valueKey){
+                $return[$key][$valueKey] = unserialize($row[$valueKey]);
+            }
+            // remove no longer used data
+            unset ($return[$key]['serialized_columns']);
+        }
+        return $return;
     }
 
+    /** Prepare data and check for required table columns
+     *
+     * @param array $data
+     * @return array|null [0] = sql columns line up, [1] = the fitting sql VALUES
+     */
     private function prepareData($data){
-        $required = array(
+        $requiredColumns = array(
             'ip' => false,
             'sid' => false,
             'user_id' => false,
             'last_action_time' => false,
             'last_action_url' => false
         );
-        $sqlItems ='';
-        $sqlValues = '';
+        $serializedColumns = array();
+        $queryItems ='';
+        $queryValues = '';
 
+        //create SQL items and values line up
         foreach ($data as $key => $value){
-            if (array_key_exists( $key, $required )){
-                $required[$key] = true;
+            if (array_key_exists( $key, $requiredColumns )){
+                $requiredColumns[$key] = true;
             }
-            $sqlItems .= $key . ", ";
+            if (is_array($value)){
+                $value = serialize($value);
+                array_push($serializedColumns, "'" . $key . "'");
+            }
+            $queryItems .= $key . ", ";
             if (is_int($value)) {
-                $sqlValues .= $value. ", ";
+                $queryValues .= $value. ", ";
             } else {
-                $sqlValues .= "'$value', ";
+                $queryValues .= "'$value', ";
             }
         }
-        $sqlItems = substr($sqlItems, 0, -2);
-        $sqlValues = substr($sqlValues, 0, -2);
-        if (in_array(false, $required))return NULL;
-        return array($sqlItems, $sqlValues);
+        $queryItems .= 'serialized_columns';
+        $queryValues .= serialize($serializedColumns);
+
+        // all required given?
+        if (in_array(false, $requiredColumns))return NULL;
+        // then:
+        return array($queryItems, $queryValues);
     }
+
     private function getWhere($where = array(), $columns = array())
     {
         try {

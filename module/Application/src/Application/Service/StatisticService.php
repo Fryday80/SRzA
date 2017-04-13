@@ -24,6 +24,9 @@ class StatisticService
     /** @var $systemLog SystemLog */
     private $systemLog;
 
+    // Options
+    private $keepUserActive = 30*60;
+
     function __construct($sm)
     {
         $this->sm = $sm;
@@ -34,28 +37,32 @@ class StatisticService
 
     public function onRedirectNoPerm(){}
     public function onDispatch(MvcEvent $e) {
-        $storeTime = 30*60;
-       
-        dump($e->getApplication()->getRequest()->getServer());
-        $ip = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
-        $a = $this->sm->get('AccessService');
-        $sid = $a->session->getManager()->getId();
-        bdump($ip);
-        bdump($sid);
-        $sid = '78978';
+        //Dummy data until all works fine
         $data = array (
-            'ip' => $ip,
-            'sid' => $sid,
+            'ip' => '8.8.8.8',
+            'sid' => '24-7-dev',
             'user_id' => 42,
             'last_action_time' => time(),
-            'last_action_url' => '/home',
-            'action_data' => '',
+            'last_action_url' => '/dev',
+            'action_data' => '$_SERVER',
         );
+        $a = $this->sm->get('AccessService');
 
+        $data['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
+        $data['sid'] = $a->session->getManager()->getId();
+        $actionData = $e->getApplication()->getRequest()->getServer()->toArray();
+        //@todo erase unused data from $actionData
+        $actionData = array ('bli' => 'bla', 'blubber' => 'blubb');
+        $data['action_data'] = $actionData;
 
-        $this->activeUsers->updateActive($data, $storeTime);
-        //@todo update activeUsers DB
+        $this->activeUsers->updateActive($data, $this->keepUserActive);
+//        $this->activeUsers->getActiveUsers();  // for testing
         //@todo update pageHits DB
+    }
+
+    public function getActiveUsers()
+    {
+        return $this->activeUsers->getActiveUsers();
     }
 
     /**
