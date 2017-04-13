@@ -39,13 +39,19 @@ class NavService
     }
     public function addRole($roleName){
         //@todo add role to permissions
+        $roleID = $this->roleTable->getRoleIDByName($roleName);
+        $this->permissionTable->add($this->navRolesResourceID, $roleName );
+        $this->rolePermissionTable->addPermission($roleID, $roleName);
     }
     public function updateRole($rid, $roleName){
-        //@todo delete role from permissions
-        //@todo add role to permissions
+        $this->removeRole($rid);
+        $this->addRole($roleName);
     }
     public function removeRole($rid){
         //@todo delete role from permissions
+        $roleName = $this->roleTable->getRoleByID($rid)['role_name'];
+        $this->permissionTable->delete($this->navRolesResourceID, $rid );
+        $this->rolePermissionTable->delete($rid, $roleName);
     }
 
     private function getResourceID(){

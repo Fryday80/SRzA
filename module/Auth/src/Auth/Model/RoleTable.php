@@ -60,6 +60,13 @@ class RoleTable extends AbstractTableGateway
         }
         return null;
     }
+    public function getRoleIDByName($name) {
+        $res = $this->select("role_name = $name")->toArray();
+        if (count($res) > 0) {
+            return $res[0]['rid'];
+        }
+        return null;
+    }
     public function edit($data, $id) {
         $this->update($data, array('rid' => $id));
     }
