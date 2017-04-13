@@ -34,8 +34,7 @@ class NavController extends AbstractActionController
         $this->getCache();
         $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->fetchAll();
-        $form = new NavForm($allRoles);
+        $form = new NavForm($roleTable);
         $form->get('submit')->setValue('Add');
         
         $config = $this->getServiceLocator()->get('Config');
@@ -87,8 +86,7 @@ class NavController extends AbstractActionController
             return $this->redirect()->toRoute('nav/sort');
         }
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->fetchAll();
-        $form = new NavForm($allRoles);
+        $form = new NavForm($roleTable);
         // $form->get('permission_id')->setValue($navItem['permission_id']);
         $form->get('submit')->setValue('Edit');
         
@@ -119,8 +117,7 @@ class NavController extends AbstractActionController
     {
         $this->getCache();
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->fetchAll();
-        $form = new NavForm($allRoles);
+        $form = new NavForm($roleTable);
         $form->get('submit')->setValue('Edit');
         
         $NavTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
