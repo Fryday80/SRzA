@@ -36,12 +36,7 @@ class ActiveUsers extends AbstractTableGateway
         $return = $this->getWhere()->toArray();
         // unserialize serialized data
         foreach ($return as $key => $row ) {
-            $imploded = unserialize($row['serialized_columns']);
-            foreach ($imploded as $valueKey){
-                $return[$key][$valueKey] = unserialize($row[$valueKey]);
-            }
-            // remove no longer used data
-            unset ($return[$key]['serialized_columns']);
+            $return[$key]['action_data'] = unserialize($row['action_data']);
         }
         return $return;
     }
@@ -59,7 +54,6 @@ class ActiveUsers extends AbstractTableGateway
             'last_action_time' => false,
             'last_action_url' => false
         );
-        $serializedColumns = array();
         $queryItems ='';
         $queryValues = '';
 
@@ -68,19 +62,19 @@ class ActiveUsers extends AbstractTableGateway
             if (array_key_exists( $key, $requiredColumns )){
                 $requiredColumns[$key] = true;
             }
-            if (is_array($value)){
-                $value = serialize($value);
-                array_push($serializedColumns, "'" . $key . "'");
-            }
             $queryItems .= $key . ", ";
+
+            if ($key == 'action_data'){
+                $value = serialize($value);
+            }
             if (is_int($value)) {
                 $queryValues .= $value. ", ";
             } else {
                 $queryValues .= "'$value', ";
             }
         }
-        $queryItems .= 'serialized_columns';
-        $queryValues .= serialize($serializedColumns);
+        $queryItems = substr($queryItems, 0, -2);
+        $queryValues = substr($queryValues, 0, -2);
 
         // all required given?
         if (in_array(false, $requiredColumns))return NULL;
