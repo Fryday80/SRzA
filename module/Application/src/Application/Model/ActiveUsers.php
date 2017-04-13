@@ -16,20 +16,26 @@ class ActiveUsers extends AbstractTableGateway
 
     public $table = '';
     private $storetime = 'z.b. 2 Monate';
+    private $activeUser = array(        //theorie zum bauen
+        'user_id' => '',                // so ein array bauen und dann damit handeln, oder was haste vor?
+        'active' => false,              // das thema kann man ja auf x weisen angehen..
+        'last_sid' => '',
+        'dbRows' => array('$rows'),
+    );
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function fetchBySID($sid){
+    public function getBySID($sid){
         $row = $this->select(array('sid' => (int) $sid));
         if (!$row)
             return false;
 
         return $row->toArray()[0];
     }
-    public function updateActive($data) {
+    private function updateActive($data) {
         //@todo hier brauchts eigentlich nur eine public funktion
         //@todo wenn es einen eintrag mit dieser sid giebt dann updaten
         //@todo ansonsten eine neue zeile
@@ -38,24 +44,24 @@ class ActiveUsers extends AbstractTableGateway
 
         //@todo und mach noch ne spalte rein mit userID sonst können wir keine anzeige machen wer gerade on ist
     }
-    public function add($data){
+    private function add($data){
         if (!$this->insert(array('sid' => $data['sid'])))
             return false;
         return $this->getLastInsertValue();
     }
 
 
-    public function save($sid, $data) {
+    private function save($sid, $data) {
         if (!$this->update(array('sid' => $data['sid']), array('sid' => (int)$sid)))
             return false;
         return $sid;
     }
-    public function remove($id) {
+    private function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
     private function deleteOlderThan($dataSet){
-        foreach ($dataSet as $sidKey => $data){
+        foreach ($dataSet as $key => $data){
             $age = /* processed */$data['lastActionTime'];
             if ( $age > $this->storetime ){
                 $this->remove($data['id']);
