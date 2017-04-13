@@ -32,7 +32,9 @@ class StatisticService
         $this->systemLog = $this->sm->get('Application\Model\SystemLog');
     }
 
+    public function onRedirectNoPerm(){}
     public function onDispatch(MvcEvent $e) {
+        dump($e->getApplication()->getRequest()->getServer());
         $ip = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $a = $this->sm->get('AccessService');
         $sid = $a->session->getManager()->getId();

@@ -96,4 +96,10 @@ class RolePermissionTable extends AbstractTableGateway
             'permission_id' => $permissionID
         ));
     }
+    public function deletePermission($roleID, $permissionID) {
+        $this->delete(array(
+            'role_id' => $roleID,
+            'permission_id' => $permissionID
+        ));
+    }
 }

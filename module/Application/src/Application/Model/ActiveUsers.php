@@ -75,7 +75,7 @@ class ActiveUsers extends AbstractTableGateway
 //@todo und ne hashTable id, sid, au_id oder so (ggf + ph_id + sl_id falls du da noch was willst)
 //@todo dann kannste ->get( ActiveUserDBTable, where ( hashTable.au_id (sid = $sid) ) ) // absolut falscher string aber du weißt was ich meine
 
-//          tabelle 1: activeUsers (id,ip,sid,lastActionTime,lastActionUrl)
+//          tabelle 1: activeUsers (id,ip,sid,userID,lastActionTime,lastActionUrl)
 
 //  für activeUsers brauchst du ne funktion die alle einträge löscht wo lastActionTime schon alter als x ist
 //  und updaten anhand der sid

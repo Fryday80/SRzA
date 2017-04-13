@@ -141,7 +141,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $resultSetPrototype, $serviceManager);
                 },
                 'Auth\Model\RoleTable' => function ($serviceManager) {
-                    return new RoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
+                    return new RoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $serviceManager);
                 },
                 'Auth\Model\PermissionTable' => function ($serviceManager) {
                     return new PermissionTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
