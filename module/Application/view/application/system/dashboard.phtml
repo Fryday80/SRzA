@@ -1,0 +1,76 @@
+<?php
+    $title = 'Dashboard';
+    $this->headTitle($title); ?>
+
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<style>
+    .dash-list {
+        max-height: 200px;
+        overflow-y: scroll;
+        list-style-type: none
+    }
+    .dash-list li {
+        box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+    }
+</style>
+<box style="width: 400px; float: left; margin-right: 30px">
+    <boxtitel>
+        <span class="own_text_small">User Statistics</span>
+    </boxtitel>
+    <boxcontent>
+        <p>All clicks:  564</p>
+        <p>clicks:  564</p>
+    </boxcontent>
+</box>
+
+<box style="width: 400px; float: right; margin-right: 30px">
+    <boxtitel>
+        <span class="own_text_small">Live Clicks</span>
+    </boxtitel>
+    <boxcontent>
+        <ul id="dashLiveList" class="dash-list">
+            <li>dsa</li>
+            <li>dsa</li>
+            <li>gfd</li>
+            <li>jhgjgh</li>
+            <li>dsa</li>
+            <li>dsa</li>
+            <li>gfd</li>
+            <li>jhgjgh</li>
+            <li>dsa</li>
+            <li>dsa</li>
+            <li>gfd</li>
+            <li>jhgjgh</li>
+        </ul>
+    </boxcontent>
+</box>
+
+<box style="width: 400px; float: left; margin-right: 30px">
+    <boxtitel>
+        <span class="own_text_small">System Log</span>
+    </boxtitel>
+    <boxcontent>
+        <ul class="dash-list">
+            <li>dsa</li>
+            <li>dsa</li>
+            <li>gfd</li>
+            <li>jhgjgh</li>
+        </ul>
+    </boxcontent>
+</box>
+
+<script type="text/javascript">
+    //script for live ticks
+
+    $.ajax({
+        url: "/website/json",
+        type: "POST",
+        data: JSON.stringify({method: 'getLiveActions', since: 6574357}),
+//        contentType: "application/json",
+        complete: function(e) {
+            console.log(e);
+        }
+    });
+    $('<li><span class="name"></span></li>')
+    $("#dashLiveList").prepend();
+</script>

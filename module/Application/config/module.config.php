@@ -11,7 +11,7 @@ return array(
 
     'controllers' => array(
         'invokables' => array(
-            'Application\Controller\Page' => 'Application\Controller\PageController',
+            'Application\Controller\System' => 'Application\Controller\SystemController',
         )
     ),
     'router' => array(
@@ -23,7 +23,7 @@ return array(
                     'constraints' => array(),
                     'defaults' => array(
 //                        '__NAMESPACE__' => 'Application\Controller',
-                        'controller'    => 'Application\Controller\Page',
+                        'controller'    => 'Application\Controller\System',
                         'action'        => 'dashboard',
                     ),
                 ),
@@ -39,16 +39,26 @@ return array(
                             )
                         )
                     ),
-                    'settings' => array(
+//                    'settings' => array(
+//                        'type' => 'Segment',
+//                        'options' => array(
+//                            'route' => '/delete[/:id]',
+//                            'constraints' => array(
+//                                'id' => '[0-9]+'
+//                            ),
+//                            'defaults' => array(
+//                                'action' => '',
+//                                'id' => '[0-9]+'
+//                            )
+//                        )
+//                    ),
+                    'json' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/delete[/:id]',
-                            'constraints' => array(
-                                'id' => '[0-9]+'
-                            ),
+                            'route' => '/json',
+                            'constraints' => array(),
                             'defaults' => array(
-                                'action' => '',
-                                'id' => '[0-9]+'
+                                'action' => 'json'
                             )
                         )
                     ),
