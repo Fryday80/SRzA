@@ -24,9 +24,16 @@ class Module
     public function onBootstrap(MvcEvent $e)
     {
         $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+        $statsService = $e->getApplication()->getServiceManager()->get('StatisticsService');
+        $eventManager->attach('dispatch', array($statsService, 'onDispatch'));
+//        $moduleRouteListener = new ModuleRouteListener();
+//        $moduleRouteListener->attach($eventManager);
         date_default_timezone_set ("Europe/Berlin");
+        return $this;
+    }
+    public function test(MvcEvent $e)
+    {
+        bdump($e);
     }
     public function getConfig()
     {

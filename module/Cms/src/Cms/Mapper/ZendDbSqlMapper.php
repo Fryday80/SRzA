@@ -93,8 +93,7 @@ class ZendDbSqlMapper implements PostMapperInterface
         if ($result instanceof Result && $result->isQueryResult() && $result->getAffectedRows()) {
             return $this->hydrator->hydrate($result->current(), $this->postPrototype);
         }
-
-        throw new \InvalidArgumentException("Page with given Url:{$url} not found.");
+        return null;
     }
 
     /**
