@@ -67,7 +67,7 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `target`, `min_role_id`, `lf
 (21, 0, 'Resources', '/resource', '', 4, 39, 40),
 (22, 0, 'FileBrowser', '/media/filebrowser', '', 4, 42, 43),
 (23, 0, 'Gallery Edit', '/album', '', 4, 44, 45),
-(24, 0, 'Links', '/links', '', 1, 46, 47);
+(24, 0, 'Links', '/links', '', 1, 47, 48);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
