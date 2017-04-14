@@ -25,6 +25,20 @@
 {
   clear: both;
 }
+ .text-highlight-mod(@h-col: @highlight-color; @h-t-col: @highlight-text-color; @h-t-s-col: @highlight-text-shadow-color)
+ {
+   background: @h-col;
+   color: @h-t-col;
+   text-shadow: 1px 1px @h-t-s-col;
+ }
+.text-highlighting(){
+  &::selection {
+    .text-highlight-mod;
+  }
+  &::-moz-selection {
+    .text-highlight-mod;
+  }
+}
 
 // hide and show ----------------------------------------------------------------------------
 .at-hide()

@@ -3,13 +3,18 @@
 {
     padding: 0;
     margin: 0;
+  .text-highlighting;
 }
 
 body
 {
     background: @body-color @html-background-image fixed;
     background-size: 100px;
-    color: #00bcd4;
+    color: #00bcd4; //change coler for var_dum or errors on dark bg
+  *
+  {
+    color: #3f3f3f; // undo error change
+  }
 }
 
 .body
@@ -19,7 +24,6 @@ body
   .at-bg-img;
   .relative;
   .at-text-shadow();
-  color: #3f3f3f;
 }
 
 h1
