@@ -20,8 +20,8 @@ class ActiveUsers extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function updateActive($data, $storeTime) {
-        $leaseTime = $data['last_action_time']-$storeTime;
+    public function updateActive($data, $storeDuration) {
+        $leaseTime = $data['last_action_time']-$storeDuration;
         $prepare = $this->prepareData($data);
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];

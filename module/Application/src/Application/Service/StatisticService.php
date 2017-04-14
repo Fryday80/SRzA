@@ -46,6 +46,7 @@ class StatisticService
         $referrer = $serverPHPData['HTTP_REFERER'];
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
         $redirect = $serverPHPData['REDIRECT_STATUS']; //set if redirected
+        $redirectedTo = $serverPHPData['REDIRECT_URL'];
 
         // active users data
         $activeUserData['last_action_time'] = $now;
@@ -58,8 +59,9 @@ class StatisticService
         array_push($activeUserData['action_data'], $serverPHPData);
 
         //@todo update pageHits DB
-
+        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
+        bdump($serverPHPData);
     }
 
     public function getActiveUsers()
