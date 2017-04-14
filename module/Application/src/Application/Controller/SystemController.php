@@ -2,6 +2,7 @@
 namespace Application\Controller;
 
 use Application\Service\CacheService;
+use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -11,19 +12,14 @@ class SystemController extends AbstractActionController
 {
     public function dashboardAction()
     {
-//        $cachePath = 'nav/file';
-//        $data = null;
-//        /** @var $cacheSerivce CacheService  */
-//        $cacheSerivce = $this->serviceLocator->get('CacheService');
-//        if (!$cacheSerivce->hasCache($cachePath) ) {
-//            $data = 0;
-//            $cacheSerivce->setCache($cachePath, $data);
-//        } else {
-//            $data = $cacheSerivce->getCache($cachePath);
-//        }
-//        return new ViewModel(array(
-//            'data' => $data
-//        ));
+        /** @var  $statsService StatisticService */
+        $statsService = $this->getServiceLocator()->get('StatisticService');
+        $liveClicks = $statsService->getLastActions();
+        $activeUsers = $statsService->getActiveUsers();
+        return new ViewModel(array(
+            'liveClicks' => $liveClicks,
+            'activeUsers' => $activeUsers,
+        ));
     }
 
     public function settingsAction()

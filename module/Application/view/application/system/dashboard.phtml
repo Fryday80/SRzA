@@ -1,7 +1,6 @@
 <?php
     $title = 'Dashboard';
-    $this->headTitle($title);
-$this-> ?>
+    $this->headTitle($title); ?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <style>
@@ -102,6 +101,17 @@ $this-> ?>
             <li>dsa</li>
             <li>gfd</li>
             <li>jhgjgh</li>
+        </ul>
+    </boxcontent>
+</box>
+<box class = "dashboard dashboard-right">
+    <boxtitel>
+        <span class="own_text_small">Active Users</span>
+    </boxtitel>
+    <boxcontent>
+        <ul class="dash-list">
+            <?php foreach ($activeUsers as $row): ?>
+            <li><?php echo $row['user_id']; ?> </li>
         </ul>
     </boxcontent>
 </box>

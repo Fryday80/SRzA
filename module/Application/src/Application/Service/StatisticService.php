@@ -82,6 +82,7 @@ class StatisticService
         $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
 
         array_push($activeUserData['action_data'], $serverPHPData);
+//        unset($activeUserData['action_data'][0]['SERVER_SOFTWARE']);
 
         $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsersTable->updateActive($activeUserData, $this->keepUserActiveFor);
@@ -99,9 +100,11 @@ class StatisticService
     }
 
     public function getLastActions($since = null) {
+        return null;
         //@todo load actions from actionLog
         //wenn since == null load all
         //ansonsten nur alle die neuer sind
+//        return $this->actionsLog->;
     }
 
     /**

@@ -33,7 +33,8 @@ class ActiveUsersTable extends AbstractTableGateway
         $return = $this->getWhere()->toArray();
         // unserialize serialized data
         foreach ($return as $key => $row ) {
-            $return[$key]['action_data'] = unserialize($row['action_data']);
+//            bdump(substr($return[$key]['action_data'], 2362));
+            $return[$key]['action_data'] = unserialize($return[$key]['action_data']);
         }
         return $return;
     }
@@ -47,6 +48,7 @@ class ActiveUsersTable extends AbstractTableGateway
     {
         $queryItems ='';
         $queryValues = '';
+//        bdump($data);die;
 
         //create SQL items and values line up
         foreach ($data as $key => $value){
