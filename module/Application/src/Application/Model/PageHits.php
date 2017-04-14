@@ -14,7 +14,7 @@ use Zend\Db\Adapter\Adapter;
 
 class PageHits extends AbstractTableGateway
 {
-//  fry        table: pageHits (id, url, lastActionTime, count, day )     id = primary , (url,day) = unique
+//  fry        table: pageHits (id, url, lastActionTime, count )     id = primary , (url,day) = unique
 
     public $table = 'page_hits';
 
@@ -25,12 +25,10 @@ class PageHits extends AbstractTableGateway
     }
     public function countHit($url, $now)
     {
-        $day = date('d.m.Y', $now);
         $query = "REPLACE INTO $this->table SET 
                       url = '$url', 
                       last_action_time = $now, 
-                      counter = counter + 1, 
-                      hit_day = '$day';
+                      counter = counter + 1;
                       ";
         var_dump($query);
         $this->adapter->query($query, array());
@@ -47,38 +45,30 @@ class PageHits extends AbstractTableGateway
         return $this->getWhere(array('url' => $url));
     }
 
-    /**
-     * @param string $day format dd.mm.yyyy
-     * @return null|\Zend\Db\ResultSet\ResultSetInterface
-     * @throws \Exception
-     */
-    public function getByDay( $day )
-    {
-        return $this->getWhere(array('hit_day' => $day));
-    }
-
-    /**
-     * @param string $day format dd.mm.yyyy
-     * @param string $url
-     * @return null|\Zend\Db\ResultSet\ResultSetInterface
-     * @throws \Exception
-     */
-    public function getByDayAndURL( $day, $url )
-    {
-        $url = $this->getRelativeURL($url);
-        return $this->getWhere(array('url' => $url, 'hit_day' => $day));
-    }
-
-    /**
-     * @param string $since format dd.mm.yyyy
-     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
-     */
-    public function getSince( $since )
-    {
-        $timestamp = $this->createTimestampFromDayString($since);
-        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp;";
-        return $this->adapter->query($query, array());
-    }
+//    /**
+//     * @param string $day format dd.mm.yyyy
+//     * @param string $url
+//     * @return null|\Zend\Db\ResultSet\ResultSetInterface
+//     * @throws \Exception
+//     */
+//    public function getByDayAndURL( $day, $url )
+//    {
+//        $url = $this->getRelativeURL($url);
+//        $select->where->equalTo('status', '-1');
+//        $select->where->equalTo('level1', '1');
+////        return $this->getWhere(array('url' => $url, 'hit_day' => $day));
+//    }
+//
+//    /**
+//     * @param string $since format dd.mm.yyyy
+//     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+//     */
+//    public function getSince( $since )
+//    {
+//        $timestamp = $this->createTimestampFromDayString($since);
+//        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp;";
+//        return $this->adapter->query($query, array());
+//    }
 
     /**
      * @param string $since format dd.mm.yyyy
