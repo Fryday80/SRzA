@@ -74,13 +74,13 @@ class CacheService
 
         $content = file_get_contents($this->realPath($name));
         if ($serialize)
-            $content = json_decode($content, true);
+            $content = unserialize($content);
 
         return $content;
     }
     private function saveFile($name, $content, $serialize = true) {
         if ($serialize)
-            $content = json_encode($content);
+            $content = serialize($content);
 
 
         $folders = explode('/', $name);

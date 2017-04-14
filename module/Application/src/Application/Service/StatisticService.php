@@ -13,10 +13,21 @@ use Application\Model\PageHits;
 use Application\Model\SystemLog;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
+use Application\Utility\CircularBuffer;
 
+class Action {
+    public $actionType; //string wie  loadPage, SystemLog, PageError ....
+    public $time;
+    public $msg; // bei loadPage die url, bei SystemLog die log msg ....
+    public $userID;
+    //...
+}
 
 class StatisticService
 {
+    const ACTIONS_CACHE_NAME = 'stats/actions';
+    /** @var StatisticService  */
+    private static $instance;
     private $sm;
     /** @var $activeUsers ActiveUsers */
     private $activeUsers ;
@@ -24,19 +35,28 @@ class StatisticService
     private $pageHits;
     /** @var $systemLog SystemLog */
     private $systemLog;
-
+    /** @var  $cache CacheService */
+    private $cache;
+    /** @var $actionsLog CircularBuffer */
+    private $actionsLog;
     // Options
     private $keepUserActive = 30*60;
 
-    function __construct($sm)
-    {
+    function __construct($sm) {
+        self::$instance = $this;
         $this->sm = $sm;
         $this->activeUsers = $this->sm->get('Application\Model\ActiveUsers');
         $this->pageHits = $this->sm->get('Application\Model\PageHits');
         $this->systemLog = $this->sm->get('Application\Model\SystemLog');
+        $this->cache = $this->sm->get('CacheService');
+        if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
+            $this->actionsLog = new CircularBuffer(100);
+            $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
+        } else {
+            $this->actionsLog = $this->cache->getCache($this::ACTIONS_CACHE_NAME);
+        }
     }
 
-    public function onRedirectNoPerm(){}
     public function onDispatch(MvcEvent $e) {
         /** @var  $a AccessService*/
         $a = $this->sm->get('AccessService');
@@ -63,10 +83,17 @@ class StatisticService
         $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
 //        bdump($serverPHPData);
     }
-
-    public function getActiveUsers()
-    {
+    public function onFinish(){
+        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
+    }
+    public function getActiveUsers() {
         return $this->activeUsers->getActiveUsers();
+    }
+
+    public function getLastActions($since = null) {
+        //@todo load actions from actionLog
+        //wenn since == null load all
+        //ansonsten nur alle die neuer sind
     }
 
     /**
@@ -76,7 +103,17 @@ class StatisticService
      * @param $data mixed (serializable)
      */
     public static function log($type, $title, $msg, $data) {
+        //achtung static hier giebts kein this
+        if (!self::$instance)
+            return;
+
+        $thiss = self::$instance;
         //@todo serialize $data
         //@todo write to DB
+    }
+    private function logAction() {
+        $action = new Action();
+        //@todo fill action
+        $this->actionsLog->push($action);
     }
 }

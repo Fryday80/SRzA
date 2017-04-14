@@ -25,6 +25,7 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $statsService = $e->getApplication()->getServiceManager()->get('StatisticService');
         $eventManager->attach('dispatch', array($statsService, 'onDispatch'));
+        $eventManager->attach('finish', array($statsService, 'onFinish'));
         date_default_timezone_set ("Europe/Berlin");
         return $this;
     }
