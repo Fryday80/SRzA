@@ -98,7 +98,7 @@ class NavController extends AbstractActionController
                 $navTable->updateItem(array(
                     'label' => $data['label'],
                     'uri' => $data['uri'],
-                    'permission_id' => $data['permission_id']
+                    'min_role_id' => $data['min_role_id']
                 ), $data['id']);
                 //clear Cache
                 $this->cacheService->clearCache('nav/main');
