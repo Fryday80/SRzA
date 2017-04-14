@@ -8,18 +8,21 @@
 
 namespace Application\Service;
 
-use Application\Model\ActiveUsers;
-use Application\Model\PageHits;
-use Application\Model\SystemLog;
+use Application\Model\ActiveUsersTable;
+use Application\Model\PageHitsTable;
+use Application\Model\SystemLogTable;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
 use Application\Utility\CircularBuffer;
 
 class Action {
     public $actionType; //string wie  loadPage, SystemLog, PageError ....
-    public $time;
-    public $msg; // bei loadPage die url, bei SystemLog die log msg ....
-    public $userID;
+    public $title;
+    public $msg;
+    public $data;
+    public $time; // bei loadPage die url, bei SystemLog die log msg ....
+    public $user_id;
+
     //...
 }
 
@@ -29,25 +32,26 @@ class StatisticService
     /** @var StatisticService  */
     private static $instance;
     private $sm;
-    /** @var $activeUsers ActiveUsers */
-    private $activeUsers ;
-    /** @var $pageHits PageHits */
-    private $pageHits;
-    /** @var $systemLog SystemLog */
-    private $systemLog;
+    /** @var $activeUsers ActiveUsersTable */
+    private $activeUsersTable ;
+    /** @var $pageHits PageHitsTable */
+    private $pageHitsTable;
+    /** @var $systemLog SystemLogTable */
+    private $systemLogTable;
     /** @var  $cache CacheService */
     private $cache;
     /** @var $actionsLog CircularBuffer */
     private $actionsLog;
     // Options
-    private $keepUserActive = 30*60;
+    private $keepUserActiveFor = 30*60;
 
-    function __construct($sm) {
+    function __construct($sm)
+    {
         self::$instance = $this;
         $this->sm = $sm;
-        $this->activeUsers = $this->sm->get('Application\Model\ActiveUsers');
-        $this->pageHits = $this->sm->get('Application\Model\PageHits');
-        $this->systemLog = $this->sm->get('Application\Model\SystemLog');
+        $this->activeUsersTable = $this->sm->get('Application\Model\ActiveUsers');
+        $this->pageHitsTable = $this->sm->get('Application\Model\PageHits');
+        $this->systemLogTable = $this->sm->get('Application\Model\SystemLog');
         $this->cache = $this->sm->get('CacheService');
         if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
             $this->actionsLog = new CircularBuffer(100);
@@ -57,7 +61,8 @@ class StatisticService
         }
     }
 
-    public function onDispatch(MvcEvent $e) {
+    public function onDispatch(MvcEvent $e)
+    {
         /** @var  $a AccessService*/
         $a = $this->sm->get('AccessService');
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
@@ -69,24 +74,28 @@ class StatisticService
         $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
 
         // active users data
-        $activeUserData['last_action_time'] = $now;
+        $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
         $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
         $activeUserData['action_data'] = array();
         $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
-        //@todo erase unused data from $serverPHPData if wanted
+
         array_push($activeUserData['action_data'], $serverPHPData);
 
-        //@todo update pageHits DB
-        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
-        $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
+        $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
+        $this->activeUsersTable->updateActive($activeUserData, $this->keepUserActiveFor);
+
+        array_push($activeUserData['action_data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
+        $this->logAction('Site call', 'call ' . $activeUserData['last_action_url'], 'regular log', $activeUserData);
     }
-    public function onFinish(){
+    public function onFinish()
+    {
         $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
     }
-    public function getActiveUsers() {
-        return $this->activeUsers->getActiveUsers();
+    public function getActiveUsers()
+    {
+        return $this->activeUsersTable->getActiveUsers();
     }
 
     public function getLastActions($since = null) {
@@ -110,9 +119,18 @@ class StatisticService
         //@todo serialize $data
         //@todo write to DB
     }
-    private function logAction() {
+    private function logAction($type, $title, $msg, $data) {
+        $a = $this->sm->get('AccessService');
+        /** @var  $action Action */
         $action = new Action();
-        //@todo fill action
+        // fill action
+        $action->actionType = $type;
+        $action->title  = $title;
+        $action->msg = $msg;
+        $action->data = $data;
+        $action->time = ($data['time']) ? $data['time'] : time();
+        $action->user_id = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
+
         $this->actionsLog->push($action);
     }
 }

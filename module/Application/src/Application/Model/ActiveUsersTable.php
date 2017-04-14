@@ -11,7 +11,7 @@ namespace Application\Model;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
-class ActiveUsers extends AbstractTableGateway
+class ActiveUsersTable extends AbstractTableGateway
 {
     public $table = 'active_users';
 
@@ -21,12 +21,12 @@ class ActiveUsers extends AbstractTableGateway
         $this->initialize();
     }
     public function updateActive($data, $storeDuration) {
-        $leaseTime = $data['last_action_time']-$storeDuration;
+        $leaseTime = $data['time']-$storeDuration;
         $prepare = $this->prepareData($data);
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
         $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);
-                      DELETE FROM active_users WHERE last_action_time < $leaseTime;";
+                      DELETE FROM active_users WHERE time < $leaseTime;";
         $this->adapter->query($query, array());
     }
     public function getActiveUsers(){

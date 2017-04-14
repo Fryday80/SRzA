@@ -9,9 +9,9 @@
 
 namespace Application;
 
-use Application\Model\ActiveUsers;
-use Application\Model\PageHits;
-use Application\Model\SystemLog;
+use Application\Model\ActiveUsersTable;
+use Application\Model\PageHitsTable;
+use Application\Model\SystemLogTable;
 use Application\Service\StatisticService;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
@@ -52,13 +52,13 @@ class Module
                     return new StatisticService( $sm );
                 },
                 'Application\Model\ActiveUsers' => function ( $serviceManager ) {
-                    return new ActiveUsers( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new ActiveUsersTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
                 'Application\Model\PageHits' => function ( $serviceManager ) {
-                    return new PageHits( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new PageHitsTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
                 'Application\Model\SystemLog' => function ( $serviceManager ) {
-                    return new SystemLog( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new SystemLogTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
             )
         );

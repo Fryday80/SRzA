@@ -12,7 +12,7 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 
-class SystemLog extends AbstractTableGateway
+class SystemLogTable extends AbstractTableGateway
 {
 // fry  table: systemLog (id, type[string], title, message, time, data[string] )
     public $table = 'system_log';

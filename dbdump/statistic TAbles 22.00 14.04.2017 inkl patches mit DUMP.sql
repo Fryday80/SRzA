@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `active_users` (
   `sid` char(50) COLLATE utf8_bin NOT NULL,
   `ip` text COLLATE utf8_bin NOT NULL,
   `user_id` int(11) NOT NULL DEFAULT '0',
-  `last_action_time` int(11) NOT NULL DEFAULT '0',
+  `time` bigint(20) NOT NULL DEFAULT '0',
   `last_action_url` text COLLATE utf8_bin NOT NULL,
   `action_data` longtext COLLATE utf8_bin,
   UNIQUE KEY `sid` (`sid`)
@@ -50,7 +50,7 @@ DROP TABLE IF EXISTS `page_hits`;
 CREATE TABLE IF NOT EXISTS `page_hits` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `url` char(100) COLLATE utf8_bin NOT NULL,
-  `last_action_time` bigint(20) NOT NULL,
+  `time` bigint(20) NOT NULL,
   `counter` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`)

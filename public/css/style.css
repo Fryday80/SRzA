@@ -413,6 +413,9 @@ body {
 body * {
   color: #3f3f3f;
 }
+body > pre {
+  color: #00bcd4;
+}
 .body {
   border-radius: 5px;
   margin: 3vw;
