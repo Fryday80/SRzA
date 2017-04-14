@@ -22,6 +22,18 @@ class PageHits extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
+//  @todo     //Adds one to the counter
+//  @todo
+//  @todo     mysql_query("UPDATE counter SET counter = counter + 1");
+//  @todo
+//  @todo     //Retrieves the current count
+//  @todo
+//  @todo     $count = mysql_fetch_row(mysql_query("SELECT counter FROM counter"));
+//  @todo
+//  @todo     //Displays the count on your site
+//  @todo
+//  @todo     print "$count[0]";
+
 }
 
 //

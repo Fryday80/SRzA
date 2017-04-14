@@ -60,7 +60,6 @@ class StatisticService
         //@todo update pageHits DB
 
         $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
-//        $this->activeUsers->getActiveUsers();  // for testing
     }
 
     public function getActiveUsers()
