@@ -25,11 +25,8 @@ class PageHits extends AbstractTableGateway
     }
     public function countHit($url, $now)
     {
-        $query = "REPLACE INTO $this->table SET 
-                      url = '$url', 
-                      last_action_time = $now, 
-                      counter = counter + 1;
-                      ";
+        $query = "INSERT INTO $this->table (url, last_action_time) VALUES ('$url', $now) 
+                      ON DUPLICATE KEY UPDATE counter = counter + 1;";
         var_dump($query);
         $this->adapter->query($query, array());
     }
@@ -45,48 +42,16 @@ class PageHits extends AbstractTableGateway
         return $this->getWhere(array('url' => $url));
     }
 
-//    /**
-//     * @param string $day format dd.mm.yyyy
-//     * @param string $url
-//     * @return null|\Zend\Db\ResultSet\ResultSetInterface
-//     * @throws \Exception
-//     */
-//    public function getByDayAndURL( $day, $url )
-//    {
-//        $url = $this->getRelativeURL($url);
-//        $select->where->equalTo('status', '-1');
-//        $select->where->equalTo('level1', '1');
-////        return $this->getWhere(array('url' => $url, 'hit_day' => $day));
-//    }
-//
-//    /**
-//     * @param string $since format dd.mm.yyyy
-//     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
-//     */
-//    public function getSince( $since )
-//    {
-//        $timestamp = $this->createTimestampFromDayString($since);
-//        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp;";
-//        return $this->adapter->query($query, array());
-//    }
-
     /**
-     * @param string $since format dd.mm.yyyy
+     * @param int $since timestamp
      * @param string $url
      * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
      */
     public function getSinceByURL( $since, $url)
     {
         $url = $this->getRelativeURL($url);
-        $timestamp = $this->createTimestampFromDayString($since);
-        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp AND url = '$url';";
+        $query = "SELECT * FROM $this->table WHERE last_action_time < $since AND url = '$url';";
         return $this->adapter->query($query, array());
-    }
-
-    private function getRelativeURL($url)
-    {
-        $relativeUrl = str_replace(array("http://", $_SERVER['HTTP_HOST']),"",$url);
-        return $relativeUrl;
     }
 
     private function getWhere($where = array(), $columns = array())
@@ -114,9 +79,10 @@ class PageHits extends AbstractTableGateway
         }
     }
 
-    private function createTimestampFromDayString($since)
+    private function getRelativeURL($url)
     {
-        return date_create_from_format('d.m.Y H:i:s', $since. '00:00:00');
+        $relativeUrl = str_replace(array("http://", $_SERVER['HTTP_HOST']),"",$url);
+        return $relativeUrl;
     }
 
 
