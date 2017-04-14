@@ -45,8 +45,8 @@ class StatisticService
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = $serverPHPData['HTTP_REFERER'];
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
-        $redirect = ($serverPHPData['REDIRECT_STATUS'])? $serverPHPData['REDIRECT_STATUS'] : ''; //set if redirected
-        $redirectedTo = $serverPHPData['REDIRECT_URL'];
+        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : null; //set if redirected
+        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : null;
 
         // active users data
         $activeUserData['last_action_time'] = $now;
