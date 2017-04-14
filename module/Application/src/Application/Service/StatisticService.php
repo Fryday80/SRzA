@@ -59,9 +59,9 @@ class StatisticService
         array_push($activeUserData['action_data'], $serverPHPData);
 
         //@todo update pageHits DB
-        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
+//        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
-        bdump($serverPHPData);
+//        bdump($serverPHPData);
     }
 
     public function getActiveUsers()
