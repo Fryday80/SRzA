@@ -23,43 +23,80 @@ class PageHits extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function countHit($url, $now) {
+    public function countHit($url, $now)
+    {
         $day = date('d.m.Y', $now);
-        $queryItems = "url, lastActionTime, count, day";
-        $queryValues = "'$url', $now, count+1, '$day'";
-        $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);";
-        bdump($query);
+        $query = "REPLACE INTO $this->table SET 
+                      url = '$url', 
+                      last_action_time = $now, 
+                      counter = counter + 1, 
+                      hit_day = '$day';
+                      ";
+        var_dump($query);
         $this->adapter->query($query, array());
     }
 
-    /** Prepare data for query
-     *
-     * @param array $data
-     * @return array|null [0] = sql columns line up, [1] = the fitting sql VALUES
+    /**
+     * @param string $url
+     * @return null|\Zend\Db\ResultSet\ResultSetInterface
+     * @throws \Exception
      */
-    private function prepareData($data)
+    public function getByUrl( $url )
     {
-        $queryItems ='';
-        $queryValues = '';
+        $url = $this->getRelativeURL($url);
+        return $this->getWhere(array('url' => $url));
+    }
 
-        //create SQL items and values line up
-        foreach ($data as $key => $value){
-            $queryItems .= $key . ", ";
+    /**
+     * @param string $day format dd.mm.yyyy
+     * @return null|\Zend\Db\ResultSet\ResultSetInterface
+     * @throws \Exception
+     */
+    public function getByDay( $day )
+    {
+        return $this->getWhere(array('hit_day' => $day));
+    }
 
-            if ($key == 'action_data'){
-                $value = serialize($value);
-            }
-            if (is_int($value)) {
-                $queryValues .= $value. ", ";
-            } else {
-                $queryValues .= "'$value', ";
-            }
-        }
+    /**
+     * @param string $day format dd.mm.yyyy
+     * @param string $url
+     * @return null|\Zend\Db\ResultSet\ResultSetInterface
+     * @throws \Exception
+     */
+    public function getByDayAndURL( $day, $url )
+    {
+        $url = $this->getRelativeURL($url);
+        return $this->getWhere(array('url' => $url, 'hit_day' => $day));
+    }
 
-        $queryItems = substr($queryItems, 0, -2);
-        $queryValues = substr($queryValues, 0, -2);
+    /**
+     * @param string $since format dd.mm.yyyy
+     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+     */
+    public function getSince( $since )
+    {
+        $timestamp = $this->createTimestampFromDayString($since);
+        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp;";
+        return $this->adapter->query($query, array());
+    }
 
-        return array($queryItems, $queryValues);
+    /**
+     * @param string $since format dd.mm.yyyy
+     * @param string $url
+     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
+     */
+    public function getSinceByURL( $since, $url)
+    {
+        $url = $this->getRelativeURL($url);
+        $timestamp = $this->createTimestampFromDayString($since);
+        $query = "SELECT * FROM $this->table WHERE last_action_time < $timestamp AND url = '$url';";
+        return $this->adapter->query($query, array());
+    }
+
+    private function getRelativeURL($url)
+    {
+        $relativeUrl = str_replace(array("http://", $_SERVER['HTTP_HOST']),"",$url);
+        return $relativeUrl;
     }
 
     private function getWhere($where = array(), $columns = array())
@@ -86,11 +123,16 @@ class PageHits extends AbstractTableGateway
             throw new \Exception($e->getMessage());
         }
     }
-    
-    
-    
-    
-    
+
+    private function createTimestampFromDayString($since)
+    {
+        return date_create_from_format('d.m.Y H:i:s', $since. '00:00:00');
+    }
+
+
+
+
+
 //  @salt     //Adds one to the counter
 //  @salt
 //  @salt     mysql_query("UPDATE counter SET counter = counter + 1");

@@ -394,11 +394,11 @@ boxcontent {
 * {
   padding: 0;
   margin: 0;
-  text-shadow: 1px 1px #f3ffff;
 }
 body {
   background: #430c0c url('/img/html.bg.png') fixed;
   background-size: 100px;
+  color: #00bcd4;
 }
 .body {
   border-radius: 5px;
@@ -407,6 +407,8 @@ body {
   background-size: '';
   background-color: #FAEBd7;
   position: relative;
+  text-shadow: 1px 1px #f3ffff;
+  color: #3f3f3f;
 }
 h1 {
   font-size: 20px;

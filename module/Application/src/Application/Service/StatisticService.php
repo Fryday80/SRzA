@@ -63,25 +63,24 @@ class StatisticService
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
         $now = time();
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
-        $referrer = $serverPHPData['HTTP_REFERER'];
+        $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
-        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : null; //set if redirected
-        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : null;
+        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
+        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
 
         // active users data
         $activeUserData['last_action_time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
-        $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : $a->getUserID();
+        $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
         $activeUserData['action_data'] = array();
-        $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $serverPHPData['HTTP_REFERER'];
+        $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
         //@todo erase unused data from $serverPHPData if wanted
         array_push($activeUserData['action_data'], $serverPHPData);
 
         //@todo update pageHits DB
-//        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
+        $this->pageHits->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsers->updateActive($activeUserData, $this->keepUserActive);
-//        bdump($serverPHPData);
     }
     public function onFinish(){
         $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
