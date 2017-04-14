@@ -16,10 +16,10 @@ return array(
     ),
     'router' => array(
         'routes' => array(
-            'website' => array(
+            'system' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/website',
+                    'route'    => '/system',
                     'constraints' => array(),
                     'defaults' => array(
 //                        '__NAMESPACE__' => 'Application\Controller',
