@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+use Application\DataObjects\DashboardData;
 use Application\Service\CacheService;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -14,11 +15,11 @@ class SystemController extends AbstractActionController
     {
         /** @var  $statsService StatisticService */
         $statsService = $this->getServiceLocator()->get('StatisticService');
-        $liveClicks = $statsService->getLastActions();
-        $activeUsers = $statsService->getActiveUsers();
+        $dashboardData = new DashboardData( $this->getServiceLocator() );
+        $dashboardData->setActionLog( );
+        $dashboardData->setActiveUsers( );
         return new ViewModel(array(
-            'liveClicks' => $liveClicks,
-            'activeUsers' => $activeUsers,
+            'dashboardData' => $dashboardData,
         ));
     }
 
@@ -30,15 +31,18 @@ class SystemController extends AbstractActionController
         ));
     }
     public function jsonAction() {
-        $a = json_decode($this->getRequest()->getContent());
-//        $a->method;
+        /** @var  $statsService StatisticService */
+        $statsService = $this->getServiceLocator()->get('StatisticService');
+        $request = json_decode($this->getRequest()->getContent());
+        $result = ['error' => false];
+        switch ($request->method) {
+            case 'getLiveActions':
+                //@todo check parameter since if exists (dann bei allen hier)
+                $statsService->getLastActions($request->since);
+                break;
+        };
 
-
-        $result = new JsonModel(array(
-            'some_parameter' => 'some value',
-            'success'=>$this->getRequest()->getContent(),
-        ));
-
-        return $result;
+        //output
+        return new JsonModel($result);
     }
 }

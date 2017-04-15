@@ -13,6 +13,7 @@ use Application\Model\ActiveUsersTable;
 use Application\Model\PageHitsTable;
 use Application\Model\SystemLogTable;
 use Application\Service\StatisticService;
+use Application\View\Helper\DashboardHelper;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\MvcEvent;
@@ -79,6 +80,9 @@ class Module
                     $accessService = $sm->getServiceLocator()->get('AccessService');
                     return new MyUrl($accessService);
                 },
+                'dashboardHelper'=>  function($sm){
+                    return new DashboardHelper($sm);
+                }
 
             )
         );

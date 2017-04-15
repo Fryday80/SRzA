@@ -14,17 +14,9 @@ use Application\Model\SystemLogTable;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
 use Application\Utility\CircularBuffer;
+use Application\DataObjects\Action;
 
-class Action {
-    public $actionType; //string wie  loadPage, SystemLog, PageError ....
-    public $title;
-    public $msg;
-    public $data;
-    public $time; // bei loadPage die url, bei SystemLog die log msg ....
-    public $user_id;
 
-    //...
-}
 
 class StatisticService
 {
@@ -54,7 +46,7 @@ class StatisticService
         $this->systemLogTable = $this->sm->get('Application\Model\SystemLog');
         $this->cache = $this->sm->get('CacheService');
         if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
-            $this->actionsLog = new CircularBuffer(100);
+            $this->actionsLog = new CircularBuffer(1);
             $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
         } else {
             $this->actionsLog = $this->cache->getCache($this::ACTIONS_CACHE_NAME);
@@ -81,8 +73,8 @@ class StatisticService
         $activeUserData['action_data'] = array();
         $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
 
-        array_push($activeUserData['action_data'], $serverPHPData);
-//        unset($activeUserData['action_data'][0]['SERVER_SOFTWARE']);
+        $activeUserData['action_data']['serverData'] = $serverPHPData;
+
 
         $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsersTable->updateActive($activeUserData, $this->keepUserActiveFor);
@@ -100,11 +92,12 @@ class StatisticService
     }
 
     public function getLastActions($since = null) {
-        return null;
-        //@todo load actions from actionLog
-        //wenn since == null load all
-        //ansonsten nur alle die neuer sind
-//        return $this->actionsLog->;
+//        $this->actionsLog->Reset();
+        return array_reverse($this->actionsLog->toArray());
+    }
+    public function getActiveUserDuration()
+    {
+        return $this->keepUserActiveFor;
     }
 
     /**

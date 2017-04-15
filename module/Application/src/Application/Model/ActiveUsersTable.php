@@ -8,35 +8,40 @@
 
 namespace Application\Model;
 
+use Application\DataObjects\ActiveUsers;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 class ActiveUsersTable extends AbstractTableGateway
 {
     public $table = 'active_users';
+    private $keepAlive;
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function updateActive($data, $storeDuration) {
-        $leaseTime = $data['time']-$storeDuration;
+    public function updateActive($data, $keepAlive) {
+        $leaseBreakpoint = $data['time']-$keepAlive;
+        $this->keepAlive = $keepAlive;
         $prepare = $this->prepareData($data);
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
         $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);
-                      DELETE FROM active_users WHERE time < $leaseTime;";
+                      DELETE FROM active_users WHERE time < $leaseBreakpoint;";
         $this->adapter->query($query, array());
     }
-    public function getActiveUsers(){
+
+    public function getActiveUsers()
+    {
         $return = $this->getWhere()->toArray();
+        $return = $this->adapter->query("SELECT * FROM $this->table", array())->toArray();
         // unserialize serialized data
         foreach ($return as $key => $row ) {
-//            bdump(substr($return[$key]['action_data'], 2362));
-            $return[$key]['action_data'] = unserialize($return[$key]['action_data']);
+            $return[$key]['action_data'] = json_decode($return[$key]['action_data']);
         }
-        return $return;
+        return new ActiveUsers($return);
     }
 
     /** Prepare data for query
@@ -48,14 +53,13 @@ class ActiveUsersTable extends AbstractTableGateway
     {
         $queryItems ='';
         $queryValues = '';
-//        bdump($data);die;
 
         //create SQL items and values line up
         foreach ($data as $key => $value){
             $queryItems .= $key . ", ";
 
             if ($key == 'action_data'){
-                $value = serialize($value);
+                $value = json_encode($value);
             }
             if (is_int($value)) {
                 $queryValues .= $value. ", ";
@@ -87,7 +91,7 @@ class ActiveUsersTable extends AbstractTableGateway
 //            ),
 //                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
 //            );
-            
+//            bdump($select->getSqlString());
             $results = $this->selectWith($select);
             return $results;
         } catch (\Exception $e) {

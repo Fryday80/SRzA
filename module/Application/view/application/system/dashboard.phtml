@@ -1,64 +1,12 @@
 <?php
     $title = 'Dashboard';
-    $this->headTitle($title); ?>
+    $this->headTitle($title);
+/** @var  $dashboardData \Application\DataObjects\DashboardData */
+$dashboardData = $dashboardData; //cleanfix easier to code
+?>
 
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<style>
-    .dashboard
-    {
-        width: 400px;
-        margin-right: 30px;
-    }
-
-    .dashboard-left
-    {
-        float: left;
-    }
-    .dashboard-right
-    {
-        float: right;
-    }
-    .dash-list {
-        max-height: 200px;
-        overflow-y: scroll;
-        list-style-type: none
-    }
-    .dash-list li {
-        box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
-    }
-    @media screen and (max-width: 1450px){
-        .dashboard
-        {
-            width: 100%;
-            margin-right: 0;
-        }
-        .dashboard *
-        {
-        //font-family: normal;
-            font-size: 1.5vw !important;
-        }
-
-        .dash-list li {
-            box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
-        }
-    }
-    @media screen and (max-width: 800px){
-        .dashboard
-        {
-            width: 100%;
-            margin-right: 0;
-        }
-        .dashboard *
-        {
-            font-family: normal;
-            font-size: 3vw !important;
-        }
-
-        .dash-list li {
-            box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
-        }
-    }
-</style>
+<?php echo $this->dashboardHelper()->getStyle() ?>
 <box class = "dashboard dashboard-left">
     <boxtitel>
         <span class="own_text_small">User Statistics</span>
@@ -66,30 +14,11 @@
     <boxcontent>
         <p>All clicks:  564</p>
         <p>clicks:  564</p>
+        <p>Active Users: <?php echo count($dashboardData->getActiveUsers()) ?></p>
     </boxcontent>
 </box>
 
-<box class = "dashboard dashboard-right">
-    <boxtitel>
-        <span class="own_text_small">Live Clicks</span>
-    </boxtitel>
-    <boxcontent>
-        <ul id="dashLiveList" class="dash-list">
-            <li>dsa</li>
-            <li>dsa</li>
-            <li>gfd</li>
-            <li>jhgjgh</li>
-            <li>dsa</li>
-            <li>dsa</li>
-            <li>gfd</li>
-            <li>jhgjgh</li>
-            <li>dsa</li>
-            <li>dsa</li>
-            <li>gfd</li>
-            <li>jhgjgh</li>
-        </ul>
-    </boxcontent>
-</box>
+<?php echo $this->dashboardHelper()->render($dashboardData->getActionLog()) ?>
 
 <box class = "dashboard dashboard-left">
     <boxtitel>
@@ -104,30 +33,7 @@
         </ul>
     </boxcontent>
 </box>
-<box class = "dashboard dashboard-right">
-    <boxtitel>
-        <span class="own_text_small">Active Users</span>
-    </boxtitel>
-    <boxcontent>
-        <ul class="dash-list">
-            <?php foreach ($activeUsers as $row): ?>
-            <li><?php echo $row['user_id']; ?> </li>
-        </ul>
-    </boxcontent>
-</box>
 
-<script type="text/javascript">
-    //script for live ticks
-
-    $.ajax({
-        url: "/website/json",
-        type: "POST",
-        data: JSON.stringify({method: 'getLiveActions', since: 6574357}),
-//        contentType: "application/json",
-        complete: function(e) {
-            console.log(e);
-        }
-    });
-    $('<li><span class="name"></span></li>')
-    $("#dashLiveList").prepend();
-</script>
+<?php
+echo $this->dashboardHelper()->render($dashboardData->getActiveUsers());
+echo $this->dashboardHelper()->getJS(); ?>

@@ -147,6 +147,16 @@ class  CircularBuffer        // extends		Object
     }
 
 
+    public function toArray() {
+        $data = [];
+        for ($i = $this->NextPosition; $i < $this->DataSize + 1; $i++) {
+            $i = ($i == $this->DataSize)? 0 : $i;
+            array_push($data, $this->Data[$i]);
+            if ($i == $this->NextPosition - 1)
+                break;
+        }
+        return $data;
+    }
     public function offsetExists($offset)
     {
         return ($offset >= 0 && $offset < $this->DataSize);
