@@ -152,5 +152,30 @@
     </div>
 
     <link href="/css/jsOverrides.css" media="screen" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function(){
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#eb6c44",
+                        "text": "#ffffff"
+                    },
+                    "button": {
+                        "background": "transparent",
+                        "text": "#f5d948",
+                        "border": "#f5d948"
+                    }
+                },
+                "position": "top",
+                "content": {
+                    "message": "Diese Seite verwendet Cookies um sie zu einem schönen Erlebnis werden zu lassen",
+                    "dismiss": "Verstanden!",
+                    "link": "Warum wird das Angezeigt?",
+//                    "href": "own policy - why cookies"
+                }
+            })});
+    </script>
 </body>
 </html>
