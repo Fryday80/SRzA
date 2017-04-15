@@ -8,14 +8,14 @@
 
 namespace Application\Model;
 
-use Application\DataObjects\SystemLog;
+use Application\DataObjects\SystemLogSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 
 class SystemLogTable extends AbstractTableGateway
 {
-// fry  table: systemLog (id, type[string], title, message, time, data[string] )
+// structure:  table: system_log (id, type [string], title [string], message [string], time [bigint], data [string|array|object] )
     public $table = 'system_log';
 
     public function __construct(Adapter $adapter)
@@ -23,24 +23,37 @@ class SystemLogTable extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function updateActive($data)
+
+    /**
+     * @param array $data array with data type[string], title[string], message[string], time, data[string|array|object]
+     * @return mixed
+     */
+    public function updateSystemLog($data)
     {
-        //@todo write to db
-//        $prepare = $this->prepareData($data);
-//        if ($prepare == NULL)return; //@todo error msg "data missing"
-//        $queryItems = $prepare[0];
-//        $queryValues = $prepare[1];
-//        $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);";
-//        $this->adapter->query($query, array());
+        $prepare = $this->prepareData($data);
+        if ($prepare == NULL)return  trigger_error( "data failure", E_USER_ERROR );
+        $queryItems = $prepare[0];
+        $queryValues = $prepare[1];
+        $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
+        $this->adapter->query($query, array());
     }
-    public function getLogs ($since = null)
+
+    public function getSystemLogs ($since = null)
     {
-        if($since == null){
-            return new SystemLog($this->getWhere());
+        // @todo check sorting of result array is to be new to old
+//        $data = array_reverse( $this->getWhere()->toArray() );
+        $data = $this->getWhere()->toArray();
+//        bdump( $data );
+        if ($since !== null && is_int($since))
+        {
+            $newDataSet = array();
+            for ($i = 0; $i < count($data); $i++)
+            {
+                if ($data[$i]->time < $since) return new SystemLogSet($newDataSet);
+                $newDataSet[$i] = $data[$i];
+            }
         }
-        else {
-            //@todo get younger than $since
-        }
+        return new SystemLogSet($data);
     }
     
     /** Prepare data for query
@@ -56,15 +69,8 @@ class SystemLogTable extends AbstractTableGateway
         //create SQL items and values line up
         foreach ($data as $key => $value){
             $queryItems .= $key . ", ";
-
-            if ($key == 'action_data'){
-                $value = serialize($value);
-            }
-            if (is_int($value)) {
-                $queryValues .= $value. ", ";
-            } else {
-                $queryValues .= "'$value', ";
-            }
+            $value = ($key == 'data') ? json_encode($value) : $value;
+            $queryValues .= (is_int($value)) ? $value. ", " : "'$value', ";
         }
         $queryItems = substr($queryItems, 0, -2);
         $queryValues = substr($queryValues, 0, -2);

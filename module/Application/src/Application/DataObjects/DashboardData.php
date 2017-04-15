@@ -2,12 +2,12 @@
 namespace Application\DataObjects;
 
 use Application\Service\StatisticService;
-use Application\DataObjects\ActiveUsers;
 
 class DashboardData
 {
     private $actionLog;
     private $activeUsers;
+    private $systemLog;
     /** @var  $statsService StatisticService */
     private $statService;
 
@@ -16,63 +16,83 @@ class DashboardData
         $this->statService = $sm->get('StatisticService');
     }
 
+    // getter
     public function getActiveUsers()
     {
-        if (!isset($this->activeUsers)){
-            $this->activeUsers = $this->updateItem('activeUsers');
-        }
-        return $this->activeUsers;
+        return (isset($this->activeUsers)) ? $this->activeUsers : $this->updateItem('activeUsers');
     }
 
-    /**
-     * @return array array of Action Objects
-     */
-    public function getActionLog()
+    public function getActionLog($since = null)
     {
-        if (!$this->actionLog) {
-            $this->actionLog = $this->updateItem('actionLog');
-        }
-        return $this->actionLog;
+        return (isset($this->actionLog)) ? $this->actionLog : $this->updateItem('actionLog', $since);
+    }
+    public function getSystemLog($since = null)
+    {
+        return (isset($this->systemLog)) ? $this->systemLog : $this->updateItem('systemLog', $since);
     }
 
-    public function setActiveUsers( ActiveUsers $data = null )
+    // setter
+    public function setActiveUsers( ActiveUsersSet $data = null )
     {
         $this->activeUsers = ($data == null) ? $this->updateItem('activeUsers') : $data;
     }
-    public function setActionLog( $data = null )
+
+    public function setActionLog( ActionLogSet $data = null )
     {
         $this->actionLog = ($data == null) ? $this->updateItem('actionLog') : $data;
     }
 
+    public function setSystemLog( SystemLogSet $data = null )
+    {
+        $this->actionLog = ($data == null) ? $this->updateItem('systemLog') : $data;
+    }
+
     /**
-     * @param null $item
+     * @param string $item activeUsers | actionLog | systemLog | all
+     * @param int $since UNIX timestamp of oldest entry
+     * @return bool true if sucessfüll false on fail
      */
-    public function update ($item = null)
+    public function update ($item = 'all', $since = null)
     {
         switch ($item){
             case 'activeUsers':
                 $this->activeUsers = $this->statService->getActiveUsers();
                 break;
             case 'actionLog':
-                $this->actionLog = $this->statService->getLastActions();
+                $this->actionLog = $this->statService->getLastActions($since);
                 break;
-            case null:
+            case 'systemLog':
+                $this->actionLog = $this->statService->getSystemLog($since);
+                break;
+            case 'all':
                 $this->activeUsers = $this->statService->getActiveUsers();
-                $this->actionLog = $this->statService->getLastActions();
+                $this->actionLog = $this->statService->getLastActions($since);
+                $this->actionLog = $this->statService->getSystemLog($since);
                 break;
             default:
-                return trigger_error("string is no keyword known to DashboardData", E_USER_ERROR);
+                trigger_error("string is no keyword known to DashboardData", E_USER_ERROR);
+                return false;
                 break;
         }
+        return true;
     }
-    private function updateItem($item)
+
+    /**
+     * @param string $item activeUsers | actionLog | systemLog | all
+     * @param int $since UNIX timestamp of oldest entry
+     * @return ActionLogSet|ActiveUsersSet|SystemLogSet
+     */
+    private function updateItem($item, $since = null)
     {
         switch ($item){
             case 'activeUsers':
                 return $this->statService->getActiveUsers();
                 break;
             case 'actionLog':
-               return $this->statService->getLastActions();
+               return $this->statService->getLastActions($since);
+                break;
+            case 'systemLog':
+               return $this->statService->getSystemLog($since);
                 break;
         }
     }

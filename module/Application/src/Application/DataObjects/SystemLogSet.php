@@ -11,4 +11,4 @@ namespace Application\DataObjects;
 
 use Application\DataObjects\BasicDashboardDataSet;
 
-class SystemLog extends BasicDashboardDataSet {}
+class SystemLogSet extends BasicDashboardDataSet {}

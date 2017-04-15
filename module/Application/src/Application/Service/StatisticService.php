@@ -88,6 +88,7 @@ class StatisticService
         $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
     }
 
+
     // ---------------------------------- getter ----------------------------
     // ------------- Active Users -----------------------------
     public function getActiveUsers()
@@ -98,11 +99,25 @@ class StatisticService
     // ------------- Action Log -------------------------------
     public function getLastActions($since = null)
     {
-//        //@todo $since
+        // checking for since here because of complex ring buffer coding
         $data = array_reverse( $this->actionsLog->toArray() );
+        if ($since !== null && is_int($since))
+        {
+            $newDataSet = array();
+            for ($i = 0; $i < count($data); $i++)
+            {
+                if ($data[$i]->time < $since) return new ActionLogSet($newDataSet);
+                $newDataSet[$i] = $data[$i];
+            }
+        }
         return new ActionLogSet($data);
     }
-    
+    // ------------- System Log -------------------------------
+    public function getSystemLog($since = null)
+    {
+        return $this->systemLogTable->getSystemLogs($since);
+    }
+
     public function getActiveUserDuration()
     {
         return $this->keepUserActiveFor;
@@ -115,13 +130,11 @@ class StatisticService
      * @param $data mixed (serializable)
      */
     public static function log($type, $title, $msg, $data) {
-        //achtung static hier giebts kein this
+        // static => $this = self::$instance;
         if (!self::$instance)
             return;
 
-        $thiss = self::$instance;
-        //@todo serialize $data
-        //@todo write to DB
+        self::$instance->systemLogTable->updateSystemLog($type, $title, $msg, $data);
     }
     
     // ----------------- Action Log -------------------------

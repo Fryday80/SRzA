@@ -8,7 +8,7 @@
 
 namespace Application\Model;
 
-use Application\DataObjects\ActiveUsers;
+use Application\DataObjects\ActiveUsersSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
@@ -40,7 +40,7 @@ class ActiveUsersTable extends AbstractTableGateway
         foreach ($return as $key => $row ) {
             $return[$key]['action_data'] = json_decode($return[$key]['action_data']);
         }
-        return new ActiveUsers($return);
+        return new ActiveUsersSet($return);
     }
 
     /** Prepare data for query
