@@ -20,6 +20,7 @@ class SystemController extends AbstractActionController
         $dashboardData->setActiveUsers( );
         return new ViewModel(array(
             'dashboardData' => $dashboardData,
+            'activeUserCount' => count($dashboardData->getActiveUsers()),
         ));
     }
 

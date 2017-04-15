@@ -80,7 +80,7 @@ class StatisticService
         $this->activeUsersTable->updateActive($activeUserData, $this->keepUserActiveFor);
 
         array_push($activeUserData['action_data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
-        $this->logAction('Site call', 'call ' . $activeUserData['last_action_url'], 'regular log', $activeUserData);
+        $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
     }
     public function onFinish()
     {
