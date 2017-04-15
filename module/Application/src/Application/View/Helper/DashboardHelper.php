@@ -23,7 +23,6 @@ Class DashboardHelper extends AbstractHelper {
 
     public function render($data)
     {
-        bdump($data);
         switch ($data){
             case ( is_array($data) && ($data[0] instanceof Action) ):
             case (($data instanceof ActiveUsers)):
