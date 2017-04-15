@@ -53,7 +53,7 @@ Class DashboardHelper extends AbstractHelper {
                     $return .= '<li> User: ' . $userdata . '    last hit: ' . date('H:i', $row['time']) ;
                 }
                 $return .= '</ul>';
-                return $this->wrapInBox($return, 'Active Users', 'right');
+                return $this->wrapInBox($return, 'Active Users', 'left');
                 break;
         }
 
@@ -73,17 +73,18 @@ Class DashboardHelper extends AbstractHelper {
         return'<style>
             .dashboard
             {
-                width: 47%;
                 text-shadow: none;
             }
         
             .dashboard-left
             {
                 float: left;
+                width: 27%;
             }
             .dashboard-right
             {
                 float: right;
+                width: 67%;
             }
             .dash-list {
                 max-height: 200px;
@@ -98,6 +99,7 @@ Class DashboardHelper extends AbstractHelper {
                 {
                     width: 100%;
                     margin-right: 0;
+                    float: none !important;
                 }
                 .dashboard *
                 {
