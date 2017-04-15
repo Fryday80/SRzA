@@ -59,7 +59,7 @@ Class DashboardHelper extends AbstractHelper {
 
     }
 
-    protected function wrapInBox($inside, $named, $float)
+    public function wrapInBox($inside, $named, $float)
     {
         return "<box class = 'dashboard dashboard-$float'>
                     <boxtitel>

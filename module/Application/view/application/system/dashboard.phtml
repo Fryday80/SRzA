@@ -3,22 +3,21 @@
     $this->headTitle($title);
 /** @var  $dashboardData \Application\DataObjects\DashboardData */
 $dashboardData = $dashboardData; //cleanfix easier to code
+
+echo '<h1>' . $this->escapeHtml($title) . '</h1>';
+
+echo $this->dashboardHelper()->getStyle();
+
+$uc = count($dashboardData->getActiveUsers());
+$inside = " <p>All clicks:  564</p>
+            <p>clicks:  564</p>
+            <p>Active Users: $uc </p>";
+
+echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
+
+echo $this->dashboardHelper()->render($dashboardData->getActionLog());
+
 ?>
-
-<h1><?php echo $this->escapeHtml($title); ?></h1>
-<?php echo $this->dashboardHelper()->getStyle() ?>
-<box class = "dashboard dashboard-left">
-    <boxtitel>
-        <span class="own_text_small">User Statistics</span>
-    </boxtitel>
-    <boxcontent>
-        <p>All clicks:  564</p>
-        <p>clicks:  564</p>
-        <p>Active Users: <?php echo count($dashboardData->getActiveUsers()) ?></p>
-    </boxcontent>
-</box>
-
-<?php echo $this->dashboardHelper()->render($dashboardData->getActionLog()) ?>
 
 <box class = "dashboard dashboard-left">
     <boxtitel>
@@ -36,4 +35,5 @@ $dashboardData = $dashboardData; //cleanfix easier to code
 
 <?php
 echo $this->dashboardHelper()->render($dashboardData->getActiveUsers());
+
 echo $this->dashboardHelper()->getJS(); ?>
