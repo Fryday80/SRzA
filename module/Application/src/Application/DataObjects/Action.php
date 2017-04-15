@@ -14,5 +14,3 @@ class Action extends BasicDashboardDataSet
 
     //...
 }
-
-class ActionLogSet extends BasicDashboardDatasSet {}
