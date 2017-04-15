@@ -3,7 +3,23 @@
 //
 //use Application\Service\StatisticService;
 //
-//class Action
+//
+//class BasicDashboardDataSet
+//{
+//    public $data;
+//
+//    function __construct($data = null)
+//    {
+//        $this->data = $data;
+//    }
+//
+//    public function toArray()
+//    {
+//        return $this->data;
+//    }
+//}
+//
+//class Action extends BasicDashboardDataSet
 //{
 //    public $actionType; //string wie  loadPage, SystemLog, PageError ....
 //    public $title;
@@ -15,10 +31,11 @@
 //    //...
 //}
 //
-//class ActiveUsers
-//{
-//    public $activeUserList;
-//}
+//class ActionLogSet extends BasicDashboardDataSet {}
+//
+//class ActiveUsers extends BasicDashboardDataSet {}
+//
+//class SystemLog extends BasicDashboardDataSet {}
 //
 //class DashboardData
 //{
@@ -51,7 +68,7 @@
 //        return $this->actionLog;
 //    }
 //
-//    public function setActiveUsers( $data = null )
+//    public function setActiveUsers( ActiveUsers $data = null )
 //    {
 //        $this->activeUsers = ($data == null) ? $this->updateItem('activeUsers') : $data;
 //    }

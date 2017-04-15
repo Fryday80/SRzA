@@ -1,8 +1,9 @@
 <?php
 namespace Application\DataObjects;
 
+use Application\DataObjects\BasicDashboardDataSet;
 
-class Action
+class Action extends BasicDashboardDataSet
 {
     public $actionType; //string wie  loadPage, SystemLog, PageError ....
     public $title;
@@ -13,3 +14,5 @@ class Action
 
     //...
 }
+
+class ActionLogSet extends BasicDashboardDataSet {}

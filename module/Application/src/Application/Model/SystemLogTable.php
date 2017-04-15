@@ -8,6 +8,7 @@
 
 namespace Application\Model;
 
+use Application\DataObjects\SystemLog;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
@@ -24,12 +25,22 @@ class SystemLogTable extends AbstractTableGateway
     }
     public function updateActive($data)
     {
-        $prepare = $this->prepareData($data);
-        if ($prepare == NULL)return; //@todo error msg "data missing"
-        $queryItems = $prepare[0];
-        $queryValues = $prepare[1];
-        $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);";
-        $this->adapter->query($query, array());
+        //@todo write to db
+//        $prepare = $this->prepareData($data);
+//        if ($prepare == NULL)return; //@todo error msg "data missing"
+//        $queryItems = $prepare[0];
+//        $queryValues = $prepare[1];
+//        $query = "REPLACE INTO $this->table ($queryItems) VALUES ($queryValues);";
+//        $this->adapter->query($query, array());
+    }
+    public function getLogs ($since = null)
+    {
+        if($since == null){
+            return new SystemLog($this->getWhere());
+        }
+        else {
+            //@todo get younger than $since
+        }
     }
     
     /** Prepare data for query

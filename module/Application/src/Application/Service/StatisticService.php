@@ -8,6 +8,7 @@
 
 namespace Application\Service;
 
+use Application\DataObjects\ActionLogSet;
 use Application\Model\ActiveUsersTable;
 use Application\Model\PageHitsTable;
 use Application\Model\SystemLogTable;
@@ -77,7 +78,7 @@ class StatisticService
 
 
         $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
-        $this->activeUsersTable->updateActive($activeUserData, $this->keepUserActiveFor);
+        $this->activeUsersTable->updateActiveUsers( $activeUserData, $this->keepUserActiveFor );
 
         array_push($activeUserData['action_data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
         $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
@@ -86,15 +87,22 @@ class StatisticService
     {
         $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
     }
+
+    // ---------------------------------- getter ----------------------------
+    // ------------- Active Users -----------------------------
     public function getActiveUsers()
     {
         return $this->activeUsersTable->getActiveUsers();
     }
 
-    public function getLastActions($since = null) {
-//        $this->actionsLog->Reset();
-        return array_reverse($this->actionsLog->toArray());
+    // ------------- Action Log -------------------------------
+    public function getLastActions($since = null)
+    {
+//        //@todo $since
+        $data = array_reverse( $this->actionsLog->toArray() );
+        return new ActionLogSet($data);
     }
+    
     public function getActiveUserDuration()
     {
         return $this->keepUserActiveFor;
@@ -115,6 +123,8 @@ class StatisticService
         //@todo serialize $data
         //@todo write to DB
     }
+    
+    // ----------------- Action Log -------------------------
     private function logAction($type, $title, $msg, $data) {
         $a = $this->sm->get('AccessService');
         /** @var  $action Action */

@@ -35,7 +35,7 @@ class DashboardData
         return $this->actionLog;
     }
 
-    public function setActiveUsers( $data = null )
+    public function setActiveUsers( ActiveUsers $data = null )
     {
         $this->activeUsers = ($data == null) ? $this->updateItem('activeUsers') : $data;
     }

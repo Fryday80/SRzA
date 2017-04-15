@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+
 use Application\DataObjects\DashboardData;
 use Application\Service\CacheService;
 use Application\Service\StatisticService;
@@ -13,14 +14,16 @@ class SystemController extends AbstractActionController
 {
     public function dashboardAction()
     {
-        /** @var  $statsService StatisticService */
-        $statsService = $this->getServiceLocator()->get('StatisticService');
+//        /** @var  $statsService StatisticService */
+//        $statsService = $this->getServiceLocator()->get('StatisticService');
         $dashboardData = new DashboardData( $this->getServiceLocator() );
-        $dashboardData->setActionLog( );
-        $dashboardData->setActiveUsers( );
+        $dashboardData->setActionLog();
+        $dashboardData->setActiveUsers();
+        $activeUsers = $dashboardData->getActiveUsers();
+        $aUc = count( $activeUsers->toArray() );
         return new ViewModel(array(
             'dashboardData' => $dashboardData,
-            'activeUserCount' => count($dashboardData->getActiveUsers()),
+            'activeUserCount' => $aUc,
         ));
     }
 

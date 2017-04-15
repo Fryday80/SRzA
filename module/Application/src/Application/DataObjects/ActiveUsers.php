@@ -1,19 +1,6 @@
 <?php
 namespace Application\DataObjects;
 
+use Application\DataObjects\BasicDashboardDataSet;
 
-class ActiveUsers
-{
-    public $activeUserList;
-
-    function __construct($dbResults)
-    {
-        $this->activeUserList = $dbResults;
-    }
-
-    public function toArray()
-    {
-        return $this->activeUserList;
-    }
-
-}
+class ActiveUsers extends BasicDashboardDataSet {}

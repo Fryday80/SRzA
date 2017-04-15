@@ -22,7 +22,7 @@ class ActiveUsersTable extends AbstractTableGateway
         $this->adapter = $adapter;
         $this->initialize();
     }
-    public function updateActive($data, $keepAlive) {
+    public function updateActiveUsers($data, $keepAlive) {
         $leaseBreakpoint = $data['time']-$keepAlive;
         $this->keepAlive = $keepAlive;
         $prepare = $this->prepareData($data);
@@ -36,7 +36,6 @@ class ActiveUsersTable extends AbstractTableGateway
     public function getActiveUsers()
     {
         $return = $this->getWhere()->toArray();
-        $return = $this->adapter->query("SELECT * FROM $this->table", array())->toArray();
         // unserialize serialized data
         foreach ($return as $key => $row ) {
             $return[$key]['action_data'] = json_decode($return[$key]['action_data']);

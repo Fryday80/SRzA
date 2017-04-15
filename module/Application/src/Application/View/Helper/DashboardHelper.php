@@ -8,7 +8,10 @@
 namespace Application\View\Helper;
 
 use Application\DataObjects\Action;
+use Application\DataObjects\ActionLogSet;
 use Application\DataObjects\ActiveUsers;
+use Application\DataObjects\BasicDashboardDataSet;
+use Application\DataObjects\SystemLog;
 use Zend\View\Helper\AbstractHelper;
 
 
@@ -23,10 +26,9 @@ Class DashboardHelper extends AbstractHelper {
 
     public function render( $data )
     {
+        if ($data == null)return;
         switch ( $data ){
-            case ( is_array( $data ) && ( $data[0] instanceof Action ) ): // ActionLog
-            case ( ( $data instanceof ActiveUsers ) ):                    // Active Users
-            case ( $data == 'SystemLog' ):                                // SystemLog
+            case ( ( $data instanceof BasicDashboardDataSet ) ):
                 return $this->renderData( $data );
                 break;
             default:
@@ -34,21 +36,21 @@ Class DashboardHelper extends AbstractHelper {
                 break;
         }
     }
-    protected function renderData( $data )
+    protected function renderData( $dataObject )
     {        
-        switch ( $data ) {
-            case ( is_array( $data ) && ( $data[0] instanceof Action ) ):
+        switch ( $dataObject ) {
+            case ( ( $dataObject instanceof ActionLogSet ) ):
                 $return = '<ul id="dashLiveList" class="dash-list">';
                 /** @var  $item Action */
-                foreach ( $data as $item )
+                foreach ( $dataObject->data as $item )
                 {
                     $return .= '<li>' . $item->actionType . ' @ ' . date('H:i d.m.Y', $item->time) . ': ' . $item->title . ': ' . $item->msg . ' <span data-timestamp="' . $item->time . '></span></li>';
                 }
                 $return .= '</ul>';
                 return $this->wrapInBox( $return, 'Live Clicks', 'right' );
                 break;
-            case ( ( $data instanceof ActiveUsers ) ):
-                $data = $data->toArray();
+            case ( ( $dataObject instanceof ActiveUsers ) ):
+                $data = $dataObject->toArray();
                 $return = '<ul class="dash-list">';
                 foreach ( $data as $row )
                 {
@@ -58,6 +60,10 @@ Class DashboardHelper extends AbstractHelper {
                 $return .= '</ul>';
                 return $this->wrapInBox( $return, 'Active Users', 'left' );
                 break;
+            case ( ( $dataObject instanceof SystemLog ) ):
+                return;
+                break;
+
         }
     }
 

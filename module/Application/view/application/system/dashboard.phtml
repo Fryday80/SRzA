@@ -13,7 +13,7 @@ $inside = " <p>All clicks:  564</p>
             <p>Active Users: $activeUserCount </p>";
 echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
 
-echo $this->dashboardHelper()->render($dashboardData->getActionLog());
+echo $this->dashboardHelper()->render( $dashboardData->getActionLog() );
 
 $inside = "<ul class='dash-list'>
                 <li>not</li>
@@ -23,6 +23,6 @@ $inside = "<ul class='dash-list'>
             </ul>";
 echo $this->dashboardHelper()->wrapInBox($inside, 'System Log not implemented yet', 'right');
 
-echo $this->dashboardHelper()->render($dashboardData->getActiveUsers());
+echo $this->dashboardHelper()->render( $dashboardData->getActiveUsers() );
 
 echo $this->dashboardHelper()->getJS();
