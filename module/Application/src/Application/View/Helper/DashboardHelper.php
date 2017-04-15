@@ -16,50 +16,52 @@ Class DashboardHelper extends AbstractHelper {
 
     private $sm;
 
-    function __construct($sm)
+    function __construct( $sm )
     {
         $this->sm = $sm;
     }
 
-    public function render($data)
+    public function render( $data )
     {
-        switch ($data){
-            case ( is_array($data) && ($data[0] instanceof Action) ):
-            case (($data instanceof ActiveUsers)):
-                return $this->renderData($data);
+        switch ( $data ){
+            case ( is_array( $data ) && ( $data[0] instanceof Action ) ): // ActionLog
+            case ( ( $data instanceof ActiveUsers ) ):                    // Active Users
+            case ( $data == 'SystemLog' ):                                // SystemLog
+                return $this->renderData( $data );
                 break;
             default:
-                return trigger_error("don't know type of data", E_USER_ERROR);
+                return trigger_error( "don't know type of data", E_USER_ERROR );
                 break;
         }
     }
-    protected function renderData($data)
+    protected function renderData( $data )
     {        
-        switch ($data) {
-            case (is_array($data) && ($data[0] instanceof Action)):
+        switch ( $data ) {
+            case ( is_array( $data ) && ( $data[0] instanceof Action ) ):
                 $return = '<ul id="dashLiveList" class="dash-list">';
                 /** @var  $item Action */
-                foreach ($data as $item) {
+                foreach ( $data as $item )
+                {
                     $return .= '<li>' . $item->actionType . ' @ ' . date('H:i d.m.Y', $item->time) . ': ' . $item->title . ': ' . $item->msg . ' <span data-timestamp="' . $item->time . '></span></li>';
                 }
                 $return .= '</ul>';
-                return $this->wrapInBox($return, 'Live Clicks', 'right');
+                return $this->wrapInBox( $return, 'Live Clicks', 'right' );
                 break;
-            case (($data instanceof ActiveUsers)):
+            case ( ( $data instanceof ActiveUsers ) ):
                 $data = $data->toArray();
                 $return = '<ul class="dash-list">';
-                foreach ($data as $row){
-                    $userdata = (isset ($row['user_name'])) ? $row['user_name'] : $row['user_id']; // just til name is provided //@todo check out name of user_id
-                    $return .= '<li> User: ' . $userdata . '    last hit: ' . date('H:i', $row['time']) ;
+                foreach ( $data as $row )
+                {
+                    $userData = ( isset ( $row['user_name'] ) ) ? $row['user_name'] : $row['user_id']; // just til name is provided //@todo check out name of user_id
+                    $return .= '<li> User: ' . $userData . ' - last action: ' . date( 'H:i', $row['time'] ) ;
                 }
                 $return .= '</ul>';
-                return $this->wrapInBox($return, 'Active Users', 'left');
+                return $this->wrapInBox( $return, 'Active Users', 'left' );
                 break;
         }
-
     }
 
-    public function wrapInBox($inside, $named, $float)
+    public function wrapInBox( $inside, $named, $float )
     {
         return "<box class = 'dashboard dashboard-$float'>
                     <boxtitel>
