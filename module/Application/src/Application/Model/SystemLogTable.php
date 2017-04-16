@@ -13,9 +13,9 @@ use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 
+// structure:  table: system_log (id, type [string], title [string], message [string], time [bigint], data [string|array|object] )
 class SystemLogTable extends AbstractTableGateway
 {
-// structure:  table: system_log (id, type [string], title [string], message [string], time [bigint], data [string|array|object] )
     public $table = 'system_log';
 
     public function __construct(Adapter $adapter)
@@ -35,25 +35,16 @@ class SystemLogTable extends AbstractTableGateway
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
         $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
+
         $this->adapter->query($query, array());
     }
 
     public function getSystemLogs ($since = null)
     {
-        // @todo check sorting of result array is to be new to old
-//        $data = array_reverse( $this->getWhere()->toArray() );
-        $data = $this->getWhere()->toArray();
-//        bdump( $data );
-        if ($since !== null && is_int($since))
-        {
-            $newDataSet = array();
-            for ($i = 0; $i < count($data); $i++)
-            {
-                if ($data[$i]->time < $since) return new SystemLogSet($newDataSet);
-                $newDataSet[$i] = $data[$i];
-            }
-        }
-        return new SystemLogSet($data);
+        $query = "SELECT * FROM $this->table ORDER BY `time` DESC;";
+        $data = $this->adapter->query($query, array());
+
+        return new SystemLogSet($data, $since);
     }
     
     /** Prepare data for query

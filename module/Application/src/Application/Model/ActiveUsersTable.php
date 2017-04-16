@@ -12,6 +12,8 @@ use Application\DataObjects\ActiveUsersSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
+
+// structure:  table: system_log ( sid [string], ip [string], user_id [int], last_action_url[string], time [bigint], data [string|array|object] )
 class ActiveUsersTable extends AbstractTableGateway
 {
     public $table = 'active_users';
@@ -35,12 +37,7 @@ class ActiveUsersTable extends AbstractTableGateway
 
     public function getActiveUsers()
     {
-        $return = $this->getWhere()->toArray();
-        // unserialize serialized data
-        foreach ($return as $key => $row ) {
-            $return[$key]['action_data'] = json_decode($return[$key]['action_data']);
-        }
-        return new ActiveUsersSet($return);
+        return new ActiveUsersSet($this->getWhere());
     }
 
     /** Prepare data for query
@@ -57,7 +54,7 @@ class ActiveUsersTable extends AbstractTableGateway
         foreach ($data as $key => $value){
             $queryItems .= $key . ", ";
 
-            if ($key == 'action_data'){
+            if ($key == 'data'){
                 $value = json_encode($value);
             }
             if (is_int($value)) {

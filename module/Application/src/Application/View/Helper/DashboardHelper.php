@@ -11,6 +11,7 @@ use Application\DataObjects\Action;
 use Application\DataObjects\ActionLogSet;
 use Application\DataObjects\ActiveUsersSet;
 use Application\DataObjects\BasicDashboardDataSet;
+use Application\DataObjects\DashboardData;
 use Application\DataObjects\SystemLogSet;
 use Zend\View\Helper\AbstractHelper;
 
@@ -26,18 +27,26 @@ Class DashboardHelper extends AbstractHelper {
 
     public function render( $data )
     {
-        if ($data == null)return;
-        switch ( $data ){
-            case ( ( $data instanceof BasicDashboardDataSet ) ):
-                return $this->renderData( $data );
-                break;
-            default:
-                return trigger_error( "don't know type of data", E_USER_ERROR );
-                break;
+        if (($data instanceof DashboardData)){
+            $return = $this->renderData($data->getActionLog());
+            $return .= $this->renderData($data->getSystemLog());
+            $return .= $this->renderData($data->getActiveUsers());
+            return $return;
+        }
+        else {
+            switch ($data) {
+                case (($data instanceof BasicDashboardDataSet)):
+                    return $this->renderData($data);
+                    break;
+                default:
+                    return trigger_error("don't know type of data", E_USER_ERROR);
+                    break;
+            }
         }
     }
     protected function renderData( $dataObject )
-    {        
+    {
+        if ($dataObject == null) return '';
         switch ( $dataObject ) {
             case ( ( $dataObject instanceof ActionLogSet ) ):
                 $return = '<ul id="dashLiveList" class="dash-list">';
@@ -67,6 +76,7 @@ Class DashboardHelper extends AbstractHelper {
         }
     }
 
+    // turn private when finished
     public function wrapInBox( $inside, $named, $float )
     {
         return "<box class = 'dashboard dashboard-$float'>

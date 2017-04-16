@@ -9,6 +9,7 @@
 namespace Application\Service;
 
 use Application\DataObjects\ActionLogSet;
+use Application\DataObjects\SystemLogSet;
 use Application\Model\ActiveUsersTable;
 use Application\Model\PageHitsTable;
 use Application\Model\SystemLogTable;
@@ -71,16 +72,16 @@ class StatisticService
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
         $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
-        $activeUserData['action_data'] = array();
+        $activeUserData['data'] = array();
         $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
 
-        $activeUserData['action_data']['serverData'] = $serverPHPData;
+        $activeUserData['data']['serverData'] = $serverPHPData;
 
 
         $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
         $this->activeUsersTable->updateActiveUsers( $activeUserData, $this->keepUserActiveFor );
 
-        array_push($activeUserData['action_data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
+        array_push($activeUserData['data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
         $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
     }
     public function onFinish()
@@ -89,30 +90,17 @@ class StatisticService
     }
 
 
-    // ---------------------------------- getter ----------------------------
-    // ------------- Active Users -----------------------------
     public function getActiveUsers()
     {
         return $this->activeUsersTable->getActiveUsers();
     }
 
-    // ------------- Action Log -------------------------------
     public function getLastActions($since = null)
     {
-        // checking for since here because of complex ring buffer coding
-        $data = array_reverse( $this->actionsLog->toArray() );
-        if ($since !== null && is_int($since))
-        {
-            $newDataSet = array();
-            for ($i = 0; $i < count($data); $i++)
-            {
-                if ($data[$i]->time < $since) return new ActionLogSet($newDataSet);
-                $newDataSet[$i] = $data[$i];
-            }
-        }
-        return new ActionLogSet($data);
+        $data = array_reverse($this->actionsLog->toArray());
+        return new ActionLogSet($data, $since);
     }
-    // ------------- System Log -------------------------------
+    
     public function getSystemLog($since = null)
     {
         return $this->systemLogTable->getSystemLogs($since);
@@ -136,8 +124,13 @@ class StatisticService
 
         self::$instance->systemLogTable->updateSystemLog($type, $title, $msg, $data);
     }
-    
-    // ----------------- Action Log -------------------------
+
+    /**
+     * @param $type string
+     * @param $title string
+     * @param $msg string
+     * @param $data mixed (serializable)
+     */
     private function logAction($type, $title, $msg, $data) {
         $a = $this->sm->get('AccessService');
         /** @var  $action Action */
