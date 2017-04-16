@@ -1,5 +1,5 @@
 <?php
-namespace Application\DataObjects;
+namespace Application\Model\DataObjects;
 
 use Application\Service\StatisticService;
 

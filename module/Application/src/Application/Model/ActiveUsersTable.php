@@ -8,7 +8,7 @@
 
 namespace Application\Model;
 
-use Application\DataObjects\ActiveUsersSet;
+use Application\Model\DataObjects\ActiveUsersSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 

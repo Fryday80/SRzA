@@ -8,20 +8,34 @@
 
 namespace Application\Model;
 
-use Application\DataObjects\SystemLogSet;
-use Zend\Db\TableGateway\AbstractTableGateway;
+use Application\Model\DataObjects\SystemLogSet;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\TableGateway\AbstractTableGateway;
 
 
 // structure:  table: system_log (id, type [string], title [string], message [string], time [bigint], data [string|array|object] )
 class SystemLogTable extends AbstractTableGateway
 {
-    public $table = 'system_log';
+    public $table;
+
+    protected $config;
+    protected $columnsConfig;
+    protected $sort;
+    protected $serialized = array();
+    protected $required = array();
+    protected $isInt = array();
+    protected $isString = array();
 
     public function __construct(Adapter $adapter)
     {
+        $bdump = 1;
+        bdump($bdump++);//1
+        $this->getConfig();
+        bdump($bdump++);
         $this->adapter = $adapter;
+        bdump($bdump++);//3
         $this->initialize();
+        bdump($bdump++);
     }
 
     /**
@@ -30,7 +44,7 @@ class SystemLogTable extends AbstractTableGateway
      */
     public function updateSystemLog($data)
     {
-        $prepare = $this->prepareData($data);
+        $prepare = $this->prepareDataForInsertQuery($data);
         if ($prepare == NULL)return  trigger_error( "data failure", E_USER_ERROR );
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
@@ -52,7 +66,7 @@ class SystemLogTable extends AbstractTableGateway
      * @param array $data
      * @return array|null [0] = sql columns line up, [1] = the fitting sql VALUES
      */
-    private function prepareData($data)
+    private function prepareDataForInsertQuery($data)
     {
         $queryItems ='';
         $queryValues = '';
@@ -60,16 +74,15 @@ class SystemLogTable extends AbstractTableGateway
         //create SQL items and values line up
         foreach ($data as $key => $value){
             $queryItems .= $key . ", ";
-            $value = ($key == 'data') ? json_encode($value) : $value;
+            $value = ( in_array($key, $this->serialized) ) ? json_encode($value) : $value;
             $queryValues .= (is_int($value)) ? $value. ", " : "'$value', ";
         }
         $queryItems = substr($queryItems, 0, -2);
         $queryValues = substr($queryValues, 0, -2);
-        
+
         return array($queryItems, $queryValues);
     }
-
-    private function getWhere($where = array(), $columns = array())
+    protected function getWhere($where = array(), $columns = array())
     {
         try {
             $sql = $this->getSql();
@@ -92,5 +105,97 @@ class SystemLogTable extends AbstractTableGateway
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
         }
+    }
+
+    protected function getConfig()
+    {
+        $this->config = $this->configFileImport();
+        $this->setConfigFromVar();
+    }
+
+    /**
+     * only last sort = tru will be used!
+     */
+    protected function setConfigFromVar()
+    {
+        $this->table = $this->config['db']['table'];
+        $this->columnsConfig = $this->config['db']['columns'];
+        foreach ($this->columnsConfig as $column_name => $column_data)
+        {
+            foreach ($column_data as $key => $value){
+                $this->sort = ($column_data['sort'] == true) ? $column_name : $this->sort;
+                if ($column_data['required']['isRequired'] == true)
+                {
+                    $this->required[$column_name] = ( isset($column_data['required']['default']) ) ? $column_data['required']['default'] : 'site default';
+                }
+                if ($column_data['serialized'] == true)
+                {
+                    array_push($this->serialized, $column_name);
+                }
+                if ($column_data['input_type'] = 'int') {
+
+                    bdump($column_name);
+                    array_push($this->isInt, $column_name);
+                } else {
+                    array_push($this->isString, $column_name);
+                }
+            }
+        }
+    }
+
+    protected function configFileImport()
+    {
+        return array(
+            'db' => array(
+                'columns' => array(
+                    'type' => array(
+                        'required' => array(
+                            'isRequired' => true,
+                            'default' => 'default Value',
+                        ),
+                        'serialized' => false,
+                        'input_type' => 'string',
+                        'sort' => false,
+                    ),
+                    'title' => array(
+                        'required' => array(
+                            'isRequired' => true,
+                            'default' => 'default Value',
+                        ),
+                        'serialized' => false,
+                        'input_type' => 'string',
+                        'sort' => false,
+                    ),
+                    'message' => array(
+                        'required' => array(
+                            'isRequired' => true,
+                            'default' => 'default Value',
+                        ),
+                        'serialized' => false,
+                        'input_type' => 'string',
+                        'sort' => false,
+                    ),
+                    'time' => array(
+                        'required' => array(
+                            'isRequired' => true,
+                            'default' => 42,
+                        ),
+                        'serialized' => false,
+                        'input_type' => 'int',
+                        'sort' => true,
+                    ),
+                    'data' => array(
+                        'required' => array(
+                            'isRequired' => true,
+                            'default' => 'default Value',
+                        ),
+                        'serialized' => true,
+                        'input_type' => 'all',
+                        'sort' => false,
+                    ),
+                ),
+                'table' => 'system_log',
+            ),
+        );
     }
 }

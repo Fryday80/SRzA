@@ -1,7 +1,7 @@
 <?php
-namespace Application\DataObjects;
+namespace Application\Model\DataObjects;
 
-use Application\DataObjects\BasicDashboardDataSet;
+use Application\Model\DataObjects\BasicDashboardDataSet;
 
 class Action extends BasicDashboardDataSet
 {

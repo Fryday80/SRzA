@@ -12,7 +12,7 @@ $inside = " <p>All clicks:  564</p>
             <p>clicks:  564</p>
             <p>Active Users: $activeUserCount </p>";
 echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
-
+bdump($dashboardData);
 echo $this->dashboardHelper()->render( $dashboardData );
 
 echo $this->dashboardHelper()->getJS();

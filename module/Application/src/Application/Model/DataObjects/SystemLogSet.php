@@ -6,9 +6,9 @@
  * Time: 21:42
  */
 
-namespace Application\DataObjects;
+namespace Application\Model\DataObjects;
 
 
-use Application\DataObjects\BasicDashboardDataSet;
+use Application\Model\DataObjects\BasicDashboardDataSet;
 
 class SystemLogSet extends BasicDashboardDataSet{}

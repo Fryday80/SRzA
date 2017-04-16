@@ -2,7 +2,7 @@
 namespace Application\Controller;
 
 
-use Application\DataObjects\DashboardData;
+use Application\Model\DataObjects\DashboardData;
 use Application\Service\CacheService;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;

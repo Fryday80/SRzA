@@ -1,5 +1,5 @@
 <?php
-namespace Application\DataObjects;
+namespace Application\Model\DataObjects;
 
 
 class ActionLogSet extends BasicDashboardDataSet {}

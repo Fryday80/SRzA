@@ -7,12 +7,12 @@
  */
 namespace Application\View\Helper;
 
-use Application\DataObjects\Action;
-use Application\DataObjects\ActionLogSet;
-use Application\DataObjects\ActiveUsersSet;
-use Application\DataObjects\BasicDashboardDataSet;
-use Application\DataObjects\DashboardData;
-use Application\DataObjects\SystemLogSet;
+use Application\Model\DataObjects\Action;
+use Application\Model\DataObjects\ActionLogSet;
+use Application\Model\DataObjects\ActiveUsersSet;
+use Application\Model\DataObjects\BasicDashboardDataSet;
+use Application\Model\DataObjects\DashboardData;
+use Application\Model\DataObjects\SystemLogSet;
 use Zend\View\Helper\AbstractHelper;
 
 

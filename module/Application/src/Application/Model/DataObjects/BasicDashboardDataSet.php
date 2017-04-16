@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\DataObjects;
+namespace Application\Model\DataObjects;
 
 
 use Zend\Db\ResultSet\ResultSet;

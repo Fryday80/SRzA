@@ -8,15 +8,14 @@
 
 namespace Application\Service;
 
-use Application\DataObjects\ActionLogSet;
-use Application\DataObjects\SystemLogSet;
+use Application\Model\DataObjects\ActionLogSet;
 use Application\Model\ActiveUsersTable;
 use Application\Model\PageHitsTable;
 use Application\Model\SystemLogTable;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
 use Application\Utility\CircularBuffer;
-use Application\DataObjects\Action;
+use Application\Model\DataObjects\Action;
 
 
 
