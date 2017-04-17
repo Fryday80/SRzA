@@ -1,18 +1,104 @@
 <?php
     $title = 'Dashboard';
     $this->headTitle($title);
-/** @var  $dashboardData \Application\DataObjects\DashboardData */
+/** @var  $dashboardData \Application\Model\DataObjects\DashboardDataCollection*/
 $dashboardData = $dashboardData; //cleanfix easier to code
 
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
+?>
+<style>
+    .dashboard
+    {
+        text-shadow: none;
+    }
 
-echo $this->dashboardHelper()->getStyle();
+    .dashboard-left
+    {
+        float: left;
+        width: 27%;
+    }
+    .dashboard-right
+    {
+        float: right;
+        width: 67%;
+    }
+    .dash-list {
+        max-height: 200px;
+        overflow-y: scroll;
+        list-style-type: none
+    }
+    .dash-list li {
+        box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+    }
+    @media screen and (max-width: 1350px){
+        .dashboard
+        {
+            width: 100%;
+            margin-right: 0;
+            float: none !important;
+        }
+        .dashboard *
+        {
+        //font-family: normal;
+            font-size: 1.5vw !important;
+        }
 
-$inside = " <p>All clicks:  564</p>
-            <p>clicks:  564</p>
-            <p>Active Users: $activeUserCount </p>";
+        .dash-list li {
+            box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+        }
+    }
+    @media screen and (max-width: 800px){
+        .dashboard
+        {
+            width: 100%;
+            margin-right: 0;
+        }
+        .dashboard *
+        {
+            font-family: normal;
+            font-size: 3vw !important;
+        }
+
+        .dash-list li {
+            box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+        }
+    }
+</style>
+
+<?php
+
+$inside = '';
+foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
 echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
-bdump($dashboardData);
 echo $this->dashboardHelper()->render( $dashboardData );
-
-echo $this->dashboardHelper()->getJS();
+bdump($dashboardData);
+?>
+<script type="text/javascript">
+    $("[data-timestamp]").each(function() {
+        //convert time to nice string and push in ele.html
+    })
+    //script for live ticks
+    function loadLive(e) {
+        e.done(function(e) {
+            console.log(e);
+            let actions = JSON.parse(e.actions);
+            actions.reverse();
+            for(let i = 0; i < actions.length; i++) {
+                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].action_id + "'>" + actions[i].msg + "</li>");
+            }
+            setTimeout(function() {
+                let since = $('#dashLiveList li:nth-child(1)').data('timestamp');
+                livereload(since);
+            }, 4500);
+        });
+    }
+    function livereload(since) {
+        $.ajax({
+            url: "/system/json",
+            type: "POST",
+            data: JSON.stringify({method: "getLiveActions", since: since}),
+            complete: loadLive
+        });
+    }
+    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'));
+</script>

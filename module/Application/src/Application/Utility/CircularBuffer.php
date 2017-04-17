@@ -149,11 +149,18 @@ class  CircularBuffer        // extends		Object
 
     public function toArray() {
         $data = [];
-        for ($i = $this->NextPosition; $i < $this->DataSize + 1; $i++) {
+        $count = 0;
+        $i = $this->NextPosition;
+        while($count < $this->DataSize) {
+            if ($this->Data[$i])
+                array_push($data, $this->Data[$i]);
+
+            $count++;
+            $i++;
             $i = ($i == $this->DataSize)? 0 : $i;
-            array_push($data, $this->Data[$i]);
-            if ($i == $this->NextPosition - 1)
+            if ($count >= $this->DataSize) {
                 break;
+            }
         }
         return $data;
     }

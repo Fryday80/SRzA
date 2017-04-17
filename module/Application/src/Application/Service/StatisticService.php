@@ -47,11 +47,12 @@ class StatisticService
         $this->systemLogTable = $this->sm->get('Application\Model\SystemLog');
         $this->cache = $this->sm->get('CacheService');
         if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
-            $this->actionsLog = new CircularBuffer(1);
+            $this->actionsLog = new CircularBuffer(100);
             $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
         } else {
             $this->actionsLog = $this->cache->getCache($this::ACTIONS_CACHE_NAME);
         }
+//        $this->log();
     }
 
     public function onDispatch(MvcEvent $e)
@@ -59,20 +60,23 @@ class StatisticService
         /** @var  $a AccessService*/
         $a = $this->sm->get('AccessService');
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
+        $ajax = $e->getApplication()->getRequest()->isXmlHttpRequest();
+//        if(!$ajax) return ; //@todo check if its in blacklist
         $now = time();
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
         $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
         $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
-
+bdump('onDispatch');
+        bdump($serverPHPData);
         // active users data
         $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
         $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
         $activeUserData['data'] = array();
-        $activeUserData['last_action_url'] = ($counter == 2)? $relativeReferrerURL : $referrer;
+        $activeUserData['last_action_url'] = $serverPHPData['REQUEST_URI'];
 
         $activeUserData['data']['serverData'] = $serverPHPData;
 
@@ -94,15 +98,18 @@ class StatisticService
         return $this->activeUsersTable->getActiveUsers();
     }
 
-    public function getLastActions($since = null)
+    /**
+     * @return ActionLogSet
+     */
+    public function getLastActions()
     {
-        $data = array_reverse($this->actionsLog->toArray());
-        return new ActionLogSet($data, $since);
+        bdump(($this->actionsLog->toArray()));
+        return new ActionLogSet($this->actionsLog->toArray());
     }
     
-    public function getSystemLog($since = null)
+    public function getSystemLog()
     {
-        return $this->systemLogTable->getSystemLogs($since);
+        return $this->systemLogTable->getSystemLogs();
     }
 
     public function getActiveUserDuration()
@@ -139,9 +146,10 @@ class StatisticService
         $action->title  = $title;
         $action->msg = $msg;
         $action->data = $data;
-        $action->time = ($data['time']) ? $data['time'] : time();
+        $action->time = time();
         $action->user_id = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
-
+        bdump('action push');
+        bdump($action);
         $this->actionsLog->push($action);
     }
 }

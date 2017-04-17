@@ -2,7 +2,7 @@
 namespace Application\Controller;
 
 
-use Application\Model\DataObjects\DashboardData;
+use Application\Model\DataObjects\DashboardDataCollection;
 use Application\Service\CacheService;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -16,14 +16,20 @@ class SystemController extends AbstractActionController
     {
 //        /** @var  $statsService StatisticService */
 //        $statsService = $this->getServiceLocator()->get('StatisticService');
-        $dashboardData = new DashboardData( $this->getServiceLocator() );
+        $dashboardData = new DashboardDataCollection( $this->getServiceLocator() );
         $dashboardData->setActionLog();
         $dashboardData->setActiveUsers();
         $activeUsers = $dashboardData->getActiveUsers();
-        $aUc = count( $activeUsers->toArray() );
+        $userStats = array(
+            array ( "All Clicks", 42424242),
+            array ('Clicks', 42),
+            array ( "Aktive User", count( $activeUsers->toArray() )),
+            array ( "Data", "you want"),
+        );
+        
         return new ViewModel(array(
             'dashboardData' => $dashboardData,
-            'activeUserCount' => $aUc,
+            'userStats' => $userStats,
         ));
     }
 
@@ -38,11 +44,12 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
+        var_dump($request);
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
-                $statsService->getLastActions($request->since);
+                $result['actions'] = $statsService->getLastActions()->getJSonUpdate($request->action_id,$request->since);
                 break;
         };
 

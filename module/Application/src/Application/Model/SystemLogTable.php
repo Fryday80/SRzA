@@ -28,14 +28,9 @@ class SystemLogTable extends AbstractTableGateway
 
     public function __construct(Adapter $adapter)
     {
-        $bdump = 1;
-        bdump($bdump++);//1
         $this->getConfig();
-        bdump($bdump++);
         $this->adapter = $adapter;
-        bdump($bdump++);//3
         $this->initialize();
-        bdump($bdump++);
     }
 
     /**
@@ -133,8 +128,6 @@ class SystemLogTable extends AbstractTableGateway
                     array_push($this->serialized, $column_name);
                 }
                 if ($column_data['input_type'] = 'int') {
-
-                    bdump($column_name);
                     array_push($this->isInt, $column_name);
                 } else {
                     array_push($this->isString, $column_name);
