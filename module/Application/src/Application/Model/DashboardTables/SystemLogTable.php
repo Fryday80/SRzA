@@ -6,17 +6,18 @@
  * Time: 02:25
  */
 
-namespace Application\Model;
+namespace Application\Model\DashboardTables;
 
+use Application\Model\DashboardTables\DashboardTablesBasic;
 use Application\Model\DataObjects\SystemLogSet;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 
 
 // structure:  table: system_log (id, type [string], title [string], message [string], time [bigint], data [string|array|object] )
-class SystemLogTable extends AbstractTableGateway
+class SystemLogTable extends DashboardTablesBasic
 {
-    public $table;
+    public $table = 'system_log';
 
     protected $config;
     protected $columnsConfig;
@@ -77,31 +78,6 @@ class SystemLogTable extends AbstractTableGateway
 
         return array($queryItems, $queryValues);
     }
-    protected function getWhere($where = array(), $columns = array())
-    {
-        try {
-            $sql = $this->getSql();
-            $select = $sql->select();
-
-            if (count($where) > 0) {
-                $select->where($where);
-            }
-            if (count($columns) > 0) {
-                $select->columns($columns);
-            }
-//            $select->join(array(
-//                'parent' => $this->table
-//            ),
-//                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
-//            );
-
-            $results = $this->selectWith($select);
-            return $results;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-    }
-
     protected function getConfig()
     {
         $this->config = $this->configFileImport();

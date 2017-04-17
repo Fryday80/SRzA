@@ -6,13 +6,14 @@
  * Time: 02:24
  */
 
-namespace Application\Model;
+namespace Application\Model\DashboardTables;
 
+use Application\Model\DashboardTables\DashboardTablesBasic;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 
-class PageHitsTable extends AbstractTableGateway
+class PageHitsTable extends DashboardTablesBasic
 {
 //  fry        table: pageHits (id, url, lastActionTime, count )     id = primary , url = unique
 
@@ -51,31 +52,6 @@ class PageHitsTable extends AbstractTableGateway
         $url = $this->getRelativeURL($url);
         $query = "SELECT * FROM $this->table WHERE time < $since AND url = '$url';";
         return $this->adapter->query($query, array());
-    }
-
-    private function getWhere($where = array(), $columns = array())
-    {
-        try {
-            $sql = $this->getSql();
-            $select = $sql->select();
-
-            if (count($where) > 0) {
-                $select->where($where);
-            }
-            if (count($columns) > 0) {
-                $select->columns($columns);
-            }
-//            $select->join(array(
-//                'parent' => $this->table
-//            ),
-//                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
-//            );
-
-            $results = $this->selectWith($select);
-            return $results;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
     }
 
     private function getRelativeURL($url)

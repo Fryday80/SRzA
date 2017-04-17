@@ -10,7 +10,7 @@ namespace Application\Service;
 
 use Application\Model\DataObjects\ActionLogSet;
 use Application\Model\ActiveUsersTable;
-use Application\Model\PageHitsTable;
+use Application\Model\DashboardTables\PageHitsTable;
 use Application\Model\SystemLogTable;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
@@ -68,8 +68,6 @@ class StatisticService
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
         $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
         $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
-bdump('onDispatch');
-        bdump($serverPHPData);
         // active users data
         $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');

@@ -6,15 +6,16 @@
  * Time: 02:24
  */
 
-namespace Application\Model;
+namespace Application\Model\DashboardTables;
 
+use Application\Model\DashboardTables\DashboardTablesBasic;
 use Application\Model\DataObjects\ActiveUsersSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
 
 // structure:  table: system_log ( sid [string], ip [string], user_id [int], last_action_url[string], time [bigint], data [string|array|object] )
-class ActiveUsersTable extends AbstractTableGateway
+class ActiveUsersTable extends DashboardTablesBasic
 {
     public $table = 'active_users';
     private $keepAlive;
@@ -68,30 +69,5 @@ class ActiveUsersTable extends AbstractTableGateway
         $queryValues = substr($queryValues, 0, -2);
 
         return array($queryItems, $queryValues);
-    }
-
-    private function getWhere($where = array(), $columns = array())
-    {
-        try {
-            $sql = $this->getSql();
-            $select = $sql->select();
-
-            if (count($where) > 0) {
-                $select->where($where);
-            }
-            if (count($columns) > 0) {
-                $select->columns($columns);
-            }
-//            $select->join(array(
-//                'parent' => $this->table
-//            ),
-//                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
-//            );
-//            bdump($select->getSqlString());
-            $results = $this->selectWith($select);
-            return $results;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
     }
 }

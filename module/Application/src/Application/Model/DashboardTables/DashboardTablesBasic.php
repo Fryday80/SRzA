@@ -1,12 +1,37 @@
 <?php
-//
-//namespace Application\Model\DashboardTables;
-//
-//
-//use Zend\Db\TableGateway\AbstractTableGateway;
-//
-//class DashboardTablesBasic extends AbstractTableGateway
-//{
+
+namespace Application\Model\DashboardTables;
+
+
+use Zend\Db\TableGateway\AbstractTableGateway;
+
+class DashboardTablesBasic extends AbstractTableGateway
+{
+    protected function getWhere($where = array(), $columns = array())
+    {
+        try {
+            $sql = $this->getSql();
+            $select = $sql->select();
+
+            if (count($where) > 0) {
+                $select->where($where);
+            }
+            if (count($columns) > 0) {
+                $select->columns($columns);
+            }
+//            $select->join(array(
+//                'parent' => $this->table
+//            ),
+//                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
+//            );
+
+            $results = $this->selectWith($select);
+            return $results;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
+
 //    protected $config;
 //    protected $columnsConfig;
 //    protected $sort = array();
@@ -104,4 +129,4 @@
 ////        );
 //    }
 //
-//}
+}
