@@ -26,12 +26,16 @@ class SystemLogTable extends DashboardTablesBasic
     protected $required = array();
     protected $isInt = array();
     protected $isString = array();
+    
 
     public function __construct(Adapter $adapter)
     {
-        $this->getConfig();
-        $this->adapter = $adapter;
-        $this->initialize();
+        if($this->configLoad) parent::__construct($adapter);
+        else {
+            $this->getConfig();
+            $this->adapter = $adapter;
+            $this->initialize();
+        }
     }
 
     /**

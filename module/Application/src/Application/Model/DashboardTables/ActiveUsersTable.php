@@ -17,14 +17,19 @@ use Zend\Db\Adapter\Adapter;
 // structure:  table: system_log ( sid [string], ip [string], user_id [int], last_action_url[string], time [bigint], data [string|array|object] )
 class ActiveUsersTable extends DashboardTablesBasic
 {
-    public $table = 'active_users';
+    public $table;
     private $keepAlive;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
-        $this->initialize();
+        if($this->configLoad) parent::__construct($adapter);
+        else {
+            $this->table = 'active_users';
+            $this->adapter = $adapter;
+            $this->initialize();
+        }
     }
+    
     public function updateActiveUsers($data, $keepAlive) {
         $leaseBreakpoint = $data['time']-$keepAlive;
         $this->keepAlive = $keepAlive;

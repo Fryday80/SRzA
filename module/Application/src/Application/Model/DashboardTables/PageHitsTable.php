@@ -9,6 +9,7 @@
 namespace Application\Model\DashboardTables;
 
 use Application\Model\DashboardTables\DashboardTablesBasic;
+use Application\Model\DataObjects\PageHitsSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
@@ -17,13 +18,18 @@ class PageHitsTable extends DashboardTablesBasic
 {
 //  fry        table: pageHits (id, url, lastActionTime, count )     id = primary , url = unique
 
-    public $table = 'page_hits';
+    public $table;
 
     public function __construct(Adapter $adapter)
     {
-        $this->adapter = $adapter;
-        $this->initialize();
+        if($this->configLoad) parent::__construct($adapter);
+        else {
+            $this->table = 'page_hits';
+            $this->adapter = $adapter;
+            $this->initialize();
+        }
     }
+
     public function countHit($url, $now)
     {
         $query = "INSERT INTO $this->table (url, time) VALUES ('$url', $now) 
@@ -31,32 +37,9 @@ class PageHitsTable extends DashboardTablesBasic
         $this->adapter->query($query, array());
     }
 
-    /**
-     * @param string $url
-     * @return null|\Zend\Db\ResultSet\ResultSetInterface
-     * @throws \Exception
-     */
-    public function getByUrl( $url )
-    {
-        $url = $this->getRelativeURL($url);
-        return $this->getWhere(array('url' => $url));
-    }
 
-    /**
-     * @param int $since timestamp
-     * @param string $url
-     * @return \Zend\Db\Adapter\Driver\StatementInterface|\Zend\Db\ResultSet\ResultSet
-     */
-    public function getSinceByURL( $since, $url)
+    public function getPageHits()
     {
-        $url = $this->getRelativeURL($url);
-        $query = "SELECT * FROM $this->table WHERE time < $since AND url = '$url';";
-        return $this->adapter->query($query, array());
-    }
-
-    private function getRelativeURL($url)
-    {
-        $relativeUrl = str_replace(array("http://", $_SERVER['HTTP_HOST']),"",$url);
-        return $relativeUrl;
+        return new PageHitsSet($this->getWhere());
     }
 }
