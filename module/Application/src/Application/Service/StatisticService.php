@@ -61,7 +61,7 @@ class StatisticService
         $a = $this->sm->get('AccessService');
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
         $ajax = $e->getApplication()->getRequest()->isXmlHttpRequest();
-//        if(!$ajax) return ; //@todo check if its in blacklist
+        if($ajax) return ; //@todo check if its in blacklist
         $now = time();
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
@@ -101,7 +101,6 @@ class StatisticService
      */
     public function getLastActions()
     {
-        bdump(($this->actionsLog->toArray()));
         return new ActionLogSet($this->actionsLog->toArray());
     }
     
@@ -145,9 +144,8 @@ class StatisticService
         $action->msg = $msg;
         $action->data = $data;
         $action->time = time();
-        $action->user_id = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
-        bdump('action push');
-        bdump($action);
+        $action->userID = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
+        
         $this->actionsLog->push($action);
     }
 }

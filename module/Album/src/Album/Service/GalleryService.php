@@ -74,6 +74,7 @@ Class GalleryService
         //get random album
         Register::add("getRandomImage start");
         $galleryDirs = $this->getAllAlbums();
+        Register::add("getRandomImage end");
         if (count($galleryDirs) == 0) return [];
         $randomIndex = rand(0, count($galleryDirs) -1);
         $album = $galleryDirs[$randomIndex];
@@ -87,7 +88,6 @@ Class GalleryService
         for($i = 0; $i < $count; $i++) {
             array_push($result, $allImages[$i]);
         }
-        Register::add("getRandomImage end");
         return $result;
     }
 

@@ -1,18 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 17.04.2017
- * Time: 01:29
- */
 
 namespace Application\Model\DataObjects;
 
 
 use Zend\Db\ResultSet\ResultSet;
 
-class DBDashboardDataSets extends BasicDashboardDataSets
+class CacheDashboardDataSets extends BasicDashboardDataSets
 {
+    protected $cacheFile;
     protected $decodeColumns = array ('data');
 
     function __construct($data = null)

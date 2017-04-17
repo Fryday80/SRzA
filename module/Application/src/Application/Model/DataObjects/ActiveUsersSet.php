@@ -1,6 +1,6 @@
 <?php
 namespace Application\Model\DataObjects;
 
-use Application\Model\DataObjects\DBDashboardDataSets;
+use Application\Model\DataObjects\CacheDashboardDataSets;
 
-class ActiveUsersSet extends DBDashboardDataSets {}
+class ActiveUsersSet extends CacheDashboardDataSets {}

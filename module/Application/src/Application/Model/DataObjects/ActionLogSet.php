@@ -34,17 +34,21 @@ function __construct($data)
          */
         foreach ( $newData as $key => $actionItem )
         {
-            if ( ( $actionItem->id == $last_id ) )unset ( $newData[$key] );
+            if ( ( $actionItem->actionID == $last_id ) )unset ( $newData[$key] );
         }
         return json_encode( $newData );
     }
 
+    /**
+     * @param $since int
+     * @return array
+     */
     private function getSince($since)
     {
-        $since = (is_object($since)) ? null : (int)$since;
+        $since = (is_object($since)) ? 0 : (int)$since;
         $newDataSet = array();
         $i = 0;
-        while ( ( $i < count($this->data) ) && ( $this->data[$i]->time <= $since ) )
+        while ( ( $i < count($this->data) ) && ( $this->data[$i]->time >= $since ) )
         {
             $newDataSet[$i] = $this->data[$i];
             $i++;

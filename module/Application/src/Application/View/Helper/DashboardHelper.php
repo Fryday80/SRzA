@@ -28,7 +28,6 @@ Class DashboardHelper extends AbstractHelper {
     public function render( $data )
     {
         if (($data instanceof DashboardDataCollection)){
-            bdump($data);
             $return = $this->renderData($data->getActionLog());
             $return .= $this->renderData($data->getSystemLog());
             $return .= $this->renderData($data->getActiveUsers());
@@ -54,7 +53,7 @@ Class DashboardHelper extends AbstractHelper {
                 /** @var  $item Action */
                 foreach ( $dataObject->data as $item )
                 {
-                    $return .= '<li class="entry" data-timestamp="' . $item->time . '">' . $item->actionType . ' @ ' . date('H:i d.m.Y', $item->time) . ': ' . $item->title . ': ' . $item->msg . '</li>';
+                    $return .= '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' . $item->actionType . ' @ ' . date('H:i d.m.Y', $item->time) . ': ' . $item->title . ': ' . $item->msg . '</li>';
                 }
                 $return .= '</ul>';
                 return $this->wrapInBox( $return, 'Live Clicks', 'right' );

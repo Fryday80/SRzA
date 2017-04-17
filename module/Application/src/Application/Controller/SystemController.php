@@ -22,7 +22,7 @@ class SystemController extends AbstractActionController
         $activeUsers = $dashboardData->getActiveUsers();
         $userStats = array(
             array ( "All Clicks", 42424242),
-            array ('Clicks', 42),
+            array ( 'Clicks', 42),
             array ( "Aktive User", count( $activeUsers->toArray() )),
             array ( "Data", "you want"),
         );
@@ -44,12 +44,14 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
-        var_dump($request);
+//        var_dump($this->getRequest());
+//        var_dump($request);
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
+//                var_dump($statsService->getLastActions()->getJSonUpdate($request->actionID, $request->since));  //alter wie gesagt hier kannst du nur direkt ausgeben
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = $statsService->getLastActions()->getJSonUpdate($request->action_id,$request->since);
+                $result['actions'] = $statsService->getLastActions()->getJSonUpdate($request->actionID, $request->since); //fry aber das hier ist die JS var... die hieß immer schon so
                 break;
         };
 

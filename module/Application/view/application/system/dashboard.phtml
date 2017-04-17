@@ -71,7 +71,6 @@ $inside = '';
 foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
 echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
 echo $this->dashboardHelper()->render( $dashboardData );
-bdump($dashboardData);
 ?>
 <script type="text/javascript">
     $("[data-timestamp]").each(function() {
@@ -79,26 +78,41 @@ bdump($dashboardData);
     })
     //script for live ticks
     function loadLive(e) {
-        e.done(function(e) {
+        console.log('update');
+        e.fail(function(jqXHR, textStatus, errorThrown) {
+            console.log(jqXHR, textStatus, errorThrown);
+            //wenns nen error giebt wird fail getriggert nicht done
+        });
+        e.done(function(e, textStatus, jqXHR) {
+            //des hier triggert aber schon oder??glaub nicht... da war ich am schauen
+            //dann schau gleich beim richtigen
             console.log(e);
             let actions = JSON.parse(e.actions);
             actions.reverse();
             for(let i = 0; i < actions.length; i++) {
-                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].action_id + "'>" + actions[i].msg + "</li>");
+                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" + actions[i].msg + "</li>");
             }
             setTimeout(function() {
-                let since = $('#dashLiveList li:nth-child(1)').data('timestamp');
-                livereload(since);
+                let ele =  $('#dashLiveList li:nth-child(1)');
+                let since = ele.data('timestamp');
+                let actionID = ele.data('id');
+                console.log(actionID);
+                livereload(since, actionID);
             }, 4500);
         });
     }
-    function livereload(since) {
+    function livereload(since, actionID) {
+        let data = {
+            method: "getLiveActions",
+            since: since,
+            actionID: actionID
+        };
         $.ajax({
             url: "/system/json",
             type: "POST",
-            data: JSON.stringify({method: "getLiveActions", since: since}),
+            data: JSON.stringify(data),
             complete: loadLive
         });
     }
-    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'));
+    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'), $('#dashLiveList li:nth-child(1)').data('id'));
 </script>
