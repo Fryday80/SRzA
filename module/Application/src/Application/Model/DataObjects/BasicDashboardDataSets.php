@@ -3,7 +3,7 @@
 namespace Application\Model\DataObjects;
 
 
-class BasicDashboardDatas
+class BasicDashboardDataSets
 {
     public $data = array();
 

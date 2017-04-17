@@ -11,7 +11,7 @@ namespace Application\Model\DataObjects;
 
 use Zend\Db\ResultSet\ResultSet;
 
-class DBDashboardDatas extends BasicDashboardDatas
+class DBDashboardDataSets extends BasicDashboardDataSets
 {
     protected $decodeColumns = array ('data');
 

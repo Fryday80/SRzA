@@ -2,7 +2,7 @@
 namespace Application\Model\DataObjects;
 
 
-class ActionLogSet extends BasicDashboardDatas {
+class ActionLogSet extends BasicDashboardDataSets {
 
 
 function __construct($data)

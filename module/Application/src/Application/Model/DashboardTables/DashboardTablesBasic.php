@@ -1,6 +1,6 @@
 <?php
 //
-//namespace Application\Model\Dashboard;
+//namespace Application\Model\DashboardTables;
 //
 //
 //use Zend\Db\TableGateway\AbstractTableGateway;

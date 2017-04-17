@@ -9,6 +9,6 @@
 namespace Application\Model\DataObjects;
 
 
-use Application\Model\DataObjects\DBDashboardDatas;
+use Application\Model\DataObjects\DBDashboardDataSets;
 
-class SystemLogSet extends DBDashboardDatas{}
+class SystemLogSet extends DBDashboardDataSets{}
