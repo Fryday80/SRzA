@@ -18,7 +18,6 @@ class NavTable extends AbstractTableGateway
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
-        $this->deleteByID(6);
     }
     public function getItem($id) {
         $result = $this->select("id = $id")->toArray();
