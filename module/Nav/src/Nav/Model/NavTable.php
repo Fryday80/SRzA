@@ -17,11 +17,6 @@ class NavTable extends AbstractTableGateway
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
     }
-//     public function fetchAll()
-//     {
-//         $resultSet = $this->tableGateway->select();
-//         return $resultSet;
-//     }
     public function getItem($id) {
         $result = $this->select("id = $id")->toArray();
         if (count($result) < 1) {
@@ -31,13 +26,6 @@ class NavTable extends AbstractTableGateway
     }
     public function getNav($id)
     {
-        $id  = (int) $id;
-        $rowset = $this->select(array('menu_id' => $id));
-        $row = $rowset->current();
-        if (!$row) {
-            throw new \Exception("Could not find row with menu_id: $id");
-        }
-        
         $statement = $this->adapter->query('
                 SELECT 
                 n.id,
@@ -55,9 +43,8 @@ class NavTable extends AbstractTableGateway
                 WHERE n.lft BETWEEN p.lft AND p.rgt
                 GROUP BY n.lft
                 ORDER BY n.lft;', array());
-        
+
         $result = $statement->toArray();
-        $result = $this->toArray($result);
         return $result;
     }
     public function append($data) {
@@ -83,6 +70,11 @@ class NavTable extends AbstractTableGateway
         ]);
         return $this->lastInsertValue;
     }
+
+    /**
+     * Update a row inc right and left value
+     * @param $row
+     */
     public function updateNesting($row) {
         $id = $row['id'];
         unset($row['id']);

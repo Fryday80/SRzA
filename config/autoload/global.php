@@ -17,7 +17,7 @@ return array(
         'driver'         => 'Pdo',
         'dsn'            => 'mysql:dbname=DB2836034;host=rdbms.strato.de',
         'driver_options' => array(
-            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\'',
         ),
         'username' => 'U2836034',
         'password' => 'SRZA2016db',

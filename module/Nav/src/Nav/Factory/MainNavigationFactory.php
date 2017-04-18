@@ -15,7 +15,7 @@ class MainNavigationFactory extends AbstractNavigationFactory
      * @var $cache CacheService
      */
     private $cache;
-    
+
     protected function getName()
     {
         return 'Main';
@@ -57,7 +57,6 @@ class MainNavigationFactory extends AbstractNavigationFactory
         }
     }
     private function loadPages(ServiceLocatorInterface $serviceLocator) {
-        Register::add("loadPages start");
         if (null === $this->pages) {
             if ($this->cache->hasCache('nav/main')) {
                 $this->pages = $this->cache->getCache('nav/main');
@@ -71,7 +70,6 @@ class MainNavigationFactory extends AbstractNavigationFactory
                 $this->cache->setCache('nav/main', $nav);
             }
         }
-        Register::add("loadPages start");
     }
 }
 
