@@ -15,5 +15,13 @@ class ActionsLog
     function __construct( $actionType, $title, $msg, $time, $userID, $data = null )
     {
         $this->actionID = uniqid();
+
+        $this->actionType = $actionType;
+        $this->title = $title;
+        $this->msg = $msg;
+        $this->time = $time;
+        $this->userID = $userID;
+        $this->data = $data;
     }
+
 }
