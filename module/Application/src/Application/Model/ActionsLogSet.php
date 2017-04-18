@@ -42,17 +42,18 @@ class ActionsLogSet
         /** @var  $action ActionsLog */
         $action = new ActionsLog( $type, $title, $msg, time(), $this->getUserId(), $data );
         $this->buffer->push($action);
+        $this->result();
     }
     
     public function toJSon($since = null)
     {
-        if ($since == null) return json_encode( $this->result() );
+        if ($since == null) return json_encode( $this->actionsLogSet );
         return json_encode( $this->getSince($since) );
     }
 
     public function toArray($since = null)
     {
-        if ($since == null) return $this->result();
+        if ($since == null) return $this->actionsLogSet;
         return $this->getSince($since);
     }
 
@@ -74,7 +75,6 @@ class ActionsLogSet
 
     private function result(){
         $this->actionsLogSet = $this->buffer->toArray();
-        return $this->actionsLogSet;
     }
     /**
      * @param $since int
@@ -82,7 +82,6 @@ class ActionsLogSet
      */
     private function getSince($since)
     {
-        $this->result();
         $since = (is_object($since)) ? 0 : (int)$since;
         $newDataSet = array();
         $i = 0;
