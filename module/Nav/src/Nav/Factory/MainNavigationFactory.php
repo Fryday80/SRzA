@@ -65,7 +65,8 @@ class MainNavigationFactory extends AbstractNavigationFactory
                 $navTable   = $serviceLocator->get('Nav\Model\NavTable');
                 $nav = $navTable->getNav(0);
                 $this->prepareData($nav);
-                $this->pages = $nav;
+                $this->pages = $this->preparePages($serviceLocator, $nav);
+//                $this->pages = $nav;
 
                 $this->cache->setCache('nav/main', $nav);
             }

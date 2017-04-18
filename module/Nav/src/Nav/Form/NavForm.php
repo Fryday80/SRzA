@@ -33,6 +33,19 @@ class NavForm extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'target',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Target',
+                'value_options' => array(
+                    '_self' => 'Selbes fenster',
+                    '_blank' => 'Neues Fenster'
+                ),
+            )
+        ));
+        $this->add(array(
             'name' => 'min_role_id',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(

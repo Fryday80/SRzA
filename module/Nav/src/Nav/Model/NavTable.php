@@ -3,11 +3,9 @@ namespace Nav\Model;
 
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Sql;
 
 class NavTable extends AbstractTableGateway
 {
@@ -34,6 +32,7 @@ class NavTable extends AbstractTableGateway
                 n.label,
                 n.uri,
                 n.min_role_id,
+                n.target,
                 role.role_name AS role_name,
                 role.rid AS role_id,
 
@@ -67,6 +66,7 @@ class NavTable extends AbstractTableGateway
             'menu_id'       => 0,
             'label'         => $data['label'],
             'uri'           => $data['uri'],
+            'target'        => $data['target'],
             'min_role_id'   => $data['rid'],
             'lft'           => $maxRgt + 1,
             'rgt'           => $maxRgt + 2
