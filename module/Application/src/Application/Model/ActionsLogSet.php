@@ -74,7 +74,6 @@ class ActionsLogSet
     /**** PRIVATE METHODS ****/
 
     private function result(){
-        bdump($this->buffer->toArray());
         $this->actionsLogSet = $this->buffer->toArray();
     }
     /**

@@ -18,14 +18,14 @@ class StatisticDataCollection
     /** @var  $accessService AccessService */
     private $accessService;
 
-    function __construct($sm)
+    function __construct()
     {
-        $this->accessService = $sm->get('AccessService');
-        /**** DATA SETS ****/
-        $this->pageHitsSet    = new PageHitsSet($this->accessService);
-        $this->activeUsersSet = new ActiveUsersSet($this->accessService);
-        $this->actionsLogSet   = new actionsLogSet($this->accessService, $sm);
-        $this->systemLogSet   = new SystemLogSet($this->accessService);
+//        $this->accessService = $sm->get('AccessService');
+//        /**** DATA SETS ****/
+//        $this->pageHitsSet    = new PageHitsSet($this->accessService);
+//        $this->activeUsersSet = new ActiveUsersSet($this->accessService);
+//        $this->actionsLogSet   = new actionsLogSet($this->accessService, $sm);
+//        $this->systemLogSet   = new SystemLogSet($this->accessService);
     }
 
     /**** PAGE HITS COUNTER ****/

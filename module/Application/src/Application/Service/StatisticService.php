@@ -10,18 +10,17 @@ namespace Application\Service;
 
 use Application\Model\ActionLogSet;
 use Application\Model\ActiveUsersSet;
+use Application\Model\PageHitsSet;
 use Application\Model\StatisticDataCollection;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
 
-
+const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 
 class StatisticService
 {
     /** STORAGE */
-    private $storagePath = '/storage';
-    private $storageName = 'Logs';
-    private $fileExtension = '.store';
+    private $storagePath;
     /** @var  $storage StatisticDataCollection */
     private $collection;
     
@@ -37,9 +36,12 @@ class StatisticService
     {
         $this->sm = $sm;
 
+        $a = serialize(new StatisticDataCollection());
+        var_dump($a);die;
         /**** STORAGE ****/
-        $this->storagePath = realpath(getcwd().$this->storagePath).'/';
-        $this->collection = ($this->loadFile($this->storageName)) ? $this->loadFile($this->storageName) : new StatisticDataCollection($sm);
+        $this->storagePath = getcwd().STORAGE_PATH;
+        $this->collection = (file_exists($this->storagePath)) ? $this->loadFile() : new StatisticDataCollection($sm);
+
     }
 
     /**** EVENTS ****/
@@ -70,7 +72,7 @@ class StatisticService
         $this->updatePageHit( $serverPHPData['REQUEST_URI'], $now, $activeUserData['user_id']);
         $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $activeUserData['last_action_url'], $activeUserData);
 
-//        $this->saveFile($this->storageName, $this->collection);
+        $this->saveFile($this->collection);
     }
     public function onFinish()
     {
@@ -111,48 +113,14 @@ class StatisticService
     
     /**** DATA COLLECTION SAVE & RESTORE ****/
 
-    private function saveFile($name, $content, $serialize = true) {
-        if ($serialize)
-            $content = json_encode($content);
-
-
-        $folders = explode('/', $name);
-        $file = array_pop($folders);
-        $lastPath = $this->storagePath;
-        if(substr($lastPath, -1) == '/') {
-            $lastPath = substr($lastPath, 0, -1);
-        }
-        foreach ($folders as $key => $value) {
-            $path = $lastPath.'/'.$value;
-            if (!is_dir($path))
-                mkdir($path);
-            $lastPath = $path;
-        }
-
-        $a = file_put_contents($this->realPath($name), $content);
-
+    private function saveFile($content) {
+        $content = serialize($content);
+        file_put_contents($this->storagePath, $content);
         return true;
     }
-    private function realPath($name) {
-        if (!$name || $name == '')
-            return false;
-
-        $path = $this->storagePath.$name.$this->fileExtension;
-        return $path;
-    }
-
-    private function exists($name) {
-        return file_exists($this->realPath($name));
-    }
-    private function loadFile($name, $serialize = true) {
-        if (!$this->exists($name))
-            return false;
-
-        $content = file_get_contents($this->realPath($name));
-
-        if ($serialize)
-            $content = json_decode($content);
-
+    private function loadFile() {
+        $content = file_get_contents($this->storagePath);
+        $content = unserialize($content);
         return $content;
     }
 }

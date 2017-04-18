@@ -85,7 +85,6 @@ $set = $dashboardData->actionsLogToArray();
 /** @var  $item \Application\Model\ActionsLog*/
 foreach ( $set as $item )
     if($item !== null) {
-        bdump($item);
         $inside .=
             '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
             $item->actionType .
@@ -96,7 +95,6 @@ foreach ( $set as $item )
     }
 foreach ( $set as $item )
     if($item !== null) {
-        bdump($item);
         $inside .=
             '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
             $item->actionType .
@@ -107,7 +105,6 @@ foreach ( $set as $item )
     }
 foreach ( $set as $item )
     if($item !== null) {
-        bdump($item);
         $inside .=
             '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
             $item->actionType .

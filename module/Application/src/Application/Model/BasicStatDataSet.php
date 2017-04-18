@@ -8,7 +8,7 @@ use Auth\Service\AccessService;
 class BasicStatDataSet
 {
     /** @var  $accessService AccessService */
-    protected $accessService;
+    private $accessService;
 
 
     function __construct($accessService)
