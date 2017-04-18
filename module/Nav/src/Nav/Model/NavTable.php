@@ -1,6 +1,8 @@
 <?php
 namespace Nav\Model;
 
+use Zend\Db\Sql\Expression;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
@@ -16,6 +18,7 @@ class NavTable extends AbstractTableGateway
         $this->adapter = $dbAdapter;
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
+        $this->deleteByID(6);
     }
     public function getItem($id) {
         $result = $this->select("id = $id")->toArray();
@@ -85,7 +88,14 @@ class NavTable extends AbstractTableGateway
         $this->update($data, array('id' => $id));
     }
     public function deleteByID($id) {
-        $this->delete("id = $id");
+        $item = $this->getItem($id);
+        if (!$item) return;
+        $lft = $item['lft'];
+        $rgt = $item['rgt'];
+        $this->delete("lft BETWEEN $lft AND $rgt");
+        $where = new Where();
+        $this->update(array('lft' => new Expression("lft - ROUND(($rgt - $lft + 1))")), $where->greaterThan('lft', $rgt));
+        $this->update(array('rgt' => new Expression("rgt - ROUND(($rgt - $lft + 1))")), $where->greaterThan('rgt', $rgt));
     }
     public function toArray(array $nodes)
     {
