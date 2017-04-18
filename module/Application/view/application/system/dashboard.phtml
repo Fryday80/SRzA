@@ -1,7 +1,7 @@
 <?php
     $title = 'Dashboard';
     $this->headTitle($title);
-/** @var  $dashboardData \Application\Model\DataObjects\DashboardDataCollection*/
+/** @var  $dashboardData \Application\Model\StatisticDataCollection*/
 $dashboardData = $dashboardData; //cleanfix easier to code
 
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
@@ -24,8 +24,11 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
     }
     .dash-list {
         max-height: 200px;
-        overflow-y: scroll;
+        overflow-y: auto;
         list-style-type: none
+    }
+    boxcontent ul {
+        list-style: none;
     }
     .dash-list li {
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
@@ -66,12 +69,57 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </style>
 
 <?php
-
+$inside = '';
+foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
+?>
+<box class = 'dashboard dashboard-left'>
+    <boxtitel>
+        <span class='own_text_small'>User Statistics</span>
+    </boxtitel>
+    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+</box>
+<?php
+$inside = '';
+/** @var  $item \Application\Model\ActionsLog*/
+foreach ( $dashboardData->actionsLogToArray() as $item )
+    if($item !== null) {
+        bdump($item);
+        $inside .=
+            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
+            $item->actionType .
+            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
+            $item->title . ': ' .
+            $item->msg .
+            '</li>';
+    }
+?>
+<box class = 'dashboard dashboard-right'>
+    <boxtitel>
+        <span class='own_text_small'>Live Clicks</span>
+    </boxtitel>
+    <boxcontent><ul id="dashLiveList" class="dash-list"><?php echo $inside ?></ul></boxcontent>
+</box>
+<?php
 $inside = '';
 foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
-echo $this->dashboardHelper()->wrapInBox($inside, 'User Statistics', 'left');
-echo $this->dashboardHelper()->render( $dashboardData );
 ?>
+<box class = 'dashboard dashboard-left'>
+    <boxtitel>
+        <span class='own_text_small'>User Statistics</span>
+    </boxtitel>
+    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+</box>
+<?php
+$inside = '';
+foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
+?>
+<box class = 'dashboard dashboard-right'>
+    <boxtitel>
+        <span class='own_text_small'>User Statistics</span>
+    </boxtitel>
+    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+</box>
+
 <script type="text/javascript">
     $("[data-timestamp]").each(function() {
         //convert time to nice string and push in ele.html

@@ -8,53 +8,41 @@
 
 namespace Application\Service;
 
-use Application\Model\DataObjects\ActionLogSet;
-use Application\Model\ActiveUsersTable;
-use Application\Model\DashboardTables\PageHitsTable;
-use Application\Model\SystemLogTable;
+use Application\Model\ActionLogSet;
+use Application\Model\ActiveUsersSet;
+use Application\Model\StatisticDataCollection;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
-use Application\Utility\CircularBuffer;
-use Application\Model\DataObjects\Action;
 
 
 
 class StatisticService
 {
-    const ACTIONS_CACHE_NAME = 'stats/actions';
-    /** @var StatisticService  */
-    private static $instance;
+    /** STORAGE */
+    private $storagePath = '/storage';
+    private $storageName = 'Logs';
+    private $fileExtension = '.store';
+    /** @var  $storage StatisticDataCollection */
+    private $collection;
+    
+    /** VARS */
     private $sm;
-    /** @var $activeUsers ActiveUsersTable */
-    private $activeUsersTable ;
-    /** @var $pageHits PageHitsTable */
-    private $pageHitsTable;
-    /** @var $systemLog SystemLogTable */
-    private $systemLogTable;
     /** @var  $cache CacheService */
     private $cache;
-    /** @var $actionsLog CircularBuffer */
-    private $actionsLog;
-    // Options
+    
+    /** OPTIONS */
     private $keepUserActiveFor = 30*60;
 
     function __construct($sm)
     {
-        self::$instance = $this;
         $this->sm = $sm;
-        $this->activeUsersTable = $this->sm->get('Application\Model\ActiveUsers');
-        $this->pageHitsTable = $this->sm->get('Application\Model\PageHits');
-        $this->systemLogTable = $this->sm->get('Application\Model\SystemLog');
-        $this->cache = $this->sm->get('CacheService');
-        if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
-            $this->actionsLog = new CircularBuffer(100);
-            $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
-        } else {
-            $this->actionsLog = $this->cache->getCache($this::ACTIONS_CACHE_NAME);
-        }
-//        $this->log();
+
+        /**** STORAGE ****/
+        $this->storagePath = realpath(getcwd().$this->storagePath).'/';
+        $this->collection = ($this->loadFile($this->storageName)) ? $this->loadFile($this->storageName) : new StatisticDataCollection($sm);
     }
 
+    /**** EVENTS ****/
     public function onDispatch(MvcEvent $e)
     {
         /** @var  $a AccessService*/
@@ -77,75 +65,93 @@ class StatisticService
         $activeUserData['last_action_url'] = $serverPHPData['REQUEST_URI'];
 
         $activeUserData['data']['serverData'] = $serverPHPData;
-
-
-        $this->pageHitsTable->countHit( $serverPHPData['REQUEST_URI'], $now );
-        $this->activeUsersTable->updateActiveUsers( $activeUserData, $this->keepUserActiveFor );
-
-        array_push($activeUserData['data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
-        $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
+        
+        $this->actionLog('site call', 'onDispatch', 'regular call', $activeUserData);
+        $this->updatePageHit( $serverPHPData['REQUEST_URI'], $now, $activeUserData['user_id']);
+//
+//        $this->activeUsersTable->updateActiveUsers( $activeUserData, $this->keepUserActiveFor );
+//
+//        array_push($activeUserData['data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
+//        $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
+//
+//        $this->saveFile($this->storageName, $this->collection);
     }
     public function onFinish()
     {
-        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
+//        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
     }
+    /**** METHODS ****/
 
-
-    public function getActiveUsers()
-    {
-        return $this->activeUsersTable->getActiveUsers();
+    public function getDataCollection(){
+        return $this->collection;
     }
-
-    /**
-     * @return ActionLogSet
-     */
-    public function getLastActions()
-    {
-        return new ActionLogSet($this->actionsLog->toArray());
+    public function getPageHitSet(){
+        return $this->collection->getPageHitSet();
+    }
+    public function getActiveUsersSet(){
+        return $this->collection->getActiveUsersSet();
+    }
+    public function getActionsLogSet(){
+        return $this->collection->getActionsLogSet();
+    }
+    public function getSystemLogSet(){
+        return $this->collection->getSystemLogSet();
     }
     
-    public function getSystemLog()
+    
+    public function actionLog($type, $title, $msg, $data){
+        $this->collection->updateActionsLog($type, $title, $msg, $data);
+    }
+
+    public function updatePageHit($url, $user_id)
     {
-        return $this->systemLogTable->getSystemLogs();
+        $this->collection->updatePageHit($url, $user_id);
+    }
+    
+    
+    /**** DATA COLLECTION SAVE & RESTORE ****/
+
+    private function saveFile($name, $content, $serialize = true) {
+        if ($serialize)
+            $content = serialize($content);
+
+
+        $folders = explode('/', $name);
+        $file = array_pop($folders);
+        $lastPath = $this->storagePath;
+        if(substr($lastPath, -1) == '/') {
+            $lastPath = substr($lastPath, 0, -1);
+        }
+        foreach ($folders as $key => $value) {
+            $path = $lastPath.'/'.$value;
+            if (!is_dir($path))
+                mkdir($path);
+            $lastPath = $path;
+        }
+
+        $a = file_put_contents($this->realPath($name), $content);
+
+        return true;
+    }
+    private function realPath($name) {
+        if (!$name || $name == '')
+            return false;
+
+        $path = $this->storagePath.$name.$this->fileExtension;
+        return $path;
     }
 
-    public function getActiveUserDuration()
-    {
-        return $this->keepUserActiveFor;
+    private function exists($name) {
+        return file_exists($this->realPath($name));
     }
+    private function loadFile($name, $serialize = true) {
+        if (!$this->exists($name))
+            return false;
 
-    /**
-     * @param $type string
-     * @param $title string
-     * @param $msg string
-     * @param $data mixed (serializable)
-     */
-    public static function log($type, $title, $msg, $data) {
-        // static => $this = self::$instance;
-        if (!self::$instance)
-            return;
+        $content = file_get_contents($this->realPath($name));
+        if ($serialize)
+            $content = unserialize($content);
 
-        self::$instance->systemLogTable->updateSystemLog($type, $title, $msg, $data);
-    }
-
-    /**
-     * @param $type string
-     * @param $title string
-     * @param $msg string
-     * @param $data mixed (serializable)
-     */
-    private function logAction($type, $title, $msg, $data) {
-        $a = $this->sm->get('AccessService');
-        /** @var  $action Action */
-        $action = new Action();
-        // fill action
-        $action->actionType = $type;
-        $action->title  = $title;
-        $action->msg = $msg;
-        $action->data = $data;
-        $action->time = time();
-        $action->userID = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
-        
-        $this->actionsLog->push($action);
+        return $content;
     }
 }

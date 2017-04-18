@@ -1,8 +1,8 @@
 <?php
-namespace Application\Model\DataObjects;
+namespace Application\Model;
 
 
-class Action
+class ActionsLog
 {
     public $actionType; //string wie  loadPage, SystemLog, PageError ....
     public $title;
@@ -12,7 +12,7 @@ class Action
     public $userID;
     public $actionID;
 
-    function __construct()
+    function __construct( $actionType, $title, $msg, $time, $userID, $data = null )
     {
         $this->actionID = uniqid();
     }

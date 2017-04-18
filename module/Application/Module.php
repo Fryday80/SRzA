@@ -53,13 +53,13 @@ class Module
                     return new StatisticService( $sm );
                 },
                 'Application\Model\ActiveUsers' => function ( $serviceManager ) {
-                    return new ActiveUsersTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new ActiveUsersTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
                 'Application\Model\PageHits' => function ( $serviceManager ) {
-                    return new PageHitsTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new PageHitsTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
                 'Application\Model\SystemLog' => function ( $serviceManager ) {
-                    return new SystemLogTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                    return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
             )
         );

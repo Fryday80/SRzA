@@ -2,8 +2,7 @@
 namespace Application\Controller;
 
 
-use Application\Model\DataObjects\DashboardDataCollection;
-use Application\Service\CacheService;
+use Application\Model\StatisticDataCollection;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -14,16 +13,13 @@ class SystemController extends AbstractActionController
 {
     public function dashboardAction()
     {
-//        /** @var  $statsService StatisticService */
-//        $statsService = $this->getServiceLocator()->get('StatisticService');
-        $dashboardData = new DashboardDataCollection( $this->getServiceLocator() );
-        $dashboardData->setActionLog();
-        $dashboardData->setActiveUsers();
-        $activeUsers = $dashboardData->getActiveUsers();
+        /** @var  $statsService StatisticService */
+        $statsService = $this->getServiceLocator()->get('StatisticService');
+        /** @var  $dashboardData \Application\Model\StatisticDataCollection*/
+        $dashboardData = $statsService->getDataCollection();
         $userStats = array(
-            array ( "All Clicks", 42424242),
-            array ( 'Clicks', 42),
-            array ( "Aktive User", count( $activeUsers->toArray() )),
+            array ( "All Clicks", $dashboardData->getAllHits()),
+            array ( "Aktive User", count( $dashboardData->activeUsersSet->getActiveUsers() )),
             array ( "Data", "you want"),
         );
         
@@ -51,7 +47,7 @@ class SystemController extends AbstractActionController
             case 'getLiveActions':
 //                var_dump($statsService->getLastActions()->getJSonUpdate($request->actionID, $request->since));  //alter wie gesagt hier kannst du nur direkt ausgeben
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = $statsService->getLastActions()->getJSonUpdate($request->actionID, $request->since); //fry aber das hier ist die JS var... die hieß immer schon so
+                $result['actions'] = $statsService->getDataCollection()->actionsLogSet->getJSonUpdate($request->actionID, $request->since); //fry aber das hier ist die JS var... die hieß immer schon so
                 break;
         };
 
