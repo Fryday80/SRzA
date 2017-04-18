@@ -6,8 +6,8 @@ class ActiveUsersSet
     extends BasicStatDataSet
 {    
     private $activeUsersSet = array();
-    private $hashLeaseSid;
-    private $hashTimeSid;
+    private $hashLeaseSid = array();
+    private $hashTimeSid = array();
     private $guestsAllOver = 0;
     private $expireTime = 30*60; // UNIX timestamp based
 

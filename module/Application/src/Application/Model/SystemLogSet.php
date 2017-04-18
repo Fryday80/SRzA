@@ -6,10 +6,10 @@ namespace Application\Model;
 class SystemLogSet
     extends BasicStatDataSet
 {    
-    private $systemLogSet;
-    private $hashTimeId;
-    private $hashTypeId;
-    private $hashUserIdId;
+    private $systemLogSet = array();
+    private $hashTimeId = array();
+    private $hashTypeId = array();
+    private $hashUserIdId = array();
     
     public function updateSystemLog($type, $msg, $data){
         $nextId = count($this->systemLogSet);
