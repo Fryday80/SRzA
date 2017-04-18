@@ -14,7 +14,7 @@ class ActionsLogSet
     
     /** @var  $buffer CircularBuffer */
     private $buffer;
-    private $actionsLogSet;
+    private $actionsLogSet; // updated and sorted @ update
 
     function __construct($accessService, $sm)
     {
