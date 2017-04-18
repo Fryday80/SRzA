@@ -1,9 +1,6 @@
 <?php
 namespace Application\Model;
 
-use Application\Service\CacheService;
-use Application\Utility\CircularBuffer;
-use Auth\Service\AccessService;
 
 class StatisticDataCollection
 {
@@ -15,17 +12,17 @@ class StatisticDataCollection
     public $actionsLogSet;
     /** @var $systemLogSet SystemLogSet  */
     public $systemLogSet;
-    /** @var  $accessService AccessService */
-    private $accessService;
-
+    
+    private $userId;
+    private $userName;
+    
     function __construct()
     {
-//        $this->accessService = $sm->get('AccessService');
-//        /**** DATA SETS ****/
-//        $this->pageHitsSet    = new PageHitsSet($this->accessService);
-//        $this->activeUsersSet = new ActiveUsersSet($this->accessService);
-//        $this->actionsLogSet   = new actionsLogSet($this->accessService, $sm);
-//        $this->systemLogSet   = new SystemLogSet($this->accessService);
+        /**** DATA SETS ****/
+        $this->pageHitsSet    = new PageHitsSet();
+        $this->activeUsersSet = new ActiveUsersSet();
+        $this->actionsLogSet   = new actionsLogSet();
+        $this->systemLogSet   = new SystemLogSet();
     }
 
     /**** PAGE HITS COUNTER ****/
@@ -74,7 +71,7 @@ class StatisticDataCollection
      * @param null $data
      */
     public function updateActive($sid, $ip, $lastActionUrl, $data = null){
-       $this->activeUsersSet->updateActive($sid, $ip, $this->getUserId(), $lastActionUrl, time(), $data);
+       $this->activeUsersSet->updateActive($sid, $ip, $this->userId(), $lastActionUrl, time(), $data);
     }
     
     public function getActiveUsersSet(){
@@ -132,7 +129,7 @@ class StatisticDataCollection
      * @param mixed $data
      */
     public function updateSystemLog($type, $msg, $data){
-        $this->systemLogSet->updateSystemLog($type, $msg, $this->getUserId(), $data);
+        $this->systemLogSet->updateSystemLog($type, $msg, $this->userId(), $data);
     }
 
     public function getSystemLogSet(){
@@ -140,20 +137,33 @@ class StatisticDataCollection
     }
 
     public function getSystemLog ($since = null){
-        return $this->systemLogSet->getSystemLog ($since = null);
+        return $this->systemLogSet->getSystemLog ($since);
     }
 
     public function getSystemLogByType ($type, $since = null){
-        return $this->systemLogSet->getSystemLogByType ($type, $since = null);
+        return $this->systemLogSet->getSystemLogByType ($type, $since);
     }
 
     public function getSystemLogByUser ($userId, $since = null){
-        return $this->systemLogSet->getSystemLogByUser ($userId, $since = null);
+        return $this->systemLogSet->getSystemLogByUser ($userId, $since);
     }
 
-
-    /**** PRIVATE METHODS ****/
-    private function getUserId(){
-        return ($this->accessService->getUserID() == "-1")? 0 : (int)$this->accessService->getUserID();
+    public function setUserId($id){
+        if ($this->userId !== $id) {
+            $this->userId = $id;
+            $this->pageHitsSet->setUserId($id);
+            $this->activeUsersSet->setUserId($id);
+            $this->actionsLogSet->setUserId($id);
+            $this->systemLogSet->setUserId($id);
+        }
+    }
+    public function setUserName($name){
+        if($this->userName !== $name) {
+            $this->userName = $name;
+            $this->pageHitsSet->setUserName($name);
+            $this->activeUsersSet->setUserName($name);
+            $this->actionsLogSet->setUserName($name);
+            $this->systemLogSet->setUserName($name);
+        }
     }
 }

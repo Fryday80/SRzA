@@ -16,20 +16,9 @@ class ActionsLogSet
     private $buffer;
     private $actionsLogSet = array(); // updated and sorted @ update
 
-    function __construct($accessService, $sm)
+    function __construct()
     {
-        parent::__construct($accessService);
-
-        /**** CACHE ****/
-        $this->cache = $sm->get('CacheService');
-        /**** CIRCULAR BUFFER - actionsLog DATA SET****/
-        self::$instance = $this;
-        if (!$this->cache->hasCache($this::ACTIONS_CACHE_NAME)) {
-            $this->buffer = new CircularBuffer(100);
-            $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->buffer);
-        } else {
-            $this->buffer = $this->cache->getCache($this::ACTIONS_CACHE_NAME);
-        }
+        $this->buffer = new CircularBuffer(100);
     }
 
     /**
@@ -40,7 +29,7 @@ class ActionsLogSet
      */
     public function updateActionsLog($type, $title, $msg, $data = null) {
         /** @var  $action ActionsLog */
-        $action = new ActionsLog( $type, $title, $msg, time(), $this->getUserId(), $data );
+        $action = new ActionsLog( $type, $title, $msg, time(), $this->userId(), $data );
         $this->buffer->push($action);
         $this->result();
     }

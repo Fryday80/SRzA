@@ -2,24 +2,21 @@
 
 namespace Application\Model;
 
-
-use Auth\Service\AccessService;
-
 class BasicStatDataSet
 {
-    /** @var  $accessService AccessService */
-    private $accessService;
+    protected $liveUserId;
+    protected $liveUserName;
 
-
-    function __construct($accessService)
-    {
-        $this->accessService = $accessService;
+    protected function userId(){
+        return $this->liveUserId;
     }
-
-    protected function getUserId(){
-        return ($this->accessService->getUserID() == "-1")? 0 : (int)$this->accessService->getUserID();
+    protected function userName() {
+        return $this->liveUserName;
     }
-    protected function getUserName(){
-        return $this->accessService->getUserName();
+    public function setUserId($id){
+        $this->liveUserId = $id;
+    }
+    public function setUserName($name) {
+        $this->liveUserName = $name;
     }
 }

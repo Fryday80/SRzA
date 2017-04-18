@@ -8,7 +8,7 @@
 
 namespace Application\Service;
 
-use Application\Model\ActionLogSet;
+use Application\Model\ActionsLogSet;
 use Application\Model\ActiveUsersSet;
 use Application\Model\PageHitsSet;
 use Application\Model\StatisticDataCollection;
@@ -37,7 +37,7 @@ class StatisticService
         $this->sm = $sm;
 
         $a = serialize(new StatisticDataCollection());
-        var_dump($a);die;
+//        var_dump($a);die;
         /**** STORAGE ****/
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->collection = (file_exists($this->storagePath)) ? $this->loadFile() : new StatisticDataCollection($sm);
@@ -49,6 +49,10 @@ class StatisticService
     {
         /** @var  $a AccessService*/
         $a = $this->sm->get('AccessService');
+        $userId = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
+        $userName = $a->getUserName();
+        $this->collection->setUserId ($userId);
+        $this->collection->setUserName ($userName);
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
         $ajax = $e->getApplication()->getRequest()->isXmlHttpRequest();
         if($ajax) return ; //@todo check if its in blacklist
@@ -62,7 +66,7 @@ class StatisticService
         $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
-        $activeUserData['user_id'] = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
+        $activeUserData['user_id'] = $userId;
         $activeUserData['data'] = array();
         $activeUserData['last_action_url'] = $serverPHPData['REQUEST_URI'];
 

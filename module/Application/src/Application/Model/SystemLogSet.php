@@ -14,7 +14,7 @@ class SystemLogSet
     public function updateSystemLog($type, $msg, $data){
         $nextId = count($this->systemLogSet);
         $now = time();
-        $user = $this->getUserId();
+        $user = $this->userId();
         $this->systemLogSet[$nextId] = new SystemLog( (int)$nextId, $type, (int)$now, $msg, (int)$user, $data );
         if(!isset($this->hashTypeId[$type]))$this->hashTypeId[$type] = array();
         array_push($this->hashTypeId[$type], $nextId);

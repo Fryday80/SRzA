@@ -93,26 +93,6 @@ foreach ( $set as $item )
             $item->msg .
             '</li>';
     }
-foreach ( $set as $item )
-    if($item !== null) {
-        $inside .=
-            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
-            $item->actionType .
-            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
-            $item->title . ': ' .
-            $item->msg .
-            '</li>';
-    }
-foreach ( $set as $item )
-    if($item !== null) {
-        $inside .=
-            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
-            $item->actionType .
-            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
-            $item->title . ': ' .
-            $item->msg .
-            '</li>';
-    }
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
@@ -125,8 +105,6 @@ foreach ( $set as $item )
 $inside = '';
 $set = $dashboardData->getActiveUsers();
 /** @var  $item \Application\Model\ActiveUser*/
-foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
-foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
 foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>

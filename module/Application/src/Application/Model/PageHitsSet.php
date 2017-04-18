@@ -53,14 +53,14 @@ class PageHitsSet
     /**** PRIVATE METHODS ****/
     private function update($key, $data = null)
     {
-        $this->pageHitsSet[$key]->update(time(), $this->getUserId(), $data);
+        $this->pageHitsSet[$key]->update(time(), $this->userId(), $data);
     }
 
     private function create($url, $data = null)
     {
         $nextKey = count($this->hashUrlPage);
         $this->hashUrlPage[$nextKey] = $url;
-        $this->pageHitsSet[$nextKey] = new Page($url, time(), $this->getUserId(), $data);
+        $this->pageHitsSet[$nextKey] = new Page($url, time(), $this->userId(), $data);
     }
 
     private function getRelativeURL($url)
