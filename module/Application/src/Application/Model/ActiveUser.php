@@ -23,7 +23,7 @@ class ActiveUser
         $this->ip = $ip;
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->astActionUrl = $lastActionUrl;
+        $this->lastActionUrl = $lastActionUrl;
         $this->time = $time;
         $this->data = $data;
         $this->expires = $time+$expireTime;
@@ -34,7 +34,7 @@ class ActiveUser
         $this->ip = $ip;
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->astActionUrl = $lastActionUrl;
+        $this->lastActionUrl = $lastActionUrl;
         $this->time = $time;
         $this->data = $data;
         $this->expires = $time+$this->expireTime;

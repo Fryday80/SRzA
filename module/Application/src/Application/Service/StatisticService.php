@@ -36,8 +36,9 @@ class StatisticService
     {
         $this->sm = $sm;
 
-        $a = serialize(new StatisticDataCollection());
-//        var_dump($a);die;
+//        $a = serialize(new StatisticDataCollection());
+//        var_dump($a);
+//        die;
         /**** STORAGE ****/
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->collection = (file_exists($this->storagePath)) ? $this->loadFile() : new StatisticDataCollection($sm);
@@ -51,8 +52,8 @@ class StatisticService
         $a = $this->sm->get('AccessService');
         $userId = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
         $userName = $a->getUserName();
-        $this->collection->setUserId ($userId);
-        $this->collection->setUserName ($userName);
+        $userName = ($userName == "") ? "Guest" : $userName;
+        $this->updateCollection($userId, $userName);
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
         $ajax = $e->getApplication()->getRequest()->isXmlHttpRequest();
         if($ajax) return ; //@todo check if its in blacklist
@@ -112,6 +113,11 @@ class StatisticService
 
     public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
         $this->collection->activeUsersSet->updateActive($sid, $ip, $lastActionUrl, $data);
+    }
+    /**** PRIVATE HELPER ****/
+    private function updateCollection($userId,$userName){
+        $this->collection->setUserId ($userId);
+        $this->collection->setUserName ($userName);
     }
 
     

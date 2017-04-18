@@ -7,6 +7,9 @@ $dashboardData = $dashboardData; //cleanfix easier to code
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
 <style>
+    .new {
+        background-color: #58bf83;
+    }
     .dashboard
     {
         text-shadow: none;
@@ -32,6 +35,12 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
     }
     .dash-list li {
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+    }
+    .dashboard
+    {
+        width: 100%;
+        margin-right: 0;
+        float: none !important;
     }
     @media screen and (max-width: 1350px){
         .dashboard
@@ -69,6 +78,8 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </style>
 
 <?php
+
+// ************************************************************************************* USER STATS
 $inside = '';
 foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
 ?>
@@ -80,6 +91,7 @@ foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
 </box>
 
 <?php
+// ************************************************************************************* LIVE CLICKS
 $inside = '';
 $set = $dashboardData->actionsLogToArray();
 /** @var  $item \Application\Model\ActionsLog*/
@@ -102,10 +114,13 @@ foreach ( $set as $item )
 </box>
 
 <?php
+// ************************************************************************************* ACTIVE USERS
 $inside = '';
 $set = $dashboardData->getActiveUsers();
 /** @var  $item \Application\Model\ActiveUser*/
-foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
+bdump($item);
+foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i', $item->time) . "</li>";
+bdump($set);
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
@@ -115,6 +130,7 @@ foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ 
 </box>
 
 <?php
+// ************************************************************************************* SYSTEM LOG
 $inside = '';
 foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
 ?>
@@ -131,6 +147,7 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
     })
     //script for live ticks
     function loadLive(e) {
+        $('.new').removeClass('new');
         console.log('update');
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
@@ -141,9 +158,15 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
             //dann schau gleich beim richtigen
             console.log(e);
             let actions = JSON.parse(e.actions);
-            actions.reverse();
+//            actions.reverse();
             for(let i = 0; i < actions.length; i++) {
-                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" + actions[i].msg + "</li>");
+                let Hours = Date(actions[i].time).getHours();
+                let Minutes = "0" + Date(actions[i].time).getMinutes();
+                let actionsTime = Hours + Minutes.substr(-2);
+                $('#dashLiveList').prepend("<li class='entry new' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
+                    actions[i].actionType +
+                    ' @ ' + actionsTime + ': ' +
+                    actions[i].title + ': ' + actions[i].msg + "</li>");
             }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');

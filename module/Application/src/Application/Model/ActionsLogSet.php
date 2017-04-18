@@ -63,7 +63,7 @@ class ActionsLogSet
     /**** PRIVATE METHODS ****/
 
     private function result(){
-        $this->actionsLogSet = $this->buffer->toArray();
+        $this->actionsLogSet = array_reverse( $this->buffer->toArray() );
     }
     /**
      * @param $since int

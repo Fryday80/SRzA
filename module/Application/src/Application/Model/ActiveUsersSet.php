@@ -16,8 +16,7 @@ class ActiveUsersSet
         $time = time();
         if ( key_exists($sid, $this->activeUsersSet) ) $this->update($sid, $ip, $lastActionUrl, $time, $data);
         else $this->create($sid, $ip, $lastActionUrl, $time, $data);
-        $this->hashLeaseSid[$this->activeUsersSet[$sid]->expires] = $sid;
-        $this->hashTimeSid[$time] = $sid;
+        $this->addHashEntries($sid, $time);
         $this->deleteExpired($time);
     }
     
@@ -40,13 +39,17 @@ class ActiveUsersSet
         if (!isset($this->hashTimeSid)) return null;
         krsort($this->hashTimeSid);
         $result = array();
-        foreach ($this->hashTimeSid as $sid) array_push($result, $this->activeUsersSet[$sid]);
+        foreach ($this->hashTimeSid as $sidArray) {
+            foreach ($sidArray as $sid) array_push($result, $this->activeUsersSet[$sid]);
+        }
         return $result;
     }
 
     /**** PRIVATE METHODS ****/
     private function update ($sid, $ip, $lastActionUrl, $time, $data = null)
     {
+        $this->removeHashEntries($sid);
+        // update
         if($this->activeUsersSet[$sid]->userId == 0 && $this->userId() !==0)$this->guestsAllOver--;
         $this->activeUsersSet[$sid]->update($ip, $this->userId(), $this->userName(), $lastActionUrl, $time, $data);
     }
@@ -57,14 +60,32 @@ class ActiveUsersSet
         $this->activeUsersSet[$sid] = new ActiveUser($this->expireTime, $sid, $ip, $this->userId(), $this->userName(), $lastActionUrl, $time, $data);
     }
 
+    private function addHashEntries ($sid, $time){
+        $lease = $time+$this->expireTime;
+        if (!key_exists( $lease, $this->hashLeaseSid)) $this->hashLeaseSid[$lease] = array();
+        array_push($this->hashLeaseSid[$lease], $sid);
+        if (!key_exists($time, $this->hashTimeSid)) $this->hashTimeSid[$time] = array();
+        array_push($this->hashTimeSid[$time], $sid);
+    }
+    private function removeHashEntries($sid){
+        $old = $this->activeUsersSet[$sid];
+        $key = array_search($sid, $this->hashLeaseSid[$old->expires]);
+        unset($this->hashLeaseSid[$old->expires][$key]);
+        $key = array_search($sid, $this->hashTimeSid[$old->time]);
+        unset($this->hashTimeSid[$old->time][$key]);
+    }
+
     private function deleteExpired($time)
     {
-        foreach ($this->hashLeaseSid as $expire => $sid)
+        foreach ($this->hashLeaseSid as $expire => $sidArray)
         {
             if ($expire < $time)
             {
-                unset($this->hashTimeSid[$this->activeUsersSet[$sid]->time]);
-                unset($this->activeUsersSet[$sid]);
+                foreach ($sidArray as $sid) {
+                    if (isset($this->hashTimeSid[$this->activeUsersSet[$sid]->time]))
+                        unset($this->hashTimeSid[$this->activeUsersSet[$sid]->time]);
+                    unset($this->activeUsersSet[$sid]);
+                }
                 unset($this->hashLeaseSid[$expire]);
             }
         }
