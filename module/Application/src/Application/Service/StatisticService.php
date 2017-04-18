@@ -113,7 +113,7 @@ class StatisticService
 
     private function saveFile($name, $content, $serialize = true) {
         if ($serialize)
-            $content = serialize($content);
+            $content = json_encode($content);
 
 
         $folders = explode('/', $name);
@@ -149,8 +149,9 @@ class StatisticService
             return false;
 
         $content = file_get_contents($this->realPath($name));
+
         if ($serialize)
-            $content = unserialize($content);
+            $content = json_decode($content);
 
         return $content;
     }

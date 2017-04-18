@@ -78,10 +78,34 @@ foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
     </boxtitel>
     <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
 </box>
+
 <?php
 $inside = '';
+$set = $dashboardData->actionsLogToArray();
 /** @var  $item \Application\Model\ActionsLog*/
-foreach ( $dashboardData->actionsLogToArray() as $item )
+foreach ( $set as $item )
+    if($item !== null) {
+        bdump($item);
+        $inside .=
+            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
+            $item->actionType .
+            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
+            $item->title . ': ' .
+            $item->msg .
+            '</li>';
+    }
+foreach ( $set as $item )
+    if($item !== null) {
+        bdump($item);
+        $inside .=
+            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
+            $item->actionType .
+            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
+            $item->title . ': ' .
+            $item->msg .
+            '</li>';
+    }
+foreach ( $set as $item )
     if($item !== null) {
         bdump($item);
         $inside .=
@@ -99,23 +123,29 @@ foreach ( $dashboardData->actionsLogToArray() as $item )
     </boxtitel>
     <boxcontent><ul id="dashLiveList" class="dash-list"><?php echo $inside ?></ul></boxcontent>
 </box>
+
 <?php
 $inside = '';
-foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
+$set = $dashboardData->getActiveUsers();
+/** @var  $item \Application\Model\ActiveUser*/
+foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
+foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
+foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i d.m.Y', $item->time) . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
-        <span class='own_text_small'>User Statistics</span>
+        <span class='own_text_small'>Active Users</span>
     </boxtitel>
     <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
 </box>
+
 <?php
 $inside = '';
-foreach ($userStats as $stat) $inside .= "<p>$stat[0]: $stat[1]</p>";
+foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
-        <span class='own_text_small'>User Statistics</span>
+        <span class='own_text_small'>System Log</span>
     </boxtitel>
     <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
 </box>

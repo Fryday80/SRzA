@@ -48,13 +48,13 @@ class ActiveUsersSet
     private function update ($sid, $ip, $lastActionUrl, $time, $data = null)
     {
         if($this->activeUsersSet[$sid]->userId == 0 && $this->getUserId() !==0)$this->guestsAllOver--;
-        $this->activeUsersSet[$sid]->update($ip, $this->getUserId(), $lastActionUrl, $time, $data);
+        $this->activeUsersSet[$sid]->update($ip, $this->getUserId(), $this->getUserName(), $lastActionUrl, $time, $data);
     }
 
     private function create($sid, $ip, $lastActionUrl, $time, $data = null)
     {
         if ($this->getUserId() == 0)$this->guestsAllOver++;
-        $this->activeUsersSet[$sid] = new ActiveUser($this->expireTime, $sid, $ip, $this->getUserId(), $lastActionUrl, $time, $data);
+        $this->activeUsersSet[$sid] = new ActiveUser($this->expireTime, $sid, $ip, $this->getUserId(), $this->getUserName(), $lastActionUrl, $time, $data);
     }
 
     private function deleteExpired($time)
