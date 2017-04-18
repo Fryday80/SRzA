@@ -45,6 +45,7 @@ class NavTable extends AbstractTableGateway
                 ORDER BY n.lft;', array());
 
         $result = $statement->toArray();
+        $result = $this->toArray($result);
         return $result;
     }
     public function append($data) {
