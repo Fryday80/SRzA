@@ -100,6 +100,11 @@ class StatisticService
     public function getSystemLogSet(){
         return $this->collection->getSystemLogSet();
     }
+
+    /**** ACTIONS LOG ****/
+    public function actionsLogGetByIDAndTime($last_id, $last_timestamp){
+        return $this->collection->actionsLogGetByIDAndTime($last_id, $last_timestamp);
+    }
     
     
     public function actionLog($type, $title, $msg, $data){

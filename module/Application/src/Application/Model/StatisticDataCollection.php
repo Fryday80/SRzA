@@ -105,20 +105,15 @@ class StatisticDataCollection
     public function getActionsLogSet(){
         return $this->actionsLogSet;
     }
-    
-    public function actionsLogToJSon($since = null)
-    {
-        return $this->actionsLogSet->toJSon($since);
-    }
 
     public function actionsLogToArray($since = null)
     {
         return $this->actionsLogSet->toArray($since);
     }
 
-    public function actionsLogGetJSonUpdate($last_id, $last_timestamp)
+    public function actionsLogGetByIDAndTime($last_id, $last_timestamp)
     {
-        return $this->actionsLogSet->getJSonUpdate($last_id, $last_timestamp);
+        return $this->actionsLogSet->getByIDAndTime($last_id, $last_timestamp);
     }
     
     /**** SYSTEM LOG ****/

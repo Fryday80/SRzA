@@ -45,9 +45,8 @@ class SystemController extends AbstractActionController
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
-//                var_dump($statsService->getLastActions()->getJSonUpdate($request->actionID, $request->since));  //alter wie gesagt hier kannst du nur direkt ausgeben
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = $statsService->getDataCollection()->actionsLogSet->getJSonUpdate($request->actionID, $request->since); //fry aber das hier ist die JS var... die hieß immer schon so
+                $result['actions'] = $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since);
                 break;
         };
 

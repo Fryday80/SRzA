@@ -33,12 +33,6 @@ class ActionsLogSet
         $this->buffer->push($action);
         $this->result();
     }
-    
-    public function toJSon($since = null)
-    {
-        if ($since == null) return json_encode( $this->actionsLogSet );
-        return json_encode( $this->getSince($since) );
-    }
 
     public function toArray($since = null)
     {
@@ -46,7 +40,7 @@ class ActionsLogSet
         return $this->getSince($since);
     }
 
-    public function getJSonUpdate($last_id, $last_timestamp)
+    public function getByIDAndTime($last_id, $last_timestamp)
     {
         $newData = $this->getSince($last_timestamp);
         /**
@@ -57,7 +51,7 @@ class ActionsLogSet
         {
             if ( ( $actionItem->actionID == $last_id ) )unset ( $newData[$key] );
         }
-        return json_encode( $newData );
+        return $newData;
     }
 
     /**** PRIVATE METHODS ****/
