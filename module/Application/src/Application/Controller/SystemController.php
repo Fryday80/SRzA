@@ -46,7 +46,7 @@ class SystemController extends AbstractActionController
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since);
+                $result['actions'] = json_encode($statsService->actionsLogGetByIDAndTime($request->actionID, $request->since));
                 break;
         };
 
