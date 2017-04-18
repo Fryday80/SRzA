@@ -68,12 +68,8 @@ class StatisticService
         
         $this->actionLog('site call', 'onDispatch', 'regular call', $activeUserData);
         $this->updatePageHit( $serverPHPData['REQUEST_URI'], $now, $activeUserData['user_id']);
-//
-//        $this->activeUsersTable->updateActiveUsers( $activeUserData, $this->keepUserActiveFor );
-//
-//        array_push($activeUserData['data'], array($redirect, $redirectedTo, $activeUserData['user_id']));
-//        $this->logAction('Site call', 'regular log', 'call ' . $activeUserData['last_action_url'], $activeUserData);
-//
+        $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $activeUserData['last_action_url'], $activeUserData);
+
 //        $this->saveFile($this->storageName, $this->collection);
     }
     public function onFinish()
@@ -107,7 +103,11 @@ class StatisticService
     {
         $this->collection->updatePageHit($url, $user_id);
     }
-    
+
+    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
+        $this->collection->activeUsersSet->updateActive($sid, $ip, $lastActionUrl, $data);
+    }
+
     
     /**** DATA COLLECTION SAVE & RESTORE ****/
 

@@ -5,7 +5,7 @@ namespace Application\Model;
 class ActiveUsersSet
     extends BasicStatDataSet
 {    
-    private $activeUsersSet;
+    private $activeUsersSet = array();
     private $hashLeaseSid;
     private $hashTimeSid;
     private $guestsAllOver = 0;
@@ -22,6 +22,7 @@ class ActiveUsersSet
     }
     
     public function getActiveGuests(){
+        if($this->activeUsersSet !== null) return null;
         $result = 0;
         foreach ($this->activeUsersSet as $item)
         {
