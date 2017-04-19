@@ -64,12 +64,13 @@ class PageHitsSet
             array_push($list[$item->count], $item->url);
         }
         krsort($list);
-        foreach($list as $hits =>$item)
+        foreach($list as $hits => $item)
             foreach ($item as $url){
-                if($count == (int)$top)return $result;
+                if($count == (int)$top) return $result;
                 array_push($result, array('hits' => $hits, 'url' => $url));
                 $count++;
             }
+        if ((count($result) < $top) && (count($result) >= 1))return $result;
         return false;
     }
 

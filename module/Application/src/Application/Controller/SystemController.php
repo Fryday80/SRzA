@@ -4,13 +4,11 @@ namespace Application\Controller;
 
 use Application\Model\ActionsLog;
 use Application\Model\ActiveUser;
-use Application\Model\StatisticDataCollection;
 use Application\Model\SystemLog;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Album\Model\Album;
 
 class SystemController extends AbstractActionController
 {
@@ -29,7 +27,7 @@ class SystemController extends AbstractActionController
         $userStats = array(
             array("All Clicks"    => $statsService->getAllHits()),
             array("Aktive User"   => count( $statsService->getActiveUsers() )),
-            array("meistbesuchter Link"  => $statsService->getMostVisitedPages()[0]['url']),
+            array("meistbesuchter Link"  => $statsService->getMostVisitedPages()[0]['url'] . ' with ' .$statsService->getMostVisitedPages()[0]['hits']),
         );
         
         return new ViewModel(array(
@@ -52,16 +50,11 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
-//        var_dump($this->getRequest());
-//        var_dump($request);
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
-//                var_dump(json_encode($this->getDataStringFromDataSets( $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since))));
-//                die;
-//                var_dump($this->getDataStringFromDataSets( $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since)));
-                $result['actions'] = $this->getDataStringFromDataSets( $statsService->getActionsLogGetByIDAndTime($request->actionID, $request->since));
+                $result['actions'] = $this->getDataStringFromDataSets( $statsService->getActionsLogByIDAndTime($request->actionID, $request->since));
                 break;
         };
 

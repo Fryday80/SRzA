@@ -16,6 +16,7 @@ class Page
         $this->time = $time;
         $this->lastUserId = $lastUserId;
         $this->data = $data;
+        $this->count = 1;
     }
 
     public function update($time, $lastUserId){
