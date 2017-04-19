@@ -86,7 +86,8 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 
 // ************************************************************************************* QUICK LINKS
 $li = '';
-foreach ($quickLinks as $item) $li .= "<li>" . $item['string'] . "</li>";
+if($quickLinks !== null)
+    foreach ($quickLinks as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
@@ -98,6 +99,7 @@ foreach ($quickLinks as $item) $li .= "<li>" . $item['string'] . "</li>";
 <?php
 // ************************************************************************************* USER STATS
 $li = '';
+if($userStats !== null)
 foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
@@ -110,11 +112,12 @@ foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 <?php
 // ************************************************************************************* LIVE CLICKS
 $li = '';
-foreach ( $liveClicks as $item )
-    if($item !== null){
-        $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '" data-id="' . $item['id'] . '"';
-        $li .= "<li $liCss>" . $item['string'] . "</li>";
-    }
+if($liveClicks !== null)
+    foreach ( $liveClicks as $item )
+        if($item !== null){
+            $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '" data-id="' . $item['id'] . '"';
+            $li .= "<li $liCss>" . $item['string'] . "</li>";
+        }
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
@@ -126,9 +129,10 @@ foreach ( $liveClicks as $item )
 <?php
 // ************************************************************************************* ACTIVE USERS
 $li = '';
-foreach ( $activeUsers as $item )
-    if($item !== null)
-        $li .= '<li>' . $item['string'] . '</li>';
+if($activeUsers !== null)
+    foreach ( $activeUsers as $item )
+        if($item !== null)
+            $li .= '<li>' . $item['string'] . '</li>';
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
@@ -140,9 +144,10 @@ foreach ( $activeUsers as $item )
 <?php
 // ************************************************************************************* SYSTEM LOG
 $li = '@todo';
-foreach ( $activeUsers as $item )
-    if($item !== null)
-        $li .= '<li>' . $item['string'] . '</li>';
+if($activeUsers !== null)
+    foreach ( $activeUsers as $item )
+        if($item !== null)
+            $li .= '<li>' . $item['string'] . '</li>';
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>

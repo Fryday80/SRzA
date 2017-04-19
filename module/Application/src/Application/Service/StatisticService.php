@@ -45,7 +45,7 @@ class StatisticService
         $userId = ($a->getUserID() == "-1")? 0 : (int)$a->getUserID();
         $userName = $a->getUserName();
         $userName = ($userName == "") ? "Guest" : $userName;
-        $this->updateCollection($userId, $userName);
+        $this->updateActiveUserData($userId, $userName);
         $serverPHPData = $e->getApplication()->getRequest()->getServer()->toArray();
         $ajax = $e->getApplication()->getRequest()->isXmlHttpRequest();
         if($ajax) return ; //@todo check if its in blacklist
@@ -67,9 +67,11 @@ class StatisticService
 
         $activeUserData['data']['serverData'] = $serverPHPData;
         
-        $this->actionLog('site call', $lastUrl, 'regular call', $activeUserData);
-        $this->updatePageHit( $lastUrl, $now, $userId);
+        $this->updateActionsLog('site call', $lastUrl, 'regular call', $activeUserData);
+        $this->updatePageHit( $lastUrl);
         $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $lastUrl, $activeUserData);
+        $this->updateSystemLog('DUMMY', 'dummy', 'dummy data');
+
 
         $this->saveFile($this->collection);
     }
@@ -78,48 +80,73 @@ class StatisticService
 //        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
     }
     /**** METHODS ****/
-
-    public function getDataCollection(){
-        return $this->collection;
+    /**** SET ****/
+    /**** ACTIVE USERS ****/
+    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
+        $this->collection->updateActiveUsers($sid, $ip, $lastActionUrl, $data);
     }
-    public function getPageHitSet(){
-        return $this->collection->getPageHitSet();
+    public function getActiveGuests(){
+        return $this->collection->getActiveGuests();
     }
-    public function getActiveUsersSet(){
-        return $this->collection->getActiveUsersSet();
+    public function getGuestCount(){
+        return $this->collection->getGuestCount();
     }
-    public function getActionsLogSet(){
-        return $this->collection->getActionsLogSet();
-    }
-    public function getSystemLogSet(){
-        return $this->collection->getSystemLogSet();
-    }
-
     /**** ACTIONS LOG ****/
-    public function actionsLogGetByIDAndTime($last_id, $last_timestamp){
-        return $this->collection->actionsLogGetByIDAndTime($last_id, $last_timestamp);
-    }
-    
-    
-    public function actionLog($type, $title, $msg, $data){
+    public function updateActionsLog($type, $title, $msg, $data = null){
         $this->collection->updateActionsLog($type, $title, $msg, $data);
     }
-
-    public function updatePageHit($url, $user_id)
-    {
-        $this->collection->updatePageHit($url, $user_id);
+    /**** PAGE HITS ****/
+    public function updatePageHit($url, $data = null){
+        $this->collection->updatePageHit($url, $data);
+    }
+    /**** SYS LOG ****/
+    public function updateSystemLog($type, $msg, $data){
+        $this->collection->updateSystemLog($type, $msg, $data);
+    }
+    /**** GET ****/
+    /**** ACTIVE USERS ****/
+    public function getActiveUsers(){
+        return $this->collection->getActiveUsers();
+    }
+    /**** ACTIONS LOG ****/
+    public function getActionsLog($since = null){
+        return $this->collection->getActionsLog($since);
+    }
+    public function getActionsLogByIDAndTime($last_id, $last_timestamp){
+        return $this->collection->getActionsLogByIDAndTime($last_id, $last_timestamp);
+    }
+    /**** PAGE HITS ****/
+    public function getPageHits($since = null){
+        return $this->collection->getPageHits($since);
+    }
+    public function getByUrl($url){
+        return $this->collection->getByUrl($url);
+    }
+    public function getHitsByUrl($url){
+        return $this->collection->getHitsByUrl($url);
+    }
+    public function getAllHits(){
+        return $this->collection->getAllHits();
+    }
+    public function getMostVisitedPages($top = 1){
+        return $this->collection->getMostVisitedPages($top);
+    }
+    /**** SYS LOG ****/
+    public function getSysLog($since = null){
+        return $this->collection->getSysLog($since);
+    }
+    public function getSystemLogByType ($type, $since = null){
+        return $this->collection->getSystemLogByType ($type, $since);
+    }
+    public function getSystemLogByUser ($userId, $since = null){
+        return $this->collection->getSystemLogByUser ($userId, $since);
     }
 
-    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
-        $this->collection->activeUsersSet->updateActive($sid, $ip, $lastActionUrl, $data);
-    }
     /**** PRIVATE HELPER ****/
-    private function updateCollection($userId,$userName){
+    private function updateActiveUserData($userId,$userName){
         $this->collection->setUserId ($userId);
         $this->collection->setUserName ($userName);
     }
-
-    
     /**** DATA COLLECTION SAVE & RESTORE ****/
 
     private function saveFile($content) {

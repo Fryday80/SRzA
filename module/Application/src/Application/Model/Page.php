@@ -12,7 +12,7 @@ class Page
 
     function __construct($url, $time, $lastUserId, $data = null)
     {
-        $this->url;
+        $this->url = $url;
         $this->time = $time;
         $this->lastUserId = $lastUserId;
         $this->data = $data;

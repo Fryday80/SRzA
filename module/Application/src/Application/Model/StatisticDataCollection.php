@@ -21,32 +21,48 @@ class StatisticDataCollection
         /**** DATA SETS ****/
         $this->pageHitsSet    = new PageHitsSet();
         $this->activeUsersSet = new ActiveUsersSet();
-        $this->actionsLogSet   = new actionsLogSet();
+        $this->actionsLogSet  = new actionsLogSet();
         $this->systemLogSet   = new SystemLogSet();
     }
 
-    /**** PAGE HITS COUNTER ****/
-
-    /** Add page hit
-     * @param string $url
-     * @param int $time UNIX timestamp
-     * @param int $lastUserId
-     * @param null $data
-     */
-    public function updatePageHit($url, $data = null)    {
+    /**** SET ****/
+    /**** ACTIVE USERS ****/
+    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
+        $this->activeUsersSet->updateActiveUsers($sid, $ip, $lastActionUrl, $data);
+    }
+    public function getActiveGuests(){
+        return $this->activeUsersSet->getActiveGuests();
+    }
+    public function getGuestCount(){
+        return $this->activeUsersSet->getGuestCount();
+    }
+    /**** ACTIONS LOG ****/
+    public function updateActionsLog($type, $title, $msg, $data = null){
+        $this->actionsLogSet->updateActionsLog($type, $title, $msg, $data);
+    }
+    /**** PAGE HITS ****/
+    public function updatePageHit($url, $data = null){
         $this->pageHitsSet->updatePageHit($url, $data);
     }
-
-    public function getPageHitSet()    {
-        return $this->pageHitsSet;
+    /**** SYS LOG ****/
+    public function updateSystemLog($type, $msg, $data){
+        $this->systemLogSet->updateSystemLog($type, $msg, $data);
     }
-
-    /**
-     * @param int $since UNIX timestamp
-     * @return array array of Page objects
-     */
-    public function getAllPagesData($since = 0){
-        return $this->pageHitsSet->getAllPagesData($since);
+    /**** GET ****/
+    /**** ACTIVE USERS ****/
+    public function getActiveUsers(){
+        return $this->activeUsersSet->toArray();
+    }
+    /**** ACTIONS LOG ****/
+    public function getActionsLog($since = null){
+        return $this->actionsLogSet->toArray($since);
+    }
+    public function getActionsLogByIDAndTime($last_id, $last_timestamp){
+        return $this->actionsLogSet->getByIDAndTime($last_id, $last_timestamp);
+    }
+    /**** PAGE HITS ****/
+    public function getPageHits($since = null){
+        return $this->pageHitsSet->toArray($since);
     }
 
     public function getByUrl($url){
@@ -60,89 +76,20 @@ class StatisticDataCollection
     public function getAllHits(){
         return $this->pageHitsSet->getAllHits();
     }
-
-    /**** ACTIVE USERS ****/
-    /**
-     * @param $sid
-     * @param $ip
-     * @param $userId
-     * @param $lastActionUrl
-     * @param $time
-     * @param null $data
-     */
-    public function updateActive($sid, $ip, $lastActionUrl, $data = null){
-       $this->activeUsersSet->updateActive($sid, $ip, $this->userId(), $lastActionUrl, time(), $data);
+    public function getMostVisitedPages($top = 1){
+        return $this->pageHitsSet->getMostVisitedPages($top);
     }
-    
-    public function getActiveUsersSet(){
-        return $this->activeUsersSet;
+    /**** SYS LOG ****/
+    public function getSysLog($since = null){
+        return $this->systemLogSet->toArray($since);
     }
-
-    public function getActiveGuests(){
-        return $this->activeUsersSet->getActiveGuests();
-    }
-
-    public function getGuestCount(){
-        return $this->activeUsersSet->getGuestCount();
-    }
-
-    public function getActiveUsers()
-    {
-        return $this->activeUsersSet->getActiveUsers();
-    }
-
-    /**** ACTION LOG - CIRCULAR BUFFER ****/
-    /**
-     * @param $type string
-     * @param $title string
-     * @param $msg string
-     * @param $data mixed (serializable)
-     */
-    public function updateActionsLog($type, $title, $msg, $data) {
-        $this->actionsLogSet->updateActionsLog($type, $title, $msg, $data);
-    }
-
-    public function getActionsLogSet(){
-        return $this->actionsLogSet;
-    }
-
-    public function actionsLogToArray($since = null)
-    {
-        return $this->actionsLogSet->toArray($since);
-    }
-
-    public function actionsLogGetByIDAndTime($last_id, $last_timestamp)
-    {
-        return $this->actionsLogSet->getByIDAndTime($last_id, $last_timestamp);
-    }
-    
-    /**** SYSTEM LOG ****/
-    /**
-     * @param string $type
-     * @param string $msg
-     * @param int $userId
-     * @param mixed $data
-     */
-    public function updateSystemLog($type, $msg, $data){
-        $this->systemLogSet->updateSystemLog($type, $msg, $this->userId(), $data);
-    }
-
-    public function getSystemLogSet(){
-        return $this->systemLogSet;
-    }
-
-    public function getSystemLog ($since = null){
-        return $this->systemLogSet->getSystemLog ($since);
-    }
-
     public function getSystemLogByType ($type, $since = null){
         return $this->systemLogSet->getSystemLogByType ($type, $since);
     }
-
     public function getSystemLogByUser ($userId, $since = null){
         return $this->systemLogSet->getSystemLogByUser ($userId, $since);
     }
-
+    /**** ACTIVE USER SET ****/
     public function setUserId($id){
         if ($this->userId !== $id) {
             $this->userId = $id;

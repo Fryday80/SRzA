@@ -10,21 +10,18 @@ class SystemLogSet
     private $hashTimeId = array();
     private $hashTypeId = array();
     private $hashUserIdId = array();
-    
+
+    /**** SET ****/
     public function updateSystemLog($type, $msg, $data){
         $nextId = count($this->systemLogSet);
         $now = time();
         $user = $this->userId();
         $this->systemLogSet[$nextId] = new SystemLog( (int)$nextId, $type, (int)$now, $msg, (int)$user, $data );
-        if(!isset($this->hashTypeId[$type]))$this->hashTypeId[$type] = array();
-        array_push($this->hashTypeId[$type], $nextId);
-        if(!isset($this->hashTimeId[$now]))$this->hashTimeId[$now] = array();
-        array_push($this->hashTimeId[$now], $nextId);
-        if(!isset($this->hashUserIdId[$user]))$this->hashUserIdId[$user] = array();
-        array_push($this->hashUserIdId[$user], $nextId);
+        $this->hash($type, $nextId, $user, $now);
     }
 
-    public function getSystemLog ($since = null){
+    /**** GET ****/
+    public function toArray ($since = null){
         if ($since == null) return $this->fetchLogData();
         return $this->getSince($since);
     }
@@ -70,5 +67,15 @@ class SystemLogSet
             else break;
         }
         return $result;
+    }
+
+    private function hash($type, $nextId, $user, $now)
+    {
+        if(!isset($this->hashTypeId[$type]))$this->hashTypeId[$type] = array();
+        array_push($this->hashTypeId[$type], $nextId);
+        if(!isset($this->hashTimeId[$now]))$this->hashTimeId[$now] = array();
+        array_push($this->hashTimeId[$now], $nextId);
+        if(!isset($this->hashUserIdId[$user]))$this->hashUserIdId[$user] = array();
+        array_push($this->hashUserIdId[$user], $nextId);
     }
 }

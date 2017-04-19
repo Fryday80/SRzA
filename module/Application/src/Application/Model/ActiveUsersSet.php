@@ -11,7 +11,8 @@ class ActiveUsersSet
     private $guestsAllOver = 0;
     private $expireTime = 30*60; // UNIX timestamp based
 
-    public function updateActive($sid, $ip, $lastActionUrl, $data = null)
+    /**** SET ****/
+    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data = null)
     {
         $time = time();
         if ( key_exists($sid, $this->activeUsersSet) ) $this->update($sid, $ip, $lastActionUrl, $time, $data);
@@ -19,7 +20,18 @@ class ActiveUsersSet
         $this->addHashEntries($sid, $time);
         $this->deleteExpired($time);
     }
-    
+
+    /**** GET ****/
+    public function toArray()
+    {
+        if (!isset($this->hashTimeSid)) return null;
+        krsort($this->hashTimeSid);
+        $result = array();
+        foreach ($this->hashTimeSid as $sidArray) {
+            foreach ($sidArray as $sid) array_push($result, $this->activeUsersSet[$sid]);
+        }
+        return $result;
+    }
     public function getActiveGuests(){
         if($this->activeUsersSet !== null) return null;
         $result = 0;
@@ -29,20 +41,8 @@ class ActiveUsersSet
         }
         return $result;
     }
-    
     public function getGuestCount(){
         return $this->guestsAllOver;
-    }
-
-    public function getActiveUsers()
-    {
-        if (!isset($this->hashTimeSid)) return null;
-        krsort($this->hashTimeSid);
-        $result = array();
-        foreach ($this->hashTimeSid as $sidArray) {
-            foreach ($sidArray as $sid) array_push($result, $this->activeUsersSet[$sid]);
-        }
-        return $result;
     }
 
     /**** PRIVATE METHODS ****/

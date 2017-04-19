@@ -19,7 +19,6 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $statsService = $this->getServiceLocator()->get('StatisticService');
         /** @var  $dashboardData \Application\Model\StatisticDataCollection*/
-        $dashboardData = $statsService->getDataCollection();
         $quickLinks = array(
             array( "<a href='/'> Home</a>"),
             array( "<a href='/cms'> Content</a>"),
@@ -28,16 +27,16 @@ class SystemController extends AbstractActionController
             array( "<a href='/system/dashboard'> Dashboard Reload</a>"),
         );
         $userStats = array(
-            array("All Clicks"    => $dashboardData->getAllHits()),
-            array("Aktive User"   => count( $dashboardData->activeUsersSet->getActiveUsers() )),
-            array("Data"  => "you want"),
+            array("All Clicks"    => $statsService->getAllHits()),
+            array("Aktive User"   => count( $statsService->getActiveUsers() )),
+            array("meistbesuchter Link"  => $statsService->getMostVisitedPages()[0]['url']),
         );
         
         return new ViewModel(array(
             'quickLinks'  => $this->getDataStringFromDataSets( $quickLinks ),
-            'liveClicks'  => $this->getDataStringFromDataSets( $dashboardData->actionsLogToArray() ),
-            'activeUsers' => $this->getDataStringFromDataSets( $dashboardData->getActiveUsers() ),
-            'sysLog'      => $this->getDataStringFromDataSets( $dashboardData->getSystemLog() ),
+            'liveClicks'  => $this->getDataStringFromDataSets( $statsService->getActionsLog() ),
+            'activeUsers' => $this->getDataStringFromDataSets( $statsService->getActiveUsers() ),
+            'sysLog'      => $this->getDataStringFromDataSets( $statsService->getSysLog() ),
             'userStats'   => $this->getDataStringFromDataSets( $userStats ),
         ));
     }
@@ -62,7 +61,7 @@ class SystemController extends AbstractActionController
 //                var_dump(json_encode($this->getDataStringFromDataSets( $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since))));
 //                die;
 //                var_dump($this->getDataStringFromDataSets( $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since)));
-                $result['actions'] = $this->getDataStringFromDataSets( $statsService->actionsLogGetByIDAndTime($request->actionID, $request->since));
+                $result['actions'] = $this->getDataStringFromDataSets( $statsService->getActionsLogGetByIDAndTime($request->actionID, $request->since));
                 break;
         };
 
@@ -74,7 +73,6 @@ class SystemController extends AbstractActionController
         $insideString = '';
         $time = 0;
         $id = 0;
-        bdump($data);
         if (!is_array($data)) return null;
         if ($data == null) return null;
         if ($data[0] instanceof ActionsLog){
@@ -102,11 +100,8 @@ class SystemController extends AbstractActionController
             foreach ($data as $item)
                 if ($item !== null) {
                     $insideString = '';
-                    $time = $item->time;
-                    $id = $item->actionID;
-                    $insideString .= $item->actionType . '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
-                        $item->msg . '<b> of </b>' . $item->title . '<b> from </b>' . $item->data['userName'];
-                    array_push($result, array("string" => $insideString, "time" => $time, "id" => $id));
+                    $insideString .= '';
+                    array_push($result, array("string" => $insideString));
                 }
         return $result;
         }
