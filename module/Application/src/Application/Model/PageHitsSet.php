@@ -13,12 +13,9 @@ class PageHitsSet
     {
         $rUrl = $this->getRelativeURL($url);
         $key = array_search($rUrl, $this->hashKeyUrl);
-
-        if ($key) $this->update($key, $data);
+        if ($key !== false) $this->update($key, $data);
         else $this->create($rUrl, $data);
         $this->allPageHits++;
-        bdump(array_search($rUrl, $this->hashKeyUrl));
-        bdump($this->hashKeyUrl);
     }
 
     /**
