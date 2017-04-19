@@ -43,10 +43,6 @@ class ActionsLogSet
     public function getByIDAndTime($last_id, $last_timestamp)
     {
         $newData = $this->getSince($last_timestamp);
-        /**
-         * @var  $key
-         * @var  $actionItem ActionsLog
-         */
         foreach ( $newData as $key => $actionItem )
         {
             if ( ( $actionItem->actionID == $last_id ) )unset ( $newData[$key] );
@@ -55,10 +51,6 @@ class ActionsLogSet
     }
 
     /**** PRIVATE METHODS ****/
-
-    private function result(){
-        $this->actionsLogSet = array_reverse( $this->buffer->toArray() );
-    }
     /**
      * @param $since int
      * @return array
@@ -74,5 +66,9 @@ class ActionsLogSet
             $i++;
         }
         return $newDataSet;
+    }
+
+    private function result(){
+        return $this->actionsLogSet = array_reverse( $this->buffer->toArray() );
     }
 }

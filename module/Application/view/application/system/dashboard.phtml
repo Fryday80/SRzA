@@ -9,6 +9,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 <style>
     .new {
         background-color: #58bf83;
+        background-color: rgba(88, 191, 131, 0.63);
     }
     .dashboard
     {
@@ -147,19 +148,21 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
     })
     //script for live ticks
     function loadLive(e) {
-        $('.new').removeClass('new');
-        console.log('update');
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
-            //wenns nen error giebt wird fail getriggert nicht done
         });
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;// JSON.parse(e);
             actions.reverse();
+            if(!(actions.length == 0))
+            {
+                $('.new').removeClass('new');
+            }
             for(let i = 0; i < actions.length; i++) {
-                let Hours = Date(actions[i].time).getHours();
-                let Minutes = "0" + Date(actions[i].time).getMinutes();
-                let actionsTime = Hours + Minutes.substr(-2);
+                let DateStamp = new Date(actions[i].time*1000)
+                let Hours = "0" + DateStamp.getHours();
+                let Minutes = "0" + DateStamp.getMinutes();
+                let actionsTime = Hours.substr(-2) + Minutes.substr(-2);
                 $('#dashLiveList').prepend("<li class='entry new' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
                     actions[i].actionType +
                     ' @ ' + actionsTime + ': ' +
@@ -169,7 +172,6 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
                 let actionID = ele.data('id');
-                console.log(actionID);
                 livereload(since, actionID);
             }, 4500);
         });
