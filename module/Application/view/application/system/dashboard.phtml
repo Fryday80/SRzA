@@ -154,11 +154,8 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
             //wenns nen error giebt wird fail getriggert nicht done
         });
         e.done(function(e, textStatus, jqXHR) {
-            //des hier triggert aber schon oder??glaub nicht... da war ich am schauen
-            //dann schau gleich beim richtigen
-            console.log(e);
-            let actions = JSON.parse(e.actions);
-//            actions.reverse();
+            let actions = e.actions;// JSON.parse(e);
+            actions.reverse();
             for(let i = 0; i < actions.length; i++) {
                 let Hours = Date(actions[i].time).getHours();
                 let Minutes = "0" + Date(actions[i].time).getMinutes();
