@@ -67,15 +67,16 @@ class StatisticService
         $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
         $activeUserData['sid'] = $a->session->getManager()->getId();
-        $activeUserData['user_id'] = $userId;
+        $activeUserData['userId'] = $userId;
+        $activeUserData['userName'] = $userName;
         $activeUserData['data'] = array();
-        $activeUserData['last_action_url'] = $serverPHPData['REQUEST_URI'];
+        $lastUrl = $activeUserData['last_action_url'] = ($serverPHPData['REQUEST_URI'] == '/') ? '/Home' : $serverPHPData['REQUEST_URI'];
 
         $activeUserData['data']['serverData'] = $serverPHPData;
         
-        $this->actionLog('site call', 'onDispatch', 'regular call', $activeUserData);
-        $this->updatePageHit( $serverPHPData['REQUEST_URI'], $now, $activeUserData['user_id']);
-        $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $activeUserData['last_action_url'], $activeUserData);
+        $this->actionLog('site call', $lastUrl, 'regular call', $activeUserData);
+        $this->updatePageHit( $lastUrl, $now, $userId);
+        $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $lastUrl, $activeUserData);
 
         $this->saveFile($this->collection);
     }

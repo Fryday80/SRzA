@@ -101,15 +101,17 @@ foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
 // ************************************************************************************* LIVE CLICKS
 $inside = '';
 $set = $dashboardData->actionsLogToArray();
+$i =0;
 /** @var  $item \Application\Model\ActionsLog*/
 foreach ( $set as $item )
     if($item !== null) {
         $inside .=
             '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
             $item->actionType .
-            ' @ ' . date('H:i d.m.Y', $item->time) . ': ' .
-            $item->title . ': ' .
+            '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
             $item->msg .
+            '<b> of </b>' . $item->title .
+            '<b> from </b>' . $item->data['userName'] .
             '</li>';
     }
 ?>
@@ -125,9 +127,7 @@ foreach ( $set as $item )
 $inside = '';
 $set = $dashboardData->getActiveUsers();
 /** @var  $item \Application\Model\ActiveUser*/
-bdump($item);
 foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i', $item->time) . "</li>";
-bdump($set);
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
@@ -164,11 +164,10 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
                 let DateStamp = new Date(actions[i].time*1000)
                 let Hours = "0" + DateStamp.getHours();
                 let Minutes = "0" + DateStamp.getMinutes();
-                let actionsTime = Hours.substr(-2) + Minutes.substr(-2);
+                let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
                 $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
-                    actions[i].actionType +
-                    ' @ ' + actionsTime + ': ' +
-                    actions[i].title + ': ' + actions[i].msg + "</li>");
+                    actions[i].actionType + '<b> @ </b>' + actionsTime + '<b>: </b>' +
+                    + actions[i].msg + '<b> of </b>' + actions[i].title + '<b> from </b>' + actions[i].data.userName + "</li>");
             }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');
