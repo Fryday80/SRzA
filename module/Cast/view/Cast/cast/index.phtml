@@ -8,15 +8,15 @@
             <br>
             <p>Tross</p>
             <ul class="tross">
-                <?php for($i = 0; $i < 5; $i++): ?>
+                <?php foreach($chars as $char): ?>
                     <li>
-                        <a href="/<?php echo $this->chars[$i]['id']; ?>">
+                        <a href="/<?php echo $char['id']; ?>">
                             <div class="box small">
-                                <?php echo $this->CharProfile()->small($this->chars[$i]); ?>
+                                <?php echo $this->CharProfile()->small($char); ?>
                             </div>
                         </a>
                     </li>
-                <?php endfor; ?>
+                <?php endforeach; ?>
             </ul>
             <div style="clear: left"></div>
         </div>
