@@ -70,7 +70,9 @@ class StatisticService
         $this->updateActionsLog('site call', $lastUrl, 'regular call', $activeUserData);
         $this->updatePageHit( $lastUrl);
         $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $lastUrl, $activeUserData);
-        $this->updateSystemLog('DUMMY', 'dummy', 'dummy data');
+        // for testing:
+        if (( 5 > $this->getNumberOfLogs() ))
+            $this->updateSystemLog('DUMMY', 'dummy', 'dummy data');
 
 
         $this->saveFile($this->collection);
@@ -102,6 +104,9 @@ class StatisticService
     /**** SYS LOG ****/
     public function updateSystemLog($type, $msg, $data){
         $this->collection->updateSystemLog($type, $msg, $data);
+    }
+    public function getNumberOfLogs(){
+        return $this->collection->getNumberOfLogs();
     }
     /**** GET ****/
     /**** ACTIVE USERS ****/

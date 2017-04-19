@@ -143,9 +143,9 @@ if($activeUsers !== null)
 
 <?php
 // ************************************************************************************* SYSTEM LOG
-$li = '@todo';
-if($activeUsers !== null)
-    foreach ( $activeUsers as $item )
+$li = '';
+if($sysLog !== null)
+    foreach ( $sysLog as $item )
         if($item !== null)
             $li .= '<li>' . $item['string'] . '</li>';
 ?>

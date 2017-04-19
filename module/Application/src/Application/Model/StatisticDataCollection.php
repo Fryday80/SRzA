@@ -89,6 +89,9 @@ class StatisticDataCollection
     public function getSystemLogByUser ($userId, $since = null){
         return $this->systemLogSet->getSystemLogByUser ($userId, $since);
     }
+    public function getNumberOfLogs(){
+        return $this->systemLogSet->getNumberOfLogs();
+    }
     /**** ACTIVE USER SET ****/
     public function setUserId($id){
         if ($this->userId !== $id) {

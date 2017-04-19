@@ -12,10 +12,12 @@ use Zend\View\Model\ViewModel;
 
 class SystemController extends AbstractActionController
 {
+    /** @var  $statsService StatisticService */
+    private $statsService;
+
     public function dashboardAction()
     {
-        /** @var  $statsService StatisticService */
-        $statsService = $this->getServiceLocator()->get('StatisticService');
+        $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
         /** @var  $dashboardData \Application\Model\StatisticDataCollection*/
         $quickLinks = array(
             array( "<a href='/'> Home</a>"),
@@ -48,7 +50,7 @@ class SystemController extends AbstractActionController
     }
     public function jsonAction() {
         /** @var  $statsService StatisticService */
-        $statsService = $this->getServiceLocator()->get('StatisticService');
+        $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
         switch ($request->method) {
@@ -69,6 +71,7 @@ class SystemController extends AbstractActionController
         if (!is_array($data)) return null;
         if ($data == null) return null;
         if ($data[0] instanceof ActionsLog){
+            /** @var  $item ActionsLog*/
             foreach ($data as $item)
                 if ($item !== null) {
                     $insideString = '';
@@ -81,6 +84,7 @@ class SystemController extends AbstractActionController
         return $result;
         }
         if ($data[0] instanceof ActiveUser){
+            /** @var  $item ActiveUser*/
             foreach ($data as $item)
                 if ($item !== null) {
                     $insideString = '';
@@ -90,10 +94,12 @@ class SystemController extends AbstractActionController
         return $result;
         }
         if ($data[0] instanceof SystemLog){
+            $count = $this->statsService->getNumberOfLogs();
+            /** @var  $item SystemLog*/
             foreach ($data as $item)
                 if ($item !== null) {
                     $insideString = '';
-                    $insideString .= '';
+                    $insideString .= "<li>$item->msg total count $count</li>";
                     array_push($result, array("string" => $insideString));
                 }
         return $result;

@@ -39,6 +39,9 @@ class SystemLogSet
         else $newData = $this->getSince($since);
         return $this->getByKey($userId, $newData, $this->hashUserIdId);
     }
+    public function getNumberOfLogs(){
+        return count($this->systemLogSet);
+    }
 
     /**** PRIVATE METHODS ****/
     private function fetchLogData(){
