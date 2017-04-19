@@ -22,6 +22,9 @@ class SystemController extends AbstractActionController
         $dashboardData = $statsService->getDataCollection();
         $quickLinks = array(
             array( "<a href='/'> Home</a>"),
+            array( "<a href='/cms'> Content</a>"),
+            array( "<a href='/media/filebrowser'> File Browser</a>"),
+            array( "<a href='/nav/sort'> Navigation</a>"),
             array( "<a href='/system/dashboard'> Dashboard Reload</a>"),
         );
         $userStats = array(
@@ -110,23 +113,24 @@ class SystemController extends AbstractActionController
         else {
             $insideString = "<table>";
             $td = "<td style='width:15%'>";
-            $space = "<td style='width:2%'>&nbsp</td>";
-            $i = 0;
+            $space = "<td style='width:2%'> | </td>";
+            $i = 1;
+            $c = 0;
             foreach ($data as $value)
                 if ($value !== null)
                     foreach ($value as $k => $v) {
                         $insideString .= ($i == 0) ? "<tr>" : "";
                         if (is_int($k)) {
                             $insideString .= "$td $v</td>";
-                            $c = 6;
+                            $c = 4;
                         }
                         else {
                             $insideString .= "$td<b>$k:</b></td>$td$v</td>";
                             $c = 3;
                         }
-                        $insideString .= ($i == ($c-1)) ? "</tr>" : "$space";
+                        $insideString .= ($i == $c) ? "</tr>" : "$space";
                         $i++;
-                        $i = ($i == $c) ? 0 : $i;
+                        $i = ($i == ($c+1)) ? 0 : $i;
                     }
             $insideString .= "</table>";
             array_push($result, array("string" => $insideString, "time" => $time, "id" => $id));
