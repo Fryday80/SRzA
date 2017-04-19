@@ -7,9 +7,13 @@ $dashboardData = $dashboardData; //cleanfix easier to code
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
 <style>
-    .new {
-        background-color: #58bf83;
-        background-color: rgba(88, 191, 131, 0.63);
+    @keyframes newOne {
+        from {
+            box-shadow: inset 0px 0px 2vw 0px rgba(16, 120, 0, 0.65);
+        }
+        to {
+            box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+        }
     }
     .dashboard
     {
@@ -35,6 +39,8 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         list-style: none;
     }
     .dash-list li {
+        animation-name: newOne;
+        animation-duration: 4s;
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
     }
     .dashboard
@@ -152,18 +158,14 @@ foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
             console.log(jqXHR, textStatus, errorThrown);
         });
         e.done(function(e, textStatus, jqXHR) {
-            let actions = e.actions;// JSON.parse(e);
+            let actions = e.actions;
             actions.reverse();
-            if(!(actions.length == 0))
-            {
-                $('.new').removeClass('new');
-            }
             for(let i = 0; i < actions.length; i++) {
                 let DateStamp = new Date(actions[i].time*1000)
                 let Hours = "0" + DateStamp.getHours();
                 let Minutes = "0" + DateStamp.getMinutes();
                 let actionsTime = Hours.substr(-2) + Minutes.substr(-2);
-                $('#dashLiveList').prepend("<li class='entry new' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
+                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
                     actions[i].actionType +
                     ' @ ' + actionsTime + ': ' +
                     actions[i].title + ': ' + actions[i].msg + "</li>");
