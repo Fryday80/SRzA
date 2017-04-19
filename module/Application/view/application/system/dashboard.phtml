@@ -1,8 +1,6 @@
 <?php
     $title = 'Dashboard';
     $this->headTitle($title);
-/** @var  $dashboardData \Application\Model\StatisticDataCollection*/
-$dashboardData = $dashboardData; //cleanfix easier to code
 
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
@@ -86,88 +84,94 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 
 <?php
 
+// ************************************************************************************* QUICK LINKS
+$li = '';
+foreach ($quickLinks as $item) $li .= "<li>" . $item['string'] . "</li>";
+?>
+<box class = 'dashboard dashboard-left'>
+    <boxtitel>
+        <span class='own_text_small'>Quick Links</span>
+    </boxtitel>
+    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
+</box>
+
+<?php
 // ************************************************************************************* USER STATS
-$inside = '';
-foreach ($userStats as $stat) $inside .= "<li>$stat[0]: $stat[1]</li>";
+$li = '';
+foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
         <span class='own_text_small'>User Statistics</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
 </box>
 
 <?php
 // ************************************************************************************* LIVE CLICKS
-$inside = '';
-$set = $dashboardData->actionsLogToArray();
-$i =0;
-/** @var  $item \Application\Model\ActionsLog*/
-foreach ( $set as $item )
-    if($item !== null) {
-        $inside .=
-            '<li class="entry basicdata" data-timestamp="' . $item->time . '" data-id="' . $item->actionID . '">' .
-            $item->actionType .
-            '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
-            $item->msg .
-            '<b> of </b>' . $item->title .
-            '<b> from </b>' . $item->data['userName'] .
-            '</li>';
+$li = '';
+foreach ( $liveClicks as $item )
+    if($item !== null){
+        $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '" data-id="' . $item['id'] . '"';
+        $li .= "<li $liCss>" . $item['string'] . "</li>";
     }
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
         <span class='own_text_small'>Live Clicks</span>
     </boxtitel>
-    <boxcontent><ul id="dashLiveList" class="dash-list"><?php echo $inside ?></ul></boxcontent>
+    <boxcontent><ul id="dashLiveList" class="dash-list"><?php echo $li ?></ul></boxcontent>
 </box>
 
 <?php
 // ************************************************************************************* ACTIVE USERS
-$inside = '';
-$set = $dashboardData->getActiveUsers();
-/** @var  $item \Application\Model\ActiveUser*/
-foreach ($set as $item) $inside .= "<li>$item->userName: $item->lastActionUrl @ " . date('H:i', $item->time) . "</li>";
+$li = '';
+foreach ( $activeUsers as $item )
+    if($item !== null)
+        $li .= '<li>' . $item['string'] . '</li>';
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
         <span class='own_text_small'>Active Users</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
 </box>
 
 <?php
 // ************************************************************************************* SYSTEM LOG
-$inside = '';
-foreach ($userStats as $stat) $inside .= "<p>Sys: log</p>";
+$li = '@todo';
+foreach ( $activeUsers as $item )
+    if($item !== null)
+        $li .= '<li>' . $item['string'] . '</li>';
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
         <span class='own_text_small'>System Log</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $inside ?></ul></boxcontent>
+    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
 </box>
 
 <script type="text/javascript">
-    $("[data-timestamp]").each(function() {
-        //convert time to nice string and push in ele.html
-    })
     //script for live ticks
     function loadLive(e) {
+
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         });
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
-            actions.reverse();
-            for(let i = 0; i < actions.length; i++) {
-                let DateStamp = new Date(actions[i].time*1000)
-                let Hours = "0" + DateStamp.getHours();
-                let Minutes = "0" + DateStamp.getMinutes();
-                let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
-                $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].actionID + "'>" +
-                    actions[i].actionType + '<b> @ </b>' + actionsTime + '<b>: </b>' +
-                    + actions[i].msg + '<b> of </b>' + actions[i].title + '<b> from </b>' + actions[i].data.userName + "</li>");
+            console.log(actions);
+            if (actions !== null) {;
+                actions.reverse();
+
+                for (let i = 0; i < actions.length; i++) {
+                    //                let DateStamp = new Date(actions[i].time*1000)
+                    //                let Hours = "0" + DateStamp.getHours();
+                    //                let Minutes = "0" + DateStamp.getMinutes();
+                    //                let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
+                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].id + "'>" +
+                        actions[i].string + "</li>");
+                }
             }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');

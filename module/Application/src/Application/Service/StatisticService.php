@@ -8,9 +8,6 @@
 
 namespace Application\Service;
 
-use Application\Model\ActionsLogSet;
-use Application\Model\ActiveUsersSet;
-use Application\Model\PageHitsSet;
 use Application\Model\StatisticDataCollection;
 use Auth\Service\AccessService;
 use Zend\Mvc\MvcEvent;
@@ -26,11 +23,6 @@ class StatisticService
     
     /** VARS */
     private $sm;
-    /** @var  $cache CacheService */
-    private $cache;
-    
-    /** OPTIONS */
-    private $keepUserActiveFor = 30*60;
 
     function __construct($sm)
     {
@@ -60,9 +52,10 @@ class StatisticService
         $now = time();
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
-        $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
-        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
-        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
+//        $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
+//        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
+//        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
+        
         // active users data
         $activeUserData['time'] = $now;
         $activeUserData['ip'] = $e->getApplication()->getRequest()->getServer('REMOTE_ADDR');
