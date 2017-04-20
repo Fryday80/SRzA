@@ -1,0 +1,25 @@
+<?php
+
+$title = 'Private Profile';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+ <?php
+// $form->setAttribute('action', $this->url('user/edit', array('id' => $this->id)));
+$userForm->prepare();
+ echo $this->form($userForm);
+ ?>
+
+<box>
+    <boxheader>Characters</boxheader>
+    <boxcontent>
+        <ul>
+            <?php foreach ($characters as $character): ?>
+                <li><?php echo $character['name'] ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <hr>
+        <?php echo $this->form($charForm); ?>
+    </boxcontent>
+</box>

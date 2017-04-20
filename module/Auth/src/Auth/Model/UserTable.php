@@ -92,6 +92,12 @@ class UserTable extends AbstractTableGateway
         //@todo remove characters from cast
     }
 
+    /**
+     * @param array $where
+     * @param array $columns
+     * @return ResultSetInterface
+     * @throws \Exception
+     */
     public function getUsersWhere($where = array(), $columns = array())
     {
         try {

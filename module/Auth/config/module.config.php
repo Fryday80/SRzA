@@ -4,11 +4,12 @@ namespace Auth;
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Auth\Controller\User' => 'Auth\Controller\UserController',
-            'Auth\Controller\Auth' => 'Auth\Controller\AuthController',
-            'Auth\Controller\Role' => 'Auth\Controller\RoleController',
-            'Auth\Controller\Permission' => 'Auth\Controller\PermissionController',
-            'Auth\Controller\Resource' => 'Auth\Controller\ResourceController'
+            'Auth\Controller\User'          => 'Auth\Controller\UserController',
+            'Auth\Controller\Auth'          => 'Auth\Controller\AuthController',
+            'Auth\Controller\Role'          => 'Auth\Controller\RoleController',
+            'Auth\Controller\Permission'    => 'Auth\Controller\PermissionController',
+            'Auth\Controller\Resource'      => 'Auth\Controller\ResourceController',
+            'Auth\Controller\Profile'       => 'Auth\Controller\ProfileController'
         )
     ),
     'view_manager' => array(
@@ -255,6 +256,19 @@ return array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
                         'action' => 'reset'
+                    )
+                )
+            ),
+            'profile' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/profile[/][/:username]',
+                    'constraints' => array(
+                        'username' => '[a-zA-Z][a-zA-Z0-9_-]+'
+                    ),
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Profile',
+                        'action' => 'index',
                     )
                 )
             ),
