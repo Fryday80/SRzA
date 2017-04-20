@@ -53,6 +53,7 @@ class CharacterController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/characters');
         }
+        /** @var CharacterTable $charTable */
         $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
         if (!$character = $charTable->getById($id)) {
             return $this->redirect()->toRoute('castmanager/characters');
@@ -60,6 +61,13 @@ class CharacterController extends AbstractActionController
         $form = $this->createCharacterForm();
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
+
+        $possibleGuardians = $charTable->getByFamilyId($character['family_id']);
+        $possibleSupervisors = $charTable->getByFamilyId($character['tross_id']);
+
+        $form->setPossibleGuardians($possibleGuardians);
+        $form->setPossibleSupervisors($possibleSupervisors);
+
         $form->populateValues($character);
         $form->setAttribute('action', '/castmanager/characters/edit/' . $id);
 

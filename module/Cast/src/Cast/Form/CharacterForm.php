@@ -8,6 +8,8 @@ class CharacterForm extends Form
     public $userList = array();
     public $familyList = array();
     public $jobs = array();
+    public $guardians = array();
+    public $supervisors = array();
 
     public function __construct(Array $users, Array $families, Array $jobs)
     {
@@ -144,13 +146,30 @@ class CharacterForm extends Form
         }
         return $selectData;
     }
-
+    public function setPossibleGuardians($guardians) {
+        $this->guardians = $guardians;
+        $this->get('guardian_id')->setValueOptions($this->getGuardianForSelect());
+    }
+    public function setPossibleSupervisors($supervisors) {
+        $this->supervisors = $supervisors;
+        $this->get('supervisor_id')->setValueOptions($this->getSupervisorForSelect());
+    }
     private function getGuardianForSelect() {
-        return [0 => 'keiner'];
+        $selectData = array();
+        $selectData[0] = 'keiner';
+        foreach ($this->guardians as $guardian) {
+            $selectData[$guardian['id']] = $guardian['name'];
+        }
+        return $selectData;
     }
 
     private function getSupervisorForSelect() {
-        return [0 => 'keiner'];
+        $selectData = array();
+        $selectData[0] = 'keiner';
+        foreach ($this->supervisors as $supervisor) {
+            $selectData[$supervisor['id']] = $supervisor['name'];
+        }
+        return $selectData;
     }
 
 }
