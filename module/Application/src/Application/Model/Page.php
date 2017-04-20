@@ -2,26 +2,24 @@
 namespace Application\Model;
 
 
-class Page
-{
-    public $url;
-    public $lastUserId;
-    public $time;
-    public $count;
-    public $data;
+use Application\Model\BasicModels\StatsDataItem;
 
-    function __construct($url, $time, $lastUserId, $data = null)
+class Page
+    extends StatsDataItem
+{
+    public $count;
+    
+    function __construct($itemId, $url, $time, $userId, $data = null)
     {
-        $this->url = $url;
-        $this->time = $time;
-        $this->lastUserId = $lastUserId;
-        $this->data = $data;
+        parent::__construct($itemId, $url, $time, $userId, $data);
         $this->count = 1;
     }
 
-    public function update($time, $lastUserId){
+    public function update($time, $lastUserId, $data = null)
+    {
         $this->time = $time;
-        $this->lastUserId = $lastUserId;
+        $this->userId = $lastUserId;
+        $this->data = $data;
         $this->count++;
     }
 }

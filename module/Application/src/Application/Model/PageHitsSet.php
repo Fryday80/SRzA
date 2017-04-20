@@ -2,42 +2,40 @@
 namespace Application\Model;
 
 
+use Application\Model\BasicModels\StatDataSetBasic;
+
 class PageHitsSet
-    extends BasicStatDataSet
+    extends StatDataSetBasic
 {
-    private $pageHitsSet = array();
     private $allPageHits = 0;
     private $hashKeyUrl = array();
-
-    public function updatePageHit($url, $data = null)
+    
+    public function updateItem($data)
     {
-        $rUrl = $this->getRelativeURL($url);
-        $key = array_search($rUrl, $this->hashKeyUrl);
-        if ($key !== false) $this->update($key, $data);
-        else $this->create($rUrl, $data);
         $this->allPageHits++;
-    }
-
-    /**
-     * @param int $since UNIX timestamp
-     * @return array array of Page objects
-     */
-    public function toArray($since = 0)
-    {
-        if((int)$since == 0) return $this->pageHitsSet;
-        $result = array();
-        foreach ($this->pageHitsSet as $key => $item)
-        {
-            if($item->time > $since) array_push($result, $item);
+        if ($this->newBuild) {
+            $this->create( $data );
+            bdump('init catch');
+            return true;
         }
-        return $result;
+        $hash = $this->getHashTableByKey('url');
+        bdump($hash);
+        $key = (key_exists($data['url'], $hash)) ? $hash[$data['url']] : null;
+        if ($key !== null) $this->update($key, $data);
+        else $this->create($data);
+        bdump($this->data);
+        return true;
     }
 
+    public function toArray($since = 0){
+        if ($since == 0) parent::toArray();
+        return $this->getSince($since);
+    }
     public function getByUrl($url)
     {
         $rUrl = $this->getRelativeURL($url);
         $key = array_search($rUrl, $this->hashKeyUrl);
-        return $this->pageHitsSet[$key];
+        return $this->data[$key];
     }
 
     public function getHitsByUrl($url)
@@ -59,7 +57,7 @@ class PageHitsSet
         $list = array();
         $count = 0;
         /** @var  $item Page*/
-        foreach ($this->pageHitsSet as $item){
+        foreach ($this->data as $item){
             if (!isset($list[$item->count])) $list[$item->count] = array();
             array_push($list[$item->count], $item->url);
         }
@@ -75,18 +73,31 @@ class PageHitsSet
     }
 
     /**** PRIVATE METHODS ****/
-    private function update($key, $data = null)
+    private function update($key, $data)
     {
-        $this->pageHitsSet[$key]->update(time(), $this->userId(), $data);
+        $this->data[(int)$key]->update($data['time'], $data['userId'], $data['data']);
     }
-
-    private function create($url, $data = null)
+    protected function create($data)
     {
-        $nextKey = count($this->hashKeyUrl);
-        $this->hashKeyUrl[$nextKey] = $url;
-        $this->pageHitsSet[$nextKey] = new Page($url, time(), $this->userId(), $data);
+        $new = $this->creator($data);
+        if ($new !== null){
+            $this->data[$this->nextId] = $new;
+            $this->setHashOfNewItem($this->nextId);
+            $this->nextId++;
+            $this->newBuild = false;
+        }
     }
-
+    protected function creator($createData)
+    {
+        if (!$createData) return NULL;
+        $url = $time = $userId = false;
+        $itemData = null;
+        foreach ($createData as $key => $value)
+            $$key = $value;
+        if (!($url && $time && $userId))return null;
+        return new Page($this->nextId, $url, $time, $userId, $itemData);
+    }
+    
     private function getRelativeURL($url)
     {
         $relativeUrl = str_replace(array("http://", $_SERVER['HTTP_HOST']),"",$url);

@@ -12,11 +12,12 @@ class SystemLogSet
     private $hashUserIdId = array();
 
     /**** SET ****/
-    public function updateSystemLog($type, $msg, $data){
+    public function updateSystemLog($type, $msg, $data = null){
         $nextId = count($this->systemLogSet);
         $now = time();
         $user = $this->userId();
         $this->systemLogSet[$nextId] = new SystemLog( (int)$nextId, $type, (int)$now, $msg, (int)$user, $data );
+        bdump($this->systemLogSet[$nextId]);
         $this->hash($type, $nextId, $user, $now);
     }
 

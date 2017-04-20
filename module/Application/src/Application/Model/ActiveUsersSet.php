@@ -12,13 +12,17 @@ class ActiveUsersSet
     private $expireTime = 30*60; // UNIX timestamp based
 
     /**** SET ****/
-    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data = null)
+    public function updateItem($data)
     {
-        $time = time();
-        if ( key_exists($sid, $this->activeUsersSet) ) $this->update($sid, $ip, $lastActionUrl, $time, $data);
-        else $this->create($sid, $ip, $lastActionUrl, $time, $data);
-        $this->addHashEntries($sid, $time);
-        $this->deleteExpired($time);
+        if ($this->newBuild) {
+            $this->create( $data );
+            bdump('init catch');
+            return true;
+        }
+        if ( key_exists($data['sid'], $this->activeUsersSet) ) $this->update($data);
+        else $this->create($data);
+        $this->addHashEntries($data['sid'], $data['time']);
+        $this->deleteExpired($data['time']);
     }
 
     /**** GET ****/
@@ -54,10 +58,14 @@ class ActiveUsersSet
         $this->activeUsersSet[$sid]->update($ip, $this->userId(), $this->userName(), $lastActionUrl, $time, $data);
     }
 
-    private function create($sid, $ip, $lastActionUrl, $time, $data = null)
+    private function create($createData)
     {
-        if ($this->userId() == 0)$this->guestsAllOver++;
-        $this->activeUsersSet[$sid] = new ActiveUser($this->expireTime, $sid, $ip, $this->userId(), $this->userName(), $lastActionUrl, $time, $data);
+        $itemId = $url = $userId = $time = $sid = $ip = $userName = $expireTime = false;
+        $data = null;
+        foreach ($createData as $key => $value)
+            $$key = $value;
+        if ($userId == 0)$this->guestsAllOver++;
+        $this->activeUsersSet[$sid] = new ActiveUser($itemId, $url, $userId, $time, $sid, $ip, $userName, $expireTime, $data);
     }
 
     private function addHashEntries ($sid, $time){

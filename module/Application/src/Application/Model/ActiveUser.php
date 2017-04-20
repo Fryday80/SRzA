@@ -4,43 +4,36 @@ namespace Application\Model;
 
 
 // structure:  table: system_log ( sid [string], ip [string], user_id [int], last_action_url[string], time [bigint], data [string|array|object] )
+use Application\Model\BasicModels\StatsDataItem;
+
 class ActiveUser
+    extends StatsDataItem
 {
     public $sid;
     public $ip;
-    public $userId;
     public $userName;
-    public $lastActionUrl;
-    public $time;
-    public $data;
     public $expireTime;
     public $expires;
 
-    function __construct($expireTime, $sid, $ip, $userId, $userName, $lastActionUrl, $time, $data = null)
+    /** userId used as itemId */
+    function __construct($itemId, $url, $userId, $time, $sid, $ip, $userName, $expireTime, $data = null)
     {
+        parent::__construct($userId, $url, $time, $userId, $data );
         $this->expireTime = $expireTime;
         $this->sid = $sid;
         $this->ip = $ip;
-        $this->userId = $userId;
         $this->userName = $userName;
-        $this->lastActionUrl = $lastActionUrl;
-        $this->time = $time;
-        $this->data = $data;
         $this->expires = $time+$expireTime;
     }
 
-    public function update($ip, $userId, $userName, $lastActionUrl, $time, $data = null)
+    public function update($ip, $userId, $userName, $url, $time, $data = null)
     {
         $this->ip = $ip;
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->lastActionUrl = $lastActionUrl;
+        $this->url = $url;
         $this->time = $time;
         $this->data = $data;
         $this->expires = $time+$this->expireTime;
-    }
-
-    public function setExpireTime($exp){
-        $this->expires = $exp;
     }
 }

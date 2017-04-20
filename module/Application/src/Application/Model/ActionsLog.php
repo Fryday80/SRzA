@@ -2,26 +2,28 @@
 namespace Application\Model;
 
 
+use Application\Model\BasicModels\StatsDataItem;
+
 class ActionsLog
+    extends StatsDataItem
 {
-    public $actionType; //string wie  loadPage, SystemLog, PageError ....
+    public $itemId;
+    public $url;
+    public $userId;
+    public $time;
+    public $data;
+
+    public $actionType;
     public $title;
     public $msg;
-    public $data;
-    public $time; // bei loadPage die url, bei SystemLog die log msg ....
-    public $userID;
-    public $actionID;
 
-    function __construct( $actionType, $title, $msg, $time, $userID, $data = null )
+    function __construct( $itemId, $url, $time, $userId, $actionType, $title, $msg,  $data = null )
     {
-        $this->actionID = uniqid();
+        parent::__construct( $itemId, $url, $time, $userId, $data );
 
         $this->actionType = $actionType;
         $this->title = $title;
         $this->msg = $msg;
-        $this->time = $time;
-        $this->userID = $userID;
-        $this->data = $data;
     }
 
 }
