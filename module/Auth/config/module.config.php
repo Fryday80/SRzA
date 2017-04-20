@@ -271,6 +271,21 @@ return array(
                         'action' => 'index',
                     )
                 )
+//                child??
+//                    'json' => array(
+//                        'type' => 'Segment',
+//                        'options' => array(
+//                            'route' => '/json',
+//                            'constraints' => array(),
+//                            'defaults' => array(
+//                                'action' => 'json'
+//                            )
+//                        )
+//                    ),
+
+
+
+
             ),
         )
     )

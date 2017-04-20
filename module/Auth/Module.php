@@ -1,6 +1,7 @@
 <?php
 namespace Auth;
 
+use Application\Service\StatisticService;
 use Auth\Model\User;
 use Auth\Model\UserTable;
 use Auth\Model\RoleTable;
@@ -51,6 +52,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $serviceManager     = $e->getApplication()->getServiceManager();
         /** @var AccessService $accessService */
         $accessService      = $serviceManager->get('AccessService');
+        /** @var StatisticService $statsService */
+        $statsService      = $serviceManager->get('StatisticService');
         $request            = $e->getRequest();
         $clientIP           = $request->getServer('REMOTE_ADDR');
         $target             = $e->getTarget();
@@ -68,8 +71,16 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         }
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
-                $flashmessanger->addMessage($request->getUriString(), 'referer', 1);
-                return $target->redirect()->toUrl('/login');
+                //@todo log to stats
+//                $statsService->getSysLog()
+                if ($request->isXmlHttpRequest()) {
+                    $e->getResponse()->setStatusCode(403);
+                    echo json_encode(['error' => true, 'message' => 'Not Allowed', 'code' => 403]);
+                    die;
+                } else {
+                    $flashmessanger->addMessage($request->getUriString(), 'referer', 1);
+                    return $target->redirect()->toUrl('/login');
+                }
             }
         }
         AbstractHelper::setDefaultAcl($accessService->getAcl());
