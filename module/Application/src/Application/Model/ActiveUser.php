@@ -11,7 +11,6 @@ class ActiveUser
 {
     public $sid;
     public $ip;
-    public $userName;
     public $expireDuration;
     public $expires;
 
@@ -22,7 +21,6 @@ class ActiveUser
         $this->expireDuration = $expireDuration;
         $this->sid = $sid;
         $this->ip = $ip;
-        $this->userName = $userName;
         $this->expires = $time+$expireDuration;
     }
 

@@ -12,18 +12,10 @@ class StatisticDataCollection
     {
         parent::__construct(); // will be overridden but otherwise the IDE claims it missing
         /**** DATA SETS ****/
-//        $this->pageHitsSet    =
-            $sets['pageHits']    =
-                new PageHitsSet();
-//        $this->activeUsersSet =
-            $sets['activeUsers'] =
-                new ActiveUsersSet();
-//        $this->actionsLogSet  =
-            $sets['actionsLog'] =
-                new actionsLogSet();
-//        $this->systemLogSet   =
-            $sets['sysLog'] =
-                new SystemLogSet();
+            $sets['pageHits']    = new PageHitsSet();
+            $sets['activeUsers'] = new ActiveUsersSet();
+            $sets['actionsLog']  = new actionsLogSet();
+            $sets['sysLog']      = new SystemLogSet();
         foreach($sets as $key => $set)
             $this->realData[$key] = array(
                 "SET" => $set,

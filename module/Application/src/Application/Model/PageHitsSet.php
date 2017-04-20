@@ -15,20 +15,17 @@ class PageHitsSet
         $this->allPageHits++;
         if ($this->newBuild) {
             $this->create( $data );
-            bdump('init catch');
             return true;
         }
         $hash = $this->getHashTableByKey('url');
-        bdump($hash);
         $key = (key_exists($data['url'], $hash)) ? $hash[$data['url']] : null;
         if ($key !== null) $this->update($key, $data);
         else $this->create($data);
-        bdump($this->data);
         return true;
     }
 
     public function toArray($since = 0){
-        if ($since == 0) parent::toArray();
+        if ($since == 0) return $this->data;
         return $this->getSince($since);
     }
     public function getByUrl($url)

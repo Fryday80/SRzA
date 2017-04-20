@@ -71,7 +71,7 @@ class StatisticService
     public function onError(MvcEvent $e) {
         /** @var \Exception $exception */
         $exception = $e->getResult()->exception;
-        $this->updateSystemLog("ROUTING", $exception->getMessage(), $e->getApplication()->getRequest()->getServer('REMOTE_ADDR'));
+        $this->updateSystemLog($e->getApplication()->getRequest()->getServer('REMOTE_ADDR'), time(), "ROUTING", $exception->getMessage(), 'test id', 'testuser' );
         $this->saveFile($this->collection);
     }
     public function onFinish()
@@ -94,10 +94,10 @@ class StatisticService
     private function updateActiveUsers($url, $userId, $now, $sid, $ip, $userName, $data = null){
         $this->collection->updateActiveUsers( array(
             'url' => $url,
-            'expireDu' => $userId,
             'time' => $now,
             'sid' => $sid,
             'ip' => $ip,
+            'userId' => $userId,
             'userName' => $userName,
             'data' => $data
         ) );

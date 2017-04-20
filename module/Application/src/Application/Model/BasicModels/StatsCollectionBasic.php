@@ -16,13 +16,6 @@ class StatsCollectionBasic
     protected $activeSet;
     protected $data;
     protected $hash;
-
-    function __construct()
-    {
-        /** @var StatDataSetBasic $std */
-        $std = new StatDataSetBasic();
-        $this->realData = array( "std" => array( "SET" => $std, "hash" => $std->getHashTables() ));
-    }
     
     public function getData($setName, $since = 0){
         $this->fetchDataSet($setName);
@@ -43,7 +36,7 @@ class StatsCollectionBasic
         $this->data = $this->activeSet->toArray();
         $this->hash = $this->realData[$setName]['hash'];
     }
-    protected function toArray(){
+    public function toArray(){
         return $this->data;
     }
     protected function getItemById($id){

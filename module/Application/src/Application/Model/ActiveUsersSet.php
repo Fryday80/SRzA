@@ -16,7 +16,7 @@ class ActiveUsersSet
         $data['expireDuration'] = $this->expireDuration;
         if ($this->newBuild) {
             $this->create( $data );
-            bdump('init catch');
+            $this->newBuild = false;
             return true;
         }
         if ( key_exists($data['sid'], $this->data) ) $this->update($data);
@@ -26,6 +26,14 @@ class ActiveUsersSet
     }
 
     /**** GET ****/
+    public function toArray()
+    {
+        $res = array();
+        foreach ($this->data as $item)
+            array_push($res, $item);
+        return $res;
+    }
+
     public function getActiveGuests(){
         if($this->data == null) return null;
         $result = 0;
