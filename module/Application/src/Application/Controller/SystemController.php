@@ -69,7 +69,7 @@ class SystemController extends AbstractActionController
         $time = 0;
         $id = 0;
         if (!is_array($data)) return null;
-        if ($data == null) return null;
+        if (! isset( $data[0] ) ) return null;
         if ($data[0] instanceof ActionsLog){
             /** @var  $item ActionsLog*/
             foreach ($data as $item)

@@ -33,9 +33,9 @@ class PageHitsSet
     }
     public function getByUrl($url)
     {
-        $rUrl = $this->getRelativeURL($url);
-        $key = array_search($rUrl, $this->hashKeyUrl);
-        return $this->data[$key];
+        $res = array();
+        $hash = $this->getHashTableByKey($url);
+        return $this->data[$hash[0]];
     }
 
     public function getHitsByUrl($url)

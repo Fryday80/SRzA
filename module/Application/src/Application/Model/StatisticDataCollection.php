@@ -7,14 +7,6 @@ use Application\Model\BasicModels\StatsCollectionBasic;
 class StatisticDataCollection
     extends StatsCollectionBasic
 {
-//    /** @var $pageHits pageHitsSet */
-//    private $pageHitsSet;
-    /** @var  $activeUsers ActiveUsersSet */
-    private $activeUsersSet;
-//    /** @var  $actionsLogSet actionsLogSet */
-//    private $actionsLogSet;
-    /** @var $systemLogSet SystemLogSet  */
-    private $systemLogSet;
     
     function __construct()
     {
@@ -66,52 +58,61 @@ class StatisticDataCollection
     /**** GET ****/
     /**** ACTIVE USERS ****/
     public function getActiveUsers(){
-        return $this->activeUsersSet->toArray();
+        $this->fetchDataSet('activeUsers');
+        return $this->activeSet->toArray();
     }
     public function getActiveGuests(){
-        return $this->activeUsersSet->getActiveGuests();
+        $this->fetchDataSet('activeUsers');
+        return $this->activeSet->getActiveGuests();
     }
     public function getGuestCount(){
-        return $this->activeUsersSet->getGuestCount();
+        $this->fetchDataSet('activeUsers');
+        return $this->activeSet->getGuestCount();
     }
     /**** ACTIONS LOG ****/
     public function getActionsLog($since = null){
-        return $this->actionsLogSet->toArray($since);
+        return $this->activeSet->toArray($since);
     }
     public function getActionsLogByIDAndTime($last_id, $last_timestamp){
-        return $this->actionsLogSet->getByIDAndTime($last_id, $last_timestamp);
+        $this->fetchDataSet('actionsLog');
+        return $this->activeSet->getByIDAndTime($last_id, $last_timestamp);
     }
     /**** PAGE HITS ****/
     public function getPageHits($since = null){
-        return $this->pageHitsSet->toArray($since);
+        $this->fetchDataSet('pageHits');
+        return $this->activeSet->toArray($since);
     }
 
     public function getByUrl($url){
-        return $this->pageHitsSet->getByUrl($url);
+        $this->fetchDataSet('pageHits');
+        return $this->activeSet->getByUrl($url);
     }
 
     public function getHitsByUrl($url){
-        return $this->pageHitsSet->getHitsByUrl($url);
+        $this->fetchDataSet('pageHits');
+        return $this->activeSet->getHitsByUrl($url);
     }
 
     public function getAllHits(){
-        return $this->pageHitsSet->getAllHits();
+        $this->fetchDataSet('pageHits');
+        return $this->activeSet->getAllHits();
     }
-    public function getMostVisitedPages($top = 1){
-        return $this->pageHitsSet->getMostVisitedPages($top);
+    public function getMostVisitedPages($top){
+        $this->fetchDataSet('pageHits');
+        return $this->activeSet->getMostVisitedPages($top);
     }
     /**** SYS LOG ****/
     public function getSysLog($since = null){
-        return $this->systemLogSet->toArray($since);
+        return $this->activeSet->toArray($since);
     }
     public function getSystemLogByType ($type, $since = null){
-        return $this->systemLogSet->getSystemLogByType ($type, $since);
+        return $this->activeSet->getSystemLogByType ($type, $since);
     }
     public function getSystemLogByUser ($userId, $since = null){
-        return $this->systemLogSet->getSystemLogByUser ($userId, $since);
+        return $this->activeSet->getSystemLogByUser ($userId, $since);
     }
     public function getNumberOfLogs(){
-        return $this->systemLogSet->getNumberOfLogs();
+        return $this->activeSet->getNumberOfLogs();
     }
 
     /**

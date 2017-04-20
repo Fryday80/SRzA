@@ -26,18 +26,8 @@ class ActiveUsersSet
     }
 
     /**** GET ****/
-    public function toArray()
-    {
-        if (!isset($this->hashTimeSid)) return null;
-        krsort($this->hashTimeSid);
-        $result = array();
-        foreach ($this->hashTimeSid as $sidArray) {
-            foreach ($sidArray as $sid) array_push($result, $this->data[$sid]);
-        }
-        return $result;
-    }
     public function getActiveGuests(){
-        if($this->data !== null) return null;
+        if($this->data == null) return null;
         $result = 0;
         foreach ($this->data as $item)
         {
