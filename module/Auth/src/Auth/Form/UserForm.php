@@ -65,16 +65,18 @@ class UserForm extends Form
             array(
                 'priority' => 2, // Increase value to move to top of form
             ));
-        $this->add(array(
-            'name' => 'status',
-            'type' => 'checkbox',
-            'options' => array(
-                'label' => 'Aktiv',
+        if ($roles) {
+            $this->add(array(
+                'name' => 'status',
+                'type' => 'checkbox',
+                'options' => array(
+                    'label' => 'Aktiv',
                 ),
             ),
-            array(
-                'priority' => 11, // Increase value to move to top of form
-            ));
+                array(
+                    'priority' => 11, // Increase value to move to top of form
+                ));
+        }
         if ($roles) {
             $this->add(array(
                 'name' => 'role_id',

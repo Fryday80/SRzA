@@ -259,6 +259,17 @@ return array(
                     )
                 )
             ),
+            'profileJson' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/profileJson',
+                    'constraints' => array(),
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Profile',
+                        'action' => 'json',
+                    )
+                )
+            ),
             'profile' => array(
                 'type' => 'Segment',
                 'options' => array(
@@ -271,21 +282,6 @@ return array(
                         'action' => 'index',
                     )
                 )
-//                child??
-//                    'json' => array(
-//                        'type' => 'Segment',
-//                        'options' => array(
-//                            'route' => '/json',
-//                            'constraints' => array(),
-//                            'defaults' => array(
-//                                'action' => 'json'
-//                            )
-//                        )
-//                    ),
-
-
-
-
             ),
         )
     )
