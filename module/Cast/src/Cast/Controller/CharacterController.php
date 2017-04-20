@@ -3,9 +3,13 @@ namespace Cast\Controller;
 
 use Auth\Model\UserTable;
 use Cast\Form\CharacterForm;
+use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
+use Cast\Model\JobTable;
 use Cast\Utility\CharacterDataTable;
+use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class CharacterController extends AbstractActionController
@@ -16,12 +20,13 @@ class CharacterController extends AbstractActionController
         $famTable = new CharacterDataTable();
         $famTable->setData($families);
         $famTable->setButtons('all');
-        $famTable->insertLinkButton('/castmanager/characters/add', 'add new familiy');
+        $famTable->insertLinkButton('/castmanager/characters/add', 'neuer Charakter');
         $famTable->insertLinkButton('/castmanager', 'Zurück');
         return new ViewModel(array(
             'families' => $famTable,
         ));
     }
+
     public function addAction() {
         $form = $this->createCharacterForm();
         $form->get('submit')->setValue('add');
@@ -33,7 +38,7 @@ class CharacterController extends AbstractActionController
             if ($form->isValid()) {
                 $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
                 $data = $form->getData();
-                $charTable ->add($data);
+                $charTable->add($data);
                 return $this->redirect()->toRoute('castmanager/characters');
             }
         }
@@ -41,6 +46,7 @@ class CharacterController extends AbstractActionController
             'form' => $form
         );
     }
+
     public function editAction(){
         $request = $this->getRequest();
         $id = (int) $this->params()->fromRoute('id', null);
@@ -93,6 +99,36 @@ class CharacterController extends AbstractActionController
             'family' => $familyTable->getById($id)
         );
     }
+    function jsonAction() {
+        /** @var CharacterTable $charTable */
+        $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
+        $request = json_decode($this->getRequest()->getContent());
+        $result = ['error' => false];
+        try {
+            switch ($request->method) {
+                case 'getPossibleSupervisors':
+                    if (!isset($request->familyID) ) {
+                        $result['data'] = false;
+                    } else {
+                        $result['data'] = $charTable->getByFamilyId($request->familyID);
+                    }
+                    break;
+                case 'getPossibleGuardians':
+                    if (!isset($request->familyID) ) {
+                        $result['data'] = false;
+                    } else {
+                        $result['data'] = $charTable->getByFamilyId($request->familyID);
+                    }
+                    break;
+            };
+        } catch (Exception $e) {
+            $result['error'] = true;
+            $result['message'] = $e->getMessage();
+        }
+
+        //output
+        return new JsonModel($result);
+    }
     private function createCharacterForm() {
         /** @var FamiliesTable $familyTable */
         $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
@@ -100,6 +136,9 @@ class CharacterController extends AbstractActionController
         /** @var UserTable $userTable */
         $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
         $users = $userTable->getUsers()->toArray();
-        return new CharacterForm($users, $families);
+        /** @var JobTable $jobTable */
+        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
+        $jobs = $jobTable->getAll();
+        return new CharacterForm($users, $families, $jobs);
     }
 }

@@ -8,7 +8,7 @@ $this->headTitle($title);
  <p>Are you sure that you want to delete '<?php echo $this->escapeHtml($family['name']); ?>' ?
  </p>
  <?php
- $url = $this->url('castmanager/families/delete', array('id'=>$id));
+ $url = $this->url('castmanager/characters/delete', array('id'=>$id));
  ?>
  <form action="<?php echo $url; ?>" method="post">
  <div>

@@ -15,7 +15,7 @@ class JobTable extends AbstractTableGateway
         $this->initialize();
     }
 
-    public function getAll () {
+    public function getAll() {
         $row = $this->select();
         if (!$row)
             return false;

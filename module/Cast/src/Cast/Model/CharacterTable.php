@@ -32,6 +32,28 @@ class CharacterTable extends AbstractTableGateway
         return $row->toArray()[0];
     }
 
+    public function getByUserId($id) {
+        $row = $this->select(array('user_id' => (int) $id));
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
+
+    public function getByTrossId($id) {
+        $row = $this->select(array('tross_id' => (int) $id));
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
+    public function getByFamilyId($id) {
+        $row = $this->select(array('family_id' => (int) $id));
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
     /**
      * returns all characters and there jobs, families and so on
      */
@@ -88,7 +110,9 @@ class CharacterTable extends AbstractTableGateway
 
     }
     public function add($data) {
-        if (!$this->insert(array('id' => $data['id'])))
+        unset($data['id']);
+        unset($data['submit']);
+        if (!$this->insert($data) )
             return false;
         return $this->getLastInsertValue();
     }

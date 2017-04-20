@@ -152,6 +152,16 @@ return array(
                          ),
 
                          'child_routes' => array(
+                             'json' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route' => '/json',
+                                     'constraints' => array(),
+                                     'defaults' => array(
+                                         'action' => 'json'
+                                     )
+                                 )
+                             ),
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(

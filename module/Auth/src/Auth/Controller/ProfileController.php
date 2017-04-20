@@ -5,6 +5,7 @@ use Auth\Form\ProfileCharacterForm;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
 use Cast\Model\CharacterTable;
+use vakata\database\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\UserForm;
 use Auth\Model\User;
@@ -26,7 +27,12 @@ class ProfileController extends AbstractActionController
         $username = ($username)? $username: $accessService->getUserName();
         /** @var User $user */
         $user = $userTable->getUsersWhere(array('name' => $username))->current();
+        if (!$user) {
+            throw Exception("todo");
+            //@todo redirect to user list
+        }
         $characters = $characterTable->getByUserId($user->id);
+        bdump($user);
         bdump($characters);
         $viewModel->setVariable('user', $user);
         $viewModel->setVariable('characters', $characters);
