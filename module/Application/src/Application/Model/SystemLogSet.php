@@ -3,22 +3,17 @@ namespace Application\Model;
 
 
 
+use Application\Model\BasicModels\StatDataSetBasic;
+
 class SystemLogSet
-    extends BasicStatDataSet
+    extends StatDataSetBasic
 {    
-    private $systemLogSet = array();
-    private $hashTimeId = array();
-    private $hashTypeId = array();
-    private $hashUserIdId = array();
 
     /**** SET ****/
-    public function updateSystemLog($type, $msg, $data = null){
-        $nextId = count($this->systemLogSet);
-        $now = time();
-        $user = $this->userId();
-        $this->systemLogSet[$nextId] = new SystemLog( (int)$nextId, $type, (int)$now, $msg, (int)$user, $data );
-        bdump($this->systemLogSet[$nextId]);
-        $this->hash($type, $nextId, $user, $now);
+    public function updateSystemLog($data){
+        $id = $this->nextId;
+        $this->systemLogSet[$id] = $this->create($data);
+        $this->setHashOfNewItem($id);
     }
 
     /**** GET ****/
@@ -27,6 +22,7 @@ class SystemLogSet
         return $this->getSince($since);
     }
 
+    //@todo
     public function getSystemLogByType ($type, $since = null)
     {
         if ($since !== null) $newData = $this->fetchLogData();
@@ -34,6 +30,7 @@ class SystemLogSet
         return $this->getByKey($type, $newData, $this->hashTypeId);
     }
 
+    //@todo
     public function getSystemLogByUser ($userId, $since = null)
     {
         if ($since !== null) $newData = $this->fetchLogData();
@@ -41,14 +38,16 @@ class SystemLogSet
         return $this->getByKey($userId, $newData, $this->hashUserIdId);
     }
     public function getNumberOfLogs(){
-        return count($this->systemLogSet);
+        return count($this->data);
     }
 
     /**** PRIVATE METHODS ****/
+    //@todo
     private function fetchLogData(){
         return array_reverse($this->systemLogSet);
     }
 
+    //@todo
     private function getByKey($key, $data, $hashTable)
     {
         $result = array();
@@ -60,26 +59,24 @@ class SystemLogSet
         return $result;
     }
 
-    private function getSince($since)
+    protected function getSince($since)
     {
-        krsort($this->hashTimeId);
+        $newData = $this->fetchLogData();
         $result = array();
-        foreach($this->hashTimeId as $time => $idArray){
-            if ($time > $since) {
-                foreach ($idArray as $key => $id) array_push($result, $this->systemLogSet[$id]);
+        foreach($newData as $item){
+            if ($item->time > $since) {
+                array_push($result, $item);
             }
             else break;
         }
         return $result;
     }
-
-    private function hash($type, $nextId, $user, $now)
-    {
-        if(!isset($this->hashTypeId[$type]))$this->hashTypeId[$type] = array();
-        array_push($this->hashTypeId[$type], $nextId);
-        if(!isset($this->hashTimeId[$now]))$this->hashTimeId[$now] = array();
-        array_push($this->hashTimeId[$now], $nextId);
-        if(!isset($this->hashUserIdId[$user]))$this->hashUserIdId[$user] = array();
-        array_push($this->hashUserIdId[$user], $nextId);
+    private function create($createData){
+        $url = $time = $type = $msg = $userId = $userName = false;
+        $data = null;
+        foreach ($createData as $key => $value)
+            $$key = $value;
+        if ($url && $time && $type && $msg && $userId && $userName)return null;
+        return new SystemLog( $this->nextId(), $url, $time, $type, $msg, $userId, $userName, $data );
     }
 }

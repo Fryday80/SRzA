@@ -126,9 +126,16 @@ class StatisticService
         ) );
     }
     /**** SYS LOG ****/
-    private function updateSystemLog($type, $msg, $url, $data = null){
-        $this->updateActionsLog('Error', $url, $msg, $data);
-        $this->collection->updateSystemLog($type, $msg, $data);
+    private function updateSystemLog( $url, $time, $type, $msg, $userId, $userName, $data = null ){
+        $this->collection->updateSystemLog( array(
+            'url' => $url, 
+            'time' => $time,
+            'type' => $type,
+            'msg' => $msg,
+            'userId' => $userId,
+            'userName' => $userName,
+            'data' => $data
+        ) );
     }
 
 

@@ -23,14 +23,14 @@ class StatisticDataCollection
 //        $this->pageHitsSet    =
             $sets['pageHits']    =
                 new PageHitsSet();
-        $this->activeUsersSet =
+//        $this->activeUsersSet =
             $sets['activeUsers'] =
                 new ActiveUsersSet();
 //        $this->actionsLogSet  =
             $sets['actionsLog'] =
                 new actionsLogSet();
-        $this->systemLogSet   =
-//            $sets['sysLogSet'] =
+//        $this->systemLogSet   =
+            $sets['sysLog'] =
                 new SystemLogSet();
         foreach($sets as $key => $set)
             $this->realData[$key] = array(
@@ -52,19 +52,17 @@ class StatisticDataCollection
     public function updateActiveUsers( $data ){
         $this->updateItemOf( 'activeUsers', $data );
     }
+    /**** SYS LOG ****/
+    public function updateSystemLog( $data ){
+        $this->updateItemOf( 'sysLog', $data );
+    }
 
-
+    /**** SET ****/
     private function updateItemOf($setName, $data){
         $this->fetchDataSet($setName);
         $this->activeSet->updateItem($data);
     }
-    
-    
-    /**** SET ****/
-    /**** SYS LOG ****/
-    public function updateSystemLog($type, $msg, $data = null){
-        $this->systemLogSet->updateSystemLog($type, $msg, $data);
-    }
+
     /**** GET ****/
     /**** ACTIVE USERS ****/
     public function getActiveUsers(){

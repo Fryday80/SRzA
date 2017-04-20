@@ -65,4 +65,9 @@ class StatDataSetBasic
             foreach ($hashtable as $key => $itemId)
                 if ($itemId == $id) unset ($this->hash['hashtables'][$tkey][$key]);
     }
+    protected function nextId(){
+        $next = $this->nextId;
+        $this->nextId++;
+        return (int)$next;
+    }
 }

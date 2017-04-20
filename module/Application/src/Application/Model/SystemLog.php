@@ -3,27 +3,18 @@
 namespace Application\Model;
 
 
-class SystemLog
-{
-    private $id;
-    public $type;
-    public $time;
-    public $msg;
-    public $userId;
-    public $data;
-    
-    function __construct($id, $type, $time, $msg, $userId, $data)
-    {
-        $this->id = $id;
-        $this->type = $type;
-        $this->time = $time;
-        $this->msg = $msg;
-        $this->userId = $userId;
-        $this->data = $data;
-    }
-    
-    public function getId(){
-        return $this->id;
-    }
+use Application\Model\BasicModels\StatsDataItem;
 
+class SystemLog
+    extends StatsDataItem
+{
+    public $type;
+    public $msg;
+
+    function __construct( $itemId, $url, $time, $type, $msg, $userId, $userName, $data = null)
+    {
+        parent::__construct($itemId, $url, $time, $userId, $userName, $data);
+        $this->type = $type;
+        $this->msg = $msg;
+    }
 }
