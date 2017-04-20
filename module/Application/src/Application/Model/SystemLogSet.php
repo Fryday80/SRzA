@@ -12,7 +12,7 @@ class SystemLogSet
     /**** SET ****/
     public function updateSystemLog($data){
         $id = $this->nextId;
-        $this->systemLogSet[$id] = $this->create($data);
+        $this->data[$id] = $this->create($data);
         $this->setHashOfNewItem($id);
     }
 
@@ -44,7 +44,7 @@ class SystemLogSet
     /**** PRIVATE METHODS ****/
     //@todo
     private function fetchLogData(){
-        return array_reverse($this->systemLogSet);
+        return array_reverse($this->data);
     }
 
     //@todo

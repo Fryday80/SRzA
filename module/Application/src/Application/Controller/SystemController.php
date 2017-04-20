@@ -30,7 +30,6 @@ class SystemController extends AbstractActionController
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
             array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]['url'] . ' with ' .$this->statsService->getMostVisitedPages()[0]['hits']),
         );
-        bdump( $this->statsService->getActionsLog());
         return new ViewModel(array(
             'quickLinks'  => $this->getDataStringFromDataSets( $quickLinks ),
             'liveClicks'  => $this->getDataStringFromDataSets( $this->statsService->getActionsLog() ),
@@ -68,26 +67,21 @@ class SystemController extends AbstractActionController
         $time = 0;
         $id = 0;
         if (!is_array($data)) return null;
-        $i=0;
-        foreach ($data as $key => $item){
-            $i = $key;
-            break;
-        }
-        if (! isset( $data[$i] ) ) return null;
-        if ($data[$i] instanceof ActionsLog){
+        if (! isset( $data[0] ) ) return null;
+        if ($data[0] instanceof ActionsLog){
+            bdump(($data[0] instanceof ActionsLog));
+            bdump($data);
             /** @var  $item ActionsLog*/
             foreach ($data as $item)
                 if ($item !== null) {
                     $insideString = '';
-                    $time = $item->time;
-                    $id = $item->actionID;
                     $insideString .= $item->actionType . '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
                         $item->msg . '<b> of </b>' . $item->title . '<b> from </b>' . $item->data['userName'];
-                    array_push($result, array("string" => $insideString, "time" => $time, "id" => $id));
+                    array_push($result, array("string" => $insideString, "time" => $item->time, "id" =>  $item->itemId));
                 }
         return $result;
         }
-        if ($data[$i] instanceof ActiveUser){
+        if ($data[0] instanceof ActiveUser){
             /** @var  $item ActiveUser*/
             foreach ($data as $item)
                 if ($item !== null) {
@@ -97,7 +91,7 @@ class SystemController extends AbstractActionController
                 }
         return $result;
         }
-        if ($data[$i] instanceof SystemLog){
+        if ($data[0] instanceof SystemLog){
             $count = $this->statsService->getNumberOfLogs();
             /** @var  $item SystemLog*/
             foreach ($data as $item)

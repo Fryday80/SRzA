@@ -49,7 +49,8 @@ class StatisticService
         $userName = ($userName == "") ? "Guest" : $userName;
         $sid = $a->session->getManager()->getId();
         $url = $activeUserData['last_action_url'] = ($serverPHPData['REQUEST_URI'] == '/') ? '/Home' : $serverPHPData['REQUEST_URI'];
-        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
+        if( $e->getApplication()->getRequest()->isXmlHttpRequest() ) return ; //@todo
+//        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
@@ -206,7 +207,7 @@ class StatisticService
         if ($ajax) {
             // @todo whitelist
             $whitelist = array('/');
-            if (in_array($url, $whitelist)) return true;
+            if (in_array($url, $whitelist)) return false;
         }
         return false;
     }

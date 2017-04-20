@@ -7,7 +7,7 @@ class StatDataSetBasic
     public $newBuild = true;
     protected $nextId =1;
     protected $data = array();
-    protected $hash = array( 'nextId' => 1, 'list' => array(), 'hashTables' => array() );
+    protected $hash = array( 'nextId' => 1, 'list' => array(), 'hashTables' => array('bsp'=>'bsp') );
 
     public function toArray(){
         return $this->data;

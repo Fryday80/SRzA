@@ -32,6 +32,7 @@ class ActionsLogSet
     public function getByIDAndTime($last_id, $last_timestamp)
     {
         $newData = $this->getSince($last_timestamp);
+        bdump($newData);
         /**
          * @var  $key
          * @var  ActionsLog $item

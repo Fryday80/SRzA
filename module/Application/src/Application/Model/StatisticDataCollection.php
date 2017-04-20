@@ -2,15 +2,16 @@
 namespace Application\Model;
 
 
-use Application\Model\BasicModels\StatsCollectionBasic;
-
 class StatisticDataCollection
-    extends StatsCollectionBasic
 {
+    public $realData;
+    /** @var  $activeSet StatDataSetBasic */
+    protected $activeSet;
+    protected $data;
+    protected $hash;
     
     function __construct()
     {
-        parent::__construct(); // will be overridden but otherwise the IDE claims it missing
         /**** DATA SETS ****/
             $sets['pageHits']    = new PageHitsSet();
             $sets['activeUsers'] = new ActiveUsersSet();
@@ -63,6 +64,7 @@ class StatisticDataCollection
     }
     /**** ACTIONS LOG ****/
     public function getActionsLog($since = null){
+        $this->fetchDataSet('actionsLog');
         return $this->activeSet->toArray($since);
     }
     public function getActionsLogByIDAndTime($last_id, $last_timestamp){
@@ -95,15 +97,19 @@ class StatisticDataCollection
     }
     /**** SYS LOG ****/
     public function getSysLog($since = null){
+        $this->fetchDataSet('sysLog');
         return $this->activeSet->toArray($since);
     }
     public function getSystemLogByType ($type, $since = null){
+        $this->fetchDataSet('sysLog');
         return $this->activeSet->getSystemLogByType ($type, $since);
     }
     public function getSystemLogByUser ($userId, $since = null){
+        $this->fetchDataSet('sysLog');
         return $this->activeSet->getSystemLogByUser ($userId, $since);
     }
     public function getNumberOfLogs(){
+        $this->fetchDataSet('sysLog');
         return $this->activeSet->getNumberOfLogs();
     }
 
@@ -163,6 +169,51 @@ class StatisticDataCollection
     }
     private function isDataSet($set){
         if (! isset ($this->$set))return null;
+    }
+    public function getData($setName, $since = 0){
+        $this->fetchDataSet($setName);
+        if ($since == 0) return $this->data;
+        return $this->getSince($since);
+    }
+    public function getDataById ($setName, $id){
+        $this->fetchDataSet($setName);
+        return $this->getItemById($id);
+    }
+    public function getDataByKey($setName, $key, $value){
+        $this->fetchDataSet($setName);
+        return $this->getByKey($key, $value);
+    }
+
+    protected function fetchDataSet($setName = "std"){
+        $this->activeSet = $this->realData[$setName]['SET'];
+        $this->data = $this->activeSet->toArray();
+        $this->hash = $this->realData[$setName]['hash'];
+    }
+    public function toArray(){
+        return $this->data;
+    }
+    protected function getItemById($id){
+        return $this->activeSet->getItemById($id);
+    }
+    protected function getByKey($key, $value){
+        $result = array();
+        foreach ($this->data as $item)
+            if ($item->$key == $value) array_push($result, $item);
+        return $result;
+    }
+    protected function getSince($since){
+        $list = array();
+        $result = array();
+        foreach ($this->data as $item)
+            if ($item->time > $since) {
+                if (!isset ($list[$item->time])) $list[$item->time] = array();
+                array_push($list[$item->time], $item);
+            }
+        krsort($list);
+        foreach ( $list as $timeKey => $itemArray)
+            foreach ($itemArray as $item)
+                array_push($result, $item);
+        return $result;
     }
     
     

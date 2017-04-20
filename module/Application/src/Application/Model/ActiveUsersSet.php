@@ -21,7 +21,6 @@ class ActiveUsersSet
         }
         if ( key_exists($data['sid'], $this->data) ) $this->update($data);
         else $this->create($data);
-        $this->setHashOfNewItem($data['sid']);
         $this->deleteExpired($data['time']);
     }
 
@@ -50,8 +49,7 @@ class ActiveUsersSet
     /**** PRIVATE METHODS ****/
     private function update ($data)
     {
-        $itemId = $sid = $data['sid'];
-        $this->removeHashEntries($itemId);
+        $sid = $data['sid'];
         // update
         if($this->data[$sid]->userId == 0 && $data['userId'] !==0)$this->guestsAllOver--;
         $this->data[$sid]->update($data['ip'], $data['userId'], $data['userName'], $data['url'], $data['time'], $data['data']);
@@ -72,7 +70,6 @@ class ActiveUsersSet
             if ($time > $item->expires)
             {
                 unset($this->data[$sid]);
-                $this->removeHashEntries($sid);
             }
     }
 }
