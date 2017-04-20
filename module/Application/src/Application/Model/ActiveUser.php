@@ -12,18 +12,18 @@ class ActiveUser
     public $sid;
     public $ip;
     public $userName;
-    public $expireTime;
+    public $expireDuration;
     public $expires;
 
     /** userId used as itemId */
-    function __construct($itemId, $url, $userId, $time, $sid, $ip, $userName, $expireTime, $data = null)
+    function __construct($itemId, $url, $userId, $time, $sid, $ip, $userName, $expireDuration, $data = null)
     {
-        parent::__construct($userId, $url, $time, $userId, $data );
-        $this->expireTime = $expireTime;
+        parent::__construct($itemId, $url, $time, $userId, $data );
+        $this->expireDuration = $expireDuration;
         $this->sid = $sid;
         $this->ip = $ip;
         $this->userName = $userName;
-        $this->expires = $time+$expireTime;
+        $this->expires = $time+$expireDuration;
     }
 
     public function update($ip, $userId, $userName, $url, $time, $data = null)
@@ -34,6 +34,6 @@ class ActiveUser
         $this->url = $url;
         $this->time = $time;
         $this->data = $data;
-        $this->expires = $time+$this->expireTime;
+        $this->expires = $time+$this->expireDuration;
     }
 }

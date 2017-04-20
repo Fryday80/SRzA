@@ -39,18 +39,16 @@ class ActionsLogSet
         return $newData;
     }
 
-    private function create($data)
+    private function create($createData)
     {
-        if (!$data) return NULL;
-        $url = $time = $userId = $type = $title = $msg = $itemData = false;
-        foreach ($data as $key => $value){
-            $url      = ( key_exists('url',$data) )    ? $data['url']    : false;
-            $time     = ( key_exists('time',$data) )   ? $data['time']   : false;
-            $userId   = ( key_exists('userId',$data) ) ? $data['userId'] : false;
-            $itemData = ( key_exists('data',$data) )   ? $data['data']   : null;
+        if (!$createData) return NULL;
+        $url = $time = $userId = $userName = $type = $title = $msg = false;
+        $itemData = null;
+        foreach ($createData as $key => $value){
+            $$key = $value;
         }
-        if (!($url && $time && $userId && $type && $title && $msg))return null;
-        return new ActionsLog( uniqid(), $url, $time, $userId, $type, $title, $msg,  $itemData);
+        if (!($url && $time && $userId && $userName&& $type && $title && $msg))return null;
+        return new ActionsLog( uniqid(), $url, $time, $userId, $userName, $type, $title, $msg,  $itemData);
     }
     private function sortResult(){
         return $this->data = array_reverse( $this->buffer->toArray() );

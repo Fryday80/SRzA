@@ -7,14 +7,12 @@ use Application\Model\BasicModels\StatsCollectionBasic;
 class StatisticDataCollection
     extends StatsCollectionBasic
 {
-    private $activeSet;
-    
-    /** @var $pageHits pageHitsSet */
-    private $pageHitsSet;
+//    /** @var $pageHits pageHitsSet */
+//    private $pageHitsSet;
     /** @var  $activeUsers ActiveUsersSet */
     private $activeUsersSet;
-    /** @var  $actionsLogSet actionsLogSet */
-    private $actionsLogSet;
+//    /** @var  $actionsLogSet actionsLogSet */
+//    private $actionsLogSet;
     /** @var $systemLogSet SystemLogSet  */
     private $systemLogSet;
     
@@ -22,11 +20,13 @@ class StatisticDataCollection
     {
         parent::__construct(); // will be overridden but otherwise the IDE claims it missing
         /**** DATA SETS ****/
-        $this->pageHitsSet    = $sets['pageHits']    = new PageHitsSet();
+//        $this->pageHitsSet    =
+            $sets['pageHits']    =
+                new PageHitsSet();
         $this->activeUsersSet =
-//            $sets['activeUsers'] =
+            $sets['activeUsers'] =
                 new ActiveUsersSet();
-        $this->actionsLogSet  =
+//        $this->actionsLogSet  =
             $sets['actionsLog'] =
                 new actionsLogSet();
         $this->systemLogSet   =
@@ -41,25 +41,16 @@ class StatisticDataCollection
 
     /**** UPDATE ****/
     /**** PAGE HITS ****/
-    public function updatePageHit($url, $time, $userId, $data = null){
-        $this->updateItemOf('pageHits', array(
-            'url' => $url,
-            'time' => $time,
-            'userId' => $userId,
-            'data' => $data
-        ));
+    public function updatePageHit($data){
+        $this->updateItemOf('pageHits', $data);
     }
     /**** ACTIONS LOG ****/
-    public function updateActionsLog($url, $time, $userId, $type, $title, $msg, $data = null){
-        $this->updateItemOf( 'actionsLog', array(
-            'url' =>$url,
-            'time' =>$time,
-            'userId' =>$userId,
-            'type' =>$type,
-            'title' =>$title,
-            'msg' =>$msg,
-            'data' =>$data
-        ));
+    public function updateActionsLog( $data ){
+        $this->updateItemOf( 'actionsLog', $data );
+    }
+    /**** ACTIVE USERS ****/
+    public function updateActiveUsers( $data ){
+        $this->updateItemOf( 'activeUsers', $data );
     }
 
 
@@ -70,10 +61,6 @@ class StatisticDataCollection
     
     
     /**** SET ****/
-    /**** ACTIVE USERS ****/
-    public function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
-        $this->activeUsersSet->updateActiveUsers($sid, $ip, $lastActionUrl, $data);
-    }
     /**** SYS LOG ****/
     public function updateSystemLog($type, $msg, $data = null){
         $this->systemLogSet->updateSystemLog($type, $msg, $data);

@@ -24,6 +24,7 @@ class StatDataSetBasic
     
     protected function getSince($since)
     {
+        if (! isset( $this->data[0] ) ) return null;
         $since = (is_object($since)) ? 0 : (int)$since;
         $newDataSet = array();
         $i = 0;
@@ -58,5 +59,10 @@ class StatDataSetBasic
             $hid = array_search($key, $this->hash['list']);
             return $this->hash['hashtables'][$hid];
         }
+    }
+    protected function removeHashEntries($id){
+        foreach ($this->hash['hashtables'] as $tkey => $hashtable)
+            foreach ($hashtable as $key => $itemId)
+                if ($itemId == $id) unset ($this->hash['hashtables'][$tkey][$key]);
     }
 }

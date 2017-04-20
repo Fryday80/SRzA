@@ -58,14 +58,14 @@ class StatisticService
         
         // active users data
         $activeUserData['time'] = $now;
-        $activeUserData['ip'] = $serverPHPData['REMOTE_ADDR'];
+        $activeUserData['ip'] = $ip = $serverPHPData['REMOTE_ADDR'];
         $activeUserData['sid'] = $sid;
         $activeUserData['userId'] = $userId;
         $activeUserData['userName'] = $userName;
         $activeUserData['data'] = array();
 
         $activeUserData['data']['serverData'] = $serverPHPData;
-        $this->triggerOnDispatch( $now, $url, $userId, 'Type:onDispatch', 'Title', $activeUserData );
+        $this->triggerOnDispatch( $now, $url, 'type', 'title', 'msg', $sid, $ip, $userName,  $userId, null, $activeUserData = null, null  );
 
     }
     public function onError(MvcEvent $e) {
@@ -80,27 +80,50 @@ class StatisticService
     }
     /**** METHODS ****/
     /**** TRIGGER SETS ****/
-    public function triggerOnDispatch( $now, $url, $type, $title, $userId, $actionsLogData = null, $activeUserData = null, $pageHitData = null )
+    public function triggerOnDispatch( $now, $url, $type, $title, $msg, $sid, $ip, $userName,  $userId, $actionsLogData = null, $activeUserData = null, $pageHitData = null )
     {
-        $this->updateActionsLog($url, $now, $userId, $type, $title, 'regular call', $actionsLogData);
-        $this->updatePageHit( $url, $now, $userId, $pageHitData);
-        $this->updateActiveUsers($activeUserData['sid'], $activeUserData['ip'], $url, $activeUserData);
+        $this->updateActionsLog($url, $now, $userId, $userName, $type, $title, $msg, $actionsLogData);
+        $this->updatePageHit( $url, $now, $userId, $userName, $pageHitData);
+        $this->updateActiveUsers($url, $userId, $now, $sid, $ip, $userName, $activeUserData);
 
         $this->saveFile($this->collection);
     }
 
     /**** SET ****/
     /**** ACTIVE USERS ****/
-    private function updateActiveUsers($sid, $ip, $lastActionUrl, $data){
-        $this->collection->updateActiveUsers($sid, $ip, $lastActionUrl, $data);
+    private function updateActiveUsers($url, $userId, $now, $sid, $ip, $userName, $data = null){
+        $this->collection->updateActiveUsers( array(
+            'url' => $url,
+            'expireDu' => $userId,
+            'time' => $now,
+            'sid' => $sid,
+            'ip' => $ip,
+            'userName' => $userName,
+            'data' => $data
+        ) );
     }
     /**** ACTIONS LOG ****/
-    private function updateActionsLog($url, $time, $userId, $type, $title, $msg, $data = null){
-        $this->collection->updateActionsLog($url, $time, $userId, $type, $title, $msg, $data);
+    private function updateActionsLog($url, $time, $userId, $userName, $type, $title, $msg, $data = null){
+        $this->collection->updateActionsLog( array(
+            'url' =>$url,
+            'time' =>$time,
+            'userId' =>$userId,
+            'userName' => $userName,
+            'type' =>$type,
+            'title' =>$title,
+            'msg' =>$msg,
+            'data' =>$data
+        ) );
     }
     /**** PAGE HITS ****/
-    private function updatePageHit($url, $time, $userId, $data = null){
-        $this->collection->updatePageHit($url, $time, $userId, $data);
+    private function updatePageHit($url, $time, $userId, $userName, $data = null){
+        $this->collection->updatePageHit( array(
+            'url' => $url,
+            'time' => $time,
+            'userId' => $userId,
+            'username' => $userName,
+            'data' => $data
+        ) );
     }
     /**** SYS LOG ****/
     private function updateSystemLog($type, $msg, $url, $data = null){

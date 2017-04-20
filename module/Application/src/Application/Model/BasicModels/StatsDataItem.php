@@ -14,14 +14,16 @@ class StatsDataItem
     public $itemId;
     public $url;
     public $userId;
+    public $username;
     public $time;
     public $data;
 
-    function __construct($itemId, $url, $time, $userId, $data = null)
+    function __construct($itemId, $url, $time, $userId, $userName, $data = null)
     {
         $this->itemId = $itemId;
         $this->url = $url;
         $this->userId = $userId;
+        $this->userName = $userName;
         $this->time = $time;
         $this->data = $data;
     }
