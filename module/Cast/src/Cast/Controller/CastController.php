@@ -14,6 +14,7 @@ class CastController extends AbstractActionController
     public function indexAction() {
         throw new Exception("sers");
         $characterTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
+        throw new \Exception('bums');
         bdump($characterTable->getAllCastData());
         return new ViewModel(array(
             'chars' => $characterTable->getAllCastData(),

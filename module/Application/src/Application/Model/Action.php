@@ -1,12 +1,7 @@
 <?php
 namespace Application\Model;
 
-
-use Application\Model\BasicModels\StatsDataItem;
-
-class ActionsLog
-    extends StatsDataItem
-{
+class Action {
     public $itemId;
     public $url;
     public $userId;
@@ -17,13 +12,16 @@ class ActionsLog
     public $title;
     public $msg;
 
-    function __construct( $itemId, $url, $time, $userId, $actionType, $title, $msg,  $data = null )
+    function __construct($url, $userId, $actionType, $title, $msg, $data = null )
     {
-        parent::__construct( $itemId, $url, $time, $userId, $data );
-
+        $this->itemId = uniqid();
+        $this->time = microtime(true);
+        $this->url = $url;
+        $this->userId = $userId;
         $this->actionType = $actionType;
         $this->title = $title;
         $this->msg = $msg;
+        $this->data = $data;
     }
 
 }
