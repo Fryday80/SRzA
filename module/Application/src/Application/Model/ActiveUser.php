@@ -20,6 +20,6 @@ class ActiveUser
         $this->ip = $ip;
         $this->url = $url;
         $this->data = $data;
-        $this->time = microtime(true);
+        $this->time = microtime(true) * 1000;
     }
 }

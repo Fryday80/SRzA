@@ -15,7 +15,7 @@ class SystemLog
 
     function __construct($type, $msg, $url, $userId, $userName, $data = null)
     {
-        $this->time = microtime(true);
+        $this->time = microtime(true) * 1000;
         $this->type = $type;
         $this->msg = $msg;
         $this->url = $url;

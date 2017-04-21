@@ -10,7 +10,7 @@ class PageHit {
 
     function __construct($url) {
         $this->url = $url;
-        $this->lastTime = microtime(true);
+        $this->lastTime = microtime(true) * 1000;
         $this->counters = array_pad([], HitType::TYPES_COUNT, 0);
     }
     public function getCount($type = null) {

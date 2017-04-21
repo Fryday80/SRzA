@@ -2,7 +2,7 @@
 namespace Application\Controller;
 
 
-use Application\Model\ActionsLog;
+use Application\Model\Action;
 use Application\Model\ActiveUser;
 use Application\Model\SystemLog;
 use Application\Service\StatisticService;
@@ -26,16 +26,16 @@ class SystemController extends AbstractActionController
             array( "<a href='/system/dashboard'> Dashboard Reload</a>"),
         );
         $userStats = array(
-            array("All Clicks"    => $this->statsService->getAllHits()),
+            array("All Clicks"    => $this->statsService->getPageHits()),
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
-            array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]['url'] . ' with ' .$this->statsService->getMostVisitedPages()[0]['hits']),
+//            array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]['url'] . ' with ' . $this->statsService->getMostVisitedPages()[0]['hits']),
         );
         return new ViewModel(array(
-            'quickLinks'  => $this->getDataStringFromDataSets( $quickLinks ),
-            'liveClicks'  => $this->getDataStringFromDataSets( $this->statsService->getActionsLog() ),
-            'activeUsers' => $this->getDataStringFromDataSets( $this->statsService->getActiveUsers() ),
-            'sysLog'      => $this->getDataStringFromDataSets( $this->statsService->getSysLog() ),
-            'userStats'   => $this->getDataStringFromDataSets( $userStats ),
+            'quickLinks'  => $this->getDataStringFromArray( $quickLinks ),
+            'liveClicks'  => null, // $this->getDataStringFromDataSets( $this->statsService->getActionsLog() ),
+            'activeUsers' => null, // $this->getDataStringFromDataSets( $this->statsService->getActiveUsers() ),
+            'sysLog'      => null, // $this->getDataStringFromDataSets( $this->statsService->getSysLog() ),
+            'userStats'   => $this->getDataStringFromArray( $userStats ),
         ));
     }
 
@@ -61,18 +61,14 @@ class SystemController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
-    private function getDataStringFromDataSets( $data){
+    private function getDataStringFromDataSets( $itemArray ){
         $result = array();
         $insideString = '';
         $time = 0;
         $id = 0;
-        if (!is_array($data)) return null;
-        if (! isset( $data[0] ) ) return null;
-        if ($data[0] instanceof ActionsLog){
-            bdump(($data[0] instanceof ActionsLog));
-            bdump($data);
-            /** @var  $item ActionsLog*/
-            foreach ($data as $item)
+        if ($itemArray[0] instanceof Action){
+            /** @var  $item Action*/
+            foreach ($itemArray as $item)
                 if ($item !== null) {
                     $insideString = '';
                     $insideString .= $item->actionType . '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
@@ -81,9 +77,9 @@ class SystemController extends AbstractActionController
                 }
         return $result;
         }
-        if ($data[0] instanceof ActiveUser){
+        if ($itemArray[0] instanceof ActiveUser){
             /** @var  $item ActiveUser*/
-            foreach ($data as $item)
+            foreach ($itemArray as $item)
                 if ($item !== null) {
                     $insideString = '';
                     $insideString .= "$item->userName: $item->url <b> @ </b>" . date('H:i', $item->time);
@@ -91,42 +87,37 @@ class SystemController extends AbstractActionController
                 }
         return $result;
         }
-        if ($data[0] instanceof SystemLog){
-            $count = $this->statsService->getNumberOfLogs();
-            /** @var  $item SystemLog*/
-            foreach ($data as $item)
-                if ($item !== null) {
-                    $insideString = '';
-                    $insideString .= "<li>$item->msg total count $count</li>";
-                    array_push($result, array("string" => $insideString));
-                }
+        if ($itemArray[0] instanceof SystemLog) {
+            // @todo
         return $result;
         }
-        else {
-            $insideString = "<table>";
-            $td = "<td style='width:15%'>";
-            $space = "<td style='width:2%'> | </td>";
-            $i = 1;
-            $c = 0;
-            foreach ($data as $value)
-                if ($value !== null)
-                    foreach ($value as $k => $v) {
-                        $insideString .= ($i == 0) ? "<tr>" : "";
-                        if (is_int($k)) {
-                            $insideString .= "$td $v</td>";
-                            $c = 4;
-                        }
-                        else {
-                            $insideString .= "$td<b>$k:</b></td>$td$v</td>";
-                            $c = 3;
-                        }
-                        $insideString .= ($i == $c) ? "</tr>" : "$space";
-                        $i++;
-                        $i = ($i == ($c+1)) ? 0 : $i;
+        else return null;
+    }
+    private function getDataStringFromArray($data){
+        $result = array();
+        $insideString = "<table>";
+        $td = "<td style='width:15%'>";
+        $space = "<td style='width:2%'> | </td>";
+        $i = 1;
+        $c = 0;
+        foreach ($data as $value)
+            if ($value !== null)
+                foreach ($value as $k => $v) {
+                    $insideString .= ($i == 0) ? "<tr>" : "";
+                    if (is_int($k)) {
+                        $insideString .= "$td $v</td>";
+                        $c = 4;
                     }
-            $insideString .= "</table>";
-            array_push($result, array("string" => $insideString, "time" => $time, "id" => $id));
-        }
+                    else {
+                        $insideString .= "$td<b>$k:</b></td>$td$v</td>";
+                        $c = 3;
+                    }
+                    $insideString .= ($i == $c) ? "</tr>" : "$space";
+                    $i++;
+                    $i = ($i == ($c+1)) ? 0 : $i;
+                }
+        $insideString .= "</table>";
+        array_push($result, array("string" => $insideString));
         return $result;
     }
 }

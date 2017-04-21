@@ -11,6 +11,7 @@ namespace Application\Service;
 use Application\Model\Action;
 use Application\Model\ActionType;
 use Application\Model\ActiveUser;
+use Application\Model\CounterType;
 use Application\Model\HitType;
 use Application\Model\PageHit;
 use Application\Model\Stats;
@@ -75,6 +76,7 @@ class StatisticService
             $this->stats->logNewUser();
             $cookie = new SetCookie('srzaiknowyou', time(), time() + 9999999);
             $e->getResponse()->getHeaders()->addHeader($cookie);
+            $this->getPageHits(0);
         }
     }
 
@@ -92,6 +94,17 @@ class StatisticService
         $this->saveFile($this->stats);
     }
 
+    public function getPageHits ($count = CounterType::ALL){
+        $this->stats->getPageHits(0);
+    }
+    public function getActiveUsers(){
+        $result = array();
+        foreach ($this->stats->activeUsers as $user){
+            array_push($result, $user);
+        }
+        return $result;
+    }
+
     private function saveFile($content) {
         $content = serialize($content);
         file_put_contents($this->storagePath, $content);
@@ -103,10 +116,6 @@ class StatisticService
         return $content;
     }
 
-    public function getPageHits($selection = 'all'){
-        $hits = $this->stats->pageHits;
-        if (());
-    }
 
 
 //

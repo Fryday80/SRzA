@@ -29,6 +29,7 @@ class Stats {
     public function updateActiveUser( ActiveUser $user) {
         if (!isset($this->activeUsers[$user->sid])) {
             $user->time = microtime(true);
+            $this->activeUsers[$user->sid] = $user;
         } else {
             $this->activeUsers[$user->sid]->url  = $user->url;
             $this->activeUsers[$user->sid]->time = microtime();
@@ -88,15 +89,13 @@ class Stats {
     public function logNewUser() {
         $this->realUserCount++;
     }
+
     /**
-     * @param $count of
-     * @return array
+     * @param int $count
+     * @return mixed
      */
-    public function getPageHits($count) {
-        return array();
-    }
-    public function logActiveUser (ActiveUser $activeUserItem){
-        
+    public function getPageHits($count = CounterType::ALL) {
+        return $this->globalCounters[$count];
     }
 }
 
