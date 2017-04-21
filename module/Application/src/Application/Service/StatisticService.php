@@ -10,9 +10,11 @@ namespace Application\Service;
 
 use Application\Model\Action;
 use Application\Model\ActionType;
+use Application\Model\ActiveUser;
 use Application\Model\HitType;
 use Application\Model\PageHit;
 use Application\Model\Stats;
+use Application\Model\SystemLog;
 use Auth\Service\AccessService;
 use Zend\Http\Header\SetCookie;
 use Zend\Mvc\MvcEvent;
@@ -49,6 +51,7 @@ class StatisticService
         $sid = $this->accessService->session->getManager()->getId();
         $url = $activeUserData['last_action_url'] = $request->getServer('REQUEST_URI');
         if($request->isXmlHttpRequest() && in_array($url, WHITE_LIST)) return;
+//        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
@@ -66,7 +69,7 @@ class StatisticService
 
         $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
         $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
-        $this->stats->updateActiveUser($userName, $userId, $url, $ip, $sid, $activeUserData);
+        $this->stats->updateActiveUser( new ActiveUser($userId, $userName, $sid, $ip, $url) );
 
         if (!$request->getCookie() || !$request->getCookie()->offsetExists('srzaiknowyou')) {
             $this->stats->logNewUser();
@@ -74,13 +77,14 @@ class StatisticService
             $e->getResponse()->getHeaders()->addHeader($cookie);
         }
     }
+
     public function onError(MvcEvent $e) {
         $url = $e->getRequest()->getServer('REQUEST_URI');
         $userId = $this->accessService->getUserID();
         $userId = ($userId == "-1")? 0 : (int)$userId;
         $this->stats->logAction(new Action($url, $userId, ActionType::ERROR , 'Call', $url));
         $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
-        //@todo stats->logSystem();
+        $this->stats->logSystem( new SystemLog('ERROR', 'message','url', 'userId', 'userName' ));
     }
     public function onFinish(MvcEvent $e)
     {
@@ -99,8 +103,9 @@ class StatisticService
         return $content;
     }
 
-    public function getAllHits(){
-        return $this->stats->getAllHits();
+    public function getPageHits($selection = 'all'){
+        $hits = $this->stats->pageHits;
+        if (());
     }
 
 

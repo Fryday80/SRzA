@@ -61,7 +61,7 @@ class SystemController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
-    private function getDataStringFromDataSets($data){
+    private function getDataStringFromDataSets( $data){
         $result = array();
         $insideString = '';
         $time = 0;
