@@ -2,17 +2,25 @@
 namespace Application\Model;
 
 use Application\Utility\CircularBuffer;
+
 class Stats {
     public $count = 0;
+    /** @var CircularBuffer $actionLog */
     public $actionLog;
     public $systemLog;
+    /** @var PageHit[] $pageHits */
     public $pageHits;
     public $activeUsers;
+    public $globalCounters;
+    public $globalHitsSum = 0;
+    public $globalErrorHitsSum = 0;
+    public $realUserCount = 0;
 
     function __construct() {
         $this->actionLog = new CircularBuffer(100);
         $this->systemLog = array();
         $this->pageHits = array();
+        $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
     }
 
     /**
@@ -29,7 +37,7 @@ class Stats {
                 'url' => $url,
                 'userId' => $userId,
                 'userName' => $userName,
-                'lastActionTime' => microtime(),
+                'lastActionTime' => microtime(true),
                 'sid' => $sid,
                 'ip' => $ip,
                 'data' => $data
@@ -49,6 +57,10 @@ class Stats {
         }
         $this->activeUsers = $newActiveUser;
     }
+
+    /**
+     * @param Action $action
+     */
     public function logAction(Action $action) {
         $this->actionLog->push($action);
     }
@@ -68,24 +80,30 @@ class Stats {
     }
 
     /**
+     * @param $hitType
      * @param $url
-     * @param $userId
-     * @param null $data
      */
-    public function logPageHit($url, $userId, $data = null) {
+    public function logPageHit($hitType, $url) {
         if (!isset($this->pageHits[$url])) {
-            $this->pageHits[$url] = array(
-                'url' => $url,
-                'lastTime' => microtime(),
-                'count' => 1
-            );
-        } else {
-            $this->pageHits[$url]['count']++;
-            $this->pageHits[$url]['lastTime'] = microtime();
+            $this->pageHits[$url] = new PageHit($url);
         }
 
+        $this->pageHits[$url]->lastTime = microtime(true);
+        if ($hitType === HitType::GUEST || $hitType === HitType::MEMBER) {
+            $this->pageHits[$url]->hitsSum++;
+            $this->globalHitsSum++;
+        }
+        if ($hitType === HitType::ERROR_GUEST || $hitType === HitType::ERROR_MEMBER) {
+            $this->pageHits[$url]->errorHitsSum++;
+            $this->globalErrorHitsSum++;
+        }
+        $this->pageHits[$url]->counters[$hitType]++;
+        $this->globalCounters[$hitType]++;
     }
 
+    public function logNewUser() {
+        $this->realUserCount++;
+    }
     /**
      * @param $count of
      * @return array
@@ -93,4 +111,16 @@ class Stats {
     public function getPageHits($count) {
         return array();
     }
+}
+
+abstract class ActionType {
+    const PAGE_CALL = 0;
+    const ERROR = 1;
+}
+abstract class HitType {
+    const MEMBER = 0;
+    const GUEST = 1;
+    const ERROR_MEMBER = 2;
+    const ERROR_GUEST = 3;
+    const TYPES_COUNT = 4;//actually no type. keep it at bottom with the highest int
 }

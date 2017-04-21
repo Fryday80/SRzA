@@ -9,43 +9,45 @@
 namespace Application\Service;
 
 use Application\Model\Action;
+use Application\Model\ActionType;
+use Application\Model\HitType;
+use Application\Model\PageHit;
 use Application\Model\Stats;
 use Auth\Service\AccessService;
+use Zend\Http\Header\SetCookie;
 use Zend\Mvc\MvcEvent;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const WHITE_LIST = array('/');
 
-class ActionType {
-    const PAGE_CALL = 0;
-}
 class StatisticService
 {
     private $storagePath;
     /** @var Stats $storage */
     private $stats;
     private $sm;
+    /** @var  AccessService */
+    private $accessService;
+
     function __construct($sm)
     {
         $this->sm = $sm;
+        $this->accessService = $sm->get('AccessService');
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
     }
 
-    /**** EVENT HANDLER ****/
     public function onDispatch(MvcEvent $e)
     {
-        /** @var  $a AccessService*/
-        $a = $this->sm->get('AccessService');
         $request = $e->getApplication()->getRequest();
         $serverPHPData = $request->getServer()->toArray();
         $now = time();
-        $userId = $a->getUserID();
+        $userId = $this->accessService->getUserID();
         $userId = ($userId == "-1")? 0 : (int)$userId;
-        $userName = $a->getUserName();
+        $userName = $this->accessService->getUserName();
         $userName = ($userName == "") ? "Guest" : $userName;
-        $sid = $a->session->getManager()->getId();
-        $url = $activeUserData['last_action_url'] = ($serverPHPData['REQUEST_URI'] == '/') ? '/Home' : $serverPHPData['REQUEST_URI'];
+        $sid = $this->accessService->session->getManager()->getId();
+        $url = $activeUserData['last_action_url'] = $request->getServer('REQUEST_URI');
         if($request->isXmlHttpRequest() && in_array($url, WHITE_LIST)) return;
 //        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
@@ -61,12 +63,24 @@ class StatisticService
         $activeUserData['userId'] = $userId;
         $activeUserData['userName'] = $userName;
         $activeUserData['data'] = array();
-
         $activeUserData['data']['serverData'] = $serverPHPData;
-        $this->stats->updateActiveUser($userName, $userId, $url, $ip, $sid, $activeUserData);
-        $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
-        $this->stats->logPageHit($url, $userId);
 
+        if ($e->isError()) {
+            bdump('error');
+//            $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
+//            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
+        } else {
+            $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
+            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
+        }
+        $this->stats->updateActiveUser($userName, $userId, $url, $ip, $sid, $activeUserData);
+
+
+        if (!$request->getCookie() || !$request->getCookie()->offsetExists('srzaiknowyou')) {
+            $this->stats->logNewUser();
+            $cookie = new SetCookie('srzaiknowyou', time(), time() + 9999999);
+            $e->getResponse()->getHeaders()->addHeader($cookie);
+        }
     }
     public function onError(MvcEvent $e) {
 //        /** @var \Exception $exception */
@@ -74,9 +88,16 @@ class StatisticService
 //        $this->updateSystemLog("ROUTING", $exception->getMessage(), $e->getApplication()->getRequest()->getServer('REMOTE_ADDR'));
 //        $this->saveFile($this->collection);
     }
-    public function onFinish()
+    public function onFinish(MvcEvent $e)
     {
 //        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
+        if ($e->isError()) {
+            $url = $e->getRequest()->getServer('REQUEST_URI');
+            $userId = $this->accessService->getUserID();
+            $userId = ($userId == "-1")? 0 : (int)$userId;
+            $this->stats->logAction(new Action($url, $userId, ActionType::ERROR , 'Call', $url));
+//            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
+        }
         bdump($this->stats);
         $this->saveFile($this->stats);
     }

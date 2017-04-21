@@ -15,7 +15,7 @@ class Action {
     function __construct($url, $userId, $actionType, $title, $msg, $data = null )
     {
         $this->itemId = uniqid();
-        $this->time = microtime();
+        $this->time = microtime(true);
         $this->url = $url;
         $this->userId = $userId;
         $this->actionType = $actionType;
