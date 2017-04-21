@@ -10,9 +10,11 @@ namespace Application\Service;
 
 use Application\Model\Action;
 use Application\Model\ActionType;
+use Application\Model\ActiveUser;
 use Application\Model\HitType;
 use Application\Model\PageHit;
 use Application\Model\Stats;
+use Application\Model\SystemLog;
 use Auth\Service\AccessService;
 use Zend\Http\Header\SetCookie;
 use Zend\Mvc\MvcEvent;
@@ -73,7 +75,7 @@ class StatisticService
             $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
             $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
         }
-        $this->stats->updateActiveUser($userName, $userId, $url, $ip, $sid, $activeUserData);
+        $this->stats->updateActiveUser( new ActiveUser($userId, $userName, $sid, $ip, $url) );
 
 
         if (!$request->getCookie() || !$request->getCookie()->offsetExists('srzaiknowyou')) {
@@ -84,7 +86,7 @@ class StatisticService
     }
     
     public function onError(MvcEvent $e) {
-        bdump('ERRRRRRROR');
+        $this->stats->logSystem( new SystemLog('ERROR', 'message','url', 'userId', 'userName' ));
 //        /** @var \Exception $exception */
 //        $exception = $e->getResult()->exception;
 //        $this->updateSystemLog("ROUTING", $exception->getMessage(), $e->getApplication()->getRequest()->getServer('REMOTE_ADDR'));
@@ -115,8 +117,9 @@ class StatisticService
         return $content;
     }
 
-    public function getAllHits(){
-        return $this->stats->getAllHits();
+    public function getPageHits($selection = 'all'){
+        $hits = $this->stats->pageHits;
+        if (());
     }
 
 

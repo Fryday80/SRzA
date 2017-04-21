@@ -24,34 +24,25 @@ class Stats {
     }
 
     /**
-     * @param $userName
-     * @param $userId
-     * @param $url
-     * @param $ip
-     * @param $sid
-     * @param null $data
+     * @param ActiveUser $user
      */
-    public function updateActiveUser($userName, $userId, $url, $ip, $sid, $data = null) {
-        if (!isset($this->activeUsers[$sid])) {
-            $this->activeUsers[$sid] = array(
-                'url' => $url,
-                'userId' => $userId,
-                'userName' => $userName,
-                'lastActionTime' => microtime(true),
-                'sid' => $sid,
-                'ip' => $ip,
-                'data' => $data
-            );
+    public function updateActiveUser( ActiveUser $user) {
+        if (!isset($this->activeUsers[$user->sid])) {
+            $user->time = microtime(true);
         } else {
-            $this->activeUsers[$sid]['url'] = $url;
-            $this->activeUsers[$sid]['lastActionTime'] = microtime();
-            $this->activeUsers[$sid]['data'] = $data;
+            $this->activeUsers[$user->sid]->url  = $user->url;
+            $this->activeUsers[$user->sid]->time = microtime();
+            $this->activeUsers[$user->sid]->data = $user->data;
+            if ( ($user->userId !== 0) && ($user->userId !== $this->activeUsers[$user->sid]->userId) ) {
+                $this->activeUsers[$user->sid]->userId = $user->userId;
+                $this->activeUsers[$user->sid]->userName = $user->userName;
+            }
         }
 
         //remove entries they are to old
         $newActiveUser = [];
         foreach($this->activeUsers as $key => $activeUser) {
-            if ($activeUser['lastActionTime'] > microtime() - 10000 * 300) {
+            if ($activeUser->time > microtime() - 10000 * 300) {
                 $newActiveUser[$key] = $activeUser;
             }
         }
@@ -66,17 +57,10 @@ class Stats {
     }
 
     /**
-     * @param $type
-     * @param $msg
-     * @param $userId
+     * @param SystemLog $log
      */
-    public function logSystem($type, $msg, $userId) {
-        array_push($this->systemLog, array(
-            'type' => $type,
-            'message' => $msg,
-            'userId' => $userId,
-            'time' => microtime()
-        ));
+    public function logSystem(SystemLog $log) {
+        array_push($this->systemLog, $log);
     }
 
     /**
@@ -110,6 +94,9 @@ class Stats {
      */
     public function getPageHits($count) {
         return array();
+    }
+    public function logActiveUser (ActiveUser $activeUserItem){
+        
     }
 }
 

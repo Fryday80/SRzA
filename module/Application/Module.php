@@ -9,9 +9,6 @@
 
 namespace Application;
 
-use Application\Model\DashboardTables\ActiveUsersTable;
-use Application\Model\DashboardTables\PageHitsTable;
-use Application\Model\DashboardTables\SystemLogTable;
 use Application\Service\StatisticService;
 use Application\View\Helper\DashboardHelper;
 use Application\View\Helper\MyUrl;
