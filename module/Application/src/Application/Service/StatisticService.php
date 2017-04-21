@@ -49,7 +49,6 @@ class StatisticService
         $sid = $this->accessService->session->getManager()->getId();
         $url = $activeUserData['last_action_url'] = $request->getServer('REQUEST_URI');
         if($request->isXmlHttpRequest() && in_array($url, WHITE_LIST)) return;
-//        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
         $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
         $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
         $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
@@ -65,16 +64,9 @@ class StatisticService
         $activeUserData['data'] = array();
         $activeUserData['data']['serverData'] = $serverPHPData;
 
-        if ($e->isError()) {
-            bdump('error');
-//            $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
-//            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
-        } else {
-            $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
-            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
-        }
+        $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
+        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
         $this->stats->updateActiveUser($userName, $userId, $url, $ip, $sid, $activeUserData);
-
 
         if (!$request->getCookie() || !$request->getCookie()->offsetExists('srzaiknowyou')) {
             $this->stats->logNewUser();
@@ -83,21 +75,15 @@ class StatisticService
         }
     }
     public function onError(MvcEvent $e) {
-//        /** @var \Exception $exception */
-//        $exception = $e->getResult()->exception;
-//        $this->updateSystemLog("ROUTING", $exception->getMessage(), $e->getApplication()->getRequest()->getServer('REMOTE_ADDR'));
-//        $this->saveFile($this->collection);
+        $url = $e->getRequest()->getServer('REQUEST_URI');
+        $userId = $this->accessService->getUserID();
+        $userId = ($userId == "-1")? 0 : (int)$userId;
+        $this->stats->logAction(new Action($url, $userId, ActionType::ERROR , 'Call', $url));
+        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
+        //@todo stats->logSystem();
     }
     public function onFinish(MvcEvent $e)
     {
-//        $this->cache->setCache($this::ACTIONS_CACHE_NAME, $this->actionsLog);
-        if ($e->isError()) {
-            $url = $e->getRequest()->getServer('REQUEST_URI');
-            $userId = $this->accessService->getUserID();
-            $userId = ($userId == "-1")? 0 : (int)$userId;
-            $this->stats->logAction(new Action($url, $userId, ActionType::ERROR , 'Call', $url));
-//            $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
-        }
         bdump($this->stats);
         $this->saveFile($this->stats);
     }
