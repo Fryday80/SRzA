@@ -82,7 +82,9 @@ class StatisticService
             $e->getResponse()->getHeaders()->addHeader($cookie);
         }
     }
+    
     public function onError(MvcEvent $e) {
+        bdump('ERRRRRRROR');
 //        /** @var \Exception $exception */
 //        $exception = $e->getResult()->exception;
 //        $this->updateSystemLog("ROUTING", $exception->getMessage(), $e->getApplication()->getRequest()->getServer('REMOTE_ADDR'));
