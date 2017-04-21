@@ -115,7 +115,7 @@ $li = '';
 if($liveClicks !== null)
     foreach ( $liveClicks as $item )
         if($item !== null){
-            $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '" data-id="' . $item['id'] . '"';
+            $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '"';
             $li .= "<li $liCss>" . $item['string'] . "</li>";
         }
 ?>
@@ -165,32 +165,29 @@ if($sysLog !== null)
         });
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
-            console.log(actions);
             if (actions !== null) {;
                 actions.reverse();
 
                 for (let i = 0; i < actions.length; i++) {
-                    //                let DateStamp = new Date(actions[i].time*1000)
-                    //                let Hours = "0" + DateStamp.getHours();
-                    //                let Minutes = "0" + DateStamp.getMinutes();
-                    //                let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
-                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "' data-id='" + actions[i].id + "'>" +
+//                                    let DateStamp = new Date(actions[i].time)
+//                                    let Hours = "0" + DateStamp.getHours();
+//                                    let Minutes = "0" + DateStamp.getMinutes();
+//                                    let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
+                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "'>" +
                         actions[i].string + "</li>");
                 }
             }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
-                let actionID = ele.data('id');
-                livereload(since, actionID);
+                livereload(since);
             }, 4500);
         });
     }
-    function livereload(since, actionID) {
+    function livereload(since) {
         let data = {
             method: "getLiveActions",
             since: since,
-            actionID: actionID
         };
         $.ajax({
             url: "/system/json",
@@ -199,5 +196,5 @@ if($sysLog !== null)
             complete: loadLive
         });
     }
-    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'), $('#dashLiveList li:nth-child(1)').data('id'));
+    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'));
 </script>
