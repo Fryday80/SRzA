@@ -18,20 +18,12 @@ class SystemController extends AbstractActionController
     public function dashboardAction()
     {
         $this->statsService = $this->getServiceLocator()->get('StatisticService');
-        $quickLinks = array(
-            array( "<a href='/'> Home</a>"),
-            array( "<a href='/cms'> Content</a>"),
-            array( "<a href='/media/filebrowser'> File Browser</a>"),
-            array( "<a href='/nav/sort'> Navigation</a>"),
-            array( "<a href='/system/dashboard'> Dashboard Reload</a>"),
-        );
         $userStats = array(
             array("All Clicks"    => $this->statsService->getPageHits()),
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
 //            array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]['url'] . ' with ' . $this->statsService->getMostVisitedPages()[0]['hits']),
         );
         return new ViewModel(array(
-            'quickLinks'  => $this->getDataStringFromArray( $quickLinks ),
             'liveClicks'  => null, // $this->getDataStringFromDataSets( $this->statsService->getActionsLog() ),
             'activeUsers' => null, // $this->getDataStringFromDataSets( $this->statsService->getActiveUsers() ),
             'sysLog'      => null, // $this->getDataStringFromDataSets( $this->statsService->getSysLog() ),

@@ -20,6 +20,7 @@ class Stats {
         $this->actionLog = new CircularBuffer(100);
         $this->systemLog = array();
         $this->pageHits = array();
+        $this->activeUsers = array();
         $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
     }
 
@@ -97,6 +98,11 @@ class Stats {
     public function getPageHits($count = CounterType::ALL) {
         return $this->globalCounters[$count];
     }
+    public function getActionLog($since){
+
+    }
+
+//    private function filterByKey( $key, $order = OR){}
 }
 
 abstract class ActionType {
@@ -117,4 +123,8 @@ abstract class CounterType {
     const ERROR_GUEST = 3;
     const ALL = 4;
     const ERROR = 5;
+}
+abstract class OrderTypes {
+    const ASCENDING = 0;
+    const DESCENDING = 1;
 }

@@ -104,6 +104,9 @@ class StatisticService
         }
         return $result;
     }
+    public function getActionLog($since){
+        
+    }
 
     private function saveFile($content) {
         $content = serialize($content);

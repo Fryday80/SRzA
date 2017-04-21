@@ -33,6 +33,11 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         overflow-y: auto;
         list-style-type: none
     }
+    dash-links {
+        list-style: none;
+        display: inline-block;
+        float: left;
+    }
     boxcontent ul {
         list-style: none;
     }
@@ -83,17 +88,20 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </style>
 
 <?php
-
 // ************************************************************************************* QUICK LINKS
-$li = '';
-if($quickLinks !== null)
-    foreach ($quickLinks as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
         <span class='own_text_small'>Quick Links</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
+    <boxcontent>
+        <ul class="dash-list dash-links">
+            <li><a href='/'> Home</a></li>
+            <li><a href='/cms'> Content</a></li>
+            <li><a href='/media/filebrowser'> File Browser</a></li>
+            <li><a href='/nav/sort'> Navigation</a></li>
+            <li><a href='/system/dashboard'> Dashboard Reload</a></li>
+        </ul></boxcontent>
 </box>
 
 <?php
