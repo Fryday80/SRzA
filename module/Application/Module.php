@@ -16,11 +16,14 @@ use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
 use Zend\Mvc\MvcEvent;
 use Application\View\Helper\DataTableHelper;
+use Zend\Validator\AbstractValidator;
 
 class Module
 {
     public function onBootstrap(MvcEvent $e)
     {
+        $translator = $e->getApplication()->getServiceManager()->get('translator');
+        AbstractValidator::setDefaultTranslator($translator);
         $eventManager = $e->getApplication()->getEventManager();
         $statsService = $e->getApplication()->getServiceManager()->get('StatisticService');
         $eventManager->attach('dispatch', array($statsService, 'onDispatch'));
