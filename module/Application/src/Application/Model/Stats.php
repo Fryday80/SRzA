@@ -107,6 +107,10 @@ class Stats {
         }
         return $this->globalCounters[$type];
     }
+    public function getActiveUsers($since = 0){
+        if ($since == 0) return $this->sortByKey($this->activeUsers, 'time');
+        return $this->getSinceOf($this->activeUsers, $since);
+    }
     
     public function getActionLog($since = 0){
         $data = array_reverse($this->actionLog->toArray());

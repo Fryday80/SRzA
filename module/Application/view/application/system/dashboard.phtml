@@ -123,44 +123,6 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </style>
 
 <?php
-
-function getDataStringFromDataSets( $itemArray ){
-    if (!is_array($itemArray)) return null;
-    $result = array();
-    foreach ($itemArray as $key => $value){
-        $firstItem = $key;
-        break;
-    }
-    if ($itemArray[$firstItem] instanceof \Application\Model\ActiveUser){
-        /** @var  $item ActiveUser*/
-        foreach ($itemArray as $item)
-            if ($item !== null) {
-                $insideString = '';
-                $insideString .= "$item->userName: $item->url <b> @ </b>" . \Application\Controller\SystemController::dateFromMicrotime($item->time);
-                array_push($result, array("string" => $insideString));
-            }
-        return $result;
-    }
-    if ($itemArray[$firstItem] instanceof \Application\Model\SystemLog) {
-        // @todo
-        return $result;
-    }
-    else return null;
-}
-
-function getDataStringFromArray($data){
-    if (!is_array($data)) return null;
-    $result = array();
-
-    foreach ($data as $value)
-        if ($value !== null)
-            foreach ($value as $k => $v) {
-                $insideString = "";
-                $insideString .= "<p><b>$k:</b></p>$v";
-                array_push($result, array("string" => $insideString));
-            }
-    return $result;
-}
 // ************************************************************************************* QUICK LINKS
 ?>
 <box class = 'dashboard dashboard-left'>
@@ -180,15 +142,21 @@ function getDataStringFromArray($data){
 <?php
 // ************************************************************************************* USER STATS
 $li = '';
-$userStats = getDataStringFromArray($userStats);
 if($userStats !== null)
-    foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
+    foreach ($userStats as $item)
+        if ($item !== null)
+            foreach ($item as $k => $v)
+                $li .= "<li><p><b>$k:</b></p>$v</li>";
 ?>
 <box class = 'user-stats'>
     <boxtitel>
         <span class='own_text_small'>User Statistics</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
+    <boxcontent>
+        <ul class="dash-list">
+            <?php echo $li ?>
+        </ul>
+    </boxcontent>
 </box>
 
 <?php
@@ -207,46 +175,48 @@ if($userStats !== null)
 
 <?php
 // ************************************************************************************* ACTIVE USERS
-$li = '';
-$activeUsers = getDataStringFromDataSets($activeUsers);
-if($activeUsers !== null)
-    foreach ( $activeUsers as $item )
-        if($item !== null)
-            $li .= '<li>' . $item['string'] . '</li>';
 ?>
 <box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'>Active Users</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
+    <boxcontent>
+        <ul id="users" class="dash-list">
+            <li class="entry basicdata" data-timestamp="0"></li>
+        </ul>
+    </boxcontent>
 </box>
 
 <?php
 // ************************************************************************************* SYSTEM LOG
 $li = '';
-$sysLog = getDataStringFromDataSets($sysLog);
 if($sysLog !== null)
     foreach ( $sysLog as $item )
         if($item !== null)
-            $li .= '<li>' . $item['string'] . '</li>';
+            $li .= '<li>to DO</li>';
 ?>
 <box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'>System Log</span>
     </boxtitel>
-    <boxcontent><ul class="dash-list"><?php echo $li ?></ul></boxcontent>
+    <boxcontent>
+        <ul class="dash-list">
+            <?php echo $li ?>
+        </ul>
+    </boxcontent>
 </box>
+
 
 <script type="text/javascript">
     //script for live ticks
     function loadLive(e) {
-
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         });
         e.done(function(e, textStatus, jqXHR) {
+            let user = e.users;
             let actions = e.actions;
-            if (actions !== null) {;
+            if (actions !== null) {
 //                actions.reverse();
 
                 for (let i = 0; i < actions.length; i++) {
@@ -254,17 +224,29 @@ if($sysLog !== null)
                         actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
+            if (user !== null) {
+                for (let c = 0; c < user.length; c++){
+                    $("li.id" + user[c].userId ).remove();
+                    $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].time + "' data-id='" + user[c].userId + "'>" +
+                    user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
+                }
+            }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
-                livereload(since);
+                let elm = $('#users li:nth-child(1)');
+                let user = elm.data('timestamp');
+                let userId = elm.data('id');
+                livereload(since, user, userId);
             }, 4500);
         });
     }
-    function livereload(since) {
+    function livereload(since, user, userId) {
         let data = {
             method: "getLiveActions",
             since: since,
+            lastUser: user,
+            userId: userId,
         };
         $.ajax({
             url: "/system/json",
@@ -273,5 +255,5 @@ if($sysLog !== null)
             complete: loadLive
         });
     }
-    livereload($('#dashLiveList li:nth-child(1)').data('timestamp'));
+    livereload( $('#dashLiveList li:nth-child(1)').data('timestamp'), $('#users li:nth-child(1)').data('timestamp'), 0 );
 </script>

@@ -73,12 +73,8 @@ class StatisticService
     public function getPageHits ($count = CounterType::ALL){
         return $this->stats->getPageHits($count);
     }
-    public function getActiveUsers(){
-        $result = array();
-        foreach ($this->stats->activeUsers as $user){
-            array_push($result, $user);
-        }
-        return $result;
+    public function getActiveUsers($since = 0){
+        return $this->stats->getActiveUsers($since);
     }
 
     /**

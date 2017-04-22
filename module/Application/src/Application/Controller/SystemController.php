@@ -43,11 +43,13 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
+//        var_dump ($request);
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
                 $result['actions'] = $this->addDateTime( $statsService->getActionLog($request->since+1));
+                $result['users'] = $this->addDateTime( $statsService->getActiveUsers($request->lastUser+1) );
                 break;
         };
 
