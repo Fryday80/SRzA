@@ -102,6 +102,14 @@ return array(
                 'base_dir' => __DIR__ . '/../language',
                 'pattern'  => '%s.mo',
             ),
+            array(
+                'type'     => 'phpArray',
+                //zend defaults
+                //'base_dir' => './vendor/zendframework/zendframework/resources/languages',
+                //overwrite
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%.2s/Zend_Validate.php',
+            ),
         ),
     ),
     'view_manager' => array(
