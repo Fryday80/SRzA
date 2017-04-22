@@ -65,7 +65,6 @@ class SystemController extends AbstractActionController
             /** @var  $item Action*/
             foreach ($itemArray as $item)
                 if ($item !== null) {
-                    bdump($item);
                     $insideString = '';
                     $insideString .= $this->actionTypeTranslator($item->actionType) . '<b> @ </b>' . $this->dateFromMicrotime($item->time, 'H:i d.m.Y') . '<b>: </b>' .
                         $item->msg . '<b> of </b>' . $item->title . '<b> from </b>' . $item->userName;
@@ -77,7 +76,6 @@ class SystemController extends AbstractActionController
             /** @var  $item ActiveUser*/
             foreach ($itemArray as $item)
                 if ($item !== null) {
-                    bdump($item);
                     $insideString = '';
                     $insideString .= "$item->userName: $item->url <b> @ </b>" . $this->dateFromMicrotime($item->time);
                     array_push($result, array("string" => $insideString));
@@ -119,9 +117,6 @@ class SystemController extends AbstractActionController
     }
     private function dateFromMicrotime($microtime, $format = ('H:i')){
         $t  = substr($microtime, 0 , strlen(time()));
-//        $t = (int)explode(".", $microtime/1000)[0];
-//        bdump($t);
-//        bdump($format);
         return date ($format, (int)$t);
     }
     public function actionTypeTranslator($type){
