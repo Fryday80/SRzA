@@ -3,6 +3,7 @@ namespace Application\Controller;
 
 
 use Application\Model\Action;
+use Application\Model\ActionType;
 use Application\Model\ActiveUser;
 use Application\Model\SystemLog;
 use Application\Service\StatisticService;
@@ -24,8 +25,8 @@ class SystemController extends AbstractActionController
 //            array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]['url'] . ' with ' . $this->statsService->getMostVisitedPages()[0]['hits']),
         );
         return new ViewModel(array(
-            'liveClicks'  => null, // $this->getDataStringFromDataSets( $this->statsService->getActionsLog() ),
-            'activeUsers' => null, // $this->getDataStringFromDataSets( $this->statsService->getActiveUsers() ),
+            'liveClicks'  => $this->getDataStringFromDataSets( $this->statsService->getActionLog() ),
+            'activeUsers' => $this->getDataStringFromDataSets( $this->statsService->getActiveUsers() ),
             'sysLog'      => null, // $this->getDataStringFromDataSets( $this->statsService->getSysLog() ),
             'userStats'   => $this->getDataStringFromArray( $userStats ),
         ));
@@ -54,44 +55,48 @@ class SystemController extends AbstractActionController
         return new JsonModel($result);
     }
     private function getDataStringFromDataSets( $itemArray ){
+        if (!is_array($itemArray)) return null;
         $result = array();
-        $insideString = '';
-        $time = 0;
-        $id = 0;
-        if ($itemArray[0] instanceof Action){
+        foreach ($itemArray as $key => $value){
+            $firstItem = $key;
+            break;
+        }
+        if ($itemArray[$firstItem] instanceof Action){
             /** @var  $item Action*/
             foreach ($itemArray as $item)
                 if ($item !== null) {
+                    bdump($item);
                     $insideString = '';
-                    $insideString .= $item->actionType . '<b> @ </b>' . date('H:i', $item->time) . '<b>: </b>' .
-                        $item->msg . '<b> of </b>' . $item->title . '<b> from </b>' . $item->data['userName'];
-                    array_push($result, array("string" => $insideString, "time" => $item->time, "id" =>  $item->itemId));
+                    $insideString .= $this->actionTypeTranslator($item->actionType) . '<b> @ </b>' . $this->dateFromMicrotime($item->time, 'H:i d.m.Y') . '<b>: </b>' .
+                        $item->msg . '<b> of </b>' . $item->title . '<b> from </b>' . $item->userName;
+                    array_push( $result, array( "string" => $insideString, "time" => $item->time ) );
                 }
         return $result;
         }
-        if ($itemArray[0] instanceof ActiveUser){
+        if ($itemArray[$firstItem] instanceof ActiveUser){
             /** @var  $item ActiveUser*/
             foreach ($itemArray as $item)
                 if ($item !== null) {
+                    bdump($item);
                     $insideString = '';
-                    $insideString .= "$item->userName: $item->url <b> @ </b>" . date('H:i', $item->time);
+                    $insideString .= "$item->userName: $item->url <b> @ </b>" . $this->dateFromMicrotime($item->time);
                     array_push($result, array("string" => $insideString));
                 }
         return $result;
         }
-        if ($itemArray[0] instanceof SystemLog) {
+        if ($itemArray[$firstItem] instanceof SystemLog) {
             // @todo
         return $result;
         }
         else return null;
     }
     private function getDataStringFromArray($data){
+        if (!is_array($data)) return null;
         $result = array();
         $insideString = "<table>";
         $td = "<td style='width:15%'>";
         $space = "<td style='width:2%'> | </td>";
         $i = 1;
-        $c = 0;
         foreach ($data as $value)
             if ($value !== null)
                 foreach ($value as $k => $v) {
@@ -111,5 +116,18 @@ class SystemController extends AbstractActionController
         $insideString .= "</table>";
         array_push($result, array("string" => $insideString));
         return $result;
+    }
+    private function dateFromMicrotime($microtime, $format = ('H:i')){
+        $t  = substr($microtime, 0 , strlen(time()));
+//        $t = (int)explode(".", $microtime/1000)[0];
+//        bdump($t);
+//        bdump($format);
+        return date ($format, (int)$t);
+    }
+    public function actionTypeTranslator($type){
+        if ( $type == ActionType::PAGE_CALL )
+            return 'Page Call';
+        if ( $type == ActionType::ERROR )
+            return 'Error';
     }
 }

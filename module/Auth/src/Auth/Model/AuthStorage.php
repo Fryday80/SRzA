@@ -17,7 +17,7 @@ class AuthStorage extends Session
     }
     public function forgetMe()
     {
-        $this->session->offsetSet('userId', -1);
+        $this->session->offsetSet('userId', 0);
         $this->session->offsetUnset('userName');
         $this->session->offsetUnset('roleId');
         $this->session->offsetUnset('roleName');
@@ -25,7 +25,7 @@ class AuthStorage extends Session
     }
     public function hasIdentity() {
         if ($this->session->offsetExists('userId')) {
-            if ($this->session->offsetGet('userId') > -1) {
+            if ($this->session->offsetGet('userId') > 0) {
                 return true;
             }
             return false;

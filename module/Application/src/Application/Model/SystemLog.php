@@ -13,9 +13,18 @@ class SystemLog
     public $userName;
     public $data;
 
-    function __construct($type, $msg, $url, $userId, $userName, $data = null)
+    /**
+     * SystemLog constructor.
+     * @param $type
+     * @param $msg
+     * @param $url
+     * @param $userId
+     * @param $userName
+     * @param null $data
+     */
+    function __construct($time, $type, $msg, $url, $userId, $userName, $data = null)
     {
-        $this->time = microtime(true) * 1000;
+        $this->time = $time;
         $this->type = $type;
         $this->msg = $msg;
         $this->url = $url;

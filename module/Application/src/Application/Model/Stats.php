@@ -4,17 +4,20 @@ namespace Application\Model;
 use Application\Utility\CircularBuffer;
 
 class Stats {
-    public $count = 0;
     /** @var CircularBuffer $actionLog */
     public $actionLog;
+    /** @var SystemLog[] $systemLog */
     public $systemLog;
     /** @var PageHit[] $pageHits */
     public $pageHits;
+    /** @var ActiveUser[] $activeUsers */
     public $activeUsers;
+    /** @var  int[] $globalCounters */
     public $globalCounters;
     public $globalHitsSum = 0;
     public $globalErrorHitsSum = 0;
     public $realUserCount = 0;
+    public $leaseTime = 30 * 60 * 1000000;
 
     function __construct() {
         $this->actionLog = new CircularBuffer(100);
@@ -29,11 +32,10 @@ class Stats {
      */
     public function updateActiveUser( ActiveUser $user) {
         if (!isset($this->activeUsers[$user->sid])) {
-            $user->time = microtime(true);
             $this->activeUsers[$user->sid] = $user;
         } else {
             $this->activeUsers[$user->sid]->url  = $user->url;
-            $this->activeUsers[$user->sid]->time = microtime();
+            $this->activeUsers[$user->sid]->time = $user->time;
             $this->activeUsers[$user->sid]->data = $user->data;
             if ( ($user->userId !== 0) && ($user->userId !== $this->activeUsers[$user->sid]->userId) ) {
                 $this->activeUsers[$user->sid]->userId = $user->userId;
@@ -44,7 +46,7 @@ class Stats {
         //remove entries they are to old
         $newActiveUser = [];
         foreach($this->activeUsers as $key => $activeUser) {
-            if ($activeUser->time > microtime() - 10000 * 300) {
+            if ($activeUser->time > microtime(true) - $this->leaseTime) {
                 $newActiveUser[$key] = $activeUser;
             }
         }
@@ -92,17 +94,72 @@ class Stats {
     }
 
     /**
-     * @param int $count
+     * @param int $type
      * @return mixed
      */
-    public function getPageHits($count = CounterType::ALL) {
-        return $this->globalCounters[$count];
+    public function getPageHits($type = CounterType::ALL) {
+        if ($type === CounterType::ALL) {
+            return $this->globalHitsSum;
+        }
+        if ($type === CounterType::ERROR) {
+            return $this->globalErrorHitsSum;
+        }
+        return $this->globalCounters[$type];
     }
-    public function getActionLog($since){
-
+    
+    public function getActionLog($since = 0){
+        if ($since == 0) return $this->getSinceOf($this->actionLog->toArray(), $since);
+        return $this->actionLog->toArray();
+    }
+    
+    private function getSinceOf($data, $since = 0){
+        if( !isset( $data ) ) return null;
+        $result = $this->filterByKey($data, 'time', $since, FilterTypes::BIGGER);
+        $result = $this->sortByKey($result, 'time');
+        return $result;
     }
 
-//    private function filterByKey( $key, $order = OR){}
+    private function filterByKey( $data, $key, $value, $type = FilterTypes::EQUAL) {
+        if( !isset( $data ) ) return null;
+        $result = array();
+        if ($type == FilterTypes::EQUAL) {
+            foreach ($data as $item) {
+                if ($item->$key == $value)
+                    array_push($result, $item);
+            }
+        }
+        if ($type == FilterTypes::BIGGER){
+            foreach ($data as $item) {
+                if ($item->$key > $value)
+                    array_push($result, $item);
+            }
+        }
+        if ($type == FilterTypes::SMALLER){
+            foreach ($data as $item) {
+                if ($item->$key < $value)
+                    array_push($result, $item);
+            }
+        }
+        if( $result == array() )return null;
+        return $result;
+    }
+
+    private function sortByKey($data, $key, $order = OrderTypes::DESCENDING){
+        if( !isset( $data ) ) return null;
+        $result = array();
+        foreach ($data as $item)
+            if ( isset( $item->$key ) ){
+                $result[$item->$key] = $item;
+            }
+        if ($order = OrderTypes::DESCENDING){
+            krsort($result);
+        }
+        if ($order = OrderTypes::ASCENDING){
+            ksort($result);
+        }
+        if( $result == array() )return null;
+        return $result;
+    }
 }
 
 abstract class ActionType {
@@ -127,4 +184,9 @@ abstract class CounterType {
 abstract class OrderTypes {
     const ASCENDING = 0;
     const DESCENDING = 1;
+}
+abstract class FilterTypes {
+    const EQUAL = 0;
+    const BIGGER = 1;
+    const SMALLER = 2;
 }

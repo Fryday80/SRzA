@@ -32,12 +32,12 @@ class AccessService {
     }
 
     /**
-     * @param $resoure
+     * @param $resource
      * @param $permission
      * @return bool
      */
-    function allowed($resoure, $permission) {
-        return $this->acl->isAccessAllowed($this->role, $resoure, $permission);
+    function allowed($resource, $permission) {
+        return $this->acl->isAccessAllowed($this->role, $resource, $permission);
     }
 
     /**
@@ -62,10 +62,10 @@ class AccessService {
     }
 
     /**
-     * @return int|mixed
+     * @return int
      */
     function getUserID() {
-        return $this->userID;
+        return (int)$this->userID;
     }
 
     /**

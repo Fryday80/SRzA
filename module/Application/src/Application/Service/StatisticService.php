@@ -13,15 +13,17 @@ use Application\Model\ActionType;
 use Application\Model\ActiveUser;
 use Application\Model\CounterType;
 use Application\Model\HitType;
-use Application\Model\PageHit;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
 use Auth\Service\AccessService;
+use Zarganwar\PerformancePanel\Register;
 use Zend\Http\Header\SetCookie;
 use Zend\Mvc\MvcEvent;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const WHITE_LIST = array('/');
+/** "true" logs speed in Tracy "false" don't */
+const SPEED_CHECK = true;
 
 class StatisticService
 {
@@ -34,59 +36,33 @@ class StatisticService
 
     function __construct($sm)
     {
+        if (SPEED_CHECK) Register::add('StatService start');
         $this->sm = $sm;
         $this->accessService = $sm->get('AccessService');
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
+        if (SPEED_CHECK) Register::add('StatService constructed');
     }
 
     public function onDispatch(MvcEvent $e)
     {
-        $request = $e->getApplication()->getRequest();
-        $serverPHPData = $request->getServer()->toArray();
-        $now = time();
-        $userId = $this->accessService->getUserID();
-        $userId = ($userId == "-1")? 0 : (int)$userId;
-        $userName = $this->accessService->getUserName();
-        $userName = ($userName == "") ? "Guest" : $userName;
-        $sid = $this->accessService->session->getManager()->getId();
-        $url = $activeUserData['last_action_url'] = $request->getServer('REQUEST_URI');
-        if($request->isXmlHttpRequest() && in_array($url, WHITE_LIST)) return;
-//        if( $this->ajaxFilter( $e->getApplication()->getRequest()->isXmlHttpRequest(), $url ) ) return ; //@todo
-        $replace = array( "http://", $serverPHPData['HTTP_HOST'] );
-        $referrer = (isset ($serverPHPData['HTTP_REFERER']) ) ? $serverPHPData['HTTP_REFERER'] : "direct call";
-        $relativeReferrerURL = str_replace( $replace,"", $referrer, $counter );
-        $redirect = (isset ($serverPHPData['REDIRECT_STATUS']))? $serverPHPData['REDIRECT_STATUS'] : "no redirect"; //set if redirected
-        $redirectedTo = (isset ($serverPHPData['REDIRECT_URL']) ) ? $serverPHPData['REDIRECT_URL'] : "no redirect";
-        
-        // active users data
-        $activeUserData['time'] = $now;
-        $activeUserData['ip'] = $ip = $serverPHPData['REMOTE_ADDR'];
-        $activeUserData['sid'] = $sid;
-        $activeUserData['userId'] = $userId;
-        $activeUserData['userName'] = $userName;
-        $activeUserData['data'] = array();
-        $activeUserData['data']['serverData'] = $serverPHPData;
+        $data = $this->gatherData($e);
 
-        $this->stats->logAction(new Action($url, $userId, ActionType::PAGE_CALL , 'Call', $url));
-        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $url);
-        $this->stats->updateActiveUser( new ActiveUser($userId, $userName, $sid, $ip, $url) );
+        if($data['request']->isXmlHttpRequest() && !in_array($data['url'], WHITE_LIST)) return;
 
-        if (!$request->getCookie() || !$request->getCookie()->offsetExists('srzaiknowyou')) {
-            $this->stats->logNewUser();
-            $cookie = new SetCookie('srzaiknowyou', time(), time() + 9999999);
-            $e->getResponse()->getHeaders()->addHeader($cookie);
-            $this->getPageHits(0);
-        }
+        $this->stats->logAction(new Action($data['time'], $data['url'], $data['userId'], $data['userName'], ActionType::PAGE_CALL , 'Call', $data['url']));
+        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $data['url']);
+        $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['time'], $data['sid'], $data['ip'], $data['url']) );
+
+        $this->checkCookie($e);
     }
 
     public function onError(MvcEvent $e) {
-        $url = $e->getRequest()->getServer('REQUEST_URI');
-        $userId = $this->accessService->getUserID();
-        $userId = ($userId == "-1")? 0 : (int)$userId;
-        $this->stats->logAction(new Action($url, $userId, ActionType::ERROR , 'Call', $url));
-        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::ERROR_MEMBER : HitType::ERROR_GUEST, $url);
-        $this->stats->logSystem( new SystemLog('ERROR', 'message','url', 'userId', 'userName' ));
+        $data = $this->gatherData($e);
+
+        $this->stats->logAction(new Action($data['time'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']));
+        $this->stats->logPageHit($data['hitType'], $data['url']);
+        $this->stats->logSystem( new SystemLog($data['time'], $data['logType'], 'message', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
     }
     public function onFinish(MvcEvent $e)
     {
@@ -95,7 +71,7 @@ class StatisticService
     }
 
     public function getPageHits ($count = CounterType::ALL){
-        $this->stats->getPageHits(0);
+        return $this->stats->getPageHits($count);
     }
     public function getActiveUsers(){
         $result = array();
@@ -104,24 +80,65 @@ class StatisticService
         }
         return $result;
     }
-    public function getActionLog($since){
-        
-    }
 
+    /**
+     * @param int $since timestamp microtime()*1000
+     * @return array|mixed
+     */
+    public function getActionLog($since = 0){
+        return $this->stats->getActionLog($since);
+    }
+    private function checkCookie(MvcEvent $e) {
+        if (!$e->getRequest()->getCookie() || !$e->getRequest()->getCookie()->offsetExists('srzaiknowyou')) {
+            $this->stats->logNewUser();
+            $cookie = new SetCookie('srzaiknowyou', time(), time() + 9999999);
+            $e->getResponse()->getHeaders()->addHeader($cookie);
+            $this->getPageHits(0);
+        }
+    }
     private function saveFile($content) {
         $content = serialize($content);
         file_put_contents($this->storagePath, $content);
         return true;
     }
     private function loadFile() {
+        if (SPEED_CHECK) Register::add('load and unserialize');
         $content = file_get_contents($this->storagePath);
         $content = unserialize($content);
+        if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
     }
 
+    private function gatherData($e)
+    {
+        if (SPEED_CHECK) Register::add('StatService ->gatherData start');
+        $data['time'] = microtime(true) * 1000;
 
+        $data['sid']= $this->accessService->session->getManager()->getId();
+        $data['userId']= $this->accessService->getUserID();
+        $data['userName']= $this->accessService->getUserName();
+        $data['userName']= ($data['userName']== "") ? "Guest" : $data['userName'];
+        $data['hitType'] = ($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST;
+        $data['logType'] = ($data['hitType'] == HitType::MEMBER) ? LogTypes::ERROR_MEMBER : LogTypes::ERROR_GUEST;
 
-//
+        $data['request']= $e->getApplication()->getRequest();
+        $data['serverPHPData']= $data['request']->getServer()->toArray();
+        $data['url']= $data['serverPHPData']['REQUEST_URI'];
+        $data['ip']= $data['serverPHPData']['REMOTE_ADDR'];
+        if (isset ($data['serverPHPData']['HTTP_REFERER']) ) {
+            // prepared if referring data is needed
+//        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
+//        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";
+//        $data['relativeReferrerURL']= str_replace( $data['replace'],"", $data['referrer'], $counter );
+//        $data['redirect']= (isset ($data['serverPHPData']['REDIRECT_STATUS'])) ? $data['serverPHPData']['REDIRECT_STATUS'] : "no redirect"; //set if redirected
+//        $data['redirectedTo']= (isset ($data['serverPHPData']['REDIRECT_URL']) ) ? $data['serverPHPData']['REDIRECT_URL'] : "no redirect";
+        }
+        if (SPEED_CHECK) Register::add('StatService ->gatherData end');
+        return $data;
+    }
+
+    private function ifYou($wantToSee, $oldServiceFunctions)
+    {
 //    /**** SET ****/
 //    /**** ACTIVE USERS ****/
 //    private function updateActiveUsers($url, $userId, $now, $sid, $ip, $userName, $data = null){
@@ -233,4 +250,9 @@ class StatisticService
 //        }
 //        return false;
 //    }
+    }
+}
+abstract class LogTypes {
+    const ERROR_GUEST = 0;
+    const ERROR_MEMBER = 1;
 }
