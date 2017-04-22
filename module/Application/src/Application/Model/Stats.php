@@ -18,6 +18,7 @@ class Stats {
     public $globalErrorHitsSum = 0;
     public $realUserCount = 0;
     public $leaseTime = 30 * 60 * 1000000;
+    private $key;
 
     function __construct() {
         $this->actionLog = new CircularBuffer(100);
@@ -76,7 +77,7 @@ class Stats {
             $this->pageHits[$url] = new PageHit($url);
         }
 
-        $this->pageHits[$url]->lastTime = microtime(true);
+        $this->pageHits[$url]->lastTime = (int)microtime(true)*1000;
         if ($hitType === HitType::GUEST || $hitType === HitType::MEMBER) {
             $this->pageHits[$url]->hitsSum++;
             $this->globalHitsSum++;
@@ -108,15 +109,20 @@ class Stats {
     }
     
     public function getActionLog($since = 0){
-        if ($since == 0) return $this->getSinceOf($this->actionLog->toArray(), $since);
-        return $this->actionLog->toArray();
+        $data = array_reverse($this->actionLog->toArray());
+        if ($since !== 0) return $this->getSinceOf( $data, $since);
+        return $data;
+    }
+    public function getMostVisitedPages($top = 1)
+    {
+        $result = array_reverse( $this->sortByKey($this->pageHits, 'hitsSum') );
+        return array_slice($result, 0, $top);
     }
     
     private function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
         $result = $this->filterByKey($data, 'time', $since, FilterTypes::BIGGER);
-        $result = $this->sortByKey($result, 'time');
-        return $result;
+        return $this->sortByKey($result, 'time');
     }
 
     private function filterByKey( $data, $key, $value, $type = FilterTypes::EQUAL) {
@@ -140,31 +146,41 @@ class Stats {
                     array_push($result, $item);
             }
         }
-        if( $result == array() )return null;
+        if( empty($result) )return null;
         return $result;
     }
 
+    function sort($a, $b) {
+        $k = $this->key;
+        $av = $a->$k;
+        $bv = $b->$k;
+        //@todo hate php
+        if($av === $bv) {
+            return  ($a->time < $b->time) ? -1 : 1;
+        }
+
+        return ($av < $bv)? -1: 1;
+    }
     private function sortByKey($data, $key, $order = OrderTypes::DESCENDING){
         if( !isset( $data ) ) return null;
-        $result = array();
-        foreach ($data as $item)
-            if ( isset( $item->$key ) ){
-                $result[$item->$key] = $item;
-            }
-        if ($order = OrderTypes::DESCENDING){
-            krsort($result);
-        }
-        if ($order = OrderTypes::ASCENDING){
-            ksort($result);
-        }
-        if( $result == array() )return null;
-        return $result;
+        $this->key = $key;
+        usort($data, array($this, 'sort'));
+        return $data;
     }
+
+
 }
 
 abstract class ActionType {
     const PAGE_CALL = 0;
     const ERROR = 1;
+
+    static function translator($type){
+        if ( $type == ActionType::PAGE_CALL )
+            return 'Page Call';
+        if ( $type == ActionType::ERROR )
+            return 'Error';
+    }
 }
 abstract class HitType {
     const MEMBER = 0;

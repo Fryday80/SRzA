@@ -60,6 +60,7 @@
                         .text(chars[i].name);
                     console.dir(clone);
                     $charList.append(clone);
+                    //kk
                     // $charList.append($('<li>', {
                     //     'data-id': chars[i].id,
                     //     text: chars[i].name

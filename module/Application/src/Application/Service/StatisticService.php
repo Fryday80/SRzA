@@ -88,6 +88,11 @@ class StatisticService
     public function getActionLog($since = 0){
         return $this->stats->getActionLog($since);
     }
+    public function getMostVisitedPages($top = 1){
+        return $this->stats->getMostVisitedPages($top);
+    }
+    
+    
     private function checkCookie(MvcEvent $e) {
         if (!$e->getRequest()->getCookie() || !$e->getRequest()->getCookie()->offsetExists('srzaiknowyou')) {
             $this->stats->logNewUser();
@@ -112,7 +117,7 @@ class StatisticService
     private function gatherData($e)
     {
         if (SPEED_CHECK) Register::add('StatService ->gatherData start');
-        $data['time'] = microtime(true) * 1000;
+        $data['time'] = (int)microtime(true) * 1000;
 
         $data['sid']= $this->accessService->session->getManager()->getId();
         $data['userId']= $this->accessService->getUserID();

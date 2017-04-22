@@ -1,5 +1,6 @@
 <?php
-    $title = 'Dashboard';
+
+$title = 'Dashboard';
     $this->headTitle($title);
 
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
@@ -88,6 +89,58 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </style>
 
 <?php
+
+function getDataStringFromDataSets( $itemArray ){
+    if (!is_array($itemArray)) return null;
+    $result = array();
+    foreach ($itemArray as $key => $value){
+        $firstItem = $key;
+        break;
+    }
+    if ($itemArray[$firstItem] instanceof \Application\Model\ActiveUser){
+        /** @var  $item ActiveUser*/
+        foreach ($itemArray as $item)
+            if ($item !== null) {
+                $insideString = '';
+                $insideString .= "$item->userName: $item->url <b> @ </b>" . \Application\Controller\SystemController::dateFromMicrotime($item->time);
+                array_push($result, array("string" => $insideString));
+            }
+        return $result;
+    }
+    if ($itemArray[$firstItem] instanceof \Application\Model\SystemLog) {
+        // @todo
+        return $result;
+    }
+    else return null;
+}
+
+function getDataStringFromArray($data){
+    if (!is_array($data)) return null;
+    $result = array();
+    $insideString = "<table>";
+    $td = "<td style='width:15%'>";
+    $space = "<td style='width:2%'> | </td>";
+    $i = 1;
+    foreach ($data as $value)
+        if ($value !== null)
+            foreach ($value as $k => $v) {
+                $insideString .= ($i == 0) ? "<tr>" : "";
+                if (is_int($k)) {
+                    $insideString .= "$td $v</td>";
+                    $c = 4;
+                }
+                else {
+                    $insideString .= "$td<b>$k:</b></td>$td$v</td>";
+                    $c = 3;
+                }
+                $insideString .= ($i == $c) ? "</tr>" : "$space";
+                $i++;
+                $i = ($i == ($c+1)) ? 0 : $i;
+            }
+    $insideString .= "</table>";
+    array_push($result, array("string" => $insideString));
+    return $result;
+}
 // ************************************************************************************* QUICK LINKS
 ?>
 <box class = 'dashboard dashboard-left'>
@@ -107,8 +160,9 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 <?php
 // ************************************************************************************* USER STATS
 $li = '';
+$userStats = getDataStringFromArray($userStats);
 if($userStats !== null)
-foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
+    foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
@@ -119,24 +173,22 @@ foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 
 <?php
 // ************************************************************************************* LIVE CLICKS
-$li = '';
-if($liveClicks !== null)
-    foreach ( $liveClicks as $item )
-        if($item !== null){
-            $liCss = 'class="entry basicdata" data-timestamp="' . $item['time'] . '"';
-            $li .= "<li $liCss>" . $item['string'] . "</li>";
-        }
 ?>
 <box class = 'dashboard dashboard-right'>
     <boxtitel>
         <span class='own_text_small'>Live Clicks</span>
     </boxtitel>
-    <boxcontent><ul id="dashLiveList" class="dash-list"><?php echo $li ?></ul></boxcontent>
+    <boxcontent>
+        <ul id="dashLiveList" class="dash-list">
+            <li class="entry basicdata" data-timestamp="0"></li>
+        </ul>
+    </boxcontent>
 </box>
 
 <?php
 // ************************************************************************************* ACTIVE USERS
 $li = '';
+$activeUsers = getDataStringFromDataSets($activeUsers);
 if($activeUsers !== null)
     foreach ( $activeUsers as $item )
         if($item !== null)
@@ -152,6 +204,7 @@ if($activeUsers !== null)
 <?php
 // ************************************************************************************* SYSTEM LOG
 $li = '';
+$sysLog = getDataStringFromDataSets($sysLog);
 if($sysLog !== null)
     foreach ( $sysLog as $item )
         if($item !== null)
@@ -174,15 +227,11 @@ if($sysLog !== null)
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
             if (actions !== null) {;
-                actions.reverse();
+//                actions.reverse();
 
                 for (let i = 0; i < actions.length; i++) {
-//                                    let DateStamp = new Date(actions[i].time)
-//                                    let Hours = "0" + DateStamp.getHours();
-//                                    let Minutes = "0" + DateStamp.getMinutes();
-//                                    let actionsTime = Hours.substr(-2) + ':' + Minutes.substr(-2);
                     $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "'>" +
-                        actions[i].string + "</li>");
+                        actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
             setTimeout(function() {
