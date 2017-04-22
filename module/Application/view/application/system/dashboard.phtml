@@ -14,35 +14,42 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
             box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
         }
     }
-    .dashboard
+    .dash-list
     {
-        text-shadow: none;
-    }
-
-    .dashboard-left
-    {
-        float: left;
-        width: 27%;
-    }
-    .dashboard-right
-    {
-        float: right;
-        width: 67%;
-    }
-    .dash-list {
         max-height: 200px;
         overflow-y: auto;
-        list-style-type: none
+        list-style-type: none;
+        text-shadow: none;
     }
-    dash-links {
-        list-style: none;
+    .dash-links {
+        min-height: 30px;
+    }
+    .dash-links li{
         display: inline-block;
-        float: left;
+        padding: 10px;
+        box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+        width: 17%;
     }
-    boxcontent ul {
+    .dash-links li:hover,
+    .dash-links li:active
+    {
+        text-shadow: 1px 1px rgba(112, 186, 192, 0.9);
+        background-color: rgba(41, 0, 0, 0.5);
+        box-shadow: inset 0px 0px 2vw 0px rgba(54, 178, 192, 0.9);
+        display: inline-block;
+        padding: 10px;
+    }
+    .dash-links li a {
+        width: 100%;
+        display: block;
+        text-align: center;
+    }
+    boxcontent ul
+    {
         list-style: none;
     }
-    .dash-list li {
+    .dash-list li
+    {
         animation-name: newOne;
         animation-duration: 4s;
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
@@ -118,8 +125,8 @@ function getDataStringFromArray($data){
     if (!is_array($data)) return null;
     $result = array();
     $insideString = "<table>";
-    $td = "<td style='width:15%'>";
-    $space = "<td style='width:2%'> | </td>";
+    $td = "<td style='min-width:8%'>";
+    $space = "<td style='width:2%'> <b>||</b> </td>";
     $i = 1;
     foreach ($data as $value)
         if ($value !== null)
@@ -145,10 +152,10 @@ function getDataStringFromArray($data){
 ?>
 <box class = 'dashboard dashboard-left'>
     <boxtitel>
-        <span class='own_text_small'>Quick Links</span>
+        <span class='own_text_small'></span>
     </boxtitel>
     <boxcontent>
-        <ul class="dash-list dash-links">
+        <ul class="dash-links">
             <li><a href='/'> Home</a></li>
             <li><a href='/cms'> Content</a></li>
             <li><a href='/media/filebrowser'> File Browser</a></li>
@@ -164,7 +171,7 @@ $userStats = getDataStringFromArray($userStats);
 if($userStats !== null)
     foreach ($userStats as $item) $li .= "<li>" . $item['string'] . "</li>";
 ?>
-<box class = 'dashboard dashboard-left'>
+<box class = 'dashboard user-stats'>
     <boxtitel>
         <span class='own_text_small'>User Statistics</span>
     </boxtitel>
@@ -174,7 +181,7 @@ if($userStats !== null)
 <?php
 // ************************************************************************************* LIVE CLICKS
 ?>
-<box class = 'dashboard dashboard-right'>
+<box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'>Live Clicks</span>
     </boxtitel>
@@ -194,7 +201,7 @@ if($activeUsers !== null)
         if($item !== null)
             $li .= '<li>' . $item['string'] . '</li>';
 ?>
-<box class = 'dashboard dashboard-left'>
+<box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'>Active Users</span>
     </boxtitel>
@@ -210,7 +217,7 @@ if($sysLog !== null)
         if($item !== null)
             $li .= '<li>' . $item['string'] . '</li>';
 ?>
-<box class = 'dashboard dashboard-right'>
+<box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'>System Log</span>
     </boxtitel>
