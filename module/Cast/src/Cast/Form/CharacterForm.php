@@ -1,6 +1,7 @@
 <?php
 namespace Cast\Form;
 
+use Cast\Form\Filter\CharacterFilter;
 use Zend\Form\Form;
 
 class CharacterForm extends Form
@@ -19,7 +20,7 @@ class CharacterForm extends Form
 
         parent::__construct("Character");
         $this->setAttribute('method', 'post');
-
+        $this->setInputFilter(new CharacterFilter());
         $this->add(array(
             'name' => 'id',
             'type' => 'Hidden',
@@ -29,14 +30,64 @@ class CharacterForm extends Form
             'type' => 'text',
             'options' => array(
                 'label' => 'Vorname'
-            )
+            ),
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
+            ),
+            'validators' => array(
+                array('validator' => 'StringLength',
+                    'options' => array(
+                        'min' => 3,
+                        'max' => 10,
+                        'messages' => array(
+                            'stringLengthTooShort' => 'The type is too short.',
+                            'stringLengthTooLong' => 'The type is too long.'
+                        )
+                    )
+                ),
+                array(
+                    'validator' => 'NotEmpty',
+                    'options' => array(
+                        'messages' => array(
+                            'isEmpty' => 'Name is required.'
+                        )
+                    )
+                )
+            ),
         ));
         $this->add(array(
             'name' => 'surename',
             'type' => 'text',
             'options' => array(
                 'label' => 'Name'
-            )
+            ),
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
+            ),
+            'validators' => array(
+                array('validator' => 'StringLength',
+                    'options' => array(
+                        'min' => 3,
+                        'max' => 15,
+                        'messages' => array(
+                            'stringLengthTooShort' => 'The type is too short.',
+                            'stringLengthTooLong' => 'The type is too long.'
+                        )
+                    )
+                ),
+                array(
+                    'validator' => 'NotEmpty',
+                    'options' => array(
+                        'messages' => array(
+                            'isEmpty' => 'Name is required.'
+                        )
+                    )
+                )
+            ),
         ));
         $this->add(array(
             'name' => 'user_id',
@@ -46,7 +97,33 @@ class CharacterForm extends Form
             'options' => array(
                 'label' => 'Darsteller',
                 'value_options' => $this->getUsersForSelect(),
-            )
+            ),
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
+            ),
+            'validators' => array(
+                array('validator' => 'StringLength',
+                    'options' => array(
+                        'min' => 3,
+                        'max' => 15,
+                        'messages' => array(
+                            'stringLengthTooShort' => 'The type is too short.',
+                            'stringLengthTooLong' => 'The type is too long.'
+                        )
+                    )
+                ),
+                array(
+                    'validator' => 'NotEmpty',
+                    'options' => array(
+                        'messages' => array(
+                            'isEmpty' => 'Name is required.'
+                        )
+                    )
+                )
+            ),
+
         ));
         $this->add(array(
             'name' => 'family_id',

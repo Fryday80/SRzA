@@ -39,7 +39,7 @@ class ProfileController extends AbstractActionController
         $viewModel->setVariable('characters', $characters);
 
         if ($private)
-            $this->privateView($viewModel, $user, $userTable);
+            $this->privateView($viewModel, $user, $userTable, $accessService);
         else
             $this->publicView($viewModel, $user);
 
@@ -75,7 +75,7 @@ class ProfileController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
-    public function privateView(ViewModel &$viewModel, User $user, $userTable) {
+    public function privateView(ViewModel &$viewModel, User $user, $userTable, AccessService $accessService) {
         $viewModel->setTemplate('auth/profile/private.phtml');
         $request = $this->getRequest();
 
@@ -102,15 +102,10 @@ class ProfileController extends AbstractActionController
                 }
             }
         }
-
-
         //create charForm
         $charForm = $this->createCharacterForm();
+        $charForm->setAttribute('action', '#');
         $viewModel->setVariable('charForm', $charForm);
-
-
-        //active / user_id
-
     }
     public function publicView(&$viewModel, User $user) {
         $viewModel->setTemplate('auth/profile/public.phtml');

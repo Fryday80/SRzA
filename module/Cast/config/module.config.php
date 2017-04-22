@@ -162,6 +162,16 @@ return array(
                                      )
                                  )
                              ),
+                             'jsonOwnerEdit' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route' => '/jsonOwnerEdit',
+                                     'constraints' => array(),
+                                     'defaults' => array(
+                                         'action' => 'jsonOwnerEdit'
+                                     )
+                                 )
+                             ),
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(

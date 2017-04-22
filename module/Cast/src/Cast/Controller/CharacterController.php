@@ -2,6 +2,7 @@
 namespace Cast\Controller;
 
 use Auth\Model\UserTable;
+use Auth\Service\AccessService;
 use Cast\Form\CharacterForm;
 use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
@@ -108,6 +109,9 @@ class CharacterController extends AbstractActionController
         );
     }
     function jsonAction() {
+        if (!$this->getRequest()->isXmlHttpRequest())
+            return $this->notFoundAction();
+
         /** @var CharacterTable $charTable */
         $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
         $request = json_decode($this->getRequest()->getContent());
@@ -126,6 +130,55 @@ class CharacterController extends AbstractActionController
                         $result['data'] = false;
                     } else {
                         $result['data'] = $charTable->getByFamilyId($request->familyID);
+                    }
+                    break;
+            };
+        } catch (Exception $e) {
+            $result['error'] = true;
+            $result['message'] = $e->getMessage();
+        }
+
+        //output
+        return new JsonModel($result);
+    }
+
+    function jsonOwnerEditAction() {
+        if (!$this->getRequest()->isXmlHttpRequest())
+            return $this->notFoundAction();
+
+        /** @var UserTable $userTable */
+        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+        /** @var CharacterTable $charTable */
+        $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
+        /** @var AccessService $accessService */
+        $accessService = $this->getServiceLocator()->get("AccessService");
+        $request = json_decode($this->getRequest()->getContent());
+        $result = ['error' => false];
+        try {
+            switch ($request->method) {
+                case 'saveChar':
+                    if (!isset($request->id) || !isset($request->data) ) {
+                        throw new Exception('id or data is not set');
+                    } else {
+                        if ($request->id < 0) {
+                            $data = get_object_vars($request->data);
+//                            $data['active'] = 0;
+                            $data['id'] = 0;
+                            $data['user_id'] = $accessService->getUserID();
+
+                            $users = $userTable->getUsers()->toArray();
+                            $form = new CharacterForm($users,[],[]);
+//                            $form->init();
+                            $form->setData($data);
+                            $form->isValid();
+                            var_dump($form->getMessages());
+//                            $charTable->add(array(
+//
+//                            ));
+                            $result['message'] = 'new char created';
+                        } else {
+                            $result['message'] = 'Save char';
+                        }
                     }
                     break;
             };
