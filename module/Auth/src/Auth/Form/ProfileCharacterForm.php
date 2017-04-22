@@ -37,6 +37,44 @@ class ProfileCharacterForm extends Form
             )
         ));
         $this->add(array(
+            'name' => 'gender',
+            'type' => 'Zend\Form\Element\Radio',
+            'attributes' => array(),
+            'options' => array(
+                'label' => 'gender',
+                'value_options' => array(
+                    'm' => 'Mann',
+                    'f' => 'Frau',
+                ),
+            ),
+            'required' => true,
+            'allow_empty' => false,
+
+        ));
+        $this->add(array(
+            'name' => 'birthday',
+            'type' => 'Zend\Form\Element\Date',
+            'attributes' => array(),
+            'options' => array(
+                'label' => 'Birthday',
+            ),
+            'required' => true,
+            'allow_empty' => false,
+
+        ));
+        $this->add(array(
+            'name' => 'vita',
+            'type' => 'textarea',
+            'options' => array(
+                'label' => 'Vita'
+            ),
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
+            ),
+        ));
+        $this->add(array(
             'name' => 'family_id',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(

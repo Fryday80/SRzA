@@ -3,30 +3,54 @@
 
     var characters = [],
         template = document.querySelector('#characterListItemTemplate'),
-        $charForm = $('#charForm'),
+        $characters = $('#characters'),
+        $charFormBox = $('#charForm'),
+        $charForm = $('#Character'),
+        $charList = $('.characterList'),
         $charFormTitle = {
-            $command: $('boxtitel .command', $charForm),
-            $charName: $('boxtitel .charName', $charForm),
+            $command: $('boxtitel .command', $charFormBox),
+            $charName: $('boxtitel .charName', $charFormBox),
         };
 
+
+    function scrollToCharForm() {
+        $('html, body').animate({
+            scrollTop: $charFormBox.offset().top
+        }, 500);
+    }
+    function scrollToCharSelect() {
+        $('html, body').animate({
+            scrollTop: $characters.offset().top
+        }, 500);
+    }
     function showCharForm() {
-        $charForm.removeClass('hide');
-        $charForm.addClass('show');
+        removeAllCharFormErrors();
+        $charFormBox.removeClass('hide');
+        $charFormBox.addClass('show');
     }
     function hideCharForm() {
-        $charForm.addClass('show');
-        $charForm.removeClass('hide');
+        $charFormBox.addClass('show');
+        $charFormBox.removeClass('hide');
     }
     function getCharByID(id) {
         for(let i = 0; i < characters.length; i++) {
-            if (parseInt(characters[i].id) === id) {
+            if (parseInt(characters[i].id) == id) {
                 return characters[i];
             }
         }
     }
+    function createCharElement(char) {
+        var clone = document.importNode(template.content, true);
+        $('li', clone)
+            .data('id', char.id)
+            .text(char.name);
+        $charList.append(clone);
+    }
+    function removeAllCharFormErrors() {
+        $charForm.children('ul').remove();
+    }
     //ajax call
     function loadChars() {
-        let $charList = $('.characterList');
         $charList.find('li').remove();
         let data = {
             method: 'getChars',
@@ -54,17 +78,7 @@
                 if (!chars) return;
                 characters = chars;
                 for (let i = 0; i < chars.length; i++) {
-                    var clone = document.importNode(template.content, true);
-                    $('li', clone)
-                        .data('id', chars[i].id)
-                        .text(chars[i].name);
-                    console.dir(clone);
-                    $charList.append(clone);
-                    //kk
-                    // $charList.append($('<li>', {
-                    //     'data-id': chars[i].id,
-                    //     text: chars[i].name
-                    // }));
+                    createCharElement(chars[i]);
                 }
             }
             //@todo remove load animation and show element
@@ -91,19 +105,40 @@
             //@todo on error is not decoded
             //e = JSON.parse(e);
             if (e.error) {
-                //@todo handle error
-                console.error(e);
+                if (e.code == 1) {
+                    removeAllCharFormErrors();
+                    // $('#Character input[name="id"]').val(char.id);
+                    let errors = e.formErrors;
+                    if (errors.name) $('#Character input[name="name"]').parent('label').after('<ul><li>'+ errors.name.isEmpty +'</li></ul>');
+
+                    // $('#Character input[name="name"]').parent('label').next().val(char.name);
+                    if (errors.surename) $('#Character input[name="surename"]').parent('label').after('<ul><li>'+ errors.surename.isEmpty +'</li></ul>')
+                    // $('#Character input[name="gender"]').val([char.gender]);
+                    // $('#Character input[name="birthday"]').val(char.birthday);
+                    // $('#Character input[name="vita"]').val(char.vita);
+
+
+
+
+                    // $('#Character select[name="family_id"]').val(parseInt(char.family_id));
+                    // $('#Character select[name="tross_id"]').val(parseInt(char.tross_id));
+                    // $('#Character select[name="job_id"]').val(parseInt(char.job_id));
+                }
             } else {
-                //add characters
-//                    let chars = e.data;
-//                    if (!chars) return;
-//                    characters = chars;
-//                    for (let i = 0; i < chars.length; i++) {
-//                        $charList.append($('<li>', {
-//                            'data-id': chars[i].id,
-//                            text: chars[i].name
-//                        }));
-//                    }
+                switch (e.code) {
+                    case 200:
+                        //saved
+                        let char = getCharByID(id);
+                        characters[characters.indexOf(char)] = e.data;
+                        break;
+                    case 201:
+                        //new created
+                        characters.push(e.data);
+                        createCharElement(e.data);
+                        break;
+                }
+                scrollToCharSelect();
+                hideCharForm();
             }
             //@todo remove load animation and show element
         });
@@ -182,13 +217,16 @@
             $charFormTitle.$command.text('Edit');
             showCharForm();
 
-            $('html, body').animate({
-                scrollTop: $charForm.offset().top
-            }, 500);
+            scrollToCharForm();
             //populate values to form
             $('#Character input[name="id"]').val(char.id);
             $('#Character input[name="name"]').val(char.name);
             $('#Character input[name="surename"]').val(char.surename);
+
+            $('#Character input[name="gender"]').val([char.gender]);
+            $('#Character input[name="birthday"]').val(char.birthday);
+            $('#Character input[name="vita"]').val(char.vita);
+
             $('#Character select[name="family_id"]').val(parseInt(char.family_id));
             $('#Character select[name="tross_id"]').val(parseInt(char.tross_id));
             $('#Character select[name="job_id"]').val(parseInt(char.job_id));
@@ -223,6 +261,10 @@
         $('#Character input[name="id"]').val(-1);
         $('#Character input[name="name"]').val('');
         $('#Character input[name="surename"]').val('');
+
+        $('#Character input[name="birthday"]').val('');
+        $('#Character input[name="vita"]').val('');
+
         $('#Character select[name="family_id"]').val(0);
         $('#Character select[name="tross_id"]').val(0);
         $('#Character select[name="job_id"]').val(0);
@@ -230,9 +272,6 @@
         $charFormTitle.$charName.text('');
         $charFormTitle.$command.text('Neuer');
         showCharForm();
-
-        $('html, body').animate({
-            scrollTop: $charForm.offset().top
-        }, 500);
+        scrollToCharForm();
     })
 })();

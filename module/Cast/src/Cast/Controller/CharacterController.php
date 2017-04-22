@@ -160,24 +160,53 @@ class CharacterController extends AbstractActionController
                     if (!isset($request->id) || !isset($request->data) ) {
                         throw new Exception('id or data is not set');
                     } else {
+                        $data = get_object_vars($request->data);
                         if ($request->id < 0) {
-                            $data = get_object_vars($request->data);
-//                            $data['active'] = 0;
+                            $data['active'] = 0;
                             $data['id'] = 0;
                             $data['user_id'] = $accessService->getUserID();
 
-                            $users = $userTable->getUsers()->toArray();
-                            $form = new CharacterForm($users,[],[]);
-//                            $form->init();
+                            $form = $this->createCharacterForm();
                             $form->setData($data);
-                            $form->isValid();
-                            var_dump($form->getMessages());
-//                            $charTable->add(array(
-//
-//                            ));
-                            $result['message'] = 'new char created';
+                            if ($form->isValid() ){
+                                unset($data['submit']);
+                                $id = $charTable->add($data);
+                                $newOwn = $charTable->getById($id);
+                                $result['message'] = 'new char created';
+                                $result['code'] = 201;
+                                $result['data'] = $newOwn;
+                            } else {
+                                $result['error'] = true;
+                                $result['message'] = 'form errors';
+                                $result['code'] = 1;
+                                $result['formErrors'] = $form->getMessages();
+                            }
                         } else {
-                            $result['message'] = 'Save char';
+                            $charInDb = $charTable->getById($request->id);
+                            if (!$charInDb) {
+                                $result['error'] = true;
+                                $result['message'] = "Character id dose't exists";
+                                $result['code'] = 2;
+                            } else {
+                                //check if current user is char owner
+                                if ($accessService->getUserID() == $charInDb['user_id']) {
+                                    $charInDb['id'] = $request->id;
+                                    if ($charTable->save($request->id, $data) ) {
+                                        $result['message'] = 'Save Character';
+                                        $result['data'] = $charInDb;
+                                        $result['code'] = 200;
+                                    } else {
+                                        $result['error'] = true;
+                                        $result['message'] = "Can't save Character";
+                                        $result['code'] = 3;
+                                    }
+                                } else {
+                                    $result['error'] = true;
+                                    $result['message'] = "Forbidden Character for you";
+                                    $result['code'] = 403;
+                                }
+
+                            }
                         }
                     }
                     break;

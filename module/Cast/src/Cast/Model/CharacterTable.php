@@ -1,6 +1,7 @@
 <?php
 namespace Cast\Model;
 
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
@@ -25,11 +26,12 @@ class CharacterTable extends AbstractTableGateway
     }
     
     public function getById($id) {
+        /** @var ResultSet $row */
         $row = $this->select(array('id' => (int) $id));
-        if (!$row)
-            return false;
-        
-        return $row->toArray()[0];
+        if (count($row) > 0)
+            return $row->current()->getArrayCopy();
+
+        return false;
     }
 
     public function getByUserId($id) {
