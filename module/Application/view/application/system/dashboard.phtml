@@ -15,8 +15,8 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         }
     }
     #content box {
-        border-top-left-radius: 40px;
-        border-bottom-right-radius: 40px;
+        border-top-left-radius: 60px;
+        border-bottom-right-radius: 60px;
         border-top-right-radius: 0;
         border-bottom-left-radius: 0;
         border: none;
@@ -41,7 +41,10 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
         width: 17%;
         text-align: center;
-        border-radius: 8px;
+        border-top-left-radius: 40px;
+        border-bottom-right-radius: 40px;
+        border-top-right-radius: 0;
+        border-bottom-left-radius: 0;
     }
     .dash-links li:hover,
     .dash-links li:active
@@ -190,6 +193,7 @@ if($userStats !== null)
 <?php
 // ************************************************************************************* SYSTEM LOG
 $li = '';
+$sysLog = array (1,2,3);
 if($sysLog !== null)
     foreach ( $sysLog as $item )
         if($item !== null)
