@@ -29,6 +29,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         padding: 10px;
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
         width: 17%;
+        text-align: center;
     }
     .dash-links li:hover,
     .dash-links li:active
@@ -43,6 +44,19 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         width: 100%;
         display: block;
         text-align: center;
+    }
+    .user-stats li
+    {
+        vertical-align: middle;
+        min-height: 40px;
+        margin: 1%;
+        width: 30%;
+        display: inline-block;
+        text-align: center;
+    }
+    .user-stats p
+    {
+        text-shadow: 1px 1px white;
     }
     boxcontent ul
     {
@@ -124,22 +138,14 @@ function getDataStringFromDataSets( $itemArray ){
 function getDataStringFromArray($data){
     if (!is_array($data)) return null;
     $result = array();
-    $insideString = "<table>";
-    $td = "<td style='min-width:8%'>";
-    $space = "<td style='width:2%'> <b>||</b> </td>";
-    $i = 1;
+
     foreach ($data as $value)
         if ($value !== null)
             foreach ($value as $k => $v) {
-                $insideString .= ($i == 0) ? "<tr>" : "";
-                $insideString .= "$td<b>$k:</b></td>$td$v</td>";
-                $c = 3;
-                $insideString .= ($i == $c) ? "</tr>" : "$space";
-                $i++;
-                $i = ($i == ($c+1)) ? 0 : $i;
+                $insideString = "";
+                $insideString .= "<p><b>$k:</b></p>$v";
+                array_push($result, array("string" => $insideString));
             }
-    $insideString .= "</table>";
-    array_push($result, array("string" => $insideString));
     return $result;
 }
 // ************************************************************************************* QUICK LINKS
