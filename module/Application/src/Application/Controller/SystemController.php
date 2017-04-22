@@ -47,9 +47,6 @@ class SystemController extends AbstractActionController
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
-//                var_dump($statsService->getActionLog($request->since+1));
-                //was stimmt dann nich?er holt immer alle
-//                var_dump($this->getDataStringFromDataSets( $statsService->getActionLog($request->since+1)));
                 $result['actions'] = $this->addDateTime( $statsService->getActionLog($request->since+1));
                 break;
         };

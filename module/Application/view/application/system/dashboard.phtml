@@ -132,14 +132,8 @@ function getDataStringFromArray($data){
         if ($value !== null)
             foreach ($value as $k => $v) {
                 $insideString .= ($i == 0) ? "<tr>" : "";
-                if (is_int($k)) {
-                    $insideString .= "$td $v</td>";
-                    $c = 4;
-                }
-                else {
-                    $insideString .= "$td<b>$k:</b></td>$td$v</td>";
-                    $c = 3;
-                }
+                $insideString .= "$td<b>$k:</b></td>$td$v</td>";
+                $c = 3;
                 $insideString .= ($i == $c) ? "</tr>" : "$space";
                 $i++;
                 $i = ($i == ($c+1)) ? 0 : $i;
