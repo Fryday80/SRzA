@@ -12,12 +12,6 @@ class SystemLogTable extends AbstractTableGateway
 {
     public $table = 'system_log';
 
-    protected $sort;
-    protected $serialized = array();
-    protected $required = array();
-    protected $isInt = array();
-    protected $isString = array();
-
 
     public function __construct($Sm, Adapter $adapter)
     {
