@@ -153,11 +153,15 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 <?php
 // ************************************************************************************* USER STATS
 $li = '';
-if($userStats !== null)
+if($userStats !== null) {
     foreach ($userStats as $item)
         if ($item !== null)
             foreach ($item as $k => $v)
                 $li .= "<li><p><b>$k:</b></p>$v</li>";
+}
+else {
+    $li =  "<li>no stats found</li>"
+}
 ?>
 <box class = 'user-stats'>
     <boxtitel>
@@ -172,6 +176,7 @@ if($userStats !== null)
 
 <?php
 // ************************************************************************************* LIVE CLICKS
+// made in js
 ?>
 <box class = 'dashboard'>
     <boxtitel>
@@ -186,6 +191,7 @@ if($userStats !== null)
 
 <?php
 // ************************************************************************************* ACTIVE USERS
+// made in js
 ?>
 <box class = 'dashboard'>
     <boxtitel>
@@ -230,6 +236,7 @@ if($sysLog !== null) {
         e.done(function(e, textStatus, jqXHR) {
             let user = e.users;
             let actions = e.actions;
+            // action log - live Clicks
             if (actions !== null) {
 //                actions.reverse();
 
@@ -238,9 +245,12 @@ if($sysLog !== null) {
                         actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
+            // active users
             if (user !== null) {
                 for (let c = 0; c < user.length; c++){
+                    // remove updated user
                     $("li.id" + user[c].userId ).remove();
+                    // prepend updated user
                     $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].time + "' data-id='" + user[c].userId + "'>" +
                     user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }

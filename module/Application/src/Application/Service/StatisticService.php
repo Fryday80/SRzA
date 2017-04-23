@@ -79,8 +79,14 @@ class StatisticService
     public function getSystemLog ($since = 0){
         return $this->getSystemLogWhere(array('since' => $since));
     }
-    public function getSystemLogWhere ($where = null){
-        return $this->stats->getSystemLogWhere($where);
+
+    /**
+     * @param array $where array("key" => "value") ... "since" => timestamp also possible
+     * @param array $options arrayKeys: <br>filterType=> <br>FilterType:: , <br>sortKey, <br>sortOrder => OrderType::
+     * @return array array of results
+     */
+    public function getSystemLogWhere ($where = null, $options = array("filterType" => FilterTypes::EQUAL, "sortKey" => "time", "sortOrder" => OrderTypes::DESCENDING)){
+        return $this->stats->getSystemLogWhere($where, $options);
     }
 
     /**
@@ -90,6 +96,11 @@ class StatisticService
     public function getActionLog($since = 0){
         return $this->stats->getActionLog($since);
     }
+
+    /**
+     * @param int $top number of top entries
+     * @return array result array
+     */
     public function getMostVisitedPages($top = 1){
         return $this->stats->getMostVisitedPages($top);
     }

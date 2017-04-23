@@ -107,6 +107,11 @@ class Stats {
         }
         return $this->globalCounters[$type];
     }
+
+    /**
+     * @param int $since optional to get data since microtime timestamp
+     * @return array|null sorted result array new -> old
+     */
     public function getActiveUsers($since = 0){
         if ($since == 0) return $this->sortByKey($this->activeUsers, 'time');
         return $this->getSinceOf($this->activeUsers, $since);
@@ -123,36 +128,56 @@ class Stats {
     }
 
     /**
-     * @param array $where array("key" => "value")
+     * @param array $where array("key" => "value") ... "since" => timestamp also possible
      * @param array $options arrayKeys: <br>filterType=> <br>FilterType:: , <br>sortKey, <br>sortOrder => OrderType::
      * @return array array of results
      */
     public function getSystemLogWhere($where = null, $options = array("filterType" => FilterTypes::EQUAL, "sortKey" => "time", "sortOrder" => OrderTypes::DESCENDING))
     {
         $data = $this->systemLog;
-        $result = array();
         // just fetch all
         if (!is_array($where)) return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
-        // fetch since
+        // fetch since if only since is given
         if (key_exists('since', $where) && count($where) == 1) return $this->getSinceOf($data, $where['since']);
         foreach ($where as $sKey => $sValue){
-            $result = $this->filterByKey($data, $sKey, $sValue, $options['filterType']);
+            if ($sKey == 'since'){
+                $data = $this->getSinceOf($data, $where['since']);
+            } else {
+                $data = $this->filterByKey($data, $sKey, $sValue, $options['filterType']);
+            }
         }
         return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
 
     }
+
+    /**
+     * @param int $top number of top entries
+     * @return array result array
+     */
     public function getMostVisitedPages($top = 1)
     {
         $result = array_reverse( $this->sortByKey($this->pageHits, 'hitsSum') );
         return array_slice($result, 0, $top);
     }
-    
+
+    /** shorthand for getting data<br> sorted new to old<br> from now to $since
+     * @param array $data array of DataItems objects
+     * @param int $since microtime timestamp
+     * @return null|array result array | null on failure
+     */
     private function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
         $result = $this->filterByKey($data, 'time', $since, FilterTypes::BIGGER);
         return $this->sortByKey($result, 'time');
     }
 
+    /**
+     * @param array $data
+     * @param string $key name of the search key
+     * @param mixed $value value of search
+     * @param int $type optional search mode<br> 0 = equal = standard,<br> 1 = bigger,<br> 2 = smaller
+     * @return array|null result array | null on failure
+     */
     private function filterByKey( $data, $key, $value, $type = FilterTypes::EQUAL) {
         if( !isset( $data ) ) return null;
         $result = array();
@@ -182,7 +207,7 @@ class Stats {
         $k = $this->key;
         $av = $a->$k;
         $bv = $b->$k;
-        //@todo hate php
+
         if($av === $bv) {
             return  ($a->time < $b->time) ? -1 : 1;
         }
@@ -195,14 +220,17 @@ class Stats {
         usort($data, array($this, 'sort'));
         return $data;
     }
-
-
 }
 
 abstract class ActionType {
     const PAGE_CALL = 0;
     const ERROR = 1;
 
+    /**
+     * Translates the constants of ActionTypes abstract class to string
+     * @param $type
+     * @return string
+     */
     static function translator($type){
         if ( $type == ActionType::PAGE_CALL )
             return 'Page Call';
