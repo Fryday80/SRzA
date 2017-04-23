@@ -43,7 +43,7 @@ class SystemLogTable extends AbstractTableGateway
         $data = $this->adapter->query($query, array());
         $result = array();
         foreach ($data as $row){
-            array_push($result, new SystemLog($row->time, $row->type, $row->msg, $row->url, $row->userId, $row->userName, $row->data));
+            array_push($result, new SystemLog($row->time, $row->type, $row->msg, $row->url, $row->userId, $row->userName, json_decode($row->data) ) );
         }
 
         return $result;
