@@ -1,19 +1,17 @@
 <?php
 
-namespace Application\Model\DashboardTables;
+namespace Application\Model;
 
 use Application\Model\SystemLog;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 
 
-// structure:  table: system_log (time, type, msg, url, userId, userName, data )
+// structure:  table: system_log (time[bigint] unique, type[string], msg[string], url[string], userId[int], userName[string], data[longblob] )
 class SystemLogTable extends AbstractTableGateway
 {
     public $table = 'system_log';
 
-    protected $config;
-    protected $columnsConfig;
     protected $sort;
     protected $serialized = array();
     protected $required = array();
@@ -21,7 +19,7 @@ class SystemLogTable extends AbstractTableGateway
     protected $isString = array();
 
 
-    public function __construct(Adapter $adapter)
+    public function __construct($Sm, Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->initialize();
@@ -59,7 +57,7 @@ class SystemLogTable extends AbstractTableGateway
 
     /** Prepare data for query
      *
-     * @param array $data
+     * @param SystemLog $data
      * @return array|null [0] = sql columns line up, [1] = the fitting sql VALUES
      */
     private function prepareDataForInsertQuery(SystemLog $data)

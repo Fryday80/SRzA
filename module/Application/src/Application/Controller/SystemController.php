@@ -2,10 +2,8 @@
 namespace Application\Controller;
 
 
-use Application\Model\Action;
-use Application\Model\ActionType;
-use Application\Model\ActiveUser;
-use Application\Model\SystemLog;
+
+use Application\Model\Abstracts\Microtime;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -62,12 +60,8 @@ class SystemController extends AbstractActionController
     private function addDateTime($itemArray){
         if (!is_array($itemArray)) return null;
         foreach ($itemArray as $item) {
-            $item->dateTime = self::dateFromMicrotime($item->time);
+            $item->dateTime = Microtime::dateFromMicrotime($item->time);
         }
         return $itemArray;
-    }
-    static function dateFromMicrotime($microtime, $format = ('H:i')){
-        $t  = substr($microtime, 0 , strlen(time()));
-        return date ($format, (int)$t);
     }
 }

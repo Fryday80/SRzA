@@ -8,11 +8,15 @@
 
 namespace Application\Service;
 
+use Application\Model\Abstracts\ActionType;
+use Application\Model\Abstracts\CounterType;
+use Application\Model\Abstracts\FilterType;
+use Application\Model\Abstracts\HitType;
+use Application\Model\Abstracts\LogType;
+use Application\Model\Abstracts\OrderType;
 use Application\Model\Action;
-use Application\Model\ActionType;
 use Application\Model\ActiveUser;
-use Application\Model\CounterType;
-use Application\Model\HitType;
+use Application\Model\SystemLogTable;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
 use Auth\Service\AccessService;
@@ -33,12 +37,15 @@ class StatisticService
     private $sm;
     /** @var  AccessService */
     private $accessService;
+    /** @var  SystemLogTable */
+    private $sysLog;
 
     function __construct($sm)
     {
         if (SPEED_CHECK) Register::add('StatService start');
         $this->sm = $sm;
         $this->accessService = $sm->get('AccessService');
+        $this->sysLog = $sm->get('Application\Model\SystemLog');
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
         if (SPEED_CHECK) Register::add('StatService constructed');
@@ -79,14 +86,28 @@ class StatisticService
     public function getSystemLog ($since = 0){
         return $this->getSystemLogWhere(array('since' => $since));
     }
-
     /**
      * @param array $where array("key" => "value") ... "since" => timestamp also possible
      * @param array $options arrayKeys: <br>filterType=> <br>FilterType:: , <br>sortKey, <br>sortOrder => OrderType::
      * @return array array of results
      */
-    public function getSystemLogWhere ($where = null, $options = array("filterType" => FilterTypes::EQUAL, "sortKey" => "time", "sortOrder" => OrderTypes::DESCENDING)){
-        return $this->stats->getSystemLogWhere($where, $options);
+    public function getSystemLogWhere($where = null, $options = array("filterType" => FilterType::EQUAL, "sortKey" => "time", "sortOrder" => OrderType::DESCENDING))
+    {
+        $data = $this->stats->systemLog;
+//        $data = $this->sysLog->getSystemLogs();
+        // just fetch all
+        if (!is_array($where)) return $this->stats->sortByKey($data, $options['sortKey'], $options['sortOrder']);
+        // fetch since if only since is given
+        if (key_exists('since', $where) && count($where) == 1) return $this->stats->getSinceOf($data, $where['since']);
+        foreach ($where as $sKey => $sValue){
+            if ($sKey == 'since'){
+                $data = $this->stats->getSinceOf($data, $where['since']);
+            } else {
+                $data = $this->stats->filterByKey($data, $sKey, $sValue, $options['filterType']);
+            }
+        }
+        return $this->stats->sortByKey($data, $options['sortKey'], $options['sortOrder']);
+
     }
 
     /**
@@ -137,7 +158,7 @@ class StatisticService
         $data['userName']= $this->accessService->getUserName();
         $data['userName']= ($data['userName']== "") ? "Guest" : $data['userName'];
         $data['hitType'] = ($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST;
-        $data['logType'] = ($data['hitType'] == HitType::MEMBER) ? LogTypes::ERROR_MEMBER : LogTypes::ERROR_GUEST;
+        $data['logType'] = ($data['hitType'] == HitType::MEMBER) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;
 
         $data['request']= $e->getApplication()->getRequest();
         $data['serverPHPData']= $data['request']->getServer()->toArray();
@@ -269,8 +290,4 @@ class StatisticService
 //        return false;
 //    }
     }
-}
-abstract class LogTypes {
-    const ERROR_GUEST = 0;
-    const ERROR_MEMBER = 1;
 }

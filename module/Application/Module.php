@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\Model\SystemLogTable;
 use Application\Service\StatisticService;
 use Application\View\Helper\DashboardHelper;
 use Application\View\Helper\InlineJS;
@@ -53,12 +54,6 @@ class Module
             'factories' => array(
                 'StatisticService' => function ( $sm ) {
                     return new StatisticService( $sm );
-                },
-                'Application\Model\ActiveUsers' => function ( $serviceManager ) {
-                    return new ActiveUsersTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
-                },
-                'Application\Model\PageHits' => function ( $serviceManager ) {
-                    return new PageHitsTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
                 'Application\Model\SystemLog' => function ( $serviceManager ) {
                     return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );

@@ -132,7 +132,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         }
     }
 </style>
-
+<div>
 <?php
 // ************************************************************************************* QUICK LINKS
 ?>
@@ -160,7 +160,7 @@ if($userStats !== null) {
                 $li .= "<li><p><b>$k:</b></p>$v</li>";
 }
 else {
-    $li =  "<li>no stats found</li>"
+    $li =  "<li>no stats found</li>";
 }
 ?>
 <box class = 'user-stats'>
@@ -226,7 +226,7 @@ if($sysLog !== null) {
     </boxcontent>
 </box>
 
-
+</div>
 <script type="text/javascript">
     //script for live ticks
     function loadLive(e) {

@@ -1,6 +1,8 @@
 <?php
 namespace Application\Model;
 
+use Application\Model\Abstracts\HitType;
+
 class PageHit {
     public $url;
     public $time;

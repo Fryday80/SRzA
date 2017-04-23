@@ -1,7 +1,12 @@
 <?php
 namespace Application\Model;
 
+use Application\Model\Abstracts\CounterType;
+use Application\Model\Abstracts\FilterType;
+use Application\Model\Abstracts\HitType;
+use Application\Model\Abstracts\OrderType;
 use Application\Utility\CircularBuffer;
+use Application\Model\Abstracts;
 
 class Stats {
     /** @var CircularBuffer $actionLog */
@@ -126,30 +131,7 @@ class Stats {
         if ($since !== 0) return $this->getSinceOf( $data, $since);
         return $data;
     }
-
-    /**
-     * @param array $where array("key" => "value") ... "since" => timestamp also possible
-     * @param array $options arrayKeys: <br>filterType=> <br>FilterType:: , <br>sortKey, <br>sortOrder => OrderType::
-     * @return array array of results
-     */
-    public function getSystemLogWhere($where = null, $options = array("filterType" => FilterTypes::EQUAL, "sortKey" => "time", "sortOrder" => OrderTypes::DESCENDING))
-    {
-        $data = $this->systemLog;
-        // just fetch all
-        if (!is_array($where)) return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
-        // fetch since if only since is given
-        if (key_exists('since', $where) && count($where) == 1) return $this->getSinceOf($data, $where['since']);
-        foreach ($where as $sKey => $sValue){
-            if ($sKey == 'since'){
-                $data = $this->getSinceOf($data, $where['since']);
-            } else {
-                $data = $this->filterByKey($data, $sKey, $sValue, $options['filterType']);
-            }
-        }
-        return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
-
-    }
-
+    
     /**
      * @param int $top number of top entries
      * @return array result array
@@ -165,9 +147,9 @@ class Stats {
      * @param int $since microtime timestamp
      * @return null|array result array | null on failure
      */
-    private function getSinceOf($data, $since = 0){
+    public function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
-        $result = $this->filterByKey($data, 'time', $since, FilterTypes::BIGGER);
+        $result = $this->filterByKey($data, 'time', $since, FilterType::BIGGER);
         return $this->sortByKey($result, 'time');
     }
 
@@ -178,22 +160,22 @@ class Stats {
      * @param int $type optional search mode<br> 0 = equal = standard,<br> 1 = bigger,<br> 2 = smaller
      * @return array|null result array | null on failure
      */
-    private function filterByKey( $data, $key, $value, $type = FilterTypes::EQUAL) {
+    public function filterByKey( $data, $key, $value, $type = FilterType::EQUAL) {
         if( !isset( $data ) ) return null;
         $result = array();
-        if ($type == FilterTypes::EQUAL) {
+        if ($type == FilterType::EQUAL) {
             foreach ($data as $item) {
                 if ($item->$key == $value)
                     array_push($result, $item);
             }
         }
-        if ($type == FilterTypes::BIGGER){
+        if ($type == FilterType::BIGGER){
             foreach ($data as $item) {
                 if ($item->$key > $value)
                     array_push($result, $item);
             }
         }
-        if ($type == FilterTypes::SMALLER){
+        if ($type == FilterType::SMALLER){
             foreach ($data as $item) {
                 if ($item->$key < $value)
                     array_push($result, $item);
@@ -214,51 +196,10 @@ class Stats {
 
         return ($av < $bv)? -1: 1;
     }
-    private function sortByKey($data, $key, $order = OrderTypes::DESCENDING){
+    public function sortByKey($data, $key, $order = OrderType::DESCENDING){
         if( !isset( $data ) ) return null;
         $this->key = $key;
         usort($data, array($this, 'sort'));
         return $data;
     }
-}
-
-abstract class ActionType {
-    const PAGE_CALL = 0;
-    const ERROR = 1;
-
-    /**
-     * Translates the constants of ActionTypes abstract class to string
-     * @param $type
-     * @return string
-     */
-    static function translator($type){
-        if ( $type == ActionType::PAGE_CALL )
-            return 'Page Call';
-        if ( $type == ActionType::ERROR )
-            return 'Error';
-    }
-}
-abstract class HitType {
-    const MEMBER = 0;
-    const GUEST = 1;
-    const ERROR_MEMBER = 2;
-    const ERROR_GUEST = 3;
-    const TYPES_COUNT = 4;//actually no type. keep it at bottom with the highest int
-}
-abstract class CounterType {
-    const MEMBER = 0;
-    const GUEST = 1;
-    const ERROR_MEMBER = 2;
-    const ERROR_GUEST = 3;
-    const ALL = 4;
-    const ERROR = 5;
-}
-abstract class OrderTypes {
-    const ASCENDING = 0;
-    const DESCENDING = 1;
-}
-abstract class FilterTypes {
-    const EQUAL = 0;
-    const BIGGER = 1;
-    const SMALLER = 2;
 }
