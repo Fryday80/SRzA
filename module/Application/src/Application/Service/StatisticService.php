@@ -76,6 +76,12 @@ class StatisticService
     public function getActiveUsers($since = 0){
         return $this->stats->getActiveUsers($since);
     }
+    public function getSystemLog ($since = 0){
+        return $this->getSystemLogWhere(array('since' => $since));
+    }
+    public function getSystemLogWhere ($where = null){
+        return $this->stats->getSystemLogWhere($where);
+    }
 
     /**
      * @param int $since timestamp microtime()*1000
@@ -113,7 +119,7 @@ class StatisticService
     private function gatherData($e)
     {
         if (SPEED_CHECK) Register::add('StatService ->gatherData start');
-        $data['time'] = (int)microtime(true) * 1000;
+        $data['time'] = (microtime(true) * 1000);
 
         $data['sid']= $this->accessService->session->getManager()->getId();
         $data['userId']= $this->accessService->getUserID();

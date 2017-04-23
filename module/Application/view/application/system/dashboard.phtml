@@ -31,15 +31,23 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         overflow-y: auto;
         list-style-type: none;
         text-shadow: none;
+        width: 85%;
+        margin-left: auto;
+        margin-right: auto;
     }
     .dash-links {
         min-height: 30px;
+        width: 95%;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .dash-links li{
+    .dash-links li
+    {
         display: inline-block;
+        margin: 5px;
         padding: 10px;
         box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
-        width: 17%;
+        width: 15%;
         text-align: center;
         border-top-left-radius: 40px;
         border-bottom-right-radius: 40px;
@@ -65,7 +73,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         vertical-align: middle;
         min-height: 40px;
         margin: 1%;
-        width: 30%;
+        width: 31%;
         display: inline-block;
         text-align: center;
         border-radius: 8px;
@@ -128,7 +136,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 <?php
 // ************************************************************************************* QUICK LINKS
 ?>
-<box class = 'dashboard dashboard-left'>
+<box class = 'dashboard'>
     <boxtitel>
         <span class='own_text_small'></span>
     </boxtitel>
@@ -193,11 +201,13 @@ if($userStats !== null)
 <?php
 // ************************************************************************************* SYSTEM LOG
 $li = '';
-$sysLog = array (1,2,3);
-if($sysLog !== null)
-    foreach ( $sysLog as $item )
-        if($item !== null)
+if($sysLog !== null) {
+    foreach ($sysLog as $item)
+        if ($item !== null)
             $li .= '<li>to DO</li>';
+} else {
+    $li = '<li>no log found </li>';
+}
 ?>
 <box class = 'dashboard'>
     <boxtitel>
@@ -239,17 +249,17 @@ if($sysLog !== null)
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
                 let elm = $('#users li:nth-child(1)');
-                let user = elm.data('timestamp');
+                let userTime = elm.data('timestamp');
                 let userId = elm.data('id');
-                livereload(since, user, userId);
+                livereload(since, userTime, userId);
             }, 4500);
         });
     }
-    function livereload(since, user, userId) {
+    function livereload(since, userTime, userId) {
         let data = {
             method: "getLiveActions",
             since: since,
-            lastUser: user,
+            userTime: userTime,
             userId: userId,
         };
         $.ajax({

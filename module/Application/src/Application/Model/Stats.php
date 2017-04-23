@@ -111,11 +111,35 @@ class Stats {
         if ($since == 0) return $this->sortByKey($this->activeUsers, 'time');
         return $this->getSinceOf($this->activeUsers, $since);
     }
-    
+
+    /**
+     * @param int $since timestamp microtime()
+     * @return array array of results
+     */
     public function getActionLog($since = 0){
         $data = array_reverse($this->actionLog->toArray());
         if ($since !== 0) return $this->getSinceOf( $data, $since);
         return $data;
+    }
+
+    /**
+     * @param array $where array("key" => "value")
+     * @param array $options arrayKeys: <br>filterType=> <br>FilterType:: , <br>sortKey, <br>sortOrder => OrderType::
+     * @return array array of results
+     */
+    public function getSystemLogWhere($where = null, $options = array("filterType" => FilterTypes::EQUAL, "sortKey" => "time", "sortOrder" => OrderTypes::DESCENDING))
+    {
+        $data = $this->systemLog;
+        $result = array();
+        // just fetch all
+        if (!is_array($where)) return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
+        // fetch since
+        if (key_exists('since', $where) && count($where) == 1) return $this->getSinceOf($data, $where['since']);
+        foreach ($where as $sKey => $sValue){
+            $result = $this->filterByKey($data, $sKey, $sValue, $options['filterType']);
+        }
+        return $this->sortByKey($data, $options['sortKey'], $options['sortOrder']);
+
     }
     public function getMostVisitedPages($top = 1)
     {

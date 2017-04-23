@@ -19,15 +19,19 @@ class SystemController extends AbstractActionController
     public function dashboardAction()
     {
         $this->statsService = $this->getServiceLocator()->get('StatisticService');
+        $mvL = $this->statsService->getMostVisitedPages();
+        $mvL = (isset($mvL[0])) ? $mvL[0]->url . ' with ' . $mvL[0]->hitsSum : null;
+        $sysLog = $this->statsService->getSystemLog();
+        $sysLog = ($sysLog == null) ? null : array_reverse($sysLog);
         $userStats = array(
             array("All Clicks"    => $this->statsService->getPageHits()),
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
-            array("meistbesuchter Link"  => $this->statsService->getMostVisitedPages()[0]->url . ' with ' . $this->statsService->getMostVisitedPages()[0]->hitsSum),
+            array("meistbesuchter Link"  => $mvL),
         );
         return new ViewModel(array(
             'liveClicks'  => $this->statsService->getActionLog(),
             'activeUsers' => $this->statsService->getActiveUsers(),
-            'sysLog'      => null, // $this->getDataStringFromDataSets( $this->statsService->getSysLog() ),
+            'sysLog'      => $sysLog,
             'userStats'   => $userStats,
         ));
     }
@@ -43,13 +47,12 @@ class SystemController extends AbstractActionController
         /** @var  $statsService StatisticService */
         $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
-//        var_dump ($request);
         $result = ['error' => false];
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
                 $result['actions'] = $this->addDateTime( $statsService->getActionLog($request->since+1));
-                $result['users'] = $this->addDateTime( $statsService->getActiveUsers($request->lastUser+1) );
+                $result['users'] = $this->addDateTime( $statsService->getActiveUsers($request->userTime+1) );
                 break;
         };
 
