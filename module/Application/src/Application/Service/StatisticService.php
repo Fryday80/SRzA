@@ -70,10 +70,7 @@ class StatisticService
         $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'message', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
     }
 
-    public function onFinish(MvcEvent $e)
-    {
-        //cleanfix
-        bdump($this->stats);
+    public function onFinish(MvcEvent $e) {
         $this->saveFile($this->stats);
     }
 
@@ -213,120 +210,5 @@ class StatisticService
         $content = unserialize($content);
         if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
-    }
-
-    private function ifYou($wantToSee, $oldServiceFunctions)
-    {
-//    /**** SET ****/
-//    /**** ACTIVE USERS ****/
-//    private function updateActiveUsers($url, $userId, $now, $sid, $ip, $userName, $data = null){
-//        $this->collection->updateActiveUsers( array(
-//            'url' => $url,
-//            'expireDu' => $userId,
-//            'time' => $now,
-//            'sid' => $sid,
-//            'ip' => $ip,
-//            'userName' => $userName,
-//            'data' => $data
-//        ) );
-//    }
-//    /**** ACTIONS LOG ****/
-//    private function updateActionsLog($url, $time, $userId, $userName, $type, $title, $msg, $data = null){
-//        $this->collection->updateActionsLog( array(
-//            'url' =>$url,
-//            'time' =>$time,
-//            'userId' =>$userId,
-//            'userName' => $userName,
-//            'type' =>$type,
-//            'title' =>$title,
-//            'msg' =>$msg,
-//            'data' =>$data
-//        ) );
-//    }
-//    /**** PAGE HITS ****/
-//    private function updatePageHit($url, $time, $userId, $userName, $data = null){
-//        $this->collection->updatePageHit( array(
-//            'url' => $url,
-//            'time' => $time,
-//            'userId' => $userId,
-//            'username' => $userName,
-//            'data' => $data
-//        ) );
-//    }
-//    /**** SYS LOG ****/
-//    private function updateSystemLog( $url, $time, $type, $msg, $userId, $userName, $data = null ){
-//        $this->collection->updateSystemLog( array(
-//            'url' => $url,
-//            'time' => $time,
-//            'type' => $type,
-//            'msg' => $msg,
-//            'userId' => $userId,
-//            'userName' => $userName,
-//            'data' => $data
-//        ) );
-//    }
-//
-//
-//    /**** GET ****/
-//    /**** ACTIVE USERS ****/
-//    public function getActiveUsers(){
-//        return $this->collection->getActiveUsers();
-//    }
-//    public function getActiveGuests(){
-//        return $this->collection->getActiveGuests();
-//    }
-//    public function getGuestCount(){
-//        return $this->collection->getGuestCount();
-//    }
-//    /**** ACTIONS LOG ****/
-//    public function getActionsLog($since = null){
-//        return $this->collection->getActionsLog($since);
-//    }
-//    public function getActionsLogByIDAndTime($last_id, $last_timestamp){
-//        return $this->collection->getActionsLogByIDAndTime($last_id, $last_timestamp);
-//    }
-//    /**** PAGE HITS ****/
-//    public function getPageHits($since = null){
-//        return $this->collection->getPageHits($since);
-//    }
-//    public function getByUrl($url){
-//        return $this->collection->getByUrl($url);
-//    }
-//    public function getHitsByUrl($url){
-//        return $this->collection->getHitsByUrl($url);
-//    }
-//    public function getAllHits(){
-//        return $this->collection->getAllHits();
-//    }
-//    public function getMostVisitedPages($top = 1){
-//        return $this->collection->getMostVisitedPages($top);
-//    }
-//    /**** SYS LOG ****/
-//    public function getSysLog($since = null){
-//        return $this->collection->getSysLog($since);
-//    }
-//    public function getSystemLogByType ($type, $since = null){
-//        return $this->collection->getSystemLogByType ($type, $since);
-//    }
-//    public function getSystemLogByUser ($userId, $since = null){
-//        return $this->collection->getSystemLogByUser ($userId, $since);
-//    }
-//
-//    public function getNumberOfLogs(){
-//        return $this->collection->getNumberOfLogs();
-//    }
-//
-//    /**** DATA COLLECTION SAVE & RESTORE ****/
-
-//
-//    private function ajaxFilter($ajax, $url)
-//    {
-//        if ($ajax) {
-//            // @todo whitelist
-//            $whitelist = array('/');
-//            if (in_array($url, $whitelist)) return true;
-//        }
-//        return false;
-//    }
     }
 }
