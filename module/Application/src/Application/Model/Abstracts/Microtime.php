@@ -14,11 +14,11 @@ abstract class Microtime
     static function addDateTime($itemArray, $format = ('H:i') )
     {
         if ( !is_array( $itemArray ) ) return null;
-        foreach ( $itemArray as $item ) {
+        foreach ( $itemArray as $key => $item ) {
             if ( is_object( $item ) ) {
-                $item->dateTime = date($format, $item->time );
+                $itemArray[$key]->dateTime = date($format, $item->time );
             } elseif ( is_array( $item ) ){
-                $item['dateTime'] = date($format, $item['time'] );
+                $itemArray[$key]['dateTime'] = date($format, $item['time'] );
             }
         }
         return $itemArray;

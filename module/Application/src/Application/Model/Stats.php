@@ -118,7 +118,7 @@ class Stats {
      * @return array|null sorted result array new -> old
      */
     public function getActiveUsers($since = 0){
-        if ($since == 0) return $this->sortByKey($this->activeUsers, 'time');
+        if ($since == 0) return $this->sortByKey($this->activeUsers, 'id');
         return $this->getSinceOf($this->activeUsers, $since);
     }
 
@@ -149,8 +149,8 @@ class Stats {
      */
     public function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
-        $result = $this->filterByKey($data, 'time', $since, FilterType::BIGGER);
-        return $this->sortByKey($result, 'time');
+        $result = $this->filterByKey($data, 'id', $since, FilterType::BIGGER);
+        return $this->sortByKey($result, 'id');
     }
 
     /**
@@ -191,7 +191,7 @@ class Stats {
         $bv = $b->$k;
 
         if($av === $bv) {
-            return  ($a->time < $b->time) ? -1 : 1;
+            return  ($a->id < $b->id) ? -1 : 1;
         }
 
         return ($av < $bv)? -1: 1;
