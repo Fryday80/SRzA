@@ -240,19 +240,26 @@ if($sysLog !== null) {
             if (actions !== null) {
 //                actions.reverse();
                 for (let i = 0; i < actions.length; i++) {
-                    var date = new Date (actions[i].time*1000);
+//                    var dateRaw = new Date (actions[i].time*1000);
+//                    var hours = '0' + dateRaw.getHours();
+//                    var minutes = '0' + dateRaw.getMinutes();
+//                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
                     $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].id + "'>" +
-                        date + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
+                        actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
             // active users
             if (user !== null) {
                 for (let c = 0; c < user.length; c++){
+//                    var dateRaw = new Date(user[c].time*1000);
+//                    var hours = '0' + dateRaw.getHours();
+//                    var minutes = '0' + dateRaw.getMinutes();
+//                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
                     // remove updated user
                     $("li.id" + user[c].userId ).remove();
                     // prepend updated user
                     $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].time + "' data-id='" + user[c].userId + "'>" +
-                    user[c].userName + ": " + user[c].url + "<b> @ </b>" + new Date((user[c].time*1000) ).toDateString('THH:MM') + "</li>");
+                    user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }
             }
             setTimeout(function() {

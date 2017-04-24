@@ -935,6 +935,11 @@ noscript {
   padding: 10px;
   min-width: 150px;
 }
+.cast .box.small ul {
+  background-image: url('/img/shield-tross.pale.png');
+  background-repeat: no-repeat;
+  background-size: auto 100%;
+}
 .castmanager {
   width: 30%;
   float: left;
