@@ -14,6 +14,11 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
             box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
         }
     }
+    .live-load,
+    .user-load
+    {
+        height: 50px;
+    }
     #content box {
         border-top-left-radius: 60px;
         border-bottom-right-radius: 60px;
@@ -183,6 +188,7 @@ else {
         <span class='own_text_small'>Live Clicks</span>
     </boxtitel>
     <boxcontent>
+        <img class="live-load" src="/img/loading.gif"/>
         <ul id="dashLiveList" class="dash-list">
             <li class="entry basicdata" data-timestamp="0"></li>
         </ul>
@@ -198,6 +204,7 @@ else {
         <span class='own_text_small'>Active Users</span>
     </boxtitel>
     <boxcontent>
+        <img class="user-load" src="/img/loading.gif"/>
         <ul id="users" class="dash-list">
             <li class="entry basicdata" data-timestamp="0"></li>
         </ul>
@@ -258,7 +265,7 @@ if($sysLog !== null) {
                     // remove updated user
                     $("li.id" + user[c].userId ).remove();
                     // prepend updated user
-                    $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].time + "' data-id='" + user[c].userId + "'>" +
+                    $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].id + "' data-id='" + user[c].userId + "'>" +
                     user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }
             }
