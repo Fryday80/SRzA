@@ -10,7 +10,8 @@ module.exports = function(grunt) {
                     optimization: 2
                 },
                 files: {
-                    "public/css/style.css": "less/style.less" // destination file and source file
+                    "public/css/style.css": "less/style.less", // destination file and source file
+                    "public/css/jsOverride.css": "less/jsOverride.less" // destination file and source file
                 }
             }
         },
