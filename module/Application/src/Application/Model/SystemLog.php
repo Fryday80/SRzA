@@ -5,6 +5,7 @@ namespace Application\Model;
 
 class SystemLog
 {
+    public $id;
     public $time;
     public $type;
     public $msg;
@@ -22,9 +23,10 @@ class SystemLog
      * @param $userName
      * @param null $data
      */
-    function __construct($time, $type, $msg, $url, $userId, $userName, $data = null)
+    function __construct($mTime, $type, $msg, $url, $userId, $userName, $data = null)
     {
-        $this->time = $time;
+        $this->id = $mTime * 10000;
+        $this->time = (int)$mTime;
         $this->type = $type;
         $this->msg = $msg;
         $this->url = $url;

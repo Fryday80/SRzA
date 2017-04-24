@@ -77,9 +77,9 @@ class Stats {
      * @param $hitType
      * @param $url
      */
-    public function logPageHit($hitType, $url) {
+    public function logPageHit($hitType, $url, $mTime) {
         if (!isset($this->pageHits[$url])) {
-            $this->pageHits[$url] = new PageHit($url);
+            $this->pageHits[$url] = new PageHit($url, $mTime);
         }
 
         $this->pageHits[$url]->lastTime = (int)microtime(true)*1000;

@@ -4,6 +4,7 @@ namespace Application\Model;
 
 class ActiveUser
 {
+    public $id;
     public $sid;     
     public $userId;  
     public $userName;
@@ -16,7 +17,17 @@ class ActiveUser
      */
     public $url;
 
-    function __construct($userId, $userName, $time, $sid, $ip, $url, $data = null)
+    /**
+     * ActiveUser constructor.
+     * @param $userId
+     * @param $userName
+     * @param $mTime microtime()
+     * @param $sid
+     * @param $ip
+     * @param $url
+     * @param mixed $data
+     */
+    function __construct($userId, $userName, $mTime, $sid, $ip, $url, $data = null)
     {
         $this->userId = $userId;
         $this->userName = $userName;
@@ -24,6 +35,7 @@ class ActiveUser
         $this->ip = $ip;
         $this->url = $url;
         $this->data = $data;
-        $this->time = $time;
+        $this->time = (int)$mTime;
+        $this->id = $mTime*10000;
     }
 }

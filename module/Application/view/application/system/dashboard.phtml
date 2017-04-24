@@ -212,7 +212,7 @@ if($sysLog !== null) {
         if ($item !== null)
             $li .= '<li>to DO</li>';
 } else {
-    $li = '<li>no log found </li>';
+    $li = '<li>no log found</li>';
 }
 ?>
 <box class = 'dashboard'>
@@ -239,10 +239,10 @@ if($sysLog !== null) {
             // action log - live Clicks
             if (actions !== null) {
 //                actions.reverse();
-
                 for (let i = 0; i < actions.length; i++) {
-                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].time + "'>" +
-                        actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
+                    var date = new Date (actions[i].time*1000);
+                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].id + "'>" +
+                        date + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
             // active users
@@ -252,7 +252,7 @@ if($sysLog !== null) {
                     $("li.id" + user[c].userId ).remove();
                     // prepend updated user
                     $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].time + "' data-id='" + user[c].userId + "'>" +
-                    user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
+                    user[c].userName + ": " + user[c].url + "<b> @ </b>" + new Date((user[c].time*1000) ).toDateString('THH:MM') + "</li>");
                 }
             }
             setTimeout(function() {

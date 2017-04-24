@@ -2,6 +2,7 @@
 namespace Application\Model;
 
 class Action {
+    public $id;
     public $url;
     public $userId;
     public $userName;
@@ -12,9 +13,21 @@ class Action {
     public $title;
     public $msg;
 
-    function __construct($time, $url, $userId, $userName, $actionType, $title, $msg, $data = null )
+    /**
+     * Action constructor.
+     * @param $mTime microtime()
+     * @param $url
+     * @param $userId
+     * @param $userName
+     * @param $actionType
+     * @param $title
+     * @param $msg
+     * @param null $data
+     */
+    function __construct($mTime, $url, $userId, $userName, $actionType, $title, $msg, $data = null )
     {
-        $this->time = $time;
+        $this->id = $mTime*10000;
+        $this->time = (int)$mTime;
         $this->url = $url;
         $this->userId = $userId;
         $this->userName = $userName;

@@ -49,19 +49,12 @@ class SystemController extends AbstractActionController
         switch ($request->method) {
             case 'getLiveActions':
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = $this->addDateTime( $statsService->getActionLog($request->since+1));
-                $result['users'] = $this->addDateTime( $statsService->getActiveUsers($request->userTime+1) );
+                $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since+1) );
+                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->userTime+1) );
                 break;
         };
 
         //output
         return new JsonModel($result);
-    }
-    private function addDateTime($itemArray){
-        if (!is_array($itemArray)) return null;
-        foreach ($itemArray as $item) {
-            $item->dateTime = Microtime::dateFromMicrotime($item->time);
-        }
-        return $itemArray;
     }
 }
