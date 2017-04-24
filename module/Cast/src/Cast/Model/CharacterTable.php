@@ -2,6 +2,7 @@
 namespace Cast\Model;
 
 use Zend\Db\ResultSet\ResultSet;
+use Zend\Db\Sql\Predicate\PredicateSet;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
@@ -56,13 +57,29 @@ class CharacterTable extends AbstractTableGateway
 
         return $row->toArray();
     }
+
+    public function getAllPossibleSupervisorsFor($familyID) {
+        try {
+            $select = $this->sql->select();
+            $select->where(array(
+                'family_id' => (int) $familyID,
+                'tross_id' => (int)$familyID
+            ), PredicateSet::OP_OR);
+
+            $statement = $this->sql->prepareStatementForSqlObject($select);
+            $result = $this->resultSetPrototype->initialize($statement->execute())
+                ->toArray();
+
+            return $result;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
     /**
      * returns all characters and there jobs, families and so on
      */
     public function getAllCastData() {
         try {
-
-
             $sql = new Sql($this->getAdapter());
 
             $select = $sql->select()
@@ -71,10 +88,15 @@ class CharacterTable extends AbstractTableGateway
                 ))
                 ->columns(array(
                     'id' => 'id',
+                    'user_id' => 'user_id',
                     'name' => 'name',
                     'surename',
                     'gender',
-                    'vita'
+                    'birthday',
+                    'guardian_id',
+                    'supervisor_id',
+                    'vita',
+                    'active'
                 ))
                 ->join(array(
                     'family' => 'families'
@@ -88,28 +110,14 @@ class CharacterTable extends AbstractTableGateway
                     'job_id' => 'id',
                     'job_name' => 'job'
                 ), 'left');
-//                ->join(array(
-//                    't4' => 'resource'
-//                ), 't4.id = t3.resource_id', array(
-//                    'resource_name'
-//                ), 'left')
-//                ->where();
-            //->order('t1.rid');
 
             $statement = $sql->prepareStatementForSqlObject($select);
             $result = $this->resultSetPrototype->initialize($statement->execute())
                 ->toArray();
             return $result;
-
-
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());
-            die;
         }
-
-
-
-
     }
     public function add($data) {
         unset($data['id']);
@@ -129,5 +137,6 @@ class CharacterTable extends AbstractTableGateway
     public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
+
 
 }

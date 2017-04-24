@@ -64,7 +64,7 @@ class CharacterController extends AbstractActionController
         $form->get('submit')->setAttribute('value', $operator);
 
         $possibleGuardians = $charTable->getByFamilyId($character['family_id']);
-        $possibleSupervisors = $charTable->getByFamilyId($character['tross_id']);
+        $possibleSupervisors = $charTable->getAllPossibleSupervisorsFor($character['tross_id']);
 
         $form->setPossibleGuardians($possibleGuardians);
         $form->setPossibleSupervisors($possibleSupervisors);
@@ -122,7 +122,7 @@ class CharacterController extends AbstractActionController
                     if (!isset($request->familyID) ) {
                         $result['data'] = false;
                     } else {
-                        $result['data'] = $charTable->getByFamilyId($request->familyID);
+                        $result['data'] = $charTable->getAllPossibleSupervisorsFor($request->familyID);
                     }
                     break;
                 case 'getPossibleGuardians':

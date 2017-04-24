@@ -1,25 +1,148 @@
-<div class="cast">
-    <h1>Besetztung</h1>
-    <?php foreach ($this->chars as $char): ?>
-        <div class="box big">
-            <a href="/<?php echo $char['id']; ?>">
-                <?php echo $this->CharProfile()->small($char);?>
-            </a>
-            <br>
-            <p>Tross</p>
-            <ul class="tross">
-                <?php foreach($chars as $char): ?>
-                    <li>
-                        <a href="/<?php echo $char['id']; ?>">
-                            <div class="box small">
-                                <?php echo $this->CharProfile()->small($char); ?>
-                            </div>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-            <div style="clear: left"></div>
-        </div>
-    <?php endforeach ?>
+<style>
+    .tree * {
+        margin: 0;
+        padding: 0;
+    }
 
+    .tree ul {
+        position: relative;
+        padding-top: 20px;
+        transition: all 0.5s;
+    }
+
+    .tree li {
+        position: relative;
+        float: left;
+        text-align: center;
+        list-style-type: none;
+        padding: 20px 5px 0 5px;
+        transition: all 0.5s;
+    }
+
+    /* connectors */
+    .tree li::before, .tree li::after {
+        content: '';
+        position: absolute; top: 0; right: 50%;
+        border-top: 1px solid #ccc;
+        width: 50%; height: 20px;
+    }
+    .tree li::after {
+        right: auto; left: 50%;
+        border-left: 1px solid #ccc;
+    }
+
+    .tree li:only-child::after,
+    .tree li:only-child::before {
+        display: none;
+    }
+
+    .tree li:only-child {
+        padding-top: 0;
+    }
+
+    .tree li:first-child::before,
+    .tree li:last-child::after {
+        border: 0 none;
+    }
+
+    .tree li:last-child::before {
+        border-right: 1px solid #ccc;
+        border-radius: 0 5px 0 0;
+    }
+
+    .tree li:first-child::after {
+        border-radius: 5px 0 0 0;
+    }
+
+    .tree ul ul::before {
+        content: '';
+        position: absolute; top: 0; left: 50%;
+        border-left: 1px solid #ccc;
+        width: 0; height: 20px;
+    }
+
+    .tree li character {
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #666;
+        font-family: arial, verdana, tahoma;
+        font-size: 11px;
+        display: inline-block;
+        border-radius: 5px;
+        transition: all 0.5s;
+    }
+
+    /* hover effect */
+    .tree li character:hover,
+    .tree li character:hover+ul li character {
+        background: #c8e4f8; color: #000; border: 1px solid #94a0b4;
+    }
+    /*Connector styles on hover*/
+    .tree li character:hover+ul li::after,
+    .tree li character:hover+ul li::before,
+    .tree li character:hover+ul::before,
+    .tree li character:hover+ul ul::before{
+        border-color: #b41d20;
+        transition: all 0.8s;
+    }
+</style>
+
+<?php
+bdump($root);
+function createList($parent, $level) {
+    echo '<li>';
+    echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
+    echo '<p>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
+    echo '</p>';
+    echo '<br>';
+    echo '<p>';
+    echo '<span>Family: </span>';
+    echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
+    echo '</p>';
+    echo '</character>';
+    if (count($parent['employ']) > 0) {
+        echo '<ul>';
+        foreach ($parent['employ'] as &$char) {
+            createList($char, $level + 1);
+        }
+        echo '</ul>';
+    }
+    echo '</li>';
+}
+?>
+<div class="tree">
+    <ul>
+        <?php createList($root, 0); ?>
+    </ul>
 </div>
+
+
+
+<!--<div class="cast">-->
+<!--    <h1>Besetztung</h1>-->
+<!--    --><?php //foreach ($this->chars as $char): ?>
+<!--        <div class="box big">-->
+<!--            <a href="/--><?php //echo $char['id']; ?><!--">-->
+<!--                --><?php //echo $this->CharProfile()->small($char);?>
+<!--            </a>-->
+<!--            <br>-->
+<!--            <p>Tross</p>-->
+<!--            <ul class="tross">-->
+<!--                --><?php //foreach($chars as $char): ?>
+<!--                    <li>-->
+<!--                        <a href="/--><?php //echo $char['id']; ?><!--">-->
+<!--                            <div class="box small">-->
+<!--                                --><?php //echo $this->CharProfile()->small($char); ?>
+<!--                            </div>-->
+<!--                        </a>-->
+<!--                    </li>-->
+<!--                --><?php //endforeach; ?>
+<!--            </ul>-->
+<!--            <div style="clear: left"></div>-->
+<!--        </div>-->
+<!--    --><?php //endforeach ?>
+<!---->
+<!--</div>-->

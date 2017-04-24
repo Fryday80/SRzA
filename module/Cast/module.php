@@ -32,7 +32,13 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     public function getServiceConfig()
     {
         return array(
+            'invokables' => array(
+                'CastService' => 'Cast\Service\CastService'
+            ),
             'factories' => array(
+//                'CastService' =>  function($sm) {
+//                    return new CharacterTable($sm->get('Zend\Db\Adapter\Adapter'));
+//                },
                 'Cast\Model\CharacterTable' =>  function($sm) {
                     return new CharacterTable($sm->get('Zend\Db\Adapter\Adapter'));
                 },
