@@ -12,7 +12,7 @@ namespace Application\View\Helper;
 use Exception;
 use Zend\View\Helper\AbstractHelper;
 
-class InlineJS extends AbstractHelper
+class InlineFromFile extends AbstractHelper
 {
     private $types = [
         'js' => 'text/javascript',
