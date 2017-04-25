@@ -51,6 +51,7 @@
         e.done(function(e, textStatus, jqXHR) {
             let user = e.users;
             // active users
+            console.log(e);
             if (user !== null) {
                 for (let c = 0; c < user.length; c++){
                     //                    var dateRaw = new Date(user[c].time*1000);
@@ -58,25 +59,26 @@
                     //                    var minutes = '0' + dateRaw.getMinutes();
                     //                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
                     // remove updated user
-                    $("li.id" + user[c].userId ).remove();
+                    if (user[c].id == $('li[data-microtime="' + user[c].id + '"]').data('microtime') ) continue;
+                    $('li[data-microtime="' + user[c].id + '"]').remove();
                     // prepend updated user
-                    $('#users').prepend("<li class='entry id" + user[c].userId + "' data-timestamp='" + user[c].id + "' data-id='" + user[c].userId + "'>" +
+                    $('#users').prepend("<li class='entry' data-timestamp='" + user[c].time + "' data-microtime='" + user[c].microtime + "'>" +
                         user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }
             }
             setTimeout(function() {
                 let elm = $('#users li:nth-child(1)');
                 let userTime = elm.data('timestamp');
-                let userId = elm.data('id');
-                activereload(userTime, userId);
+                let microtime = elm.data('microtime');
+                activereload(userTime, microtime);
             }, 4500);
         });
     }
-    function activereload(userTime, userId) {
+    function activereload(userTime, microtime) {
         let data = {
             method: "getActiveUsers",
             userTime: userTime,
-            userId: userId,
+            userId: microtime,
         };
         $.ajax({
             url: "/system/json",
@@ -85,5 +87,5 @@
             complete: loadActive
         });
     }
-    livereload( $('#users li:nth-child(1)').data('timestamp'), 0 );
+    activereload( $('#users li:nth-child(1)').data('timestamp'), 0 );
 })();

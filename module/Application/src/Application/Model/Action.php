@@ -1,13 +1,11 @@
 <?php
 namespace Application\Model;
 
-class Action {
-    public $id;
+class Action extends DataItem
+{
     public $url;
     public $userId;
     public $userName;
-    public $time;
-    public $data;
 
     public $actionType;
     public $title;
@@ -26,15 +24,13 @@ class Action {
      */
     function __construct($mTime, $url, $userId, $userName, $actionType, $title, $msg, $data = null )
     {
-        $this->id = $mTime*10000;
-        $this->time = (int)$mTime;
+        parent::__construct($mTime, $data);
         $this->url = $url;
         $this->userId = $userId;
         $this->userName = $userName;
         $this->actionType = $actionType;
         $this->title = $title;
         $this->msg = $msg;
-        $this->data = $data;
     }
 
 }

@@ -48,13 +48,14 @@ class SystemController extends AbstractActionController
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
         switch ($request->method) {
-            case 'getLiveActions':
+            case 'getLiveActions' :
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since+1) );
+                $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since) );
                 break;
-            case 'getActiveUsers':
+            case 'getActiveUsers' :
                 //@todo check parameter since if exists (dann bei allen hier)
-                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->userTime+1) );
+//                var_dump((int)$request->userId+1);
+                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->userId) );
                 break;
         };
 

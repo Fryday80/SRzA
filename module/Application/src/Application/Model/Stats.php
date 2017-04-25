@@ -22,7 +22,7 @@ class Stats {
     public $globalHitsSum = 0;
     public $globalErrorHitsSum = 0;
     public $realUserCount = 0;
-    public $leaseTime = 30 * 60 * 1000000;
+    public $leaseTime = 30 * 60;
     private $key;
 
     function __construct() {
@@ -52,7 +52,7 @@ class Stats {
         //remove entries they are to old
         $newActiveUser = [];
         foreach($this->activeUsers as $key => $activeUser) {
-            if ($activeUser->time > microtime(true) - $this->leaseTime) {
+            if ($activeUser->time > time() - $this->leaseTime) {
                 $newActiveUser[$key] = $activeUser;
             }
         }
@@ -149,8 +149,8 @@ class Stats {
      */
     public function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
-        $result = $this->filterByKey($data, 'id', $since, FilterType::BIGGER);
-        return $this->sortByKey($result, 'id');
+        $result = $this->filterByKey($data, 'microtime', $since, FilterType::BIGGER);
+        return $this->sortByKey($result, 'microtime');
     }
 
     /**
@@ -191,7 +191,7 @@ class Stats {
         $bv = $b->$k;
 
         if($av === $bv) {
-            return  ($a->id < $b->id) ? -1 : 1;
+            return  ($a->microtime < $b->microtime) ? -1 : 1;
         }
 
         return ($av < $bv)? -1: 1;

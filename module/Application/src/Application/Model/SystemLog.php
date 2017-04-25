@@ -3,16 +3,13 @@
 namespace Application\Model;
 
 
-class SystemLog
+class SystemLog extends DataItem
 {
-    public $id;
-    public $time;
     public $type;
     public $msg;
     public $url;
     public $userId;
     public $userName;
-    public $data;
 
     /**
      * SystemLog constructor.
@@ -25,13 +22,11 @@ class SystemLog
      */
     function __construct($mTime, $type, $msg, $url, $userId, $userName, $data = null)
     {
-        $this->id = $mTime * 10000;
-        $this->time = (int)$mTime;
+        parent::__construct($mTime, $data);
         $this->type = $type;
         $this->msg = $msg;
         $this->url = $url;
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->daty = $data;
     }
 }

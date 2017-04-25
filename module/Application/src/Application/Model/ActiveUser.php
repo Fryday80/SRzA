@@ -2,14 +2,11 @@
 
 namespace Application\Model;
 
-class ActiveUser
+class ActiveUser extends DataItem
 {
-    public $id;
-    public $sid;     
+//    public $sid;
     public $userId;  
     public $userName;
-    public $time;    
-    public $data;    
     
     public $ip;
     /**
@@ -29,13 +26,11 @@ class ActiveUser
      */
     function __construct($userId, $userName, $mTime, $sid, $ip, $url, $data = null)
     {
+        parent::__construct($mTime, $data);
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->sid = $sid;
+//        $this->sid = $sid;
         $this->ip = $ip;
         $this->url = $url;
-        $this->data = $data;
-        $this->time = (int)$mTime;
-        $this->id = $mTime*10000;
     }
 }
