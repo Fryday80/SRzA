@@ -52,9 +52,9 @@ class StatisticService
     public function onDispatch(MvcEvent $e)
     {
         $data = $this->gatherData($e);
-
+        // skit on Ajax requests except on white list
         if($data['request']->isXmlHttpRequest() && !in_array($data['url'], WHITE_LIST)) return;
-
+        
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::PAGE_CALL , 'Call', $data['url']));
         $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $data['url'], $data['mTime']);
         $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['ip'], $data['url']) , $data['sid']);

@@ -1,4 +1,6 @@
-/** menu management **/
+/**
+ * menu management
+ */
 $(document).ready (function menu_handler_js () {
     "use strict";
     
@@ -159,7 +161,9 @@ $(document).ready (function menu_handler_js () {
     });
 });
 
-/** redesign of the login/logout box **/
+/**
+ * redesign of the login/logout box
+ */
 $(document).ready(function loggingDesigner() {
     var state;
     state = {
@@ -248,11 +252,11 @@ $(document).ready(function loggingDesigner() {
     });
 });
 
-/** popUps for disclaimer and impressum **/
+/**
+ * popUps for disclaimer and impressum
+ */
 $(document).ready(function poppingUp() {
-
 //    sessionStorage.clear(); // for testing reasons
-
     /** remove the href event default of the no js fallback **/
     function removeNoScriptFallback (){
         $(".disclaim").click(function( event ) {
@@ -262,10 +266,8 @@ $(document).ready(function poppingUp() {
             event.preventDefault();
         });
     }
-
-
+    
     /**
-     *
      * @param title     string
      * @param content   string
      * @param buttons   e.g. {ok: functionXY, deny: functionYX}
@@ -300,7 +302,7 @@ $(document).ready(function poppingUp() {
 
     /**
      * close dialog
-     */
+     * */
     function closeButton(){
         sessionStorage.setItem('isshow', 1);
         $(this).dialog("close");
@@ -310,13 +312,12 @@ $(document).ready(function poppingUp() {
      * redirect to google
      * e.g. if disclaimer is denied
      */
-    function denyButtonToGoogle() {
+    function redirectToGoogle() {
         var url = "http://www.google.de";
         window.location = url;
     }
 
     /**
-     *
      * @param url       string .. guess what of an url
      * @param buttons   e.g. {ok: functionXY, deny: functionYX}
      * @param popUpClass string
@@ -341,12 +342,16 @@ $(document).ready(function poppingUp() {
         });
     }
 
-    /** run dialog for disclaimer */
+    /**
+     * run dialog for disclaimer
+     */
     function disclaimerPop() {
-        openPopUpByUrl('/disclaimer', {ok: closeButton, deny: denyButtonToGoogle}, 'disclaimer');
+        openPopUpByUrl('/disclaimer', {ok: closeButton, deny: redirectToGoogle}, 'disclaimer');
     }
 
-    /** run dialog for impressum */
+    /**
+     * run dialog for impressum
+     */
     function impressumPop(){
         openPopUpByUrl('/impressum', {ok: closeButton},'impressum');
     }
@@ -364,7 +369,9 @@ $(document).ready(function poppingUp() {
     });
 });
 
-/** accordion **/
+/**
+ * accordion
+ */
 $(function() {
     //<accordion class="hightcontent"></accordion>
     $("accordion").each(function(i, ele) {

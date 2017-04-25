@@ -115,7 +115,7 @@ class Stats {
     }
 
     /**
-     * @param int $since optional to get data since microtime timestamp
+     * @param float $since optional to get data since microtime timestamp
      * @return array|null sorted result array new -> old
      */
     public function getActiveUsers($since = 0){
@@ -124,7 +124,7 @@ class Stats {
     }
 
     /**
-     * @param int $since timestamp microtime()
+     * @param float $since timestamp microtime()
      * @return array array of results
      */
     public function getActionLog($since = 0){
@@ -145,7 +145,7 @@ class Stats {
 
     /** shorthand for getting data<br> sorted new to old<br> from now to $since
      * @param array $data array of DataItems objects
-     * @param int $since microtime timestamp
+     * @param float $since microtime timestamp
      * @return null|array result array | null on failure
      */
     public function getSinceOf($data, $since = 0){
@@ -194,7 +194,6 @@ class Stats {
         if($av === $bv) {
             return  ($a->microtime < $b->microtime) ? -1 : 1;
         }
-
         return ($av < $bv)? -1: 1;
     }
     public function sortByKey($data, $key, $order = OrderType::DESCENDING){

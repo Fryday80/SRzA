@@ -643,7 +643,6 @@ button {
     margin-left: -1.5vw;
     margin-right: -1.5vw;
   }
-  /* first level ul */
   .navigation {
     background-color: #FAEBd7;
     border: 0.5vw solid;
@@ -651,7 +650,6 @@ button {
     height: 23px;
     border-radius: 5px;
   }
-  /* first level li */
   .level_0 {
     position: relative;
     display: inline-block;
