@@ -24,12 +24,11 @@ class ActiveUser extends DataItem
      * @param $url
      * @param mixed $data
      */
-    function __construct($userId, $userName, $mTime, $sid, $ip, $url, $data = null)
+    function __construct($userId, $userName, $mTime, $ip, $url, $data = null)
     {
         parent::__construct($mTime, $data);
         $this->userId = $userId;
         $this->userName = $userName;
-        $this->sid = $sid;
         $this->ip = $ip;
         $this->url = $url;
     }

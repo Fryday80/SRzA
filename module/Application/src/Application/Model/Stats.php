@@ -35,21 +35,22 @@ class Stats {
 
     /**
      * @param ActiveUser $user
+     * @param $sid
      */
-    public function updateActiveUser( ActiveUser $user) {
-        if (!isset($this->activeUsers[$user->sid])) {
-            $this->activeUsers[$user->sid] = $user;
+    public function updateActiveUser( ActiveUser $user, $sid) {
+        if (!isset($this->activeUsers[$sid])) {
+            $this->activeUsers[$sid] = $user;
         } else {
-            $this->activeUsers[$user->sid]->url  = $user->url;
-            $this->activeUsers[$user->sid]->time = $user->time;
-            $this->activeUsers[$user->sid]->data = $user->data;
-            if ( ($user->userId !== 0) && ($user->userId !== $this->activeUsers[$user->sid]->userId) ) {
-                $this->activeUsers[$user->sid]->userId = $user->userId;
-                $this->activeUsers[$user->sid]->userName = $user->userName;
+            $this->activeUsers[$sid]->url  = $user->url;
+            $this->activeUsers[$sid]->time = $user->time;
+            $this->activeUsers[$sid]->data = $user->data;
+            if ( ($user->userId !== 0) && ($user->userId !== $this->activeUsers[$sid]->userId) ) {
+                $this->activeUsers[$sid]->userId = $user->userId;
+                $this->activeUsers[$sid]->userName = $user->userName;
             }
         }
 
-        //remove entries they are to old
+        //remove entries that are to old
         $newActiveUser = [];
         foreach($this->activeUsers as $key => $activeUser) {
             if ($activeUser->time > time() - $this->leaseTime) {

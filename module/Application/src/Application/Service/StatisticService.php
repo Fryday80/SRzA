@@ -57,7 +57,7 @@ class StatisticService
 
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::PAGE_CALL , 'Call', $data['url']));
         $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $data['url'], $data['mTime']);
-        $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['sid'], $data['ip'], $data['url']) );
+        $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['ip'], $data['url']) , $data['sid']);
 
         $this->checkCookie($e);
     }
@@ -65,7 +65,7 @@ class StatisticService
     public function onError(MvcEvent $e) {
         $data = $this->gatherData($e);
 
-        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']));
+        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
         $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
         $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'message', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
     }
