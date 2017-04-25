@@ -670,10 +670,10 @@ button {
     border-bottom: none;
   }
   .level_0 p {
-    padding-top: 2px;
+    padding-top: 1.5px;
   }
   .level_0 > ul {
-    margin-top: calc(0.5vw + 2px);
+    margin-top: calc(0.5vw + 1.5px);
     position: absolute;
     width: 100%;
     background-color: #FAEBd7;
