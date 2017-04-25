@@ -4,7 +4,7 @@ namespace Application\Model;
 
 class ActiveUser extends DataItem
 {
-//    public $sid;
+    public $sid;
     public $userId;  
     public $userName;
     
@@ -29,7 +29,7 @@ class ActiveUser extends DataItem
         parent::__construct($mTime, $data);
         $this->userId = $userId;
         $this->userName = $userName;
-//        $this->sid = $sid;
+        $this->sid = $sid;
         $this->ip = $ip;
         $this->url = $url;
     }
