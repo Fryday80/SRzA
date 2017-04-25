@@ -55,7 +55,7 @@ class SystemController extends AbstractActionController
             case 'getActiveUsers' :
                 //@todo check parameter since if exists (dann bei allen hier)
 //                var_dump((int)$request->userId+1);
-                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->userId) );
+                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
                 break;
         };
 

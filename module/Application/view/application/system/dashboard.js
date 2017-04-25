@@ -59,7 +59,7 @@
                     //                    var minutes = '0' + dateRaw.getMinutes();
                     //                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
                     // remove updated user
-                    if (user[c].id == $('li[data-microtime="' + user[c].id + '"]').data('microtime') ) continue;
+                    if (user[c].microtime == $('li[data-microtime="' + user[c].microtime + '"]').data('microtime') ) continue;
                     $('li[data-microtime="' + user[c].id + '"]').remove();
                     // prepend updated user
                     $('#users').prepend("<li class='entry' data-timestamp='" + user[c].time + "' data-microtime='" + user[c].microtime + "'>" +
@@ -78,7 +78,7 @@
         let data = {
             method: "getActiveUsers",
             userTime: userTime,
-            userId: microtime,
+            microtime: microtime,
         };
         $.ajax({
             url: "/system/json",
