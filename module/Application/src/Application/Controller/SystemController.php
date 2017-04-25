@@ -16,6 +16,7 @@ class SystemController extends AbstractActionController
 
     public function dashboardAction()
     {
+        $this->layout()->setVariable('showSidebar', false);
         $this->statsService = $this->getServiceLocator()->get('StatisticService');
         $mvL = $this->statsService->getMostVisitedPages();
         $mvL = (isset($mvL[0])) ? $mvL[0]->url . ' with ' . $mvL[0]->hitsSum : null;
