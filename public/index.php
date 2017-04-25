@@ -13,6 +13,8 @@ use Tracy\Debugger;
 
 Debugger::enable(Debugger::DEVELOPMENT, $logPath);
 Debugger::$strictMode = true;
+Debugger::$maxDepth = 5; // default: 3
+Debugger::$maxLength = 550; // default: 150
 require 'vendor/zarganwar/performance-panel/src/Panel.php';
 require 'vendor/zarganwar/performance-panel/src/Register.php';
 

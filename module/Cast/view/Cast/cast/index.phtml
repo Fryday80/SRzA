@@ -3,8 +3,22 @@
 <?php echo $this->inlineFromFile('cast', 'cast', 'tree.css');  ?>
 <?php
 bdump($root);
+function createFamilyList($parent, $level) {
+    echo '<li class="familyMember">';
+    echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
+    echo '<p>';
+    echo '<span>FAM</span> ';
+    echo '<span> NAME</span>';
+    echo '</p>';
+    echo '<br>';
+    echo '<p>';
+    echo '<span>Family: </span>';
+    echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
+    echo '</p>';
+    echo '</familymember>';
+}
 function createList($parent, $level) {
-    echo '<li>';
+    echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
     echo '<p>';
     echo '<span>'.$parent['name'].'</span> ';
@@ -16,23 +30,44 @@ function createList($parent, $level) {
     echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
     echo '</p>';
     echo '</character>';
-    if (count($parent['employ']) > 0) {
+
+    if (isset($parent['family']) || count($parent['employ']) > 0) {
         echo '<ul>';
-        foreach ($parent['employ'] as &$char) {
-            createList($char, $level + 1);
+        if (isset($parent['family'])) {
+            echo '<li class="family">';
+            echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '"> Family';
+            echo '<ul>';
+            foreach ($parent['family']['members'] as &$member) {
+            createFamilyList($member, $level + 1);
+            }
+            echo '</ul>';
+
+            echo '</family>';
+            echo '</li>';
+        }
+        if (count($parent['employ']) > 0) {
+            foreach ($parent['employ'] as &$char) {
+                createList($char, $level + 1);
+            }
         }
         echo '</ul>';
     }
     echo '</li>';
 }
 ?>
-<div class="tree">
-    <ul>
-        <?php createList($root, 0); ?>
-    </ul>
-</div>
 
-
+<box>
+    <boxtitel>
+        <span class='own_text_small'>Staatshierarchie</span>
+    </boxtitel>
+    <boxcontent style="display: inline-block; overflow-x: scroll; ">
+        <div class="tree" style="width: 2000px; height: 2000px;">
+            <ul style="white-space:nowrap">
+                <?php createList($root, 0); ?>
+            </ul>
+        </div>
+    </boxcontent>
+</box>
 
 <!--<div class="cast">-->
 <!--    <h1>Besetztung</h1>-->

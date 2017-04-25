@@ -23,9 +23,71 @@ class CastService implements ServiceLocatorAwareInterface
     function __construct() {
 
     }
+
+    private $charsById = [];
+    private $depth = 0;
+    private $tempFamsHash;
+    public function getStanding($withFam = false) {
+        $this->loadData();
+
+        foreach ($this->data as $key => &$char) {
+            $this->charsById[$char['id']] = &$char;
+            $char['employ'] = array();
+            $char['type'] = 'char';
+        }
+        $root = $this->charsById[1];
+        $this->tempFamsHash = [];
+        $this->buildStandingTree($root);
+        //iterate families and add chars
+
+//        foreach ($this->tempFamsHash as &$fam) {
+//            $next = $fam['member'][0];
+//            $famMembers = $this->getAllCharsFromFamily($fam['id']);
+//            foreach ($famMembers as &$char) {
+//                $this->charsById[$char['id']] = &$char;
+//                $char['employ'] = array();
+//                $char['type'] = 'char';
+//            }
+//        }
+        bdump($this->tempFamsHash);
+        return $root;
+    }
+    public function getAllCharsFromFamily($id) {
+        $result = [];
+        foreach ($this->data as $char) {
+            if ($char['family_id'] == $id) {
+                array_push($result, $char);
+            }
+        }
+        return $result;
+    }
+    private function buildStandingTree(&$parent) {
+        $this->depth++;
+        if (isset($this->tempFamsHash[$parent['family_id']])) {
+            //add char to family
+            array_push($this->tempFamsHash[$parent['family_id']]['members'], $parent);
+        } else {
+            //create family
+            $parent['family'] = array(
+                'id' => $parent['family_id'],
+                'type' => 'family',
+                'name' => $parent['family_name'],
+                'members' => array($parent)
+            );
+            $this->tempFamsHash[$parent['family_id']] = &$parent['family'];
+        }
+        foreach ($this->charsById as &$value) {
+            if ($value['supervisor_id'] == $parent['id']) {
+                $this->buildStandingTree($value);
+                array_push($parent['employ'], $value);
+            }
+        }
+    }
+    /*  *
+
     private $chars = [];
     private $depth = 0;
-    public function getStanding() {
+    public function getStanding($withFam = false) {
         $this->loadData();
 
         foreach ($this->data as $key => &$char) {
@@ -48,6 +110,8 @@ class CastService implements ServiceLocatorAwareInterface
             }
         }
     }
+
+     * */
     private function loadData() {
         if (!$this->loaded) {
             /** @var CharacterTable $charTable */
