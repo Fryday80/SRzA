@@ -762,6 +762,9 @@ button {
     -o-animation: blurIn 0.3s ease-in;
     animation: blurIn 0.3s ease-in;
   }
+  #navframe {
+    min-height: 5vw;
+  }
 }
 /* login and logout view */
 @media only screen and (min-width: 700px) {

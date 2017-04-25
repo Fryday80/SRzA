@@ -83,9 +83,7 @@ $(document).ready (function menu_handler_js () {
             menuActionsMobile();
         } else {
             state.changeMode("browser");
-            if(state.resized) {
                 runBrowserDesign();
-            }
         }
     }
 
