@@ -20,7 +20,9 @@
         maxZoom: 1.5,
         dragging: true,
         dragMouseButton: 1,
-    };
+        defaultLeft: 0,
+        defaultTop: 0,
+};
 
     /**
      * @param ele
@@ -74,6 +76,8 @@
                 this.$workspace = this.$draggable.parent('workspace');
             }
             this.$ele.addClass('ws-content');
+            this.setPos(this.settings.defaultLeft, this.settings.defaultTop);
+            this.$ele.show();
             //event handler
             this.$workspace.on('mousedown', this.onMouseDown.bind(this));
             $(window).on('mouseup', this.onMouseUp.bind(this));

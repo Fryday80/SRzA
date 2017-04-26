@@ -48,7 +48,12 @@ function createList($parent, $level) {
             echo '<li class="family">';
             echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
             echo '<div class="details">';
-            echo ' Family';
+            echo $parent['family']['name'];
+            echo '<br>';
+            echo '<br>';
+            echo '<hr>';
+            echo '<p>wappen</p>';
+            echo '<p>etc</p>';
             echo '</div>';
             echo '<ul>';
             foreach ($parent['family']['members'] as &$member) {
@@ -76,7 +81,7 @@ function createList($parent, $level) {
     </boxtitel>
     <boxcontent style="overflow: hidden; height: 500px;">
 
-        <div class="tree" style="width: 2000px; height: 2000px;">
+        <div class="tree" style="width: 2000px; height: 2000px; display:none">
             <ul style="white-space:nowrap">
                 <?php createList($root, 0); ?>
             </ul>
