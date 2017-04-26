@@ -1,0 +1,164 @@
+@import "../../../../../less/css/_vars";
+@import "../../../../../less/css/_helper";
+@import "../../../../../less/css/realCss/siteDesign/_box";
+@import "tree";
+
+.tree li {
+    character {
+        //border: 1px solid #ccc;
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #666;
+        font-family: arial, verdana, tahoma;
+        font-size: 11px;
+        display: inline-block;
+        //border-radius: 5px;
+        transition: all 0.5s;
+    }
+
+    /* hover effect */
+    character:hover,
+    character:hover + ul li character {
+        background: #c8e4f8;
+        color: #000;
+        padding: 15px;
+        //border: 1px solid #94a0b4;
+    }
+    /*Connector styles on hover*/
+    character:hover + ul li::after,
+    character:hover + ul li::before,
+    character:hover + ul::before,
+    character:hover + ul li ul::before {
+        border-color: @backgroundcolor;
+        transition: all 0.8s;
+    }
+
+    family {
+        width: auto;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        text-decoration: none;
+        font-family: arial, verdana, tahoma;
+        font-size: 11px;
+        display: inline-block;
+        border-radius: 5px;
+        background-color: @body-color;
+        transition: all 0.5s;
+    }
+
+    familymember {
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        text-decoration: none;
+        color: #ffffff;
+        font-family: arial, verdana, tahoma;
+        font-size: 11px;
+        display: inline-block;
+        border-radius: 5px;
+        transition: all 0.5s;
+        * {
+            color: #ffffff;
+        }
+    }
+    /* hover effect */
+    familymember:hover,
+    familymember:hover + ul li familymember {
+        background: @blue-hover;
+        color: #000;
+        border: 1px solid #94a0b4;
+        *
+        {
+            color: #000;
+        }
+    }
+    /*Connector styles on hover*/
+    familymember:hover + ul li::after,
+    familymember:hover + ul li::before,
+    familymember:hover + ul::before,
+    familymember:hover + ul ul::before {
+        border-color: #5db414;
+        transition: all 0.8s;
+    }
+
+    character:hover + ul li {
+        familymember,
+        .details {
+            background: @darker;
+            color: #000;
+        }
+    }
+
+    character:hover + ul > li.family {
+        familymember,
+        .details {
+            .box;
+            margin: 0;
+        }
+    }
+}
+
+
+family>.details {
+    .box;
+    margin: 0;
+    height: 14px;
+    padding: 10px;
+    overflow: hidden;
+}
+
+
+
+
+
+
+
+
+.centered>family {
+    background-color: @backgroundcolor!important;
+    padding-left: 30px!important;
+    padding-right: 30px!important;
+    padding-bottom: 30px!important;
+    transition: all 3s;
+    &>.details,
+    &>ul>.familyMember familymember
+    {
+        .box;
+        margin: 0;
+        min-height: 30px;
+        transition: all 1s ;
+    }
+}
+
+
+
+
+    .tree-pic
+    {
+        height: 45px;
+    }
+
+
+
+
+    #content>boxcontent boxcontent
+    {
+        padding: 0;
+        background-color: @body-color;
+        .at-box-inner-shadow(2vw; darkgrey);
+        background: @body-color @html-background-image fixed;
+        background-size: 100px;
+        text-shadow: none;
+    }
+
+
+
+
+
+    //@todo transit this to a global position ;)
+    .notransition {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+        -ms-transition: none !important;
+        transition: none !important;
+    }

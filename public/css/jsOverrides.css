@@ -1,1 +1,59 @@
-.box-shadow-bottom{box-shadow:0 .35vw .8vw darkgrey,inset 0 0 5vw 0 rgba(41,0,0,0.5)}.ui-dialog{top:0 !important;left:0 !important}.ui-dialog-buttonset{float:none !important;text-align:center}.ui-widget-content button{background-color:#FAEBd7;width:60px}.ui-widget-content button:hover{box-shadow:inset 0 0 2vw 0 rgba(41,0,0,0.5)}.disclaimer{width:100%;height:75% !important;font-size:medium !important}table.dataTable tr:hover>td,table.dataTable tr:hover>td{background-color:#9fa8da !important}.preview_gallery{height:75px;border-radius:10%}#ui-datepicker-div{border:.5vw solid;border-image:url("/img/uikit/border.png") 40 repeat}.ui-datepicker{background-image:none;background-size:100% 100%}#ui-datepicker-div>table>thead>tr>th>span{color:black}accordion span span{display:none !important}
+/* positioning */
+/* ------ shadows ------- */
+.box-shadow-bottom {
+  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+}
+/* overrides for js css */
+/* -------------------- */
+/* own pop up styles */
+/* ----------------- UI special desing -------------------------------- */
+.ui-dialog {
+  top: 0 !important;
+  left: 0 !important;
+}
+.ui-dialog-buttonset {
+  float: none !important;
+  text-align: center;
+}
+.ui-widget-content button {
+  background-color: #FAEBd7;
+  width: 60px;
+}
+.ui-widget-content button:hover {
+  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+}
+/* ----------------- pop up div design -------------------- */
+.disclaimer {
+  width: 100%;
+  height: 75% !important;
+  font-size: medium !important;
+}
+/* data tables */
+table.dataTable tr:hover > td,
+table.dataTable tr:hover > td {
+  background-color: #9fa8da !important;
+}
+/* additional settings for the gallery */
+/******************** CSS for Gallery Index Page *********************/
+.preview_gallery {
+  height: 75px;
+  border-radius: 10%;
+}
+/* datepicker */
+#ui-datepicker-div {
+  border: 0.5vw solid;
+  border-image: url("/img/uikit/border.png") 40 repeat;
+}
+/* ******** datepicker (part of jquery-ui I think) ******** */
+.ui-datepicker {
+  background-image: none;
+  background-size: 100% 100%;
+}
+#ui-datepicker-div > table > thead > tr > th > span {
+  color: black;
+}
+/* simplyscroll */
+/* accordion */
+accordion span span {
+  display: none !important;
+}

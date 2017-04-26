@@ -69,7 +69,7 @@ class CastService implements ServiceLocatorAwareInterface
         if (isset($this->tempFamsHash[$parent['family_id']])) {
             //add char to family
             array_push($this->tempFamsHash[$parent['family_id']]['members'], $parent);
-        } else {
+        } else if($parent['family_id'] != 0) {
             //create family
             $parent['family'] = array(
                 'id' => $parent['family_id'],

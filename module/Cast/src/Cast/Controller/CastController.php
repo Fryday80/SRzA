@@ -13,6 +13,7 @@ use Exception;
 class CastController extends AbstractActionController
 {
     public function indexAction() {
+        $this->layout()->setVariable('showSidebar', false);
         /** @var CastService $castService */
         $castService = $this->getServiceLocator()->get("CastService");
         $castService->getStanding();

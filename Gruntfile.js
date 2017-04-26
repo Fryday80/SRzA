@@ -24,26 +24,26 @@ module.exports = function(grunt) {
                     }
                 ]
             },
-            production: {
-                options: {
-                    compress: true,
-                    yuicompress: true,
-                    optimization: 2,
-                    strictMath: true
-                },
-                files: [
-                    {
-                        "public/css/style.css": "less/style.less", // destination file and source file
-                        "public/css/jsOverrides.css": "less/jsOverrides.less", // destination file and source file
-                    },
-                    {
-                        expand: true,
-                        src: ['module/**/*.less'],
-                        ext: '.css',
-                        extDot: 'first'
-                    }
-                ]
-            }
+            // production: {
+            //     options: {
+            //         compress: true,
+            //         yuicompress: true,
+            //         optimization: 2,
+            //         strictMath: true
+            //     },
+            //     files: [
+            //         {
+            //             "public/css/style.css": "less/style.less", // destination file and source file
+            //             "public/css/jsOverrides.css": "less/jsOverrides.less", // destination file and source file
+            //         },
+            //         {
+            //             expand: true,
+            //             src: ['module/**/*.less'],
+            //             ext: '.css',
+            //             extDot: 'first'
+            //         }
+            //     ]
+            // }
         },
         watch: {
             styles: {

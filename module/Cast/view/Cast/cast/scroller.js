@@ -19,6 +19,6 @@
     });
     $(document).ready(function() {
         let $family = $('.ws-content ul li .character');
-        workspace.goToElement($family, 2);
+        workspace.goToElement($family);
     });
 })();
