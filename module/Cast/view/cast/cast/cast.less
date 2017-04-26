@@ -1,9 +1,20 @@
 @import "../../../../../less/css/_vars";
 @import "../../../../../less/css/_helper";
-@import "../../../../../less/css/realCss/siteDesign/_box";
+@import "../../../../../less/css/realCss/siteDesign/_box_basic";
 @import "tree";
 
+@tree-pic-height: 45px;
+
+.tree-pic
+{
+    height: @tree-pic-height;
+}
+
 .tree li {
+    .details
+    {
+        color: black;
+    }
     character {
         //border: 1px solid #ccc;
         padding: 5px 10px;
@@ -19,7 +30,7 @@
     /* hover effect */
     character:hover,
     character:hover + ul li character {
-        background: #c8e4f8;
+        background: @silver-hover-color;
         color: #000;
         padding: 15px;
         //border: 1px solid #94a0b4;
@@ -50,20 +61,20 @@
         border: 1px solid #ccc;
         padding: 5px 10px;
         text-decoration: none;
-        color: #ffffff;
+        color: @silver-hover-color;
         font-family: arial, verdana, tahoma;
         font-size: 11px;
         display: inline-block;
         border-radius: 5px;
         transition: all 0.5s;
         * {
-            color: #ffffff;
+            color: @silver-hover-color;
         }
     }
     /* hover effect */
     familymember:hover,
     familymember:hover + ul li familymember {
-        background: @blue-hover;
+        background: @silver-hover-color;
         color: #000;
         border: 1px solid #94a0b4;
         *
@@ -72,35 +83,50 @@
         }
     }
     /*Connector styles on hover*/
+    div:hover+ul li::after,
+    div:hover+ul li::before,
+    div:hover+ul::before,
+    div:hover+ul li ul::before,
     familymember:hover + ul li::after,
     familymember:hover + ul li::before,
     familymember:hover + ul::before,
     familymember:hover + ul ul::before {
-        border-color: #5db414;
+        border-color: @backgroundcolor;
         transition: all 0.8s;
     }
 
+    // all dependent Chars
     character:hover + ul li {
+        *
+        {
+            color: #000;
+        }
         familymember,
         .details {
             background: @darker;
-            color: #000;
         }
     }
 
-    character:hover + ul > li.family {
+    // own family of hovered char
+    character:hover + ul > li.family family
+    {
+        .fam-tree
+        {
+            height: (@tree-pic-height *2);
+        }
         *
         {
             color: black;
         }
         familymember,
-        .details {
+        .details
+        {
             .box;
             margin: 0;
         }
         familymember
         {
-            width: auto!important;
+            display: inline-block;
         }
     }
 }
@@ -140,10 +166,7 @@ family>.details {
 
 
 
-    .tree-pic
-    {
-        height: 45px;
-    }
+
 
 
 
