@@ -12,3 +12,4 @@ module/demo/
 .vagrant/
 cache/
 storage/
+*/*.css
