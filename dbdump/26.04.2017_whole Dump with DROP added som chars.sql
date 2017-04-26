@@ -56,30 +56,6 @@ CREATE TABLE IF NOT EXISTS `abonnementtypes` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `active_users`
---
-
-DROP TABLE IF EXISTS `active_users`;
-CREATE TABLE IF NOT EXISTS `active_users` (
-  `sid` char(50) COLLATE utf8_bin NOT NULL,
-  `ip` text COLLATE utf8_bin NOT NULL,
-  `user_id` int(11) NOT NULL DEFAULT '0',
-  `last_action_url` text COLLATE utf8_bin NOT NULL,
-  `time` bigint(20) NOT NULL DEFAULT '0',
-  `data` longtext COLLATE utf8_bin NOT NULL,
-  UNIQUE KEY `sid` (`sid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
---
--- Daten für Tabelle `active_users`
---
-
-INSERT INTO `active_users` (`sid`, `ip`, `user_id`, `last_action_url`, `time`, `data`) VALUES
-('t0monqbtpl1fn5n6fv4cp120t6', '::1', 2, '/system/dashboard', 1492458138, '{"serverData":{"REDIRECT_STATUS":"200","HTTP_HOST":"localhost","HTTP_CONNECTION":"keep-alive","HTTP_PRAGMA":"no-cache","HTTP_CACHE_CONTROL":"no-cache","HTTP_UPGRADE_INSECURE_REQUESTS":"1","HTTP_USER_AGENT":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36","HTTP_ACCEPT":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8","HTTP_DNT":"1","HTTP_REFERER":"http://localhost/gallery","HTTP_ACCEPT_ENCODING":"gzip, deflate, sdch, br","HTTP_ACCEPT_LANGUAGE":"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4","HTTP_COOKIE":"pla3412_1_9_7_1=789b3a7284ca426a574144085665b786; pla3412_1_9_7_1_salt=vuV3inj4mwPiwml1QlMF; cookieconsent_status=dismiss; PHPSESSID=t0monqbtpl1fn5n6fv4cp120t6","PATH":"C:\\Perl64\\site\\bin;C:\\Perl64\\bin;D:\\Web\\Webprojekte\\TESTING\\usbweb\\php;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\Common Files\\Adobe\\AGL;D:\\Program Files (x86)\\QuickTime\\QTSystem\\;D:\\Web\\usbweb\\php;C:\\ProgramData\\ComposerSetup\\bin;C:\\Program Files\\nodejs\\;C:\\Program Files (x86)\\Brackets\\command;C:\\Program Files\\Microsoft SQL Server\\130\\Tools\\Binn\\;C:\\Program Files\\Microsoft\\Web Platform Installer\\;C:\\Program Files\\dotnet\\;C:\\Program Files (x86)\\Microsoft SQL Server\\110\\DTS\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\120\\DTS\\Binn\\;C:\\Program Files (x86)\\Microsoft SQL Server\\130\\DTS\\Binn\\;C:\\Program Files (x86)\\Bitvise SSH Client;D:\\HashiCorp\\Vagrant\\bin;D:\\Program Files\\PuTTY\\;D:\\Program Files\\Git\\Git\\cmd;D:\\Program Files\\Git\\Git\\mingw64\\bin;D:\\Program Files\\Git\\Git\\usr\\bin;C:\\Program Files (x86)\\Gource\\cmd;C:\\Users\\Fry\\AppData\\Roaming\\Composer\\vendor\\bin;C:\\Users\\Fry\\AppData\\Roaming\\npm;"D:\\Program Files\\PuTTY"","SystemRoot":"C:\\WINDOWS","COMSPEC":"C:\\WINDOWS\\system32\\cmd.exe","PATHEXT":".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC","WINDIR":"C:\\WINDOWS","SERVER_SIGNATURE":"","SERVER_SOFTWARE":"Apache/2.4.6 (Win32) PHP/5.6.30","SERVER_NAME":"localhost","SERVER_ADDR":"::1","SERVER_PORT":"80","REMOTE_ADDR":"::1","DOCUMENT_ROOT":"D:/Web/Webprojekte/SRzA/public","REQUEST_SCHEME":"http","CONTEXT_PREFIX":"","CONTEXT_DOCUMENT_ROOT":"D:/Web/Webprojekte/SRzA/public","SERVER_ADMIN":"mail@localhost","SCRIPT_FILENAME":"D:/Web/Webprojekte/SRzA/public/index.php","REMOTE_PORT":"51718","REDIRECT_URL":"/system/dashboard","GATEWAY_INTERFACE":"CGI/1.1","SERVER_PROTOCOL":"HTTP/1.1","REQUEST_METHOD":"GET","QUERY_STRING":"","REQUEST_URI":"/system/dashboard","SCRIPT_NAME":"/index.php","PHP_SELF":"/index.php","REQUEST_TIME_FLOAT":1492458137.872,"REQUEST_TIME":1492458137}}');
-
--- --------------------------------------------------------
-
---
 -- Tabellenstruktur für Tabelle `albumimages`
 --
 
@@ -156,14 +132,14 @@ CREATE TABLE IF NOT EXISTS `characters` (
 --
 
 INSERT INTO `characters` (`id`, `user_id`, `name`, `surename`, `gender`, `birthday`, `job_id`, `family_id`, `guardian_id`, `supervisor_id`, `tross_id`, `vita`, `active`) VALUES
-(1, 11, 'König', 'Quasimodo', 'm', '1784-04-22', 2, 4, 0, 0, 0, 'dsadsadas', 1),
-(2, 2, 'Fry', 'zu Leym', 'm', '1748-04-07', 0, 3, 0, 1, 0, 'jgfjjdj', 0),
-(3, 12, 'Nane', 'zu Leym', 'f', '2017-04-09', 0, 3, 2, 0, 0, '', 0),
-(4, 4, 'Christoph', 'zu Leym', 'm', '1715-07-29', 0, 3, 3, 0, 0, '', 0),
-(9, 14, 'Lara', 'zu Leym', 'f', '2017-04-23', 0, 3, 3, 0, 0, 'fdfdf', 0),
-(11, 6, 'Ben', 'zu Leym', 'm', '', 0, 0, 0, 0, 0, '', 0),
-(12, 0, 'xass', 'xasx', 'm', '', 0, 0, 0, 0, 0, '', 0),
-(13, 0, 'gfjk', 'hkj', 'f', '', 0, 0, 0, 0, 0, '', 0);
+(1, 1, 'König', 'Quasimodo', 'm', '1784-04-22', 1, 1, 0, 0, 0, 'dsadsadas', 1),
+(2, 2, 'Fry', 'zu Leym', 'm', '1748-04-07', 1, 2, 0, 1, 0, 'jgfjjdj', 1),
+(3, 6, 'Nane', 'zu Leym', 'f', '2017-04-09', 0, 2, 2, 0, 0, 'edqq', 1),
+(4, 7, 'Christoph', 'zu Leym', 'm', '1715-07-29', 5, 2, 3, 0, 0, 'qd', 1),
+(9, 8, 'Lara', 'zu Leym', 'f', '2017-04-23', 0, 2, 3, 0, 0, 'fdfdf', 1),
+(11, 9, 'Ben', 'zu Leym', 'm', '', 0, 2, 3, 0, 0, 'dqw', 1),
+(12, 10, 'Basti', 'Bogi', 'm', '', 2, 3, 0, 2, 0, 'csd', 1),
+(13, 3, 'Wasser', 'Platsch', 'f', '', 4, 4, 0, 2, 0, 'csd', 1);
 
 -- --------------------------------------------------------
 
@@ -183,9 +159,10 @@ CREATE TABLE IF NOT EXISTS `families` (
 --
 
 INSERT INTO `families` (`id`, `name`) VALUES
-(2, 'Von und Zu Hälter'),
-(3, 'dsadsa'),
-(4, 'BurgerKing');
+(1, 'BurgerKing'),
+(2, 'Fam1'),
+(3, 'Fam2'),
+(4, 'Fam3');
 
 -- --------------------------------------------------------
 
@@ -244,7 +221,11 @@ CREATE TABLE IF NOT EXISTS `job` (
 --
 
 INSERT INTO `job` (`id`, `job`) VALUES
-(2, 'Schmied');
+(1, 'Ritter'),
+(2, 'Bogenschütze'),
+(3, 'Schmied'),
+(4, 'Bader'),
+(5, 'Hofnarr');
 
 -- --------------------------------------------------------
 
@@ -340,55 +321,6 @@ INSERT INTO `pages` (`id`, `title`, `url`, `exceptedRoles`, `content`, `updated`
 (9, 'Links', 'links', '', '<p>test1</p>\r\n\r\n<p>test2</p>\r\n', '2017-03-23 22:41:03'),
 (10, 'Haftungsausschluß', 'disclaimer', '', '<titel>Haftungsausschluss</titel>\r\n<p>&nbsp;</p>\r\n\r\n<h3>Inhalt des Onlineangebotes</h3>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Der Autor &uuml;bernimmt keinerlei Gew&auml;hr f&uuml;r die Aktualit&auml;t, Richtigkeit und Vollst&auml;ndigkeit der bereitgestellten Informationen auf unserer Website. Haftungsanspr&uuml;che gegen den Autor, welche sich auf Sch&auml;den materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollst&auml;ndiger Informationen verursacht wurden, sind grunds&auml;tzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vors&auml;tzliches oder grob fahrl&auml;ssiges Verschulden vorliegt.<br />\r\nAlle Angebote sind freibleibend und unverbindlich. Der Autor beh&auml;lt es sich ausdr&uuml;cklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ank&uuml;ndigung zu ver&auml;ndern, zu erg&auml;nzen, zu l&ouml;schen oder die Ver&ouml;ffentlichung zeitweise oder endg&uuml;ltig einzustellen.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<h3>Verweise und Links</h3>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Bei direkten oder indirekten Verweisen auf fremde Webseiten (&ldquo;Hyperlinks&rdquo;), die au&szlig;erhalb des Verantwortungsbereiches des Autors liegen, w&uuml;rde eine Haftungsverpflichtung ausschlie&szlig;lich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch m&ouml;glich und zumutbar w&auml;re, die Nutzung im Falle rechtswidriger Inhalte zu verhindern.<br />\r\nDer Autor erkl&auml;rt hiermit ausdr&uuml;cklich, dass zum Zeitpunkt der Linksetzung keine illegalen Inhalte auf den zu verlinkenden Seiten erkennbar waren. Auf die aktuelle und zuk&uuml;nftige Gestaltung, die Inhalte oder die Urheberschaft der verlinkten/verkn&uuml;pften Seiten hat der Autor keinerlei Einfluss. Deshalb distanziert er sich hiermit ausdr&uuml;cklich von allen Inhalten aller verlinkten /verkn&uuml;pften Seiten, die nach der Linksetzung ver&auml;ndert wurden. Diese Feststellung gilt f&uuml;r alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie f&uuml;r Fremdeintr&auml;ge in vom Autor eingerichteten G&auml;steb&uuml;chern, Diskussionsforen, Linkverzeichnissen, Mailinglisten und in allen anderen Formen von Datenbanken, auf deren Inhalt externe Schreibzugriffe m&ouml;glich sind. F&uuml;r illegale, fehlerhafte oder unvollst&auml;ndige Inhalte und insbesondere f&uuml;r Sch&auml;den, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der &uuml;ber Links auf die jeweilige Ver&ouml;ffentlichung lediglich verweist.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<h3>Urheber- und Kennzeichenrecht</h3>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Der Autor ist bestrebt, in allen Publikationen die Urheberrechte der verwendeten Bilder, Grafiken, Tondokumente, Videosequenzen und Texte zu beachten, von ihm selbst erstellte Bilder, Grafiken, Tondokumente, Videosequenzen und Texte zu nutzen oder auf lizenzfreie Grafiken, Tondokumente, Videosequenzen und Texte zur&uuml;ckzugreifen.<br />\r\nAlle innerhalb des Internetangebotes genannten und ggf. durch Dritte gesch&uuml;tzten Marken- und Warenzeichen unterliegen uneingeschr&auml;nkt den Bestimmungen des jeweils g&uuml;ltigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigent&uuml;mer. Allein aufgrund der blo&szlig;en Nennung ist nicht der Schluss zu ziehen, dass Markenzeichen nicht durch Rechte Dritter gesch&uuml;tzt sind!<br />\r\nDas Copyright f&uuml;r ver&ouml;ffentlichte, vom Autor selbst erstellte Objekte bleibt allein beim Autor der Seiten. Eine Vervielf&auml;ltigung oder Verwendung solcher Grafiken, Tondokumente, Videosequenzen und Texte in anderen elektronischen oder gedruckten Publikationen ist ohne ausdr&uuml;ckliche Zustimmung des Autors nicht gestattet.</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<h3>Datenschutz</h3>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p>Sofern innerhalb des Internetangebotes die M&ouml;glichkeit zur Eingabe pers&ouml;nlicher oder gesch&auml;ftlicher Daten (Emailadressen, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten seitens des Nutzers auf ausdr&uuml;cklich freiwilliger Basis. Die Inanspruchnahme und Bezahlung aller angebotenen Dienste ist &ndash; soweit technisch m&ouml;glich und zumutbar &ndash; auch ohne Angabe solcher Daten bzw. unter Angabe anonymisierter Daten oder eines Pseudonyms gestattet. Die Nutzung der im Rahmen des Impressums oder vergleichbarer Angaben ver&ouml;ffentlichten Kontaktdaten wie Postanschriften, Telefon- und Faxnummern sowie Emailadressen durch Dritte zur &Uuml;bersendung von nicht ausdr&uuml;cklich angeforderten Informationen ist nicht gestattet. Rechtliche Schritte gegen die Versender von sogenannten Spam-Mails bei Verst&ouml;ssen gegen dieses Verbot sind ausdr&uuml;cklich vorbehalten.</p>\r\n\r\n<p><!-- \r\n<h3>Datenschutzerklärung für die Nutzung von Facebook-Plugins (Like-Button)</h3>\r\n<p>\r\nDiese Webseite nutzt Plugins des Anbieters Facebook.com, welche durch das Unternehmen Facebook Inc., 1601 S. California Avenue, Palo Alto, CA 94304 in den USA bereitgestellt werden. Nutzer unserer Webseite, auf der das Facebook-Plugin installiert ist, werden hiermit darauf hingewiesen, dass durch das Plugin eine Verbindung zu Facebook aufgebaut wird, wodurch eine Übermittlung an Ihren Browser durchgeführt wird, damit das Plugin auf der Webseite erscheint.<br>\r\nDes Weiteren werden durch die Nutzung Daten an die Facebook-Server weitergeleitet, welche Informationen über Ihre Webseitenbesuche auf unserer Homepage enthalten. Dies hat für eingeloggte Facebook-Nutzer zur Folge, dass die Nutzungsdaten ihrem persönlichen Facebook-Account zugeordnet werden.<br>\r\nSobald Sie als eingeloggter Facebook-Nutzer aktiv das Facebook-Plugin nutzen (z.B. durch das Klicken auf den „Gefällt mir“ Knopf oder die Nutzung der Kommentarfunktion), werden diese Daten zu Ihrem Facebook-Account übertragen und veröffentlicht. Dies können Sie nur durch vorheriges Ausloggen aus Ihrem Facebook-Account umgehen.<br>\r\nWeitere Information bezüglich der Datennutzung durch Facebook entnehmen Sie bitte den datenschutzrechtlichen Bestimmungen auf Facebook.</p>\r\n\r\n<h3>Datenschutzerklärung für die Nutzung von Twitter</h3>\r\n<p>Auf unseren Seiten sind Funktionen des Dienstes Twitter eingebunden. Diese Funktionen werden angeboten durch die Twitter Inc., 795 Folsom St., Suite 600, San Francisco, CA 94107, USA. Durch das Benutzen von Twitter und der Funktion „Re-Tweet“ werden die von Ihnen besuchten Webseiten mit Ihrem Twitter-Account verknüpft und anderen Nutzern bekannt gegeben. Dabei werden auch Daten an Twitter übertragen.</p>\r\n<p>Wir weisen darauf hin, dass wir als Anbieter der Seiten keine Kenntnis vom Inhalt der übermittelten Daten sowie deren Nutzung durch Twitter erhalten. Weitere Informationen hierzu finden Sie in der Datenschutzerklärung von Twitter unter http://twitter.com/privacy.</p>\r\n<p>Ihre Datenschutzeinstellungen bei Twitter können Sie in den Konto-Einstellungen unter http://twitter.com/account/settings ändern.</p>\r\n<p></p>\r\n\r\n<h3>Datenschutzerklärung für die Nutzung von Google +1</h3>\r\n<p><b>Erfassung und Weitergabe von Informationen:</b><br>Mithilfe der Google +1-Schaltfläche können Sie Informationen weltweit veröffentlichen. Über die Google +1-Schaltfläche erhalten Sie und andere Nutzer personalisierte Inhalte von Google und unseren Partnern. Google speichert sowohl die Information, dass Sie für einen Inhalt +1 gegeben haben, als auch Informationen über die Seite, die Sie beim Klicken auf +1 angesehen haben. Ihre +1 können als Hinweise zusammen mit Ihrem Profilnamen und Ihrem Foto in Google-Diensten, wie etwa in Suchergebnissen oder in Ihrem Google-Profil, oder an anderen Stellen auf Websites und Anzeigen im Internet eingeblendet werden. Google zeichnet Informationen über Ihre +1-Aktivitäten auf, um die Google-Dienste für Sie und andere zu verbessern.</p>\r\n<p>Um die Google +1-Schaltfläche verwenden zu können, benötigen Sie ein weltweit sichtbares, öffentliches Google-Profil, das zumindest den für das Profil gewählten Namen enthalten muss. Dieser Name wird in allen Google-Diensten verwendet. In manchen Fällen kann dieser Name auch einen anderen Namen ersetzen, den Sie beim Teilen von Inhalten über Ihr Google-Konto verwendet haben. Die Identität Ihres Google-Profils kann Nutzern angezeigt werden, die Ihre E-Mail-Adresse kennen oder über andere identifizierende Informationen von Ihnen verfügen.</p>\r\n<p><b>Verwendung der erfassten Informationen:</b><br>Neben den oben erläuterten Verwendungszwecken werden die von Ihnen bereitgestellten Informationen gemäß den geltenden Google-Datenschutzbestimmungen genutzt. Google veröffentlicht möglicherweise zusammengefasste Statistiken über die +1-Aktivitäten der Nutzer bzw. gibt diese an Nutzer und Partner weiter, wie etwa Publisher, Inserenten oder verbundene Websites.</p>\r\n\r\n<h3>Datenschutzerklärung für die Nutzung von Google Adsense</h3>\r\n<p>Diese Website benutzt Google AdSense, einen Dienst zum Einbinden von Werbeanzeigen der Google Inc. („Google“). Google AdSense verwendet sog. „Cookies“, Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website ermöglicht. Google AdSense verwendet auch so genannte Web Beacons (unsichtbare Grafiken). Durch diese Web Beacons können Informationen wie der Besucherverkehr auf diesen Seiten ausgewertet werden. Die durch Cookies und Web Beacons erzeugten Informationen über die Benutzung dieser Website (einschließlich Ihrer IP-Adresse) und Auslieferung von Werbeformaten werden an einen Server von Google in den USA übertragen und dort gespeichert.</p>\r\n<p>Diese Informationen können von Google an Vertragspartner von Google weiter gegeben werden. Google wird Ihre IP-Adresse jedoch nicht mit anderen von Ihnen gespeicherten Daten zusammenführen. Sie können die Installation der Cookies durch eine entsprechende Einstellung Ihrer Browser Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website voll umfänglich nutzen können. Durch die Nutzung dieser Website erklären Sie sich mit der Bearbeitung der über Sie erhobenen Daten durch Google in der zuvor beschriebenen Art und Weise und zu dem zuvor benannten Zweck einverstanden.</p>\r\n<p></p>\r\n\r\n<h3>Datenschutzerklärung für die Nutzung von Google Analytics</h3>\r\n<p>Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. („Google“). Google Analytics verwendet sog. „Cookies“, Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglichen. Die durch den Cookie erzeugten Informationen über Ihre Benutzung dieser Website werden in der Regel an einen Server von Google in den USA übertragen und dort gespeichert.</p>\r\n<p>Im Falle der Aktivierung der IP-Anonymisierung auf dieser Webseite, wird Ihre IP-Adresse von Google jedoch innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen Vertragsstaaten des Abkommens über den Europäischen Wirtschaftsraum zuvor gekürzt. Nur in Ausnahmefällen wird die volle IP-Adresse an einen Server von Google in den USA übertragen und dort gekürzt. Im Auftrag des Betreibers dieser Website wird Google diese Informationen benutzen, um Ihre Nutzung der Website auszuwerten, um Reports über die Websiteaktivitäten zusammenzustellen und um weitere mit der Websitenutzung und der Internetnutzung verbundene Dienstleistungen gegenüber dem Websitebetreiber zu erbringenDie im Rahmen von Google Analytics von Ihrem Browser übermittelte IP-Adresse wird nicht mit anderen Daten von Google zusammengeführt. </p>\r\n<p>Sie können die Speicherung der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website vollumfänglich werden nutzen können. Sie können darüber hinaus die Erfassung der durch das Cookie erzeugten und auf Ihre Nutzung der Website bezogenen Daten (inkl. Ihrer IP-Adresse) an Google sowie die Verarbeitung dieser Daten durch Google verhindern, indem sie das unter dem folgenden Link verfügbare Browser-Plugin herunterladen und installieren http://tools.google.com/dlpage/gaoptout?hl=de.</p>\r\n--><br />\r\nQuelle: <a href="http://www.haftungsausschluss.org/">Disclaimer</a> von <a href="http://www.haftungsausschluss-vorlage.de/haftungsausschluss/">Haftungsausschluss-Vorlage.de</a> und <a href="http://www.datenschutzgesetz.de/">Datenschutzgesetz.de</a> &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;</p>\r\n', '2017-04-08 17:51:26'),
 (11, 'Impressum', 'impressum', '', '<h3>Impressum</h3>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><br />\r\nSchwarze Ritter zu Augsburg<br />\r\nc/o Christian Schmiedt<br />\r\nSingerstr. 1<br />\r\n86159 Augsburg<br />\r\n<br />\r\nTel.:<br />\r\n+49 (0)8xxx-xxxx<br />\r\n+49 (0)8xxx-xxxx<br />\r\n<br />\r\nE-Mail: Webkontakt@schwarze-ritter-augsburg.com<br />\r\n<br />\r\nInhaltlich Verantwortlicher gem&auml;&szlig; &sect; 10 Absatz 3 MDStV:<br />\r\nChristian Schmiedt</p>\r\n\r\n<p>&nbsp;</p>\r\n', '2017-04-08 17:54:22');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `page_hits`
---
-
-DROP TABLE IF EXISTS `page_hits`;
-CREATE TABLE IF NOT EXISTS `page_hits` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `url` char(100) COLLATE utf8_bin NOT NULL,
-  `time` bigint(20) NOT NULL,
-  `counter` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `url` (`url`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=787 ;
-
---
--- Daten für Tabelle `page_hits`
---
-
-INSERT INTO `page_hits` (`id`, `url`, `time`, `counter`) VALUES
-(1, '/?_tr_error', 1434, 9),
-(2, '/?_tracy_skip_error', 14766434, 3),
-(11, '/website/dashboard', 1492194508, 24),
-(12, '/website/json', 1492194509, 22),
-(13, '/login', 1492194509, 31),
-(17, '/register', 1492194844, 3),
-(20, '/Veranstalter', 1492195305, 3),
-(21, '/nav/sort', 1492195318, 5),
-(23, '/', 1492195322, 72),
-(25, '/user', 1492195342, 1),
-(32, '/gallery', 1492201936, 25),
-(99, '/system/dashboard', 1492205817, 320),
-(103, '/system/dashboard?_tracy_skip_error', 1492212264, 13),
-(130, '/home', 1492217771, 6),
-(134, '/cast', 1492218115, 7),
-(169, '/system/json', 1492222376, 372),
-(174, '/resource', 1492222467, 2),
-(175, '/resource/edit/32', 1492222474, 2),
-(176, '/role', 1492222485, 2),
-(177, '/permission/edit/4', 1492222489, 3),
-(374, '/links', 1492377112, 3),
-(377, '/disclaimer', 1492377293, 13),
-(379, '/Angebote', 1492377371, 6),
-(513, '/gallery/small/Facebook', 1492382864, 1),
-(768, '/media/filebrowser', 1492384366, 1),
-(784, '/termine', 1492427891, 2),
-(786, '/AGB', 1492427896, 5);
 
 -- --------------------------------------------------------
 
@@ -799,11 +731,11 @@ INSERT INTO `users` (`id`, `email`, `name`, `password`, `role_id`, `status`, `cr
 (3, 'boluuuu@gmail.com', 'stefan', 'ed8da3d7f461715ddeb6f9217613904b1d98d4fb', 3, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (4, 'testuser@example.com', 'Test', 'test', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
 (5, 'testuser2@example.com', 'Test2', '37c7419816bc29749747704c96b655f2f7ba6d74', 3, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(11, '', 'qweq', '', NULL, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(12, '', 'asda', '', NULL, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(13, '', 'ben', '', NULL, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(14, '', 'lara', '', NULL, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(15, '', 'xaxs', '', NULL, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+(6, 'Test3@exaple.com', 'NaneTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'Test4@exaple.com', 'ChristophTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, 'Test5@exaple.com', 'LaraTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, 'Test6@exaple.com', 'BenTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, 'Test7@exaple.com', 'BastiTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
