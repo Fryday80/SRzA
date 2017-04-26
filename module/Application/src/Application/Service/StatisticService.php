@@ -167,10 +167,12 @@ class StatisticService
             'mTime' => microtime(true),
             'request' => $e->getApplication()->getRequest(),
             'sid' => $this->accessService->session->getManager()->getId(),
-            'userId' => $this->accessService->getUserID(),
             'userName' => $this->accessService->getUserName(),
             'hitType'  => ( $this->accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST,
         );
+
+        $data['userId'] = $this->accessService->getUserID();
+        $data['userId'] = ($data['userId'] == "-1") ? $this->stats->getActiveGuestId($data['sid']) : $data['userId'];
         $data['serverPHPData'] = $data['request']->getServer()->toArray();
         $data['userName'] = ( $data['userName']== "" ) ? "Guest" : $data['userName'];
         $data['logType'] = ( $data['hitType'] == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;

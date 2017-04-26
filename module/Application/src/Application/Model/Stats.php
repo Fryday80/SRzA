@@ -24,6 +24,11 @@ class Stats {
     public $realUserCount = 0;
     public $leaseTime = 30 * 60;
     private $key;
+    /** @var int userIds for guests */
+    private $guestNumbers = 100000;
+
+
+    private $do;
 
     function __construct() {
         $this->actionLog = new CircularBuffer(100);
@@ -119,8 +124,23 @@ class Stats {
      * @return array|null sorted result array new -> old
      */
     public function getActiveUsers($since = 0){
-        if ($since == 0) return $this->sortByKey($this->activeUsers, 'id');
+        if ($since == 0) return $this->sortByKey($this->activeUsers, 'microtime');
+        $this->do=true;
         return $this->getSinceOf($this->activeUsers, $since);
+    }
+
+    /** get a unique guestId
+     * @param $sid
+     * @return int
+     */
+    public function getActiveGuestId($sid){
+        if (isset($this->activeUsers[$sid])) return $this->activeUsers[$sid]->userId;
+
+        $gId = $this->guestNumbers;
+        $this->guestNumbers--;
+        //reset guestIds
+        if($this->guestNumbers == 90000) $this->guestNumbers = 100000;
+        return $gId;
     }
 
     /**
@@ -151,6 +171,10 @@ class Stats {
     public function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
         $result = $this->filterByKey($data, 'microtime', $since, FilterType::BIGGER);
+        if($this->do == true){
+            bdump($result);
+            $this->do = false;
+        }
         return $this->sortByKey($result, 'microtime');
     }
 

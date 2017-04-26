@@ -27,9 +27,8 @@ class SystemController extends AbstractActionController
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
             array("meistbesuchter Link"  => $mvL),
         );
+
         return new ViewModel(array(
-            'liveClicks'  => $this->statsService->getActionLog(),
-            'activeUsers' => $this->statsService->getActiveUsers(),
             'sysLog'      => $sysLog,
             'userStats'   => $userStats,
         ));
@@ -54,7 +53,7 @@ class SystemController extends AbstractActionController
                 break;
             case 'getActiveUsers' :
                 //@todo check parameter since if exists (dann bei allen hier)
-//                var_dump((int)$request->userId+1);
+//                var_dump($request->microtime);
                 $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
                 break;
         };

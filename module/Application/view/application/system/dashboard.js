@@ -45,39 +45,36 @@
     "use strict";
     //script for live ticks
     function loadActive(e) {
+        console.log(e);
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         });
         e.done(function(e, textStatus, jqXHR) {
             let user = e.users;
+            user.reverse();
             // active users
-            console.log(e);
             if (user !== null) {
                 for (let c = 0; c < user.length; c++){
-                    //                    var dateRaw = new Date(user[c].time*1000);
-                    //                    var hours = '0' + dateRaw.getHours();
-                    //                    var minutes = '0' + dateRaw.getMinutes();
-                    //                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
                     // remove updated user
-                    if (user[c].microtime == $('li[data-microtime="' + user[c].microtime + '"]').data('microtime') ) continue;
-                    $('li[data-microtime="' + user[c].id + '"]').remove();
+                    if (user[c].userId == $('li[data-userId="' + user[c].userId + '"]').data('userId') ) {
+                        if (user[c].microtime == $('li[data-microtime="' + user[c].microtime + '"]').data('microtime')) continue;
+                    }
+                    $('li[data-userId="' + user[c].userId + '"]').remove();
                     // prepend updated user
-                    $('#users').prepend("<li class='entry' data-timestamp='" + user[c].time + "' data-microtime='" + user[c].microtime + "'>" +
-                        user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
+                    $('#users').prepend("<li class='entry' data-userId='" + user[c].userId + "' data-microtime='" + user[c].microtime + "'>" +
+                        user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + ",," + user[c].microtime + "</li>");
                 }
             }
             setTimeout(function() {
                 let elm = $('#users li:nth-child(1)');
-                let userTime = elm.data('timestamp');
                 let microtime = elm.data('microtime');
-                activereload(userTime, microtime);
+                activereload(microtime);
             }, 4500);
         });
     }
-    function activereload(userTime, microtime) {
+    function activereload(microtime) {
         let data = {
             method: "getActiveUsers",
-            userTime: userTime,
             microtime: microtime,
         };
         $.ajax({
@@ -87,5 +84,5 @@
             complete: loadActive
         });
     }
-    activereload( $('#users li:nth-child(1)').data('timestamp'), 0 );
+    activereload( 1 );
 })();
