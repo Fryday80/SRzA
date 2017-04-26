@@ -25,7 +25,9 @@ class Stats {
     public $leaseTime = 30 * 60;
     private $key;
     /** @var int userIds for guests */
-    private $guestNumbers = 100000;
+    public $guestId;
+    public $guestNumbersMax = 100000;
+    public $guestNumbersMin =  90000;
 
 
     private $do;
@@ -36,6 +38,7 @@ class Stats {
         $this->pageHits = array();
         $this->activeUsers = array();
         $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
+        $this->guestId = $this-> guestNumbersMax;
     }
 
     /**
@@ -136,10 +139,10 @@ class Stats {
     public function getActiveGuestId($sid){
         if (isset($this->activeUsers[$sid])) return $this->activeUsers[$sid]->userId;
 
-        $gId = $this->guestNumbers;
-        $this->guestNumbers--;
+        $gId = $this->guestId;
+        $this->guestId--;
         //reset guestIds
-        if($this->guestNumbers == 90000) $this->guestNumbers = 100000;
+        if($this->guestId == $this->guestNumbersMin ) $this->guestId = $this->guestNumbersMax;
         return $gId;
     }
 
