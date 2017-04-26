@@ -1,1 +1,104 @@
-scroller{position:relative;box-shadow:#0d3349 inset 5px 5px 5px 5px;height:500px;width:100%}scroller .draggable{position:absolute;top:0;left:0}.tree *{margin:0;padding:0;user-select:none}.tree ul{position:relative;padding-top:20px;transition:all .5s}.tree li{position:relative;float:left;text-align:center;list-style-type:none;padding:20px 5px 0 5px;transition:all .5s;display:inline-block}.tree li::before,.tree li::after{content:'';position:absolute;top:0;right:50%;border-top:1px solid #ccc;width:50%;height:20px}.tree li::after{right:auto;left:50%;border-left:1px solid #ccc}.tree li:only-child::after,.tree li:only-child::before{display:none}.tree li:only-child{padding-top:0}.tree li:first-child::before,.tree li:last-child::after{border:0 none}.tree li:last-child::before{border-right:1px solid #ccc;border-radius:0 5px 0 0}.tree li:first-child::after{border-radius:5px 0 0 0}.tree ul ul::before{content:'';position:absolute;top:0;left:50%;border-left:1px solid #ccc;width:0;height:20px}.tree li character{border:1px solid #ccc;padding:5px 10px;text-decoration:none;color:#666;font-family:arial,verdana,tahoma;font-size:11px;display:inline-block;border-radius:5px;transition:all .5s}.tree li character:hover,.tree li character:hover+ul li character{background:#c8e4f8;color:#000;border:1px solid #94a0b4}.tree li character:hover+ul li::after,.tree li character:hover+ul li::before,.tree li character:hover+ul::before,.tree li character:hover+ul li ul::before{border-color:#b41d20;transition:all .8s}.tree li family{width:auto;border:1px solid #ccc;padding:5px 10px;text-decoration:none;color:#666;font-family:arial,verdana,tahoma;font-size:11px;display:inline-block;border-radius:5px;background-color:#0d3349;transition:all .5s}.tree li familymember{border:1px solid #ccc;padding:5px 10px;text-decoration:none;color:#666;font-family:arial,verdana,tahoma;font-size:11px;display:inline-block;border-radius:5px;transition:all .5s}.tree li familymember:hover,.tree li familymember:hover+ul li familymember{background:#c8e4f8;color:#000;border:1px solid #94a0b4}.tree li familymember:hover+ul li::after,.tree li familymember:hover+ul li::before,.tree li familymember:hover+ul::before,.tree li familymember:hover+ul ul::before{border-color:#5db414;transition:all .8s}.tree li character:hover+ul li familymember{background:#f8dc62;color:#000;border:1px solid #94a0b4}.centered>family{background-color:deeppink !important;padding-left:30px !important;padding-right:30px !important;padding-bottom:30px !important;transition:all 1s}family>.details{height:14px;padding:10px;border:1px solid #ccc;overflow:hidden}.centered>family>.details{border:1px solid #ccc;height:120px;transition:all 1s}.notransition{-webkit-transition:none !important;-moz-transition:none !important;-o-transition:none !important;-ms-transition:none !important;transition:none !important}
+/* positioning */
+/* ------ shadows ------- */
+.box-shadow-bottom {
+  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+}
+scroller {
+  position: relative;
+  box-shadow: #0d3349 inset 5px 5px 5px 5px;
+  height: 500px;
+  width: 100%;
+}
+scroller .draggable {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+.tree * {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+.tree ul {
+  position: relative;
+  padding-top: 20px;
+  transition: all 0.5s;
+}
+.tree li {
+  position: relative;
+  float: left;
+  text-align: center;
+  list-style-type: none;
+  padding: 20px 5px 0 5px;
+  transition: all 0.5s;
+  display: inline-block;
+}
+/* connectors */
+.tree li::before,
+.tree li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 1px solid #ccc;
+  width: 50%;
+  height: 20px;
+}
+.tree li::after {
+  right: auto;
+  left: 50%;
+  border-left: 1px solid #ccc;
+}
+.tree li:only-child::after,
+.tree li:only-child::before {
+  display: none;
+}
+.tree li:only-child {
+  padding-top: 0;
+}
+.tree li:first-child::before,
+.tree li:last-child::after {
+  border: 0 none;
+}
+.tree li:last-child::before {
+  border-right: 1px solid #ccc;
+  border-radius: 0 5px 0 0;
+}
+.tree li:first-child::after {
+  border-radius: 5px 0 0 0;
+}
+.tree ul ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-left: 1px solid #ccc;
+  width: 0;
+  height: 20px;
+}
+.tree li div {
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #666;
+  font-family: arial, verdana, tahoma;
+  font-size: 11px;
+  display: inline-block;
+  border-radius: 5px;
+  transition: all 0.5s;
+}
+/* hover effect */
+.tree li div:hover,
+.tree li div:hover + ul li div {
+  background: #c8e4f8;
+  color: #000;
+  border: 1px solid #94a0b4;
+}
+/*Connector styles on hover*/
+.tree li div:hover + ul li::after,
+.tree li div:hover + ul li::before,
+.tree li div:hover + ul::before,
+.tree li div:hover + ul li ul::before {
+  border-color: #b41d20;
+  transition: all 0.8s;
+}

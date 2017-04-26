@@ -1,9 +1,9 @@
 <style>
 </style>
-<?php echo $this->inlineFromFile('cast', 'cast', 'tree.css');  ?>
+<?php echo $this->inlineFromFile('cast', 'cast', 'cast.css');  ?>
 <?php
-$this->headScript()->appendFile('/libs/jquery.workspace/jquery.workspace.js');
-$this->headLink()->appendStylesheet('/libs/jquery.workspace/jquery.workspace.css');
+$this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
+$this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
 bdump($root);
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
@@ -30,15 +30,22 @@ function createFamilyList($parent, $level) {
 }
 function createList($parent, $level) {
     echo '<li class="character">';
-    echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
+    echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
     echo '<p>';
     echo '<span>'.$parent['name'].'</span> ';
     echo '<span>'.$parent['surename'].'</span>';
     echo '</p>';
     echo '<br>';
+    echo '<img src = "img/shield-tross.big.png" class="tree-pic">';
+    echo '<br>';
+    echo '<p>'. $parent['job_name'] .'</p>';
     echo '<p>';
-    echo '<span>Family: </span>';
-    echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
+    if ($parent['surename'] !== $parent['family_name']) {
+        if ($parent['family_id'] !== null) {
+            echo '<span>Family: </span>';
+            echo '<span data-id="' . $parent['family_id'] . '">' . $parent['family_name'] . '</span>';
+        }
+    }
     echo '</p>';
     echo '</character>';
 
@@ -47,6 +54,9 @@ function createList($parent, $level) {
         if (isset($parent['family'])) {
             echo '<li class="family">';
             echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
+            echo '<br>';
+            echo '<img src = "img/shield-tross.big.png" class="tree-pic fam-tree">';
+            echo '<br>';
             echo '<div class="details">';
             echo $parent['family']['name'];
             echo '<br>';
@@ -57,7 +67,7 @@ function createList($parent, $level) {
             echo '</div>';
             echo '<ul>';
             foreach ($parent['family']['members'] as &$member) {
-            createFamilyList($member, $level + 1);
+                createFamilyList($member, $level + 1);
             }
             echo '</ul>';
 
@@ -93,28 +103,3 @@ function createList($parent, $level) {
 </box>
 
 <?php echo $this->inlineFromFile('cast', 'cast', 'scroller.js');  ?>
-<!--<div class="cast">-->
-<!--    <h1>Besetztung</h1>-->
-<!--    --><?php //foreach ($this->chars as $char): ?>
-<!--        <div class="box big">-->
-<!--            <a href="/--><?php //echo $char['id']; ?><!--">-->
-<!--                --><?php //echo $this->CharProfile()->small($char);?>
-<!--            </a>-->
-<!--            <br>-->
-<!--            <p>Tross</p>-->
-<!--            <ul class="tross">-->
-<!--                --><?php //foreach($chars as $char): ?>
-<!--                    <li>-->
-<!--                        <a href="/--><?php //echo $char['id']; ?><!--">-->
-<!--                            <div class="box small">-->
-<!--                                --><?php //echo $this->CharProfile()->small($char); ?>
-<!--                            </div>-->
-<!--                        </a>-->
-<!--                    </li>-->
-<!--                --><?php //endforeach; ?>
-<!--            </ul>-->
-<!--            <div style="clear: left"></div>-->
-<!--        </div>-->
-<!--    --><?php //endforeach ?>
-<!---->
-<!--</div>-->
