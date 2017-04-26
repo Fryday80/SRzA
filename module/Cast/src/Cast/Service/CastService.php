@@ -45,15 +45,23 @@ class CastService implements ServiceLocatorAwareInterface
             foreach ($famMembersByID as $key => &$char) {
                 $char['dependent'] = array();
             }
+            bdump($famMembersByID);
             foreach ($famMembersByID as &$char) {
-                if (isset($famMembersByID[$char['guardian_id']]) ) {
-                    array_push($famMembersByID[$char['guardian_id']]['dependent'], $char);
+                if (isset($famMembersByID[$char['guardian_id']])) {
+                    bdump($famMembersByID[$char['guardian_id']]);
+                    $famMembersByID[ $char['guardian_id'] ]['dependent'][$char['id']] = &$char;
+//                    array_push($famMembersByID[$char['guardian_id']]['dependent'], $char);
                 } else if ($char['id'] == $fam['head']) {
-                    $fam['members'] = array(&$char);
+                    $fam['members'] = array(&$famMembersByID[$char['id']]);
+//                    array_push($fam['members'], array(&$famMembersByID[$char['id']]) );
                 }
             }
+            bdump($fam);
         }
         return $root;
+    }
+    public function getFamilyMembers() {
+
     }
     public function getAllCharsFromFamily($id) {
         $result = [];
@@ -76,7 +84,7 @@ class CastService implements ServiceLocatorAwareInterface
                 'type' => 'family',
                 'name' => $parent['family_name'],
                 'head' => $parent['id'],
-                'members' => array($parent)
+                'members' => array()
             );
             $this->tempFamsHash[$parent['family_id']] = &$parent['family'];
         }
