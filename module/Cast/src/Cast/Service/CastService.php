@@ -38,25 +38,28 @@ class CastService implements ServiceLocatorAwareInterface
         $root = $this->charsById[1];
         $this->tempFamsHash = [];
         $this->buildStandingTree($root);
-        //iterate families and add chars
 
-//        foreach ($this->tempFamsHash as &$fam) {
-//            $next = $fam['member'][0];
-//            $famMembers = $this->getAllCharsFromFamily($fam['id']);
-//            foreach ($famMembers as &$char) {
-//                $this->charsById[$char['id']] = &$char;
-//                $char['employ'] = array();
-//                $char['type'] = 'char';
-//            }
-//        }
-        bdump($this->tempFamsHash);
+        //iterate families and add chars
+        foreach ($this->tempFamsHash as &$fam) {
+            $famMembersByID = $this->getAllCharsFromFamily($fam['id']);
+            foreach ($famMembersByID as $key => &$char) {
+                $char['dependent'] = array();
+            }
+            foreach ($famMembersByID as &$char) {
+                if (isset($famMembersByID[$char['guardian_id']]) ) {
+                    array_push($famMembersByID[$char['guardian_id']]['dependent'], $char);
+                } else if ($char['id'] == $fam['head']) {
+                    $fam['members'] = array(&$char);
+                }
+            }
+        }
         return $root;
     }
     public function getAllCharsFromFamily($id) {
         $result = [];
         foreach ($this->data as $char) {
             if ($char['family_id'] == $id) {
-                array_push($result, $char);
+                $result[$char['id']] = $char;
             }
         }
         return $result;
@@ -72,6 +75,7 @@ class CastService implements ServiceLocatorAwareInterface
                 'id' => $parent['family_id'],
                 'type' => 'family',
                 'name' => $parent['family_name'],
+                'head' => $parent['id'],
                 'members' => array($parent)
             );
             $this->tempFamsHash[$parent['family_id']] = &$parent['family'];

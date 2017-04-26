@@ -2,13 +2,14 @@
 </style>
 <?php echo $this->inlineFromFile('cast', 'cast', 'tree.css');  ?>
 <?php
+$this->headScript()->appendFile('/libs/jquery.workspace/jquery.workspace.js');
 bdump($root);
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
     echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
     echo '<p>';
-    echo '<span>FAM</span> ';
-    echo '<span> NAME</span>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
     echo '</p>';
     echo '<br>';
     echo '<p>';
@@ -16,6 +17,15 @@ function createFamilyList($parent, $level) {
     echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
     echo '</p>';
     echo '</familymember>';
+    if (count($parent['dependent']) > 0) {
+        echo '<ul>';
+        if (count($parent['dependent']) > 0) {
+            foreach ($parent['dependent'] as &$char) {
+                createFamilyList($char, $level + 1);
+            }
+        }
+        echo '</ul>';
+    }
 }
 function createList($parent, $level) {
     echo '<li class="character">';
@@ -56,19 +66,24 @@ function createList($parent, $level) {
 }
 ?>
 
-<box>
+<box id="fullCastScroller">
     <boxtitel>
         <span class='own_text_small'>Staatshierarchie</span>
     </boxtitel>
-    <boxcontent style="display: inline-block; overflow-x: scroll; ">
+    <boxcontent style="overflow: hidden; height: 500px;">
+
         <div class="tree" style="width: 2000px; height: 2000px;">
             <ul style="white-space:nowrap">
                 <?php createList($root, 0); ?>
             </ul>
+
+            <br style="clear:both"/>
         </div>
+
     </boxcontent>
 </box>
 
+<?php echo $this->inlineFromFile('cast', 'cast', 'scroller.js');  ?>
 <!--<div class="cast">-->
 <!--    <h1>Besetztung</h1>-->
 <!--    --><?php //foreach ($this->chars as $char): ?>

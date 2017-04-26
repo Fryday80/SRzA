@@ -183,7 +183,6 @@
     //     }
     }
     $count = 1;
-    bdump($this->navtree);
     foreach ($this->navtree as $page) {
         $count = recursive($page, $this, $count);
     }
