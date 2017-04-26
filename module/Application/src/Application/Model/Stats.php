@@ -51,6 +51,7 @@ class Stats {
         } else {
             $this->activeUsers[$sid]->url  = $user->url;
             $this->activeUsers[$sid]->time = $user->time;
+            $this->activeUsers[$sid]->microtime = $user->microtime;
             $this->activeUsers[$sid]->data = $user->data;
             if ( ($user->userId !== 0) && ($user->userId !== $this->activeUsers[$sid]->userId) ) {
                 $this->activeUsers[$sid]->userId = $user->userId;
@@ -84,14 +85,15 @@ class Stats {
 
     /**
      * @param $hitType
-     * @param $url
+     * @param string $url
+     * @param float $mTime microtime(true)
      */
     public function logPageHit($hitType, $url, $mTime) {
         if (!isset($this->pageHits[$url])) {
             $this->pageHits[$url] = new PageHit($url, $mTime);
         }
 
-        $this->pageHits[$url]->lastTime = (int)microtime(true)*1000;
+        $this->pageHits[$url]->updateTime($mTime);
         if ($hitType === HitType::GUEST || $hitType === HitType::MEMBER) {
             $this->pageHits[$url]->hitsSum++;
             $this->globalHitsSum++;
@@ -128,7 +130,6 @@ class Stats {
      */
     public function getActiveUsers($since = 0){
         if ($since == 0) return $this->sortByKey($this->activeUsers, 'microtime');
-        $this->do=true;
         return $this->getSinceOf($this->activeUsers, $since);
     }
 
@@ -173,11 +174,8 @@ class Stats {
      */
     public function getSinceOf($data, $since = 0){
         if( !isset( $data ) ) return null;
+        $since = $since + 0.0001;
         $result = $this->filterByKey($data, 'microtime', $since, FilterType::BIGGER);
-        if($this->do == true){
-            bdump($result);
-            $this->do = false;
-        }
         return $this->sortByKey($result, 'microtime');
     }
 
@@ -197,13 +195,14 @@ class Stats {
                     array_push($result, $item);
             }
         }
-        if ($type == FilterType::BIGGER){
+        elseif ($type == FilterType::BIGGER){
             foreach ($data as $item) {
-                if ($item->$key > $value)
+                if ($item->$key > $value) {
                     array_push($result, $item);
+                }
             }
         }
-        if ($type == FilterType::SMALLER){
+        elseif ($type == FilterType::SMALLER){
             foreach ($data as $item) {
                 if ($item->$key < $value)
                     array_push($result, $item);

@@ -15,13 +15,14 @@
     //                    var hours = '0' + dateRaw.getHours();
     //                    var minutes = '0' + dateRaw.getMinutes();
     //                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
-                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].id + "'>" +
+                    $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].microtime + "'>" +
                         actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
                 }
             }
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
+                console.log(since);
                 livereload(since);
             }, 4500);
         });
@@ -38,22 +39,22 @@
             complete: loadLive
         });
     }
-    livereload( $('#dashLiveList li:nth-child(1)').data('timestamp'));
+    livereload( $('#dashLiveList li:nth-child(1)').data('timestamp'), 0);
 })();
 
 (function () {
     "use strict";
     //script for live ticks
     function loadActive(e) {
-        console.log(e);
         e.fail(function(jqXHR, textStatus, errorThrown) {
             console.log(jqXHR, textStatus, errorThrown);
         });
         e.done(function(e, textStatus, jqXHR) {
+            console.log(e);
             let user = e.users;
-            user.reverse();
             // active users
             if (user !== null) {
+                // user.reverse();
                 for (let c = 0; c < user.length; c++){
                     // remove updated user
                     if (user[c].userId == $('li[data-userId="' + user[c].userId + '"]').data('userId') ) {

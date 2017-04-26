@@ -21,4 +21,9 @@ class DataItem
         $this->time = (int)$microtime;
         $this->data = $data;
     }
+    public function updateTime($mTime){
+
+        $this->microtime = $mTime;
+        $this->time = (int)$mTime;
+    }
 }

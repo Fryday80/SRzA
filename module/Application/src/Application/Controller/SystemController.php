@@ -28,6 +28,7 @@ class SystemController extends AbstractActionController
             array("meistbesuchter Link"  => $mvL),
         );
 
+        bdump($this->statsService->getActiveUsers(1493218392.7175));
         return new ViewModel(array(
             'sysLog'      => $sysLog,
             'userStats'   => $userStats,
@@ -54,6 +55,7 @@ class SystemController extends AbstractActionController
             case 'getActiveUsers' :
                 //@todo check parameter since if exists (dann bei allen hier)
 //                var_dump($request->microtime);
+//                var_dump( $statsService->getActiveUsers($request->microtime) );
                 $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
                 break;
         };
