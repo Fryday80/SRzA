@@ -12,4 +12,5 @@ module/demo/
 .vagrant/
 cache/
 storage/
-*/*.css
+module/Cast/view/cast/cast/cast.css
+public/css/
