@@ -1,4 +1,6 @@
 (function($) {
+    "use strict";
+
     /**
      * @typedef {{
      *      zoom: bool,
@@ -13,7 +15,7 @@
     /** @var SimpleSettings */
     var defaultOptions = {
         zoom: false,
-        zoomStep: 0.08,
+        zoomStep: 0.1,
         minZoom: 0.5,
         maxZoom: 1.5,
         dragging: true,
@@ -32,6 +34,7 @@
             this.$draggable;
             this.$content = $(ele);
             this.settings = settings;
+            this.canDrag = false;
             this.isDragging = false;
             this.mousePos = {
                 moveX:      0,
@@ -42,6 +45,7 @@
                 y:          0,
             };
             this.zoom = 1;
+            this.clickListeners = [];
         }
         init() {
             if ($(this.$ele).is('workspace')) {
@@ -73,25 +77,36 @@
             //event handler
             this.$workspace.on('mousedown', this.onMouseDown.bind(this));
             $(window).on('mouseup', this.onMouseUp.bind(this));
-            $(window).on('mousemove', this.onMouseMove.bind(this));
+            $(document).on('mousemove', this.onMouseMove.bind(this));
             this.$workspace.on('wheel', this.onMouseWheel.bind(this));
         }
         onMouseDown(e) {
             if (e.which != this.settings.dragMouseButton) return true;
-            this.isDragging = true;
+            this.canDrag = true;
             this.savePos(e, this.mousePos);
+            e.preventDefault();
         }
-        onMouseUp() {
-            this.isDragging = false;
+        onMouseUp(e) {
+            this.canDrag = false;
+            if (this.isDragging) {
+                this.$draggable.removeClass('notransition');
+                this.isDragging = false;
+            } else {
+                this.triggerClick(e);
+            }
         }
         onMouseMove(e) {
-            if (!this.isDragging || !this.settings.dragging) return true;
-
+            if (!this.canDrag || !this.settings.dragging) return true;
+            if (!this.isDragging) {
+                this.$draggable.addClass('notransition');
+            }
+            this.isDragging = true;
             this.savePos(e, this.mousePos);
             this.changePos(
                 this.mousePos.moveX / this.zoom,
                 this.mousePos.moveY / this.zoom
             );
+            e.preventDefault();
         }
         onMouseWheel(e) {
             if (!this.settings.zoom) return true;
@@ -105,13 +120,16 @@
                 (this.mousePos.offsetX * zoomChange) * -1,
                 (this.mousePos.offsetY * zoomChange) * -1
             );
-
+            e.preventDefault();
         }
         changePos(x, y) {
             this.$draggable.css('left', x + parseInt(this.$draggable.css('left')));
             this.$draggable.css('top', y + parseInt(this.$draggable.css('top')));
         }
-
+        setPos(x, y) {
+            this.$draggable.css('left', x);
+            this.$draggable.css('top', y);
+        }
         savePos(event, to) {
             to.moveX = event.originalEvent.movementX;
             to.moveY = event.originalEvent.movementY;
@@ -120,15 +138,45 @@
             to.x = event.originalEvent.pageX - this.$workspace.offset().left;
             to.y = event.originalEvent.pageY - this.$workspace.offset().top;
         }
+        goToElement(element) {
+            if (this.isDragging) return false;
+            let $target = $(element);
+            //@todo check if target is in $draggable > .ws-content
+            let x = $target.offset().left - this.$workspace.offset().left,
+                y = $target.offset().top - this.$workspace.offset().top,
+                dragOffX = $target.offset().left - this.$draggable.offset().left,
+                dragOffY = $target.offset().top - this.$draggable.offset().top,
+                centerX = this.$workspace.width() / 2,
+                centerY = this.$workspace.height() / 2;
+
+            x += centerX - x - dragOffX - $target.width() / 2;
+            y += centerY - y - dragOffY - $target.height() / 2;
+
+            this.setPos(x, y);
+        }
+        click(handler) {
+            this.clickListeners.push(handler);
+        }
+        triggerClick(e) {
+            for (let i = 0; i < this.clickListeners.length; i++) {
+                this.clickListeners[i](e);
+            }
+        }
     }
 
     $.fn.workspace = function(options) {
-        //handle options
         let settings = $.extend(defaultOptions, options);
         return this.each(function() {
             let instance = new Workspace(this, settings);
             instance.init();
-            $(this).data(instance);
+            $(this).data('Workspace', instance);
         });
+    };
+    $.fn.getWorkspace = function() {
+        let instance = $(this).data('Workspace');
+        if (!(instance instanceof Workspace)) {
+            throw new Error('This element has no Workspace');
+        }
+        return instance;
     };
 }( jQuery ));

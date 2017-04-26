@@ -3,6 +3,7 @@
 <?php echo $this->inlineFromFile('cast', 'cast', 'tree.css');  ?>
 <?php
 $this->headScript()->appendFile('/libs/jquery.workspace/jquery.workspace.js');
+$this->headLink()->appendStylesheet('/libs/jquery.workspace/jquery.workspace.css');
 bdump($root);
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
@@ -45,7 +46,10 @@ function createList($parent, $level) {
         echo '<ul>';
         if (isset($parent['family'])) {
             echo '<li class="family">';
-            echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '"> Family';
+            echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
+            echo '<div class="details">';
+            echo ' Family';
+            echo '</div>';
             echo '<ul>';
             foreach ($parent['family']['members'] as &$member) {
             createFamilyList($member, $level + 1);

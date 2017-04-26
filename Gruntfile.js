@@ -14,6 +14,7 @@ module.exports = function(grunt) {
                     {
                         "public/css/style.css": "less/style.less", // destination file and source file
                         "public/css/jsOverrides.css": "less/jsOverrides.less", // destination file and source file
+                        "public/libs/jquery.workspace/jquery.workspace.css": "public/libs/jquery.workspace/jquery.workspace.less",
                     },
                     {
                         expand: true,
@@ -48,7 +49,8 @@ module.exports = function(grunt) {
             styles: {
                 files: [
                     'less/**/*.less',
-                    'module/**/*.less'
+                    'module/**/*.less',
+                    "public/libs/jquery.workspace/jquery.workspace.less",
                 ],
                 tasks: ['less'],
                 options: {
