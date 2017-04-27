@@ -784,7 +784,7 @@ button {
     top: 0;
     right: 3vw;
     width: 10vw;
-    max-height: 20vw;
+    max-height: 5vw;
   }
   .topBox.login > boxtitel {
     margin-top: 0;
@@ -803,11 +803,11 @@ button {
   .topBox.login:active {
     width: 20vw;
     z-index: 20;
-    max-height: 20vw;
     -webkit-animation: logIn-animate-slide-in 0.3s ease-in;
     -moz-animation: logIn-animate-slide-in 0.3s ease-in;
     -o-animation: logIn-animate-slide-in 0.3s ease-in;
     animation: logIn-animate-slide-in 0.3s ease-in;
+    max-height: 20vw;
   }
   .topBox.login:hover > boxcontent,
   .topBox.login:active > boxcontent {
@@ -956,54 +956,54 @@ noscript {
   float: left;
   margin: 1vw;
 }
-.triangle-border.top:before {
-  top: -20px;
-  bottom: auto;
-  left: auto;
-  right: 40px;
-  border-width: 0 20px 20px;
-}
-.triangle-border:before {
-  content: "";
-  position: absolute;
-  bottom: -20px;
-  left: 40px;
-  border-width: 20px 20px 0;
-  border-style: solid;
-  border-color: #5a8f00 transparent;
-  display: block;
-  width: 0;
-}
-.triangle-border:after {
-  content: "";
-  position: absolute;
-  bottom: -13px;
-  left: 47px;
-  border-width: 13px 13px 0;
-  border-style: solid;
-  border-color: #fff transparent;
-  display: block;
-  width: 0;
-}
-.triangle-border.top:after {
-  top: -13px;
-  bottom: auto;
-  left: auto;
-  right: 47px;
-  border-width: 0 13px 13px;
-}
 form {
-  width: 500px;
+  width: auto;
 }
 form > * {
   display: list-item;
   list-style: none;
   margin-bottom: 105px;
 }
+form input[type="file"]::after {
+  content: "Datei Auswählen";
+  position: absolute;
+  padding-top: 3px;
+  padding-left: 5px;
+  top: 5px;
+  left: 4px;
+  width: 44%;
+  height: 50%;
+  background-color: #FAEBd7;
+  pointer-events: none;
+  box-shadow: inset 0px 0px 15px 0px #430c0c, 4px 4px 10px #430c0c;
+}
+form input[type="submit"],
+form button {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  min-height: 30px;
+  min-width: 40px;
+  box-shadow: inset 0px 0px 15px 0px #430c0c, 4px 4px 10px #430c0c;
+}
+form input[type="submit"]:hover,
+form button:hover {
+  background-color: #AFA08D;
+}
+form input[type="submit"]:active,
+form button:active {
+  margin-left: 3px;
+  margin-top: 13px;
+  margin-bottom: 0;
+  box-shadow: inset 0px 0px 15px 0px #430c0c, 1px 1px 1px #430c0c;
+}
+form > fieldset > label,
 form > label {
   position: relative;
   z-index: 0;
 }
+form > fieldset > label > span:first-child,
 form > label > span:first-child {
   position: absolute;
   top: -5px;
@@ -1017,8 +1017,12 @@ form > label > span:first-child {
   color: #430c0c;
   box-shadow: inset 0px -1px 3px 0px #430c0c;
 }
+form > fieldset > label input,
 form > label input,
-form > label textarea {
+form > fieldset > label textarea,
+form > label textarea,
+form > fieldset > label select,
+form > label select {
   position: relative;
   z-index: 1;
   height: 25px;
@@ -1027,11 +1031,27 @@ form > label textarea {
   border: 1px solid #430c0c;
   color: #555;
   box-shadow: inset 0px 0px 15px 0px #430c0c;
+  min-width: 76px;
 }
+form > fieldset > label input :focus,
 form > label input :focus,
-form > label textarea :focus {
+form > fieldset > label textarea :focus,
+form > label textarea :focus,
+form > fieldset > label select :focus,
+form > label select :focus {
   border: 1px solid #E86975;
 }
+form > fieldset > label input[type="checkbox"],
+form > label input[type="checkbox"] {
+  box-shadow: none;
+  margin-top: 10px;
+}
+form > fieldset > label select,
+form > label select {
+  margin-top: 7px;
+  margin-left: 19px;
+}
+form > fieldset > label .form-error-messages,
 form > label .form-error-messages {
   position: relative;
   text-shadow: none;
@@ -1041,33 +1061,71 @@ form > label .form-error-messages {
   list-style: none;
   text-align: center;
   color: #fff;
-  background: #333;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 35px 0px #E86975;
+  box-shadow: inset -2px -4px 15px 0px #430c0c;
 }
+form > fieldset > label .form-error-messages li,
+form > label .form-error-messages li {
+  z-index: 5;
+  border: solid #430c0c;
+  background-color: #430c0c;
+  text-shadow: black;
+}
+form > fieldset > label .form-error-messages *,
 form > label .form-error-messages * {
+  font-family: bodytext, arial, sans-serif;
   color: #fff3e0;
+  border-radius: 3px;
 }
+form > fieldset > label .form-error-messages ::before,
 form > label .form-error-messages ::before {
+  color: #fff;
+  border-left: solid #430c0c;
+  border-top: solid #430c0c;
   content: "";
   position: absolute;
   top: -5px;
   left: 30px;
   transform: rotate(45deg);
-  width: 10px;
-  height: 10px;
-  background: #f00;
-  animation: wobbel 2s infinite;
+  width: 20px;
+  height: 20px;
+  background: #E86975;
+}
+form fieldset {
+  box-shadow: inset 0px 0px 15px 0px #430c0c;
+}
+form fieldset legend {
+  background-color: #FAEBd7;
+  box-shadow: inset 0px -1px 3px 0px #430c0c;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 30px;
+  font-style: italic;
+  font-size: 11px;
+  font-family: 'Glyphicons Halflings';
+}
+form fieldset label {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+form fieldset ul {
+  list-style: none;
 }
 @keyframes wobbel {
   0% {
-    left: 30px;
+    top: -5px;
+    witdh: 20px;
+    height: 20px;
   }
   50% {
-    left: 50px;
+    top: 3px;
+    witdh: 10px;
+    height: 10px;
   }
   100% {
-    left: 30px;
+    top: -5px;
+    witdh: 20px;
+    height: 20px;
   }
 }
 /* media queries for Basic Layout */

@@ -1,79 +1,57 @@
 @import "../../_vars";
 @import "../../_helper";
 @import "_box_basic";
-@body-color: rgb(67,12,12);
-@backgroundcolor: #FAEBd7;
-@dark-color: #dbd2c9;
-@darker: #AFA08D;
-@text-shadow-color: #f3ffff;
 
-@silver-hover-color: #c8e4f8;
-@blue-hover: #4F79AE;
+@error-color1: #E86975;
+@error-color:  @body-color;
+@error-bg: rgb(67,12,12);
 @input-background: @body-color;
 
-
-//input {
-//  background-color: #1DC116;//@body-color;
-//  .at-box-inner-shadow(2vw; darkgrey);
-//  background: #1DC116 @html-background-image;
-//  background-size: 30px;
-//  text-shadow: none;
-//}
-//input:invalid{
-//   border-color: #900;
-//   background-color: #FDD;
-//}
-//.form-error-messages {
-//  display: inline-block;
-//  position: relative;
-//  width: auto;
-//  background-color: #E83737;
-//}
-
-.triangle-border.top:before {
-  top: -20px;
-  bottom: auto;
-  left: auto;
-  right: 40px;
-  border-width: 0 20px 20px;
-}
-.triangle-border:before {
-  content: "";
-  position: absolute;
-  bottom: -20px;
-  left: 40px;
-  border-width: 20px 20px 0;
-  border-style: solid;
-  border-color: #5a8f00 transparent;
-  display: block;
-  width: 0;
-}
-.triangle-border:after {
- content: "";
- position: absolute;
- bottom: -13px;
- left: 47px;
- border-width: 13px 13px 0;
- border-style: solid;
- border-color: #fff transparent;
- display: block;
- width: 0;
-}
-.triangle-border.top:after {
-  top: -13px;
-  bottom: auto;
-  left: auto;
-  right: 47px;
-  border-width: 0 13px 13px;
-}
 form {
-  width: 500px;
+  width: auto;
   >* {
     display: list-item;
     list-style: none;
     margin-bottom: 105px;
   }
-  >label {
+  input[type="file"]::after {
+    content: "Datei Auswählen";
+    position: absolute;
+    padding-top: 3px;
+    padding-left: 5px;
+    top: 5px;
+    left: 4px;
+    width: 44%;
+    height: 50%;
+    background-color: #FAEBd7;
+    pointer-events: none;
+    box-shadow: inset 0px 0px 15px 0px @body-color, 4px 4px 10px @body-color;
+  }
+  input[type="submit"],
+  button
+  {
+    margin-top: 10px;
+    margin-bottom: 3px;
+    padding-left: 5px;
+    padding-right: 5px;
+    min-height: 30px;
+    min-width: 40px;
+    box-shadow: inset 0px 0px 15px 0px @body-color, 4px 4px 10px @body-color;
+    &:hover
+    {
+      background-color: @darker;
+    }
+    &:active
+    {
+      margin-left: 3px;
+      margin-top: 13px;
+      margin-bottom: 0;
+      box-shadow: inset 0px 0px 15px 0px @body-color, 1px 1px 1px @body-color;
+    }
+  }
+  >fieldset>label,
+  >label
+  {
     position: relative;
     z-index: 0;
 
@@ -91,7 +69,8 @@ form {
       box-shadow: inset 0px -1px 3px 0px @body-color;
     }
     input,
-    textarea {
+    textarea,
+    select {
       position: relative;
       z-index: 1;
       height: 25px;
@@ -100,10 +79,21 @@ form {
       border: 1px solid @body-color;
       color: #555;
       box-shadow: inset 0px 0px 15px 0px @body-color;
+      min-width: 76px;
 
       :focus {
         border: 1px solid @highlight-color;
       }
+    }
+    input[type="checkbox"]
+    {
+      box-shadow: none;
+      margin-top: 10px;
+    }
+    select
+    {
+      margin-top: 7px;
+      margin-left: 19px;
     }
     .form-error-messages {
       position: relative;
@@ -114,70 +104,171 @@ form {
       list-style: none;
       text-align: center;
       color: #fff;
-      background: #333;
       border-radius: 5px;
-      box-shadow: inset 0px 0px 35px 0px #E86975;
+      box-shadow: inset -2px -4px 15px 0px @error-color;
+      //background: @error-bg;
+      li {
+        z-index: 5;
+        border: solid @error-color;
+        background-color: @error-bg;
+        text-shadow: black;
+      }
       *
       {
+        font-family: bodytext, arial, sans-serif; //^^
         color: #fff3e0;
+        border-radius: 3px;
       }
       ::before {
+        color: #fff;
+        border-left: solid @error-color;
+        border-top: solid @error-color;
+        //z-index: -3;
         content: "";
         position: absolute;
         top: -5px;
         left: 30px;
         transform: rotate(45deg);
-        width: 10px;
-        height: 10px;
-        background: #f00;
-        animation: wobbel 2s infinite;
+        width: 20px;
+        height: 20px;
+        background: @error-color1;
+        //animation: wobbel 2s infinite;
       }
     }
     //clear: both;
   }
+  fieldset
+  {
+    box-shadow: inset 0px 0px 15px 0px @body-color;
+    legend
+    {
+      background-color: @backgroundcolor;
+      box-shadow: inset 0px -1px 3px 0px @body-color;
+      padding-left: 5px;
+      padding-right: 5px;
+      margin-left: 30px;
+      font-style: italic;
+      font-size: 11px;
+      font-family: 'Glyphicons Halflings';
+    }
+    label {
+      margin-right: 10px;
+      margin-left: 10px;
+    }
+    ul
+    {
+      list-style: none;
+    }
+  }
 }
 
-.start(){ left: 30px;}
-.end(){ left: 50px;}
+.start(){
+  top: -5px;
+  witdh: 20px;
+  height: 20px;
+}
+.end(){
+  top: 3px;
+  witdh: 10px;
+  height: 10px;
+}
 @keyframes wobbel
 {
   0% {.start;}
   50% {.end;}
   100% {.start;}
 }
-//  label {
-//    text-align: center;
-//    > span {
-//      margin-bottom: 0.5vw;
-//    }
-//  }
-//  input
-//  {
-//    //.at-shaded-part;
-//    //border-radius: 5px;
-//    //text-align: center;
-//    //padding-left: 5px;
-//    //padding-right: 5px;
-//    //margin-left: auto;
-//    //margin-right: auto;
-//    width: 250px;
-//
-//    //&:hover{
-//    //  background-image: @background-image;
-//    //
-//    //}
-//  }
-//
-//  select {
-//    margin-left: auto;
-//    margin-right: auto;
-//  }
-//
-//  input:-webkit-autofill {
-//    background-color: @body-color !important;
-//    color: #000000 !important;
-//  }
-//}
-//form option{
-//  text-align: left;
-//}
+.schrott {
+  //  label {
+  //    text-align: center;
+  //    > span {
+  //      margin-bottom: 0.5vw;
+  //    }
+  //  }
+  //  input
+  //  {
+  //    //.at-shaded-part;
+  //    //border-radius: 5px;
+  //    //text-align: center;
+  //    //padding-left: 5px;
+  //    //padding-right: 5px;
+  //    //margin-left: auto;
+  //    //margin-right: auto;
+  //    width: 250px;
+  //
+  //    //&:hover{
+  //    //  background-image: @background-image;
+  //    //
+  //    //}
+  //  }
+  //
+  //  select {
+  //    margin-left: auto;
+  //    margin-right: auto;
+  //  }
+  //
+  //  input:-webkit-autofill {
+  //    background-color: @body-color !important;
+  //    color: #000000 !important;
+  //  }
+  //}
+  //form option{
+  //  text-align: left;
+  //}
+
+  //input {
+  //  background-color: #1DC116;//@body-color;
+  //  .at-box-inner-shadow(2vw; darkgrey);
+  //  background: #1DC116 @html-background-image;
+  //  background-size: 30px;
+  //  text-shadow: none;
+  //}
+  //input:invalid{
+  //   border-color: #900;
+  //   background-color: #FDD;
+  //}
+  //.form-error-messages {
+  //  display: inline-block;
+  //  position: relative;
+  //  width: auto;
+  //  background-color: #E83737;
+  //}
+
+  //.triangle-border.top:before {
+  //  top: -20px;
+  //  bottom: auto;
+  //  left: auto;
+  //  right: 40px;
+  //  border-width: 0 20px 20px;
+  //}
+  //.triangle-border:before {
+  //  content: "";
+  //  position: absolute;
+  //  bottom: -20px;
+  //  left: 40px;
+  //  border-width: 20px 20px 0;
+  //  border-style: solid;
+  //  border-color: #5a8f00 transparent;
+  //  display: block;
+  //  width: 0;
+  //}
+  //.triangle-border:after {
+  // content: "";
+  // position: absolute;
+  // bottom: -13px;
+  // left: 47px;
+  // border-width: 13px 13px 0;
+  // border-style: solid;
+  // border-color: #fff transparent;
+  // display: block;
+  // width: 0;
+  //}
+  //.triangle-border.top:after {
+  //  top: -13px;
+  //  bottom: auto;
+  //  left: auto;
+  //  right: 47px;
+  //  border-width: 0 13px 13px;
+  //}
+  //ich glaub die sind müll
+}
