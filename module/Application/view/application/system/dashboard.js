@@ -52,6 +52,7 @@
         e.done(function(e, textStatus, jqXHR) {
             console.log(e);
             let user = e.users;
+            console.log(user);
             // active users
             if (user !== null) {
                 // user.reverse();
@@ -60,9 +61,13 @@
                     if (user[c].userId == $('li[data-userId="' + user[c].userId + '"]').data('userId') ) {
                         if (user[c].microtime == $('li[data-microtime="' + user[c].microtime + '"]').data('microtime')) continue;
                     }
-                    $('li[data-userId="' + user[c].userId + '"]').remove();
+                    $('li[data-firstCall="' + user[c].firstCall + '"]').remove();
                     // prepend updated user
-                    $('#users').prepend("<li class='entry' data-userId='" + user[c].userId + "' data-microtime='" + user[c].microtime + "'>" +
+                    $('#users').prepend("<li class='entry' " +
+                        "data-userId='" + user[c].userId +
+                        "' data-microtime='" + user[c].microtime +
+                        "' data-firstCall='" + user[c].firstCall +
+                        "'>" +
                         user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }
             }

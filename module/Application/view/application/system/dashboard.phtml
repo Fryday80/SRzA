@@ -109,7 +109,7 @@ if($sysLog !== null) {
      $li = '';
      $summedHits = 0;
      $c = 0;
-     $maxHitsCountLength = strlen($top10[0]->hitsSum);
+     $maxHitsCountLength = (isset($top10[0]))?strlen($top10[0]->hitsSum):1;
      foreach ($top10 as $item){
          if ($item !== null){
              $c++;

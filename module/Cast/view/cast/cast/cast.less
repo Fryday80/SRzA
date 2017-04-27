@@ -92,9 +92,12 @@
     /* hover effect */
     familymember:hover,
     familymember:hover + ul li familymember {
+        .box;
+        margin: 0;
+        display: inline-block;
         background: @darker;
         color: #000;
-        border: 1px solid #94a0b4;
+        border-color: black;
         *
         {
             color: #000;
@@ -104,12 +107,15 @@
     div:hover+ul li::after,
     div:hover+ul li::before,
     div:hover+ul::before,
-    div:hover+ul li ul::before,
+    div:hover+ul li ul::before {
+        border-color: @backgroundcolor;
+        transition: all 0.8s;
+    }
     familymember:hover + ul li::after,
     familymember:hover + ul li::before,
     familymember:hover + ul::before,
     familymember:hover + ul ul::before {
-        border-color: @backgroundcolor;
+        border-color: black;
         transition: all 0.8s;
     }
 
@@ -155,12 +161,24 @@
 }
 
 
-family>.details {
-    .box;
-    margin: 0;
-    height: 14px;
-    padding: 10px;
-    overflow: hidden;
+family
+    {
+    li,
+    ul
+    {
+        &::before,
+        &::after
+        {
+            border-color: black!important;
+        }
+    }
+    >.details {
+        .box;
+        margin: 0;
+        height: 14px;
+        padding: 10px;
+        overflow: hidden;
+    }
 }
 
 .fam-tree
@@ -169,10 +187,11 @@ family>.details {
 }
 // Centered Family
 .centered {
-    //ul
-    //{
-    //    display: block!important;
-    //}
+    ul
+    {
+        display: block!important;
+        border-color: black;
+    }
     .fam-tree
     {
         height: (@tree-pic-height*2);
