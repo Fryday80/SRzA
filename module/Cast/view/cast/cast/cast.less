@@ -124,13 +124,18 @@
         familymember,
         .details
         {
-            .box;
+            .box();
             margin: 0;
         }
         familymember
         {
             display: inline-block;
         }
+    }
+    .details:hover
+    {
+        .box();
+        margin: 0;
     }
 }
 
@@ -151,6 +156,10 @@ family>.details {
 
 
 .centered>family {
+    *
+    {
+        color: black!important;
+    }
     background-color: @backgroundcolor!important;
     padding-left: 30px!important;
     padding-right: 30px!important;
@@ -163,6 +172,9 @@ family>.details {
         margin: 0;
         min-height: 30px;
         transition: all 1s ;
+    }
+    &>ul>.familyMember familymember {
+        display: inline-block;
     }
 }
 
