@@ -1,0 +1,111 @@
+<style>
+</style>
+<?php echo $this->inlineFromFile('cast', 'cast', 'cast.css');  ?>
+<?php
+$this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
+$this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
+bdump($root);
+function createFamilyList($parent, $level) {
+    echo '<li class="familyMember">';
+    echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
+    echo '<p>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
+    echo '</p>';
+    echo '<br>';
+    echo '<p>';
+    echo '<span>Family: </span>';
+    echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
+    echo '</p>';
+    echo '</familymember>';
+    if (count($parent['dependent']) > 0) {
+        echo '<ul>';
+        if (count($parent['dependent']) > 0) {
+            foreach ($parent['dependent'] as &$char) {
+                createFamilyList($char, $level + 1);
+            }
+        }
+        echo '</ul>';
+    }
+}
+function createList($parent, $level) {
+    // test workaround until db works
+    if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/fry1.png';
+    $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/shield-tross.big.png';
+    echo '<li class="character">';
+    echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
+    echo '<p>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
+    echo '</p>';
+    echo '<br>';
+    echo '<img src = "'.$picUrl.'" class="tree-pic char">';
+    echo '<br>';
+    echo '<p>'. $parent['job_name'] .'</p>';
+    echo '<p>';
+    if ($parent['surename'] !== $parent['family_name']) {
+        if ($parent['family_id'] !== null) {
+            echo '<span>Family: </span>';
+            echo '<span data-id="' . $parent['family_id'] . '">' . $parent['family_name'] . '</span>';
+        }
+    }
+    echo '</p>';
+    echo '</character>';
+
+    if (isset($parent['family']) || count($parent['employ']) > 0) {
+        // test workaround until db works
+        if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/fry1.png';
+        $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/shield-tross.big.png';
+        echo '<ul>';
+        if (isset($parent['family'])) {
+            echo '<li class="family">';
+            echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
+            echo '<br>';
+            echo '<img src = "' .$picUrl. '" class="tree-pic fam-tree only_if_own_pic">';
+            echo '<br>';
+            echo '<div class="details">';
+            echo $parent['family']['name'];
+//            echo '<br>';
+//            echo '<br>';
+//            echo '<hr>';
+//            echo '<p>wappen</p>';
+//            echo '<p>etc</p>';
+            echo '</div>';
+            echo '<ul>';
+            foreach ($parent['family']['members'] as &$member) {
+                createFamilyList($member, $level + 1);
+            }
+            echo '</ul>';
+
+            echo '</family>';
+            echo '</li>';
+        }
+        if (count($parent['employ']) > 0) {
+            foreach ($parent['employ'] as &$char) {
+                createList($char, $level + 1);
+            }
+        }
+        echo '</ul>';
+    }
+    echo '</li>';
+}
+?>
+
+<box id="fullCastScroller">
+    <boxtitel>
+        <span class='own_text_small'>Staatshierarchie</span>
+    </boxtitel>
+    <boxcontent style="overflow: hidden; height: 500px;">
+
+        <div class="tree" style="width: 2000px; height: 2000px; display:none">
+            <ul style="white-space:nowrap">
+                <?php createList($root, 0); ?>
+            </ul>
+
+            <br style="clear:both"/>
+        </div>
+
+    </boxcontent>
+</box>
+
+<?php echo $this->inlineFromFile('cast', 'cast', 'scroller.js');  ?>
