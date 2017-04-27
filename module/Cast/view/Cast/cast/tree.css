@@ -3,6 +3,13 @@
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}
 scroller {
   position: relative;
   box-shadow: #0d3349 inset 5px 5px 5px 5px;
@@ -13,6 +20,11 @@ scroller .draggable {
   position: absolute;
   top: 0px;
   left: 0px;
+}
+.tree {
+  /* connectors */
+  /* hover effect */
+  /*Connector styles on hover*/
 }
 .tree * {
   margin: 0;
@@ -33,7 +45,6 @@ scroller .draggable {
   transition: all 0.5s;
   display: inline-block;
 }
-/* connectors */
 .tree li::before,
 .tree li::after {
   content: '';
@@ -87,14 +98,12 @@ scroller .draggable {
   border-radius: 5px;
   transition: all 0.5s;
 }
-/* hover effect */
 .tree li div:hover,
 .tree li div:hover + ul li div {
   background: #c8e4f8;
   color: #000;
   border: 1px solid #94a0b4;
 }
-/*Connector styles on hover*/
 .tree li div:hover + ul li::after,
 .tree li div:hover + ul li::before,
 .tree li div:hover + ul::before,
