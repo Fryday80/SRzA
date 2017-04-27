@@ -3,6 +3,13 @@
 .box-shadow-bottom {
   box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
 }
+.notransition {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  -ms-transition: none !important;
+  transition: none !important;
+}
 /* overrides for js css */
 /* -------------------- */
 /* own pop up styles */

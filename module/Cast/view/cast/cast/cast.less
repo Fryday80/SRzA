@@ -5,16 +5,23 @@
 
 @tree-pic-height: 45px;
 
+// general appearance
+#content>boxcontent boxcontent
+{
+    padding: 0;
+    background-color: @body-color;
+    .at-box-inner-shadow(2vw; darkgrey);
+    background: @body-color @html-background-image fixed;
+    background-size: 100px;
+    text-shadow: none;
+}
 .tree-pic
 {
     height: @tree-pic-height;
 }
 
 .tree li {
-    .details
-    {
-        color: black;
-    }
+    // single Chars
     character {
         //border: 1px solid #ccc;
         padding: 5px 10px;
@@ -47,6 +54,15 @@
         transition: all 0.8s;
     }
 
+    // Chars Family
+    family ul
+    {
+        display: none;
+    }
+    .details
+    {
+        color: black;
+    }
     family {
         width: auto;
         border: 1px solid #ccc;
@@ -77,7 +93,7 @@
     /* hover effect */
     familymember:hover,
     familymember:hover + ul li familymember {
-        background: @silver-hover-color;
+        background: @darker;
         color: #000;
         border: 1px solid #94a0b4;
         *
@@ -148,14 +164,12 @@ family>.details {
     overflow: hidden;
 }
 
-
-
-
-
-
-
-
+// Centered Family
 .centered {
+    ul
+    {
+        display: block!important;
+    }
     .fam-tree
     {
         height: (@tree-pic-height*2);
@@ -181,34 +195,3 @@ family>.details {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-    #content>boxcontent boxcontent
-    {
-        padding: 0;
-        background-color: @body-color;
-        .at-box-inner-shadow(2vw; darkgrey);
-        background: @body-color @html-background-image fixed;
-        background-size: 100px;
-        text-shadow: none;
-    }
-
-
-
-
-
-    //@todo transit this to a global position ;)
-    .notransition {
-        -webkit-transition: none !important;
-        -moz-transition: none !important;
-        -o-transition: none !important;
-        -ms-transition: none !important;
-        transition: none !important;
-    }
