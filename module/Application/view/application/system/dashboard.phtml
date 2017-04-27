@@ -88,7 +88,7 @@ $li = '';
 if($sysLog !== null) {
     foreach ($sysLog as $item)
         if ($item !== null)
-            $li .= '<li>to DO</li>';
+            $li .= '<li>' . $item->msg . ' at ' . $item->url . '</li>';
 } else {
     $li = '<li>no log found</li>';
 }
@@ -109,14 +109,15 @@ if($sysLog !== null) {
      $li = '';
      $summedHits = 0;
      $c = 0;
+     $maxHitsCountLength = strlen($top10[0]->hitsSum);
      foreach ($top10 as $item){
          if ($item !== null){
-             $li .= '<li><b>'. $item->hitsSum . '</b> &nbsp;&nbsp;&nbsp; hits on &nbsp;&nbsp;&nbsp;<b>'. $item->url . '</b></li>';
-             $summedHits = $summedHits + $item->hitsSum;
              $c++;
+             $li .= "<li><b>". sprintf("%'.02d.\n", $c) . "&nbsp;&nbsp;&nbsp; ".sprintf("%'.0".$maxHitsCountLength."d\n", $item->hitsSum) ."</b> &nbsp;&nbsp;&nbsp; hits on &nbsp;&nbsp;&nbsp;<b> ." .$item->url ."</b></li>";
+             $summedHits = $summedHits + $item->hitsSum;
          }
      }
-     $pre = "<li> => <b>" . $summedHits . "</b> Hits of <b>" . $allClicks . "</b> Hits on <b>" . $c ."</b> sites</li>";
+     $pre = '<li> => <b>' . $summedHits . "</b> Hits of <b>" . $allClicks . "</b> Hits on <b>" . $c ."</b> sites</li>";
      $li = $pre.$li;
  ?>
 <box class = 'dashboard'>
@@ -124,7 +125,7 @@ if($sysLog !== null) {
         <span class='own_text_small'>Seiten Top 10</span>
     </boxtitel>
     <boxcontent>
-        <ul class="dash-list">
+        <ul class="dash-list" style="max-height: none">
             <?php echo $li ?>
         </ul>
     </boxcontent>

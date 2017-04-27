@@ -71,7 +71,7 @@ class StatisticService
 
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
         $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
-        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'message', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
+        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'ErrorMsg', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
     }
 
     public function onFinish(MvcEvent $e) {
