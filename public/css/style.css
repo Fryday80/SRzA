@@ -1015,6 +1015,7 @@ form > label > span:first-child {
   font-size: 11px;
   font-family: 'Glyphicons Halflings';
   color: #430c0c;
+  box-shadow: inset 0px -1px 3px 0px #430c0c;
 }
 form > label input,
 form > label textarea {
@@ -1025,6 +1026,7 @@ form > label textarea {
   background-color: #FAEBd7;
   border: 1px solid #430c0c;
   color: #555;
+  box-shadow: inset 0px 0px 15px 0px #430c0c;
 }
 form > label input :focus,
 form > label textarea :focus {
