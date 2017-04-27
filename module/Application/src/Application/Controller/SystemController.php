@@ -3,6 +3,7 @@ namespace Application\Controller;
 
 
 
+use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
 use Application\Service\StatisticService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -62,5 +63,39 @@ class SystemController extends AbstractActionController
 
         //output
         return new JsonModel($result);
+    }
+    public function formtestAction() {
+
+        $form = new TestForm();
+        $form->setData(array(
+            'Text' => null,
+            'Textarea' => null,
+            'Number' => null,
+            'Password' => null,
+            'Range' => null,
+            'Url' => null,
+            'File' => null,
+            'Button' => null,
+            'CAPTCHA' => null,
+            'Data' => null,
+            'DataSelect' => null,
+            'DataTime' => null,
+            'DateTimeLocal' => null,
+            'DateTimeSelect' => null,
+            'Month' => null,
+            'MonthSelect' => null,
+            'Week' => null,
+            'Time' => null,
+            'Button' => null,
+            'Radio' => null,
+            'Checkbox' => null,
+            'MultiCheckbox' => null,
+            'Select' => null,
+            'Color' => null,
+        ));
+        $form->isValid();
+        return array(
+            'form' => $form
+        );
     }
 }

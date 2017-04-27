@@ -62,13 +62,18 @@ return array(
                             )
                         )
                     ),
+                    'formtest' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/formtest',
+                            'constraints' => array(),
+                            'defaults' => array(
+                                'action' => 'formtest',
+                            )
+                        )
+                    ),
                 ),
             ),
-
-
-
-
-
         ),
     ),
     'service_manager' => array(

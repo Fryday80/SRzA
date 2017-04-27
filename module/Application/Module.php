@@ -12,6 +12,8 @@ namespace Application;
 use Application\Model\SystemLogTable;
 use Application\Service\StatisticService;
 use Application\View\Helper\DashboardHelper;
+use Application\View\Helper\FormElementErrors;
+use Application\View\Helper\FormRow;
 use Application\View\Helper\InlineFromFile;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
@@ -68,6 +70,12 @@ class Module
             'factories' => array(
                 'form' => function () {
                     return new sraForm();
+                },
+                'FormRow' => function () {
+                    return new FormRow();
+                },
+                'FormElementErrors' => function () {
+                    return new FormElementErrors();
                 },
                 'dataTable' => function ($sm){
                     $parentLocator = $sm->getServiceLocator();
