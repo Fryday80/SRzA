@@ -18,20 +18,21 @@ class SystemController extends AbstractActionController
     {
         $this->layout()->setVariable('showSidebar', false);
         $this->statsService = $this->getServiceLocator()->get('StatisticService');
-        $mvL = $this->statsService->getMostVisitedPages();
-        $mvL = (isset($mvL[0])) ? $mvL[0]->url . ' with ' . $mvL[0]->hitsSum : null;
+        $mvL = $this->statsService->getMostVisitedPages(10);
+        $mvL1 = (isset($mvL[0])) ? $mvL[0]->url . ' with ' . $mvL[0]->hitsSum : null;
         $sysLog = $this->statsService->getSystemLog();
         $sysLog = ($sysLog == null) ? null : array_reverse($sysLog);
         $userStats = array(
             array("All Clicks"    => $this->statsService->getPageHits()),
             array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
-            array("meistbesuchter Link"  => $mvL),
+            array("meistbesuchter Link"  => $mvL1),
         );
 
         bdump($this->statsService->getActiveUsers(1493218392.7175));
         return new ViewModel(array(
-            'sysLog'      => $sysLog,
-            'userStats'   => $userStats,
+            'sysLog'    => $sysLog,
+            'userStats' => $userStats,
+            'top10'     => $mvL,
         ));
     }
 

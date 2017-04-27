@@ -101,6 +101,28 @@ if($sysLog !== null) {
         </ul>
     </boxcontent>
 </box>
-
+ <?php   
+// ************************************************************************************** Top 10 Sites
+ if ($top10 !== null):
+     $li = '';
+     foreach ($top10 as $item){
+         if ($item !== null){
+             $li .= '<li><b>'. $item->hitsSum . ' hits on </b>'. $item->url . '</li>';
+         }
+     }
+ ?>
+<box class = 'dashboard'>
+    <boxtitel>
+        <span class='own_text_small'>Seiten Top 10</span>
+    </boxtitel>
+    <boxcontent>
+        <ul class="dash-list">
+            <?php echo $li ?>
+        </ul>
+    </boxcontent>
+</box>
+    <?php
+    endif;
+    ?>
 </div>
 <?php echo $this->inlineFromFile('Application', 'system', 'dashboard.js'); ?>

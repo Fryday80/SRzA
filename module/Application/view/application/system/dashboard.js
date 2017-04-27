@@ -63,7 +63,7 @@
                     $('li[data-userId="' + user[c].userId + '"]').remove();
                     // prepend updated user
                     $('#users').prepend("<li class='entry' data-userId='" + user[c].userId + "' data-microtime='" + user[c].microtime + "'>" +
-                        user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + ",," + user[c].microtime + "</li>");
+                        user[c].userName + ": " + user[c].url + "<b> @ </b>" + user[c].dateTime + "</li>");
                 }
             }
             setTimeout(function() {
