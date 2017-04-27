@@ -1,7 +1,14 @@
 @import "../../_vars";
 @import "../../_helper";
 @import "_box_basic";
+@body-color: rgb(67,12,12);
+@backgroundcolor: #FAEBd7;
+@dark-color: #dbd2c9;
+@darker: #AFA08D;
+@text-shadow-color: #f3ffff;
 
+@silver-hover-color: #c8e4f8;
+@blue-hover: #4F79AE;
 @input-background: @body-color;
 
 
@@ -100,6 +107,7 @@ form {
     }
     .form-error-messages {
       position: relative;
+      text-shadow: none;
       z-index: 4;
       padding: 5px;
       margin: 10px;
@@ -108,6 +116,11 @@ form {
       color: #fff;
       background: #333;
       border-radius: 5px;
+      box-shadow: inset 0px 0px 35px 0px #E86975;
+      *
+      {
+        color: #fff3e0;
+      }
       ::before {
         content: "";
         position: absolute;
@@ -117,10 +130,20 @@ form {
         width: 10px;
         height: 10px;
         background: #f00;
+        animation: wobbel 2s infinite;
       }
     }
     //clear: both;
   }
+}
+
+.start(){ left: 30px;}
+.end(){ left: 50px;}
+@keyframes wobbel
+{
+  0% {.start;}
+  50% {.end;}
+  100% {.start;}
 }
 //  label {
 //    text-align: center;
