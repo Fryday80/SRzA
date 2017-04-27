@@ -88,7 +88,7 @@ $li = '';
 if($sysLog !== null) {
     foreach ($sysLog as $item)
         if ($item !== null)
-            $li .= '<li>' . $item->msg . ' at ' . $item->url . '</li>';
+            $li .= '<li>' . date('d.m.y H:i',$item->time) . ' ' . $item->msg . ' at ' . $item->url . '</li>';
 } else {
     $li = '<li>no log found</li>';
 }
