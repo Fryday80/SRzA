@@ -60,7 +60,6 @@ class AlbumController extends AbstractActionController
                 }
             ),
         ) );
-        bdump($albumsTable);
         $viewModel = new ViewModel(array( 'table' => $albumsTable ) );
         return $viewModel;
     }

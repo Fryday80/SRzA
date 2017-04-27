@@ -28,7 +28,6 @@ class SystemController extends AbstractActionController
             array("meistbesuchter Link"  => $mvL1),
         );
 
-        bdump($this->statsService->getActiveUsers(1493218392.7175));
         return new ViewModel(array(
             'sysLog'    => $sysLog,
             'userStats' => $userStats,

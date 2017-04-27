@@ -30,8 +30,10 @@ $li = '';
 if($userStats !== null) {
     foreach ($userStats as $item)
         if ($item !== null)
-            foreach ($item as $k => $v)
+            foreach ($item as $k => $v) {
                 $li .= "<li><p><b>$k:</b></p>$v</li>";
+                if ($k == 'All Clicks') $allClicks = $v;
+            }
 }
 else {
     $li =  "<li>no stats found</li>";
@@ -105,11 +107,17 @@ if($sysLog !== null) {
 // ************************************************************************************** Top 10 Sites
  if ($top10 !== null):
      $li = '';
+     $summedHits = 0;
+     $c = 0;
      foreach ($top10 as $item){
          if ($item !== null){
-             $li .= '<li><b>'. $item->hitsSum . ' hits on </b>'. $item->url . '</li>';
+             $li .= '<li><b>'. $item->hitsSum . '</b> &nbsp;&nbsp;&nbsp; hits on &nbsp;&nbsp;&nbsp;<b>'. $item->url . '</b></li>';
+             $summedHits = $summedHits + $item->hitsSum;
+             $c++;
          }
      }
+     $pre = "<li> => <b>" . $summedHits . "</b> Hits of <b>" . $allClicks . "</b> Hits on <b>" . $c ."</b> sites</li>";
+     $li = $pre.$li;
  ?>
 <box class = 'dashboard'>
     <boxtitel>
