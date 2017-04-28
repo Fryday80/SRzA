@@ -1094,6 +1094,11 @@ form > label .form-error-messages ::before {
   height: 20px;
   background: #E86975;
 }
+form label.checkbox,
+form label.button {
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5);
+  border: groove 0.5px grey;
+}
 form fieldset {
   box-shadow: inset 0px 0px 15px 0px #430c0c;
 }
