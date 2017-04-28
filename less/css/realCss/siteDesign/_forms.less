@@ -7,7 +7,11 @@ form {
   >* {
     display: list-item;
     list-style: none;
-    margin-bottom: 105px;
+    margin-bottom: 10px;
+  }
+  input[type="radio"]
+  {
+    box-shadow: none;
   }
   input[type="file"]::after {
     content: "Datei Auswählen";
@@ -123,7 +127,7 @@ form {
         position: absolute;
         top: -5px;
         left: 30px;
-        transform: rotate(45deg);
+        transform: rotate(48deg) skew(20deg,10deg);
         width: 20px;
         height: 20px;
         background: @error-color1;
