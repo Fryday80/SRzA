@@ -59,7 +59,7 @@ class sraForm extends Form
      *
      * @return string
      */
-    public function openMyTag(){
+    public function openMyTag(){//aber des file is komisch
         return '<form '. $this->config->getFormConfig() . '>';
     }
 }

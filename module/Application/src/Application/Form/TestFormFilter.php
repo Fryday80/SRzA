@@ -1,59 +1,50 @@
 <?php
 namespace Application\Form;
 
-use Zend\Form\Form;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterInterface;
 
-class TestForm extends Form
+class TestFormFilter extends InputFilter
 {
     public function __construct()
     {
-        parent::__construct("Test");
-        $this->setAttribute('method', 'post');
-        $this->setInputFilter(new TestFormFilter());
-
 /// Text
         $this->add(array(
-            'name' => 'Text',
-            'type' => 'text',
-            'attributes' => array(
-                'placeholder' => 'Text',
+            'name' => 'Text',//sry ich hab die namen alle kopiert
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
             ),
-            'options' => array(
-                'label' => 'Text'
+            'validators' => array(
+
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'encoding' => 'UTF-8',
+                        'min' => 1,
+                        'max' => 3,
+                    ),
+                ),
             ),
         ));
 /// Textarea
         $this->add(array(
             'name' => 'Textarea',
-            'type' => 'Zend\Form\Element\Textarea',
-            'attributes' => array(
-                'placeholder' => 'Textarea'
-            ),
-            'options' => array(
-                'label' => 'Textarea',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Number
         $this->add(array(
             'name' => 'Number',
-            'type' => 'Zend\Form\Element\Number',
-            'attributes' => array(
-                'placeholder' => 'Number'
-            ),
-            'options' => array(
-                'label' => 'Number',
-            ),
+//            'required' => true,
+//            'allow_empty' => false,
         ));
 /// Password
         $this->add(array(
             'name' => 'Password',
-            'type' => 'Zend\Form\Element\Password',
-            'attributes' => array(
-                'placeholder' => 'Password'
-            ),
-            'options' => array(
-                'label' => 'Password',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Range
 //        $this->add(array(
@@ -68,29 +59,30 @@ class TestForm extends Form
 /// Url
         $this->add(array(
             'name' => 'Url',
-            'type' => 'Zend\Form\Element\Url',
-            'attributes' => array(
-                'placeholder' => 'Url'
-            ),
-            'options' => array(
-                'label' => 'Url',
-            ),
+            'required' => true,
+            'allow_empty' => false,
+            'validators' => array(
+                array(
+                    'name' => 'StringLength',
+                    'options' => array(
+                        'encoding' => 'UTF-8',
+                        'min' => 10,
+                        'max' => 32
+                    )
+                )
+            )
         ));
 /// File
         $this->add(array(
             'name' => 'File',
-            'type' => 'Zend\Form\Element\File',
-            'options' => array(
-                'label' => 'File',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Button
         $this->add(array(
             'name' => 'Button',
-            'type' => 'Zend\Form\Element\Button',
-            'options' => array(
-                'label' => 'Button',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 
 /// CAPTCHA   https://samsonasik.wordpress.com/2012/09/12/zend-framework-2-using-captcha-image-in-zend-form/
@@ -122,10 +114,8 @@ class TestForm extends Form
 /// Data
         $this->add(array(
             'name' => 'date',
-            'type' => 'Zend\Form\Element\Date',
-            'options' => array(
-                'label' => 'Data',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// DataSelect
 //        $this->add(array(
@@ -164,11 +154,8 @@ class TestForm extends Form
 //        ));
 /// DateTimeLocal
         $this->add(array(
-            'name' => 'DateTimeLocal',
-            'type' => 'Zend\Form\Element\DateTimeLocal',
-            'options' => array(
-                'label' => 'DateTimeLocal',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// DateTimeSelect       requires the intl PHP extension
 //        $this->add(array(
@@ -183,10 +170,8 @@ class TestForm extends Form
 /// Month
         $this->add(array(
             'name' => 'Month',
-            'type' => 'Zend\Form\Element\Month',
-            'options' => array(
-                'label' => 'Month',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// MonthSelect     requires the intl PHP extension
 //        $this->add(array(
@@ -202,90 +187,48 @@ class TestForm extends Form
 /// Week
         $this->add(array(
             'name' => 'Week',
-            'type' => 'Zend\Form\Element\Week',
-            'options' => array(
-                'label' => 'Week',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Time
         $this->add(array(
             'name' => 'Time',
-            'type' => 'Zend\Form\Element\Time',
-            'options' => array(
-                'label' => 'Time',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Button
         $this->add(array(
             'name' => 'Button',
-            'type' => 'Zend\Form\Element\Button',
-            'options' => array(
-                'label' => 'Button',
-            ),
+            'required' => true,
+            'allow_empty' => false,
         ));
 /// Radio
         $this->add(array(
             'name' => 'radio',
-            'type' => 'Zend\Form\Element\Radio',
-            'attributes' => array(),
-            'options' => array(
-                'label' => 'Radio',
-                'value_options' => array(
-                    'm' => 'One',
-                    'f' => 'Two',
-                ),
-            ),
+            'required' => true,
+            'allow_empty' => false,
 
         ));
 /// Checkbox
         $this->add(array(
             'name' => 'checkbox',
-            'type' => 'Zend\Form\Element\Checkbox',
-            'options' => array(
-                'label' => 'Checkbox',
-            ),
+            'required' => true,
         ));
 /// MultiCheckbox
         $this->add(array(
             'name' => 'multiCheckbox',
-            'type' => 'Zend\Form\Element\MultiCheckbox',
-            'options' => array(
-                'label' => 'MultiCheckbox',
-                'value_options' => array(
-                    '0' => 'Apple',
-                    '1' => 'Orange',
-                    '2' => 'Lemon'
-                ),
-            ),
+            'required' => true,
         ));
 /// Select
         $this->add(array(
             'name' => 'supervisor_id',
-            'type' => 'Zend\Form\Element\Select',
-            'required' => true,
-            'options' => array(
-                'label' => 'Select',
-                'value_options' => array(0 => 'Eins', 1 => 'Zwei'),
-            )
         ));
 /// Color
         $this->add(array(
-            'name' => 'Color',
-            'type' => 'Zend\Form\Element\Color',
-            'required' => true,
-            'options' => array(
-                'label' => 'Color',
-            )
         ));
 /// Submit
         $this->add(array(
             'name' => 'submit',
-            'type' => 'Submit',
-            'required' => true,
-            'attributes' => array(
-                'type' => 'submit',
-                'value' => 'Submit',
-            )
         ));
 /// Image   stupid
 //        $this->add(array(

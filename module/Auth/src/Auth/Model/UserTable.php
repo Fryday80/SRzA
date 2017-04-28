@@ -32,7 +32,7 @@ class UserTable extends AbstractTableGateway
             $select->join(array('role' => 'role'), 'users.role_id = role.rid', array('role_name'), 'LEFT');
             $user = $this->selectWith($select)->current();
             if (!$user) {
-                throw new \Exception("Could not find user with email: $email");
+                return null;
             }
             return $user;
         } catch (\Exception $e) {

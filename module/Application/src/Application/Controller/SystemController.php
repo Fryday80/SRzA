@@ -93,6 +93,10 @@ class SystemController extends AbstractActionController
             'Select' => null,
             'Color' => null,
         ));
+        if ($this->getRequest()->isPost()) {
+            $form->setData($this->getRequest()->getPost());
+        }
+        bdump( $form->isValid());
         $form->isValid();
         return array(
             'form' => $form

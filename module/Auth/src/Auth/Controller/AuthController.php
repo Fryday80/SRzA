@@ -2,6 +2,7 @@
 namespace Auth\Controller;
 
 use Auth\Form\EmailForm;
+use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
 use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -39,6 +40,11 @@ class AuthController extends AbstractActionController
 
     public function loginAction()
     {
+        $translator = $this->getServiceLocator()->get('viewhelpermanager')->get('translate');
+        $text = $translator('File');//so kannst du "File" übersetzten
+        //is eher generel aber auch wenn wir keine verschiedenen sprachen haben is des praktisch ... wenns geht hab ich noch nie geteste
+        //aha
+
         $form = new LoginForm('Login');
         $request = $this->getRequest();
         $ip = $request->getServer('REMOTE_ADDR');
@@ -51,36 +57,46 @@ class AuthController extends AbstractActionController
        
             if ($form->isValid()) {
                 $data = $form->getData();
+                $valid = true;
                 //check if user exists
+                /** @var UserTable $userTable */
                 $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
                 $userDetails = $userTable->getUsersForAuth($data['email']);
-                if ($userDetails->status == 'N') {
-                    $this->flashmessenger()->addMessage("Zugang Verweigert::Dieser Account ist nicht Aktiviert", "MessagePage", 1);
-                    return $this->redirect()->toRoute('message');
+                // email not found
+                if (!$userDetails){
+                    $valid = false;
                 }
-                //check authentication... @todo move to AccessService
-                $userPassword = new UserPassword();
-                $encyptPass = $userPassword->create($data['password']);
+                // email found but inactive
+                elseif ($userDetails->status == 'N') {
+                    $valid = false;
+                    $newMsg = "Zugang Verweigert::Dieser Account ist nicht Aktiviert";
+//                    $this->flashmessenger()->addMessage("Zugang Verweigert::Dieser Account ist nicht Aktiviert", "MessagePage", 1);
+//                    return $this->redirect()->toRoute('message');
+                }
+                if ($valid) {
+                    //check authentication... @todo move to AccessService
+                    $userPassword = new UserPassword();
+                    $encyptPass = $userPassword->create($data['password']);
 
-                /** @var AuthenticationService $authService */
-                $authService = $this->getServiceLocator()->get('AuthService');
-        
-                $authService->getAdapter()
-                    ->setIdentity($data['email'])
-                    ->setCredential($encyptPass);
+                    /** @var AuthenticationService $authService */
+                    $authService = $this->getServiceLocator()->get('AuthService');
 
-                $result = $authService->authenticate();
+                    $authService->getAdapter()
+                        ->setIdentity($data['email'])
+                        ->setCredential($encyptPass);
 
-                foreach ($result->getMessages() as $message) {
-                    // save message temporary into flashmessenger
-                    $this->flashmessenger()->addMessage($message);
+                    $result = $authService->authenticate();
+                    
+                    foreach ($result->getMessages() as $message) {
+                        // save message temporary into flashmessenger
+                        $this->flashmessenger()->addMessage($message);
+                    }
                 }
         
-                if ($result->isValid()) {
+                if ($valid && $result->isValid()) {
                     $storage = $this->getSessionStorage();
                     $storage->setUserID($userDetails->id);
                     $storage->setUserName($userDetails->name);
-                    $storage->setRoleID($userDetails->role_id);
                     $storage->setRoleName($userDetails->role_name);
                     $storage->setIP($ip);
                     // check if it has rememberMe :
@@ -96,6 +112,14 @@ class AuthController extends AbstractActionController
 
                     $this->flashmessenger()->addMessage("You've been logged in");
                     return $this->redirect()->toUrl($this->getReferer());
+                } else {
+                    //@todo error wrong user email-pw error to form
+                    if (!isset ($newMsg)) {
+                        $newMsg = 'Email oder Passwort falsch';
+                    }
+                    $msg = $form->get('password')->getMessages();
+                    array_push($msg, $newMsg);
+                    $form->get('password')->setMessages($msg);
                 }
             }
         }
