@@ -15,7 +15,7 @@
 /* positioning */
 /* ------ shadows ------- */
 .box-shadow-bottom {
-  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 0.35vw 0.8vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
 }
 .notransition {
   -webkit-transition: none !important;
@@ -365,7 +365,7 @@ box {
   border-image: url("/img/uikit/border.png") 40 repeat;
   background-color: #FAEBd7;
   border-radius: 5px;
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
   position: relative;
 }
 boxtitel {
@@ -395,7 +395,7 @@ boxcontent {
   display: block;
 }
 .linkbox:hover {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
 }
 /* Basic Layout without Menu */
 /* -----------------general Settings----------------- */
@@ -414,7 +414,7 @@ boxcontent {
   text-shadow: 1px 1px #4F79AE;
 }
 body {
-  background: #430c0c url('/img/html.bg.png') fixed;
+  background: #294231 url('/img/html.bg.png') fixed;
   background-size: 100px;
   color: #00bcd4;
 }
@@ -484,10 +484,10 @@ button {
   height: 30px;
 }
 .logoutbutton:hover {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
 }
 .overlayShadow {
-  box-shadow: 0 0.7vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 0.7vw 0.8vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
 }
 /* -----------------Head----------------- */
 #headcontainer {
@@ -515,7 +515,7 @@ button {
   margin-left: 1%;
 }
 .head {
-  box-shadow: 0 1vw 3vw grey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 1vw 3vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
   margin-top: 1vw;
   background-color: #FAEBd7;
   border-radius: 5px;
@@ -607,14 +607,14 @@ button {
   min-height: 30px;
   width: calc(100% + 2vw);
   margin-left: -1.5vw;
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
 }
 #foottext li {
   display: inline-block;
   vertical-align: sub;
 }
 #foottext li:hover {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
 }
 /* Menu Layout */
 /* -----------------Navbar CSS settings----------------- */
@@ -626,7 +626,7 @@ button {
     width: 20%;
     background-color: #FAEBd7;
     background-image: none;
-    box-shadow: 0.35vw 0.8vw 1vw darkgrey, inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+    box-shadow: 0.35vw 0.8vw 1vw #8D7F9C, inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
   }
   /* **** mobile button **** */
   .menu_button_div {
@@ -698,7 +698,7 @@ button {
   .level_0:hover,
   .level_0:active,
   .level_0 li:hover {
-    box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
     border-image: url("/img/uikit/border_active.png") 40 repeat;
   }
   .level_0:hover > ul,
@@ -739,7 +739,7 @@ button {
     border: 0.5vw solid;
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: rgba(0, 0, 0, 0.1);
-    box-shadow: 0.35vw 0.35vw 0.8vw darkgrey;
+    box-shadow: 0.35vw 0.35vw 0.8vw #8D7F9C;
   }
   .level_0 > ul {
     position: relative;
@@ -861,7 +861,7 @@ button {
     border-image: url("/img/uikit/border.png") 40 repeat;
     background-color: #FAEBd7;
     border-radius: 5px;
-    box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+    box-shadow: inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
     min-height: 11vw;
     max-height: 17.5vw;
   }
@@ -926,13 +926,13 @@ noscript {
   margin: 0.5vw auto 0.5vw auto;
   padding: 5px;
   text-align: center;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0.35vw 0.35vw 0.8vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
 }
 .cast .small {
   width: 80%;
   margin: 0 auto 0 auto;
   overflow-y: hidden;
-  box-shadow: 0.35vw 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0.35vw 0.35vw 0.8vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
 }
 .cast .small:hover li {
   background-color: rgba(0, 0, 0, 0.1);
@@ -975,7 +975,7 @@ form input[type="file"]::after {
   height: 50%;
   background-color: #FAEBd7;
   pointer-events: none;
-  box-shadow: inset 0px 0px 15px 0px #430c0c, 4px 4px 10px #430c0c;
+  box-shadow: inset 0px 0px 15px 0px rgba(141, 127, 156, 0.8), 4px 4px 10px #294231;
 }
 form input[type="submit"],
 form button {
@@ -985,18 +985,18 @@ form button {
   padding-right: 5px;
   min-height: 30px;
   min-width: 40px;
-  box-shadow: inset 0px 0px 15px 0px #430c0c, 4px 4px 10px #430c0c;
+  box-shadow: inset 0px 0px 15px 0px rgba(141, 127, 156, 0.8), 4px 4px 10px #294231;
 }
 form input[type="submit"]:hover,
 form button:hover {
-  background-color: #AFA08D;
+  background-color: #456250;
 }
 form input[type="submit"]:active,
 form button:active {
   margin-left: 3px;
   margin-top: 13px;
   margin-bottom: 0;
-  box-shadow: inset 0px 0px 15px 0px #430c0c, 1px 1px 1px #430c0c;
+  box-shadow: inset 0px 0px 15px 0px rgba(141, 127, 156, 0.8), 1px 1px 1px #294231;
 }
 form > fieldset > label,
 form > label {
@@ -1014,8 +1014,8 @@ form > label > span:first-child {
   font-style: italic;
   font-size: 11px;
   font-family: 'Glyphicons Halflings';
-  color: #430c0c;
-  box-shadow: inset 0px -1px 3px 0px #430c0c;
+  color: #294231;
+  box-shadow: inset 0px -1px 3px 0px rgba(141, 127, 156, 0.8);
 }
 form > fieldset > label input,
 form > label input,
@@ -1028,9 +1028,9 @@ form > label select {
   height: 25px;
   padding: 5px;
   background-color: #FAEBd7;
-  border: 1px solid #430c0c;
+  border: 1px solid #294231;
   color: #555;
-  box-shadow: inset 0px 0px 15px 0px #430c0c;
+  box-shadow: inset 0px 0px 15px 0px rgba(141, 127, 156, 0.8);
   min-width: 76px;
 }
 form > fieldset > label input :focus,
@@ -1062,13 +1062,13 @@ form > label .form-error-messages {
   text-align: center;
   color: #fff;
   border-radius: 5px;
-  box-shadow: inset -2px -4px 15px 0px #430c0c;
+  box-shadow: inset -2px -4px 15px 0px rgba(141, 127, 156, 0.8);
 }
 form > fieldset > label .form-error-messages li,
 form > label .form-error-messages li {
   z-index: 5;
-  border: solid #430c0c;
-  background-color: #430c0c;
+  border: solid #294231;
+  background-color: #294231;
   text-shadow: black;
 }
 form > fieldset > label .form-error-messages *,
@@ -1080,8 +1080,8 @@ form > label .form-error-messages * {
 form > fieldset > label .form-error-messages ::before,
 form > label .form-error-messages ::before {
   color: #fff;
-  border-left: solid #430c0c;
-  border-top: solid #430c0c;
+  border-left: solid #294231;
+  border-top: solid #294231;
   content: "";
   position: absolute;
   top: -5px;
@@ -1092,11 +1092,11 @@ form > label .form-error-messages ::before {
   background: #E86975;
 }
 form fieldset {
-  box-shadow: inset 0px 0px 15px 0px #430c0c;
+  box-shadow: inset 0px 0px 15px 0px #294231;
 }
 form fieldset legend {
   background-color: #FAEBd7;
-  box-shadow: inset 0px -1px 3px 0px #430c0c;
+  box-shadow: inset 0px -1px 3px 0px #294231;
   padding-left: 5px;
   padding-right: 5px;
   margin-left: 30px;

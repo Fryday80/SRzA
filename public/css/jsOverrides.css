@@ -1,7 +1,7 @@
 /* positioning */
 /* ------ shadows ------- */
 .box-shadow-bottom {
-  box-shadow: 0 0.35vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: 0 0.35vw 0.8vw #8D7F9C, inset 0px 0px 5vw 0px rgba(141, 127, 156, 0.8);
 }
 .notransition {
   -webkit-transition: none !important;
@@ -27,7 +27,7 @@
   width: 60px;
 }
 .ui-widget-content button:hover {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(141, 127, 156, 0.8);
 }
 /* ----------------- pop up div design -------------------- */
 .disclaimer {

@@ -2,11 +2,6 @@
 @import "../../_helper";
 @import "_box_basic";
 
-@error-color1: #E86975;
-@error-color:  @body-color;
-@error-bg: rgb(67,12,12);
-@input-background: @body-color;
-
 form {
   width: auto;
   >* {
@@ -25,7 +20,7 @@ form {
     height: 50%;
     background-color: #FAEBd7;
     pointer-events: none;
-    box-shadow: inset 0px 0px 15px 0px @body-color, 4px 4px 10px @body-color;
+    box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 4px 4px 10px @body-color;
   }
   input[type="submit"],
   button
@@ -36,7 +31,7 @@ form {
     padding-right: 5px;
     min-height: 30px;
     min-width: 40px;
-    box-shadow: inset 0px 0px 15px 0px @body-color, 4px 4px 10px @body-color;
+    box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 4px 4px 10px @body-color;
     &:hover
     {
       background-color: @darker;
@@ -46,7 +41,7 @@ form {
       margin-left: 3px;
       margin-top: 13px;
       margin-bottom: 0;
-      box-shadow: inset 0px 0px 15px 0px @body-color, 1px 1px 1px @body-color;
+      box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 1px 1px 1px @body-color;
     }
   }
   >fieldset>label,
@@ -66,7 +61,7 @@ form {
       font-size: 11px;
       font-family: 'Glyphicons Halflings';
       color: @body-color;
-      box-shadow: inset 0px -1px 3px 0px @body-color;
+      box-shadow: inset 0px -1px 3px 0px @forms-inner-shadow;
     }
     input,
     textarea,
@@ -78,7 +73,7 @@ form {
       background-color: @backgroundcolor;
       border: 1px solid @body-color;
       color: #555;
-      box-shadow: inset 0px 0px 15px 0px @body-color;
+      box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow;
       min-width: 76px;
 
       :focus {
@@ -105,7 +100,7 @@ form {
       text-align: center;
       color: #fff;
       border-radius: 5px;
-      box-shadow: inset -2px -4px 15px 0px @error-color;
+      box-shadow: inset -2px -4px 15px 0px @forms-inner-shadow;
       //background: @error-bg;
       li {
         z-index: 5;
