@@ -19,8 +19,6 @@ class LoginForm extends Form
             'name' => 'email',
             'type' => 'text',
             'attributes' => array(
-                'id' => 'email',
-                'class' => 'input-sm',
                 'placeholder' => 'example@example.com'
             ),
             'options' => array(
@@ -32,8 +30,6 @@ class LoginForm extends Form
             'name' => 'password',
             'type' => 'password',
             'attributes' => array(
-                'id' => 'password',
-                'class' => 'input-sm br',
                 'placeholder' => '**********'
             ),
             'options' => array(
