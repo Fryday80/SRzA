@@ -7,8 +7,6 @@
 
 namespace Application\View\Helper;
 
-
-use Zend\Form\ElementInterface;
 use Zend\Form\View\Helper\FormElementErrors as BaseFormElementErrors;
 
 class FormElementErrors extends BaseFormElementErrors {

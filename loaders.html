@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        @keyframes loader-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes wabble {
+            0% {
+                transform: rotateX(40deg);
+            }
+            25% {
+                transform: rotateX(0deg);
+            }
+            50% {
+                transform: rotateX(40deg);
+            }
+            75% {
+                transform: rotateX(0deg);
+            }
+            100% {
+                transform: rotateX(40deg);
+            }
+        }
+        .loader2 {
+            position: relative;
+            width: 35px;
+            height: 35px;
+            background-color: darkolivegreen;
+            filter: url(#goo);
+            animation: loader-spin 2s linear infinite reverse;
+            overflow: hidden;
+            transform: rotateX(40deg);
+            border: 4px solid #ff974d;
+        }
+        .loader2:before {
+            content: "";
+            position: absolute;
+            animation: loader-spin 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            background: #ff974d;
+            transform-origin: top center;
+            border-radius: 50%;
+            width: 150%;
+            height: 150%;
+            top: 50%;
+            left: -12.5%;
+        }
+    </style>
+    <style>
+        body {
+            padding: 100px;
+            background-color: #0a001f;
+        }
+        @keyframes firstOrbiter {
+            0% {
+                left: 0%;
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+            25% {
+                left: 0%;
+                width: 100%;
+                top: 0%;
+                height: 1px;
+            }
+            50% {
+                left: calc(100% - 1px);
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+            75% {
+                left: 0%;
+                width: 100%;
+                top: calc(100% - 1px);
+                height: 1px;
+            }
+            100% {
+                left: 0%;
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+        }
+        @keyframes secOrbiter {
+            0% {
+                left: calc(100% - 1px);
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+            25% {
+                left: 0%;
+                width: 100%;
+                top: calc(100% - 1px);
+                height: 1px;
+            }
+            50% {
+                left: 0%;
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+            75% {
+                left: 0%;
+                width: 100%;
+                top: 0%;
+                height: 1px;
+            }
+            100% {
+                left: calc(100% - 1px);
+                width: 1px;
+                top: 0%;
+                height: 100%;
+            }
+        }
+        .loader {
+            position: relative;
+            z-index: 0;
+            width: 50px;
+            height: 50px;
+            /*background-color: #0a001f;*/
+        }
+        .loader:after {
+            content: "";
+            position: absolute;
+
+            left: 0%;
+            width: 50%;
+            top: 0%;
+            height: 100%;
+
+            overflow: visible;
+            border: solid 2px #f0ad4e;
+            animation: firstOrbiter 3s linear infinite;
+            box-shadow: 0px 0px 10px 0px #f0ad4e;
+        }
+        .loader:before {
+            content: "";
+            position: absolute;
+
+            left: calc(100% - 5px);
+            width: 5px;
+            top: 0%;
+            height: 100%;
+
+            overflow: visible;
+            border: solid 2px #30f02c;
+            animation: secOrbiter 3s linear infinite;
+            box-shadow: 0px 0px 10px 0px #30f02c;
+        }
+
+        @keyframes points {
+            0% {
+                content: ".";
+                color: #30f02c;
+            }
+            25% {
+                content: "..";
+                color: #f0ad4e;
+            }
+            50% {
+                content: "...";
+                color: #30f02c;
+            }
+            75% {
+                content: "....";
+                color: #f0ad4e;
+            }
+            100% {
+                content: ".";
+                color: #30f02c;
+            }
+        }
+        .loader>div {
+            position: relative;
+            left: 2px;
+            top: 2px;
+            z-index: 10;
+            width: 50px;
+            height: 50px;
+            background-color: #0a001f;
+            color: white;
+            font-size: 30px;
+            line-height: 35px;
+        }
+        .loader>div::after {
+            content: "...";
+            animation: points 3s linear infinite;
+        }
+
+    </style>
+    <style>
+        @keyframes offset {
+            0% {
+                stroke-dashoffset: 0;
+            }
+            100% {
+                stroke-dashoffset: 300;
+            }
+        }
+
+        svg .border {
+            stroke-dasharray: 20,280;
+            animation: offset 3s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <div class="loader">
+            <div></div>
+        </div>
+        <br>
+        <br>
+        <div class="loader2">
+            <div></div>
+        </div>
+        <br>
+        <br>
+        <svg viewBox="0 0 110 62" height="100px">
+            <defs>
+                <filter id="filter1" x="0" y="0">
+                    <feTurbulence type="turbulence" baseFrequency="0.02" numOctaves="2" result="turbulence"/>
+                    <feDisplacementMap in2="turbulence" in="SourceGraphic" result="displaced" scale="15"/>
+                    <feGaussianBlur in="displaced" stdDeviation="0.5" />
+                    <!--<feBlend in="SourceGraphic" in2="blurOut2" mode="normal" />-->
+
+                    <!--<feGaussianBlur in="SourceGraphic" result="blurOut1" stdDeviation="5" />-->
+                    <!--<feOffset result="offOut" in="blurOut1" dx="0" dy="0" />-->
+                    <!--<feGaussianBlur result="blurOut2" in="SourceGraphic" stdDeviation="3" />-->
+                    <!--<feBlend in="SourceGraphic" in2="blurOut2" mode="normal" />-->
+                </filter>
+            </defs>
+            <path class="border" filter="url(#filter1)" stroke="#fff" fill="none" stroke-width="2" d="M0 0 L100 0 L100 50 L0 50 L0 0" />
+            <text class="text" filter="url(#filter1)" x="20" y="30" font-family="Comic Sans MS" font-size="20" stroke="#fff" >
+                Loading
+            </text>
+        </svg>
+    </center>
+</body>
+</html>

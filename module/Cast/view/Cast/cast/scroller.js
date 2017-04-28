@@ -13,7 +13,6 @@
         let $family = ($(e.target).is('.family'))? $(e.target): $(e.target).parents('.family');
         if ($family.length > 0) {
             //clicked on family
-            console.log('center family');
             $family = $($family[0]);
             workspace.goToElement($family, 2);
             $('*', workspace.$dragable).removeClass('centered');
@@ -23,13 +22,13 @@
         let $char = ($(e.target).is('.character'))? $(e.target): $(e.target).parents('.character');
         if ($char.length > 0) {
             //clicked on character
-            console.log('center character');
             $char = $($char[0]);
             workspace.goToElement($('character', $char));
             $('*', workspace.$dragable).removeClass('centered');
             $char.addClass('centered');
             return false;
         }
+        $('*', workspace.$dragable).removeClass('centered');
     });
     $(document).ready(function() {
         let $family = $('.ws-content ul li .character');
