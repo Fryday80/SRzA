@@ -1,6 +1,7 @@
 <?php
 namespace Calendar;
 
+use Calendar\DataTable\CalendarTable;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 
@@ -28,10 +29,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-//                'Album\Model\AlbumsTable' =>  function($sm) {
-//                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-//                    return new AlbumsTable($dbAdapter);
-//                },
+                'Calendar\DataTable\Calendar' =>  function($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    return new CalendarTable($dbAdapter);
+                },
             ),
         );
     }
