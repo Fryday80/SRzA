@@ -1,6 +1,7 @@
 <?php
 namespace Calendar\Controller;
 
+use Calendar\Form\CalendarSelectionForm;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -54,6 +55,7 @@ class CalendarController extends AbstractActionController
 //                }
 //            ),
 //        ) );
+        $calendarSelectionForm = new CalendarSelectionForm();
         $viewModel = new ViewModel(array( 'form' => $calendarSelectionForm ) );
         return $viewModel;
     }
