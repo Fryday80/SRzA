@@ -17,28 +17,26 @@ class SystemController extends AbstractActionController
 
     public function dashboardAction()
     {
-        $this->layout()->setVariable('showSidebar', false);
+        /** @var  $statsService StatisticService */
         $this->statsService = $this->getServiceLocator()->get('StatisticService');
-        $mvL = $this->statsService->getMostVisitedPages(10);
-        $mvL1 = (isset($mvL[0])) ? $mvL[0]->url . ' with ' . $mvL[0]->hitsSum : null;
+        /** turn off (slider) sidebar */
+        $this->layout()->setVariable('showSidebar', false);
+        $top10 = $this->statsService->getMostVisitedPages(10);
         $sysLog = $this->statsService->getSystemLog();
-        $sysLog = ($sysLog == null) ? null : array_reverse($sysLog);
-        $userStats = array(
-            array("All Clicks"    => $this->statsService->getPageHits()),
-            array("Aktive User"   => count( $this->statsService->getActiveUsers() )),
-            array("meistbesuchter Link"  => $mvL1),
-        );
 
         return new ViewModel(array(
-            'sysLog'    => $sysLog,
-            'userStats' => $userStats,
-            'top10'     => $mvL,
+            'top10'     => $top10,
+            'sysLog'    => ($sysLog == null) ? null : array_reverse($sysLog),
+            'userStats' => array(
+                                array( "Alle Clicks"         => $this->statsService->getPageHits() ),
+                                array( "Aktive User"         => count( $this->statsService->getActiveUsers() ) ),
+                                array( "meistbesuchter Link" => ( isset($top10[0]) ) ? $top10[0]->url . ' with ' . $top10[0]->hitsSum : null ),
+            ),
         ));
     }
 
     public function settingsAction()
     {
-
         return new ViewModel(array(
             //'table' => $albumsTable
         ));
@@ -55,8 +53,6 @@ class SystemController extends AbstractActionController
                 break;
             case 'getActiveUsers' :
                 //@todo check parameter since if exists (dann bei allen hier)
-//                var_dump($request->microtime);
-//                var_dump( $statsService->getActiveUsers($request->microtime) );
                 $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
                 break;
         };
