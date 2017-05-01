@@ -62,7 +62,6 @@ class BlazonService implements ServiceLocatorAwareInterface
         $fileName = $this->moveFile($filePath, $name);
         //@todo! resize file
 
-
         /** @var BlazonTable $blaTable */
         $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
         $newID = $blaTable->add(array(
