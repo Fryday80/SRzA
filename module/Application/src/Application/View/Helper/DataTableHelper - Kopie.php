@@ -77,8 +77,8 @@ Class DataTableHelper extends AbstractHelper {
                 }
                 $datarow .= '</tr>';
             } else {
-                $datarow = '<tr><td>no data</td></tr>';
-                $datahead = '<th>no data</th>';
+                $datarow = '<tr><td>no data and no column config</td></tr>';
+                $datahead = '<th>no data and no column config</th>';
             }
         }
 
