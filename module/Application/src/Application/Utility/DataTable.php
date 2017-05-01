@@ -211,7 +211,8 @@ class DataTable
      * prepares $this->columns for read out
      * <br> if not set => each data set = one column
      */
-    private function columnPrepare (){
+    private function columnPrepare ()
+    {
         //  checks if the column configuration is set
         //  --  //  if yes
         if ( count($this->columns)>0 ) { }
