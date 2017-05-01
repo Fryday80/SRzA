@@ -10,9 +10,9 @@ namespace Application\Utility;
 
 class DataTable
 {
-    public $data = array();
+    public $data = null;
 
-    public $columns = array();
+    public $columns = null;
     
     public $jsConfig = array();
 
@@ -39,6 +39,7 @@ class DataTable
     }
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
+        if (! is_array($this->columns) ) $this->columns = array();
         array_push($this->columns, $columnConf);
     }
     public function setJSConfig($jsConfig) {
@@ -213,18 +214,20 @@ class DataTable
      */
     private function columnPrepare ()
     {
-        //  checks if the column configuration is set
-        //  --  //  if yes
-        if ( count($this->columns)>0 ) { }
-        //  --  //  if not, each data column is made to visible column
-        else {
-            foreach ($this->data as $row) {
-                foreach ($row as $key => $value) {
-                    $this->add(array(
-                        'name' => $key
-                    ));
+        if($this->data !== null) {
+            //  checks if the column configuration is set
+            //  --  //  if yes
+            if (count($this->columns) > 0) {
+            } //  --  //  if not, each data column is made to visible column
+            else {
+                foreach ($this->data as $row) {
+                    foreach ($row as $key => $value) {
+                        $this->add(array(
+                            'name' => $key
+                        ));
+                    }
+                    break;
                 }
-                break;
             }
         }
     }

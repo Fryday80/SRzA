@@ -24,12 +24,9 @@ Class DataTableHelper extends AbstractHelper {
     /**
      * @param DataTable $table
      */
-    public function render($table) {
-        //@todo check $table
-        if (!($table instanceof DataTable)) {
-            trigger_error('argument 1 is not a instance of DataTable', E_USER_ERROR);
-        }
+    public function render(DataTable $table) {
         $table->prepare();
+
         echo $this->renderHTML($table);
         echo $this->renderJS($table->getSetupString());
     }
@@ -44,27 +41,45 @@ Class DataTableHelper extends AbstractHelper {
         $datahead = '';
         $i = 0;
 
-        foreach ($table->data as $row) {
-            $datarow .= '<tr>';
+        if ($table->data !== null) {
+            foreach ($table->data as $row) {
+                $datarow .= '<tr>';
 
-            foreach ($table->columns as $number => $value){
-                $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
-                $datarow .= "<td>";
-                
-                switch ($value['type']) {
-                    case 'text':
-                        $datarow .= (is_object($row)) ? $datarow .= $row->$value['name'] : $row[$value['name']];
-                        break;
-                    case 'custom':
-                        $datarow .= $value['render']($row);
-                        break;
-                    case '':
-                        break;
+                foreach ($table->columns as $number => $value) {
+                    $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
+                    $datarow .= "<td>";
+
+                    switch ($value['type']) {
+                        case 'text':
+                            $datarow .= (is_object($row)) ? $datarow .= $row->$value['name'] : $row[$value['name']];
+                            break;
+                        case 'custom':
+                            $datarow .= $value['render']($row);
+                            break;
+                        case '':
+                            break;
+                    }
+                    $datarow .= "</td>";
                 }
-                $datarow .= "</td>";
+                $datarow .= '</tr>';
+                $i++;
             }
-            $datarow .= '</tr>';
-            $i++;
+        } else {
+            if ($table->columns !== null) {
+                $columnsCount = 0;
+                foreach ($table->columns as $number => $value) {
+                    $datahead .= ($i == 0) ? '<th>' . $value['label'] . '</th>' : '';
+                    $columnsCount++;
+                }
+                $datarow = '<tr>';
+                for ($ic = 0; $ic < $columnsCount; $ic++) {
+                    $datarow .= '<td>no data</td>';
+                }
+                $datarow .= '</tr>';
+            } else {
+                $datarow = '<tr><td>no data</td></tr>';
+                $datahead = '<th>no data</th>';
+            }
         }
 
         return '<br><table class="display" cellspacing="0" width="100%">' .
