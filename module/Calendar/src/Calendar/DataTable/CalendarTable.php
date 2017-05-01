@@ -6,7 +6,7 @@ use Zend\Db\Adapter\Adapter;
 
 class CalendarTable extends AbstractTableGateway
 {
-    // structure Table "calendar":  time [bigint](timestamp), title [string], sub_title [string], content [string], role [int], archive [int] (0/1)
+    // structure Table "calendar":  time [bigint](timestamp), time_end[Bigint], title [string], sub_title [string], content [string], role [int], archive [int] (0/1)
 
     public $table = 'calendar';
 
