@@ -1,9 +1,9 @@
 <?php
 namespace Calendar;
 
-use Calendar\DataTable\CalendarTable;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Calendar\Service\CalendarService;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {
@@ -29,27 +29,10 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'factories' => array(
-                'Calendar\DataTable\Calendar' =>  function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    return new CalendarTable($dbAdapter);
-                },
-            ),
-            'factories' => array(
                 'CalendarService' =>  function($sm) {
-                    return new CalendarTable($sm);
+                    return new CalendarService($sm);
                 },
             ),
-        );
-    }
-    public function getViewHelperConfig()
-    {
-        return array(
-//            'factories' => array(
-//                'randomImage' => function ($sm){
-//                    $galleryService = $sm->getServiceLocator()->get('GalleryService');
-//                    return new RandomImageHelper($galleryService);
-//                }
-//            )
         );
     }
 }
