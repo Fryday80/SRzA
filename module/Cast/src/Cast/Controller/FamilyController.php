@@ -2,6 +2,7 @@
 namespace Cast\Controller;
 
 use Cast\Form\FamilyForm;
+use Cast\Service\BlazonService;
 use Cast\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -20,18 +21,27 @@ class FamilyController extends AbstractActionController
         ) );
     }
     public function addAction() {
-        $form = new FamilyForm();
+        /** @var BlazonService $blaService */
+        $blaService = $this->getServiceLocator()->get("BlazonService");
+        $form = new FamilyForm($blaService->getAll());
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/families/add');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            //merge post data and files
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+
+            $form->setData($post);
             if ($form->isValid()) {
                 $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
                 $data = $form->getData();
-                $familyTable->add($data);
-                return $this->redirect()->toRoute('castmanager/families');
+                bdump($data);
+//                $familyTable->add($data);
+//                return $this->redirect()->toRoute('castmanager/families');
             }
         }
         return array(
@@ -48,7 +58,9 @@ class FamilyController extends AbstractActionController
         if (!$family = $familyTable->getById($id)) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        $form = new FamilyForm();
+        /** @var BlazonService $blaService */
+        $blaService = $this->getServiceLocator()->get("BlazonService");
+        $form = new FamilyForm($blaService->getAll());
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
         $form->populateValues($family);

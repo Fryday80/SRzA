@@ -2,6 +2,7 @@
 namespace Cast;
 
 use Cast\Helper\CharProfile;
+use Cast\Model\BlazonTable;
 use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
 use Cast\Model\JobTable;
@@ -33,7 +34,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return array(
             'invokables' => array(
-                'CastService' => 'Cast\Service\CastService'
+                'CastService' => 'Cast\Service\CastService',
+                'BlazonService' => 'Cast\Service\BlazonService'
             ),
             'factories' => array(
 //                'CastService' =>  function($sm) {
@@ -47,6 +49,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 },
                 'Cast\Model\JobTable' =>  function($sm) {
                     return new JobTable($sm->get('Zend\Db\Adapter\Adapter'));
+                },
+                'Cast\Model\BlazonTable' =>  function($sm) {
+                    return new BlazonTable($sm->get('Zend\Db\Adapter\Adapter'));
                 },
             ),
         );

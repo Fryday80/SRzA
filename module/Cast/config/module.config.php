@@ -6,7 +6,8 @@ return array(
             'Cast\Controller\Character'     => 'Cast\Controller\CharacterController',
             'Cast\Controller\Family'        => 'Cast\Controller\FamilyController',
             'Cast\Controller\Job'           => 'Cast\Controller\JobController',
-            'Cast\Controller\Cast'           => 'Cast\Controller\CastController',
+            'Cast\Controller\Cast'          => 'Cast\Controller\CastController',
+            'Cast\Controller\Blazon'          => 'Cast\Controller\BlazonController',
         ),
 //        'factories' => array(
 //            'Cast\Controller\Cast' => function($controllerManager) {
@@ -36,9 +37,7 @@ return array(
                          'action'     => 'index',
                      ),
                  ),
-
                  'child_routes' => array(
-
                      'families' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
@@ -49,7 +48,7 @@ return array(
                                  'action'     => 'index',
                              ),
                          ),
-
+                         //children
                          'child_routes' => array(
                              'delete' => array(
                                  'type' => 'Segment',
@@ -99,7 +98,7 @@ return array(
                                  'action'     => 'index',
                              ),
                          ),
-
+                         //children
                          'child_routes' => array(
                              'delete' => array(
                                  'type' => 'Segment',
@@ -139,7 +138,6 @@ return array(
                              )
                          ),
                      ),
-
                      'characters' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
@@ -150,7 +148,7 @@ return array(
                                  'action'     => 'index',
                              ),
                          ),
-
+                         //children
                          'child_routes' => array(
                              'json' => array(
                                  'type' => 'Segment',
@@ -210,7 +208,56 @@ return array(
                              )
                          ),
                      ),
-
+                     'wappen' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/wappen',
+                             'defaults' => array(
+                                 'controller' => 'Cast\Controller\Blazon',
+                                 'action'     => 'index',
+                             ),
+                         ),
+                         //children
+                         'child_routes' => array(
+                             'delete' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route' => '/delete[/:id]',
+                                     'constraints' => array(
+                                         'id' => '[0-9]+'
+                                     ),
+                                     'defaults' => array(
+                                         'action' => 'delete'
+                                     )
+                                 )
+                             ),
+                             'add' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route' => '/add[/:id]',
+                                     'constraints' => array(
+                                         'id' => '[0-9]+'
+                                     ),
+                                     'defaults' => array(
+                                         'action' => 'add'
+                                     )
+                                 )
+                             ),
+                             'edit' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route' => '/edit[/:id]',
+                                     'constraints' => array(
+                                         'id' => '[0-9]+'
+                                     ),
+                                     'defaults' => array(
+                                         'action' => 'edit'
+                                     )
+                                 )
+                             )
+                         ),
+                     ),
                  ),
              ),
 

@@ -1,4 +1,40 @@
 /**
+ * change all select.iconselect's jquery ui selectmenu
+ */
+(function() {
+    "use strict";
+    $.widget("custom.iconselectmenu", $.ui.selectmenu, {
+        _renderItem: function (ul, item) {
+            var li = $("<li>", {
+                style: item.element.attr("data-li-style"),
+                "class": item.element.attr("data-li-class")
+            });
+            var wrapper = $("<div>", {
+                text: item.label
+            });
+
+            if (item.disabled) {
+                li.addClass("ui-state-disabled");
+            }
+
+            $("<span>", {
+                style: item.element.attr("data-span-style"),
+                "class": item.element.attr("data-span-class")
+            })
+                .appendTo(wrapper);
+
+            return li.append(wrapper).appendTo(ul);
+        }
+    });
+})();
+$(document).ready(function() {
+    "use strict";
+    //hack for strange widget error
+    let $selected = $("select");
+    if ($selected.iconselectmenu == undefined) return;
+    $("select.iconselect").iconselectmenu();
+});
+/**
  * menu management
  */
 $(document).ready (function menu_handler_js () {

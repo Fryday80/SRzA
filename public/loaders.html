@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
+        body {
+            padding: 100px;
+            background-color: #1b2832;
+        }
+
+
+
 
         @keyframes loader-spin {
             0% {
@@ -13,7 +20,6 @@
                 transform: rotate(360deg);
             }
         }
-
         @keyframes wabble {
             0% {
                 transform: rotateX(40deg);
@@ -35,12 +41,11 @@
             position: relative;
             width: 35px;
             height: 35px;
-            background-color: darkolivegreen;
-            filter: url(#goo);
+            filter: url(#loader2-blur-filter);
             animation: loader-spin 2s linear infinite reverse;
             overflow: hidden;
-            transform: rotateX(40deg);
-            border: 4px solid #ff974d;
+            border: 3.6px solid #ff974d;
+            box-shadow: 0 0 0 1px #ff974d inset
         }
         .loader2:before {
             content: "";
@@ -56,10 +61,51 @@
         }
     </style>
     <style>
-        body {
-            padding: 100px;
-            background-color: #0a001f;
+        @keyframes loader-spin2 {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
         }
+        .loader3 {
+            position: relative;
+            width: 35px;
+            height: 35px;
+            background-color: #1b2832;
+            filter: url(#fancy-goo);
+            animation: loader-spin2 2s linear infinite reverse;
+            /*overflow: hidden;*/
+            border: 3.6px solid #ff974d;
+            box-shadow: 0 0 0 1px #ff974d inset
+        }
+        .loader3:before {
+            content: "";
+            position: absolute;
+            animation: loader-spin2 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            background: #ff974d;
+            transform-origin: top center;
+            border-radius: 50%;
+            width: 150%;
+            height: 150%;
+            top: 50%;
+            left: -12.5%;
+        }
+        .loader3:before {
+            content: "";
+            position: absolute;
+            animation: loader-spin2 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            background: #54ff2a;
+            transform-origin: top center;
+            border-radius: 50%;
+            width: 150%;
+            height: 150%;
+            top: 50%;
+            left: -12.5%;
+        }
+    </style>
+    <style>
         @keyframes firstOrbiter {
             0% {
                 left: 0%;
@@ -215,16 +261,350 @@
             animation: offset 3s linear infinite;
         }
     </style>
+
+    <style>
+        @keyframes loader-spin4 {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes left-right {
+            0% {
+                left: 100px;
+            }
+            50% {
+                left: -100px;
+            }
+            100% {
+                left: 100px;
+            }
+        }
+        #ding-dong-loader {
+            position: relative;
+            animation: left-right 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite reverse;
+            animation-delay: 200ms;
+        }
+        .loader4 {
+            position: relative;
+            width: 35px;
+            height: 35px;
+            background-color: #1b2832;
+            filter: url(#fancy-goo);
+            animation: loader-spin4 2s linear infinite reverse;
+            /*overflow: hidden;*/
+            border: 3.6px solid #ff974d;
+            box-shadow: 0 0 0 1px #ff974d inset
+        }
+        .loader4:before {
+            content: "";
+            position: absolute;
+            animation: loader-spin4 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            background: #ff974d;
+            transform-origin: top center;
+            border-radius: 50%;
+            width: 150%;
+            height: 150%;
+            top: 50%;
+            left: -12.5%;
+        }
+        .loader4:before {
+            content: "";
+            position: absolute;
+            animation: loader-spin4 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            background: #54ff2a;
+            transform-origin: top center;
+            border-radius: 50%;
+            width: 150%;
+            height: 150%;
+            top: 50%;
+            left: -12.5%;
+        }
+    </style>
+    <style>
+        :root {
+            --main-penis-color: #ff974d;
+            --balls-hight: 125px;
+        }
+        @keyframes glans {
+            0% {
+                left: 0px;
+                top: 0px;
+            }
+            25% {
+                left: -50px;
+                top: 14px;
+            }
+            50% {
+                left: 0px;
+                top: 0px;
+            }
+            75% {
+                left: 50px;
+                top: 14px;
+            }
+            100% {
+                left: 0px;
+                top: 0px;
+            }
+        }
+        @keyframes corpus4 {
+            0% {
+                left: 0px;
+                top: 30px;
+            }
+            25% {
+                left: -30px;
+                top: 35px;
+            }
+            50% {
+                left: 0px;
+                top: 30px;
+            }
+            75% {
+                left: 30px;
+                top: 35px;
+            }
+            100% {
+                left: 0px;
+                top: 30px;
+            }
+        }
+        @keyframes corpus3 {
+            0% {
+                left: 0px;
+                top: 60px;
+            }
+            25% {
+                left: -15px;
+                top: 62px;
+            }
+            50% {
+                left: 0px;
+                top: 60px;
+            }
+            75% {
+                left: 15px;
+                top: 62px;
+            }
+            100% {
+                left: 0px;
+                top: 60px;
+            }
+        }
+        @keyframes corpus2 {
+            0% {
+                left: 0px;
+                top: 90px;
+            }
+            25% {
+                left: -5px;
+                top: 90px;
+            }
+            50% {
+                left: 0px;
+                top: 90px;
+            }
+            75% {
+                left: 5px;
+                top: 90px;
+            }
+            100% {
+                left: 0px;
+                top: 90px;
+            }
+        }
+        @keyframes corpus1 {
+            0% {
+                left: 0px;
+                top: 120px;
+            }
+            25% {
+                left: 0px;
+                top: 120px;
+            }
+            50% {
+                left: 0px;
+                top: 120px;
+            }
+            75% {
+                left: 0px;
+                top: 120px;
+            }
+            100% {
+                left: 0px;
+                top: 120px;
+            }
+        }
+        @keyframes ball-left {
+            0% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: -30px;
+            }
+            25% {
+                transform: scale(1.1);
+                top: calc(var(--balls-hight) + 10px);
+                left: -33px;
+            }
+            50% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: -30px;
+            }
+            75% {
+                transform: scale(0.9);
+                top: calc(var(--balls-hight) - 4px);
+                left: -27px;
+            }
+            100% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: -30px;
+            }
+        }
+        @keyframes ball-right {
+            0% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: 30px;
+            }
+            25% {
+                transform: scale(1.1);
+                top: calc(var(--balls-hight) + 10px);
+                left: 33px;
+            }
+            50% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: 30px;
+            }
+            75% {
+                transform: scale(0.9);
+                top: calc(var(--balls-hight) - 4px);
+                left: 27px;
+            }
+            100% {
+                transform: scale(1);
+                top: var(--balls-hight);
+                left: 30px;
+            }
+        }
+
+        .penis>* {
+            transition: all 1s;
+        }
+        .penis {
+            position: relative;
+            width: auto;
+            height: 300px;
+            filter: url(#fancy-goo);
+            /*animation: loader-spin2 2s linear infinite reverse;*/
+            /*!*overflow: hidden;*!*/
+            /*border: 3.6px solid #ff974d;*/
+            /*box-shadow: 0 0 0 1px #ff974d inset*/
+        }
+        .penis-part {
+            position: absolute;
+            left: 0px;
+            top: 0px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--main-penis-color);
+        }
+        .corpus {
+
+        }
+        .corpus::before {
+            content: "";
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: black;
+        }
+        .corpus::after {
+            content: "";
+            position: absolute;
+            left: 25px;
+            top: 10px;
+            width: 20px;
+            height: 20px;
+            background-color: black;
+        }
+        /* aufrecht */
+        .glans {
+            left: 0px;
+            top: 0px;
+            animation: glans 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .corpus4 {
+            left: 0px;
+            top: 30px;
+            animation: corpus4 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .corpus3 {
+            left: 0px;
+            top: 60px;
+            animation: corpus3 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .corpus2 {
+            left: 0px;
+            top: 90px;
+            animation: corpus2 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .corpus1 {
+            left: 0px;
+            top: 120px;
+            animation: corpus1 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .ball {
+            top: 125px;
+            width: 50px;
+            height: 70px;
+        }
+        .ball-left {
+            left: -30px;
+            animation: ball-left 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+        }
+        .ball-right {
+            left: 30px;
+            animation: ball-right 2s cubic-bezier(0.59, 0.25, 0.4, 0.69) infinite;
+            animation-delay: 1s;
+        }
+
+    </style>
 </head>
 <body>
     <center>
+        <div class="penis">
+            <div class="penis-part glans"></div>
+            <div class="penis-part corpus corpus4"></div>
+            <div class="penis-part corpus corpus3"></div>
+            <div class="penis-part corpus corpus2"></div>
+            <div class="penis-part corpus corpus1"></div>
+            <div class="penis-part ball ball-left"></div>
+            <div class="penis-part ball ball-right"></div>
+        </div>
         <div class="loader">
             <div></div>
         </div>
         <br>
         <br>
         <div class="loader2">
-            <div></div>
+        </div>
+        <br>
+        <br>
+        <div class="loader3">
+        </div>
+        <br>
+        <br>
+        <div id="ding-dong-loader">
+            <div class="loader4"></div>
         </div>
         <br>
         <br>
@@ -248,5 +628,22 @@
             </text>
         </svg>
     </center>
+
+
+    <svg>
+        <defs>
+            <filter id="loader2-blur-filter">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 19 -9" result="gooey" />
+                <feComposite in="SourceGraphic" in2="gooey" operator="atop"/>
+            </filter>
+            <filter id="fancy-goo">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+                <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 30 -15" result="goo" />
+                <!--<feComposite in="SourceGraphic" in2="goo" operator="atop"/>-->
+            </filter>
+        </defs>
+    </svg>
+
 </body>
 </html>

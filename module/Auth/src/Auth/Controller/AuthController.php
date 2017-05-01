@@ -40,11 +40,6 @@ class AuthController extends AbstractActionController
 
     public function loginAction()
     {
-        $translator = $this->getServiceLocator()->get('viewhelpermanager')->get('translate');
-        $text = $translator('File');//so kannst du "File" übersetzten
-        //is eher generel aber auch wenn wir keine verschiedenen sprachen haben is des praktisch ... wenns geht hab ich noch nie geteste
-        //aha
-
         $form = new LoginForm('Login');
         $request = $this->getRequest();
         $ip = $request->getServer('REMOTE_ADDR');
@@ -54,7 +49,7 @@ class AuthController extends AbstractActionController
         }
         if ($request->isPost()) {
             $form->setData($request->getPost());
-       
+
             if ($form->isValid()) {
                 $data = $form->getData();
                 $valid = true;
@@ -67,11 +62,9 @@ class AuthController extends AbstractActionController
                     $valid = false;
                 }
                 // email found but inactive
-                elseif ($userDetails->status == 'N') {
+                elseif ($userDetails->status != 1) {
                     $valid = false;
                     $newMsg = "Zugang Verweigert::Dieser Account ist nicht Aktiviert";
-//                    $this->flashmessenger()->addMessage("Zugang Verweigert::Dieser Account ist nicht Aktiviert", "MessagePage", 1);
-//                    return $this->redirect()->toRoute('message');
                 }
                 if ($valid) {
                     //check authentication... @todo move to AccessService

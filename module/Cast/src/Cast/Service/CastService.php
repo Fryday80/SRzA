@@ -24,6 +24,25 @@ class CastService implements ServiceLocatorAwareInterface
 
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+     * ich hab des mal hier runter gepackt reil des ein bisal refactoring braucht
+     */
     private $charsById = [];
     private $depth = 0;
     private $tempFamsHash;
