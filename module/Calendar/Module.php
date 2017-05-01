@@ -34,6 +34,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return new CalendarTable($dbAdapter);
                 },
             ),
+            'factories' => array(
+                'CalendarService' =>  function($sm) {
+                    return new CalendarTable($sm);
+                },
+            ),
         );
     }
     public function getViewHelperConfig()

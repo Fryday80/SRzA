@@ -6,6 +6,7 @@ use Zend\Db\Adapter\Adapter;
 
 class CalendarTable extends AbstractTableGateway
 {
+    // structure Table "calendar":  time [bigint](timestamp), title [string], sub_title [string], content [string], role [int], archive [int] (0/1)
 
     public $table = 'calendar';
 
@@ -17,6 +18,20 @@ class CalendarTable extends AbstractTableGateway
 
     public function getAll () {
         $row = $this->select();
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
+    public function getAllActive () {
+        $row = $this->select( array('archive' => 0) );
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
+    public function getAllInactive () {
+        $row = $this->select( array('archive' => 1) );
         if (!$row)
             return false;
 

@@ -3,6 +3,7 @@ namespace Calendar\Controller;
 
 use Calendar\DataTable\CalendarTable;
 use Calendar\Form\CalendarSelectionForm;
+use Calendar\Service\CalendarService;
 use Zend\Http\Header\Referer;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -11,17 +12,17 @@ use Zend\View\Model\ViewModel;
 class CalendarController extends AbstractActionController
 {
     private $sm;
-    /** @var CalendarTable $calendar*/
+    /** @var CalendarService $calendar*/
     private $calendar;
 
     public function __construct($sm)
     {
         $this->sm = $sm;
+        $this->calendar = $sm->get('CalendarService');
     }
 
     public function indexAction()
     {
-        $this->calendar = $this->sm->get('Calendar\DataTable\Calendar');
         $request = $this->getRequest();
         $form = new CalendarSelectionForm();
         $form->get('submit')->setAttribute('value', 'index');
@@ -39,7 +40,8 @@ class CalendarController extends AbstractActionController
         if ($requested){
             // get calendar data from/to
         } else {
-            $appointments = $this->calendar->getAll();
+            // get calendar data from now on == all
+            $appointments = $this->calendar->getAllAppointments();
             // get calendar data from now on == all
         }
 
