@@ -125,7 +125,8 @@ class BlazonHelper extends AbstractHelper
 
     private function standards()
     {
-        $height = floatval(200);
+        $height  = floatval(200);
+        $left    = $height*0.03;
         $top1    = $height*0.155;
         $height1 = $height*0.435;
         $height2 = $height*0.45;
@@ -134,21 +135,22 @@ class BlazonHelper extends AbstractHelper
             "big" => array(
                 "divStyle" => "height: " . $height . "px; width: " . $height . "px;",
                 "height1"  => "height: " . $height . "px;",
-                "overlay1" => "left:0; right:0; margin: 0 auto; top: " . $top1 . "px; height: " . $height1 . "px;",
-                "overlay2" => "bottom: 0;  left:0; right:0; margin: 0 auto; height: " . $height2 . "px;",
+                "overlay1" => "left: " . $left . "px; right: 0; margin: 0 auto; top: " . $top1 . "px; height: " . $height1 . "px;",
+                "overlay2" => "bottom: 0;  left: " . $left . "px; right: 0; margin: 0 auto; height: " . $height2 . "px;",
             ),
             "small" => array(
                 "divStyle" => "height: " . ($height /4) . "px; width: " . ($height /4) . "px;",
                 "height1"  => "height: " . ($height /4) . "px;",
-                "overlay1" => "left:0; right:0; margin: 0 auto; top: " . ($top1 /4) . "px; height: " . ($height1 /4) . "px;",
-                "overlay2" => "bottom: 0; left:0; right:0; margin: 0 auto; height: " . ($height2 /4) . "px;",
+                "overlay1" => "left: " . ($left/4) . "px; right:0; margin: 0 auto; top: " . ($top1 /4) . "px; height: " . ($height1 /4) . "px;",
+                "overlay2" => "bottom: 0; left: " . ($left/4) . "px; right: 0; margin: 0 auto; height: " . ($height2 /4) . "px;",
             ),
         );
     }
 
     private function customizedSize($size)
     {
-        $height = floatval(200);
+        $height  = floatval(200);
+        $left    = $height*0.03;
         $top1    = $height*31/200;
         $height1 = $height*87/200;
         $height2 = $height*90/200;
@@ -156,8 +158,8 @@ class BlazonHelper extends AbstractHelper
         $this->activeOption = array(
             "divStyle" => "height: " . ($height /$size) . "px; width: " . ($height /$size) . "px;",
             "height1"  => "height: " . ($height /$size) . "px;",
-            "overlay1" => "left:0; right:0; margin: 0 auto; top: " . ($top1 /$size) . "px; height: " . ($height1 /$size) . "px;",
-            "overlay2" => "bottom: 0;  left:0; right:0; margin: 0 auto; height: " . ($height2 /$size) . "px;",
+            "overlay1" => "left: " . ($left/$size) . "px; right: 0; margin: 0 auto; top: " . ($top1 /$size) . "px; height: " . ($height1 /$size) . "px;",
+            "overlay2" => "bottom: 0;  left: " . ($left/$size) . "px; right: 0; margin: 0 auto; height: " . ($height2 /$size) . "px;",
         );
     }
 }
