@@ -1,6 +1,7 @@
 <?php
 namespace Calendar\Service;
 
+use Exception;
 use Google_Service_Calendar;
 use Google_Client;
 
@@ -15,7 +16,8 @@ class CalendarService {
         $confPath = __DIR__.'/../../../config/';
         $this->APPLICATION_NAME = 'SRA Events';
         $this->CREDENTIALS_PATH = $confPath.'calendar-php-quickstart.json';
-        $this->CLIENT_SECRET_PATH = $confPath.'client_secret.json';
+        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
+        bdump($this->CLIENT_SECRET_PATH);
         // If modifying these scopes, delete your previously saved credentials
         $this->SCOPES = implode(' ', array(
                 Google_Service_Calendar::CALENDAR_READONLY)
@@ -31,7 +33,7 @@ class CalendarService {
             'maxResults' => 10,
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
-            'timeMin' => date('c'),
+            'timeMin' => date('c', time() - 4000000),
         );
         $results = $this->gCalendarService->events->listEvents($calendarId, $optParams);
         return $results;
@@ -40,6 +42,7 @@ class CalendarService {
     /**
      * Returns an authorized API client.
      * @return Google_Client the authorized client object
+     * @throws Exception
      */
     function getClient() {
         $client = new Google_Client();
@@ -54,21 +57,23 @@ class CalendarService {
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
         } else {
+            bdump("sers");
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
-            printf("Open the following link in your browser:\n%s\n", $authUrl);
-            print 'Enter verification code: ';
-            $authCode = trim(fgets(STDIN));
+//            bdump($authUrl);
+//            printf("Open the following link in your browser:\n%s\n", $authUrl);
+//            print 'Enter verification code: ';
+            $authCode = trim('4/rzVhdv_RVG6ujtgeXfog7bpH8wqsAdugYXFo2eXauLE');
 
             // Exchange authorization code for an access token.
             $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-
+            bdump($accessToken);
             // Store the credentials to disk.
             if(!file_exists(dirname($credentialsPath))) {
                 mkdir(dirname($credentialsPath), 0700, true);
             }
             file_put_contents($credentialsPath, json_encode($accessToken));
-            printf("Credentials saved to %s\n", $credentialsPath);
+//            printf("Credentials saved to %s\n", $credentialsPath);
         }
         $client->setAccessToken($accessToken);
 

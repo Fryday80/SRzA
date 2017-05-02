@@ -13,8 +13,9 @@ class CalendarController extends AbstractActionController
     public function indexAction()
     {
         $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $results = $calendarService->getEventsFrom();
+        $results = $calendarService->getEventsFrom(1,1);
 
+        bdump($results);
         if (count($results->getItems()) == 0) {
             print "No upcoming events found.\n";
         } else {
