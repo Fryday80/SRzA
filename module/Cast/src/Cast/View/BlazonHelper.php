@@ -113,8 +113,8 @@ class BlazonHelper extends AbstractHelper
         $newwidth = $baseWidth;
 
         $out = imagecreatetruecolor($newwidth, $newheight);
-        if ($blazonOverlay1Url) imagecopyresampled($out, $blazonBase, 0, 0, 0, 0, $newwidth, $newheight, $baseWidth, $baseHeight);
-        if ($blazonOverlay2Url) imagecopyresampled($out, $blazonOverlay2, 0, 0, 0, 0, ($newwidth/2), ($newheight/2), $over1Width, $over1Height);
+        if ($blazonOverlay1Url) imagecopyresampled($out, $blazonBase, 0, 0, 0, 0, $newwidth, $newheight, $over1Width, $over1Width);
+        if ($blazonOverlay2Url) imagecopyresampled($out, $blazonOverlay2, 0, 0, 0, 0, ($newwidth/2), ($newheight/2), $over2Width, $over2Height);
         imagepng($out, $path . $newPic, 5);
         return $imgPre . $imgPath . $imgPost;
 
