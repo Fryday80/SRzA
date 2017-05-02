@@ -46,13 +46,16 @@ class BlazonHelper extends AbstractHelper
             }
         }
 
-        if (! is_string($overlay1) || $overlay1 == '') $overlay1 = 0;
+        if ( (!is_string($overlay1)) || ($overlay1 == '') ) $overlay1 = 0;
         if (! is_int($overlay2) ) $overlay2 = 0;
+
+
         return $this->createBlazon($baseId, $overlay1, $overlay2, $class);
     }
 
     public function blazonFamily($familyId, $class = null)
     {
+        $class .= 'family';
         return $this->blazon($familyId, '', null, $class);
     }
     public function blazonFollowers($familyId, $job = '', $class = null)
@@ -68,6 +71,7 @@ class BlazonHelper extends AbstractHelper
         $baseId = $this->validateIds($baseId);
         $job    = $this->validateJob($job);
         $familyId = $this->validateIds($familyId);
+        
         $img = $this->createImg($baseId, $job, $familyId);
         return '<div class="blazon '. $class .  '" style = " position: relative; height: '. $this->imgHeight .'px;">' . $img. '</div>';
 
@@ -76,12 +80,11 @@ class BlazonHelper extends AbstractHelper
 
     private function createImg($baseId, $job, $familyId)
     {
-        $backgroundImage2    = $backgroundImage3 = '';
-        // base blazon
-//        $scale = $this->isHigh($this->blazons[$baseId]['url']);
-        $backgroundImage1 = "<img src = '" . $this->blazons[$baseId]['url'] . "' style=' position: absolute; left: auto; right: auto; z-index: 3; height: " . $this->imgHeight . "px;'>";
+        $backgroundImage2 = $backgroundImage3 = '';
+        
+        $backgroundImage1 = "<img src = '" . $this->blazons[$baseId]['url'] . "' style=' position: absolute; z-index: 3; height: " . $this->imgHeight . "px;'>";
         if ( isset($this->jobs[$job]) ){
-            $backgroundImage2 = "<img src = '".  $this->jobs[$job] . "' style=' position: absolute; z-index: 5; height: 200px;'>";
+            $backgroundImage2 = "<img src = '".  $this->jobs[$job] . "' style=' position: absolute; left: 61px; top: 31px; z-index: 5; height: 87px;'>";
         }
         if ( isset($this->blazons[$familyId]['url']) && $baseId !== $familyId){
             $backgroundImage3 =  "<img src = '" . $this->blazons[$familyId]['url'] . "' style=' position: absolute; bottom: 0; left: 75px; z-index: 7; height: 90px;'>";
@@ -97,8 +100,8 @@ class BlazonHelper extends AbstractHelper
 
     private function validateJob($job)
     {
-        if ( $job == 0 ) return 0;
-        if (! in_array( $job , $this->jobs ) ) return 0;
+        if ( !is_string($job) ) return 0;
+        if (!key_exists( $job , $this->jobs ) ) return 0;
         return $job;
     }
 
