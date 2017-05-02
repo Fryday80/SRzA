@@ -35,7 +35,7 @@ function createList($parent, $level) {
     $bh->setSize('small');
     // test workaround until db works
     if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = $bh->blazonFamily(1);
-    $pic = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : $bh->blazon(0);
+    $pic = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : $bh->blazon(0, null, 2);
     echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
     echo '<p>';
