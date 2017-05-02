@@ -9,8 +9,12 @@ $this->dataTable()->render($blazons);
 
 /** @var \Cast\View\BlazonHelper $bh */
 $bh = $this->blazon();
+$bh->setSize('big');
 echo $bh->blazon(0, 'soldat', 2);
+$bh->setSize('small');
 echo $bh->blazon(0, null, 2);
+$bh->setSize(3);
 echo $bh->blazon(0, 'soldat');
+$bh->setSize(0.5);
 echo $bh->blazon(1);
 ?>
