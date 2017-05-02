@@ -5,7 +5,7 @@ namespace Cast\View;
 
 use Zend\View\Helper\AbstractHelper;
 
-const TEST_BLAZON = true; // cleanFix for testing
+const TEST_BLAZON = false; // cleanFix for testing
 
 class BlazonHelper extends AbstractHelper
 {
