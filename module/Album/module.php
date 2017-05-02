@@ -2,6 +2,7 @@
 namespace Album;
 
 use Album\Utility\RandomImageHelper;
+use Cast\View\BlazonHelper;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Album\Model\AlbumsTable;
@@ -58,9 +59,11 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 'randomImage' => function ($sm){
                     $galleryService = $sm->getServiceLocator()->get('GalleryService');
                     return new RandomImageHelper($galleryService);
+                },
+                'blazon' => function ($sm){
+                    return new BlazonHelper($sm);
                 }
-
-            )
+            ),
         );
     }
 }
