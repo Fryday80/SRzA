@@ -30,8 +30,8 @@ function createFamilyList($parent, $level) {
 }
 function createList($parent, $level) {
     // test workaround until db works
-    if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/fry1.png';
-    $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/shield-tross.big.png';
+    if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/blazons/fryschild.png';
+    $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/blazons/shield-tross.big.png';
     echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
     echo '<p>';
@@ -54,8 +54,8 @@ function createList($parent, $level) {
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
         // test workaround until db works
-        if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/fry1.png';
-        $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/shield-tross.big.png';
+        if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/blazons/zuLeym.png';
+        $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/blazons/shield-tross.big.png';
         echo '<ul>';
         if (isset($parent['family'])) {
             echo '<li class="family">';
