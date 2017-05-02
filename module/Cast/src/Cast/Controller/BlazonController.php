@@ -14,7 +14,6 @@ class BlazonController extends AbstractActionController
         /** @var BlazonService $blaService */
         $blaService = $this->getServiceLocator()->get("BlazonService");
         $blaTable = new BlazonDataTable( );
-        bdump($blaService->getAll());
         $blaTable->setData($blaService->getAll());
         $blaTable->setButtons('all');
         $blaTable->insertLinkButton('/castmanager/wappen/add', 'add new familiy');
