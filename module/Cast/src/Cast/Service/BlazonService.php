@@ -51,29 +51,34 @@ class BlazonService implements ServiceLocatorAwareInterface
 
     /**
      * @param $name string
-     * @param $isOverlay boolean
      * @param $filePath string
+     * @param null $bigFilePath
      * @return bool
      */
-    public function addNew($name, $isOverlay, $filePath) {
+    public function addNew($name, $filePath, $bigFilePath = null) {
         if ($this->exists($name)) return false;
-
+        $bigFileName = null;
         //move file to wappen folder
         $fileName = $this->moveFile($filePath, $name);
         //@todo! resize file
+
+        if ($bigFilePath) {
+            $bigFileName = $this->moveFile($bigFilePath, $name.'_big');
+            //@todo! resize file
+        }
 
         /** @var BlazonTable $blaTable */
         $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
         $newID = $blaTable->add(array(
             'name' => $name,
-            'isOverlay' => $isOverlay,
-            'filename' => $fileName
+            'filename' => $fileName,
+            'bigFilename' => $bigFileName
         ));
         //@todo add also to this->data
         return true;
     }
 
-    public function save($id, $name = null, $isOverlay = null, $filePath = null, $bigFilePath = null, $offsetX = null, $offsetY = null) {
+    public function save($id, $name = null, $filePath = null, $bigFilePath = null) {
         $item = $this->getById($id);
         if(!$item) return false;
         $fileName = null;
@@ -92,22 +97,17 @@ class BlazonService implements ServiceLocatorAwareInterface
             $bigFileName = $this->moveFile($bigFilePath, $item['name'].'_big');
             //@todo! resize file
         }
-        if ($isOverlay !== null) $item['isOverlay'] = $isOverlay;
         if ($fileName !== null) $item['filename'] = $fileName;;
         if ($bigFileName !== null) $item['bigFilename'] = $bigFileName;
-        if ($offsetX !== null) $item['offsetX'] = $offsetX;
-        if ($offsetY !== null) $item['offsetY'] = $offsetY;
         $data = [];
         if ($name !== null) $data['name'] = $name;
-        if ($isOverlay !== null) $data['isOverlay'] = $isOverlay;
         if ($fileName !== null) $data['filename'] = $fileName;
         if ($bigFileName !== null) $data['bigFilename'] = $bigFileName;
-        if ($offsetX !== null) $data['offsetX'] = $offsetX;
-        if ($offsetY !== null) $data['offsetY'] = $offsetY;
 
         /** @var BlazonTable $blaTable */
         $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
         $blaTable->save($id, $data);
+        //@todo add also to this->data
         return $item;
     }
 

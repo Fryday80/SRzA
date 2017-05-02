@@ -25,13 +25,6 @@ class BlazonForm extends Form
             )
         ));
         $this->add(array(
-            'name' => 'isOverlay',
-            'type' => 'checkbox',
-            'options' => array(
-                'label' => 'Overlay'
-            )
-        ));
-        $this->add(array(
             'name' => 'blazon',
             'type' => 'file',
             'options' => array(
@@ -52,20 +45,6 @@ class BlazonForm extends Form
             )
         ));
         $this->add(array(
-            'name' => 'offsetX',
-            'type' => 'number',
-            'options' => array(
-                'label' => 'overlay abstand links'
-            )
-        ));
-        $this->add(array(
-            'name' => 'offsetY',
-            'type' => 'number',
-            'options' => array(
-                'label' => 'overlay abstand rechts'
-            )
-        ));
-        $this->add(array(
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
@@ -80,7 +59,7 @@ class BlazonForm extends Form
 
         // blazon
         $blazonFileInput = new FileInput('blazon');
-        $blazonFileInput->setRequired(false);
+        $blazonFileInput->setRequired(true);
         $blazonFileInput->getFilterChain()->attachByName(
             'filerenameupload',
             array(

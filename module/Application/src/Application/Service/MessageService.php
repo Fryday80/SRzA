@@ -5,6 +5,22 @@ namespace Application\Service;
 
 class MessageService
 {
+
+    public function pmTo($userId, $msg) {}
+    public function getUnreadPms() {}
+    public function getPms($since) {}
+
+    /**
+     * @param $channel int | string   userID or channelName
+     * @param $msg
+     * @param $media
+     */
+    public function chatSay($channel, $msg, $media) {}
+    public function chatGetChannel($channel, $since) {}
+
+
+
+
     public function SendMail($address, $Subject, $message) {
         try {
             mail($address, $Subject, $message, "From: Absender <absender@euredomain.de>");
@@ -22,7 +38,6 @@ class MessageService
         }
         return false;
     }
-
 
 }
 class TemplateTypes {
