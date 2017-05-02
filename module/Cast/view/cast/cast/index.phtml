@@ -4,6 +4,7 @@
 <?php
 $this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
 $this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
+$GLOBALS['bhelper'] = $this->blazon();
 bdump($root);
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
@@ -29,9 +30,12 @@ function createFamilyList($parent, $level) {
     }
 }
 function createList($parent, $level) {
+    /** @var \Cast\View\BlazonHelper $bh */
+    $bh = $GLOBALS['bhelper'];
+    $bh->setSize('small');
     // test workaround until db works
-    if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/blazons/fryschild.png';
-    $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/blazons/shield-tross.big.png';
+    if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = $bh->blazonFamily(1);
+    $pic = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : $bh->blazon(0);
     echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
     echo '<p>';
@@ -39,7 +43,7 @@ function createList($parent, $level) {
     echo '<span>'.$parent['surename'].'</span>';
     echo '</p>';
     echo '<br>';
-    echo '<img src = "'.$picUrl.'" class="tree-pic char">';
+    echo $pic;
     echo '<br>';
     echo '<p>'. $parent['job_name'] .'</p>';
     echo '<p>';

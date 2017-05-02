@@ -24,9 +24,27 @@ class BlazonHelper extends AbstractHelper
                         'soldat' => '/img/blazons/swords.png'
     ); // job strings
 
+    private $options;
+    private $activeOption;
+
     function __construct($sm)
     {
         $this->sm = $sm;
+        $this->standards();
+        $this->activeOption = $this->options['small'];
+    }
+
+    public function setSize($size)
+    {
+        if( is_int($size) || is_float($size) ){
+            $this->customizedSize($size);
+        } else {
+            if (key_exists($size, $this->options)) {
+                $this->activeOption = $this->options[$size];
+            } else {
+                $this->activeOption = $this->options['small'];
+            }
+        }
     }
 
     public function blazon($baseId, $overlay1 = null, $overlay2 = null, $class = null)
@@ -74,19 +92,19 @@ class BlazonHelper extends AbstractHelper
         $familyId = $this->validateIds($familyId);
         
         $img = $this->createImg($baseId, $job, $familyId);
-        return '<div class="blazon '. $class .  '" style = " position: relative; height: 200px; width: 200px; float: left;">' . $img. '</div>';
+        return '<div class="blazon '. $class .  '" style = " position: relative; '. $this->activeOption['divStyle'] . '">' . $img. '</div>';
     }
 
     private function createImg($baseId, $job, $familyId)
     {
         $backgroundImage2 = $backgroundImage3 = '';
         
-        $backgroundImage1 = "<img src = '" . $this->blazons[$baseId]['url'] . "' style=' position: absolute; z-index: 3; height: 200px;'>";
+        $backgroundImage1 = "<img src = '" . $this->blazons[$baseId]['url'] . "' style=' position: absolute; z-index: 3;". $this->activeOption['height1'] ."'>";
         if ( isset($this->jobs[$job]) ){
-            $backgroundImage2 = "<img src = '".  $this->jobs[$job] . "' style=' position: absolute; left: 61px; top: 31px; z-index: 5; height: 87px;'>";
+            $backgroundImage2 = "<img src = '".  $this->jobs[$job] . "' style=' position: absolute; z-index: 5; ". $this->activeOption['overlay1'] ."'>";
         }
         if ( isset($this->blazons[$familyId]['url']) ){
-            $backgroundImage3 =  "<img src = '" . $this->blazons[$familyId]['url'] . "' style=' position: absolute; bottom: 0; left: 75px; z-index: 7; height: 90px;'>";
+            $backgroundImage3 =  "<img src = '" . $this->blazons[$familyId]['url'] . "' style=' position: absolute; z-index: 7; ". $this->activeOption['overlay2'] ."'>";
         }
         return $backgroundImage1.$backgroundImage2.$backgroundImage3;
     }
@@ -101,5 +119,48 @@ class BlazonHelper extends AbstractHelper
     {
         if ( (!is_string($job)) || (!key_exists( $job , $this->jobs )) ) return null;
         return $job;
+    }
+
+    private function standards()
+    {
+        $height = floatval(200);
+        $left1   = $height*61/200;
+        $top1    = $height*31/200;
+        $height1 = $height*87/200;
+        $left2   = $height*75/200;
+        $height2 = $height*90/200;
+
+        $this->options = array(
+            "big" => array(
+                "divStyle" => "height: " . $height . "px; width: " . $height . "px;",
+                "height1"  => "height: " . $height . "px;",
+                "overlay1" => "left: " . $left1 . "px; top: " . $top1 . "px; height: " . $height1 . "px;",
+                "overlay2" => "bottom: 0; left: " . $left2 . "px; height: " . $height2 . "px;",
+            ),
+            "small" => array(
+                "divStyle" => "height: " . ($height /4) . "px; width: " . ($height /4) . "px;",
+                "height1"  => "height: " . ($height /4) . "px;",
+                "overlay1" => "left: " . ($left1 /4) . "px; top: " . ($top1 /4) . "px; height: " . ($height1 /4) . "px;",
+                "overlay2" => "bottom: 0; left: " . ($left2 /4) . "px; height: " . ($height2 /4) . "px;",
+            ),
+        );
+
+    }
+
+    private function customizedSize($size)
+    {
+        $height = floatval(200);
+        $left1   = $height*61/200;
+        $top1    = $height*31/200;
+        $height1 = $height*87/200;
+        $left2   = $height*75/200;
+        $height2 = $height*90/200;
+        
+        $this->activeOption = array(
+            "divStyle" => "height: " . ($height /$size) . "px; width: " . ($height /$size) . "px;",
+            "height1"  => "height: " . ($height /$size) . "px;",
+            "overlay1" => "left: " . ($left1 /$size) . "px; top: " . ($top1 /$size) . "px; height: " . ($height1 /$size) . "px;",
+            "overlay2" => "bottom: 0; left: " . ($left2 /$size) . "px; height: " . ($height2 /$size) . "px;",
+        );
     }
 }
