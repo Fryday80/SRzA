@@ -41,7 +41,7 @@ Class DataTableHelper extends AbstractHelper {
         $datahead = '';
         $i = 0;
 
-        if ($table->data !== null) {
+        if ($table->data !== null && !empty($table->data)) {
             foreach ($table->data as $row) {
                 $datarow .= '<tr>';
 
