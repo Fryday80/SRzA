@@ -43,6 +43,13 @@ html .ui-button.ui-state-disabled:active
   background: @backgroundcolor;
   .at-box-inner-shadow(2vw);
 }
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover
+,
 .ui-state-hover,
 .ui-widget-content .ui-state-hover,
 .ui-widget-header .ui-state-hover,
@@ -100,4 +107,25 @@ button
   background: @backgroundcolor;
   .at-box-inner-shadow(1vw);
   border-color: @body-color;
+  border-width: 1px;
+}
+
+// slider bg
+.ui-slider
+{
+  .at-box-inner-shadow(6px; @backgroundcolor);
+  background-color: @body-color;
+}
+.ui-slider-handle
+{
+
+  .at-box-inner-shadow(12px; @backgroundcolor)!important;
+  background-color: @body-color!important;
+}
+.ui-datepicker-calendar .ui-state-active,
+.ui-datepicker-calendar .ui-state-hover
+{
+  .at-box-inner-shadow(6px; @backgroundcolor) !important;
+  background-color: @body-color !important;
+  color: @backgroundcolor !important;
 }
