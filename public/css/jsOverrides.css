@@ -56,6 +56,7 @@ table.dataTable tr:hover > td {
   background-image: none;
   background-size: 100% 100%;
 }
+.ui-datepicker-title,
 #ui-datepicker-div > table > thead > tr > th > span {
   color: black;
 }
@@ -65,8 +66,9 @@ accordion span span {
   display: none !important;
 }
 /* jquery ui */
+.ui-widget-header,
 .ui-visual-focus {
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 1vw 0px rgba(41, 0, 0, 0.5);
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -78,14 +80,14 @@ accordion span span {
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 3vw 0px rgba(41, 0, 0, 0.5);
   text-decoration: none;
 }
 .ui-state-active,
 .ui-state-hover,
 .ui-state-focus,
 .ui-visual-focus {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 3vw 0px rgba(41, 0, 0, 0.5);
   border-color: #430c0c;
   color: black;
 }
@@ -94,4 +96,60 @@ a.ui-button:focus {
   box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
   background: #FAEBd7 url(images/ui-bg_inset-soft_100_f4f0ec_1x100.png) 50% bottom repeat-x;
   color: #1e1b1d;
+}
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-button,
+html .ui-button.ui-state-disabled:hover,
+html .ui-button.ui-state-disabled:active {
+  background: #FAEBd7;
+  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
+}
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-button:hover,
+.ui-button:focus,
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited,
+a.ui-button:hover,
+a.ui-button:focus,
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited {
+  color: black;
+}
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight,
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error {
+  background: #FAEBd7;
+  box-shadow: inset 0px 0px 1vw 0px rgba(41, 0, 0, 0.5);
+  border-color: #430c0c;
+}
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error {
+  border-color: #E86975;
+  border-width: 3px;
+}
+input,
+textarea,
+select,
+button {
+  background: #FAEBd7;
+  box-shadow: inset 0px 0px 1vw 0px rgba(41, 0, 0, 0.5);
+  border-color: #430c0c;
 }
