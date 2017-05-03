@@ -160,6 +160,9 @@ button {
   border-color: #430c0c;
   border-width: 1px;
 }
+.ui-spinner > input {
+  background: inherit;
+}
 .ui-slider {
   box-shadow: inset 0px 0px 6px 0px #FAEBd7;
   background-color: #430c0c;
@@ -173,4 +176,7 @@ button {
   box-shadow: inset 0px 0px 6px 0px #FAEBd7 !important;
   background-color: #430c0c !important;
   color: #FAEBd7 !important;
+}
+.ui-spinner a {
+  box-shadow: none;
 }
