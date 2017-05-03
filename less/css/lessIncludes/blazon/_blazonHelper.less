@@ -1,0 +1,39 @@
+.blazonstyle(@height: 50px;) {
+  @left: (@height * 0.08);
+  @top1: (@height * 0.155);
+  @height1: (@height * 0.435);
+  @height2: (@height * 0.45);
+
+  .blazon {
+    position: relative;
+    height: @height;
+    width: @height;
+
+    .blazon-sub-0 {
+      position: absolute;
+      z-index: 1;
+      height: @height;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+    }
+    .blazon-sub-1 {
+      position: absolute;
+      z-index: 2;
+      top: @top1;
+      left: @left;
+      right: 0;
+      margin: 0 auto;
+      height: @height1;
+    }
+    .blazon-sub-2 {
+      position: absolute;
+      z-index: 3;
+      bottom: 0;
+      left: @left;
+      right: 0;
+      margin: 0 auto;
+      height: @height2;
+    }
+  }
+}
