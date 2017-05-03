@@ -402,6 +402,37 @@
 /* .js-L-view */
 /* .js-S-view */
 /* ************* BOXES *************/
+.blazon {
+  position: relative;
+  height: 50px;
+  width: 50px;
+}
+.blazon .blazon-sub-0 {
+  position: absolute;
+  z-index: 1;
+  height: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.blazon .blazon-sub-1 {
+  position: absolute;
+  z-index: 2;
+  top: 7.75px;
+  left: 4px;
+  right: 0;
+  margin: 0 auto;
+  height: 21.75px;
+}
+.blazon .blazon-sub-2 {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 4px;
+  right: 0;
+  margin: 0 auto;
+  height: 22.5px;
+}
 /* ************* BOXES *************/
 .box,
 box {

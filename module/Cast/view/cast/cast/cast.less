@@ -165,7 +165,7 @@
 }
 
 
-family
+.tree family
     {
     li,
     ul
@@ -227,7 +227,7 @@ li.family.centered {
     /* hover effect */
     familymember:hover,
     familymember:hover + ul li familymember {
-        .box;
+        //.box;
         margin: 0;
         display: inline-block;
         background: @darker;
@@ -240,14 +240,10 @@ li.family.centered {
     }
 }
 
-// blazon styling
-.blazon
-{
-    border-radius: 50% !important;
-}
 .character .blazon
 {
-    background: radial-gradient( @backgroundcolor 2%, @body-color 60%);
+    background: radial-gradient( @backgroundcolor, @body-color 55%);
+    border-radius: 50% ;
     img
     {
         .at-animation(shake_sign 3s alternate);
