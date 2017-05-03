@@ -367,6 +367,7 @@ box {
   border-radius: 5px;
   box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
   position: relative;
+  background-image: url("");
 }
 boxtitel {
   box-shadow: none;
@@ -433,6 +434,7 @@ body > pre {
   background-size: '';
   background-color: #FAEBd7;
   position: relative;
+  background-image: url("");
   text-shadow: 1px 1px #f3ffff;
 }
 h1 {
@@ -476,6 +478,7 @@ button {
 }
 .relative {
   position: relative;
+  background-image: url("");
 }
 .clear {
   clear: both;
@@ -492,10 +495,12 @@ button {
 /* -----------------Head----------------- */
 #headcontainer {
   position: relative;
+  background-image: url("");
   width: 100%;
 }
 #head {
   position: relative;
+  background-image: url("");
   float: right;
   text-align: center;
   width: 100%;
@@ -535,6 +540,7 @@ button {
 #headlinks {
   clear: both;
   position: relative;
+  background-image: url("");
   width: calc(100% - 10px);
   height: auto;
   text-align: center;
@@ -543,6 +549,7 @@ button {
 #navframe {
   width: 100%;
   position: relative;
+  background-image: url("");
   text-align: center;
   padding-top: 2px;
 }
@@ -576,6 +583,7 @@ button {
 .rightbarDown,
 .rightbarUp {
   position: relative;
+  background-image: url("");
   width: 100%;
   float: right;
   height: auto;
@@ -599,6 +607,7 @@ button {
 #foot {
   text-shadow: 1px 1px #f3ffff;
   position: relative;
+  background-image: url("");
   margin-top: 0.7vw;
   width: 100%;
   text-align: center;
@@ -650,6 +659,7 @@ button {
   }
   .topics {
     position: relative;
+    background-image: url("");
     margin-left: -1.5vw;
     margin-right: -1.5vw;
   }
@@ -662,6 +672,7 @@ button {
   }
   .level_0 {
     position: relative;
+    background-image: url("");
     display: inline-block;
     width: 140px;
     text-align: center;
@@ -724,6 +735,7 @@ button {
   }
   .navigation {
     position: relative;
+    background-image: url("");
     padding-bottom: 5px;
   }
   .navigation a {
@@ -743,6 +755,7 @@ button {
   }
   .level_0 > ul {
     position: relative;
+    background-image: url("");
     display: inline-block;
   }
   .level_0 p {
@@ -1005,6 +1018,7 @@ form > fieldset > label,
 form > label {
   position: relative;
   z-index: 0;
+  margin-top: 10px;
 }
 form > fieldset > label > span:first-child,
 form > label > span:first-child {
@@ -1015,7 +1029,7 @@ form > label > span:first-child {
   padding: 0 10px 0 10px;
   background-color: #FAEBd7;
   font-style: italic;
-  font-size: 11px;
+  font-size: 12px;
   font-family: 'Glyphicons Halflings';
   color: #430c0c;
   box-shadow: inset 0px -1px 3px 0px rgba(41, 0, 0, 0.5);
@@ -1245,6 +1259,7 @@ form fieldset ul {
 }
 noscript > div {
   position: relative;
+  background-image: url("");
   z-index: 1000;
 }
 noscript > div > div {

@@ -64,3 +64,25 @@ table.dataTable tr:hover > td {
 accordion span span {
   display: none !important;
 }
+/* jquery ui */
+.ui-visual-focus {
+  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+}
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited,
+a.ui-button:hover,
+a.ui-button:focus {
+  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  text-decoration: none;
+}
+.ui-state-focus,
+.ui-visual-focus {
+  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  border-color: #430c0c;
+}
