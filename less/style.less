@@ -1,42 +1,27 @@
-// all over standards
-@import "css/_vars";
-/* fonts */
-@import "css/realCss/siteDesign/_fonts";
-// less helpers
-@import "css/_helper";
-/* css animations */
-@import "css/_css_actions";
+// includes
+@import "allIncludes";
+
+// box design - concrete classes
+@import "css/realCss/siteDesign/box/_box";
 // modding
 @import "css/realCss/siteDesign/_modding";
-/* box design */
-@import "css/realCss/siteDesign/_box_basic";
-@import "css/realCss/siteDesign/_box";
 /* Basic Layout without Menu */
 @import "css/realCss/siteDesign/_layout";
 /* Menu Layout */
 @import "css/realCss/menu/_menu";
 /* login and logout view */
-@import "css/realCss/siteDesign/_login_logout";
+@import "css/realCss/siteDesign/logging/_login_logout";
 /* styles used in Zend */
 @import "css/realCss/Zend/_Zend";
-/* js-used classes */
-@import "css/realCss/siteDesign/_jsHelper";
 /* z-indexing */
 @import "css/realCss/siteDesign/_z-index";
-/* *** special subpages design *** */
-@import "css/realCss/siteDesign/_cast";
-@import "css/realCss/siteDesign/_forms";
- @import "css/realCss/siteDesign/_dashboard";
+/* *** special sub pages design *** */
+@import "css/realCss/singlePages/castmanager/_castmanager";
+@import "css/realCss/siteDesign/forms/_forms";
 /* media queries for Basic Layout */
-@import "css/_media";
-/* media queries for Layout with own less*/
-@import "css/_media_special";
+@import "css/realCss/siteDesign/_media";
 /* css transformation @ no script */
-@import "css/_noscript";
-
-/* *** js styles used global */
-/* jquery UI Style   for pop up, datepicker ... */
-@import "css/jsGlobalUse/jquery-ui/_jquery-ui";
+@import "css/realCss/siteDesign/_noscript";
 
 // --- un-comment for usage
-@import "css/_preLaunch";    /*erase unused elements for pre launch */
+@import "css/lessIncludes/_preLaunch";    //*erase unused elements for pre launch */

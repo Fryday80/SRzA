@@ -46,11 +46,6 @@
     }
     .keyframes(@name; { .ani-action });
 }
-.headdeko:hover
-{
-    /* used in... -> head */
-    .at-animation(shake_sign 3s alternate);
-}
 
 // -------------------------------------------------------------
 .animation {
@@ -162,5 +157,23 @@
         }
     }
     /* used in... -> login_logout.css */
+    .keyframes(@name; { .ani-action });
+}
+// -------------------------------------------------------------
+/* ------------------------- */
+.animation{
+    @higlight-swelling: rgb(50, 170, 205);
+    @name: swelling;
+    .ani-style(@1; @2) {
+        background-color: @1;
+        .at-box-inner-shadow(1vw; @2);
+    }
+    .ani-action(){
+        0% {.ani-style(@body-color; @backgroundcolor)}
+        //45% {.ani-style(@body-color; @backgroundcolor); .at-box-inner-shadow(1.5vw; @backgroundcolor)}
+        50% {.ani-style(@higlight-swelling; @body-color)}
+        //55% {.ani-style(@body-color; @backgroundcolor); .at-box-inner-shadow(1.5vw; @backgroundcolor)}
+        100% {.ani-style(@body-color; @backgroundcolor)}
+    }
     .keyframes(@name; { .ani-action });
 }
