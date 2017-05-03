@@ -95,7 +95,7 @@ class BlazonHelper extends AbstractHelper
         $familyId = $this->validateIds($familyId);
         
         $img = $this->createImgElements($baseId, $job, $familyId);
-        return '<div class="blazon '. $class .  '" style = " position: relative; border-radius: 50%; '. $this->activeOption['divStyle'] . '">' . $img. '</div>';
+        return '<div class="blazon '. $class .  '" style = " position: relative; '. $this->activeOption['divStyle'] . '">' . $img. '</div>';
     }
 
     private function createImgElements($baseId, $job, $familyId)
