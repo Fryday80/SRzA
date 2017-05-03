@@ -1,4 +1,7 @@
+@import "../../../../../less/css/_vars";
+@import "../../../../../less/css/_helper";
 @import "../../../../../less/css/realCss/siteDesign/_box_basic";
+@import "../../../../../less/css/_css_actions";
 @import "tree";
 
 @tree-pic-height: 45px;
@@ -237,5 +240,15 @@ li.family.centered {
         {
             color: #000;
         }
+    }
+}
+
+// blazon styling
+.character .blazon
+{
+    background: radial-gradient( @backgroundcolor 2%, @body-color 60%);
+    img
+    {
+        .at-animation(shake_sign 3s alternate);
     }
 }

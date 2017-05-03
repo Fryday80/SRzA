@@ -78,11 +78,14 @@ accordion span span {
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
   text-decoration: none;
 }
+.ui-state-active,
+.ui-state-hover,
 .ui-state-focus,
 .ui-visual-focus {
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
   border-color: #430c0c;
+  color: black;
 }

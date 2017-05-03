@@ -12,12 +12,15 @@
 .ui-state-focus a:visited,
 a.ui-button:hover,
 a.ui-button:focus {
-  .at-box-inner-shadow();
+  .at-box-inner-shadow(2vw);
   //color: #a08a6f;
   text-decoration: none;
 }
-.ui-state-focus,
+.ui-state-active,
+.ui-state-hover,
+.ui-state-focus,  // this should be the selection boarder, but doesn't work out
 .ui-visual-focus {
-  .at-box-inner-shadow();
+  .at-box-inner-shadow(2vw);
   border-color: @body-color;
+  color: black;
 }
