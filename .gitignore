@@ -3,7 +3,7 @@ vendor/
 .idea/
 /.settings/org.eclipse.core.resources.prefs
 
-config/autoload/local.php
+config/autoload/fry.local.php
 config/autoload/salt.local.php
 
 cache/
