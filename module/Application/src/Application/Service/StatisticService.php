@@ -19,6 +19,7 @@ use Application\Model\ActiveUser;
 use Application\Model\SystemLogTable;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
+use Auth\Model\User;
 use Auth\Service\AccessService;
 use Exception;
 use Zarganwar\PerformancePanel\Register;
@@ -137,6 +138,17 @@ class StatisticService
         return $this->stats->getActiveUsers($since);
     }
 
+    /** Checks if user is active
+     * @param $userName
+     * @return bool
+     */
+    public function isActive($userName){
+        $activeUsers = $this->getActiveUsers();
+        foreach ($activeUsers as $user){
+            if ($user->userName == $userName) return true;
+        }
+        return false;
+    }
     /**
      * @param int $since
      * @return array
