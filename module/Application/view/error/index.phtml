@@ -4,9 +4,10 @@
 <?php
 //test
 $test = getenv('APPLICATION_ENV');
-//$test = 'production';
-//$test = 'crap';
+$test = 'production';
 switch ($test){
+// test end
+//switch (getenv('APPLICATION_ENV')) {
     case ("development"):
         if (isset($this->display_exceptions) && $this->display_exceptions):
             if(isset($this->exception) && $this->exception instanceof Exception): ?>
@@ -65,47 +66,22 @@ switch ($test){
 
             <?php endif;
         endif;
-
+        break;
     case('production'):
     default:  ?>
-        <p><b>Leider ist ein Fehler aufgetreten.</b></p>
+        <br/>
+        <h1>Leider ist ein Fehler aufgetreten.</h1>
         <p>Unser System ist direkt mit dem Verantwortlichen verbunden.</p>
         <p>Wenn sie dies hier lesen hat er bereits einen Stromschlag bekommen,</p>
         <p>durch betätigen des Zurückknopfes bekommt er einen weiteren und Sie gelangen auf die letzte Seite zurück.</p>
-        <button onclick="window.history.back();">
+        <FORM>
+            <INPUT style="margin: 10px; height: 30px; width: 60px;" Type="button" VALUE="Back" onClick="history.go(-1);return true;">
+        </FORM>
     <?php
 }
-
-bdump(getenv('APPLICATION_ENV'));
-if (isset($error->display_exceptions) && $error->display_exceptions) {
-    if (isset($error->exception) && $error->exception instanceof Exception) {
-        $errorData['error'][$this->translate('Additional information')] = get_class($error->exception);
-        $errorData['error'][$this->translate('File')] = $error->exception->getFile();
-        $errorData['error']['line'] = $error->exception->getLine();
-        $data['msg'] = $errorData['error'][$this->translate('Message')] = $error->exception->getMessage();
-        $errorData['error'][$this->translate('Stack trace')] = $error->exception->getTraceAsString();
-
-        $e = $error->exception->getPrevious();
-        if ($e) {
-            $errorData['error'][$this->translate('Previous exceptions')] = array();
-            while ($e) {
-                $dataSet = array();
-                $dataSet['class_info'] = get_class($e);
-                $dataSet[$this->translate('File')] = $e->getFile();
-                $dataSet['line'] = $e->getLine();
-                $dataSet[$this->translate('Message')] = $e->getMessage();
-                $dataSet[$this->translate('Stack trace')] = $e->getTraceAsString();
-
-                array_push($errorData['error'][$this->translate('Previous exceptions')], $dataSet);
-                $e = $e->getPrevious();
-            }
-        } else {
-            $errorData['error'][$this->translate('Previous exceptions')] = $this->translate('No Exception available');
-        }
-        $data['data']['errorPage'] = $errorData;
-    }
-}
 ?>
+
+
 <link href="/css/fun.css" media="screen" rel="stylesheet" type="text/css">
 
 <div class="greentree-wrap">
