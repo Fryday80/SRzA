@@ -23,6 +23,8 @@ use Auth\Service\AccessService;
 use Exception;
 use Zarganwar\PerformancePanel\Register;
 use Zend\Http\Header\SetCookie;
+use Zend\Http\Response;
+use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
@@ -71,6 +73,44 @@ class StatisticService
     }
 
     public function onError(MvcEvent $e) {
+
+        $error = $e->getError();
+        if (empty($error)) {
+            return;
+        }
+
+        // Do nothing if the result is a response object
+        $result = $e->getResult();
+        if ($result instanceof Response) {
+            return;
+        }
+
+        switch ($error) {
+            case Application::ERROR_CONTROLLER_NOT_FOUND:
+            case Application::ERROR_CONTROLLER_INVALID:
+            case Application::ERROR_ROUTER_NO_MATCH:
+                // Specifically not handling these
+                return;
+
+            case Application::ERROR_EXCEPTION:
+            default:
+                /** @var Exception $exception */
+                $exception = $e->getParam('exception');
+
+                $errors = [];
+                do {
+                    array_push($errors, array(
+                        'name' => get_class($exception),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'msg' => $exception->getMessage(),
+                        'stackTrace' => $exception->getTraceAsString()
+                    ));
+                } while($exception = $exception->getPrevious());
+                bdump($errors);
+                break;
+        }
+
         $this->isError = true;
         $this->errorData = $this->gatherData($e);
     }

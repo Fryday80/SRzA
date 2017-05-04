@@ -6,6 +6,7 @@
 //phpinfo();die;
 chdir(dirname(__DIR__));
 
+
 //tracy debug
 $logPath = realpath(__DIR__ . '/../logs');
 require 'vendor/tracy/tracy/src/tracy.php';
