@@ -46,9 +46,6 @@ class StatisticService
     /** @var  SystemLogTable */
     private $sysLog;
 
-    private $isError = false;
-    private $errorData = array();
-
     function __construct($sm)
     {
         if (SPEED_CHECK) Register::add('StatService start');
@@ -111,17 +108,15 @@ class StatisticService
                 break;
         }
 
-        $this->isError = true;
-        $this->errorData = $this->gatherData($e);
+        $data = $this->gatherData($e);
+        $data['errors'] = $errors;
+
+        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
+        $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
+        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['errors'][0]['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
     }
 
     public function onFinish(MvcEvent $e) {
-        if ($this->isError){
-            $this->isError = false;
-            $this->errorData = $this->gatherErrorData($e, $this->errorData);
-            $this->errorLog($this->errorData);
-            // salt @todo for security $e->setViewModel(new ErrorPage_without $data);
-        }
         $this->saveFile($this->stats);
     }
 
@@ -201,13 +196,6 @@ class StatisticService
     }
     
 //======================================================================================================= PRIVATES
-    // could be made public as for logging a set of data
-    private function errorLog($data){
-        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
-        $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
-        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
-        unset($this->errorData);
-    }
 
     /**
      * microtime is passed through to data object via <b>$data['mTime']</b><br>
@@ -252,41 +240,6 @@ class StatisticService
         return $data;
     }
 
-    private function gatherErrorData(MvcEvent $e, $data)
-    {
-//        todo get the translator
-        $error = $e->getViewModel()->getChildren()[0];
-        
-        if (isset($error->display_exceptions) && $error->display_exceptions) {
-            if (isset($error->exception) && $error->exception instanceof Exception) {
-                $errorData['error'][$this->translate('Additional information')] = get_class($error->exception);
-                $errorData['error'][$this->translate('File')] = $error->exception->getFile();
-                $errorData['error']['line'] = $error->exception->getLine();
-                $data['msg'] = $errorData['error'][$this->translate('Message')] = $error->exception->getMessage();
-                $errorData['error'][$this->translate('Stack trace')] = $error->exception->getTraceAsString();
-
-                $e = $error->exception->getPrevious();
-                if ($e) {
-                    $errorData['error'][$this->translate('Previous exceptions')] = array();
-                    while ($e) {
-                        $dataSet = array();
-                        $dataSet['class_info'] = get_class($e);
-                        $dataSet[$this->translate('File')] = $e->getFile();
-                        $dataSet['line'] = $e->getLine();
-                        $dataSet[$this->translate('Message')] = $e->getMessage();
-                        $dataSet[$this->translate('Stack trace')] = $e->getTraceAsString();
-
-                        array_push($errorData['error'][$this->translate('Previous exceptions')], $dataSet);
-                        $e = $e->getPrevious();
-                    }
-                } else {
-                    $errorData['error'][$this->translate('Previous exceptions')] = $this->translate('No Exception available');
-                }
-                $data['data']['errorPage'] = $errorData;
-            }
-        }
-        return $data;
-    }
 
     private function checkCookie(MvcEvent $e) {
         if (!$e->getRequest()->getCookie() || !$e->getRequest()->getCookie()->offsetExists('srzaiknowyou')) {
@@ -309,10 +262,5 @@ class StatisticService
         $content = unserialize($content);
         if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
-    }
-
-    //mocking function
-    private function translate($string){
-        return $string;
     }
 }

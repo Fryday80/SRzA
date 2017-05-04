@@ -1,7 +1,110 @@
 <h1><?php echo $this->translate('An error occurred') ?></h1>
 <h2><?php echo  $this->message ?></h2>
+
 <?php
-var_dump(getenv('APPLICATION_ENV'));
+//test
+$test = getenv('APPLICATION_ENV');
+//$test = 'production';
+//$test = 'crap';
+switch ($test){
+    case ("development"):
+        if (isset($this->display_exceptions) && $this->display_exceptions):
+            if(isset($this->exception) && $this->exception instanceof Exception): ?>
+                <hr/>
+                <h2><?php echo $this->translate('Additional information') ?>:</h2>
+                <h3><?php echo get_class($this->exception); ?></h3>
+                <dl>
+                    <dt><?php echo $this->translate('File') ?>:</dt>
+                    <dd>
+                        <pre class="prettyprint linenums"><?php echo $this->exception->getFile() ?>:<?php echo $this->exception->getLine() ?></pre>
+                    </dd>
+                    <dt><?php echo $this->translate('Message') ?>:</dt>
+                    <dd>
+                        <pre class="prettyprint linenums"><?php echo $this->escapeHtml($this->exception->getMessage()) ?></pre>
+                    </dd>
+                    <dt><?php echo $this->translate('Stack trace') ?>:</dt>
+                    <dd>
+                        <pre class="prettyprint linenums"><?php echo $this->escapeHtml($this->exception->getTraceAsString()) ?></pre>
+                    </dd>
+                </dl>
+                <?php
+                $e = $this->exception->getPrevious();
+                if ($e) :
+                    ?>
+                    <hr/>
+                    <h2><?php echo $this->translate('Previous exceptions') ?>:</h2>
+                    <ul class="unstyled">
+                        <?php while($e) : ?>
+                            <li>
+                                <h3><?php echo get_class($e); ?></h3>
+                                <dl>
+                                    <dt><?php echo $this->translate('File') ?>:</dt>
+                                    <dd>
+                                        <pre class="prettyprint linenums"><?php echo $e->getFile() ?>:<?php echo $e->getLine() ?></pre>
+                                    </dd>
+                                    <dt><?php echo $this->translate('Message') ?>:</dt>
+                                    <dd>
+                                        <pre class="prettyprint linenums"><?php echo $this->escapeHtml($e->getMessage()) ?></pre>
+                                    </dd>
+                                    <dt><?php echo $this->translate('Stack trace') ?>:</dt>
+                                    <dd>
+                                        <pre class="prettyprint linenums"><?php echo $this->escapeHtml($e->getTraceAsString()) ?></pre>
+                                    </dd>
+                                </dl>
+                            </li>
+                            <?php
+                            $e = $e->getPrevious();
+                        endwhile;
+                        ?>
+                    </ul>
+                <?php endif; ?>
+
+            <?php else: ?>
+
+                <h3><?php echo $this->translate('No Exception available') ?></h3>
+
+            <?php endif;
+        endif;
+
+    case('production'):
+    default:  ?>
+        <p><b>Leider ist ein Fehler aufgetreten.</b></p>
+        <p>Unser System ist direkt mit dem Verantwortlichen verbunden.</p>
+        <p>Wenn sie dies hier lesen hat er bereits einen Stromschlag bekommen,</p>
+        <p>durch betätigen des Zurückknopfes bekommt er einen weiteren und Sie gelangen auf die letzte Seite zurück.</p>
+        <button onclick="window.history.back();">
+    <?php
+}
+
+bdump(getenv('APPLICATION_ENV'));
+if (isset($error->display_exceptions) && $error->display_exceptions) {
+    if (isset($error->exception) && $error->exception instanceof Exception) {
+        $errorData['error'][$this->translate('Additional information')] = get_class($error->exception);
+        $errorData['error'][$this->translate('File')] = $error->exception->getFile();
+        $errorData['error']['line'] = $error->exception->getLine();
+        $data['msg'] = $errorData['error'][$this->translate('Message')] = $error->exception->getMessage();
+        $errorData['error'][$this->translate('Stack trace')] = $error->exception->getTraceAsString();
+
+        $e = $error->exception->getPrevious();
+        if ($e) {
+            $errorData['error'][$this->translate('Previous exceptions')] = array();
+            while ($e) {
+                $dataSet = array();
+                $dataSet['class_info'] = get_class($e);
+                $dataSet[$this->translate('File')] = $e->getFile();
+                $dataSet['line'] = $e->getLine();
+                $dataSet[$this->translate('Message')] = $e->getMessage();
+                $dataSet[$this->translate('Stack trace')] = $e->getTraceAsString();
+
+                array_push($errorData['error'][$this->translate('Previous exceptions')], $dataSet);
+                $e = $e->getPrevious();
+            }
+        } else {
+            $errorData['error'][$this->translate('Previous exceptions')] = $this->translate('No Exception available');
+        }
+        $data['data']['errorPage'] = $errorData;
+    }
+}
 ?>
 <link href="/css/fun.css" media="screen" rel="stylesheet" type="text/css">
 
