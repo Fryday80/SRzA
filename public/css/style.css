@@ -504,8 +504,12 @@ a:active {
   color: black;
 }
 button {
-  background: none;
-  border: none;
+  background: #FAEBd7;
+  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  border: solid 1px #430c0c;
+}
+button:hover {
+  background: #AFA08D;
 }
 .ownhead {
   font-family: headline, arial, sans-serif;
@@ -1029,51 +1033,14 @@ form > * {
   list-style: none;
   margin-bottom: 10px;
 }
-form input[type="radio"] {
-  box-shadow: none;
-}
-form input[type="file"]::after {
-  content: "Datei Auswählen";
-  position: absolute;
-  padding-top: 3px;
-  padding-left: 5px;
-  top: 5px;
-  left: 4px;
-  width: 44%;
-  height: 50%;
-  background-color: #FAEBd7;
-  pointer-events: none;
-  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
-}
-form input[type="submit"],
-form button {
-  margin-top: 10px;
-  margin-bottom: 3px;
-  padding-left: 5px;
-  padding-right: 5px;
-  min-height: 30px;
-  min-width: 40px;
-  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
-}
-form input[type="submit"]:hover,
-form button:hover {
-  background-color: #AFA08D;
-}
-form input[type="submit"]:active,
-form button:active {
-  margin-left: 3px;
-  margin-top: 13px;
-  margin-bottom: 0;
-  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 1px 1px 1px #430c0c;
-}
-form > fieldset > label,
-form > label {
+fieldset label,
+label {
   position: relative;
   z-index: 0;
   margin-top: 10px;
 }
-form > fieldset > label > span:first-child,
-form > label > span:first-child {
+fieldset label > span:first-child,
+label > span:first-child {
   position: absolute;
   top: -5px;
   left: 20px;
@@ -1086,12 +1053,12 @@ form > label > span:first-child {
   color: #430c0c;
   box-shadow: inset 0px -1px 3px 0px rgba(41, 0, 0, 0.5);
 }
-form > fieldset > label input,
-form > label input,
-form > fieldset > label textarea,
-form > label textarea,
-form > fieldset > label select,
-form > label select {
+fieldset label input,
+label input,
+fieldset label textarea,
+label textarea,
+fieldset label select,
+label select {
   position: relative;
   z-index: 1;
   height: 25px;
@@ -1102,26 +1069,26 @@ form > label select {
   box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5);
   min-width: 76px;
 }
-form > fieldset > label input :focus,
-form > label input :focus,
-form > fieldset > label textarea :focus,
-form > label textarea :focus,
-form > fieldset > label select :focus,
-form > label select :focus {
+fieldset label input :focus,
+label input :focus,
+fieldset label textarea :focus,
+label textarea :focus,
+fieldset label select :focus,
+label select :focus {
   border: 1px solid #E86975;
 }
-form > fieldset > label input[type="checkbox"],
-form > label input[type="checkbox"] {
+fieldset label input[type="checkbox"],
+label input[type="checkbox"] {
   box-shadow: none;
   margin-top: 10px;
 }
-form > fieldset > label select,
-form > label select {
+fieldset label select,
+label select {
   margin-top: 7px;
   margin-left: 19px;
 }
-form > fieldset > label .form-error-messages,
-form > label .form-error-messages {
+fieldset label .form-error-messages,
+label .form-error-messages {
   position: relative;
   text-shadow: none;
   z-index: 4;
@@ -1133,21 +1100,21 @@ form > label .form-error-messages {
   border-radius: 5px;
   box-shadow: inset -2px -4px 15px 0px rgba(41, 0, 0, 0.5);
 }
-form > fieldset > label .form-error-messages li,
-form > label .form-error-messages li {
+fieldset label .form-error-messages li,
+label .form-error-messages li {
   z-index: 5;
   border: solid #430c0c;
   background-color: #430c0c;
   text-shadow: black;
 }
-form > fieldset > label .form-error-messages *,
-form > label .form-error-messages * {
+fieldset label .form-error-messages *,
+label .form-error-messages * {
   font-family: bodytext, arial, sans-serif;
   color: #fff3e0;
   border-radius: 3px;
 }
-form > fieldset > label .form-error-messages ::before,
-form > label .form-error-messages ::before {
+fieldset label .form-error-messages ::before,
+label .form-error-messages ::before {
   color: #fff;
   border-left: solid #430c0c;
   border-top: solid #430c0c;
@@ -1160,15 +1127,52 @@ form > label .form-error-messages ::before {
   height: 20px;
   background: #E86975;
 }
-form label.checkbox,
-form label.button {
+input[type="radio"] {
+  box-shadow: none;
+}
+input[type="file"]::after {
+  content: "Datei Auswählen";
+  position: absolute;
+  padding-top: 3px;
+  padding-left: 5px;
+  top: 5px;
+  left: 4px;
+  width: 44%;
+  height: 50%;
+  background-color: #FAEBd7;
+  pointer-events: none;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
+}
+input[type="submit"],
+button {
+  margin-top: 10px;
+  margin-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  min-height: 30px;
+  min-width: 40px;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
+}
+input[type="submit"]:hover,
+button:hover {
+  background-color: #AFA08D;
+}
+input[type="submit"]:active,
+button:active {
+  margin-left: 3px;
+  margin-top: 13px;
+  margin-bottom: 0;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 1px 1px 1px #430c0c;
+}
+label.checkbox,
+label.button {
   box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5);
   border: groove 0.5px grey;
 }
-form fieldset {
+fieldset {
   box-shadow: inset 0px 0px 15px 0px #430c0c;
 }
-form fieldset legend {
+fieldset legend {
   background-color: #FAEBd7;
   box-shadow: inset 0px -1px 3px 0px #430c0c;
   padding-left: 5px;
@@ -1178,11 +1182,11 @@ form fieldset legend {
   font-size: 11px;
   font-family: 'Glyphicons Halflings';
 }
-form fieldset label {
+fieldset label {
   margin-right: 10px;
   margin-left: 10px;
 }
-form fieldset ul {
+fieldset ul {
   list-style: none;
 }
 @keyframes wobbel {

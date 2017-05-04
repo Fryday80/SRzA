@@ -51,8 +51,13 @@ a
 
 button
 {
-  background: none;
-  border: none;
+  background: @backgroundcolor;
+  .at-box-inner-shadow();
+  border: solid 1px @body-color;
+}
+button:hover
+{
+  background: @darker;
 }
 
 .ownhead

@@ -74,9 +74,7 @@ switch ($test){
         <p>Unser System ist direkt mit dem Verantwortlichen verbunden.</p>
         <p>Wenn sie dies hier lesen hat er bereits einen Stromschlag bekommen,</p>
         <p>durch betätigen des Zurückknopfes bekommt er einen weiteren und Sie gelangen auf die letzte Seite zurück.</p>
-        <FORM>
-            <INPUT style="margin: 10px; height: 30px; width: 60px;" Type="button" VALUE="Back" onClick="history.go(-1);return true;">
-        </FORM>
+        <button style="margin: 10px; height: 30px; width: 60px;" onclick="window.history.back();">Zurück</button>
     <?php
 }
 ?>
