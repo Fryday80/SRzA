@@ -503,13 +503,23 @@ a:active {
   text-decoration: none;
   color: black;
 }
+.button,
 button {
   background: #FAEBd7;
-  box-shadow: inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
   border: solid 1px #430c0c;
 }
+.button:hover,
 button:hover {
   background: #AFA08D;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
+}
+.button:active,
+button:active {
+  margin-left: 3px;
+  margin-top: 13px;
+  margin-bottom: 0;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 1px 1px 1px #430c0c;
 }
 .ownhead {
   font-family: headline, arial, sans-serif;
@@ -542,12 +552,6 @@ button:hover {
 }
 .clear {
   clear: both;
-}
-.logoutbutton {
-  height: 30px;
-}
-.logoutbutton:hover {
-  box-shadow: inset 0px 0px 2vw 0px rgba(41, 0, 0, 0.5);
 }
 .overlayShadow {
   box-shadow: 0 0.7vw 0.8vw darkgrey, inset 0px 0px 5vw 0px rgba(41, 0, 0, 0.5);
@@ -620,7 +624,7 @@ button:hover {
   padding-top: 2px;
 }
 /* -----------------hp body----------------- */
-/* -----------------colum 2 content----------------- */
+/* -----------------left column: content----------------- */
 #content {
   float: left;
   width: 70%;
@@ -632,7 +636,7 @@ button:hover {
   margin-left: -1.5vw !important;
   margin-right: -1.5vw !important;
 }
-/* -----------------colum 3 right bar----------------- */
+/* -----------------right column: right bar----------------- */
 #rightcontainer {
   float: right;
   width: 29%;
@@ -660,14 +664,6 @@ button:hover {
   /* height of simpleSlideShow.js */
   height: 18vw;
   padding: 0;
-}
-/* --- #scroller helper ----- */
-#scroller {
-  height: 200px;
-  width: 100%;
-}
-.scroller-spacer {
-  height: 100%;
 }
 /* -----------------foot----------------- */
 #foot {
@@ -948,6 +944,9 @@ button:hover {
     text-align: center;
   }
 }
+.logoutbutton {
+  height: 30px;
+}
 /* styles used in Zend */
 /* ------------------Zend Form Styles ---------------------------------- */
 #album {
@@ -1145,17 +1144,20 @@ input[type="file"]::after {
 }
 input[type="submit"],
 button {
+  background: #FAEBd7;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
+  border: solid 1px #430c0c;
   margin-top: 10px;
   margin-bottom: 3px;
   padding-left: 5px;
   padding-right: 5px;
   min-height: 30px;
   min-width: 40px;
-  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
 }
 input[type="submit"]:hover,
 button:hover {
-  background-color: #AFA08D;
+  background: #AFA08D;
+  box-shadow: inset 0px 0px 15px 0px rgba(41, 0, 0, 0.5), 4px 4px 10px #430c0c;
 }
 input[type="submit"]:active,
 button:active {
@@ -1208,13 +1210,16 @@ fieldset ul {
 }
 .blazon {
   position: relative;
+  padding: 10px !important;
   height: 50px;
   width: 50px;
+  border-radius: 50%;
 }
 .blazon .blazon-sub-0 {
   position: absolute;
   z-index: 1;
   height: 50px;
+  top: 12.5px;
   left: 0;
   right: 0;
   margin: 0 auto;

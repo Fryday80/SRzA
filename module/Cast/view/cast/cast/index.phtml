@@ -57,14 +57,15 @@ function createList($parent, $level) {
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
         // test workaround until db works
-        if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = 'img/blazons/zuLeym.png';
-        $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : 'img/blazons/shield-tross.big.png';
+        if ($parent['surename'] == 'zu Leym') $parent['pic_url'] = $bh->blazon(1);
+        $picUrl = (isset($parent['pic_url']) && $parent['pic_url'] !== null)? $parent['pic_url'] : $bh->blazon(0);
         echo '<ul>';
         if (isset($parent['family'])) {
             echo '<li class="family">';
             echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
             echo '<br>';
-            echo '<img src = "' .$picUrl. '" class="tree-pic fam-tree only_if_own_pic">';
+            //Todo
+            echo $picUrl;
             echo '<br>';
             echo '<div class="details">';
             echo $parent['family']['name'];
@@ -98,7 +99,7 @@ function createList($parent, $level) {
     <boxtitel>
         <span class='own_text_small'>Staatshierarchie</span>
     </boxtitel>
-    <boxcontent style="overflow: hidden; height: 500px;">
+    <boxcontent>
 
         <div class="tree" style="width: 2000px; height: 2000px; display:none">
             <ul style="white-space:nowrap">

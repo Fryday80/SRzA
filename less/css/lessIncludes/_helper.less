@@ -138,6 +138,10 @@
 .at-box-inner-shadow(@d: @inner-shadow-depth, @c: @inner-shadow-color){
   box-shadow: inset 0px 0px @d 0px @c;
 }
+.at-box-double-shadow( @box-shadow_x: @box-shadow-standard-x; @box-shadow_y: @box-shadow-standard-y; @box-shadow_fade: @box-shadow-standard-fade; @box-shadow_c:@box-shadow-standard-color ;@d: @inner-shadow-depth; @c: @inner-shadow-color){
+
+  box-shadow: @box-shadow_x @box-shadow_y @box-shadow_fade @box-shadow_c, inset 0px 0px @d 0px @c;
+}
 .box-shadow-bottom{
   .at-box-shadow(0);
 }

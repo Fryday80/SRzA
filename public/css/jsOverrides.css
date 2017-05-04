@@ -491,10 +491,8 @@ a.ui-button:focus,
 }
 input,
 textarea,
-select,
-button {
+select {
   background: #FAEBd7;
-  box-shadow: inset 0px 0px 1vw 0px rgba(41, 0, 0, 0.5);
   border-color: #430c0c;
   border-width: 1px;
 }
