@@ -20,6 +20,7 @@ use Application\Model\SystemLogTable;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
 use Auth\Service\AccessService;
+use Exception;
 use Zarganwar\PerformancePanel\Register;
 use Zend\Http\Header\SetCookie;
 use Zend\Mvc\MvcEvent;
@@ -42,6 +43,9 @@ class StatisticService
     private $accessService;
     /** @var  SystemLogTable */
     private $sysLog;
+
+    private $isError = false;
+    private $errorData = array();
 
     function __construct($sm)
     {
@@ -67,14 +71,17 @@ class StatisticService
     }
 
     public function onError(MvcEvent $e) {
-        $data = $this->gatherData($e);
-
-        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
-        $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
-        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'ErrorMsg', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
+        $this->isError = true;
+        $this->errorData = $this->gatherData($e);
     }
 
     public function onFinish(MvcEvent $e) {
+        if ($this->isError){
+            $this->isError = false;
+            $this->errorData = $this->gatherErrorData($e, $this->errorData);
+            $this->errorLog($this->errorData);
+            // salt @todo for security $e->setViewModel(new ErrorPage_without $data);
+        }
         $this->saveFile($this->stats);
     }
 
@@ -154,6 +161,14 @@ class StatisticService
     }
     
 //======================================================================================================= PRIVATES
+    // could be made public as for logging a set of data
+    private function errorLog($data){
+        $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
+        $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
+        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
+        unset($this->errorData);
+    }
+
     /**
      * microtime is passed through to data object via <b>$data['mTime']</b><br>
      * and processed there so the different logs have one common value and fitting timestamps<br>
@@ -175,15 +190,17 @@ class StatisticService
             'hitType'  => ( $this->accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST,
         );
 
-        $data['userId'] = $this->accessService->getUserID();
-        $data['userId'] = ($data['userId'] == "-1") ? $this->stats->getActiveGuestId($data['sid']) : $data['userId'];
-        $data['serverPHPData'] = $data['request']->getServer()->toArray();
+        $serverData = $data['request']->getServer()->toArray();
+        $data['url']      = $serverData['REQUEST_URI'];
+        $data['ip']       = $serverData['REMOTE_ADDR'];
+        $data['userId']   = $this->accessService->getUserID();
+        $data['userId']   = ( $data['userId'] == "-1" ) ? $this->stats->getActiveGuestId($data['sid']) : $data['userId'];
         $data['userName'] = ( $data['userId'] > $this->stats->guestNumbersMin ) ? "Guest" : $data['userName'];
-        $data['logType'] = ( $data['hitType'] == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;
-        $data['url'] = $data['serverPHPData']['REQUEST_URI'];
-        $data['ip'] = $data['serverPHPData']['REMOTE_ADDR'];
+        $data['logType']  = ( $data['hitType'] == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;
+        $data['data']['serverPHPData'] = $serverData;
+
         // not used -- prepared for redirect logging
-        if (isset ($data['serverPHPData']['HTTP_REFERER']) ) {
+        if (isset ($serverData['HTTP_REFERER']) ) {
             // prepared if referring data is needed
 //        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
 //        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";
@@ -192,6 +209,42 @@ class StatisticService
 //        $data['redirectedTo']= (isset ($data['serverPHPData']['REDIRECT_URL']) ) ? $data['serverPHPData']['REDIRECT_URL'] : "no redirect";
         }
         if (SPEED_CHECK) Register::add('StatService ->gatherData end');
+        return $data;
+    }
+
+    private function gatherErrorData(MvcEvent $e, $data)
+    {
+//        todo get the translator
+        $error = $e->getViewModel()->getChildren()[0];
+        
+        if (isset($error->display_exceptions) && $error->display_exceptions) {
+            if (isset($error->exception) && $error->exception instanceof Exception) {
+                $errorData['error'][$this->translate('Additional information')] = get_class($error->exception);
+                $errorData['error'][$this->translate('File')] = $error->exception->getFile();
+                $errorData['error']['line'] = $error->exception->getLine();
+                $data['msg'] = $errorData['error'][$this->translate('Message')] = $error->exception->getMessage();
+                $errorData['error'][$this->translate('Stack trace')] = $error->exception->getTraceAsString();
+
+                $e = $error->exception->getPrevious();
+                if ($e) {
+                    $errorData['error'][$this->translate('Previous exceptions')] = array();
+                    while ($e) {
+                        $dataSet = array();
+                        $dataSet['class_info'] = get_class($e);
+                        $dataSet[$this->translate('File')] = $e->getFile();
+                        $dataSet['line'] = $e->getLine();
+                        $dataSet[$this->translate('Message')] = $e->getMessage();
+                        $dataSet[$this->translate('Stack trace')] = $e->getTraceAsString();
+
+                        array_push($errorData['error'][$this->translate('Previous exceptions')], $dataSet);
+                        $e = $e->getPrevious();
+                    }
+                } else {
+                    $errorData['error'][$this->translate('Previous exceptions')] = $this->translate('No Exception available');
+                }
+                $data['data']['errorPage'] = $errorData;
+            }
+        }
         return $data;
     }
 
@@ -216,5 +269,10 @@ class StatisticService
         $content = unserialize($content);
         if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
+    }
+
+    //mocking function
+    private function translate($string){
+        return $string;
     }
 }
