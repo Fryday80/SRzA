@@ -28,7 +28,7 @@
     {
         box-shadow: 4px 4px 4px rgb(67,12,12), inset 0 0 1vw rgb(67,12,12);
     }
-    .public-profile.summary .blazon
+    .public-profile .blazon
     {
         float: left;
         margin-top: -14px;
@@ -36,6 +36,16 @@
     .charbutton
     {
         margin-left: 2vw;
+    }
+    .online
+    {
+        color: darkgreen;
+        text-shadow: 2px 2px 8px mediumspringgreen;
+    }
+    .offline
+    {
+        color: #8B2252;
+        text-shadow: 2px 2px 8px red;
     }
 </style>
 
@@ -52,67 +62,39 @@ $title =$user->name;
 $this->headTitle($title);
 ?>
 
-<h1><?php echo $this->escapeHtml($title); echo $activityState; ?></h1><br/>
+<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; ?></span></h1><br/>
 <div>
     <span>Wohl eher nicht!</span>
     <button class="pwbutton">Hier klicken um das password in Klartext zu sehen</button>
 </div>
 <br/>
 <box class="public-profile summary">
-    Rolle: <?php echo $user->role_name;?> |
-    Angemeldet seit: <?php echo date('d.m.Y', $user->created_on);?> |
-    eMail: <a href="mailto:<?php echo $user->email;?>?Subject=Schwarze%20Ritter%20von%20<?php echo $askingUser;?>" target="_top"><?php echo $user->email;?></a> |
-    OnlineStatus: <?php echo $state;?>
+    <b>Funktion:</b> <?php echo $user->role_name;?> |
+    <b>Angemeldet seit:</b> <?php echo date('d.m.Y', $user->created_on);?> |
+    <b>eMail:</b> <a href="mailto:<?php echo $user->email;?>?Subject=Schwarze%20Ritter%20von%20<?php echo $askingUser;?>" target="_top"><?php echo $user->email;?></a> |
+    <b>OnlineStatus:</b> <span class="<?php echo $state;?>"><?php echo $state;?></span>
 </box>
 <box class="public-profile address">
-    Anschrift: <br/>
+    <boxtitle>
+        <span class="own_text_small">Anschrift:</span>
+    </boxtitle>
+    <boxcontent>
     <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
     echo $user->street . '<br/>';
-    echo $user->zip . ' ' . $user->city . '<br/>';
-?></box>
-<box class="public-profile summary">
-    <?php foreach ($characters as $character):
-        echo $character['name'] . ' ' . $character['surename'];
-        echo $bh->blazon(0) ;?>
-        <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>'
-        <br/>
-    <?php endforeach; ?>
+    echo $user->zip . ' ' . $user->city . '<br/>';?>
+    </boxcontent>
+</box>
+<box class="public-profile">
+    <boxtitle>
+        <span class="own_text_small">Darstellungen</span>
+    </boxtitle>
+    <boxcontent>
+        <?php foreach ($characters as $character):
+            echo $character['name'] . ' ' . $character['surename'];
+            echo $bh->blazon(0) ;?>
+            <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>'
+            <br/>
+        <?php endforeach; ?>
+    </boxcontent>
 </box>
 <br/>
-<?php
-bdump($user);
-//Auth\Model\User #ca29
-//id => "2"
-//email => "fryday@example.com" (18)
-//name => "FryDay" (6)
-//password => "8b20508657fb4d3b457198e94c02ac916c72ce02" (40)
-//status => "1"
-//role_id => "4"
-//role_name => "Administrator" (13)
-//created_on => "67665564" (8)
-//modified_on => "20161008200401" (14)
-//street => NULL
-//city => NULL
-//zip => NULL
-//member_number => NULL
-//real_name => NULL
-//real_surename => NULL
-//birthday => NULL
-//gender => NULL
-//City => NULL
-bdump($characters);
-//array (1)
-//0 => array (13)
-//id => "2"
-//user_id => "2"
-//name => "Fry" (3)
-//surename => "zu Leym" (7)
-//gender => "m"
-//birthday => "1748-04-07" (10)
-//job_id => "1"
-//family_id => "2"
-//guardian_id => "0"
-//supervisor_id => "1"
-//tross_id => "0"
-//vita => "jgfjjdj" (7)
-//active => "1"

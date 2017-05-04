@@ -14,4 +14,38 @@
   font-family: 'vendor';
   src: url('@{fonts-path}hp3.ttf') format('truetype');
 }
-// less helpers in _helpers.less
+
+.headfont(@hfont-size: 5.5vw; @hfont-color: black)
+{
+  font-family: headline, arial, sans-serif;
+  color: @hfont-color;
+  font-size: @hfont-size;
+  .at-text-shadow(2px; 2px);
+}
+.font1(@font1-size: 1vw; @font1-color: black){
+  font-family: bodytext, arial, sans-serif;
+  color: @font1-color;
+  font-size: @font1-size;
+}
+.text-highlight-mod(@h-col: @highlight-color; @h-t-col: @highlight-text-color; @h-t-s-col: @highlight-text-shadow-color)
+{
+  background: @h-col;
+  color: @h-t-col;
+  text-shadow: 1px 1px @h-t-s-col;
+}
+.text-highlighting(){
+  &::selection {
+    .text-highlight-mod;
+  }
+  &::-moz-selection {
+    .text-highlight-mod;
+  }
+}
+
+.at-text-shadow(@x: 1px; @y: 1px; @color: @text-shadow-color){
+  text-shadow: @x @y @color;
+}
+.at-text-glow(@blurColor: white; @blur: 4px; @direction: 2px; @direction-y: @direction)
+{
+  text-shadow: @direction @direction-y @blur @blurColor;
+}
