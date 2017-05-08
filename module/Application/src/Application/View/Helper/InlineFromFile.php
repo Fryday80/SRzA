@@ -18,7 +18,7 @@ class InlineFromFile extends AbstractHelper
         'js' => 'text/javascript',
         'css' => 'text/css'
     ];
-    public function __invoke($module, $controller = null, $name = null) {
+    public function __invoke($module, $controller = null, $name = null, $arguments = null) {
         if (!$controller) {
             $path = $module;
         } else {
@@ -34,14 +34,19 @@ class InlineFromFile extends AbstractHelper
         if (!$content) {
             throw new Exception("InlineJs: Error while loading file '$path'");
         }
-        return $this->createHTML($extension, $content);
+        echo $this->createHTML($extension, $content, $arguments);
     }
-    private function createHTML($extension, $content) {
+    private function createHTML($extension, $content, $arguments = null) {
         $result = '';
         switch($extension) {
             case 'js':
                 $result = '<script type="';
                 $result .= $this->types[$extension].'">';
+                if (is_array($arguments)) {
+                    $result .= 'var args = ';
+                    $result .= json_encode($arguments);
+                    $result .= ';';
+                }
                 $result .= $content;
                 $result .= '</script>';
                 break;
