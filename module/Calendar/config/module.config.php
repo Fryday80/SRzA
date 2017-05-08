@@ -22,6 +22,18 @@ return array(
                      ),
                  ),
              ),
+
+             'getevents' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/calendar/getEvents',
+                     'defaults' => array(
+                         'controller' => 'Calendar\Controller\Calendar',
+                         'action'     => 'getEvents',
+                     ),
+                 ),
+             ),
+
          ),
      ),
 );

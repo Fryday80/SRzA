@@ -1,0 +1,13 @@
+<?php
+$title = 'Edit Permissions for:';
+$this->headTitle($title);
+
+$this->headLink()->prependStylesheet($this->basePath('libs/fullcalendar/fullcalendar.css'));
+$this->headScript()->prependFile($this->basePath('libs/fullcalendar/fullcalendar.js'));
+$this->headScript()->prependFile($this->basePath('libs/fullcalendar/lib/moment.min.js'));
+?>
+<div id="calendar"></div>
+<?php $this->inlineFromFile('Calendar', 'Calendar', 'calendar.js', array(
+    'canEdit' => false,
+    ''
+));?>

@@ -15,9 +15,8 @@ class CalendarService {
     function __construct($serviceManager) {
         $confPath = __DIR__.'/../../../config/';
         $this->APPLICATION_NAME = 'SRA Events';
-        $this->CREDENTIALS_PATH = $confPath.'calendar-php-quickstart.json';
+        $this->CREDENTIALS_PATH = $confPath.'accessToken.json';
         $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
-        bdump($this->CLIENT_SECRET_PATH);
         // If modifying these scopes, delete your previously saved credentials
         $this->SCOPES = implode(' ', array(
                 Google_Service_Calendar::CALENDAR_READONLY)
@@ -51,23 +50,25 @@ class CalendarService {
         $client->setAuthConfig($this->CLIENT_SECRET_PATH);
         $client->setAccessType('offline');
 
+//        $client->setRedirectUri($this->redirectUri);
+//        $client->setAccessType('offline');
+//        $client->setApprovalPrompt('force');
+
+
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->expandHomeDirectory($this->CREDENTIALS_PATH);
 
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
         } else {
-            bdump("sers");
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
-//            bdump($authUrl);
 //            printf("Open the following link in your browser:\n%s\n", $authUrl);
 //            print 'Enter verification code: ';
-            $authCode = trim('4/rzVhdv_RVG6ujtgeXfog7bpH8wqsAdugYXFo2eXauLE');
+            $authCode = trim('4/7_FtmKBwA3O51w_JtTrTqysNGlNn_NeBozJ1TyZleuM');
 
             // Exchange authorization code for an access token.
             $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-            bdump($accessToken);
             // Store the credentials to disk.
             if(!file_exists(dirname($credentialsPath))) {
                 mkdir(dirname($credentialsPath), 0700, true);
@@ -78,9 +79,25 @@ class CalendarService {
         $client->setAccessToken($accessToken);
 
         // Refresh the token if it's expired.
+//        if ($client->isAccessTokenExpired()) {
+//            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
+//            bdump($accessToken);
+//            bdump($client->getAccessToken());
+//            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+//        }// Refresh the token if it's expired.
+
+
         if ($client->isAccessTokenExpired()) {
-            $client->fetchAccessTokenWithRefreshToken($client->getRefreshToken());
-            file_put_contents($credentialsPath, json_encode($client->getAccessToken()));
+            // save refresh token to some variable
+            $refreshTokenSaved = $client->getRefreshToken();
+            // update access token
+            $client->fetchAccessTokenWithRefreshToken($refreshTokenSaved);
+            // pass access token to some variable
+            $accessTokenUpdated = $client->getAccessToken();
+            // append refresh token
+            $accessTokenUpdated['refresh_token'] = $refreshTokenSaved;
+            // save to file
+            file_put_contents($credentialsPath, json_encode($accessTokenUpdated));
         }
         return $client;
     }
@@ -92,13 +109,9 @@ class CalendarService {
      */
     function expandHomeDirectory($path) {
         $homeDirectory = getenv('HOME');
-        print($homeDirectory);
         if (empty($homeDirectory)) {
             $homeDirectory = getenv('HOMEDRIVE') . getenv('HOMEPATH');
         }
-        print('<br>');
-        print($homeDirectory);
-        print('<br>');
         return str_replace('~', realpath($homeDirectory), $path);
     }
 }
