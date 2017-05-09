@@ -2,12 +2,7 @@
 <h2><?php echo  $this->message ?></h2>
 
 <?php
-//test
-$test = getenv('APPLICATION_ENV');
-$test = 'production';
-switch ($test){
-// test end
-//switch (getenv('APPLICATION_ENV')) {
+switch (getenv('APPLICATION_ENV')) {
     case ("development"):
         if (isset($this->display_exceptions) && $this->display_exceptions):
             if(isset($this->exception) && $this->exception instanceof Exception): ?>
@@ -66,7 +61,7 @@ switch ($test){
 
             <?php endif;
         endif;
-        break;
+        echo '<br/>****************************** standard message ******************************';
     case('production'):
     default:  ?>
         <br/>

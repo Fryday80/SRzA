@@ -49,6 +49,36 @@ class BlazonService implements ServiceLocatorAwareInterface
         return false;
     }
 
+    public function getBigBlazonUrl($selector){
+        if (is_string( $selector )) {
+            $blazonData = $this->getByName($selector);
+        }
+        elseif (is_int( $selector )) {
+            $blazonData = $this->getById($selector);
+        }
+        else {
+            $blazonData = $this->getByName('standard');
+        }
+        $fileName = (isset($blazonData['bigFilename'])) ? $blazonData['bigFilename'] : $blazonData['filename'];
+
+        return '/media/file'.$this::BLAZON_IMAGE_URL.$fileName;
+    }
+
+    public function getBlazonUrl($selector){
+        if (is_string( $selector )) {
+            $blazonData = $this->getByName($selector);
+        }
+        elseif (is_int( $selector )) {
+            $blazonData = $this->getById($selector);
+        }
+        else {
+            $blazonData = $this->getByName('standard');
+        }
+        $fileName = $blazonData['filename'];
+
+        return '/media/file'.$this::BLAZON_IMAGE_URL.$fileName;
+    }
+
     /**
      * @param $name string
      * @param $filePath string
