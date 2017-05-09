@@ -16,7 +16,8 @@ class CalendarService {
         $confPath = __DIR__.'/../../../config/';
         $this->APPLICATION_NAME = 'SRA Events';
         $this->CREDENTIALS_PATH = $confPath.'accessToken.json';
-        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
+//        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
+        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret_fry.json');
         // If modifying these scopes, delete your previously saved credentials
         $this->SCOPES = implode(' ', array(
                 Google_Service_Calendar::CALENDAR_READONLY)
@@ -27,7 +28,7 @@ class CalendarService {
     }
     public function getEventsFrom($start, $end) {
         // Print the next 10 events on the user's calendar.
-        $calendarId = 'primary';
+        $calendarId = 'h538i5k416vk6taarc8m0mnfu4@group.calendar.google.com';
         $optParams = array(
             'maxResults' => 10,
             'orderBy' => 'startTime',
@@ -50,11 +51,13 @@ class CalendarService {
         $client->setAuthConfig($this->CLIENT_SECRET_PATH);
         $client->setAccessType('offline');
 
-//        $client->setRedirectUri($this->redirectUri);
+        $client->setRedirectUri('http://localhost');
 //        $client->setAccessType('offline');
-//        $client->setApprovalPrompt('force');
+        $client->setApprovalPrompt('force');
 
-
+//AIzaSyDyO6e0A4Q3gsSb4xtIBRixFiU0bcTrFBA
+        
+        
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->expandHomeDirectory($this->CREDENTIALS_PATH);
 
@@ -63,9 +66,7 @@ class CalendarService {
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
-//            printf("Open the following link in your browser:\n%s\n", $authUrl);
-//            print 'Enter verification code: ';
-            $authCode = trim('4/7_FtmKBwA3O51w_JtTrTqysNGlNn_NeBozJ1TyZleuM');
+            $authCode = trim('4/zakee2XtcePIkT6ZhDkoXXVy9iRaoGVE1azAREKjSXo');
 
             // Exchange authorization code for an access token.
             $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
