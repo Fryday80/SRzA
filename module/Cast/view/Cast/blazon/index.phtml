@@ -5,12 +5,13 @@ $this->headTitle($title);
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php
+bdump($blazons);
 $this->dataTable()->render($blazons);
-
+?>
+<div class="exampleBlazon">
+ <?php
 /** @var \Cast\View\BlazonHelper $bh */
 $bh = $this->blazon();
-echo $bh->blazon(0, 'soldat', 2);
-echo $bh->blazon(0, null, 2);
-echo $bh->blazon(0, 'soldat');
-echo $bh->blazon(1);
+echo $bh->blazon(1, 'soldat', 'zuLeym');
 ?>
+</div>

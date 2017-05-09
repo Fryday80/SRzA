@@ -12,7 +12,16 @@ class BlazonDataTable extends DataTable
             'name' => 'Wappen',
             'type' => 'custom',
             'render' => function($row) {
-                $links = '<img width="50px" src="/media/file/wappen/' . $row['filename'] . '">';
+                $links = '<img height="50px" src="/media/file/wappen/' . $row['filename'] . '">';
+                return $links;
+            }
+        ));
+        $this->add(array(
+            'name' => 'BigWappen',
+            'type' => 'custom',
+            'render' => function($row) {
+                $pic = (isset($row['bigFilename']))? '/media/file/wappen/'.$row['bigFilename'] : '/img/uikit/cross-NO.gif';
+                $links = '<img height="50px" src="' . $pic . '">';
                 return $links;
             }
         ));

@@ -1403,8 +1403,8 @@ fieldset ul {
 .blazon .blazon-sub-1 {
   position: absolute;
   z-index: 2;
-  top: 7.75px;
-  left: 4px;
+  top: 30%;
+  left: 6%;
   right: 0;
   margin: 0 auto;
   height: 21.75px;
@@ -1417,6 +1417,40 @@ fieldset ul {
   right: 0;
   margin: 0 auto;
   height: 22.5px;
+}
+.exampleBlazon .blazon {
+  position: relative;
+  padding: 40px !important;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+}
+.exampleBlazon .blazon .blazon-sub-0 {
+  position: absolute;
+  z-index: 1;
+  height: 200px;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.exampleBlazon .blazon .blazon-sub-1 {
+  position: absolute;
+  z-index: 2;
+  top: 30%;
+  left: 6%;
+  right: 0;
+  margin: 0 auto;
+  height: 87px;
+}
+.exampleBlazon .blazon .blazon-sub-2 {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 16px;
+  right: 0;
+  margin: 0 auto;
+  height: 90px;
 }
 /* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
