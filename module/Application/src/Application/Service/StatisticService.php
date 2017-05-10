@@ -72,6 +72,7 @@ class StatisticService
 
     public function onError(MvcEvent $e) {
 
+
         $error = $e->getError();
         if (empty($error)) {
             return;
@@ -88,6 +89,7 @@ class StatisticService
             case Application::ERROR_CONTROLLER_INVALID:
             case Application::ERROR_ROUTER_NO_MATCH:
                 // Specifically not handling these
+                //here 404 missmatch is prozessed
                 return;
 
             case Application::ERROR_EXCEPTION:
@@ -114,11 +116,15 @@ class StatisticService
 
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
         $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
-        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['errors'][0]['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
+        $this->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['errors'][0]['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
     }
 
     public function onFinish(MvcEvent $e) {
         $this->saveFile($this->stats);
+    }
+    
+    public function logSystem(SystemLog $log){
+        $this->sysLog->updateSystemLog($log);
     }
 
 //======================================================================================================= PUBLIC GET
@@ -165,9 +171,9 @@ class StatisticService
     public function getSystemLogWhere($where = null, $options = array("filterType" => FilterType::EQUAL, "sortKey" => "time", "sortOrder" => OrderType::DESCENDING))
     {
         if (SPEED_CHECK) Register::add('StatService get SysLog start');
-        $data = $this->stats->systemLog;
+//        $data = $this->stats->systemLog;
         //@todo re-build to db
-//        $data = $this->sysLog->getSystemLogs();
+        $data = $this->sysLog->getSystemLogs();
         if (SPEED_CHECK) Register::add('StatService get SysLog db/var fetched');
         // just fetch all
         if (!is_array($where)) {

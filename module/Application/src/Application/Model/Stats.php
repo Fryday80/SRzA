@@ -77,13 +77,6 @@ class Stats {
     }
 
     /**
-     * @param SystemLog $log
-     */
-    public function logSystem(SystemLog $log) {
-        array_push($this->systemLog, $log);
-    }
-
-    /**
      * @param $hitType
      * @param string $url
      * @param float $mTime microtime(true)
