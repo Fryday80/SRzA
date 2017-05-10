@@ -11,8 +11,6 @@ use Application\Model\Abstracts;
 class Stats {
     /** @var CircularBuffer $actionLog */
     public $actionLog;
-    /** @var SystemLog[] $systemLog */
-    public $systemLog;
     /** @var PageHit[] $pageHits */
     public $pageHits;
     /** @var ActiveUser[] $activeUsers */
@@ -29,12 +27,8 @@ class Stats {
     public $guestNumbersMax = 100000;
     public $guestNumbersMin =  90000;
 
-
-    private $do;
-
     function __construct() {
         $this->actionLog = new CircularBuffer(100);
-        $this->systemLog = array();
         $this->pageHits = array();
         $this->activeUsers = array();
         $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
