@@ -6,7 +6,6 @@ use Application\Model\Abstracts\FilterType;
 use Application\Model\Abstracts\HitType;
 use Application\Model\Abstracts\OrderType;
 use Application\Utility\CircularBuffer;
-use Application\Model\Abstracts;
 
 class Stats {
     /** @var CircularBuffer $actionLog */
