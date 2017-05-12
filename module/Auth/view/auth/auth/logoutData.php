@@ -1,35 +1,18 @@
+<style>
+    ul.logout-list>li>ul>li:hover {
+        background: linear-gradient(to left, #FAEBd7, #AFA08D);
+    }
+    li.logout-list{
+        list-style: none;
+    }
+    .active-user-icon{
+        height: 18px;
+        width: 20px;
+        float: right;
+    }
+</style>
 <?php
-//@todo get active user data here
-$activeUsers = array ("salt", "FryDay");
-$userListItems = array();
-foreach ($activeUsers as $activeUser) {
-    array_push($userListItems, array(
-        "name" => $activeUser,
-        "url" => "/profile/$activeUser",
-    ));
-}
-//@todo create this somewhere else
-$logOutList = array(
-  0 => array (
-      "name" => "mein Menü",
-      "class" => "my-menu",
-      "list" => array (
-          0=> array(
-              "name" => "Mein Profil",
-              "url" => "#",
-          ),
-          1=> array(
-              "name" => "Meine Charaktere",
-              "url" => "#",
-          ),
-      ),
-  ),
-  1 => array (
-      "name" => "Active Users",
-      "class" => "active-users",
-      "list" => $userListItems,
-  ),
-);
+$logOutList = $dataService->getLogoutData();
 
 function createLogoutList($logOutList){
     $return = '<ul class="logout-list">';

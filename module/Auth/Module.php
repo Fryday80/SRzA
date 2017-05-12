@@ -12,6 +12,7 @@ use Auth\Model\UserRoleTable;
 use Auth\Model\AuthStorage;
 use Auth\Service\AclService;
 use Auth\Service\AccessService;
+use Auth\Service\LogoutDataService;
 use Auth\View\Helper\LoginView;
 use Auth\View\Helper\UserInfo;
 use Zend\Http\Request;
@@ -112,8 +113,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     return $userInfo;
                 },
                 'loginview' => function (ServiceLocatorInterface $serviceLocator) {
+                    $dataService = $serviceLocator->getServiceLocator()->get('LogoutDataService');
                     $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
-                    $loginview = new LoginView($storage);
+                    $loginview = new LoginView($storage, $dataService);
                     return $loginview;
                 }
             )
@@ -162,6 +164,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                 },
                 'Auth\Model\RolePermissionTable' => function ($serviceManager) {
                     return new RolePermissionTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
+                },
+                'LogoutDataService' => function ($serviceManager) {
+                    return new LogoutDataService($serviceManager);
                 }
             )
         );

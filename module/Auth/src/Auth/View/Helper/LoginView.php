@@ -1,6 +1,7 @@
 <?php
 namespace Auth\View\Helper;
 
+use Auth\Service\LogoutDataService;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
 use Auth\Model\AuthStorage;
@@ -13,9 +14,11 @@ class LoginView extends AbstractHelper
      * @var AuthStorage
      */
     protected $storage;
+    protected $dataService;
 
-    public function __construct(AuthStorage $storage) {
+    public function __construct(AuthStorage $storage, LogoutDataService $dataService) {
         $this->storage = $storage;
+        $this->dataService = $dataService;
         return $this;
     }
     public function __invoke()
@@ -29,6 +32,7 @@ class LoginView extends AbstractHelper
             return $this->getView()->render($viewModel);
         } else {
             $viewModel->setTemplate("auth/auth/logout.phtml");
+            $viewModel->setVariable('dataService', $this->dataService);
 //            $viewModel->setVariable('user', $name);
 //            $viewModel->setVariable('role', $role);
             return $this->getView()->render($viewModel);
