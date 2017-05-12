@@ -14,11 +14,9 @@ class LoginView extends AbstractHelper
      * @var AuthStorage
      */
     protected $storage;
-    protected $myMenuService;
 
-    public function __construct(AuthStorage $storage, MyMenuService $myMenuService) {
+    public function __construct(AuthStorage $storage) {
         $this->storage = $storage;
-        $this->myMenuService = $myMenuService;
         return $this;
     }
     public function __invoke()
@@ -32,7 +30,6 @@ class LoginView extends AbstractHelper
             return $this->getView()->render($viewModel);
         } else {
             $viewModel->setTemplate("auth/auth/logout.phtml");
-            $viewModel->setVariable('myMenuService', $this->myMenuService);
 //            $viewModel->setVariable('user', $name);
 //            $viewModel->setVariable('role', $role);
             return $this->getView()->render($viewModel);

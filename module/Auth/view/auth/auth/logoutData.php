@@ -20,7 +20,7 @@
     }
 </style>
 <?php
-$logOutList = $myMenuService->getLogoutData();
+//$logOutList = $myMenuService->getLogoutData();
 
 function createLogoutList($logOutList){
     $return = '<ul class="logout-list">';
@@ -41,6 +41,6 @@ function createLogoutList($logOutList){
         <br/>
     </div>
     <div>
-        <?php echo createLogoutList($logOutList); ?>
+<!--        --><?php //echo createLogoutList($logOutList); ?>
     </div>
 </div>
