@@ -1,6 +1,7 @@
 $(document).ready(function() {
     var stayOpenFlag = false,
         $details = $('<div>details</div>');
+
     $details.css({
         position: "absolute",
         top: "0px",

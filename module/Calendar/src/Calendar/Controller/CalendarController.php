@@ -1,6 +1,7 @@
 <?php
 namespace Calendar\Controller;
 
+use Calendar\Form\EventForm;
 use Calendar\Service\CalendarService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -13,25 +14,14 @@ class CalendarController extends AbstractActionController
 
     public function indexAction()
     {
+        /** @var CalendarService $calendarService */
         $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $results = $calendarService->getEventsFrom(1,1);
 
-        bdump($results);
-        if (count($results->getItems()) == 0) {
-            print "No upcoming events found.\n";
-        } else {
-            print "Upcoming events:\n";
-            foreach ($results->getItems() as $event) {
-                $start = $event->start->dateTime;
-                if (empty($start)) {
-                    $start = $event->start->date;
-                }
-                printf("%s (%s)\n", $event->getSummary(), $start);
-            }
-        }
-        //return new ViewModel(array(
-        //    'albums' => $this->getAlbumTable()->fetchAll()
-        //));
+        $form = new EventForm($calendarService);
+        return new ViewModel(array(
+            'calendars' => $calendarService->getCalendars(),
+            'form' => $form
+        ));
     }
     public function getEventsAction() {
 
