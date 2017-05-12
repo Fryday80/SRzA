@@ -2,8 +2,16 @@
     ul.logout-list>li>ul>li:hover {
         background: linear-gradient(to left, #FAEBd7, #AFA08D);
     }
-    li.logout-list{
+    ul.logout-list,
+    ul.logout-list *
+    {
         list-style: none;
+    }
+    li.logout-list>span{
+    }
+    li.logout-list>ul{
+        border: solid 1px;
+        margin-left: 10px;
     }
     .active-user-icon{
         height: 18px;
