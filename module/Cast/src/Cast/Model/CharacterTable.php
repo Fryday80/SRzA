@@ -103,6 +103,7 @@ class CharacterTable extends AbstractTableGateway
                 ), 'char.family_id = family.id', array(
                     'family_id' => 'id',
                     'family_name' => 'name',
+                    'blazon_id' => 'blazon_id',
                 ), 'left')
                 ->join(array(
                     'job' => 'job'

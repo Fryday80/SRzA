@@ -6,6 +6,7 @@ namespace Application\Controller;
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
 use Application\Service\StatisticService;
+use Application\Utility\DataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;

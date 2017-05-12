@@ -50,7 +50,7 @@ class BlazonService implements ServiceLocatorAwareInterface
     }
 
     public function getBigBlazonUrl($selector){
-        if (is_string( $selector )) {
+        if (is_string( $selector )) {//ja da giebt es sicher ne einfache lösung man muss sich nur überlegen mit welche funktion es am geschicktesten geht
             $blazonData = $this->getByName($selector);
         }
         elseif (is_int( $selector )) {
