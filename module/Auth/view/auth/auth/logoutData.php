@@ -20,7 +20,7 @@
     }
 </style>
 <?php
-$logOutList = $dataService->getLogoutData();
+$logOutList = $myMenuService->getLogoutData();
 
 function createLogoutList($logOutList){
     $return = '<ul class="logout-list">';

@@ -6,7 +6,7 @@ namespace Auth\Service;
 use Application\Model\ActiveUser;
 use Application\Service\StatisticService;
 
-class LogoutDataService
+class MyMenuService
 {
     /** @var StatisticService $stats */
     private $stats;
