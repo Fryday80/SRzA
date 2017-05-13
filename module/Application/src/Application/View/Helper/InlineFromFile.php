@@ -42,12 +42,16 @@ class InlineFromFile extends AbstractHelper
             case 'js':
                 $result = '<script type="';
                 $result .= $this->types[$extension].'">';
+                $result .= '(function(){';
                 if (is_array($arguments)) {
                     $result .= 'var args = ';
                     $result .= json_encode($arguments);
                     $result .= ';';
+                } else {
+                    $result .= 'var args = [];';
                 }
                 $result .= $content;
+                $result .= '})()';
                 $result .= '</script>';
                 break;
             case 'css':
