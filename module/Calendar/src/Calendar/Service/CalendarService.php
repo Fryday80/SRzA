@@ -19,7 +19,7 @@ class CalendarService {
         $this->APPLICATION_NAME = 'SRA Events';
         $this->CREDENTIALS_PATH = $confPath.'accessToken.json';
 //        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
-        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret_fry.json');
+        $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
         // If modifying these scopes, delete your previously saved credentials
         $this->SCOPES = implode(' ', array(
                 Google_Service_Calendar::CALENDAR_READONLY)
@@ -34,7 +34,7 @@ class CalendarService {
     }
     public function getEventsFrom($start, $end = null) {
         // Print the next 10 events on the user's calendar.
-        $calendarId = 'h538i5k416vk6taarc8m0mnfu4@group.calendar.google.com';
+        $calendarId = 'primary';
         $optParams = array(
             'maxResults' => 10,
             'orderBy' => 'startTime',
@@ -92,9 +92,6 @@ class CalendarService {
 //        $client->setAccessType('offline');
         $client->setApprovalPrompt('force');
 
-//AIzaSyDyO6e0A4Q3gsSb4xtIBRixFiU0bcTrFBA
-        
-        
         // Load previously authorized credentials from a file.
         $credentialsPath = $this->expandHomeDirectory($this->CREDENTIALS_PATH);
 
@@ -103,7 +100,7 @@ class CalendarService {
         } else {
             // Request authorization from the user.
             $authUrl = $client->createAuthUrl();
-            $authCode = trim('4/zakee2XtcePIkT6ZhDkoXXVy9iRaoGVE1azAREKjSXo');
+            $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
 
             // Exchange authorization code for an access token.
             $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
