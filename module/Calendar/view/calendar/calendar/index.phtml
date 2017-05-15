@@ -8,9 +8,44 @@ $this->headScript()->prependFile($this->basePath('libs/fullcalendar/lib/moment.m
 
 $form->prepare();
 ?>
+<style>
+    .flex {
+        display: flex;
+        overflow: hidden;
+    }
+    .form {
+
+    }
+    .preview {
+        width: 200px;
+        transition: all 0.5s linear;
+    }
+    .preview .wrapper {
+        width: 200px;
+    }
+    .hideFlex {
+        width: 0px;
+        transition: all 0.5s linear;
+    }
+</style>
 <div class="box event-details">
-    <h3>Event add/edit form</h3>
-    <?php echo $this->form($form); ?>
+    <div class="flex">
+        <div class="form">
+            <h3>Event add/edit form</h3>
+            <?php echo $this->form($form); ?>
+        </div>
+        <div class="preview">
+            <div class="wrapper">
+                <h3 class="title">Event Title</h3>
+                <p>------------------------------------------------------------</p>
+                <p class="description">beschreibung</p>
+                <p class="start">start zeit</p>
+                <p class="end">end zeit</p>
+                <p class="allDay">allDay</p>
+                <p class="calendar">calendar id</p>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="eventPreview">
     <ul>

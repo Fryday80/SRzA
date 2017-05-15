@@ -13,34 +13,40 @@ $(document).ready(function() {
     });
     $details.addClass("box");
 
+    function calcDistanceFromElement(ele, x, y) {
+
+    }
     function openDetails(event, jsEvent, formData = null) {
         // if (isDetailsOpen) return;
         isDetailsOpen = true;
         $details.css({
             left: jsEvent.originalEvent.pageX - $('#calendar').offset().left,
             top: jsEvent.originalEvent.pageY - $('#calendar').offset().top,
-            display: "block"
+            display: "block",
+            opacity: 1.0
         });
         if (formData !== null) $('#Event').formPush(formData);
-        let relPos = {x:0,y:0};
-        let handlerID = $(window).on('mousemove', function moveHandler(e) {
-            relPos.x += e.originalEvent.movementX;
-            relPos.y += e.originalEvent.movementY;
-            console.log(relPos);
-            let x = (relPos.x > 0)? Math.max(0, relPos.x - $details.width()): relPos.x;
-            let y = (relPos.y > 0)? Math.max(0, relPos.y - $details.height()): relPos.y;
+
+        $(window).on('mousemove', function moveHandler(e) {
+
+            let bBox = $details.get(0).getBoundingClientRect();
+            let X = e.originalEvent.clientX - bBox.left;
+            let Y = e.originalEvent.clientY - bBox.top;
+
+            let x = (X > 0)? Math.max(0, X - bBox.width): X;
+            let y = (Y > 0)? Math.max(0, Y - bBox.height): Y;
             let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
             let opacity = 1 - (distance / 400);
             $details.css('opacity', opacity);
             if (distance > 300) {
                 closeDetails();
-                $(window).off('mousemove', null,moveHandler);
+                $(window).off('mousemove', null, moveHandler);
             }
         });
     }
     function closeDetails() {
         $details.hide();
-        $details.css('opacity', 1);
+        $details.css('opacity', 1.0);
         isDetailsOpen = false;
     }
 
