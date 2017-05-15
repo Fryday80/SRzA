@@ -587,10 +587,12 @@ button[data-balloon] {
   transform-origin: top;
 }
 [data-balloon]:after {
-  background: rgba(17, 17, 17, 0.9);
+  background: rgba(67, 12, 12, 0.9);
   border-radius: 4px;
+  border-color: #AFA08D;
   color: #fff;
   content: attr(data-balloon);
+  font-family: bodytext;
   font-size: 12px;
   padding: .5em 1em;
   white-space: nowrap;
