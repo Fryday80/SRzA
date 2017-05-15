@@ -5,18 +5,23 @@ $this->headTitle($title);
 $this->headLink()->prependStylesheet($this->basePath('libs/fullcalendar/fullcalendar.css'));
 $this->headScript()->prependFile($this->basePath('libs/fullcalendar/fullcalendar.js'));
 $this->headScript()->prependFile($this->basePath('libs/fullcalendar/lib/moment.min.js'));
+
+$form->prepare();
 ?>
-<div class="box szraContextMenu">
+<div class="box event-details">
     <h3>Event add/edit form</h3>
-    <?php
-    $form->prepare();
-    echo $this->form($form);
-    ?>
+    <?php echo $this->form($form); ?>
+</div>
+<div id="eventPreview">
+    <ul>
+        <li><span class="title">Title</span></li>
+        <li><span class="description">Description</span></li>
+    </ul>
 </div>
 <div id="calendar"></div>
 <?php
 $this->inlineFromFile('Calendar', 'Calendar', 'calendar.js', array(
-    'canEdit' => false,
+    'canEdit' => true,
 ));
 $this->inlineFromFile('Calendar', 'Calendar', 'contextMenu.js');
 ?>

@@ -27,7 +27,9 @@ class EventForm extends Form
         ));
         $this->add(array(
             'name' => 'description',
-            'type' => 'Text',
+            'type' => 'Zend\Form\Element\Textarea',
+            'attributes' => array(
+            ),
             'options' => array(
                 'label' => 'Beschreibung',
             ),
@@ -48,7 +50,7 @@ class EventForm extends Form
             ),
         ));
         $this->add(array(
-            'name' => 'checkbox',
+            'name' => 'allDay',
             'type' => 'Zend\Form\Element\Checkbox',
             'options' => array(
                 'label' => 'AllDay',

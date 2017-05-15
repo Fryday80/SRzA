@@ -30,14 +30,15 @@ class CalendarController extends AbstractActionController
 
         $items = $results->getItems();
         $result = [];
-        bdump($items);
+//        bdump($items);die;
         foreach ($items as $value) {
             array_push($result, [
                 'title'  => $value['summary'],
                 'start'  => ($value['sequence'] == 3)? $value['start']['date'] : $value['start']['dateTime'],
                 'end'    => ($value['sequence'] == 3)? $value['end']['date'] : $value['end']['dateTime'],
 //                'id'     => $value['id'],
-//                'allDay' => ($value['sequence'] == 3)? true: false,
+                'description' => $value['description'],
+                'allDay' => ($value['sequence'] == 3)? true: false,
 //                'url' => 'leer',
 //                'className' => [''],
 //                'editable' => false,
