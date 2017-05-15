@@ -23,10 +23,28 @@ $form->prepare();
     .preview .wrapper {
         width: 200px;
     }
+    .preview .wrapper *
+    {
+        list-style: none;
+    }
     .hideFlex {
         width: 0px;
         transition: all 0.5s linear;
     }
+    td.fc-sun,
+    td.fc-sat
+    {
+        background: linear-gradient(#dbd2c9, white 75%, transparent);
+    }
+    td.fc-mon,
+    td.fc-tue,
+    td.fc-wed,
+    td.fc-thu,
+    td.fc-fri
+    {
+        background: linear-gradient(#dbd2c9, white 50%, transparent);
+    }
+
 </style>
 <div class="box event-details">
     <div class="flex">
@@ -35,23 +53,20 @@ $form->prepare();
             <?php echo $this->form($form); ?>
         </div>
         <div class="preview">
-            <div class="wrapper">
-                <h3 class="title">Event Title</h3>
-                <p>------------------------------------------------------------</p>
-                <p class="description">beschreibung</p>
-                <p class="start">start zeit</p>
-                <p class="end">end zeit</p>
-                <p class="allDay">allDay</p>
-                <p class="calendar">calendar id</p>
-            </div>
+            <ul class="wrapper">
+                <li>
+                    <h3 class="item" name="title">Event Title</h3>
+                    <ul>
+                        <li><p class="item" name="description">beschreibung</p></li>
+                        <li><p class="item" name="date">start zeit</p></li>
+                        <li><p class="item" name="time">end zeit</p></li>
+                        <li><p class="item" name="allDay">allDay</p></li>
+                        <li><p class="item" name="calendar_id">calendar id</p></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
-</div>
-<div id="eventPreview">
-    <ul>
-        <li><span class="title">Title</span></li>
-        <li><span class="description">Description</span></li>
-    </ul>
 </div>
 <div id="calendar"></div>
 <?php

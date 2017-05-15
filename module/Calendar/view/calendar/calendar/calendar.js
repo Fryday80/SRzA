@@ -16,6 +16,19 @@ $(document).ready(function() {
     function calcDistanceFromElement(ele, x, y) {
 
     }
+
+    function pushPreviewDetails(formData) {
+        var stt, ett;
+        var format = 'DD[.]MM[.]YYYY';
+        stt = new moment(formData['startTime']);
+        ett = new moment(formData['endTime']);
+        formData['date'] = (stt.format(format) == ett.format(format))? stt.format(format) : stt.format(format) + ' - ' + ett.format(format);
+        formData['time'] = stt.format('HH:mm') + ' - ' + ett.format('HH:mm');
+        $(".preview .wrapper .item").each( function() {
+            $(this).html(formData[$(this).attr('name')]);
+        });
+    }
+
     function openDetails(event, jsEvent, formData = null) {
         // if (isDetailsOpen) return;
         isDetailsOpen = true;
@@ -26,6 +39,7 @@ $(document).ready(function() {
             opacity: 1.0
         });
         if (formData !== null) $('#Event').formPush(formData);
+        pushPreviewDetails(formData);
 
         $(window).on('mousemove', function moveHandler(e) {
 
@@ -62,6 +76,7 @@ $(document).ready(function() {
         editable: true,
         theme: true,
         selectable: true,
+        firstDay: 4,
         eventSources: [
             {
                 url: '/calendar/getEvents',
@@ -136,7 +151,6 @@ $(document).ready(function() {
     $('#calendar').css({position: 'absolute'});
     $('#calendar').append($details);
 });
-
 (function($) {
     "use strict";
     function populateFormData(formEle, data) {
