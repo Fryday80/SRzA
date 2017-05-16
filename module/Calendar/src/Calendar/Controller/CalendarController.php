@@ -1,6 +1,7 @@
 <?php
 namespace Calendar\Controller;
 
+use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;
 use Calendar\Service\CalendarService;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -69,6 +70,25 @@ class CalendarController extends AbstractActionController
 //            'borderColor' => '',
 //            'textColor' => '',
 //        ));
+    }
+    public function configAction(){
+        $calendarSet = array();
+        /** @var CalendarService $calendarService */
+        $calendarService = $this->getServiceLocator()->get('CalendarService');
+        $calendars = $calendarService->getCalendars();
+        bdump($calendars);
+        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
+        $allRoles = $roleTable->getUserRoles();
+//        $form = new CalendarForm($allRoles);
+        foreach ($calendars as $calendar ){
+            $form = new CalendarForm($allRoles);
+            $form->setData($calendar);
+            array_push($calendarSet, $form);
+        }
+        return new ViewModel(array(
+            'calendars' => $calendars,
+            'calendarSet' => $calendarSet
+        ));
     }
     public function createEventAction() {
         //@todo implement

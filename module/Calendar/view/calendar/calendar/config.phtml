@@ -1,0 +1,18 @@
+
+<accordion>
+    <?php
+    /**
+     * @var  $key
+     * @var  \Calendar\Form\CalendarForm $calendar
+     */
+    foreach ($calendarSet as $key => $calendar): ?>
+    <span data-name="<?php echo $calendar->get('id')->getValue(); ?>" style="border-left: solid 4px <?php echo $calendar->get('backgroundColor')->getValue(); ?>"><?php echo $calendar->get('summary')->getValue(); ?></span>
+    <div><?php echo $this->form($calendar); ?></div>
+    <?php endforeach; ?>
+</accordion>
+<script>
+    $('.color input').change(function() {
+        let id = $(this).parent('label').parent('form').children('input[name="id"]').val();
+        $('span[data-name="'+id+'"]').css('border-left-color', $(this).val());
+    });
+</script>

@@ -33,6 +33,16 @@ return array(
                      ),
                  ),
              ),
+             'config' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/calendar/config',
+                     'defaults' => array(
+                         'controller' => 'Calendar\Controller\Calendar',
+                         'action'     => 'config',
+                     ),
+                 ),
+             ),
 
          ),
      ),
