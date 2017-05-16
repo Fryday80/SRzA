@@ -1,4 +1,14 @@
-
+<style>
+    form label select[name="role_id"]
+    {
+        height: 40px;
+    }
+    .color-change
+    {
+        width: 100%;
+        height: 15px;
+    }
+</style>
 <accordion>
     <?php
     /**
@@ -12,7 +22,26 @@
 </accordion>
 <script>
     $('.color input').change(function() {
+        var newColor = $(this).val();
         let id = $(this).parent('label').parent('form').children('input[name="id"]').val();
-        $('span[data-name="'+id+'"]').css('border-left-color', $(this).val());
+
+        animateColorChange(id, $(this).parent('label').parent('form').parent('div'), $('span[data-name="'+id+'"]').css('border-left-color'), $(this).val());
+
+        $('span[data-name="'+id+'"]').css('border-left-color', newColor);
     });
+    function animateColorChange(id, parentDiv, oldColor, newColor) {
+        $('.color-change', parentDiv).remove();
+        var ele = ('<div class="color-change"></div>');
+        parentDiv.append(ele);
+        $('.color-change', parentDiv).css('background-color', oldColor);
+        $('.color-change', parentDiv).animate({
+            'background-color': newColor
+        },
+            3000,
+            function () {
+                $('.color-change', parentDiv).css('background', 'linear-gradient(to left, ' + oldColor + ', ' + newColor + ')');
+            }
+        )
+    }
+
 </script>

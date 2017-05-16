@@ -35,7 +35,7 @@ class CalendarForm extends Form
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(),
             'options' => array(
-                'label' => 'role',
+                'label' => 'Minimum Role',
                 'value_options' => $this->getRolesForSelect(),
             )
         ));
