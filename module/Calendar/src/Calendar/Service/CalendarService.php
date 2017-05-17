@@ -1,6 +1,7 @@
 <?php
 namespace Calendar\Service;
 
+use DateTime;
 use Exception;
 use Google_Service_Calendar;
 use Google_Client;
@@ -30,19 +31,51 @@ class CalendarService {
     }
     public function getCalendars() {
         $data = $this->gCalendarService->calendarList->listCalendarList();
+        bdump($data);
         return $data['modelData']['items'];
     }
     public function getEventsFrom($start, $end = null) {
-        // Print the next 10 events on the user's calendar.
-        $calendarId = 'primary';
+        $start = new DateTime($start);
         $optParams = array(
-            'maxResults' => 10,
+            'maxResults' => 1,
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
-            'timeMin' => date('c', time() - 4000000),
+            'timeMin' => $start->format('c'),
         );
-        $results = $this->gCalendarService->events->listEvents($calendarId, $optParams);
-        return $results;
+        if($end) {
+            $end = new DateTime($end);
+            $optParams['timeMax'] = $end->format('c');
+        }
+        $items = array();
+        $calendars = $this->getCalendars();
+        foreach ($calendars as $calendar) {
+            $results = $this->gCalendarService->events->listEvents($calendar['id'], $optParams);
+            $items = array_merge($items, $results->getItems());
+        }
+        $result = [];
+        /** @var Google_Service_Calendar_Event $value */
+        foreach ($items as $value) {
+            array_push($result, [
+                'id'     => $value->getId(),
+//                'calendarId'     => $value->getId(),
+                'title'  => $value['summary'],
+                'start'  => ($value['sequence'] == 3)? $value['start']['date'] : $value['start']['dateTime'],
+                'end'    => ($value['sequence'] == 3)? $value['end']['date'] : $value['end']['dateTime'],
+                'description' => $value['description'],
+                'allDay' => ($value['sequence'] == 3)? true: false,
+//                'url' => 'leer',
+//                'className' => [''],
+//                'editable' => false,
+                'startEditable' => true,
+                'durationEditable' => true,
+//                'source' => null,
+//                'color' => '',
+//                'backgroundColor' => '',
+//                'borderColor' => '',
+//                'textColor' => '',
+            ]);
+        }
+        return $result;
     }
 
     public function createEvent() {

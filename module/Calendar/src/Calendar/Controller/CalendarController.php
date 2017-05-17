@@ -4,6 +4,8 @@ namespace Calendar\Controller;
 use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;
 use Calendar\Service\CalendarService;
+use DateTime;
+use Zend\Http\PhpEnvironment\Request;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -29,33 +31,38 @@ class CalendarController extends AbstractActionController
     }
     public function getEventsAction() {
 
-        $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $results = $calendarService->getEventsFrom(1,1);
-
-        $items = $results->getItems();
-        $result = [];
-//        bdump($items);die;
-        foreach ($items as $value) {
-            array_push($result, [
-                'title'  => $value['summary'],
-                'start'  => ($value['sequence'] == 3)? $value['start']['date'] : $value['start']['dateTime'],
-                'end'    => ($value['sequence'] == 3)? $value['end']['date'] : $value['end']['dateTime'],
-//                'id'     => $value['id'],
-                'description' => $value['description'],
-                'allDay' => ($value['sequence'] == 3)? true: false,
-//                'url' => 'leer',
-//                'className' => [''],
-//                'editable' => false,
-                'startEditable' => true,
-                'durationEditable' => true,
-//                'source' => null,
-//                'color' => '',
-//                'backgroundColor' => '',
-//                'borderColor' => '',
-//                'textColor' => '',
-            ]);
+        $request = $this->getRequest();
+        if (!$request->isPost()) {
+            return new JsonModel(array(
+                'error' => 'need post data startTime'
+            ));
         }
-        return new JsonModel($result);
+        $post = $request->getPost();
+        $calendarService = $this->getServiceLocator()->get("CalendarService");
+        $results = $calendarService->getEventsFrom($post['start'], $post['end']);
+//        $items = $results->getItems();
+//        $result = [];
+//        foreach ($items as $value) {
+//            array_push($result, [
+//                'title'  => $value['summary'],
+//                'start'  => ($value['sequence'] == 3)? $value['start']['date'] : $value['start']['dateTime'],
+//                'end'    => ($value['sequence'] == 3)? $value['end']['date'] : $value['end']['dateTime'],
+////                'id'     => $value['id'],
+//                'description' => $value['description'],
+//                'allDay' => ($value['sequence'] == 3)? true: false,
+////                'url' => 'leer',
+////                'className' => [''],
+////                'editable' => false,
+//                'startEditable' => true,
+//                'durationEditable' => true,
+////                'source' => null,
+////                'color' => '',
+////                'backgroundColor' => '',
+////                'borderColor' => '',
+////                'textColor' => '',
+//            ]);
+//        }
+        return new JsonModel($results);
 //        return new JsonModel(array(
 //            'id' => 42,
 //            'title' => 'titel',
