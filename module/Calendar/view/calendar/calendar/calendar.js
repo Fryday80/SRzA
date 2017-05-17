@@ -68,6 +68,7 @@ $(document).ready(function() {
         let url;
         switch(state){
             case 'delete':
+                //@todo confirm delete pop up
                 url = "/calendar/deleteEvent";
                 break;
             case 'add':
@@ -92,40 +93,40 @@ $(document).ready(function() {
             //@todo on error is not decoded
             //e = JSON.parse(e);
             if (e.error) {
-                if (e.code == 1) {
-                    removeAllCharFormErrors();
-                    // $('#Character input[name="id"]').val(char.id);
-                    let errors = e.formErrors;
-                    if (errors.name) $('#Character input[name="name"]').parent('label').after('<ul><li>'+ errors.name.isEmpty +'</li></ul>');
-
-                    // $('#Character input[name="name"]').parent('label').next().val(char.name);
-                    if (errors.surename) $('#Character input[name="surename"]').parent('label').after('<ul><li>'+ errors.surename.isEmpty +'</li></ul>')
-                    // $('#Character input[name="gender"]').val([char.gender]);
-                    // $('#Character input[name="birthday"]').val(char.birthday);
-                    // $('#Character input[name="vita"]').val(char.vita);
-
-
-
-
-                    // $('#Character select[name="family_id"]').val(parseInt(char.family_id));
-                    // $('#Character select[name="tross_id"]').val(parseInt(char.tross_id));
-                    // $('#Character select[name="job_id"]').val(parseInt(char.job_id));
-                }
-            } else {
-                switch (e.code) {
-                    case 200:
-                        //saved
-                        let char = getCharByID(id);
-                        characters[characters.indexOf(char)] = e.data;
-                        break;
-                    case 201:
-                        //new created
-                        characters.push(e.data);
-                        createCharElement(e.data);
-                        break;
-                }
-                scrollToCharSelect();
-                hideCharForm();
+            //     if (e.code == 1) {
+            //         removeAllCharFormErrors();
+            //         // $('#Character input[name="id"]').val(char.id);
+            //         let errors = e.formErrors;
+            //         if (errors.name) $('#Character input[name="name"]').parent('label').after('<ul><li>'+ errors.name.isEmpty +'</li></ul>');
+            //
+            //         // $('#Character input[name="name"]').parent('label').next().val(char.name);
+            //         if (errors.surename) $('#Character input[name="surename"]').parent('label').after('<ul><li>'+ errors.surename.isEmpty +'</li></ul>')
+            //         // $('#Character input[name="gender"]').val([char.gender]);
+            //         // $('#Character input[name="birthday"]').val(char.birthday);
+            //         // $('#Character input[name="vita"]').val(char.vita);
+            //
+            //
+            //
+            //
+            //         // $('#Character select[name="family_id"]').val(parseInt(char.family_id));
+            //         // $('#Character select[name="tross_id"]').val(parseInt(char.tross_id));
+            //         // $('#Character select[name="job_id"]').val(parseInt(char.job_id));
+            //     }
+            // } else {
+            //     switch (e.code) {
+            //         case 200:
+            //             //saved
+            //             let char = getCharByID(id);
+            //             characters[characters.indexOf(char)] = e.data;
+            //             break;
+            //         case 201:
+            //             //new created
+            //             characters.push(e.data);
+            //             createCharElement(e.data);
+            //             break;
+            //     }
+            //     scrollToCharSelect();
+            //     hideCharForm();
             }
             //@todo remove load animation and show element
         });
@@ -223,11 +224,13 @@ $(document).ready(function() {
     });
     $('#calendar').css({position: 'absolute'});
     $('#calendar').append($details);
-    $('#Event').submit(function(e) {
-        let data = $('#Event').formPull();
-        changeEvent(data, $('#Event').attr('state'));
+
+    function pushFormData(e, form, mode) {
+        let data = form.formPull();
+        changeEvent(data, mode);
         e.preventDefault();
-    });
+        //@todo refresh data
+    }
     
     function setDetailsMode(mode) {
         switch(mode) {
@@ -248,11 +251,13 @@ $(document).ready(function() {
     
     $('.event.edit-btn').on('click', function(){
         setDetailsMode('edit');
-    });  
-    $('.event.delete-btn').on('click', function(){
-        //trigger delete
     });
-
+    $('#Event').submit(function(e) {
+        pushFormData( e, $('#Event'), $('.box.event-details').attr('state') );
+    });
+    $('.event.delete-btn').on('click', function(e){
+        pushFormData(e, $('#Event'), 'delete');
+    });
 });
 (function($) {
     "use strict";

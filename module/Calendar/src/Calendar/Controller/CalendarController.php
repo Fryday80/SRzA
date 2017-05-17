@@ -94,21 +94,29 @@ class CalendarController extends AbstractActionController
         ));
     }
     public function addEventAction() {
+        $request = json_decode($this->getRequest()->getContent());
         //@todo implement
         return new JsonModel(array(
-            'data' => 42
+            'data' => 'add newEvent triggered',
+            'request' => $request
         ));
     }
     public function editEventAction() {
+        $request = json_decode($this->getRequest()->getContent());
         //@todo implement
+        // save ($request->title, $request->description ....)
         return new JsonModel(array(
-            'data' => 42
+            'data' => 'edit triggered',
+            'request' => $request
         ));
     }
     public function deleteEventAction() {
+        $request = json_decode($this->getRequest()->getContent());
+        var_dump($request);
         //@todo implement
         return new JsonModel(array(
-            'data' => 42
+            'data' => 'delete triggered',
+            'request' => $request
         ));
     }
 }
