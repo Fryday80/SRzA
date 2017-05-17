@@ -25,11 +25,11 @@
         var newColor = $(this).val();
         let id = $(this).parent('label').parent('form').children('input[name="id"]').val();
 
-        animateColorChange(id, $(this).parent('label').parent('form').parent('div'), $('span[data-name="'+id+'"]').css('border-left-color'), $(this).val());
+        animateColorChange($(this).parent('label').parent('form').parent('div'), $('span[data-name="'+id+'"]').css('border-left-color'), $(this).val());
 
         $('span[data-name="'+id+'"]').css('border-left-color', newColor);
     });
-    function animateColorChange(id, parentDiv, oldColor, newColor) {
+    function animateColorChange(parentDiv, oldColor, newColor) {
         $('.color-change', parentDiv).remove();
         var ele = ('<div class="color-change"></div>');
         parentDiv.append(ele);

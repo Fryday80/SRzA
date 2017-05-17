@@ -14,7 +14,61 @@ $form->prepare();
         overflow: hidden;
     }
     .form {
-
+        overflow: hidden;
+    }
+    .event-details[state="closed"] {
+        display: none !important;
+    }
+    .event-details[state="closed"] .form,
+    .event-details[state="closed"] .preview {
+        width: 0px;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .form {
+        width: 0px;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .event.edit-btn{
+        width: auto;
+        padding-left: 18px;
+        overflow: hidden;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .event.delete-btn{
+        width: 0px;
+        overflow: hidden;
+        padding: 0;
+        transition: all 0.8s;
+    }
+    .event-details[state="edit"] .form {
+        width: 270px;
+        transition: all 0.8s;
+    }
+    .event-details[state="edit"] .event.edit-btn{
+        width: 0px;
+        padding: 0;
+        overflow: hidden;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .event.edit-btn::before{
+        position: absolute;
+        left: -13px;
+        content: "";
+        height: 0;
+        width: 0;
+        border: solid 15px rgba(67,12,12, 0.5);
+        border-top-color: transparent;
+        border-right: solid 15px;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    }
+    .event-details[state="edit"] .event.delete-btn{
+        width: auto;
+        transition: all 0.8s;
+    }
+    .event-details[state="add"] .preview {
+        width: 0px;
+        transition: all 0.8s;
     }
     .preview {
         width: 200px;
@@ -46,7 +100,7 @@ $form->prepare();
     }
 
 </style>
-<div class="box event-details">
+<div class="box event-details" state="preview">
     <div class="flex">
         <div class="form">
             <h3>Event add/edit form</h3>
@@ -62,6 +116,12 @@ $form->prepare();
                         <li><p class="item" name="time">end zeit</p></li>
                         <li><p class="item" name="allDay">allDay</p></li>
                         <li><p class="item" name="calendar_id">calendar id</p></li>
+                        <?php if ($canEdit == true): ?>
+                        <li><button class="event edit-btn">Edit falls man darf</button></li>
+                        <?php endif; ?>
+                        <?php if ($canDelete == true): ?>
+                            <li><button class="event delete-btn">Delete falls man darf</button></li>
+                        <?php endif; ?>
                     </ul>
                 </li>
             </ul>

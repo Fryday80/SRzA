@@ -2,7 +2,8 @@ $(document).ready(function() {
     "use strict";
     var isDetailsOpen = false,
         canEdit = args['canEdit'] || false,
-        $details = $('.event-details');
+        $details = $('.event-details'),
+        detailsState = 'closed';//closed, preview, edit, add
 
     $details.css({
         position: "absolute",
@@ -13,9 +14,6 @@ $(document).ready(function() {
     });
     $details.addClass("box");
 
-    function calcDistanceFromElement(ele, x, y) {
-
-    }
 
     function pushPreviewDetails(formData) {
         var stt, ett;
@@ -29,8 +27,9 @@ $(document).ready(function() {
         });
     }
 
-    function openDetails(event, jsEvent, formData = null) {
+    function openDetails(event, jsEvent, formData = null, mode = 'preview') {
         // if (isDetailsOpen) return;
+        setDetailsMode(mode);
         isDetailsOpen = true;
         $details.css({
             left: jsEvent.originalEvent.pageX - $('#calendar').offset().left,
@@ -59,11 +58,78 @@ $(document).ready(function() {
         });
     }
     function closeDetails() {
-        $details.hide();
+        setDetailsMode('closed');
+        // $details.hide();
         $details.css('opacity', 1.0);
         isDetailsOpen = false;
     }
 
+    function changeEvent(formData, state) {
+        let url;
+        switch(state){
+            case 'delete':
+                url = "/calendar/deleteEvent";
+                break;
+            case 'add':
+                url = "/calendar/addEvent";
+                break;
+            case 'edit':
+                url = "/calendar/editEvent";
+                break;
+        }
+        let promise = $.ajax({
+            url: url,
+            type: "POST",
+            data: JSON.stringify(formData)
+        });
+
+        promise.fail(function(jqXHR, textStatus, errorThrown) {
+            //@todo handle error
+            console.error(textStatus);
+            //@todo remove load animation and show element
+        });
+        promise.done(function(e, textStatus, jqXHR) {
+            //@todo on error is not decoded
+            //e = JSON.parse(e);
+            if (e.error) {
+                if (e.code == 1) {
+                    removeAllCharFormErrors();
+                    // $('#Character input[name="id"]').val(char.id);
+                    let errors = e.formErrors;
+                    if (errors.name) $('#Character input[name="name"]').parent('label').after('<ul><li>'+ errors.name.isEmpty +'</li></ul>');
+
+                    // $('#Character input[name="name"]').parent('label').next().val(char.name);
+                    if (errors.surename) $('#Character input[name="surename"]').parent('label').after('<ul><li>'+ errors.surename.isEmpty +'</li></ul>')
+                    // $('#Character input[name="gender"]').val([char.gender]);
+                    // $('#Character input[name="birthday"]').val(char.birthday);
+                    // $('#Character input[name="vita"]').val(char.vita);
+
+
+
+
+                    // $('#Character select[name="family_id"]').val(parseInt(char.family_id));
+                    // $('#Character select[name="tross_id"]').val(parseInt(char.tross_id));
+                    // $('#Character select[name="job_id"]').val(parseInt(char.job_id));
+                }
+            } else {
+                switch (e.code) {
+                    case 200:
+                        //saved
+                        let char = getCharByID(id);
+                        characters[characters.indexOf(char)] = e.data;
+                        break;
+                    case 201:
+                        //new created
+                        characters.push(e.data);
+                        createCharElement(e.data);
+                        break;
+                }
+                scrollToCharSelect();
+                hideCharForm();
+            }
+            //@todo remove load animation and show element
+        });
+    }
 
     $('#calendar').fullCalendar({
         header: {
@@ -94,6 +160,7 @@ $(document).ready(function() {
         ],
         //event handler
         eventMouseover: function(event, jsEvent, view) {
+            // hier kann man ihm doch noch ein "edit" mitgeben
             // openDetails(event, jsEvent);
             openDetails(event, jsEvent, {
                 title: event.title,
@@ -101,13 +168,19 @@ $(document).ready(function() {
                 allDay: event.allDay,
                 startTime: event.start.format('YYYY-MM-DD[T]HH:mm'),
                 endTime: event.end.format('YYYY-MM-DD[T]HH:mm'),
-            })
+            });
         },
         eventMouseout: function(event, jsEvent, view) {
             //closeDetails(event);
         },
         eventClick: function(event, jsEvent, view) {
-            // (stayOpenFlag)? closeDetails(event, true): openDetails(event, jsEvent);
+            openDetails(event, jsEvent, {
+                title: event.title,
+                description: event.description,
+                allDay: event.allDay,
+                startTime: event.start.format('YYYY-MM-DD[T]HH:mm'),
+                endTime: event.end.format('YYYY-MM-DD[T]HH:mm'),
+            }, 'edit');
         },
         eventResize: function(event, delta, revertFunc) {
             if (!confirm("is this okay?")) {
@@ -142,7 +215,7 @@ $(document).ready(function() {
             openDetails(event, jsEvent, {
                 startTime: start.format('YYYY-MM-DD[T]HH:mm'),
                 endTime: end.format('YYYY-MM-DD[T]HH:mm'),
-            })
+            }, 'add');
         },
         unselect: function(view, jsEvent) {
             // console.log("eventDragStart", a,b,c);
@@ -150,6 +223,36 @@ $(document).ready(function() {
     });
     $('#calendar').css({position: 'absolute'});
     $('#calendar').append($details);
+    $('#Event').submit(function(e) {
+        let data = $('#Event').formPull();
+        changeEvent(data, $('#Event').attr('state'));
+        e.preventDefault();
+    });
+    
+    function setDetailsMode(mode) {
+        switch(mode) {
+            case 'preview':
+                $details.attr('state', 'preview');
+                break;
+            case 'edit':
+                $details.attr('state', 'edit');
+                break;
+            case 'add':
+                $details.attr('state', 'add');
+                break;
+            case 'closed':
+                $details.attr('state', 'closed');
+                break;
+        }
+    }
+    
+    $('.event.edit-btn').on('click', function(){
+        setDetailsMode('edit');
+    });  
+    $('.event.delete-btn').on('click', function(){
+        //trigger delete
+    });
+
 });
 (function($) {
     "use strict";

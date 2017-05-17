@@ -17,11 +17,14 @@ class CalendarController extends AbstractActionController
     {
         /** @var CalendarService $calendarService */
         $calendarService = $this->getServiceLocator()->get("CalendarService");
-
+        $accessService = $this->getServiceLocator()->get('AccessService');
         $form = new EventForm($calendarService);
         return new ViewModel(array(
             'calendars' => $calendarService->getCalendars(),
-            'form' => $form
+            'form' => $form,
+            'canAdd' => $accessService->allowed('Calendar\Controller\Calendar', 'addEvent'),
+            'canEdit' => $accessService->allowed('Calendar\Controller\Calendar', 'editEvent'),
+            'canDelete' => $accessService->allowed('Calendar\Controller\Calendar', 'deleteEvent'),
         ));
     }
     public function getEventsAction() {
@@ -90,16 +93,22 @@ class CalendarController extends AbstractActionController
             'calendarSet' => $calendarSet
         ));
     }
-    public function createEventAction() {
+    public function addEventAction() {
         //@todo implement
-//        return new JsonModel(array(
-//            'data' => 42
-//        ));
+        return new JsonModel(array(
+            'data' => 42
+        ));
     }
-    public function removeEventAction() {
+    public function editEventAction() {
         //@todo implement
-//        return new JsonModel(array(
-//            'data' => 42
-//        ));
+        return new JsonModel(array(
+            'data' => 42
+        ));
+    }
+    public function deleteEventAction() {
+        //@todo implement
+        return new JsonModel(array(
+            'data' => 42
+        ));
     }
 }

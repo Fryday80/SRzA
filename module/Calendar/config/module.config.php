@@ -43,6 +43,36 @@ return array(
                      ),
                  ),
              ),
+             'addEvent' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/calendar/addEvent',
+                     'defaults' => array(
+                         'controller' => 'Calendar\Controller\Calendar',
+                         'action'     => 'addEvent',
+                     ),
+                 ),
+             ),
+             'editEvent' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/calendar/editEvent',
+                     'defaults' => array(
+                         'controller' => 'Calendar\Controller\Calendar',
+                         'action'     => 'editEvent',
+                     ),
+                 ),
+             ),
+             'deleteEvent' => array(
+                 'type'    => 'segment',
+                 'options' => array(
+                     'route'    => '/calendar/deleteEvent',
+                     'defaults' => array(
+                         'controller' => 'Calendar\Controller\Calendar',
+                         'action'     => 'deleteEvent',
+                     ),
+                 ),
+             ),
 
          ),
      ),
