@@ -2,6 +2,8 @@ $(document).ready(function() {
     "use strict";
     var isDetailsOpen = false,
         canEdit = args['canEdit'] || false,
+        canAdd = args['canAdd'] || false,
+        canDelete = args['canDelete'] || false,
         $details = $('.event-details'),
         detailsState = 'closed';//closed, preview, edit, add
 
@@ -64,11 +66,13 @@ $(document).ready(function() {
         isDetailsOpen = false;
     }
 
-    function changeEvent(formData, state) {
+    function changeEvent(e, form, state) {
         let url;
+        let formData = form.formPull();
+        e.preventDefault();
+
         switch(state){
             case 'delete':
-                //@todo confirm delete pop up
                 url = "/calendar/deleteEvent";
                 break;
             case 'add':
@@ -86,6 +90,7 @@ $(document).ready(function() {
 
         promise.fail(function(jqXHR, textStatus, errorThrown) {
             //@todo handle error
+            console.log(errorThrown);
             console.error(textStatus);
             //@todo remove load animation and show element
         });
@@ -128,7 +133,25 @@ $(document).ready(function() {
             //     scrollToCharSelect();
             //     hideCharForm();
             }
+            $('#calendar').fullCalendar( 'removeEvents', formData['id']);
             //@todo remove load animation and show element
+        });
+    }
+
+    function confirmDelete(e, form, mode = 'delete') {
+        var formData = form.formPull();
+        console.log();
+        let confirm = ('<div class="delete-pop-up" title="' + formData['title'] + '">Event wirklich löschen?</div>');
+        $(confirm).dialog({
+            left: '50%',
+            right: '50%',
+            buttons: {
+                ja: function(){
+                    $(this).dialog('close');
+                    changeEvent(e, form, mode);
+                },
+                nein: function(){ $(this).dialog('close') }
+            }
         });
     }
 
@@ -163,7 +186,9 @@ $(document).ready(function() {
         eventMouseover: function(event, jsEvent, view) {
             // hier kann man ihm doch noch ein "edit" mitgeben
             // openDetails(event, jsEvent);
+            console.log(event);
             openDetails(event, jsEvent, {
+                id: event.id,
                 title: event.title,
                 description: event.description,
                 allDay: event.allDay,
@@ -176,12 +201,13 @@ $(document).ready(function() {
         },
         eventClick: function(event, jsEvent, view) {
             openDetails(event, jsEvent, {
+                id: event.id,
                 title: event.title,
                 description: event.description,
                 allDay: event.allDay,
                 startTime: event.start.format('YYYY-MM-DD[T]HH:mm'),
                 endTime: event.end.format('YYYY-MM-DD[T]HH:mm'),
-            }, 'edit');
+            }, 'preview');
         },
         eventResize: function(event, delta, revertFunc) {
             if (!confirm("is this okay?")) {
@@ -190,11 +216,8 @@ $(document).ready(function() {
                 //send update to server
             }
         },
-        dayClick: function(date, jsEvent, view, resourceObj) {
-            console.log("dayClick");
-        },
         selectAllow: function(selectInfo) {
-            return canEdit;
+            return canAdd;
         },
         eventDragStart: function(event, jsEvent, ui, view) {},
         eventDragStop: function(event, jsEvent, ui, view) {},
@@ -224,13 +247,6 @@ $(document).ready(function() {
     });
     $('#calendar').css({position: 'absolute'});
     $('#calendar').append($details);
-
-    function pushFormData(e, form, mode) {
-        let data = form.formPull();
-        changeEvent(data, mode);
-        e.preventDefault();
-        //@todo refresh data
-    }
     
     function setDetailsMode(mode) {
         switch(mode) {
@@ -253,10 +269,10 @@ $(document).ready(function() {
         setDetailsMode('edit');
     });
     $('#Event').submit(function(e) {
-        pushFormData( e, $('#Event'), $('.box.event-details').attr('state') );
+        changeEvent( e, $('#Event'), $('.box.event-details').attr('state') );
     });
     $('.event.delete-btn').on('click', function(e){
-        pushFormData(e, $('#Event'), 'delete');
+        confirmDelete(e, $('#Event'), 'delete');
     });
 });
 (function($) {

@@ -37,7 +37,7 @@ class CalendarService {
     public function getEventsFrom($start, $end = null) {
         $start = new DateTime($start);
         $optParams = array(
-            'maxResults' => 1,
+            'maxResults' => 50,
             'orderBy' => 'startTime',
             'singleEvents' => TRUE,
             'timeMin' => $start->format('c'),
@@ -48,10 +48,12 @@ class CalendarService {
         }
         $items = array();
         $calendars = $this->getCalendars();
-        foreach ($calendars as $calendar) {
-            $results = $this->gCalendarService->events->listEvents($calendar['id'], $optParams);
-            $items = array_merge($items, $results->getItems());
-        }
+//        foreach ($calendars as $calendar) {
+//            $results = $this->gCalendarService->events->listEvents($calendar['id'], $optParams);
+//            $items = array_merge($items, $results->getItems());
+//        }
+            $results = $this->gCalendarService->events->listEvents('primary', $optParams);
+            $items = $results->getItems();
         $result = [];
         /** @var Google_Service_Calendar_Event $value */
         foreach ($items as $value) {
