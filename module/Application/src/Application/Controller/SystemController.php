@@ -24,6 +24,17 @@ class SystemController extends AbstractActionController
         $this->layout()->setVariable('showSidebar', false);
         $top10 = $this->statsService->getMostVisitedPages(10);
         $sysLog = $this->statsService->getSystemLog();
+        $sysLogMod = $sysLog;
+        foreach ($sysLogMod as $key => $value){
+            if ($value->data === null) $replace = '';
+            else {
+                $replace = implode('---', $value->data);
+            }
+            $sysLogMod[$key]->data = $replace;
+        }
+        $sysLogTable = new DataTable(array( 'data' => $sysLogMod ));
+        $sysLogTable->prepare();
+
 
         return new ViewModel(array(
             'top10'     => $top10,
@@ -33,6 +44,7 @@ class SystemController extends AbstractActionController
                                 array( "Aktive User"         => count( $this->statsService->getActiveUsers() ) ),
                                 array( "meistbesuchter Link" => ( isset($top10[0]) ) ? $top10[0]->url . ' with ' . $top10[0]->hitsSum : null ),
             ),
+            'sysLogTable' => $sysLogTable,
         ));
     }
 

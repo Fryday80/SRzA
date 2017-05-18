@@ -92,3 +92,21 @@
     }
     activereload( 1 );
 })();
+(function(){
+    var html = $('.dashboard.systemLog boxcontent').html();;
+    // function closefunction(){
+    //
+    // }
+    $('.systemLog').on('click', function(){
+        // html = $('.dashboard.systemLog boxcontent').html();
+        // html = $('#sysTable').html();
+        $('<div id="pop" title="System Log"></div>').dialog({
+            // close: closefunction,
+            width: "100%",
+            // top: "30%",
+        });
+        $('#pop').append(html);
+        $('#pop ul').css('max-height', '60vh');
+        console.log('sdf');
+    });
+})();
