@@ -34,23 +34,27 @@ class MainNavigationFactory extends AbstractNavigationFactory
             $request = new Request();
             $request->setUri($value['uri']);
 
-            if ($value['role_id'] == 0) {
+            if (true) {//$value['role_id'] == 0) {
                 $items[$i]['resource'] = 'Role';
                 $items[$i]['privilege'] = $value['role_name'];
-            }else {
-                $routeMatch = $this->router->match( $request );
-                if($routeMatch !== null ) {
-                    $namespace = $routeMatch->getParam('__NAMESPACE__');
-                    $controller = $routeMatch->getParam('controller');
-                    $action = $routeMatch->getParam('action');
-                    if ($namespace == null) {
-                        $items[$i]['resource'] = $controller;
-                    } else {
-                        $items[$i]['resource'] = $namespace.'\\'.$controller;
-                    }
-                    $items[$i]['privilege'] = $action;
-                }
             }
+//            if ($value['role_id'] == 0) {
+//                $items[$i]['resource'] = 'Role';
+//                $items[$i]['privilege'] = $value['role_name'];
+//            } else {
+//                $routeMatch = $this->router->match( $request );
+//                if($routeMatch !== null ) {
+//                    $namespace = $routeMatch->getParam('__NAMESPACE__');
+//                    $controller = $routeMatch->getParam('controller');
+//                    $action = $routeMatch->getParam('action');
+//                    if ($namespace == null) {
+//                        $items[$i]['resource'] = $controller;
+//                    } else {
+//                        $items[$i]['resource'] = $namespace.'\\'.$controller;
+//                    }
+//                    $items[$i]['privilege'] = $action;
+//                }
+//            }
             if (isset($value['pages']) && is_array($value['pages'])) {
                 $this->prepareData($value['pages']);
             }
