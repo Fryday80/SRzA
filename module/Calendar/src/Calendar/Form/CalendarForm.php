@@ -19,6 +19,13 @@ class CalendarForm extends Form
             'type' => 'Hidden',
         ));
         $this->add(array(
+            'name' => 'active',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'options' => array(
+                'label' => 'Active',
+            ),
+        ));
+        $this->add(array(
             'name' => 'summary',
             'type' => 'Hidden',
         ));
@@ -27,11 +34,27 @@ class CalendarForm extends Form
             'type' => 'Zend\Form\Element\Color',
             'required' => true,
             'options' => array(
-                'label' => 'Color',
+                'label' => 'Hintergrund Farbe',
             )
         ));
         $this->add(array(
-            'name' => 'role_id',
+            'name' => 'textColor',
+            'type' => 'Zend\Form\Element\Color',
+            'required' => true,
+            'options' => array(
+                'label' => 'Text Farbe',
+            )
+        ));
+        $this->add(array(
+            'name' => 'borderColor',
+            'type' => 'Zend\Form\Element\Color',
+            'required' => true,
+            'options' => array(
+                'label' => 'Rahmen Farbe',
+            )
+        ));
+        $this->add(array(
+            'name' => 'roleId',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(),
             'options' => array(

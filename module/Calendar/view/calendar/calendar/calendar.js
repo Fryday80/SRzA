@@ -51,9 +51,9 @@ $(document).ready(function() {
             let x = (X > 0)? Math.max(0, X - bBox.width): X;
             let y = (Y > 0)? Math.max(0, Y - bBox.height): Y;
             let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-            let opacity = 1 - (distance / 400);
+            let opacity = 1 - (distance / 140);
             $details.css('opacity', opacity);
-            if (distance > 300) {
+            if (distance > 100) {
                 closeDetails();
                 $(window).off('mousemove', null, moveHandler);
             }
@@ -140,7 +140,6 @@ $(document).ready(function() {
 
     function confirmDelete(e, form, mode = 'delete') {
         var formData = form.formPull();
-        console.log();
         let confirm = ('<div class="delete-pop-up" title="' + formData['title'] + '">Event wirklich löschen?</div>');
         $(confirm).dialog({
             left: '50%',
@@ -163,10 +162,26 @@ $(document).ready(function() {
         },
 //            defaultDate: '2014-06-12',
         defaultView: 'month',
+        cache: true,//@todo ?? geht nicht glaub ich
         editable: true,
         theme: true,
         selectable: true,
         firstDay: 4,
+//         events: [{
+//             id: '12',
+//             title:"My repeating event",
+//             start: '10:00', // a start time (10am in this example)
+//             end: '14:00', // an end time (6pm in this example)
+//
+//             dow: [ 0 ] // Repeat monday and thursday
+//         },{
+//             id: '12',
+//             title:"My repeating event",
+//             start: '10:00', // a start time (10am in this example)
+//             end: '14:00', // an end time (6pm in this example)
+//
+//             dow: [ 0 ] // Repeat monday and thursday
+//         }],
         eventSources: [
             {
                 url: '/calendar/getEvents',
@@ -178,8 +193,6 @@ $(document).ready(function() {
                 error: function() {
                     alert('there was an error while fetching events!');
                 },
-                color: 'yellow',   // a non-ajax option
-                textColor: 'black' // a non-ajax option
             }
         ],
         //event handler
