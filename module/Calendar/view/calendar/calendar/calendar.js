@@ -1,6 +1,7 @@
 $(document).ready(function() {
     "use strict";
     var isDetailsOpen = false,
+        detailsStayOpen = false,
         canEdit = args['canEdit'] || false,
         canAdd = args['canAdd'] || false,
         canDelete = args['canDelete'] || false,
@@ -43,23 +44,24 @@ $(document).ready(function() {
         pushPreviewDetails(formData);
 
         $(window).on('mousemove', function moveHandler(e) {
-
+            if (detailsStayOpen) return;
             let bBox = $details.get(0).getBoundingClientRect();
             let X = e.originalEvent.clientX - bBox.left;
             let Y = e.originalEvent.clientY - bBox.top;
 
             let x = (X > 0)? Math.max(0, X - bBox.width): X;
             let y = (Y > 0)? Math.max(0, Y - bBox.height): Y;
-            let distance = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-            let opacity = 1 - (distance / 140);
+            let distance = Math.pow(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)), 2);
+            let opacity = 1 - (distance / 1500);
             $details.css('opacity', opacity);
-            if (distance > 100) {
+            if (distance > 1500) {
                 closeDetails();
                 $(window).off('mousemove', null, moveHandler);
             }
         });
     }
     function closeDetails() {
+        detailsStayOpen = false;
         setDetailsMode('closed');
         // $details.hide();
         $details.css('opacity', 1.0);
@@ -197,9 +199,6 @@ $(document).ready(function() {
         ],
         //event handler
         eventMouseover: function(event, jsEvent, view) {
-            // hier kann man ihm doch noch ein "edit" mitgeben
-            // openDetails(event, jsEvent);
-            console.log(event);
             openDetails(event, jsEvent, {
                 id: event.id,
                 title: event.title,
@@ -208,9 +207,11 @@ $(document).ready(function() {
                 startTime: event.start.format('YYYY-MM-DD[T]HH:mm'),
                 endTime: event.end.format('YYYY-MM-DD[T]HH:mm'),
             });
+            detailsStayOpen = true;
         },
         eventMouseout: function(event, jsEvent, view) {
-            //closeDetails(event);
+            //if dialog is open set stayOpen = false
+            detailsStayOpen = false;
         },
         eventClick: function(event, jsEvent, view) {
             openDetails(event, jsEvent, {

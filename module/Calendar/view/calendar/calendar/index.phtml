@@ -131,9 +131,9 @@ $form->prepare();
 <div id="calendar"></div>
 <?php
 $this->inlineFromFile('Calendar', 'Calendar', 'calendar.js', array(
-    'canEdit' => false,
-    'canAdd' => true,
-    'canDelete' => true,
+    'canEdit' => $canEdit,
+    'canAdd' => $canAdd,
+    'canDelete' => $canDelete,
 ));
 $this->inlineFromFile('Calendar', 'Calendar', 'contextMenu.js');
 ?>

@@ -35,8 +35,8 @@ class CalendarService {
     }
 
     public function cache() {
-        $this->gGetCalendarService();
-        $this->cacheEvents();
+//        $this->gGetCalendarService();
+//        $this->cacheEvents();
     }
     /**
      * @param $calendarID
@@ -69,12 +69,11 @@ class CalendarService {
         if (isset($data['textColor'])) $overwrites[$data['id']]['textColor'] = $data['textColor'];
         if (isset($data['borderColor'])) $overwrites[$data['id']]['borderColor'] = $data['borderColor'];
         if (isset($data['roleId'])) $overwrites[$data['id']]['roleId'] = $data['roleId'];
-bdump($overwrites);
+
         $this->cacheService->setCache('calendar/overwrites', $overwrites);
     }
 
     public function getCalendars($reload = false) {
-//        $this->cacheService->clearCache('calendar/calendars');
         if ($reload || !$this->cacheService->hasCache('calendar/calendars')) {
             $this->cacheService->setCache('calendar/calendars', $this->gLoadCalendars());
         }
@@ -100,7 +99,7 @@ bdump($overwrites);
     }
     public function getEventsFrom($start, $end = null) {
         $filtered = [];
-        if (strtotime($start) < strtotime($this->minCacheDate) || strtotime($end) > strtotime($this->maxCacheDate)) {
+        if (strtotime($start) > strtotime($this->maxCacheDate) || strtotime($end) < strtotime($this->minCacheDate)) {
             //out of cache bounds -> load events from google
             $events = $this->gGetEventsFrom($this->minCacheDate, $this->maxCacheDate);
             foreach ($events as $event) {
@@ -115,13 +114,59 @@ bdump($overwrites);
             }
             foreach ($events as $event) {
                 //@todo check rights
-                if (strtotime($start) < strtotime($this->minCacheDate) || strtotime($end) > strtotime($this->maxCacheDate)) continue;
+                if (strtotime($event['start']) > strtotime($end) || strtotime($event['end']) < strtotime($start)) continue;
                 array_push($filtered, $event);
             }
             return $filtered;
         }
         return $events;
     }
+
+
+
+    public function createEvent() {
+
+        $calendarId = 'primary';
+        $event = new Google_Service_Calendar_Event(array(
+            'summary' => 'Google I/O 2015',
+            'location' => '800 Howard St., San Francisco, CA 94103',
+            'description' => 'A chance to hear more about Google\'s developer products.',
+            'start' => array(
+                'dateTime' => '2015-05-28T09:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'end' => array(
+                'dateTime' => '2015-05-28T17:00:00-07:00',
+                'timeZone' => 'America/Los_Angeles',
+            ),
+            'recurrence' => array(
+                'RRULE:FREQ=DAILY;COUNT=2'
+            ),
+            'attendees' => array(
+                array('email' => 'lpage@example.com'),
+                array('email' => 'sbrin@example.com'),
+            ),
+            'reminders' => array(
+                'useDefault' => FALSE,
+                'overrides' => array(
+                    array('method' => 'email', 'minutes' => 24 * 60),
+                    array('method' => 'popup', 'minutes' => 10),
+                ),
+            ),
+        ));
+        $event = $this->gCalendarService->events->insert($calendarId, $event);
+    }
+
+
+
+
+
+
+
+
+
+
+
     private function cacheEvents() {
         $events = $this->gGetEventsFrom($this->minCacheDate, $this->maxCacheDate);
         $this->cacheService->setCache('calendar/events', $events);
@@ -180,38 +225,7 @@ bdump($overwrites);
         return $result;
     }
 
-    public function createEvent() {
 
-        $calendarId = 'primary';
-        $event = new Google_Service_Calendar_Event(array(
-            'summary' => 'Google I/O 2015',
-            'location' => '800 Howard St., San Francisco, CA 94103',
-            'description' => 'A chance to hear more about Google\'s developer products.',
-            'start' => array(
-                'dateTime' => '2015-05-28T09:00:00-07:00',
-                'timeZone' => 'America/Los_Angeles',
-            ),
-            'end' => array(
-                'dateTime' => '2015-05-28T17:00:00-07:00',
-                'timeZone' => 'America/Los_Angeles',
-            ),
-            'recurrence' => array(
-                'RRULE:FREQ=DAILY;COUNT=2'
-            ),
-            'attendees' => array(
-                array('email' => 'lpage@example.com'),
-                array('email' => 'sbrin@example.com'),
-            ),
-            'reminders' => array(
-                'useDefault' => FALSE,
-                'overrides' => array(
-                    array('method' => 'email', 'minutes' => 24 * 60),
-                    array('method' => 'popup', 'minutes' => 10),
-                ),
-            ),
-        ));
-        $event = $this->gCalendarService->events->insert($calendarId, $event);
-    }
 
 
     private function gLoadCalendars() {
