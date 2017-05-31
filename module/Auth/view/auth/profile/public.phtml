@@ -62,10 +62,10 @@ $this->headTitle($title);
 ?>
 
 <h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; ?></span></h1><br/>
-<div>
-    <span>Wohl eher nicht!</span>
-    <button class="pwbutton">Hier klicken um das password in Klartext zu sehen</button>
-</div>
+<!--<div>-->
+<!--    <span>Wohl eher nicht!</span>-->
+<!--    <button class="pwbutton">Hier klicken um das password in Klartext zu sehen</button>-->
+<!--</div>-->
 <br/>
 <box class="public-profile summary">
     <span>
@@ -89,6 +89,14 @@ $this->headTitle($title);
     <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
     echo $user->street . '<br/>';
     echo $user->zip . ' ' . $user->city . '<br/>';?>
+    </boxcontent>
+</box>
+<box class="public-profile birthday">
+    <boxtitle>
+        <span class="own_text_small">Geburtstag:</span>
+    </boxtitle>
+    <boxcontent>
+    <?php echo $user->birthday ;?>
     </boxcontent>
 </box>
 <box class="public-profile">

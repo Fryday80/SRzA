@@ -22,6 +22,16 @@ class UserForm extends Form
             'type' => 'Hidden',
         ));
 
+        if($roles){
+            $this->add(array(
+                'name' => 'member_number',
+                'type' => 'Text',
+                'options' => array(
+                    'label' => 'Mitgliedsnummer',
+                ),
+            ));
+        }
+
         $this->add(array(
             'name' => 'email',
             'type' => 'Text',
@@ -37,13 +47,48 @@ class UserForm extends Form
             'name' => 'name',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Name',
+                'label' => 'Benutzername',
                 ),
             ),
             array(
                 'priority' => 10, // Increase value to move to top of form
             ));
-        
+
+        if($roles){
+            $this->add(array(
+                'name' => 'real_name',
+                'type' => 'text',
+                'attributes' => array(),
+                'options' => array(
+                    'label' => 'Vorname',
+                )
+            ));
+        }
+        if($roles){
+            $this->add(array(
+                'name' => 'real_surename',
+                'type' => 'text',
+                'attributes' => array(),
+                'options' => array(
+                    'label' => 'Nachname',
+                )
+            ));
+        }
+        if($roles){
+            $this->add(array(
+                'name' => 'gender',
+                'type' => 'Zend\Form\Element\Select',
+                'attributes' => array(),
+                'options' => array(
+                    'label' => 'Geschlecht',
+                    'value_options' => array(
+                        'm' => 'Mann',
+                        'f' => 'Frau',
+                    ),
+                )
+            ));
+        }
+
         $this->add(array(
             'name' => 'password',
             'type' => 'Password',
@@ -65,6 +110,45 @@ class UserForm extends Form
             array(
                 'priority' => 2, // Increase value to move to top of form
             ));
+
+        if($roles){
+            $this->add(array(
+                'name' => 'birthday',
+                'type' => 'Text',
+                'options' => array(
+                    'label' => 'Geburtstag',
+                ),
+            ));
+        }
+
+        if($roles){
+            $this->add(array(
+                'name' => 'street',
+                'type' => 'Text',
+                'options' => array(
+                    'label' => 'Strasse',
+                ),
+            ));
+        }
+        if($roles){
+            $this->add(array(
+                'name' => 'city',
+                'type' => 'Text',
+                'options' => array(
+                    'label' => 'Stadt',
+                ),
+            ));
+        }
+        if($roles){
+            $this->add(array(
+                'name' => 'zip',
+                'type' => 'Text',
+                'options' => array(
+                    'label' => 'Postleitzahl',
+                ),
+            ));
+        }
+
         if ($roles) {
             $this->add(array(
                 'name' => 'status',
