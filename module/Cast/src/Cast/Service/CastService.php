@@ -64,10 +64,8 @@ class CastService implements ServiceLocatorAwareInterface
             foreach ($famMembersByID as $key => &$char) {
                 $char['dependent'] = array();
             }
-            bdump($famMembersByID);
             foreach ($famMembersByID as &$char) {
                 if (isset($famMembersByID[$char['guardian_id']])) {
-                    bdump($famMembersByID[$char['guardian_id']]);
                     $famMembersByID[ $char['guardian_id'] ]['dependent'][$char['id']] = &$char;
 //                    array_push($famMembersByID[$char['guardian_id']]['dependent'], $char);
                 } else if ($char['id'] == $fam['head']) {
@@ -75,7 +73,6 @@ class CastService implements ServiceLocatorAwareInterface
 //                    array_push($fam['members'], array(&$famMembersByID[$char['id']]) );
                 }
             }
-            bdump($fam);
         }
         return $root;
     }

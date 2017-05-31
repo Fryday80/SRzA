@@ -1,0 +1,73 @@
+// basic style of login.phtml and logout.phtml
+// .rightbarDown and .box and _forms.less
+
+// behavior when logged in:
+// .loggin {
+//    used for js selection of logout box in loggingDesigner.js
+//  }
+@login-max-height: 20vw;
+
+@media only screen and (min-width: 700px) {
+  .topBox {   /* styles only the logIn box top-right */
+    &.login {
+      position: absolute;
+      top: 0;
+      right: 6vw;
+      width: 10vw;
+      max-height: 5vw;
+
+      > boxtitel {
+        margin-top: 0;
+      }
+      > boxcontent {
+        opacity: 0;
+        padding-top: 2.5vw;
+      }
+    }
+
+    &.login-inactive {
+      .at-animation(logIn-animate-slide-out 0.5s ease-in);
+    }
+
+    &.login:hover,
+    &.login:active {
+      .login-active;
+      max-height: @login-max-height;
+    }
+
+    &.login-active {
+      width: 20vw;
+      z-index: 20;
+      max-height: @login-max-height;
+      .at-animation(logIn-animate-slide-in 0.3s ease-in);
+      > boxcontent {
+        opacity: 1;
+        .at-animation(blurIn 0.8s ease-in);
+      }
+      > boxtitel {
+        margin-top: 1vw;
+        .at-animation(logIn-animate-boxtitle-margin 0.3s ease)
+      }
+    }
+  }
+
+  .logout {
+    overflow-y: auto;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    width: 18vw;
+    .at-box;
+    min-height: 11vw;
+    max-height: 17.5vw;
+
+    > boxtitel {
+      text-align: center;
+    }
+  }
+}
+.logoutbutton
+{
+  height: 30px;
+}

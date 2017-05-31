@@ -1,0 +1,101 @@
+*
+{
+  padding: 0;
+  margin: 0;
+  .text-highlighting;
+}
+
+body
+{
+  background: @body-color @html-background-image fixed;
+  background-size: 100px;
+  color: #00bcd4; //change coler for var_dum or errors on dark bg
+  *
+  {
+    color: #3f3f3f; // undo error change
+  }
+  > pre
+  {
+    color: #00bcd4; //change coler for var_dum or errors on dark bg}
+  }
+}
+.body
+{
+  border-radius: 5px;
+  margin: 3vw;
+  margin-left: 6vw;
+  margin-right: 6vw;
+  .at-bg-img;
+  .relative;
+  .at-text-shadow();
+}
+h1
+{
+  font-size: 20px;
+}
+a
+{
+  &:link,
+  &:visited,
+  &:hover,
+  &:active
+  {
+    text-decoration: none;
+    color: black;
+  };
+}
+
+.button,
+button
+{
+  background: @backgroundcolor;
+  box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 4px 4px 10px @body-color;
+  border: solid 1px @body-color;
+  &:hover
+  {
+    background: @darker;
+    box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 4px 4px 10px @body-color;
+  }
+  &:active
+  {
+    margin-left: 3px;
+    margin-top: 13px;
+    margin-bottom: 0;
+    box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 1px 1px 1px @body-color;
+  }
+}
+
+.ownhead
+{
+  .headfont();
+}
+
+.own_text_big
+{
+  .font1(2vw);
+}
+
+.own_text_medium
+{
+  .font1(1.5vw);
+}
+
+.own_text_small
+{
+  .font1();
+}
+/* ---- positioning ---- */
+.absolute{
+  .absolute;
+}
+.relative{
+  .relative;
+}
+.clear{
+  .clear;
+}
+.overlayShadow{
+  .at-box-shadow(0, 0.7vw);
+}
+
+@import "../../balloons/_balloons";

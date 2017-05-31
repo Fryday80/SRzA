@@ -19,9 +19,13 @@ use Application\Model\ActiveUser;
 use Application\Model\SystemLogTable;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
+use Auth\Model\User;
 use Auth\Service\AccessService;
+use Exception;
 use Zarganwar\PerformancePanel\Register;
 use Zend\Http\Header\SetCookie;
+use Zend\Http\Response;
+use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
@@ -67,15 +71,60 @@ class StatisticService
     }
 
     public function onError(MvcEvent $e) {
+
+
+        $error = $e->getError();
+        if (empty($error)) {
+            return;
+        }
+
+        // Do nothing if the result is a response object
+        $result = $e->getResult();
+        if ($result instanceof Response) {
+            return;
+        }
+
+        switch ($error) {
+            case Application::ERROR_CONTROLLER_NOT_FOUND:
+            case Application::ERROR_CONTROLLER_INVALID:
+            case Application::ERROR_ROUTER_NO_MATCH:
+                // Specifically not handling these
+                //here 404 missmatch is prozessed
+                return;
+
+            case Application::ERROR_EXCEPTION:
+            default:
+                /** @var Exception $exception */
+                $exception = $e->getParam('exception');
+
+                $errors = [];
+                do {
+                    array_push($errors, array(
+                        'name' => get_class($exception),
+                        'file' => $exception->getFile(),
+                        'line' => $exception->getLine(),
+                        'msg' => $exception->getMessage(),
+                        'stackTrace' => $exception->getTraceAsString()
+                    ));
+                } while($exception = $exception->getPrevious());
+                bdump($errors);
+                break;
+        }
+
         $data = $this->gatherData($e);
+        $data['errors'] = $errors;
 
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
         $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
-        $this->stats->logSystem( new SystemLog($data['mTime'], $data['logType'], 'ErrorMsg', $data['url'], $data['userId'], $data['userName'], $data['serverPHPData'] ));
+        $this->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['errors'][0]['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
     }
 
     public function onFinish(MvcEvent $e) {
         $this->saveFile($this->stats);
+    }
+    
+    public function logSystem(SystemLog $log){
+        $this->sysLog->updateSystemLog($log);
     }
 
 //======================================================================================================= PUBLIC GET
@@ -95,6 +144,17 @@ class StatisticService
         return $this->stats->getActiveUsers($since);
     }
 
+    /** Checks if user is active
+     * @param $userName
+     * @return bool
+     */
+    public function isActive($userName){
+        $activeUsers = $this->getActiveUsers();
+        foreach ($activeUsers as $user){
+            if ($user->userName == $userName) return true;
+        }
+        return false;
+    }
     /**
      * @param int $since
      * @return array
@@ -111,9 +171,9 @@ class StatisticService
     public function getSystemLogWhere($where = null, $options = array("filterType" => FilterType::EQUAL, "sortKey" => "time", "sortOrder" => OrderType::DESCENDING))
     {
         if (SPEED_CHECK) Register::add('StatService get SysLog start');
-        $data = $this->stats->systemLog;
+//        $data = $this->stats->systemLog;
         //@todo re-build to db
-//        $data = $this->sysLog->getSystemLogs();
+        $data = $this->sysLog->getSystemLogs();
         if (SPEED_CHECK) Register::add('StatService get SysLog db/var fetched');
         // just fetch all
         if (!is_array($where)) {
@@ -154,6 +214,7 @@ class StatisticService
     }
     
 //======================================================================================================= PRIVATES
+
     /**
      * microtime is passed through to data object via <b>$data['mTime']</b><br>
      * and processed there so the different logs have one common value and fitting timestamps<br>
@@ -175,15 +236,17 @@ class StatisticService
             'hitType'  => ( $this->accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST,
         );
 
-        $data['userId'] = $this->accessService->getUserID();
-        $data['userId'] = ($data['userId'] == "-1") ? $this->stats->getActiveGuestId($data['sid']) : $data['userId'];
-        $data['serverPHPData'] = $data['request']->getServer()->toArray();
+        $serverData = $data['request']->getServer()->toArray();
+        $data['url']      = $serverData['REQUEST_URI'];
+        $data['ip']       = $serverData['REMOTE_ADDR'];
+        $data['userId']   = $this->accessService->getUserID();
+        $data['userId']   = ( $data['userId'] == "-1" ) ? $this->stats->getActiveGuestId($data['sid']) : $data['userId'];
         $data['userName'] = ( $data['userId'] > $this->stats->guestNumbersMin ) ? "Guest" : $data['userName'];
-        $data['logType'] = ( $data['hitType'] == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;
-        $data['url'] = $data['serverPHPData']['REQUEST_URI'];
-        $data['ip'] = $data['serverPHPData']['REMOTE_ADDR'];
+        $data['logType']  = ( $data['hitType'] == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST;
+        $data['data']['serverPHPData'] = $serverData;
+
         // not used -- prepared for redirect logging
-        if (isset ($data['serverPHPData']['HTTP_REFERER']) ) {
+        if (isset ($serverData['HTTP_REFERER']) ) {
             // prepared if referring data is needed
 //        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
 //        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";
@@ -194,6 +257,7 @@ class StatisticService
         if (SPEED_CHECK) Register::add('StatService ->gatherData end');
         return $data;
     }
+
 
     private function checkCookie(MvcEvent $e) {
         if (!$e->getRequest()->getCookie() || !$e->getRequest()->getCookie()->offsetExists('srzaiknowyou')) {

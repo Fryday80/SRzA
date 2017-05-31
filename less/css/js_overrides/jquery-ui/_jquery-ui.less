@@ -1,0 +1,146 @@
+// for visual testing
+//@backgroundcolor: #Bac;
+.ui-widget-header
+, // and
+.ui-visual-focus {
+  .at-box-inner-shadow(1vw);
+}
+
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited,
+a.ui-button:hover,
+a.ui-button:focus {
+  .at-box-inner-shadow(3vw);
+  text-decoration: none;
+}
+.ui-state-active,
+.ui-state-hover,
+.ui-state-focus,  // this should be the selection boarder, but doesn't work out
+.ui-visual-focus {
+  .at-box-inner-shadow(3vw);
+  border-color: @body-color;
+  color: black;
+}
+.ui-widget-content {
+  border: 1px solid @body-color;
+  .at-box-inner-shadow(2vw);
+  background: @backgroundcolor url(images/ui-bg_inset-soft_100_f4f0ec_1x100.png) 50% bottom repeat-x;
+  color: #1e1b1d;
+}
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default,
+.ui-button,
+html .ui-button.ui-state-disabled:hover,
+html .ui-button.ui-state-disabled:active
+{
+  background: @backgroundcolor;
+  .at-box-inner-shadow(2vw);
+}
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active,
+a.ui-button:active,
+.ui-button:active,
+.ui-button.ui-state-active:hover
+,
+.ui-state-hover,
+.ui-widget-content .ui-state-hover,
+.ui-widget-header .ui-state-hover,
+.ui-state-focus,
+.ui-widget-content .ui-state-focus,
+.ui-widget-header .ui-state-focus,
+.ui-button:hover,
+.ui-button:focus
+, //and
+.ui-state-hover a,
+.ui-state-hover a:hover,
+.ui-state-hover a:link,
+.ui-state-hover a:visited,
+.ui-state-focus a,
+.ui-state-focus a:hover,
+.ui-state-focus a:link,
+.ui-state-focus a:visited,
+a.ui-button:hover,
+a.ui-button:focus
+,// and block
+.ui-state-active a,
+.ui-state-active a:link,
+.ui-state-active a:visited
+{
+  color: black;
+}
+.ui-state-highlight,
+.ui-widget-content .ui-state-highlight,
+.ui-widget-header .ui-state-highlight
+, //and
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error
+{
+  background: @backgroundcolor;
+  .at-box-inner-shadow(1vw);
+  border-color: @body-color;
+}
+
+.ui-state-error,
+.ui-widget-content .ui-state-error,
+.ui-widget-header .ui-state-error
+{
+  border-color: @error-color1;
+  border-width: 3px;
+}
+
+// "form design"
+// the "label <p>" is not to get
+input,
+textarea,
+select
+{
+  background: @backgroundcolor;
+  border-color: @body-color;
+  border-width: 1px;
+}
+.ui-spinner>input
+{
+  background: inherit;
+}
+
+// slider bg
+.ui-slider
+{
+  .at-box-inner-shadow(6px; @backgroundcolor);
+  background-color: @body-color;
+}
+.ui-slider-handle
+{
+
+  .at-box-inner-shadow(12px; @backgroundcolor)!important;
+  background-color: @body-color!important;
+}
+.ui-datepicker-calendar .ui-state-active,
+.ui-datepicker-calendar .ui-state-hover
+{
+  .at-box-inner-shadow(6px; @backgroundcolor) !important;
+  background-color: @body-color !important;
+  color: @backgroundcolor !important;
+}
+.ui-spinner a
+{
+  box-shadow: none;
+}
+.ui-corner-all{
+  box-shadow: inset 0px 0px 13px 0px rgba(41, 0, 0, 0.5);
+}
+.ui-progressbar .ui-progressbar-value
+{
+  background-color: @body-color;
+  .at-box-inner-shadow(1vw; @backgroundcolor);
+  .at-animation(swelling 3s infinite);
+}

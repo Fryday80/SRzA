@@ -1,6 +1,7 @@
 <?php
 namespace Auth\View\Helper;
 
+use Auth\Service\MyMenuService;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
 use Auth\Model\AuthStorage;

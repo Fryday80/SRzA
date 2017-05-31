@@ -1,7 +1,23 @@
-@import "../../../../../less/css/realCss/siteDesign/_box_basic";
+@import "../../../../../less/allIncludes";
 @import "tree";
 
 @tree-pic-height: 45px;
+
+#fullCastScroller boxcontent
+{
+    overflow: hidden;
+    //height: 500px;
+    height: calc( 100vh ~"-" 0.5vw);
+    workspace
+    {
+        height: calc( 100vh ~"-" 0.5vw);
+    }
+}
+
+body .body boxcontent
+{
+    height: calc( 100vh ~"+" 2vw);
+}
 
 // general appearance
 #content>boxcontent boxcontent
@@ -28,23 +44,16 @@
         font-family: arial, verdana, tahoma;
         font-size: 11px;
         display: inline-block;
-        //border-radius: 5px;
         transition: all 0.8s;
     }
 
     /* hover effect */
     character:hover,
     character:hover + ul li character {
-        //background: @silver-hover-color;
         box-shadow: 0px 0px 5px 5px #00acc1;
         color: #000;
         transition: all 0.8s;
-        //padding: 15px;
-        //border: 1px solid #94a0b4;
     }
-    //character:hover img.char{
-    //    //height: (@tree-pic-height*2)
-    //}
 
     /*Connector styles on hover*/
     character:hover + ul li::after,
@@ -138,24 +147,6 @@
     {
         box-shadow: 0px 0px 5px 5px #00acc1;
         transition: all 0.5s;
-        //.fam-tree
-        //{
-        //    height: (@tree-pic-height *2);
-        //}
-        //*
-        //{
-        //    color: black;
-        //}
-        //familymember,
-        //.details
-        //{
-        //    .box();
-        //    margin: 0;
-        //}
-        //familymember
-        //{
-        //    display: inline-block;
-        //}
     }
     .details:hover
     {
@@ -165,7 +156,7 @@
 }
 
 
-family
+.tree family
     {
     li,
     ul
@@ -227,7 +218,7 @@ li.family.centered {
     /* hover effect */
     familymember:hover,
     familymember:hover + ul li familymember {
-        .box;
+        //.box;
         margin: 0;
         display: inline-block;
         background: @darker;
@@ -238,4 +229,30 @@ li.family.centered {
             color: #000;
         }
     }
+}
+.character .blazon
+{
+    background: radial-gradient( @backgroundcolor, @body-color 55%);
+    border-radius: 50% ;
+    .at-animation(shake_sign 3s alternate);
+    &:hover
+    {
+        .at-animation(shake_sign 3s alternate);
+    }
+}
+
+family .blazon
+{
+    background: radial-gradient( @backgroundcolor, @body-color 55%);
+    border-radius: 50% ;
+    .at-animation(shake_sign 3s alternate);
+    &:hover
+    {
+        .at-animation(shake_sign 3s alternate);
+    }
+}
+
+.family.centered
+{
+    .blazonstyle(100px);
 }

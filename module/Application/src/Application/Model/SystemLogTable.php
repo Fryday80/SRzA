@@ -7,7 +7,7 @@ use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 
 
-// structure:  table: system_log (time[bigint] unique, type[string], msg[string], url[string], userId[int], userName[string], data[longblob] )
+// structure:  table: system_log (microtime [float] unique, time[bigint], type[string], msg[string], url[string], userId[int], userName[string], data[longblob] )
 class SystemLogTable extends AbstractTableGateway
 {
     public $table = 'system_log';
@@ -43,7 +43,7 @@ class SystemLogTable extends AbstractTableGateway
         $data = $this->adapter->query($query, array());
         $result = array();
         foreach ($data as $row){
-            array_push($result, new SystemLog($row->time, $row->type, $row->msg, $row->url, $row->userId, $row->userName, json_decode($row->data) ) );
+            array_push($result, new SystemLog($row->microtime, $row->type, $row->msg, $row->url, $row->userId, $row->userName, json_decode($row->data) ) );
         }
 
         return $result;
@@ -63,7 +63,7 @@ class SystemLogTable extends AbstractTableGateway
         foreach ($data as $key => $value){
             $queryItems .= $key . ", ";
             if ($key == 'data'){
-                $data[$key] = json_encode($value);
+                $value = json_encode($value);
             }
             $queryValues .= (is_int($value)) ? $value. ", " : "'$value', ";
         }

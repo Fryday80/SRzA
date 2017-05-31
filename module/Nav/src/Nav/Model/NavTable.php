@@ -67,7 +67,7 @@ class NavTable extends AbstractTableGateway
             'label'         => $data['label'],
             'uri'           => $data['uri'],
             'target'        => $data['target'],
-            'min_role_id'   => $data['rid'],
+            'min_role_id'   => $data['min_role_id'],
             'lft'           => $maxRgt + 1,
             'rgt'           => $maxRgt + 2
         ]);

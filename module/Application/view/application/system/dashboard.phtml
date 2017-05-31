@@ -93,7 +93,7 @@ if($sysLog !== null) {
     $li = '<li>no log found</li>';
 }
 ?>
-<box class = 'dashboard'>
+<box class = 'dashboard systemLog'>
     <boxtitel>
         <span class='own_text_small'>System Log</span>
     </boxtitel>
@@ -138,5 +138,8 @@ if($sysLog !== null) {
     <?php
     endif;
     ?>
+</div>
+<div id="sysTable" class="hidden">
+<!--    --><?php //echo $this->dataTable()->render($sysLogTable); ?>
 </div>
 <?php echo $this->inlineFromFile('Application', 'system', 'dashboard.js'); ?>

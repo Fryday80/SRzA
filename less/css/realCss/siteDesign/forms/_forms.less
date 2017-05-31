@@ -1,0 +1,176 @@
+form {
+  width: auto;
+  > * {
+    display: list-item;
+    list-style: none;
+    margin-bottom: 10px;
+  }
+}
+fieldset label,
+label {
+  position: relative;
+  z-index: 0;
+  margin-top: 10px;
+
+  > span:first-child {
+    position: absolute;
+    top: -5px;
+    left: 20px;
+    z-index: 2;
+    padding: 0 10px 0 10px;
+    background-color: @backgroundcolor;
+    font-style: italic;
+    font-size: 12px;
+    font-family: 'Glyphicons Halflings';
+    color: @body-color;
+    box-shadow: inset 0px -1px 3px 0px @forms-inner-shadow;
+  }
+  input,
+  textarea,
+  select {
+    position: relative;
+    z-index: 1;
+    height: 25px;
+    padding: 5px;
+    background-color: @backgroundcolor;
+    border: 1px solid @body-color;
+    color: #555;
+    box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow;
+    min-width: 76px;
+
+    :focus {
+      border: 1px solid @highlight-color;
+    }
+  }
+  input[type="checkbox"] {
+    box-shadow: none;
+    margin-top: 10px;
+  }
+  select {
+    margin-top: 7px;
+    margin-left: 19px;
+  }
+  .form-error-messages {
+    position: relative;
+    text-shadow: none;
+    z-index: 4;
+    padding: 5px;
+    margin: 10px;
+    list-style: none;
+    text-align: center;
+    color: #fff;
+    border-radius: 5px;
+    box-shadow: inset -2px -4px 15px 0px @forms-inner-shadow;
+    //background: @error-bg;
+    li {
+      z-index: 5;
+      border: solid @error-color;
+      background-color: @error-bg;
+      text-shadow: black;
+    }
+    * {
+      font-family: bodytext, arial, sans-serif; //^^
+      color: #fff3e0;
+      border-radius: 3px;
+    }
+    ::before {
+      color: #fff;
+      border-left: solid @error-color;
+      border-top: solid @error-color;
+      //z-index: -3;
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 30px;
+      transform: rotate(48deg) skew(20deg, 10deg);
+      width: 20px;
+      height: 20px;
+      background: @error-color1;
+      //animation: wobbel 2s infinite;
+    }
+  }
+  //clear: both;
+}
+input[type="radio"]
+{
+  box-shadow: none;
+}
+input[type="file"]::after {
+  content: "Datei Auswählen";
+  position: absolute;
+  padding-top: 3px;
+  padding-left: 5px;
+  top: 5px;
+  left: 4px;
+  width: 44%;
+  height: 50%;
+  background-color: #FAEBd7;
+  pointer-events: none;
+  box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow, 4px 4px 10px @body-color;
+}
+input[type="submit"],
+button
+{
+  .button;
+  margin-top: 10px;
+  margin-bottom: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
+  min-height: 30px;
+  min-width: 40px;
+}
+label.checkbox,
+label.button
+{
+  box-shadow: inset 0px 0px 15px 0px @forms-inner-shadow;
+  border: groove 0.5px grey;
+}
+fieldset
+{
+  box-shadow: inset 0px 0px 15px 0px @body-color;
+  padding-bottom: 10px;
+  legend
+  {
+    background-color: @backgroundcolor;
+    box-shadow: inset 0px -1px 3px 0px @body-color;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin-left: 30px;
+    font-style: italic;
+    font-size: 11px;
+    font-family: 'Glyphicons Halflings';
+  }
+  label {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+  ul
+  {
+    list-style: none;
+  }
+}
+
+.start(){
+  top: -5px;
+  witdh: 20px;
+  height: 20px;
+}
+.end(){
+  top: 3px;
+  witdh: 10px;
+  height: 10px;
+}
+@keyframes wobbel
+{
+  0% {.start;}
+  50% {.end;}
+  100% {.start;}
+}
+//
+//input:-webkit-autofill,
+//textarea:-webkit-autofill,
+//select:-webkit-autofill
+//{
+//  background-color: @backgroundcolor!important;
+//}
+@import "../../singlePages/registration/registration";

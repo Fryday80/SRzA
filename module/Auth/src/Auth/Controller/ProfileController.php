@@ -1,6 +1,7 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Service\StatisticService;
 use Auth\Form\ProfileCharacterForm;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
@@ -21,6 +22,8 @@ class ProfileController extends AbstractActionController
         $characterTable = $this->getServiceLocator()->get('Cast/Model/CharacterTable');
         /** @var AccessService $accessService */
         $accessService = $this->getServiceLocator()->get('AccessService');
+        /** @var StatisticService $statService */
+        $statService = $this->getServiceLocator()->get('StatisticService');
         $viewModel = new ViewModel();
         $username = $this->params()->fromRoute('username');
         $private = (!$username);
@@ -33,8 +36,13 @@ class ProfileController extends AbstractActionController
             //@todo redirect to user list
         }
         $characters = $characterTable->getByUserId($user->id);
+        $isActive = $statService->isActive($user->name);
+        $askingUser = $accessService->getUserName();
+        
         bdump($user);
         bdump($characters);
+        $viewModel->setVariable('askingUser', $askingUser);
+        $viewModel->setVariable('isActive', $isActive);
         $viewModel->setVariable('user', $user);
         $viewModel->setVariable('characters', $characters);
 

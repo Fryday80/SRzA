@@ -1,0 +1,55 @@
+/* -----------------left column: content----------------- */
+#content{
+  float: left;
+  width: 70%;
+  min-height: 60%;
+  margin: 2vw 0 0 -1vw;
+}
+.fullWidth{
+  width: calc( 100% ~"+" 2vw) !important;
+  margin-left: -1.5vw !important;
+  margin-right: -1.5vw !important;
+}
+/* -----------------right column: right bar----------------- */
+#rightcontainer{
+  float: right;
+  width: 29%;
+  text-align: center;
+  margin: 2vw -1vw 0 0;
+
+  fieldset{
+    background: none;
+    width: 99%;
+    border: none;
+    padding-bottom: 3px;
+  }
+}
+
+#rightbarSlider,
+.rightbarDown,
+.rightbarUp{
+  .relative;
+  width: 100%;
+  float: right;
+  height: auto;
+  min-height: 20%;
+  overflow: visible;
+}
+
+#rightbarSlider
+{
+  /* height of simpleSlideShow.js */
+  height: 18vw; // height of slideshow here
+  padding: 0;
+}
+
+//
+///* --- #scroller helper ----- */
+//
+//#scroller {
+//  height: @scroller-height;
+//  width: 100%;
+//}
+//.scroller-spacer{
+//  height: 100%;
+//}

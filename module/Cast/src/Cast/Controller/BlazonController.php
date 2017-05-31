@@ -16,7 +16,7 @@ class BlazonController extends AbstractActionController
         $blaTable = new BlazonDataTable( );
         $blaTable->setData($blaService->getAll());
         $blaTable->setButtons('all');
-        $blaTable->insertLinkButton('/castmanager/wappen/add', 'add new familiy');
+        $blaTable->insertLinkButton('/castmanager/wappen/add', 'Neues Wappen');
         $blaTable->insertLinkButton('/castmanager', 'Zurück');
         return new ViewModel(array(
             'blazons' => $blaTable,
@@ -42,13 +42,21 @@ class BlazonController extends AbstractActionController
                 $form->setData($post);
                 if ($form->isValid()) {
                     $data = $form->getData();
+                    $blaPath = $data['blazon']['tmp_name'];
+                    $blaBigPath = $data['blazonBig']['tmp_name'];
+                    if ($data['blazon']['error'] > 0) {
+                        $blaPath = null;
+                    }
+                    if ($data['blazonBig']['error'] > 0) {
+                        $blaBigPath = null;
+                    }
                     if ($data['blazon']['error'] == 0) {
-                        $blaService->addNew($data['name'], (bool)$data['isOverlay'], $data['blazon']['tmp_name']);
+                        $blaService->addNew($data['name'], $blaPath, $blaBigPath);
+                        return $this->redirect()->toRoute('castmanager/wappen');
                     } else {
                         //todo error handling
                         bdump('file error');
                     }
-                return $this->redirect()->toRoute('castmanager/wappen');
                 }
             } else {
                 //@todo add error msg to form/name  "name already taken"
@@ -95,7 +103,7 @@ class BlazonController extends AbstractActionController
                 if ($data['blazonBig']['error'] > 0) {
                     $blaBigPath = null;
                 }
-                if (!$item = $blaService->save($id, $data['name'], (bool)$data['isOverlay'], $blaPath, $blaBigPath)) {
+                if (!$item = $blaService->save($id, $data['name'], $blaPath, $blaBigPath)) {
                     //@todo errors to form
                 } else {
                     return $this->redirect()->toRoute('castmanager/wappen');
