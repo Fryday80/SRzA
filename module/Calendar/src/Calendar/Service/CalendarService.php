@@ -34,9 +34,20 @@ class CalendarService {
         $this->maxCacheDate = date("Y-m-d", mktime(0, 0, 0, date("m") + 10, date("d"), date("Y")));
     }
 
-    public function cache() {
-//        $this->gGetCalendarService();
-//        $this->cacheEvents();
+
+    function sort($a, $b) {
+        if ($a['startUnix'] == $b['startUnix']) {
+            return 0;
+        }
+        return ($a['startUnix'] < $b['startUnix']) ? -1 : 1;
+    }
+    public function getUpcoming($count = 5) {
+        $maxMonth = 5;
+        $now = date("Y-m-d", time());
+        $end = date("Y-m-d", mktime(0, 0, 0, date("m") + $maxMonth, date("d"), date("Y")));
+        $events = $this->getEventsFrom($now, $end);
+        usort($events, array($this, 'sort'));
+        return array_slice($events, 0, $count);
     }
     /**
      * @param $calendarID
@@ -121,8 +132,6 @@ class CalendarService {
         }
         return $events;
     }
-
-
 
     public function createEvent() {
 

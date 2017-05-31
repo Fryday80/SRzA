@@ -14,7 +14,7 @@ class CalendarController extends AbstractActionController
     {
         /** @var CalendarService $calendarService */
         $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $calendarService->cache();
+        $calendarService->getUpcoming();
         $accessService = $this->getServiceLocator()->get('AccessService');
         $form = new EventForm($calendarService);
         return new ViewModel(array(
