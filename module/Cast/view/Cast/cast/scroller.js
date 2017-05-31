@@ -31,7 +31,8 @@
         $('*', workspace.$dragable).removeClass('centered');
     });
     $(document).ready(function() {
-        let $family = $('.ws-content ul li .character');
+        let $family = $('.ws-content>ul>li');
+        console.log($family)
         workspace.goToElement($family);
     });
 })();

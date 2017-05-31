@@ -183,4 +183,4 @@
         }
         return instance;
     };
-}( jQuery ));
+}(jQuery));
