@@ -8,8 +8,8 @@
         $charForm = $('#Character'),
         $charList = $('.characterList'),
         $charFormTitle = {
-            $command: $('boxtitel .command', $charFormBox),
-            $charName: $('boxtitel .charName', $charFormBox),
+            $command: $('boxtitle .command', $charFormBox),
+            $charName: $('boxtitle .charName', $charFormBox),
         };
 
 

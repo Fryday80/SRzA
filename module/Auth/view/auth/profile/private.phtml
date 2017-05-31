@@ -36,14 +36,14 @@ $userForm->prepare();
 </style>
 
 <box>
-    <boxtitel><span class="own_text_medium">User Details</span></boxtitel>
+    <boxtitle><span class="own_text_medium">User Details</span></boxtitle>
     <boxcontent>
         <?php echo $this->form($userForm); ?>
     </boxcontent>
 </box>
 
 <box id="characters">
-    <boxtitel><span class="own_text_medium">Characters</span><button id="addCharButton">ADD</button></boxtitel>
+    <boxtitle><span class="own_text_medium">Characters</span><button id="addCharButton">ADD</button></boxtitle>
     <boxcontent>
         <template id="characterListItemTemplate">
             <li class="box">Loding...</li>
@@ -54,7 +54,7 @@ $userForm->prepare();
         </ul>
         <br>
         <box id="charForm" class="animatable hide">
-            <boxtitel><span class="own_text_small"><span class="command">Edit</span> <span>Charakter</span> <span class="charName"></span></span></boxtitel>
+            <boxtitle><span class="own_text_small"><span class="command">Edit</span> <span>Charakter</span> <span class="charName"></span></span></boxtitle>
             <boxcontent>
                 <?php echo $this->form($charForm); ?>
             </boxcontent>

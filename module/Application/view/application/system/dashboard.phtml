@@ -10,9 +10,9 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 // ************************************************************************************* QUICK LINKS
 ?>
 <box class = 'dashboard'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'></span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <ul class="dash-links">
             <li><a href='/'><b>Home</b></a></li>
@@ -40,9 +40,9 @@ else {
 }
 ?>
 <box class = 'user-stats'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'>User Statistics</span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <ul class="dash-list">
             <?php echo $li ?>
@@ -55,9 +55,9 @@ else {
 // made in js
 ?>
 <box class = 'dashboard'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'>Live Clicks</span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <img class="live-load" src="/img/loading.gif"/>
         <ul id="dashLiveList" class="dash-list">
@@ -71,9 +71,9 @@ else {
 // made in js
 ?>
 <box class = 'dashboard'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'>Active Users</span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <img class="user-load" src="/img/loading.gif"/>
         <ul id="users" class="dash-list">
@@ -94,9 +94,9 @@ if($sysLog !== null) {
 }
 ?>
 <box class = 'dashboard systemLog'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'>System Log</span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <ul class="dash-list">
             <?php echo $li ?>
@@ -126,9 +126,9 @@ if($sysLog !== null) {
      $li = $pre.$li;
  ?>
 <box class = 'dashboard'>
-    <boxtitel>
+    <boxtitle>
         <span class='own_text_small'>Seiten Top 10</span>
-    </boxtitel>
+    </boxtitle>
     <boxcontent>
         <ul class="dash-list" style="max-height: none">
             <?php echo $li ?>

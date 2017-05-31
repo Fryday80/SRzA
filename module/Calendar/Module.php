@@ -1,6 +1,8 @@
 <?php
 namespace Calendar;
 
+use Calendar\View\Helper\UpcomingEvents;
+use Calendar\View\Helper\UpcommingEvents;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Calendar\Service\CalendarService;
@@ -34,5 +36,15 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                 },
             ),
         );
+    }
+    public function getViewHelperConfig(){
+        return array(
+            'factories' => array(
+                'upcoming' => function ($sm) {
+                    $storage = $sm->getServiceLocator()->get('Auth\Model\AuthStorage');
+                    $calService = $sm->getServiceLocator()->get('CalendarService');
+                    return new UpcomingEvents($storage, $calService);
+                },
+        ));
     }
 }

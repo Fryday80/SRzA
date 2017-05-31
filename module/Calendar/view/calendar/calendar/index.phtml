@@ -29,26 +29,29 @@ $form->prepare();
         transition: all 0.8s;
     }
     .event-details[state="preview"] .event.edit-btn{
+        display: block;
         width: auto;
         padding-left: 18px;
         overflow: hidden;
         transition: all 0.8s;
     }
     .event-details[state="preview"] .event.delete-btn{
-        width: 0px;
-        overflow: hidden;
-        padding: 0;
-        transition: all 0.8s;
+        /*width: 0px;*/
+        /*overflow: hidden;*/
+        /*padding: 0;*/
+        /*transition: all 0.8s;*/
+        display: none;
     }
     .event-details[state="edit"] .form {
         width: 270px;
         transition: all 0.8s;
     }
     .event-details[state="edit"] .event.edit-btn{
-        width: 0px;
-        padding: 0;
-        overflow: hidden;
-        transition: all 0.8s;
+        /*width: 0px;*/
+        /*padding: 0;*/
+        /*overflow: hidden;*/
+        /*transition: all 0.8s;*/
+        display: none;
     }
     .event-details[state="preview"] .event.edit-btn::before{
         position: absolute;
@@ -65,6 +68,7 @@ $form->prepare();
     .event-details[state="edit"] .event.delete-btn{
         width: auto;
         transition: all 0.8s;
+        display: block;
     }
     .event-details[state="add"] .preview {
         width: 0px;
@@ -115,7 +119,7 @@ $form->prepare();
                         <li><p class="item" name="date">start zeit</p></li>
                         <li><p class="item" name="time">end zeit</p></li>
                         <li><p class="item" name="allDay">allDay</p></li>
-                        <li><p class="item" name="calendar_id">calendar id</p></li>
+                        <li><p class="item" name="calendar_name">calendar name</p></li>
                         <?php if ($canEdit == true): ?>
                         <li><button class="event edit-btn">Edit falls man darf</button></li>
                         <?php endif; ?>

@@ -415,7 +415,7 @@ box {
   position: relative;
   background-image: url("");
 }
-boxtitel {
+boxtitle {
   box-shadow: none;
   background-image: none;
   border: none;
@@ -734,6 +734,19 @@ button[data-balloon] {
 [data-balloon-length="fit"]:after {
   width: 100%;
 }
+box.upcoming {
+  margin-bottom: 5px;
+}
+boxtitle.upcoming {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
+boxcontent.upcoming {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
 /* -----------------Head----------------- */
 #headcontainer {
   position: relative;
@@ -1039,7 +1052,7 @@ button[data-balloon] {
     width: 10vw;
     max-height: 5vw;
   }
-  .topBox.login > boxtitel {
+  .topBox.login > boxtitle {
     margin-top: 0;
   }
   .topBox.login > boxcontent {
@@ -1070,8 +1083,8 @@ button[data-balloon] {
     -o-animation: blurIn 0.8s ease-in;
     animation: blurIn 0.8s ease-in;
   }
-  .topBox.login:hover > boxtitel,
-  .topBox.login:active > boxtitel {
+  .topBox.login:hover > boxtitle,
+  .topBox.login:active > boxtitle {
     margin-top: 1vw;
     -webkit-animation: logIn-animate-boxtitle-margin 0.3s ease;
     -moz-animation: logIn-animate-boxtitle-margin 0.3s ease;
@@ -1094,7 +1107,7 @@ button[data-balloon] {
     -o-animation: blurIn 0.8s ease-in;
     animation: blurIn 0.8s ease-in;
   }
-  .topBox.login-active > boxtitel {
+  .topBox.login-active > boxtitle {
     margin-top: 1vw;
     -webkit-animation: logIn-animate-boxtitle-margin 0.3s ease;
     -moz-animation: logIn-animate-boxtitle-margin 0.3s ease;
@@ -1118,7 +1131,7 @@ button[data-balloon] {
     min-height: 11vw;
     max-height: 17.5vw;
   }
-  .logout > boxtitel {
+  .logout > boxtitle {
     text-align: center;
   }
 }
@@ -1351,7 +1364,7 @@ label.button {
 }
 fieldset {
   box-shadow: inset 0px 0px 15px 0px #430c0c;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
 }
 fieldset legend {
   background-color: #FAEBd7;
