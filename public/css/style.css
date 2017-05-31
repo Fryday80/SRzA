@@ -1400,6 +1400,10 @@ fieldset ul {
     height: 20px;
   }
 }
+.preview_gallery {
+  height: 75px;
+  border-radius: 10%;
+}
 .blazon {
   position: relative;
   padding: 10px !important;
