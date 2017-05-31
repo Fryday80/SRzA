@@ -44,12 +44,8 @@ class PageController extends AbstractActionController
           */
          $page = $this->postService->findByUrl($url);
          if (!$page) {
-             //@todo add flash msg and redirect to error page 404
-             throw new \InvalidArgumentException("Page with given Url:{$url} not found.");
-//             $page = new Post();
-//             return new ViewModel(array(
-//                 'page' => $page,
-//             ));
+             $this->getResponse()->setStatusCode(404);
+             return;
          }
          $exceptRolls = $page->getExceptedRoles(true);
          //check auth
