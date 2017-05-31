@@ -52,7 +52,7 @@ $(document).ready(function () {
      * close dialog
      */
     function closeButton(){
-        sessionStorage.setItem('isshow', 1);
+        localStorage.setItem('isshow', 1);
         $(this).dialog("close");
     }
 
@@ -101,7 +101,7 @@ $(document).ready(function () {
         openPopUpByUrl('/impressum', {ok: closeButton},'impressum');
     }
 
-    if(sessionStorage && !sessionStorage.getItem('isshow')){
+    if(localStorage && !localStorage.getItem('isshow')){
         disclaimerPop();
     }
 
