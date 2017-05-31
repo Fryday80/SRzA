@@ -1035,7 +1035,7 @@ button[data-balloon] {
   .topBox.login {
     position: absolute;
     top: 0;
-    right: 3vw;
+    right: 6vw;
     width: 10vw;
     max-height: 5vw;
   }
@@ -1351,6 +1351,7 @@ label.button {
 }
 fieldset {
   box-shadow: inset 0px 0px 15px 0px #430c0c;
+  padding-bottom: 5px;
 }
 fieldset legend {
   background-color: #FAEBd7;
