@@ -162,6 +162,13 @@ $(document).ready(function() {
             center: 'title',
             right: 'listYear,listMonth,month,agendaWeek,agendaDay'
         },
+        buttonText: {
+            listYear: 'Jahresliste',
+            listMonth: 'Monatsliste',
+            month: 'Monatsansicht',
+            agendaWeek: 'Wochenansicht',
+            agendaDay: 'Tagesansicht'
+        },
 //            defaultDate: '2014-06-12',
         defaultView: 'month',
         cache: true,//@todo ?? geht nicht glaub ich
@@ -259,7 +266,8 @@ $(document).ready(function() {
             // console.log("eventDragStart", a,b,c);
         },
     });
-    $('#calendar').css({position: 'absolute'});
+    //@todo changed for style from $('#calendar').css({position: 'absolute'});
+    $('#calendar').css({position: 'relative'});
     $('#calendar').append($details);
     
     function setDetailsMode(mode) {
