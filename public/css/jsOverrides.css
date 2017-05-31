@@ -534,11 +534,11 @@ accordion span span {
 /* jquery ui - own pop up styles */
 /* ----------------- UI special desing -------------------------------- */
 .ui-dialog {
-  top: 0 !important;
-  left: 0 !important;
+  top: 0;
+  left: 0;
 }
 .ui-dialog-buttonset {
-  float: none !important;
+  float: none;
   text-align: center;
 }
 .ui-widget-content button {
@@ -551,7 +551,7 @@ accordion span span {
 /* ----------------- pop up div design -------------------- */
 .disclaimer {
   width: 100%;
-  height: 75% !important;
+  height: 75%;
   font-size: medium !important;
 }
 /* jquery ui - datepicker */
