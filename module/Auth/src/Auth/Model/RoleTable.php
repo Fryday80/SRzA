@@ -69,7 +69,7 @@ class RoleTable extends AbstractTableGateway
         }
     }
     public function getRoleByID($id) {
-        $res = $this->getWhere("rid = '$id'")->toArray();
+        $res = $this->getWhere("role.rid = '$id'")->toArray();
         if (count($res) > 0) {
             return $res[0];
         }
