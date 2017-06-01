@@ -1,0 +1,143 @@
+<?php
+$title = $this->translate("Calendar");
+$this->headTitle($title);
+
+$this->headLink()->prependStylesheet($this->basePath('libs/fullcalendar/fullcalendar.css'));
+$this->headScript()->prependFile($this->basePath('libs/fullcalendar/fullcalendar.js'));
+$this->headScript()->prependFile($this->basePath('libs/fullcalendar/lib/moment.min.js'));
+
+$form->prepare();
+?>
+<style>
+    .flex {
+        display: flex;
+        overflow: hidden;
+    }
+    .form {
+        overflow: hidden;
+    }
+    .event-details[state="closed"] {
+        display: none !important;
+    }
+    .event-details[state="closed"] .form,
+    .event-details[state="closed"] .preview {
+        width: 0px;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .form {
+        width: 0px;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .event.edit-btn{
+        display: block;
+        width: auto;
+        padding-left: 18px;
+        overflow: hidden;
+        transition: all 0.8s;
+    }
+    .event-details[state="preview"] .event.delete-btn{
+        /*width: 0px;*/
+        /*overflow: hidden;*/
+        /*padding: 0;*/
+        /*transition: all 0.8s;*/
+        display: none;
+    }
+    .event-details[state="edit"] .form {
+        width: 270px;
+        transition: all 0.8s;
+    }
+    .event-details[state="edit"] .event.edit-btn{
+        /*width: 0px;*/
+        /*padding: 0;*/
+        /*overflow: hidden;*/
+        /*transition: all 0.8s;*/
+        display: none;
+    }
+    .event-details[state="preview"] .event.edit-btn::before{
+        position: absolute;
+        left: -13px;
+        content: "";
+        height: 0;
+        width: 0;
+        border: solid 15px rgba(67,12,12, 0.5);
+        border-top-color: transparent;
+        border-right: solid 15px;
+        border-bottom-color: transparent;
+        border-left-color: transparent;
+    }
+    .event-details[state="edit"] .event.delete-btn{
+        width: auto;
+        transition: all 0.8s;
+        display: block;
+    }
+    .event-details[state="add"] .preview {
+        width: 0px;
+        transition: all 0.8s;
+    }
+    .preview {
+        width: 200px;
+        transition: all 0.5s linear;
+    }
+    .preview .wrapper {
+        width: 200px;
+    }
+    .preview .wrapper *
+    {
+        list-style: none;
+    }
+    .hideFlex {
+        width: 0px;
+        transition: all 0.5s linear;
+    }
+    td.fc-sun,
+    td.fc-sat
+    {
+        background: linear-gradient(#dbd2c9, white 75%, transparent);
+    }
+    td.fc-mon,
+    td.fc-tue,
+    td.fc-wed,
+    td.fc-thu,
+    td.fc-fri
+    {
+        background: linear-gradient(#dbd2c9, white 50%, transparent);
+    }
+
+</style>
+<div class="box event-details" state="preview">
+    <div class="flex">
+        <div class="form">
+            <h3>Event add/edit form</h3>
+            <?php echo $this->form($form); ?>
+        </div>
+        <div class="preview">
+            <ul class="wrapper">
+                <li>
+                    <h3 class="item" name="title">Event Title</h3>
+                    <ul>
+                        <li><p class="item" name="description">beschreibung</p></li>
+                        <li><p class="item" name="date">start zeit</p></li>
+                        <li><p class="item" name="time">end zeit</p></li>
+                        <li><p class="item" name="allDay">allDay</p></li>
+                        <li><p class="item" name="calendar_name">calendar name</p></li>
+                        <?php if ($canEdit == true): ?>
+                        <li><button class="event edit-btn">Edit falls man darf</button></li>
+                        <?php endif; ?>
+                        <?php if ($canDelete == true): ?>
+                            <li><button class="event delete-btn">Delete falls man darf</button></li>
+                        <?php endif; ?>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div id="calendar"></div>
+<?php
+$this->inlineFromFile('Calendar', 'Calendar', 'calendar.js', array(
+    'canEdit' => $canEdit,
+    'canAdd' => $canAdd,
+    'canDelete' => $canDelete,
+));
+$this->inlineFromFile('Calendar', 'Calendar', 'contextMenu.js');
+?>

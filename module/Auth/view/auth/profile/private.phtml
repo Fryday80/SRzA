@@ -1,0 +1,64 @@
+<?php
+$title = 'Private Profile';
+$this->headTitle($title);
+$userForm->prepare();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<style>
+    .hide {
+        display: none;
+        height: 0px;
+    }
+    .animatable {
+        transition:all 0.3s ease;
+    }
+    .show {
+        height: auto;
+    }
+    .characterList li {
+        float: left;
+        width: 30%;
+        height: 150px;
+    }
+    .characterList li.selected {
+        background-color: rgba(191, 179, 75, 0.6);
+    }
+    .clearfixAfter::after {
+        content: " ";
+        display: block;
+        height: 0;
+        clear: both;
+    }
+    #addCharButton {
+        float: right;
+    }
+</style>
+
+<box>
+    <boxtitle><span class="own_text_medium">User Details</span></boxtitle>
+    <boxcontent>
+        <?php echo $this->form($userForm); ?>
+    </boxcontent>
+</box>
+
+<box id="characters">
+    <boxtitle><span class="own_text_medium">Characters</span><button id="addCharButton">ADD</button></boxtitle>
+    <boxcontent>
+        <template id="characterListItemTemplate">
+            <li class="box">Loding...</li>
+        </template>
+<!--   eigentlich selbs erklärend oder? templajote und drunter die liste wo es rein kommt     -->
+        <ul class="characterList clearfixAfter" >
+            <li class="box">Loding...</li>
+        </ul>
+        <br>
+        <box id="charForm" class="animatable hide">
+            <boxtitle><span class="own_text_small"><span class="command">Edit</span> <span>Charakter</span> <span class="charName"></span></span></boxtitle>
+            <boxcontent>
+                <?php echo $this->form($charForm); ?>
+            </boxcontent>
+        </box>
+    </boxcontent>
+</box>
+<?php echo $this->inlineFromFile('auth', 'profile', 'privateProfile.js');  ?>

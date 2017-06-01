@@ -1,0 +1,9 @@
+<?php
+$title = 'Families';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$this->dataTable()->render($families);
+?>

@@ -1,0 +1,22 @@
+<?php
+$title = 'Edit Menu Item';
+// $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
+$this->headScript()->appendFile('/js/selectedUsage/jquery/nestable/jquery.nestable.js');
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+
+$form = $this->form;
+$form->setAttribute('action', $this->url('nav/edit', array('id' => $id)));
+$form->prepare();
+echo $this->form($form);
+
+
+
+
+
+
+
+

@@ -52,6 +52,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
             ),
         );
     }
+    
     public function getViewHelperConfig()
     {
         return array(

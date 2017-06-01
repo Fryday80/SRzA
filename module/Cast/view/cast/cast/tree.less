@@ -1,0 +1,108 @@
+@import "../../../../../less/allIncludes";
+scroller {
+  position: relative;
+  box-shadow: #0d3349 inset 5px 5px 5px 5px;
+  height: 500px;
+  width: 100%;
+
+  .draggable {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+  }
+}
+
+.tree {
+  * {
+    margin: 0;
+    padding: 0;
+    user-select: none;
+  }
+
+  ul {
+    position: relative;
+    padding-top: 20px;
+    transition: all 0.5s;
+  }
+
+  li {
+    position: relative;
+    float: left;
+    text-align: center;
+    list-style-type: none;
+    padding: 20px 5px 0 5px;
+    transition: all 0.5s;
+    display: inline-block;
+  }
+
+  /* connectors */
+  li::before,
+  li::after {
+    content: '';
+    position: absolute; top: 0; right: 50%;
+    border-top: 1px solid #ccc;
+    width: 50%; height: 20px;
+  }
+  li::after {
+    right: auto; left: 50%;
+    border-left: 1px solid #ccc;
+  }
+
+  li:only-child::after,
+  li:only-child::before {
+    display: none;
+  }
+
+  li:only-child {
+    padding-top: 0;
+  }
+
+  li:first-child::before,
+  li:last-child::after {
+    border: 0 none;
+  }
+
+  li:last-child::before {
+    border-right: 1px solid #ccc;
+    border-radius: 0 5px 0 0;
+  }
+
+  li:first-child::after {
+    border-radius: 5px 0 0 0;
+  }
+
+  ul ul::before {
+    content: '';
+    position: absolute; top: 0; left: 50%;
+    border-left: 1px solid #ccc;
+    width: 0; height: 20px;
+  }
+
+  li div {
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    text-decoration: none;
+    color: #666;
+    font-family: arial, verdana, tahoma;
+    font-size: 11px;
+    display: inline-block;
+    border-radius: 5px;
+    transition: all 0.5s;
+  }
+
+  /* hover effect */
+  li div:hover,
+  li div:hover+ul li div {
+    background: #c8e4f8;
+    color: #000;
+    border: 1px solid #94a0b4;
+  }
+  /*Connector styles on hover*/
+  li div:hover+ul li::after,
+  li div:hover+ul li::before,
+  li div:hover+ul::before,
+  li div:hover+ul li ul::before{
+    border-color: #b41d20;
+    transition: all 0.8s;
+  }
+}

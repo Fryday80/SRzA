@@ -1,0 +1,8 @@
+<?php
+$title = $page->getTitle();
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<article data-page-id="<?= $page->getId(); ?>">
+     <?= $page->getContent(); ?>
+</article>

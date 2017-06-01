@@ -1,0 +1,18 @@
+<?php
+
+$title = 'Neuer User';
+$this->headTitle($title);
+//echo $back . '<br><br>';
+
+echo $this->form()->render($form);
+
+?>
+<script>
+    $('#content input[name="date"]').datepicker({
+        dateFormat: "dd.mm.yy",
+        defaultDate: $.datepicker.parseDate('@', $('#content input[name="timestamp"]').val()),
+        onSelect: function (selectedDate) {
+            var date = new Date($('#content input[name="birthday"]' ).val());
+        }
+    });
+</script>

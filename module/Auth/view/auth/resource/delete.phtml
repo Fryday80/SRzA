@@ -1,0 +1,22 @@
+<?php
+$title = 'Resource Löschen';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Willst du wirklich die Resource 
+     '<?php echo $this->escapeHtml($resourcename); ?>' löschen?
+ </p>
+<?php
+$url = $this->url('resource', array(
+    'action' => 'delete',
+    'id' => $this->id
+));
+?>
+<form action="<?php echo $url; ?>" method="post">
+	<div>
+		<input type="hidden" name="id" value="<?php echo (int) $id; ?>" /> <input
+			type="submit" name="del" value="Yes" /> <input type="submit"
+			name="del" value="No" />
+	</div>
+</form>

@@ -1,0 +1,53 @@
+<?php
+    $title = 'Roles';
+    $this->headTitle($title);
+
+    echo $this->dataTable()->render ( new \Application\Utility\DataTable ( array (
+        'data' => $roles,
+        'columns' =>    array(
+            array (
+                'name'  => 'role_name',
+                'label' => 'Rolle'
+            ),
+            array (
+                'name'  => 'role_parent_name',
+                'label' => 'Parent'
+            ),
+            array (
+                'name'  => 'perm',
+                'label' => 'Permissions',
+                'type'  => 'custom',
+                'render' => function ($row){
+                    $perm = '<a href="permission/edit/' . $row['rid'] . '">Permissions</a>';
+                    return $perm;
+                }
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function ($row){
+                    $edit = '<a href="role/edit/' . $row['rid'] . '">Edit</a>';
+                    $delete = '<a href="role/delete/' . $row['rid'] . '">Delete</a>';
+                    return $edit.' '.$delete;
+                }
+            ),
+        ),
+        'jsConfig' => array(
+            'buttons' => array(
+                'pdf',
+                'print',
+                "csv",
+                "excel",
+                array(
+                    'text' => 'add role',
+                    'url' => '/role/add',
+                )
+            ),
+            'dom' => array(
+                'B' => true,
+            )
+        ),
+    ) ) );
+
+?>

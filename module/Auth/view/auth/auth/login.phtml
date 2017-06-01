@@ -1,0 +1,23 @@
+<box class="logging login">
+    <boxtitle>
+        <span class="own_text_big">Login</span>
+    </boxtitle>
+    <boxcontent >
+        <?php
+
+        $form = $this->form;
+        $form->prepare();
+        echo $this->form($form);
+
+            if ($this->messages){
+                echo '<ul>';
+                foreach($this->messages as $message)
+                {
+                    echo '<li>'.$message.'</li>';
+                }
+                echo '</ul>';
+            }
+        ?>
+        <a href="/register ">Registrieren</a>
+    </boxcontent>
+</box>

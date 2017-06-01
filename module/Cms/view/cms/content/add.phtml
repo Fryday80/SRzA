@@ -1,0 +1,27 @@
+<h1>Add Content</h1>
+<div id="page-edit">
+<?php
+$this->headScript()->appendFile('/libs/ckeditor/ckeditor.js');
+$form = $this->form;
+$form->setAttribute('action', $this->url());
+$form->prepare();
+
+echo $this->form($form);
+?>
+</div>
+<script>
+    $($('#page-edit textarea')[0]).attr("id","editor");
+    CKEDITOR.replace( 'editor',{
+        allowedContent: {
+            script: true,
+            div: true,
+            $1: {
+                // This will set the default set of elements
+                elements: CKEDITOR.dtd,
+                attributes: true,
+                styles: true,
+                classes: true
+            }
+        }
+    });
+</script>

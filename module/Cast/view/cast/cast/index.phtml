@@ -1,0 +1,143 @@
+<style>
+</style>
+<?php echo $this->inlineFromFile('cast', 'cast', 'cast.css');  ?>
+<?php
+$this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
+$this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
+$GLOBALS['bhelper'] = $this->blazon();
+
+bdump($root);
+
+function createReference($char){
+    $GLOBALS['parentBlazons'][$char['id']] = $char['blazon_id'];
+    if (isset($char['employ'])){
+        foreach ($char['employ'] as $employee){
+            createReference($employee);
+        }
+    }
+}
+createReference($root);
+
+
+function getBlazonHelperArguments($character){
+    $overlay1 = $overlay2 = '';
+    if ($character['job_name'] !== null){
+        $overlay1 = $character['job_name'];
+    }
+    if ( $character['supervisor_id'] !== "0" ) { //not set should be unused when in use
+        if ( $character['supervisor_id'] !== "1" ) {    //first level Chars under fictive supervisor
+            $overlay2 = (int)$GLOBALS['parentBlazons'][$character['supervisor_id']];
+        }
+    }
+    $base = ($character['blazon_id'] == "0") ? 'standard' : (int)$character['blazon_id'];
+
+    if ($character['id'] == "1") $overlay1 = 'king'; //special rule for the king
+    if ($base == $overlay2) $overlay2 = null;
+
+    return array($base, $overlay1, $overlay2);
+}
+
+function createFamilyList($parent, $level) {
+    echo '<li class="familyMember">';
+    echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
+    echo '<p>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
+    echo '</p>';
+    echo '<br>';
+    echo '<p>';
+    echo '<span>Family: </span>';
+    echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
+    echo '</p>';
+    echo '</familymember>';
+    if (count($parent['dependent']) > 0) {
+        echo '<ul>';
+        if (count($parent['dependent']) > 0) {
+            foreach ($parent['dependent'] as &$char) {
+                createFamilyList($char, $level + 1);
+            }
+        }
+        echo '</ul>';
+    }
+}
+function createList($parent, $level) {
+    /** @var \Cast\View\BlazonHelper $bh */
+    $bh = $GLOBALS['bhelper'];
+    $blazonArguments = getBlazonHelperArguments($parent);
+    echo '<li class="character">';
+    echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
+    echo '<p>';
+    echo '<span>'.$parent['name'].'</span> ';
+    echo '<span>'.$parent['surename'].'</span>';
+    echo '</p>';
+    echo '<br>';
+    echo $bh->blazon($blazonArguments);
+    echo '<br>';
+    echo '<p>'. $parent['job_name'] .'</p>';
+    echo '<p>';
+    if ($parent['surename'] !== $parent['family_name']) {
+        if ($parent['family_id'] !== null) {
+            echo '<span>Family: </span>';
+            echo '<span data-id="' . $parent['family_id'] . '">' . $parent['family_name'] . '</span>';
+        }
+    }
+    echo '</p>';
+    echo '</character>';
+
+    if (isset($parent['family']) || count($parent['employ']) > 0) {
+        $blazonArguments = getBlazonHelperArguments($parent);//hä
+        echo '<ul>';
+        if (isset($parent['family'])) {
+            echo '<li class="family">';
+            echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
+            echo '<br>';
+            //Todo family blazon
+            echo $bh->getSingleBlazon($blazonArguments, 'big');
+            echo '<br>';
+            echo '<div class="details">';
+            echo $parent['family']['name'];
+//            echo '<br>';
+//            echo '<br>';
+//            echo '<hr>';
+//            echo '<p>wappen</p>';
+//            echo '<p>etc</p>';
+            echo '</div>';
+            echo '<ul>';
+            foreach ($parent['family']['members'] as &$member) {
+                createFamilyList($member, $level + 1);
+            }
+            echo '</ul>';
+
+            echo '</family>';
+            echo '</li>';
+        }
+        if (count($parent['employ']) > 0) {
+            foreach ($parent['employ'] as &$char) {
+                createList($char, $level + 1);
+            }
+        }
+        echo '</ul>';
+    }
+    echo '</li>';
+}
+?>
+
+<box id="fullCastScroller">
+    <boxtitle>
+        <span class='own_text_small'>Staatshierarchie</span>
+    </boxtitle>
+    <boxcontent>
+
+        <div class="tree" style="width: 2000px; height: 2000px; display:none">
+            <ul style="white-space:nowrap">
+                <?php
+                createList($root, 0); ?>
+            </ul>
+
+            <br style="clear:both"/>
+        </div>
+
+    </boxcontent>
+</box>
+
+<?php echo $this->inlineFromFile('cast', 'cast', 'scroller.js');  ?>

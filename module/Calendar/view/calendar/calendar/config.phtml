@@ -1,0 +1,47 @@
+<style>
+    form label select[name="role_id"]
+    {
+        height: 40px;
+    }
+    .color-change
+    {
+        width: 100%;
+        height: 15px;
+    }
+</style>
+<accordion>
+    <?php
+    /**
+     * @var  $key
+     * @var  \Calendar\Form\CalendarForm $calendar
+     */
+    foreach ($calendarSet as $key => $calendar): ?>
+    <span data-name="<?php echo $calendar->get('id')->getValue(); ?>" style="border-left: solid 4px <?php echo $calendar->get('backgroundColor')->getValue(); ?>"><?php echo $calendar->get('summary')->getValue(); ?></span>
+    <div><?php echo $this->form($calendar); ?></div>
+    <?php endforeach; ?>
+</accordion>
+<script>
+    $('.color input').change(function() {
+        var newColor = $(this).val();
+        let id = $(this).parent('label').parent('form').children('input[name="id"]').val();
+
+        animateColorChange($(this).parent('label').parent('form').parent('div'), $('span[data-name="'+id+'"]').css('border-left-color'), $(this).val());
+
+        $('span[data-name="'+id+'"]').css('border-left-color', newColor);
+    });
+    function animateColorChange(parentDiv, oldColor, newColor) {
+        $('.color-change', parentDiv).remove();
+        var ele = ('<div class="color-change"></div>');
+        parentDiv.append(ele);
+        $('.color-change', parentDiv).css('background-color', oldColor);
+        $('.color-change', parentDiv).animate({
+            'background-color': newColor
+        },
+            3000,
+            function () {
+                $('.color-change', parentDiv).css('background', 'linear-gradient(to left, ' + oldColor + ', ' + newColor + ')');
+            }
+        )
+    }
+
+</script>

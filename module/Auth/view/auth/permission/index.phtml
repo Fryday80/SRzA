@@ -1,0 +1,22 @@
+<?php
+$title = 'Edit Permissions for:';
+$this->headTitle($title);
+
+    echo $this->dataTable()->render(new \Application\Utility\DataTable ( array(
+        'data' => $roles,
+        'columns' =>    array(
+            array (
+                'name' => 'role_name',
+                'label' => 'Rolle'
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Aktion',
+                'type'  => 'custom',
+                'render' => function($row){
+                    $edit = '<a href="permission/edit/' . $row['rid'] . '">Ändern</a>';
+                    return $edit;
+                }
+            )
+        )
+    )));

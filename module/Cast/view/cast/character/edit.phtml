@@ -1,0 +1,72 @@
+<?php
+$title = 'Edit Character';
+$this->headTitle($title);
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+$form = $this->form;
+$form->prepare();
+echo $this->form($form);
+?>
+
+
+<script type="text/javascript">
+    (function () {
+        //ajax call
+        function reloadSelect($select, funcName, familyID) {
+            //@todo hide element and show load animation
+            //remove guardians
+            $select.find('option').remove();
+            let data = {
+                method: funcName,
+                familyID: familyID,
+            };
+            let promise = $.ajax({
+                url: "/castmanager/characters/json",
+                type: "POST",
+                data: JSON.stringify(data)
+            });
+
+            promise.fail(function(jqXHR, textStatus, errorThrown) {
+                //@todo handle error
+                console.error(textStatus);
+                //@todo remove load animation and show element
+            });
+            promise.done(function(e, textStatus, jqXHR) {
+                //@todo on error is not decoded
+                //e = JSON.parse(e);
+                if (e.error) {
+                    //@todo handle error
+                    console.error(e);
+                } else {
+                    //add guardians
+                    let guardians = e.data;
+                    $select.append($('<option>', {
+                        value: 0,
+                        text: 'keiner'
+                    }));
+                    for (let i = 0; i < guardians.length; i++) {
+                        $select.append($('<option>', {
+                            value: guardians[i].id,
+                            text: guardians[i].name
+                        }));
+                    }
+                }
+                //@todo remove load animation and show element
+            });
+        }
+        //register events on form elements
+        $("select[name='family_id']").on('change', function() {
+            let familyID = $(this).val();
+            let $select = $('select[name="guardian_id"]');
+            reloadSelect($select, "getPossibleGuardians", familyID);
+        });
+        $("select[name='tross_id']").on('change', function() {
+            let familyID = $(this).val();
+            let $select = $('select[name="supervisor_id"]');
+            reloadSelect($select, "getPossibleSupervisors", familyID);
+        });
+    })();
+</script>
+

@@ -1,0 +1,104 @@
+<style>
+    div.onlineStatus
+    {
+        float: right;
+        margin 5px;
+    }
+    img.onlineStatus
+    {
+        height: 35px
+    }
+    .public-profile
+    {
+        position: relative;
+        padding: 5px;
+        background-color: #FAEBd7;
+        box-shadow: 4px 4px 4px rgb(67,12,12), inset 0 0 2vw rgb(67,12,12);
+    }
+    .public-profile.summary
+    {
+        box-shadow: 4px 4px 4px rgb(67,12,12), inset 0 0 1vw rgb(67,12,12);
+    }
+    .public-profile .blazon
+    {
+        float: left;
+        margin-top: -14px;
+    }
+    .charbutton
+    {
+        margin-left: 2vw;
+    }
+    .online
+    {
+        color: darkgreen;
+        text-shadow: 2px 2px 8px mediumspringgreen;
+    }
+    .offline
+    {
+        color: #8B2252;
+        text-shadow: 2px 2px 8px red;
+    }
+</style>
+
+
+<?php
+/** @var \Auth\Model\User $user */
+$user = $user;
+$bh = $this->blazon();
+$stateUrl = ($isActive) ? '/img/uikit/led-green.png' : '/img/uikit/led-red.png';
+$state    = ($isActive) ? 'online' : 'offline';
+$activityState = " <div class='onlineStatus' data-balloon=$state data-balloon-pos='down' ><img src=$stateUrl class='onlineStatus' alt=$state></div>";
+
+$title =$user->name;
+$this->headTitle($title);
+?>
+
+<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; ?></span></h1><br/>
+<br/>
+<box class="public-profile summary">
+    <span>
+        <b>Funktion:</b> <?php echo $user->role_name;?>
+    </span> |
+    <span>
+        <b>Angemeldet seit:</b> <?php echo date('d.m.Y', $user->created_on);?>
+    </span> |
+    <span data-balloon='Email schreiben' data-balloon-pos='up' >
+        <b>eMail:</b> <a href="mailto:<?php echo $user->email;?>?Subject=Schwarze%20Ritter%20von%20<?php echo $askingUser;?>" target="_top"><?php echo $user->email;?></a>
+    </span> |
+    <span data-balloon=<?php echo $state;?> data-balloon-pos='up' >
+        <b>OnlineStatus:</b> <span class="<?php echo $state;?>"><?php echo $state;?></span>
+    </span>
+</box>
+<box class="public-profile address">
+    <boxtitle>
+        <span class="own_text_small">Anschrift:</span>
+    </boxtitle>
+    <boxcontent>
+    <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
+    echo $user->street . '<br/>';
+    echo $user->zip . ' ' . $user->city . '<br/>';?>
+    </boxcontent>
+</box>
+<box class="public-profile birthday">
+    <boxtitle>
+        <span class="own_text_small">Geburtstag:</span>
+    </boxtitle>
+    <boxcontent>
+    <?php echo $user->birthday ;?>
+    </boxcontent>
+</box>
+<box class="public-profile">
+    <boxtitle>
+        <span class="own_text_small">Darstellungen</span>
+    </boxtitle>
+    <boxcontent>
+        <?php foreach ($characters as $character):
+            $blazonArgument = (isset($character['blazon_id']) && $character['blazon_id'] !== "0") ? array($character['blazon_id']) : array('standard');
+            echo $character['name'] . ' ' . $character['surename'];
+            echo $bh->blazon($blazonArgument) ;?>
+            <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
+            <br/>
+        <?php endforeach; ?>
+    </boxcontent>
+</box>
+<br/>

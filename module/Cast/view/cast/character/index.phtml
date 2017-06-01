@@ -1,0 +1,12 @@
+<?php
+$title = 'Characters';
+$this->headTitle($title);
+?>
+ <h1><?php echo $this->escapeHtml($title); ?></h1>
+ <p>
+     <a href="<?php echo $this->url('castmanager/characters/add');?>">Add new Character</a>
+ </p>
+
+<?php
+$this->dataTable()->render($families);
+?>

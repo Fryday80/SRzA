@@ -1,0 +1,34 @@
+<h1>Edit Content</h1>
+<div id="page-edit">
+<?php
+// $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
+$this->headScript()->appendFile('/libs/ckeditor/ckeditor.js');
+$form = $this->form;
+$form->setAttribute('action', $this->url('cms/edit', array(), true));
+$form->prepare();
+$form->get('submit')->setValue('Update');
+
+echo $this->form($form);
+?>
+</div>
+<style type="text/css">
+    .fm-modal {
+        z-index: 10011; /** Because CKEditor image dialog was at 10010 */
+        width:80%;
+        height:80%;
+        top: 10%;
+        left:10%;
+        border:0;
+        position:fixed;
+        -moz-box-shadow: 0px 1px 5px 0px #656565;
+        -webkit-box-shadow: 0px 1px 5px 0px #656565;
+        -o-box-shadow: 0px 1px 5px 0px #656565;
+        box-shadow: 0px 1px 5px 0px #656565;
+        filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=180, Strength=5);
+    }
+</style>
+<script>
+    $($('#page-edit textarea')[0]).attr("id","editor");
+    CKEDITOR.replace( 'editor',{
+    });
+</script>

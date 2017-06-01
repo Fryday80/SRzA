@@ -1,0 +1,25 @@
+<?php
+
+$title = 'Profil';
+$this->headTitle($title);
+
+echo $buttons;
+echo $this->dataTable()->render($user);
+//fry todo pw ändern if ($owner)...
+?>
+
+
+<script>
+ //datepicker
+ $('#content input[name="birthday"]').datepicker({
+  dateFormat: "dd.mm.yy",
+  defaultDate: $.datepicker.parseDate('@', $('#content input[name="birthday"]').val()),
+  onSelect: function (selectedDate) {
+   var date = new Date($('#content input[name="birthday"]' ).val());
+   $('#content input[name="timestamp"]').val(date.getTime() / 1000);
+  }
+ });
+
+ var create = new Date($('#content input[name="created_on"]').val());
+ var mod = new Date($('#content input[name="modyfied_on"]').val());
+</script>
