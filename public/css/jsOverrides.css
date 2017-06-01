@@ -573,3 +573,10 @@ table.dataTable tr:hover > td,
 table.dataTable tr:hover > td {
   background-color: #9fa8da !important;
 }
+/* navSort */
+#navTree.dd button {
+  background: none;
+  min-height: auto;
+  min-width: auto;
+  box-shadow: none;
+}
