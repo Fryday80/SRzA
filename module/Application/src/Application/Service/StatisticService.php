@@ -68,6 +68,7 @@ class StatisticService
         $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['ip'], $data['url']) , $data['sid']);
 
         $this->checkCookie($e);
+        bdump($e->getError());
     }
 
     public function onError(MvcEvent $e) {
@@ -90,6 +91,7 @@ class StatisticService
             case Application::ERROR_ROUTER_NO_MATCH:
                 // Specifically not handling these
                 //here 404 missmatch is prozessed
+            bdump('onError skipped');
                 return;
 
             case Application::ERROR_EXCEPTION:
@@ -111,6 +113,7 @@ class StatisticService
                 break;
         }
 
+        bdump('onError');
         $data = $this->gatherData($e);
         $data['errors'] = $errors;
 

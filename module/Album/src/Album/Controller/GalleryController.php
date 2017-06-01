@@ -29,7 +29,7 @@ class GalleryController extends AbstractActionController
         $viewModel = new ViewModel(array(
             'album' => $album_data,
         ));
-        $viewModel->setTemplate('Album/gallery/small.phtml');
+        $viewModel->setTemplate('album/gallery/small.phtml');
         return $viewModel;
     }
 }

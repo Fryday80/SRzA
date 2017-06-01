@@ -1,9 +1,9 @@
 <h1><?php echo $this->translate('An error occurred') ?></h1>
 <h2><?php echo  $this->message ?></h2>
-
 <?php
-switch (getenv('APPLICATION_ENV')) {
-    case ("development"):
+//switch (getenv('APPLICATION_ENV')) {
+switch ('development') {
+    case "development":
         if (isset($this->display_exceptions) && $this->display_exceptions):
             if(isset($this->exception) && $this->exception instanceof Exception): ?>
                 <hr/>
@@ -63,7 +63,7 @@ switch (getenv('APPLICATION_ENV')) {
         endif;
         echo '<br/>****************************** standard message ******************************';
     case('production'):
-    default:  ?>
+    default:?>
         <br/>
         <h1>Leider ist ein Fehler aufgetreten.</h1>
         <p>Unser System ist direkt mit dem Verantwortlichen verbunden.</p>
