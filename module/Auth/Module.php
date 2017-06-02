@@ -10,7 +10,6 @@ use Auth\Model\ResourceTable;
 use Auth\Model\RolePermissionTable;
 use Auth\Model\UserRoleTable;
 use Auth\Model\AuthStorage;
-use Auth\Service\AclService;
 use Auth\Service\AccessService;
 use Auth\View\Helper\LoginView;
 use Auth\View\Helper\UserInfo;
@@ -142,9 +141,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
                     $authService = $serviceManager->get('AuthService');
                     return new AccessService($aclService, $authService, $storage);
                 },
-                'Auth\AclService' => function ($serviceManager) {
-                    return new AclService($serviceManager);
-                },
+                'Auth\AclService' => 'Auth\Factory\AclServiceFactory',
                 'Auth\Model\UserTable' => function ($serviceManager) {
                     $resultSetPrototype = new HydratingResultSet();
                     $resultSetPrototype->setHydrator(new ObjectProperty());

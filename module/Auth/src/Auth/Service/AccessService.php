@@ -25,7 +25,6 @@ class AccessService {
         $this->userName = $storage->getUserName();
         $this->userIP = $storage->getIP();
         $this->acl = $aclService;
-        $this->acl->initAcl();
         
         AbstractHelper::setDefaultAcl($this->acl);
         AbstractHelper::setDefaultRole($this->role);
@@ -81,11 +80,11 @@ class AccessService {
     function getUserIP() {
         return $this->userIP;
     }
-
-    /**
-     * @return array
-     */
-    public function fetchAllRoles(){
-        return $this->aclService->fetchAllRoles();
-}
+// @todo remove
+//    /**
+//     * @return array
+//     */
+//    public function fetchAllRoles(){
+//        return $this->aclService->fetchAllRoles();
+//    }
 }

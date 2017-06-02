@@ -5,41 +5,26 @@ use Zend\Permissions\Acl\Acl;
 use Zend\Permissions\Acl\Role\GenericRole as Role;
 use Zend\Permissions\Acl\Resource\GenericResource as Resource;
 use Zend\Permissions\Acl\Role\Registry;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class AclService extends Acl
 {
 
     const DEFAULT_ROLE = 'Guest';
 
-    protected $_roleTableObject;
+    public $_roleTableObject;
+    public $roles;
+    public $permissions;
+    public $resources;
+    public $rolePermission;
+    public $commonPermission;
 
-    protected $serviceLocator;
+    public function __construct() { }
 
-    protected $roles;
+    public function initAcl($roles, $resources, $rolePermissions) {
+        $this->roles = $roles;
+        $this->resources = $resources;
+        $this->rolePermission = $rolePermissions;
 
-    protected $permissions;
-
-    protected $resources;
-
-    protected $rolePermission;
-
-    protected $commonPermission;
-
-    public function __construct($sm)
-    {
-        $this->serviceLocator = $sm;
-    }
-
-    public function initAcl()
-    {
-        //get Roles
-        $this->roles = $this->_getAllRoles();
-        $this->resources = $this->_getAllResources();
-        $this->rolePermission = $this->_getRolePermissions();
-
-        // we are not putting these resource & permission in table bcz it is
         // common to all user
         $this->commonPermission = array(
             'Auth\Controller\Auth' => array(
@@ -47,18 +32,18 @@ class AclService extends Acl
                 'login'
             )
         );
+
         $this->_addRoles()
             ->_addResources()
             ->_addRoleResources();
-            
+
         if ($this->hasRole('Administrator') ) {
+            //@todo sollen wir dem admin einfach alles erlauben? dann kann man sich nicht aussperren
 //             $this->allow('Administrator');
         }
-
     }
 
-    public function isAccessAllowed($role, $resource, $permission)
-    {
+    public function isAccessAllowed($role, $resource, $permission) {
         if (! $this->hasResource($resource)) {
             return false;
         }
@@ -67,12 +52,11 @@ class AclService extends Acl
         }
         return false;
     }
-
-    public function fetchAllRoles () {
-        //@todo add caching
-        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
-        return $roleTable->getUserRoles();
-    }
+//@todo remove
+//    public function fetchAllRoles () {
+//        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
+//        return $roleTable->getUserRoles();
+//    }
 
     protected function _addRoles()
     {
@@ -98,7 +82,7 @@ class AclService extends Acl
                 }
             }
         }
-        
+
         // add common resources
         if (! empty($this->commonPermission)) {
             foreach ($this->commonPermission as $resource => $permissions) {
@@ -107,7 +91,7 @@ class AclService extends Acl
                 }
             }
         }
-        
+
         return $this;
     }
 
@@ -121,7 +105,7 @@ class AclService extends Acl
                 }
             }
         }
-        
+
         if (! empty($this->rolePermission)) {
             foreach ($this->rolePermission as $rolePermissions) {
                 $this->allow($rolePermissions['role_name'], $rolePermissions['resource_name'], $rolePermissions['permission_name']);
@@ -129,29 +113,6 @@ class AclService extends Acl
         }
 
         return $this;
-    }
-
-    protected function _getAllRoles()
-    {
-        $roleTable = $this->serviceLocator->get("Auth\Model\RoleTable");
-        return $roleTable->getUserRoles();
-    }
-
-    protected function _getAllResources()
-    {
-        $resourceTable = $this->serviceLocator->get("Auth\Model\ResourceTable");
-        return $resourceTable->getAllResources();
-    }
-
-    protected function _getRolePermissions()
-    {
-        $rolePermissionTable = $this->serviceLocator->get("Auth\Model\RolePermissionTable");
-        return $rolePermissionTable->getRolePermissions();
-    }
-    
-    private function debugAcl($role, $resource, $permission)
-    {
-        echo 'Role:-' . $role . '==>' . $resource . '\\' . $permission . '<br/>';
     }
 
     /**
