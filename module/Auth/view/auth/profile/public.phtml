@@ -93,10 +93,13 @@ $this->headTitle($title);
     </boxtitle>
     <boxcontent>
         <?php foreach ($characters as $character):
+            $link = '/profile/' . $user->name . '/' . str_replace(" ","-",$character['name']) . '-' . str_replace(" ", "-", $character['surename']);
             $blazonArgument = (isset($character['blazon_id']) && $character['blazon_id'] !== "0") ? array($character['blazon_id']) : array('standard');
             echo $character['name'] . ' ' . $character['surename'];
             echo $bh->blazon($blazonArgument) ;?>
-            <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
+            <a href="<?php echo $link?>">
+                <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
+            </a>
             <br/>
         <?php endforeach; ?>
     </boxcontent>

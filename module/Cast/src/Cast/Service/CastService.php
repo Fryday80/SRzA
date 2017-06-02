@@ -20,6 +20,7 @@ class CastService implements ServiceLocatorAwareInterface
 {
     private $serviceLocator;
     private $loaded = false;
+    private $userSet = false;
     private $data;
 
     function __construct() {
@@ -177,10 +178,23 @@ class CastService implements ServiceLocatorAwareInterface
     private function getUserNames(){
         /** @var UserTable $userTable */
         $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
-        foreach ($this->data as $key => $char){
+        foreach ($this->data as $key => $char) {
             /** @var User $newData */
             $newData = $userTable->getUsersBy('id', $char['user_id']);
             $this->data[$key]['userName'] = $newData->name;
         }
+        $this->userSet = true;
+    }
+    public function getCharacterData($name, $username){
+        if (!$this->loaded) $this->loadData();
+        if (!$this->userSet) $this->getUserNames();
+        $return = array();
+        foreach ($this->data as $key => $char){
+            $wholeName = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
+            if ($wholeName == $name && $char['userName'] == $username){
+                return $char;
+            }
+        }
+        return null;
     }
 }

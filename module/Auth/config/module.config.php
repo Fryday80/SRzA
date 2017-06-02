@@ -273,13 +273,40 @@ return array(
             'profile' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/profile[/][/:username]',
-                    'constraints' => array(
-                        'username' => '[a-zA-Z][a-zA-Z0-9_-]+'
-                    ),
+                    'route' => '/profile',
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Profile',
                         'action' => 'index',
+                    )
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'username' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/:username',
+                            'constraints' => array(
+                                'username' => '[a-zA-Z][a-zA-Z0-9_-]+'
+                            ),
+                            'defaults' => array(
+                                'action' => 'index',
+                            )
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'charname' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/:charname',
+                                    'constraints' => array(
+                                        'charname' => '[a-zA-Z][a-zA-Z0-9_-]+'
+                                    ),
+                                    'defaults' => array(
+                                        'action' => 'charprofile',
+                                    )
+                                )
+                            )
+                        )
                     )
                 )
             ),
