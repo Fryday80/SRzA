@@ -83,10 +83,7 @@ function createList($parent, $level) {
         }
     }
     echo '</p>';
-    echo '<br/><div class="onlyCentered">';
-    echo '<a href="cast/profile/' . $parent['name'] . '">Details</a><br/>';
-    echo '<a href="profile/' . $parent['name'] . '">Darsteller</a>';
-    echo '</div><br/>';
+    echo linkCreator($parent);
     echo '</character>';
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
@@ -124,6 +121,15 @@ function createList($parent, $level) {
         echo '</ul>';
     }
     echo '</li>';
+}
+function linkCreator($parent){
+    $profileRoot = 'profile/' . $parent['userName'];
+    $castProfile = '/' . (str_replace(" ", "-", $parent['name'] )) . '-' .(str_replace(" ", "-", $parent['surename'] ));
+    $link = '<br/><div class="onlyCentered">';
+    $link .= '<a href="' . $profileRoot . $castProfile . '">Details</a><br/>';
+    $link .= '<a href="' . $profileRoot . '">Darsteller</a>';
+    $link .= '</div><br/>';
+    return $link;
 }
 ?>
 
