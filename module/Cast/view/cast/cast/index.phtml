@@ -82,6 +82,10 @@ function createList($parent, $level) {
         }
     }
     echo '</p>';
+    echo '<br/><div class="onlyCentered">';
+    echo '<a href="cast/profile/' . $parent['name'] . '">Details</a><br/>';
+    echo '<a href="profile/' . $parent['name'] . '">Darsteller</a>';
+    echo '</div><br/>';
     echo '</character>';
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
