@@ -231,7 +231,7 @@ class UserForm extends Form
             'submit' => 1
         );
         if (!isset ($order[$name]) ){
-            $prio = 105;
+            $prio = 7;
         } else {
             $prio = $order[$name];
         }
