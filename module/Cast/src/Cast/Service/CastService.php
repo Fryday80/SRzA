@@ -9,6 +9,8 @@
 namespace Cast\Service;
 
 
+use Auth\Model\User;
+use Auth\Model\UserTable;
 use Cast\Model\CharacterTable;
 use Tracy\Debugger;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
@@ -48,7 +50,7 @@ class CastService implements ServiceLocatorAwareInterface
     private $tempFamsHash;
     public function getStanding($withFam = false) {
         $this->loadData();
-        
+
         foreach ($this->data as $key => &$char) {
             $this->charsById[$char['id']] = &$char;
             $char['employ'] = array();
@@ -145,6 +147,8 @@ class CastService implements ServiceLocatorAwareInterface
             /** @var CharacterTable $charTable */
             $charTable = $this->getServiceLocator()->get('Cast\Model\CharacterTable');
             $this->data = $charTable->getAllCastData();
+            //insert user names for linking
+            $this->getUserNames();
             $this->loaded = true;
         }
     }
@@ -164,5 +168,19 @@ class CastService implements ServiceLocatorAwareInterface
      */
     public function getServiceLocator() {
         return $this->serviceLocator;
+    }
+
+    /**
+     * Adds the username of the Character to the user objects
+     * @throws \Exception
+     */
+    private function getUserNames(){
+        /** @var UserTable $userTable */
+        $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
+        foreach ($this->data as $key => $char){
+            /** @var User $newData */
+            $newData = $userTable->getUsersBy('id', $char['user_id']);
+            $this->data[$key]['userName'] = $newData->name;
+        }
     }
 }
