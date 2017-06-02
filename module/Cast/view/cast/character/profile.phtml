@@ -1,0 +1,39 @@
+<style>
+
+</style>
+
+<?php
+// $char = character array
+$char = $char;
+//cleanfix dummy
+$char['hasChild'] = false;
+
+/** @var \Cast\View\BlazonHelper $bh */
+$bh = $this->blazon();
+
+$title =$char->name;
+$this->headTitle($title);
+?>
+
+<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span></h1><br/>
+<br/>
+<box class="public-char-profile">
+    <boxtitle>
+        <?php $bh->blazon(); ?>
+    </boxtitle>
+    <boxcontent>
+        <p>name</p>
+        <p>bild</p>
+        <p>vita</p>
+        <p>family</p>
+        <?php if ($char['hasChild']):
+            echo '<accordion>';
+            foreach ($charfamily as $member): ?>
+                <span>name</span>
+                <div>info + links</div>
+            <?php endforeach;
+            echo '</accordion>';
+        endif; ?>
+        <p>link zur Darsteller page</p>
+    </boxcontent>
+</box>

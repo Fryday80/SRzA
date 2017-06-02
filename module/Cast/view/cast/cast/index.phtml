@@ -19,7 +19,6 @@ function createReference($char){
 }
 createReference($root);
 
-
 function getBlazonHelperArguments($character){
     $overlay1 = $overlay2 = '';
     if ($character['job_name'] !== null){
@@ -50,6 +49,7 @@ function createFamilyList($parent, $level) {
     echo '<span>Family: </span>';
     echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
     echo '</p>';
+    echo linkCreator($parent);
     echo '</familymember>';
     if (count($parent['dependent']) > 0) {
         echo '<ul>';
@@ -98,11 +98,6 @@ function createList($parent, $level) {
             echo '<br>';
             echo '<div class="details">';
             echo $parent['family']['name'];
-//            echo '<br>';
-//            echo '<br>';
-//            echo '<hr>';
-//            echo '<p>wappen</p>';
-//            echo '<p>etc</p>';
             echo '</div>';
             echo '<ul>';
             foreach ($parent['family']['members'] as &$member) {
@@ -124,12 +119,16 @@ function createList($parent, $level) {
 }
 function linkCreator($parent){
     $profileRoot = 'profile/' . $parent['userName'];
-    $castProfile = '/' . (str_replace(" ", "-", $parent['name'] )) . '-' .(str_replace(" ", "-", $parent['surename'] ));
-    $link = '<br/><div class="onlyCentered">';
-    $link .= '<a href="' . $profileRoot . $castProfile . '">Details</a><br/>';
-    $link .= '<a href="' . $profileRoot . '">Darsteller</a>';
-    $link .= '</div><br/>';
-    return $link;
+    $castProfile = $profileRoot . '/' . (str_replace(" ", "-", $parent['name'] )) . '-' .(str_replace(" ", "-", $parent['surename'] ));
+
+    $link1 = '<br/><div class="onlyCentered">';
+    $link1 .= '<a href="' . $castProfile . '">Darstellung</a>';
+    $link1 .= '</div>';
+
+    $link2 = '<div class="onlyCentered">';
+    $link2 .= '<a href="' . $profileRoot . '">Darsteller</a>';
+    $link2 .= '</div><br/>';
+    return $link1 . $link2;
 }
 ?>
 
