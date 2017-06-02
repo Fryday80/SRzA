@@ -27,6 +27,7 @@ class RoleController extends AbstractActionController
                 $data = $form->getData();
                 //if role_parent == 0 then set to null
                 $roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
+                $this->cache->clearCache('acl');
                 return $this->redirect()->toRoute('role');
             } else {
                 
@@ -54,6 +55,7 @@ class RoleController extends AbstractActionController
                     'role_name' => $data['role_name'],
                     'role_parent'=> $data['role_parent']
                 ), $data['rid']);
+                $this->cache->clearCache('acl');
                 return $this->redirect()->toRoute('role');
             }
         }
@@ -79,8 +81,10 @@ class RoleController extends AbstractActionController
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 $roleTable->deleteByID($id);
+                $this->cache->clearCache('acl');
             }
-            $this->navService->removeRole($id);
+            //cleanfix @todo remove
+//            $this->navService->removeRole($id);
            return $this->redirect()->toRoute('role');
         }
         return array(

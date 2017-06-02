@@ -68,7 +68,6 @@ class StatisticService
         $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['ip'], $data['url']) , $data['sid']);
 
         $this->checkCookie($e);
-        bdump($e->getError());
     }
 
     public function onError(MvcEvent $e) {

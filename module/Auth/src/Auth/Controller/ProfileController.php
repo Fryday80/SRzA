@@ -6,6 +6,7 @@ use Auth\Form\ProfileCharacterForm;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
 use Cast\Model\CharacterTable;
+use Cast\Service\CastService;
 use vakata\database\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\UserForm;
@@ -133,4 +134,51 @@ class ProfileController extends AbstractActionController
         $jobs = $jobTable->getAll();
         return new ProfileCharacterForm($users, $families, $jobs);
     }
+    public function charprofileAction(){
+        $hasFamily = false;
+        $username = $this->params()->fromRoute('username');
+        $charnameURL = $this->params()->fromRoute('charname');
+        
+        /** @var  CastService $castService */
+        $castService = $this->getServiceLocator()->get("CastService");
+        
+        $char = $castService->getCharacterData($charnameURL, $username);
+        $charFamily = $castService->getAllCharsFromFamily($char['family_id']);
+        
+        foreach ($charFamily as $key => $member){
+            $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);
+            if ($wholeName == $charnameURL){
+                unset($charFamily[$key]);
+                break;
+            }
+        }
+        
+        if ($charFamily) $hasFamily = true;
+
+        return new ViewModel(array(
+            'char'       => $char,
+            'hasFamily'  => $hasFamily,
+            'charFamily' => $charFamily,
+            'username'   => $username,
+            'charname'   => $charnameURL,
+        ));
+
+    }
+//    public function familyprofileAction(){
+//        $username = $this->params()->fromRoute('username');
+//        $charname = $this->params()->fromRoute('charname');
+//        /** @var  CastService $castService */
+//        $castService = $this->getServiceLocator()->get("CastService");
+//        $char = $castService->getCharacterData($charname, $username);
+//        $charFamily = $castService->getAllCharsFromFamily($char['family_id']);
+//
+//
+//        return new ViewModel(array(
+//            'char'       => $char,
+//            'charFamily' => $charFamily,
+//            'username'   => $username,
+//            'charname'   => $charname,
+//        ));
+//
+//    }
 }

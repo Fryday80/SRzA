@@ -64,6 +64,7 @@ class PermissionController extends AbstractActionController
                 $rolePermTable->addPermission($roleID, $id);
             }
         }
+        $this->cache->clearCache('acl');
         return $this->redirect()->toRoute('permission/edit', array(
             'id' => $roleID
         ));
@@ -79,6 +80,7 @@ class PermissionController extends AbstractActionController
             foreach ($rolePermIDs as $id) {
                 $rolePermTable->delete("id = $id");
             }
+            $this->cache->clearCache('acl');
         }
         
         return $this->redirect()->toRoute('permission/edit', array(

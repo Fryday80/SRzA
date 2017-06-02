@@ -1,12 +1,20 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Service\CacheService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Auth\Form\ResourceForm;
 
 class ResourceController extends AbstractActionController
 {
+    /** @var CacheService */
+    private $cache;
+
+    function __construct()
+    {
+        $this->cache = $this->getServiceLocator()->get("CacheService");
+    }
 
     public function indexAction()
     {
@@ -36,6 +44,7 @@ class ResourceController extends AbstractActionController
                 foreach ($perms as $value) {
                     $permTable->add($resID, $value);
                 }
+                $this->cache->clearCache('acl');
                 return $this->redirect()->toRoute('resource');
             } else {
                 
@@ -96,6 +105,7 @@ class ResourceController extends AbstractActionController
                     if (!in_array($perm, $permNames) )
                         $permTable->add($id, $perm);
                 }
+                $this->cache->clearCache('acl');
                 return $this->redirect()->toRoute('resource');
             } else {
         
@@ -128,7 +138,8 @@ class ResourceController extends AbstractActionController
                 $resTable->deleteByID($id);
                 $permTable->deleteByResourceID($id);
             }
-    
+
+            $this->cache->clearCache('acl');
             // Redirect to list of albums
             return $this->redirect()->toRoute('resource');
         }
