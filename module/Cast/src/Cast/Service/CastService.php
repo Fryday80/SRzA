@@ -48,7 +48,7 @@ class CastService implements ServiceLocatorAwareInterface
     private $tempFamsHash;
     public function getStanding($withFam = false) {
         $this->loadData();
-
+        
         foreach ($this->data as $key => &$char) {
             $this->charsById[$char['id']] = &$char;
             $char['employ'] = array();
