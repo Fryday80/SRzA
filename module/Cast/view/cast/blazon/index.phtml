@@ -5,7 +5,8 @@ $this->headTitle($title);
  <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <?php
-bdump($blazons);
+//cleanfix
+//bdump($blazons);
 $this->dataTable()->render($blazons);
 ?>
 <div class="exampleBlazon">

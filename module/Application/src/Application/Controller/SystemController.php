@@ -105,7 +105,8 @@ class SystemController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $form->setData($this->getRequest()->getPost());
         }
-        bdump( $form->isValid());
+        //cleanfix
+//bdump( $form->isValid());
         $form->isValid();
         return array(
             'form' => $form

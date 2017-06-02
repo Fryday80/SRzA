@@ -83,7 +83,8 @@ EOD;
             );
         }
 //        <option disabled selected>Please pick one</option>
-        bdump($data);
+        //cleanfix
+//bdump($data);
         $this->get('blazon_id')->setValueOptions($data);
     }
 }

@@ -38,9 +38,10 @@ class ProfileController extends AbstractActionController
         $characters = $characterTable->getByUserId($user->id);
         $isActive = $statService->isActive($user->name);
         $askingUser = $accessService->getUserName();
-        
-        bdump($user);
-        bdump($characters);
+
+        //cleanfix
+//bdump($user);
+//        bdump($characters);
         $viewModel->setVariable('askingUser', $askingUser);
         $viewModel->setVariable('isActive', $isActive);
         $viewModel->setVariable('user', $user);

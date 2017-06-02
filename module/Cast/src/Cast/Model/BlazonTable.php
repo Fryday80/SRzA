@@ -37,7 +37,8 @@ class BlazonTable extends AbstractTableGateway
     
     public function save($id, $data) {
         unset($data['id']);
-        bdump($data);
+        //cleanfix
+//bdump($data);
         if (!$this->update($data, array('id' => (int)$id)))
             return false;
         return $id;

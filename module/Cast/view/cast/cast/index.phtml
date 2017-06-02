@@ -6,7 +6,8 @@ $this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
 $this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
 $GLOBALS['bhelper'] = $this->blazon();
 
-bdump($root);
+//cleanfix
+//bdump($root);
 
 function createReference($char){
     $GLOBALS['parentBlazons'][$char['id']] = $char['blazon_id'];

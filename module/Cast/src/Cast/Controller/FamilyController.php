@@ -39,7 +39,8 @@ class FamilyController extends AbstractActionController
             if ($form->isValid()) {
                 $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
                 $data = $form->getData();
-                bdump($data);
+                //cleanfix
+//bdump($data);
 //                $familyTable->add($data);
 //                return $this->redirect()->toRoute('castmanager/families');
             }
