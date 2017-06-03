@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 files: {
                     // 'public/js/output2.min.js': ['public/js/globalUsage/jquery/*.js'],
                     // 'public/js/output.min.js': ['public/js/selectedUsage/**/*.js']
-                    'public/js/main.js': [
+                    'public/js/main.js': [//
                         'public/js/globalUsage/accordion/*.js',
                         'public/js/globalUsage/loggingDesigner/*.js',
                         'public/js/globalUsage/menu/*.js',

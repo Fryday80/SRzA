@@ -1,34 +1,41 @@
 <style>
-
+    .charprofile.headimages {
+        float: right;
+        margin-left: 15%;
+        width: 100px;
+    }
 </style>
 
 <?php
 // $char = character array
 //$char = $char;
 //cleanfix dummy
-bdump($char);
-bdump($hasFamily);
+//bdump($char);
+//bdump($hasFamily);
 
 /** @var \Cast\View\BlazonHelper $bh */
 $bh = $this->blazon();
 
-$title =$char['name'];
+$title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 ?>
 
-<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span></h1><br/>
+<h1>
+    <span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span>
+    <?php echo '<div class="charprofile headimages">' . $bh->blazon() . '</div>' ?>
+    <div class="charprofile headimages">
+        <?php echo (isset($char['pic'])) ? '<img style="float: right;" src="">' : 'bild nicht gefunden' ?>
+    </div>
+</h1>
+<br/>
 <br/>
 <box class="public-char-profile">
     <boxtitle>
-        <?php $bh->blazon(); ?>
     </boxtitle>
     <boxcontent>
-        <p><?php echo $char['name'] . ' ' . $char['surename'] ?></p>
-        <p><?php echo $char['family_name'] ?></p>
-        <p><?php echo (isset($char['blazon'])) ? $char['blazon'] :  'wappen'?></p>
-        <p><?php echo (isset($char['pic'])) ? $char['pic'] :  'bild'?></p>
         <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita'?></p>
         <?php if ($hasFamily):
+            echo '<br/><h1><span class="own_text_small">Familie</span></h1><br/>';
             echo '<accordion>';
             foreach ($charFamily as $member): ?>
                 <span><?php echo $member['name'] ?></span>
@@ -36,6 +43,11 @@ $this->headTitle($title);
             <?php endforeach;
             echo '</accordion>';
         endif; ?>
-        <a href="/profile/<?php echo $username ?>"><p>link zur Darsteller page</p></a>
     </boxcontent>
 </box>
+<a href="/profile/<?php echo $username ?>">
+    <button><?php echo $username ?></button>
+</a>
+<a href="/cast">
+    <button>Tree view</button>
+</a>

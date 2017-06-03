@@ -63,8 +63,6 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         $requestedResourse  = $controller . '-' . $action;
         /** @var FlashMessenger $flashmessanger */
         $flashmessanger     = $e->getApplication()-> getServiceManager()->get('controllerpluginmanager')->get('flashmessenger');
-        bdump($requestedResourse);
-        bdump( !$accessService->allowed($controller, $action) );
 
         if ($action != 'logout' && $accessService->hasIdentity() && $clientIP != $accessService->getUserIP()) {
             //SID hijacked log as website event and logout
