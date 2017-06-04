@@ -4,6 +4,7 @@ namespace Auth\Controller;
 use Auth\Form\EmailForm;
 use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
+use Exception;
 use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
@@ -106,7 +107,6 @@ class AuthController extends AbstractActionController
                     $this->flashmessenger()->addMessage("You've been logged in");
                     return $this->redirect()->toUrl($this->getReferer());
                 } else {
-                    //@todo error wrong user email-pw error to form
                     if (!isset ($newMsg)) {
                         $newMsg = 'Email oder Passwort falsch';
                     }
@@ -169,7 +169,7 @@ class AuthController extends AbstractActionController
         );
     }
     //password reset action
-    public function resetAction() {
+    public function resetRequestAction() {
         $form = new EmailForm();
         $form->get('submit')->setValue('Reset Password');
 
@@ -183,20 +183,23 @@ class AuthController extends AbstractActionController
                 if (!$user) {
                     $form->get('email')->setMessages(array('Email nicht gefunden.'));
                 } else {
-                    //create temp password
-                    $userPassword = new UserPassword();
-                    $tempPassword = $userPassword->generateRandom(8);
-                    $user->password = $userPassword->create($tempPassword);
-                    //send temp password
+//                    //create temp password
+//                    $userPassword = new UserPassword();
+//                    $tempPassword = $userPassword->generateRandom(8);
+//                    $user->password = $userPassword->create($tempPassword);
+//                    send temp password
                     $msgService = $this->getServiceLocator()->get('MessageService');
-                    if ($msgService->SendMailFromTemplate(TemplateTypes::RESET_PASSWORD, $user)) {
-                        //if successful send
-                        $userTable->saveUser($user);
-                        //@todo add success page
-                        return $this->redirect()->toRoute('home');
+                    if ($msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, [
+                        'name' => 'Salt',
+
+                    ])) {
+                        //@todo redirect to email provider
+                        return array(
+                            'messages' => ''
+                        );
+//                        return $this->redirect()->toRoute('home');
                     }
-                    $this->flashmessenger()->addMessage("Server Error::Die nachricht konnte nicht gesendet werden. Bitte Sag dem admin bescheid", "MessagePage", 1);
-                    return $this->redirect()->toRoute('message');
+                    throw new Exception('Die nachricht konnte nicht gesendet werden.');
                 }
             }
         }
@@ -206,6 +209,9 @@ class AuthController extends AbstractActionController
         );
     }
 
+    public function resetAction() {
+
+    }
     //makeup reffering site to usable string
     protected function getReferer()
     {

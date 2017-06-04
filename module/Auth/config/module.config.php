@@ -255,8 +255,24 @@ return array(
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
-                        'action' => 'reset'
+                        'action' => 'resetRequest'
                     )
+                ),
+                'may_terminate' => true,
+                'child_routes' => array(
+                    'hash' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/:hash',
+//                            'constraints' => array(
+//                                'hash' => '[0-9]+'
+//                            ),
+                            'defaults' => array(
+                                'action' => 'reset',
+//                                'hash' => '[0-9]+'
+                            )
+                        )
+                    ),
                 )
             ),
             'profileJson' => array(

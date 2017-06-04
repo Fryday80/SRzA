@@ -4,7 +4,7 @@
   "description": "schwartze ritter zu augsburg",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "maildev -s 25"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
     "grunt-contrib-less": "^1.4.1",
     "grunt-contrib-uglify": "^3.0.1",
     "grunt-contrib-watch": "^1.0.0",
-    "jit-grunt": "^0.10.0"
+    "jit-grunt": "^0.10.0",
+    "maildev": "^1.0.0-rc2"
   }
 }

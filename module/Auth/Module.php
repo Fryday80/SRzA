@@ -33,6 +33,7 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
         'Auth\Controller\Auth-login',
         'Auth\Controller\Auth-logout',
         'Auth\Controller\Auth-reset',
+        'Auth\Controller\Auth-resetRequest',
     );
 
     public function onBootstrap(MvcEvent $e)
