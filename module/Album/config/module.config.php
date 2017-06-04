@@ -4,18 +4,9 @@ use Album\Service\GalleryService;
 use Album\Controller\AlbumController;
 return array(
     'controllers' => array(
-        'invokables' => array( ),
-        'factories' => array(
-            'Album\Controller\Gallery' => function($controllerManager) {
-                $sm = $controllerManager->getServiceLocator();
-                $galleryService = $sm->get('GalleryService');
-                return new GalleryController($galleryService);
-            },
-            'Album\Controller\Album' =>  function($controllerManager) {
-                $sm = $controllerManager->getServiceLocator();
-                $galleryService = $sm->get('GalleryService');
-                return new AlbumController($galleryService);
-            },
+        'invokables' => array(
+            'Album\Controller\Gallery' => 'Album\Factory\AlbumGalleryControllerFactory',
+            'Album\Controller\Album' => 'Album\Factory\AlbumControllerFactory'
         ),
     ),
     'view_manager' => array(
@@ -75,8 +66,6 @@ return array(
                         )
                     )
                 ),
-
-
              ),
              'gallery' => array(
                  'type'    => 'segment',

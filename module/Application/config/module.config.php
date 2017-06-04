@@ -77,20 +77,6 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'factories' => array(
-            'MessageService' => function($sm) {
-                $service = new \Application\Service\MessageService();
-                return $service;
-            },
-            'CacheService' => function($sm) {
-                $service = new \Application\Service\CacheService();
-                return $service;
-            },
-            'StorageService' => function($sm) {
-                $service = new \Application\Service\StorageService();
-                return $service;
-            },
-        ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',

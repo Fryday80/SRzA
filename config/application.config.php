@@ -1,4 +1,5 @@
 <?php
+$env = getenv('APPLICATION_ENV');
 return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
@@ -26,9 +27,19 @@ return array(
         // An array of paths from which to glob configuration files after
         // modules are loaded. These effectively override configuration
         // provided by modules themselves. Paths may use GLOB_BRACE notation.
+
+
         'config_glob_paths' => array(
             'config/autoload/{,*.}{global,local}.php',
         ),
+//
+        'config_cache_enabled' => ($env == 'production'),
+        'config_cache_key' => 'main',
+        'module_map_cache_enabled' => ($env == 'production'),
+        'module_map_cache_key' => 'main',
+        'cache_dir' => './zendCache',
+
+
 
         // Whether or not to enable a configuration cache.
         // If enabled, the merged configuration will be cached and used in

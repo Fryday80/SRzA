@@ -5,15 +5,8 @@ return array(
             'Media\Controller\List'         => 'Media\Controller\ListController',
             'Media\Controller\Upload'       => 'Media\Controller\UploadController',
             'Media\Controller\File'         => 'Media\Controller\FileController',
-            'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
+            'Media\Controller\FileBrowser'  => 'Media\Factory\FileBrowserControllerFactory',
         ),
-        'factories' => array(
-            'Media\Controller\FileBrowserController' => function($controllerManager) {
-                $sm = $controllerManager->getServiceLocator();
-                $mediaService = $sm->get('MediaService');
-                return new \Media\Controller\FileBrowserController($mediaService);
-            }
-        )
     ),
     'view_manager' => array(
         'template_path_stack' => array(

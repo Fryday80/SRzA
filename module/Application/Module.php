@@ -10,6 +10,8 @@
 namespace Application;
 
 use Application\Model\SystemLogTable;
+use Application\Service\CacheService;
+use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Application\View\Helper\DashboardHelper;
 use Application\View\Helper\FormElementErrors;
@@ -60,6 +62,18 @@ class Module
                 'Application\Model\SystemLog' => function ( $serviceManager ) {
                     return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
+                'MessageService' => function($sm) {
+                    $service = new MessageService();
+                    return $service;
+                },
+                'CacheService' => function($sm) {
+                    $service = new CacheService();
+                    return $service;
+                },
+//                'StorageService' => function($sm) {
+//                    $service = new \Application\Service\StorageService();
+//                    return $service;
+//                },
             )
         );
     }
