@@ -3,6 +3,7 @@ namespace Application\Controller;
 
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
+use Application\Model\MailTemplatesTable;
 use Application\Service\StatisticService;
 use Application\Utility\DataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -121,6 +122,26 @@ class SystemController extends AbstractActionController
         $form->isValid();
         return array(
             'form' => $form
+        );
+    }
+    public function mailTemplatesIndexAction() {
+        /** @var MailTemplatesTable $templateTable */
+        $templateTable = $this->getServiceLocator()->get('Application\Model\MailTemplatesTable');
+        $templates = $templateTable->getAllTemplates();
+        $data = new DataTable();
+        $data->setData($templates);
+        $data->insertLinkButton('/system/mailTemplates/add', 'Neu');
+        return array(
+          'data' => $data,
+        );
+    }
+    public function mailTemplateAction() {
+        $templateID = $this->params()->fromRoute('templateName');
+        /** @var MailTemplatesTable $templateTable */
+        $templateTable = $this->getServiceLocator()->get('Application\Model\MailTemplatesTable');
+        $template = $templateTable->getByID($templateID);
+        return array(
+          'template' => $template,
         );
     }
 }

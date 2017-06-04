@@ -21,16 +21,17 @@ class MailTemplatesTable extends AbstractTableGateway
 
     public function getAllTemplates()
     {
-        try {
-            $sql = new Sql($this->getAdapter());
-            $select = $sql->select();
-            $statement = $sql->prepareStatementForSqlObject($select);
-            $templates = $this->resultSetPrototype->initialize($statement->execute())
-                ->toArray();
-            return $templates;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getPrevious()->getMessage());
-        }
+        return $this->select()->toArray();
+//        try {
+//            $sql = new Sql($this->getAdapter());
+//            $select = $sql->select();
+//            $statement = $sql->prepareStatementForSqlObject($select);
+//            $templates = $this->resultSetPrototype->initialize($statement->execute())
+//                ->toArray();
+//            return $templates;
+//        } catch (\Exception $e) {
+//            throw new \Exception($e->getPrevious()->getMessage());
+//        }
     }
 
     public function getByID($id)

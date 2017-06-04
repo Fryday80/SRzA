@@ -32,11 +32,36 @@ return array(
                     'dashboard' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/dashboard',
+                            'route' => '/dashboard[/]',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'dashboard',
                             )
+                        ),
+                        'may_terminate' => true,
+                    ),
+                    'mailTemplates' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/mailTemplates',
+                            'constraints' => array(),
+                            'defaults' => array(
+                                'action' => 'mailTemplatesIndex',
+                            )
+                        ),
+                        'may_terminate' => true,
+                        'child_routes' => array(
+                            'template' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/:templateName',
+                                    'constraints' => array(),
+                                    'defaults' => array(
+                                        'action' => 'mailTemplate',
+                                    )
+                                ),
+                                'may_terminate' => true,
+                            ),
                         )
                     ),
 //                    'settings' => array(
