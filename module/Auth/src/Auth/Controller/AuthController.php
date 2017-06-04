@@ -179,6 +179,7 @@ class AuthController extends AbstractActionController
             if ($form->isValid()) {
                 $email = $form->getData()['email'];
                 $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
+                /** @var User $user */
                 $user = $userTable->getUserByMail($email);
                 if (!$user) {
                     $form->get('email')->setMessages(array('Email nicht gefunden.'));
@@ -188,10 +189,12 @@ class AuthController extends AbstractActionController
 //                    $tempPassword = $userPassword->generateRandom(8);
 //                    $user->password = $userPassword->create($tempPassword);
 //                    send temp password
+                    $hash = bin2hex(random_bytes (22));
                     $msgService = $this->getServiceLocator()->get('MessageService');
                     if ($msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, [
-                        'name' => 'Salt',
-
+                        'userName' => $user->name,
+                        'userEmail' => $user->email,
+                        'hash' => $hash,
                     ])) {
                         //@todo redirect to email provider
                         return array(

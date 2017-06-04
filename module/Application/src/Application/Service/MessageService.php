@@ -1,9 +1,7 @@
 <?php
-
 namespace Application\Service;
 
-
-use Auth\Model\User;
+use Exception;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
@@ -17,9 +15,9 @@ class MessageService implements ServiceManagerAwareInterface
     /** @var  ServiceManager */
     private $serviceManager;
 
-    public function SendMail($address, $Subject, $message) {
+    public function SendMail($address, $Subject, $message, $sender) {
         try {
-            mail($address, $Subject, $message, "From: Absender <absender@euredomain.de>");
+            mail($address, $Subject, $message, $sender);//"From: Absender <absender@euredomain.de>");
         } catch(Exception $e) {
             return false;
         }
@@ -27,30 +25,25 @@ class MessageService implements ServiceManagerAwareInterface
     }
 
     /**
+     * @param $target
      * @param $templateID
-     * @param $user User
+     * @param $templateVars
      * @return bool
      */
     public function SendMailFromTemplate($target, $templateID, $templateVars) {
         try {
             //load template from db
-//            $mailTemplatesTable = $this->serviceManager->get('MailTemplatesTable');
-//            $template = $mailTemplatesTable->getByID($templateID);
-            $template = 'sers {{name}} und {{email}}';
+            $mailTemplatesTable = $this->serviceManager->get('Application\Model\MailTemplatesTable');
+            $template = $mailTemplatesTable->getByID($templateID);
+//            $template = 'sers {{name}} und {{email}}';
             if ($templateID == null) {
                 //@todo error: "no template with this id"
             }
             //parse template vars -> check if all exists in data
-            $template = $this->buildTemplateString($template, [
-                'name' => 'Salt',
-                'email' => 'mail@me.de'
-            ]);
-            bdump($template);
-            //replace and send
-
-            $this->SendMail($user->email, 'betreff -> test', 'nachricht ');
-            //mail($address, $Subject, $message, "From: Absender <absender@euredomain.de>");
-            bdump($user);
+            $template['subject'] = $this->buildTemplateString($template['subject'], $templateVars);
+            $template['msg'] = $this->buildTemplateString($template['msg'], $templateVars);
+            //send
+            $this->SendMail($target, $template['subject'], $template['msg'], $template['sender']);
         } catch(Exception $e) {
             return false;
         }
