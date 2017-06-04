@@ -1,8 +1,6 @@
 <?php
 namespace Application\Controller;
 
-
-
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
 use Application\Service\StatisticService;
@@ -59,14 +57,30 @@ class SystemController extends AbstractActionController
         $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
+        if (!property_exists($request, 'method') ) {
+            $this->response->setStatusCode(400);
+            $result['error'] = true;
+            $result['msg'] = "need param 'method'!";
+            return new JsonModel($result);
+        }
         switch ($request->method) {
             case 'getLiveActions' :
-                //@todo check parameter since if exists (dann bei allen hier)
-                $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since) );
+                if (property_exists($request, 'since') ) {
+                    $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since) );
+                } else {
+                    $this->response->setStatusCode(400);
+                    $result['error'] = true;
+                    $result['msg'] = "need param 'since'!";
+                }
                 break;
             case 'getActiveUsers' :
-                //@todo check parameter since if exists (dann bei allen hier)
-                $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
+                if (property_exists($request, 'microtime') ) {
+                    $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
+                } else {
+                    $this->response->setStatusCode(400);
+                    $result['error'] = true;
+                    $result['msg'] = "need param 'microtime'!";
+                }
                 break;
         };
 
@@ -74,7 +88,6 @@ class SystemController extends AbstractActionController
         return new JsonModel($result);
     }
     public function formtestAction() {
-
         $form = new TestForm();
         $form->setData(array(
             'Text' => null,
@@ -105,8 +118,6 @@ class SystemController extends AbstractActionController
         if ($this->getRequest()->isPost()) {
             $form->setData($this->getRequest()->getPost());
         }
-        //cleanfix
-//bdump( $form->isValid());
         $form->isValid();
         return array(
             'form' => $form

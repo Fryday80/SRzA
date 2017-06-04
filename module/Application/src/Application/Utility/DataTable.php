@@ -32,7 +32,7 @@ class DataTable
         $this->data = $data;
     }
     public function setColumns($columns) {
-        //@todo validate $data ??
+        //@todo validate $data ??   ja
         foreach ($columns as $key => $value) {
             $this->add($value);
         }

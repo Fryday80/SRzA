@@ -3,11 +3,10 @@
     //script for live ticks
     function loadLive(e) {
         e.fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR, textStatus, errorThrown);
+            console.error(jqXHR.responseJSON.msg);
         });
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
-            // action log - live Clicks
             if (actions !== null) {
     //                actions.reverse();
                 for (let i = 0; i < actions.length; i++) {
@@ -22,7 +21,6 @@
             setTimeout(function() {
                 let ele =  $('#dashLiveList li:nth-child(1)');
                 let since = ele.data('timestamp');
-                console.log(since);
                 livereload(since);
             }, 4500);
         });
@@ -36,7 +34,7 @@
             url: "/system/json",
             type: "POST",
             data: JSON.stringify(data),
-            complete: loadLive
+            complete: loadLive,
         });
     }
     livereload( $('#dashLiveList li:nth-child(1)').data('timestamp'), 0);
@@ -47,12 +45,10 @@
     //script for live ticks
     function loadActive(e) {
         e.fail(function(jqXHR, textStatus, errorThrown) {
-            console.log(jqXHR, textStatus, errorThrown);
+            console.error(jqXHR.responseJSON.msg);
         });
         e.done(function(e, textStatus, jqXHR) {
-            console.log(e);
             let user = e.users;
-            console.log(user);
             // active users
             if (user !== null) {
                 // user.reverse();
@@ -107,6 +103,5 @@
         });
         $('#pop').append(html);
         $('#pop ul').css('max-height', '60vh');
-        console.log('sdf');
     });
 })();
