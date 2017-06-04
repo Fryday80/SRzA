@@ -41,26 +41,48 @@ class CacheService
         return $this->exists($name);
     }
 
+    /**
+     * @param $name string|null
+     * @return bool|void
+     */
     public function clearCache($name) {
         if (!$name) {
-            //@todo clear hole cache  -> recursive folder and files delete giebts schon im mediaService da kannste klauen
+            //clear hole cache
+            //@todo test if this goes right
+            $items = scandir($this->cachePath, 1);
+            foreach ($items as $item) {
+                $this->deleteRecursive($this->cachePath.'/'.$item);
+            }
         }
         if (!$this->exists($name))
             return false;
-        //@todo check if $name is a file or a folder
+
         if(is_dir($name)){
             $this->unsetFolder($name);
             return;
+        } else {
+            $this->unsetFile($name);
         }
-
-        $this->unsetFile($name);
     }
     private function unsetFile($name){
         unlink($this->realPath($name));
     }
-
     private function unsetFolder($name){
-        unlink($this->realPath($name));
+        $this->deleteRecursive($this->realPath($name));
+    }
+    /**
+     * @param $realPath
+     */
+    private function deleteRecursive($realPath) {
+        if (is_dir($realPath)){
+            $files = glob($realPath.'/*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
+            foreach ($files as $file) {
+                $this->deleteRecursive( $file );
+            }
+            rmdir($realPath);
+        } elseif (is_file($realPath)) {
+            unlink($realPath);
+        }
     }
 
     private function exists($name) {
