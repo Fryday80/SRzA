@@ -20,40 +20,53 @@ class UserForm extends Form
         $fields = array();
         $adminFields = array(); // only shown for admins
         //data that is usual in $this->add();
-        $new = array(
+        $fields[] = array(
             'name' => 'id',
             'type' => 'Hidden',
         );
-        array_push($fields, $new);
 
-        $new = array(
-            'name' => 'member_number',
-            'type' => 'Text',
-            'options' => array(
-                'label' => 'Mitgliedsnummer',
-            )
-        );
-        array_push($adminFields, $new);
-
-        $new = array(
+        $fields[] = array(
             'name' => 'email',
             'type' => 'Text',
             'options' => array(
                 'label' => 'eMail',
             )
         );
-        array_push($fields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'name',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Benutzername',
             ),
         );
-        array_push($fields, $new);
 
-        $new = array(
+        $fields[] = array(
+            'name' => 'password',
+            'type' => 'Password',
+            'options' => array(
+                'label' => 'Password',
+                )
+            );
+
+        $fields[] = array(
+            'name'       => 'passwordConfirm',
+            'type'       => 'Password',
+            'options' => array(
+                'label' => 'Password confirm',
+                )
+            );
+
+        $fields[] = array(
+            'name' => 'submit',
+            'type' => 'Submit',
+            'attributes' => array(
+                'value' => 'Go',
+                'id' => 'submitbutton',
+            ),
+        );
+
+        $fields[] = array(
             'name' => 'real_name',
             'type' => 'text',
             'attributes' => array(),
@@ -61,9 +74,8 @@ class UserForm extends Form
                 'label' => 'Vorname',
             )
         );
-        array_push($adminFields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'real_surename',
             'type' => 'text',
             'attributes' => array(),
@@ -71,9 +83,8 @@ class UserForm extends Form
                 'label' => 'Nachname',
             )
         );
-        array_push($adminFields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'gender',
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(),
@@ -85,100 +96,66 @@ class UserForm extends Form
                 ),
             )
         );
-        array_push($adminFields, $new);
 
-        $new = array(
-            'name' => 'password',
-            'type' => 'Password',
-            'options' => array(
-                'label' => 'Password',
-                )
-            );
-        array_push($fields, $new);
-
-        $new = array(
-            'name'       => 'passwordConfirm',
-            'type'       => 'Password',
-            'options' => array(
-                'label' => 'Password confirm',
-                )
-            );
-        array_push($fields, $new);
-
-        $new = array(
+        $fields[]= array(
             'name' => 'birthday',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Geburtstag',
             ),
         );
-        array_push($adminFields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'street',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Strasse',
             ),
         );
-        array_push($adminFields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'city',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Stadt',
             ),
         );
-        array_push($adminFields, $new);
 
-        $new = array(
+        $fields[] = array(
             'name' => 'zip',
             'type' => 'Text',
             'options' => array(
                 'label' => 'Postleitzahl',
             ),
         );
-        array_push($adminFields, $new);
-
-        $new = array(
-            'name' => 'status',
-            'type' => 'checkbox',
-            'options' => array(
-                'label' => 'Aktiv',
-                ),
-            );
-        array_push($adminFields, $new);
-
-        $new = array(
-            'name' => 'role_id',
-            'type' => 'Zend\Form\Element\Select',
-            'attributes' => array(),
-            'options' => array(
-                'label' => 'role',
-                'value_options' => $this->getRolesForSelect(),
-            )
-        );
-        array_push($adminFields, $new);
-
-        $new = array(
-            'name' => 'submit',
-            'type' => 'Submit',
-            'attributes' => array(
-                'value' => 'Go',
-                'id' => 'submitbutton',
-                ),
-            );
-        array_push($fields, $new);
 
         foreach ($fields as $field){
-                $this->add(
-                    $field,
-                    $this->getPriority($field['name'])
-                );
+            $this->add(
+                $field,
+                $this->getPriority($field['name'])
+            );
         }
 
-        if($roles){
+        //only for users with admin permission
+        if($roles) {
+            $adminFields[] = array(
+                'name' => 'status',
+                'type' => 'checkbox',
+                'options' => array(
+                    'label' => 'Aktiv',
+                ),
+            );
+
+            $adminFields[] = array(
+                'name' => 'role_id',
+                'type' => 'Zend\Form\Element\Select',
+                'attributes' => array(),
+                'options' => array(
+                    'label' => 'role',
+                    'value_options' => $this->getRolesForSelect(),
+                )
+            );
+
             foreach ($adminFields as $field){
                 $this->add(
                     $field,

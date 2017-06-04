@@ -9,6 +9,7 @@
 
 namespace Application;
 
+use Application\Model\MailTemplatesTable;
 use Application\Model\SystemLogTable;
 use Application\Service\CacheService;
 use Application\Service\MessageService;
@@ -70,10 +71,9 @@ class Module
                     $service = new CacheService();
                     return $service;
                 },
-//                'StorageService' => function($sm) {
-//                    $service = new \Application\Service\StorageService();
-//                    return $service;
-//                },
+                'Application\Model\MailTemplatesTable' => function($serviceManager) {
+                    return new MailTemplatesTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                },
             )
         );
     }
