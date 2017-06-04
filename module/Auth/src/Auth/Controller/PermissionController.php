@@ -8,6 +8,9 @@ use Auth\Form\PermissionDeleteForm;
 class PermissionController extends AbstractActionController
 {
 
+    /** @var CacheService */
+    private $cacheService = false;
+
     public function indexAction()
     {
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
@@ -64,7 +67,8 @@ class PermissionController extends AbstractActionController
                 $rolePermTable->addPermission($roleID, $id);
             }
         }
-        $this->cache->clearCache('acl');
+        $this->getCacheService()->clearCache('acl');
+        
         return $this->redirect()->toRoute('permission/edit', array(
             'id' => $roleID
         ));
@@ -80,11 +84,22 @@ class PermissionController extends AbstractActionController
             foreach ($rolePermIDs as $id) {
                 $rolePermTable->delete("id = $id");
             }
-            $this->cache->clearCache('acl');
+            $this->getCacheService()->clearCache('acl');
         }
         
         return $this->redirect()->toRoute('permission/edit', array(
             'id' => $post['role_id']
         ));
+    }
+
+    /**
+     * get the CacheService
+     * @return CacheService
+     */
+    private function getCacheService() {
+        if (!$this->cacheService) {
+            $this->cacheService = $this->getServiceLocator()->get('CacheService');
+        }
+        return $this->cacheService;
     }
 }

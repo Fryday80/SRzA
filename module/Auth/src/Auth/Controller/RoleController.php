@@ -6,6 +6,9 @@ use Auth\Form\RoleForm;
 
 class RoleController extends AbstractActionController
 {
+
+    /** @var CacheService */
+    private $cacheService = false;
     
     public function indexAction()
     {
@@ -27,7 +30,7 @@ class RoleController extends AbstractActionController
                 $data = $form->getData();
                 //if role_parent == 0 then set to null
                 $roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
-                $this->cache->clearCache('acl');
+                $this->getCacheService()->clearCache('acl');
                 return $this->redirect()->toRoute('role');
             } else {
                 
@@ -55,7 +58,7 @@ class RoleController extends AbstractActionController
                     'role_name' => $data['role_name'],
                     'role_parent'=> $data['role_parent']
                 ), $data['rid']);
-                $this->cache->clearCache('acl');
+                $this->getCacheService()->clearCache('acl');
                 return $this->redirect()->toRoute('role');
             }
         }
@@ -81,7 +84,7 @@ class RoleController extends AbstractActionController
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 $roleTable->deleteByID($id);
-                $this->cache->clearCache('acl');
+                $this->getCacheService()->clearCache('acl');
             }
             //cleanfix @todo remove
 //            $this->navService->removeRole($id);
@@ -91,5 +94,16 @@ class RoleController extends AbstractActionController
             'id' => $id,
             'rolename' => $role['role_name']
         );
+    }
+
+    /**
+     * get the CacheService
+     * @return CacheService
+     */
+    private function getCacheService() {
+        if (!$this->cacheService) {
+            $this->cacheService = $this->getServiceLocator()->get('CacheService');
+        }
+        return $this->cacheService;
     }
 }
