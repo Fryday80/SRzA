@@ -29,7 +29,6 @@ class NavController extends AbstractActionController
 
     public function addAction()
     {
-        $this->getCache();
         $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new NavForm($roleTable->fetchAllSorted());
@@ -57,7 +56,7 @@ class NavController extends AbstractActionController
                 $data = $form->getData();
                 $navTable->append($data);
                 //clear Cache
-                $this->cacheService->clearCache('nav/main');
+                $this->getCache()->clearCache('nav/main');
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -69,7 +68,6 @@ class NavController extends AbstractActionController
 
     public function editAction()
     {
-        $this->getCache();
         $itemID = (int) $this->params('id');
         if (! $itemID) {
             return $this->redirect()->toRoute('nav/sort');
@@ -101,7 +99,7 @@ class NavController extends AbstractActionController
                     'min_role_id' => $data['min_role_id']
                 ), $data['id']);
                 //clear Cache
-                $this->cacheService->clearCache('nav/main');
+                $this->getCache()->clearCache('nav/main');
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -114,7 +112,6 @@ class NavController extends AbstractActionController
 
     public function sortAction()
     {
-        $this->getCache();
         $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         $form = new NavForm($roleTable->fetchAllSorted());
         $form->get('submit')->setValue('Edit');
@@ -163,6 +160,9 @@ class NavController extends AbstractActionController
             foreach ($result as $row) {
                 $NavTable->updateNesting($row);
             }
+            // clear cache
+
+            $this->getCache()->clearCache('nav/main');
             
             print('"}');
             die();
@@ -177,7 +177,6 @@ class NavController extends AbstractActionController
 
     public function deleteAction()
     {
-        $this->getCache();
         // check for param id
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
@@ -194,7 +193,7 @@ class NavController extends AbstractActionController
                 $navTable->deleteByID($id);
             }
             //clear Cache
-            $this->cacheService->clearCache('nav/main');
+            $this->getCache()->clearCache('nav/main');
             // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
@@ -213,5 +212,6 @@ class NavController extends AbstractActionController
             $this->cacheService = $this->getServiceLocator()->get('CacheService');
             $this->cache = $this->cacheService->getCache('nav/main');
         }
+        return $this->cacheService;
     }
 }
