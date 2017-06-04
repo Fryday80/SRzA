@@ -182,16 +182,16 @@ class CastService implements ServiceLocatorAwareInterface
             /** @var User $newData */
             $newData = $userTable->getUsersBy('id', $char['user_id']);
             $this->data[$key]['userName'] = $newData->name;
+            $this->data[$key]['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
         }
         $this->userSet = true;
     }
     public function getCharacterData($name, $username){
         if (!$this->loaded) $this->loadData();
         if (!$this->userSet) $this->getUserNames();
-        $return = array();
+
         foreach ($this->data as $key => $char){
-            $wholeName = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
-            if ($wholeName == $name && $char['userName'] == $username){
+            if ($char['charURL'] == $name && $char['userName'] == $username){
                 return $char;
             }
         }

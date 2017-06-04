@@ -4,6 +4,15 @@
         margin-left: 15%;
         width: 100px;
     }
+    .charprofile.headimages .blazon
+    {
+        width: 100px
+    }
+    box.familyMember
+    {
+        margin-top: 0;
+        margin-bottom: 3px;
+    }
 </style>
 
 <?php
@@ -36,12 +45,18 @@ $this->headTitle($title);
         <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita'?></p>
         <?php if ($hasFamily):
             echo '<br/><h1><span class="own_text_small">Familie</span></h1><br/>';
-            echo '<accordion>';
             foreach ($charFamily as $member): ?>
-                <span><?php echo $member['name'] ?></span>
-                <div>info + links</div>
+                <a href="/profile/<?php echo $member['userName'] . '/' . $member['charURL'] ?>">
+                    <box class = "familyMember">
+                        <boxtitle>
+                            <span><?php echo $member['name'] ?></span>
+                        </boxtitle>
+                        <boxcontent>
+                            <div>info + links</div>
+                        </boxcontent>
+                    </box>
+                </a>
             <?php endforeach;
-            echo '</accordion>';
         endif; ?>
     </boxcontent>
 </box>

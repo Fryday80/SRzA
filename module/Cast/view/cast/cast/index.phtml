@@ -119,7 +119,7 @@ function createList($parent, $level) {
 }
 function linkCreator($parent){
     $profileRoot = 'profile/' . $parent['userName'];
-    $castProfile = $profileRoot . '/' . (str_replace(" ", "-", $parent['name'] )) . '-' .(str_replace(" ", "-", $parent['surename'] ));
+    $castProfile = $profileRoot . '/' . $parent['charURL'];
 
     $link1 = '<br/><div class="onlyCentered">';
     $link1 .= '<a href="' . $castProfile . '">Darstellung</a>';
