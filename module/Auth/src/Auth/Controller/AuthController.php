@@ -1,6 +1,7 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Model\DynamicHashTable;
 use Auth\Form\EmailForm;
 use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
@@ -172,7 +173,7 @@ class AuthController extends AbstractActionController
     public function resetRequestAction() {
         $form = new EmailForm();
         $form->get('submit')->setValue('Reset Password');
-
+        $isSend = false;
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());
@@ -184,35 +185,58 @@ class AuthController extends AbstractActionController
                 if (!$user) {
                     $form->get('email')->setMessages(array('Email nicht gefunden.'));
                 } else {
-//                    //create temp password
-//                    $userPassword = new UserPassword();
-//                    $tempPassword = $userPassword->generateRandom(8);
-//                    $user->password = $userPassword->create($tempPassword);
 //                    send temp password
-                    $hash = bin2hex(random_bytes (22));
+                    /** @var DynamicHashTable $dynamicHashTable */
+                    $dynamicHashTable = $this->getServiceLocator()->get('Application\Model\DynamicHashTable');
+                    $hash = $dynamicHashTable->create(600);//@todo get value from config
                     $msgService = $this->getServiceLocator()->get('MessageService');
-                    if ($msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, [
+                    $templateData = [
                         'userName' => $user->name,
                         'userEmail' => $user->email,
                         'hash' => $hash,
-                    ])) {
+                    ];
+                    if ($msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, $templateData)) {
                         //@todo redirect to email provider
-                        return array(
-                            'messages' => ''
-                        );
+                        $isSend = true;
 //                        return $this->redirect()->toRoute('home');
+//$this->flashMessenger()->getMessagesFromNamespace("PasswordReset"),
+
+                    } else {
+                        throw new Exception('Die nachricht konnte nicht gesendet werden.');
                     }
-                    throw new Exception('Die nachricht konnte nicht gesendet werden.');
                 }
             }
         }
         return array(
             'form' => $form,
-            'messages' => $this->flashMessenger()->getMessagesFromNamespace("PasswordReset")
+            'isSend' => $isSend
         );
     }
 
     public function resetAction() {
+        /** @var DynamicHashTable $dynamicHashTable */
+        $dynamicHashTable = $this->getServiceLocator()->get('Application\Model\DynamicHashTable');
+
+        $request = $this->getRequest();
+        $hash = $this->params('hash');
+
+        $savedHash = $dynamicHashTable->getByHash($hash);
+        if (!$savedHash) {
+            //no such a hash
+            return array(
+                'message' => 'hash nicht gefunden. eventuel ist der hash schon zu alt.',
+                'hashError' => true
+            );
+        }
+
+        //hash accepted
+        //render form for new pass
+        $form = new UserForm();
+
+        return array(
+            'pwForm' => $form,
+            'hashError' => false
+        );
 
     }
     //makeup reffering site to usable string

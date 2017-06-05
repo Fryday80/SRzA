@@ -1,6 +1,11 @@
 <own_text_big>Passwort zurücksetzten</own_text_big>
 <div class="spacer_line"></div><br>
+<?php if ($isSend): ?>
+    <h2>Wir haben dir eine email geschickt</h2>
 <?php
-$form = $this->form;
-$form->prepare();
-echo $this->form($form);
+else:
+    $form = $this->form;
+    $form->prepare();
+    echo $this->form($form);
+endif;
+?>

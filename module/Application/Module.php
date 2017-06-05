@@ -11,7 +11,7 @@ namespace Application;
 
 use Application\Model\MailTemplatesTable;
 use Application\Model\SystemLogTable;
-use Application\Model\TempUrlTable;
+use Application\Model\DynamicHashTable;
 use Application\Service\CacheService;
 use Application\Service\MessageService;
 use Application\Service\StatisticService;
@@ -75,8 +75,8 @@ class Module
                 'Application\Model\MailTemplatesTable' => function($serviceManager) {
                     return new MailTemplatesTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
-                'Application\Model\TempUrlTable' => function($serviceManager) {
-                    return new TempUrlTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
+                'Application\Model\DynamicHashTable' => function($serviceManager) {
+                    return new DynamicHashTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
                 },
             )
         );

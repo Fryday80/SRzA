@@ -3,14 +3,15 @@ namespace Application\Model;
 
 use Exception;
 use Zend\Db\Sql\Sql;
+use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 
-class TempUrlTable extends AbstractTableGateway
+class DynamicHashTable extends AbstractTableGateway
 {
 
-    public $table = 'temp_url';
+    public $table = 'dynamic_hash';
 
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
@@ -30,28 +31,49 @@ class TempUrlTable extends AbstractTableGateway
         }
     }
 
-    public function getByID($id) {
+    public function getByHash($hash) {
+        $this->clean();
         $result = $this->select([
-            'id' => $id
+            'hash' => $hash
         ])->toArray();
         if (count($result) < 1) {
             return null;
         }
         return $result[0];
     }
-
-    public function add(Array $data) {
+    public function create($lifetime = 3600) {
         try {
-            $this->insert($data);
-            return $this->lastInsertValue;
+            $hash = $this->randomToken();
+            $this->insert(array(
+                'hash' => $hash,
+                'time' => time() + $lifetime
+            ));
+            return $hash;
         } catch (Exception $e) {
             throw new Exception($e->getPrevious()->getMessage());
         }
     }
 
-    public function deleteByID($id) {
+    public function deleteByHash($hash) {
         return $this->delete([
-            'id' => $id
+            'hash' => $hash
         ]);
+    }
+    public function clean() {
+        $where = new Where();
+        $where->lessThan('time', time());
+        $this->delete($where);
+    }
+    private function randomToken($length = 32){
+        $length = $length / 2;
+        if (function_exists('random_bytes')) {
+            return bin2hex(random_bytes($length));
+        }
+        if (function_exists('mcrypt_create_iv')) {
+            return bin2hex(mcrypt_create_iv($length, MCRYPT_DEV_URANDOM));
+        }
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            return bin2hex(openssl_random_pseudo_bytes($length));
+        }
     }
 }

@@ -1,7 +1,12 @@
 <own_text_big>Passwort zurücksetzten</own_text_big>
 <div class="spacer_line"></div><br>
-<?php
-$form = $this->form;
-$form->prepare();
+<?php if ($hashError): ?>
+    <h2>Hash Ungültig</h2>
 
-echo $this->form($form);
+<?php
+else:
+    ?><p>//@todo anderes formular benutzen</p><?php
+    $pwForm->prepare();
+    echo $this->form($pwForm);
+endif;
+?>

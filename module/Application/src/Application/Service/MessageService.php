@@ -7,7 +7,7 @@ use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 class TemplateTypes {
     const SUCCESSFUL_REGISTERED = 'SUCCESSFUL_REGISTERED';
-    const RESET_PASSWORD = 'RESET_PASSWORD';
+    const RESET_PASSWORD = 'passwordForgotten';
 }
 
 class MessageService implements ServiceManagerAwareInterface
@@ -15,9 +15,12 @@ class MessageService implements ServiceManagerAwareInterface
     /** @var  ServiceManager */
     private $serviceManager;
 
-    public function SendMail($address, $Subject, $message, $sender) {
+    public function SendMail($address, $Subject, $message, $sender, $senderAddress) {
         try {
-            mail($address, $Subject, $message, $sender);//"From: Absender <absender@euredomain.de>");
+            $headers =  'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'From: '.$sender.' <'.$senderAddress.'>' . "\r\n";
+            $headers .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+            mail($address, $Subject, $message, $headers);//"From: Absender <absender@euredomain.de>");
         } catch(Exception $e) {
             return false;
         }
@@ -35,19 +38,23 @@ class MessageService implements ServiceManagerAwareInterface
             //load template from db
             $mailTemplatesTable = $this->serviceManager->get('Application\Model\MailTemplatesTable');
             $template = $mailTemplatesTable->getByID($templateID);
-//            $template = 'sers {{name}} und {{email}}';
-            if ($templateID == null) {
+
+            if (!$template) {
                 //@todo error: "no template with this id"
+                throw new Exception('no template with this templateID');
+                return;
             }
             //parse template vars -> check if all exists in data
             $template['subject'] = $this->buildTemplateString($template['subject'], $templateVars);
             $template['msg'] = $this->buildTemplateString($template['msg'], $templateVars);
+
             //send
-            $this->SendMail($target, $template['subject'], $template['msg'], $template['sender']);
+            $this->SendMail($target, $template['subject'], $template['msg'], $template['sender'], $template['sender_address']);
+            return true;
         } catch(Exception $e) {
+            throw new Exception($e->getMessage());
             return false;
         }
-        return false;
     }
 
 
