@@ -7,6 +7,8 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
+use Application\Factory\DefaultTableGatewayFactory;
+
 return array(
 
     'controllers' => array(
@@ -114,13 +116,26 @@ return array(
             'CacheService' => 'Application\Service\CacheService',
             'Application\Model\DynamicHashTable' => 'Application\Model\DynamicHashTable',
             'Application\Model\MailTemplatesTable' => 'Application\Model\MailTemplatesTable',
-//            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
+            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
         ),
         'factories' => array(
             'StatisticService' => 'Application\Factory\StatisticServiceFactory'
         ),
         'abstract_factories' => array(
-            \Application\Factory\StatisticServiceFactory::class,
+            'Application\Model\SystemLogTable' => DefaultTableGatewayFactory::class,
+        )
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'form' => 'Application\View\Helper\sraForm',
+            'FormRow' => 'Application\View\Helper\FormRow',
+            'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
+        ),
+        'factories' => array(
+            'asurl' => 'Application\View\Helper\MyUrlFactory',
+            'DashboardHelper' => 'Application\View\Helper\DashboardHelperFactory',
+            'dataTable' => 'Application\View\Helper\DataTableHelperFactory',
+            'InlineFromFile' => 'Application\View\Helper\InlineFromFileFactory',
         )
     ),
     'translator' => array(

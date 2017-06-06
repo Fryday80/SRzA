@@ -62,42 +62,11 @@ class Module
     public function getServiceConfig()
     {
         return array(
-            'factories' => array(
-                'Application\Model\SystemLog' => function ( $serviceManager ) {
-                    return new SystemLogTable($serviceManager->get('Zend\Db\Adapter\Adapter') );
-                },
-            )
-        );
-    }
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'form' => function () {
-                    return new sraForm();
-                },
-                'FormRow' => function () {
-                    return new FormRow();
-                },
-                'FormElementErrors' => function () {
-                    return new FormElementErrors();
-                },
-                'dataTable' => function ($sm){
-                    $parentLocator = $sm->getServiceLocator();
-                    return new DataTableHelper($parentLocator);
-                },
-                'asurl' => function ($sm){
-                    $accessService = $sm->getServiceLocator()->get('AccessService');
-                    return new MyUrl($accessService);
-                },
-                'dashboardHelper'=>  function($sm){
-                    return new DashboardHelper($sm);
-                },
-                'inlineFromFile'=>  function($sm){
-                    return new InlineFromFile($sm);
-                }
-
-            )
+//            'factories' => array(
+//                'Application\Model\SystemLog' => function ( $serviceManager ) {
+//                    return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
+//                },
+//            )
         );
     }
 }

@@ -14,12 +14,16 @@ class SystemController extends AbstractActionController
 {
     /** @var  $statsService StatisticService */
     private $statsService;
+    private $mailTemplateTable;
 
+    public function __construct(StatisticService $statisticService, MailTemplatesTable $mailTemplateTable)
+    {
+        $this->statsService = $statisticService;
+        $this->mailTemplateTable = $mailTemplateTable;
+    }
     public function dashboardAction()
     {
-        /** @var  $statsService StatisticService */
-        $this->statsService = $this->getServiceLocator()->get('StatisticService');
-        /** turn off (slider) sidebar */
+        // turn off (slider) sidebar
         $this->layout()->setVariable('showSidebar', false);
         $top10 = $this->statsService->getMostVisitedPages(10);
         $sysLog = $this->statsService->getSystemLog();
@@ -125,9 +129,7 @@ class SystemController extends AbstractActionController
         );
     }
     public function mailTemplatesIndexAction() {
-        /** @var MailTemplatesTable $templateTable */
-        $templateTable = $this->getServiceLocator()->get('Application\Model\MailTemplatesTable');
-        $templates = $templateTable->getAllTemplates();
+        $templates = $this->mailTemplateTable->getAllTemplates();
         $data = new DataTable();
         $data->setData($templates);
         $data->insertLinkButton('/system/mailTemplates/add', 'Neu');
@@ -137,9 +139,7 @@ class SystemController extends AbstractActionController
     }
     public function mailTemplateAction() {
         $templateID = $this->params()->fromRoute('templateName');
-        /** @var MailTemplatesTable $templateTable */
-        $templateTable = $this->getServiceLocator()->get('Application\Model\MailTemplatesTable');
-        $template = $templateTable->getByID($templateID);
+        $template = $this->mailTemplateTable->getByID($templateID);
         return array(
           'template' => $template,
         );

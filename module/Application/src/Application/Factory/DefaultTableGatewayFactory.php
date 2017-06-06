@@ -2,6 +2,7 @@
 namespace Application\Factory;
 
 
+use Exception;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -18,7 +19,8 @@ class DefaultTableGatewayFactory implements AbstractFactoryInterface
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-        // TODO: Implement canCreateServiceWithName() method.
+        $nameSpace = explode( '\\', $requestedName);
+        return ($nameSpace[1] == 'Model' )? true: false;
     }
 
     /**
@@ -28,9 +30,12 @@ class DefaultTableGatewayFactory implements AbstractFactoryInterface
      * @param $name
      * @param $requestedName
      * @return mixed
+     * @throws Exception
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
-        // TODO: Implement createServiceWithName() method.
+        $adapter = $serviceLocator->get('Zend\Db\Adapter\Adapter');
+        $new  = new $requestedName($adapter);
+        return $new;
     }
 }

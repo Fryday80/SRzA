@@ -14,9 +14,9 @@ use Application\Utility\DataTable;
 Class DataTableHelper extends AbstractHelper {
 
     protected $view;
-    function __construct($sm)
+    function __construct($view)
     {
-        $this->view = $sm->get('viewhelpermanager')->get('basePath')->getView();
+        $this->view = $view;
         $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
         $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
     }

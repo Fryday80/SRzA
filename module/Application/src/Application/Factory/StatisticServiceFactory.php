@@ -9,7 +9,7 @@ class StatisticServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $accessService = $sm->get('AccessService');
-        $sysLogTable = $sm->get('Application\Model\SystemLog');
+        $sysLogTable = $sm->get('Application\Model\SystemLogTable');
         return new StatisticService($accessService, $sysLogTable);
     }
 }
