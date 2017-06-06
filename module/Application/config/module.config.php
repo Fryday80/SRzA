@@ -118,6 +118,9 @@ return array(
         ),
         'factories' => array(
             'StatisticService' => 'Application\Factory\StatisticServiceFactory'
+        ),
+        'abstract_factories' => array(
+            \Application\Factory\StatisticServiceFactory::class,
         )
     ),
     'translator' => array(
