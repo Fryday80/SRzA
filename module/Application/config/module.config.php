@@ -12,8 +12,8 @@ use Application\Factory\DefaultTableGatewayFactory;
 return array(
 
     'controllers' => array(
-        'invokables' => array(
-            'Application\Controller\System' => 'Application\Controller\SystemController',
+        'factories' => array(
+            'Application\Controller\System' => 'Application\Controller\SystemControllerFactory',
         )
     ),
     'router' => array(
@@ -132,10 +132,10 @@ return array(
             'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
         ),
         'factories' => array(
-            'asurl' => 'Application\View\Helper\MyUrlFactory',
-            'DashboardHelper' => 'Application\View\Helper\DashboardHelperFactory',
-            'dataTable' => 'Application\View\Helper\DataTableHelperFactory',
-            'InlineFromFile' => 'Application\View\Helper\InlineFromFileFactory',
+            'asurl' => 'Application\Factory\MyUrlFactory',
+            'DashboardHelper' => 'Application\Factory\DashboardHelperFactory',
+            'dataTable' => 'Application\Factory\DataTableHelperFactory',
+            'InlineFromFile' => 'Application\Factory\InlineFromFileFactory',
         )
     ),
     'translator' => array(
