@@ -4,6 +4,7 @@ return array(
     'Application\Module'                          => __DIR__ . '/Module.php',
     'Application\Controller\SystemController'     => __DIR__ . '/src/Application/Controller/SystemController.php',
     'Application\DataTable\AbstractDataTable'     => __DIR__ . '/src/Application/DataTable/AbstractDataTable.php',
+    'Application\Factory\DefaultTablesFactory'    => __DIR__ . '/src/Application/Factory/DefaultTablesFactory.php',
     'Application\Factory\StatisticServiceFactory' => __DIR__ . '/src/Application/Factory/StatisticServiceFactory.php',
     'Application\Form\MailTemplatesForm'          => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
     'Application\Form\TestForm'                   => __DIR__ . '/src/Application/Form/TestForm.php',

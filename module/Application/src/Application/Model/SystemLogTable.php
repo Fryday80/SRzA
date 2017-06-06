@@ -3,12 +3,17 @@
 namespace Application\Model;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
 
-class SystemLogTable extends AbstractTableGateway implements AdapterAwareInterface
+class SystemLogTable extends AbstractTableGateway
 {
     public $table = 'system_log';
+
+
+    public function __construct(Adapter $adapter) {
+        $this->adapter = $adapter;
+        $this->initialize();
+    }
 
     /**
      * @param SystemLog $logItem
@@ -22,7 +27,7 @@ class SystemLogTable extends AbstractTableGateway implements AdapterAwareInterfa
         $queryValues = $prepare[1];
         $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
 
-        $this->adapter->query($query, array());
+//        $this->adapter->query($query, array());
     }
 
     /**
@@ -62,15 +67,5 @@ class SystemLogTable extends AbstractTableGateway implements AdapterAwareInterfa
         $queryValues = substr($queryValues, 0, -2);
 
         return array($queryItems, $queryValues);
-    }
-    /**
-     * Set db adapter
-     *
-     * @param Adapter $adapter
-     * @return AdapterAwareInterface
-     */
-    public function setDbAdapter(Adapter $adapter) {
-        $this->adapter = $adapter;
-        $this->initialize();
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace Album\Factory;
+namespace Gallery\Factory;
 
-use Album\Utility\RandomImageHelper;
+use Gallery\Utility\RandomImageHelper;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

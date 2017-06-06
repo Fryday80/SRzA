@@ -1,24 +1,18 @@
 <?php
-use Album\Controller\GalleryController;
-use Album\Service\GalleryService;
-use Album\Controller\AlbumController;
 return array(
     'service_manager' => array(
-//        'invokables' => array(
-//            'GalleryService' => 'Album\Service\GalleryService'
-//        ),
         'factories' => array(
-            'GalleryService' => 'Album\Factory\GalleryServiceFactory'
+            'GalleryService' => 'Gallery\Factory\GalleryServiceFactory'
         )
     ),
     'controllers' => array(
-        'invokables' => array(
-            'Album\Controller\Gallery' => 'Album\Controller\GalleryController'
-        ),
+        'factories' => array(
+            'Gallery\Controller\Gallery' => 'Gallery\Factory\GalleryControllerFactory'
+        )
     ),
     'view_helpers' => array(
         'factories' => array(
-            'randomImage' => 'Album\Factory\RandomImageHelperFactory',
+            'randomImage' => 'Gallery\Factory\RandomImageHelperFactory',
         ),
     ),
     'view_manager' => array(
@@ -34,7 +28,7 @@ return array(
                  'options' => array(
                      'route'    => '/gallery',
                      'defaults' => array(
-                         '__NAMESPACE__' => 'Album\Controller',
+                         '__NAMESPACE__' => 'Gallery\Controller',
                          'controller' => 'Gallery',
                          'action'     => 'index',
                      ),

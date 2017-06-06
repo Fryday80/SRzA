@@ -6,6 +6,8 @@ use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class FileController extends AbstractActionController  {
+    
+    
 
     public function fileAction()
     {

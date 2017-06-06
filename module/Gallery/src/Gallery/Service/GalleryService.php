@@ -1,7 +1,7 @@
 <?php
-namespace Album\Service;
+namespace Gallery\Service;
 
-use Album\Model\AlbumModel;
+use Gallery\Model\AlbumModel;
 use Application\Service\CacheService;
 use Media\Service\MediaException;
 use Media\Service\MediaService;

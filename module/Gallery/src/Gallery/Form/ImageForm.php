@@ -1,5 +1,5 @@
 <?php
-namespace Album\Form;
+namespace Gallery\Form;
 
 use Zend\Form\Form;
 

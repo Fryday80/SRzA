@@ -59,6 +59,16 @@ class Module
         );
     }
 
+    public function getServiceConfig()
+    {
+        return array(
+            'factories' => array(
+                'Application\Model\SystemLog' => function ( $serviceManager ) {
+                    return new SystemLogTable($serviceManager->get('Zend\Db\Adapter\Adapter') );
+                },
+            )
+        );
+    }
     public function getViewHelperConfig()
     {
         return array(

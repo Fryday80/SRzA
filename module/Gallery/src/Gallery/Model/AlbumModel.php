@@ -1,5 +1,5 @@
 <?php
-namespace Album\Model;
+namespace Gallery\Model;
 
 
 use Media\Service\MediaItem;

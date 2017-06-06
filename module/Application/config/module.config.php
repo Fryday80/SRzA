@@ -114,7 +114,7 @@ return array(
             'CacheService' => 'Application\Service\CacheService',
             'Application\Model\DynamicHashTable' => 'Application\Model\DynamicHashTable',
             'Application\Model\MailTemplatesTable' => 'Application\Model\MailTemplatesTable',
-            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
+//            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
         ),
         'factories' => array(
             'StatisticService' => 'Application\Factory\StatisticServiceFactory'

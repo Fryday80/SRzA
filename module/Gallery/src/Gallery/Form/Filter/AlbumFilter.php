@@ -1,5 +1,5 @@
 <?php
-namespace Album\Form\Filter;
+namespace Gallery\Form\Filter;
 
 use Zend\InputFilter\InputFilter;
 

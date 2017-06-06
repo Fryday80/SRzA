@@ -10,10 +10,10 @@ return array(
         'Cms',
         'Media',
         'Nav',
-        'Album',
+        'Gallery',
         'Cast',
         'Calendar',
-//        'ZendDeveloperTools'
+        'ZendDeveloperTools'
     ),
 
     // These are various options for the listeners attached to the ModuleManager

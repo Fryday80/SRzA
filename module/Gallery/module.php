@@ -1,7 +1,7 @@
 <?php
-namespace Album;
+namespace Gallery;
 
-use Album\Service\GalleryService;
+use Gallery\Service\GalleryService;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 

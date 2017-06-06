@@ -1,8 +1,8 @@
 <?php
-namespace Album\Form;
+namespace Gallery\Form;
 
 use Zend\Form\Form;
-use Album\Form\Filter\AlbumFilter;
+use Gallery\Form\Filter\AlbumFilter;
 
 class AlbumForm extends Form
 {

@@ -1,7 +1,7 @@
 <?php
-namespace Album\Factory;
+namespace Gallery\Factory;
 
-use Album\Service\GalleryService;
+use Gallery\Service\GalleryService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 

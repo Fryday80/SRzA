@@ -1593,3 +1593,6 @@ noscript > div > div > .ownhead {
   color: white;
   font-size: 8vw;
 }
+#zend-developer-toolbar * {
+  color: white;
+}

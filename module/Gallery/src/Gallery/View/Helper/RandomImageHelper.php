@@ -6,10 +6,10 @@
  * Time: 00:26
  */
 
-namespace Album\Utility;
+namespace Gallery\Utility;
 
 
-use Album\Service\GalleryService;
+use Gallery\Service\GalleryService;
 use Zarganwar\PerformancePanel\Register;
 use Zend\View\Helper\AbstractHelper;
 
@@ -17,7 +17,7 @@ use Zend\View\Helper\AbstractHelper;
  * Class RandomImageHelper <br>
  * creates 3 random images
  *
- * @package Album\Utility
+ * @package Gallery\Utility
  */
 class RandomImageHelper extends AbstractHelper
 {
