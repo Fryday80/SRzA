@@ -1,11 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 13.04.2017
- * Time: 02:13
- */
-
 namespace Application\Service;
 
 use Application\Model\Abstracts\ActionType;
@@ -19,7 +12,6 @@ use Application\Model\ActiveUser;
 use Application\Model\SystemLogTable;
 use Application\Model\Stats;
 use Application\Model\SystemLog;
-use Auth\Model\User;
 use Auth\Service\AccessService;
 use Exception;
 use Zarganwar\PerformancePanel\Register;
@@ -35,7 +27,7 @@ const AJAX_BLACK_LIST = array(
     '/system/dashboard'
 );
 /** "true" logs speed in Tracy "false" don't */
-const SPEED_CHECK = true;
+const SPEED_CHECK = false;
 
 class StatisticService
 {
@@ -71,8 +63,6 @@ class StatisticService
     }
 
     public function onError(MvcEvent $e) {
-
-
         $error = $e->getError();
         if (empty($error)) {
             return;
