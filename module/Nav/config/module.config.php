@@ -1,13 +1,18 @@
 <?php
+use Application\Factory\DefaultTableGatewayFactory;
+
 return array(
     'service_manager' => array(
         'factories' => array(
             'navigation' => 'Nav\Factory\MainNavigationFactory'
+        ),
+        'abstract_factories' => array(
+            'Nav\Model\NavTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'controllers' => array(
-        'invokables' => array(
-            'Nav\Controller\Nav' => 'Nav\Controller\NavController'
+        'factories' => array(
+            'Nav\Controller\Nav' => 'Nav\Factory\NavControllerFactory'
         )
     ),
     'view_manager' => array(

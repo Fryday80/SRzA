@@ -11,33 +11,27 @@ use Zend\Json\Json;
 class NavController extends AbstractActionController
 {
 
-    protected $albumTable;
-
     /** @var $cacheService CacheService */
-    private $cacheService = false;
+    private $cacheService;
+    /** @var $navTable NavTable */
+    private $navTable;
+    /** @var $roleTable RoleTable */
+    private $roleTable;
     private $cache;
 
     public function __construct(CacheService $cacheService, NavTable $navTable, RoleTable $roleTable)
     {
-
+        $this->cacheService = $cacheService;
+        $this->navTable = $navTable;
+        $this->roleTable = $roleTable;
     }
     public function indexAction()
     {
-        // show all menus
-        // link to add/edit/delete
-
-        // $navTable = $this->getServiceLocator()->get('Nav\Model\NavTable');
-        // $navTable->getNav(0);
-        // return new ViewModel(array(
-        // 'albums' => $this->getAlbumTable()->fetchAll()
-        // ));
     }
 
     public function addAction()
     {
-        $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $form = new NavForm($roleTable->fetchAllSorted());
+        $form = new NavForm($this->roleTable->fetchAllSorted());
         $form->get('submit')->setValue('Add');
         
         $config = $this->getServiceLocator()->get('Config');
@@ -60,9 +54,9 @@ class NavController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $navTable->append($data);
+                $this->navTable->append($data);
                 //clear Cache
-                $this->getCache()->clearCache('nav/main');
+                $this->cacheService->clearCache('nav/main');
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -78,17 +72,15 @@ class NavController extends AbstractActionController
         if (! $itemID) {
             return $this->redirect()->toRoute('nav/sort');
         }
-        $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         try {
-            $navItem = $navTable->getItem($itemID);
+            $navItem = $this->navTable->getItem($itemID);
             if ($navItem === false) {
                 throw new \Exception('No Nav Item found with this id!');
             }
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('nav/sort');
         }
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $form = new NavForm($roleTable->fetchAllSorted());
+        $form = new NavForm($this->roleTable->fetchAllSorted());
         // $form->get('permission_id')->setValue($navItem['permission_id']);
         $form->get('submit')->setValue('Edit');
         
@@ -98,14 +90,14 @@ class NavController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $navTable->updateItem(array(
+                $this->navTable->updateItem(array(
                     'label' => $data['label'],
                     'uri' => $data['uri'],
                     'target' => $data['target'],
                     'min_role_id' => $data['min_role_id']
                 ), $data['id']);
                 //clear Cache
-                $this->getCache()->clearCache('nav/main');
+                $this->cacheService->clearCache('nav/main');
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -118,12 +110,10 @@ class NavController extends AbstractActionController
 
     public function sortAction()
     {
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $form = new NavForm($roleTable->fetchAllSorted());
+        $form = new NavForm($this->roleTable->fetchAllSorted());
         $form->get('submit')->setValue('Edit');
-        
-        $NavTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
-        $navTree = $NavTable->getNav(0);
+
+        $navTree = $this->navTable->getNav(0);
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -164,11 +154,11 @@ class NavController extends AbstractActionController
 
             // update database
             foreach ($result as $row) {
-                $NavTable->updateNesting($row);
+                $this->navTable->updateNesting($row);
             }
             // clear cache
 
-            $this->getCache()->clearCache('nav/main');
+            $this->cacheService->clearCache('nav/main');
             
             print('"}');
             die();
@@ -188,7 +178,6 @@ class NavController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('nav/sort');
         }
-        $navTable = $this->getServiceLocator()->get("Nav\Model\NavTable");
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -196,28 +185,16 @@ class NavController extends AbstractActionController
             
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $navTable->deleteByID($id);
+                $this->navTable->deleteByID($id);
             }
             //clear Cache
-            $this->getCache()->clearCache('nav/main');
+            $this->cacheService->clearCache('nav/main');
             // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
         return array(
             'id' => $id,
-            'item' => $navTable->getItem($id)
+            'item' => $this->navTable->getItem($id)
         );
-    }
-
-    /**
-     * get the CacheService
-     * sets the nav cache in $this->cache
-     */
-    private function getCache() {
-        if (!$this->cacheService) {
-            $this->cacheService = $this->getServiceLocator()->get('CacheService');
-            $this->cache = $this->cacheService->getCache('nav/main');
-        }
-        return $this->cacheService;
     }
 }
