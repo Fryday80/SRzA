@@ -17,11 +17,6 @@ class FileBrowserController extends AbstractActionController  {
      */
     private $mediaService;
 
-    function __construct()
-    {
-    }
-
-
     public function indexAction() {
         $viewModel = new ViewModel();
         $viewModel->setVariables(array('key' => 'value'))

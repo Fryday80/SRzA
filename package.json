@@ -4,7 +4,8 @@
   "description": "schwartze ritter zu augsburg",
   "main": "index.js",
   "scripts": {
-    "test": "maildev -s 25"
+    "test": "maildev -s 25",
+    "build:classmap": "cd module/  ../../vendor/bin/classmap_generator.php.bat"
   },
   "repository": {
     "type": "git",

@@ -12,9 +12,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     public function getAutoloaderConfig()
     {
         return array(
-            'Zend\Loader\ClassMapAutoloader' => array()
-            // __DIR__ . '/autoload_classmap.php',
-            ,
+            'Zend\Loader\ClassMapAutoloader' => array(
+                __DIR__ . '/autoload_classmap.php',
+            ),
             'Zend\Loader\StandardAutoloader' => array(
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
@@ -38,7 +38,8 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
                     return $table;
                 },
                 'MediaService' => function ($sm) {
-                    return new MediaService($sm->get('AccessService'));
+                    $a = $sm->get('AccessService');
+                    return new MediaService($a);
                 }
             )
         );

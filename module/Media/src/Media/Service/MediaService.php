@@ -1,11 +1,14 @@
 <?php
 namespace Media\Service;
 use Auth\Service\AccessService;
+use Exception;
 use Media\Utility\FmHelper;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Tracy\Debugger;
 use Zend\Http\Response;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 use ZipArchive;
 
 const DATA_PATH = '/Data';
@@ -107,16 +110,20 @@ class MediaException {
         $this->path = $path;
     }
 }
-class MediaService {
+class MediaService implements ServiceManagerAwareInterface {
     protected $dataPath;
     protected $accessService;
     private $metaCache;
 
     function __construct(AccessService $accessService) {
-        $this->accessService = $accessService;
-        $rootPath = getcwd();
-        $this->dataPath = $this->cleanPath($rootPath.DATA_PATH);
-        $this->metaCache = [];
+        try {
+            $this->accessService = $accessService;
+            $rootPath = getcwd();
+            $this->dataPath = $this->cleanPath($rootPath.DATA_PATH);
+            $this->metaCache = [];
+        } catch (Exception $e) {
+            bdump($e);
+        }
     }
     //@todo need to be replaced by getItems -- only used in galleryService.
     /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
@@ -907,5 +914,15 @@ class MediaService {
         } elseif (is_file($realPath)) {
             unlink($realPath);
         }
+    }
+
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager)
+    {
+        // TODO: Implement setServiceManager() method.
     }
 }

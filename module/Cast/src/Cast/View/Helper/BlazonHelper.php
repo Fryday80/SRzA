@@ -1,6 +1,5 @@
 <?php
-
-namespace Cast\View;
+namespace Cast\View\Helper;
 
 
 use Cast\Service\BlazonService;

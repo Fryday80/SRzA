@@ -5,9 +5,13 @@ use Album\Model\AlbumModel;
 use Application\Service\CacheService;
 use Media\Service\MediaException;
 use Media\Service\MediaService;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-Class GalleryService
+Class GalleryService implements ServiceManagerAwareInterface
 {
+    /** @var  ServiceManager */
+    private $serviceManager;
     /**
      * @var MediaService
      */
@@ -16,12 +20,6 @@ Class GalleryService
     private $cacheService;
     private $galleryPath = "/gallery";
 
-
-    function __construct($sm)
-    {
-        $this->mediaService = $sm->get('MediaService');
-        $this->cacheService = $sm->get('CacheService');
-    }
 
     public function getAllAlbums() {
         if ($this->cacheService->hasCache('album')) {
@@ -71,8 +69,7 @@ Class GalleryService
         $path = $this->galleryPath.'/'.$name;
         $meta = $this->mediaService->getFolderMeta($path);
         if (is_array($meta) && isset($meta['Album'])) {
-            $album = new AlbumModel($path, $this->mediaService);
-            $album->loadImages();
+            $album = $this->loadAlbum($path);
             return $album;
         } else {
             if ($meta instanceof MediaException) {
@@ -101,5 +98,16 @@ Class GalleryService
             array_push($result, $allImages[$i]);
         }
         return $result;
+    }
+
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager) {
+        $this->serviceManager = $serviceManager;
+        $this->mediaService = $serviceManager->get('MediaService');
+        $this->cacheService = $serviceManager->get('CacheService');
     }
 }

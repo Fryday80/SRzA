@@ -19,6 +19,11 @@ return array(
 //            },
 //        ),
     ),
+    'view_helpers' => array(
+        'factories' => array(
+            'blazon' => 'Cast\Factory\BlazonHelperFactory',
+        ),
+    ),
     'view_manager' => array(
         'template_path_stack' => array(
             'profiles' => __DIR__ . '/../view',

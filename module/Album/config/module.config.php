@@ -3,10 +3,19 @@ use Album\Controller\GalleryController;
 use Album\Service\GalleryService;
 use Album\Controller\AlbumController;
 return array(
+    'service_manager' => array(
+        'invokables' => array(
+            'GalleryService' => 'Album\Service\GalleryService'
+        )
+    ),
     'controllers' => array(
         'invokables' => array(
-            'Album\Controller\Gallery' => 'Album\Factory\AlbumGalleryControllerFactory',
-            'Album\Controller\Album' => 'Album\Factory\AlbumControllerFactory'
+            'Album\Controller\Gallery' => 'Album\Controller\GalleryController'
+        ),
+    ),
+    'view_helpers' => array(
+        'factories' => array(
+            'randomImage' => 'Album\Factory\RandomImageHelperFactory',
         ),
     ),
     'view_manager' => array(
@@ -14,59 +23,8 @@ return array(
             'album' => __DIR__ . '/../view',
         ),
     ),
-     'router' => array(
+    'router' => array(
          'routes' => array(
-
-             'album' => array(
-                 'type'    => 'segment',
-                 'may_terminate' => true,
-                 'options' => array(
-                     'route'    => '/album',
-                     'defaults' => array(
-                         'controller' => 'Album\Controller\Album',
-                         'action'     => 'index',
-                     ),
-                 ),
-
-                 'child_routes' => array(
-                    'delete' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/delete[/:id]',
-                            'constraints' => array(
-                                'id' => '[0-9]+'
-                            ),
-                            'defaults' => array(
-                                'action' => 'delete'
-                            )
-                        )
-                    ),
-                    'add' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/add[/:id]',
-                            'constraints' => array(
-                                'id' => '[0-9]+'
-                            ),
-                            'defaults' => array(
-                                'action' => 'add'
-                            )
-                        )
-                    ),
-                    'edit' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/edit[/:id]',
-                            'constraints' => array(
-                                'id' => '[0-9]+'
-                            ),
-                            'defaults' => array(
-                                'action' => 'edit'
-                            )
-                        )
-                    )
-                ),
-             ),
              'gallery' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,

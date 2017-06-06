@@ -6,16 +6,11 @@ use Zend\View\Model\ViewModel;
 
 class GalleryController extends AbstractActionController
 {
-    protected $galleryService;
-
-    public function __construct($galleryService)
-    {
-        $this->galleryService = $galleryService;
-    }
 
     public function indexAction()
     {
-        $albums = $this->galleryService->getAllAlbums();
+        $galleryService = $this->getServiceLocator()->get('GalleryService');
+        $albums = $galleryService->getAllAlbums();
         $viewModel = new ViewModel(array( 'albums' => $albums ) );
         return $viewModel;
     }
@@ -25,7 +20,8 @@ class GalleryController extends AbstractActionController
         $this->layout()->setVariable('showSidebar', false);
         $request = $this->getRequest();
         $id = $this->params()->fromRoute('id', null);
-        $album_data = $this->galleryService->getAlbum($id);
+        $galleryService = $this->getServiceLocator()->get('GalleryService');
+        $album_data = $galleryService->getAlbum($id);
         $viewModel = new ViewModel(array(
             'album' => $album_data,
         ));

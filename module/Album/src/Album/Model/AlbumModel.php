@@ -27,7 +27,7 @@ class AlbumModel implements \Iterator, \Countable
         ]
     ];
 
-    public function __construct($path, $options = null) {
+    public function __construct($path, $options = []) {
         $this->position = 0;
         $this->path = $path;
 //        $this->mediaService = $mediaService;

@@ -5,7 +5,7 @@ return array(
             'Media\Controller\List'         => 'Media\Controller\ListController',
             'Media\Controller\Upload'       => 'Media\Controller\UploadController',
             'Media\Controller\File'         => 'Media\Controller\FileController',
-            'Media\Controller\FileBrowser'  => 'Media\Factory\FileBrowserControllerFactory',
+            'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
         ),
     ),
     'view_manager' => array(
