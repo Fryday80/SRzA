@@ -109,6 +109,14 @@ return array(
         'aliases' => array(
             'translator' => 'MvcTranslator',
         ),
+        'invokables' => array(
+            'StatisticService' => 'Application\Service\StatisticService',
+            'MessageService' => 'Application\Service\MessageService',
+            'CacheService' => 'Application\Service\CacheService',
+            'Application\Model\DynamicHashTable' => 'Application\Model\DynamicHashTable',
+            'Application\Model\MailTemplatesTable' => 'Application\Model\MailTemplatesTable',
+            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
+        ),
     ),
     'translator' => array(
         'locale' => 'de_DE',

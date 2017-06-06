@@ -2,22 +2,17 @@
 namespace Application\Model;
 
 use Exception;
+use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Where;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 
-class DynamicHashTable extends AbstractTableGateway
+class DynamicHashTable extends AbstractTableGateway implements AdapterAwareInterface
 {
 
     public $table = 'dynamic_hash';
-
-    public function __construct(Adapter $adapter) {
-        $this->adapter = $adapter;
-        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
-        $this->initialize();
-    }
 
     public function getAll() {
         try {
@@ -75,5 +70,17 @@ class DynamicHashTable extends AbstractTableGateway
         if (function_exists('openssl_random_pseudo_bytes')) {
             return bin2hex(openssl_random_pseudo_bytes($length));
         }
+    }
+
+    /**
+     * Set db adapter
+     *
+     * @param Adapter $adapter
+     * @return AdapterAwareInterface
+     */
+    public function setDbAdapter(Adapter $adapter) {
+        $this->adapter = $adapter;
+//        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
+        $this->initialize();
     }
 }

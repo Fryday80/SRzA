@@ -2,22 +2,13 @@
 
 namespace Application\Model;
 
-use Application\Model\SystemLog;
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
 
-
-// structure:  table: system_log (microtime [float] unique, time[bigint], type[string], msg[string], url[string], userId[int], userName[string], data[longblob] )
-class SystemLogTable extends AbstractTableGateway
+class SystemLogTable extends AbstractTableGateway implements AdapterAwareInterface
 {
     public $table = 'system_log';
-
-
-    public function __construct($Sm, Adapter $adapter)
-    {
-        $this->adapter = $adapter;
-        $this->initialize();
-    }
 
     /**
      * @param SystemLog $logItem
@@ -71,5 +62,15 @@ class SystemLogTable extends AbstractTableGateway
         $queryValues = substr($queryValues, 0, -2);
 
         return array($queryItems, $queryValues);
+    }
+    /**
+     * Set db adapter
+     *
+     * @param Adapter $adapter
+     * @return AdapterAwareInterface
+     */
+    public function setDbAdapter(Adapter $adapter) {
+        $this->adapter = $adapter;
+        $this->initialize();
     }
 }

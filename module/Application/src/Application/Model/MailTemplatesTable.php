@@ -2,36 +2,19 @@
 namespace Application\Model;
 
 use Exception;
-use Zend\Db\Sql\Sql;
+use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 
-class MailTemplatesTable extends AbstractTableGateway
+class MailTemplatesTable extends AbstractTableGateway implements AdapterAwareInterface
 {
 
     public $table = 'mail_templates';
 
-    public function __construct(Adapter $adapter)
-    {
-        $this->adapter = $adapter;
-        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
-        $this->initialize();
-    }
-
     public function getAllTemplates()
     {
         return $this->select()->toArray();
-//        try {
-//            $sql = new Sql($this->getAdapter());
-//            $select = $sql->select();
-//            $statement = $sql->prepareStatementForSqlObject($select);
-//            $templates = $this->resultSetPrototype->initialize($statement->execute())
-//                ->toArray();
-//            return $templates;
-//        } catch (\Exception $e) {
-//            throw new \Exception($e->getPrevious()->getMessage());
-//        }
     }
 
     public function getByID($id)
@@ -73,5 +56,17 @@ class MailTemplatesTable extends AbstractTableGateway
         if ($entry === null) return false;
         if ($entry['build_in'] == 1) return true;
         return false;
+    }
+
+    /**
+     * Set db adapter
+     *
+     * @param Adapter $adapter
+     * @return AdapterAwareInterface
+     */
+    public function setDbAdapter(Adapter $adapter) {
+        $this->adapter = $adapter;
+        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
+        $this->initialize();
     }
 }

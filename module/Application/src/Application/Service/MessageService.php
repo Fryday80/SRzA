@@ -5,11 +5,6 @@ use Exception;
 use Zend\ServiceManager\ServiceManager;
 use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class TemplateTypes {
-    const SUCCESSFUL_REGISTERED = 'SUCCESSFUL_REGISTERED';
-    const RESET_PASSWORD = 'passwordForgotten';
-}
-
 class MessageService implements ServiceManagerAwareInterface
 {
     /** @var  ServiceManager */
@@ -32,6 +27,7 @@ class MessageService implements ServiceManagerAwareInterface
      * @param $templateID
      * @param $templateVars
      * @return bool
+     * @throws Exception
      */
     public function SendMailFromTemplate($target, $templateID, $templateVars) {
         try {
@@ -87,4 +83,8 @@ class MessageService implements ServiceManagerAwareInterface
         }
         return $string;
     }
+}
+class TemplateTypes {
+    const SUCCESSFUL_REGISTERED = 'SUCCESSFUL_REGISTERED';
+    const RESET_PASSWORD = 'passwordForgotten';
 }

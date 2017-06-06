@@ -1,4 +1,6 @@
 <?php
+use Zend\Db\Adapter\AdapterAwareInterface;
+
 $env = getenv('APPLICATION_ENV');
 return array(
     // This should be an array of module namespaces used in the application.
@@ -32,7 +34,7 @@ return array(
         'config_glob_paths' => array(
             'config/autoload/{,*.}{global,local}.php',
         ),
-//
+
         'config_cache_enabled' => ($env == 'production'),
         'config_cache_key' => 'main',
         'module_map_cache_enabled' => ($env == 'production'),
@@ -78,5 +80,13 @@ return array(
 
    // Initial configuration with which to seed the ServiceManager.
    // Should be compatible with Zend\ServiceManager\Config.
-   // 'service_manager' => array(),
+    'service_manager' => array(
+        'initializers' => array(
+            function ($instance, $sm) {
+                if ($instance instanceof AdapterAwareInterface) {
+                    $instance->setDbAdapter($sm->get('Zend\Db\Adapter\Adapter'));
+                }
+            }
+        ),
+    ),
 );

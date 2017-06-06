@@ -21,6 +21,7 @@ use Application\View\Helper\FormRow;
 use Application\View\Helper\InlineFromFile;
 use Application\View\Helper\MyUrl;
 use Application\View\Helper\sraForm;
+use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Mvc\MvcEvent;
 use Application\View\Helper\DataTableHelper;
 use Zend\Validator\AbstractValidator;
@@ -55,33 +56,6 @@ class Module
 //                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 //                ),
 //            ),
-        );
-    }
-    public function getServiceConfig()
-    {
-        return array(
-            'factories' => array(
-                'StatisticService' => function ( $sm ) {
-                    return new StatisticService( $sm );
-                },
-                'Application\Model\SystemLog' => function ( $serviceManager ) {
-                    return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
-                },
-                'MessageService' => function($sm) {
-                    $service = new MessageService();
-                    return $service;
-                },
-                'CacheService' => function($sm) {
-                    $service = new CacheService();
-                    return $service;
-                },
-                'Application\Model\MailTemplatesTable' => function($serviceManager) {
-                    return new MailTemplatesTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
-                },
-                'Application\Model\DynamicHashTable' => function($serviceManager) {
-                    return new DynamicHashTable( $serviceManager->get('Zend\Db\Adapter\Adapter') );
-                },
-            )
         );
     }
 

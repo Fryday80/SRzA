@@ -19,6 +19,8 @@ use Zend\Http\Header\SetCookie;
 use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
+use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const AJAX_BLACK_LIST = array(
@@ -29,7 +31,7 @@ const AJAX_BLACK_LIST = array(
 /** "true" logs speed in Tracy "false" don't */
 const SPEED_CHECK = false;
 
-class StatisticService
+class StatisticService implements ServiceManagerAwareInterface
 {
     private $storagePath;
     /** @var Stats $storage */
@@ -39,14 +41,16 @@ class StatisticService
     /** @var  SystemLogTable */
     private $sysLog;
 
-    function __construct($sm)
-    {
-        if (SPEED_CHECK) Register::add('StatService start');
-        $this->accessService = $sm->get('AccessService');
-        $this->sysLog = $sm->get('Application\Model\SystemLog');
+    /**
+     * Set service manager
+     *
+     * @param ServiceManager $serviceManager
+     */
+    public function setServiceManager(ServiceManager $serviceManager) {
+        $this->accessService = $serviceManager->get('AccessService');
+        $this->sysLog = $serviceManager->get('Application\Model\SystemLog');
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
-        if (SPEED_CHECK) Register::add('StatService constructed');
     }
 //======================================================================================================= EVENTS
     public function onDispatch(MvcEvent $e)
@@ -273,4 +277,5 @@ class StatisticService
         if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
     }
+
 }
