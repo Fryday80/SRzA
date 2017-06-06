@@ -2,6 +2,8 @@
 namespace Nav\Controller;
 
 use Application\Service\CacheService;
+use Auth\Model\RoleTable;
+use Nav\Model\NavTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Nav\Form\NavForm;
 use Zend\Json\Json;
@@ -15,6 +17,10 @@ class NavController extends AbstractActionController
     private $cacheService = false;
     private $cache;
 
+    public function __construct(CacheService $cacheService, NavTable $navTable, RoleTable $roleTable)
+    {
+
+    }
     public function indexAction()
     {
         // show all menus
