@@ -5,10 +5,8 @@ use Exception;
 use Media\Utility\FmHelper;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Tracy\Debugger;
 use Zend\Http\Response;
 use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 use ZipArchive;
 
 const DATA_PATH = '/Data';
@@ -110,7 +108,7 @@ class MediaException {
         $this->path = $path;
     }
 }
-class MediaService implements ServiceManagerAwareInterface {
+class MediaService {
     protected $dataPath;
     protected $accessService;
     private $metaCache;

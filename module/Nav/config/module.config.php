@@ -3,9 +3,6 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'navigation' => 'Nav\Factory\MainNavigationFactory'
-//            'navigation' => function($sm) {
-//                return new \Nav\Factory\MainNavigationFactory($sm);
-//            }
         )
     ),
     'controllers' => array(

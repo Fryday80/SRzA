@@ -8,6 +8,11 @@ return array(
             'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
         ),
     ),
+    'service_manager' => array(
+        'factories' => array(
+            'MediaService' => 'Media\Factory\MediaServiceFactory'
+        )
+    ),
     'view_manager' => array(
         'template_path_stack' => array(
             'media' => __DIR__ . '/../view'

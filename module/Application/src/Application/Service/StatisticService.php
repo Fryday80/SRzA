@@ -20,7 +20,6 @@ use Zend\Http\Response;
 use Zend\Mvc\Application;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const AJAX_BLACK_LIST = array(
@@ -31,7 +30,7 @@ const AJAX_BLACK_LIST = array(
 /** "true" logs speed in Tracy "false" don't */
 const SPEED_CHECK = false;
 
-class StatisticService implements ServiceManagerAwareInterface
+class StatisticService
 {
     private $storagePath;
     /** @var Stats $storage */
@@ -41,14 +40,9 @@ class StatisticService implements ServiceManagerAwareInterface
     /** @var  SystemLogTable */
     private $sysLog;
 
-    /**
-     * Set service manager
-     *
-     * @param ServiceManager $serviceManager
-     */
-    public function setServiceManager(ServiceManager $serviceManager) {
-        $this->accessService = $serviceManager->get('AccessService');
-        $this->sysLog = $serviceManager->get('Application\Model\SystemLog');
+    public function __construct(AccessService $accessService, SystemLogTable $sysLogTable) {
+        $this->accessService = $accessService;
+        $this->sysLog = $sysLogTable;
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
     }
@@ -118,7 +112,7 @@ class StatisticService implements ServiceManagerAwareInterface
     public function onFinish(MvcEvent $e) {
         $this->saveFile($this->stats);
     }
-    
+
     public function logSystem(SystemLog $log){
         $this->sysLog->updateSystemLog($log);
     }
@@ -208,7 +202,7 @@ class StatisticService implements ServiceManagerAwareInterface
     public function getMostVisitedPages($top = 1){
         return $this->stats->getMostVisitedPages($top);
     }
-    
+
 //======================================================================================================= PRIVATES
 
     /**

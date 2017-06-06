@@ -2,7 +2,10 @@
 namespace Nav\Factory;
 
 use Application\Service\CacheService;
+use Exception;
+use Interop\Container\ContainerInterface;
 use Zend\Http\Request;
+use Zend\Navigation\Navigation;
 use Zend\Navigation\Service\AbstractNavigationFactory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zarganwar\PerformancePanel\Register;
@@ -16,15 +19,43 @@ class MainNavigationFactory extends AbstractNavigationFactory
      */
     private $cache;
 
+
+
+    /**
+     * Create and return a new Navigation instance (v3).
+     *
+     * @param ContainerInterface $container
+     * @param string $requestedName
+     * @param null|array $options
+     * @return Navigation
+     */
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        return new Navigation($this->getPages($container));
+    }
+
+    /**
+     * Create and return a new Navigation instance (v2).
+     *
+     * @param ServiceLocatorInterface $container
+     * @param null|string $name
+     * @param null|string $requestedName
+     * @return Navigation
+     */
+    public function createService(ServiceLocatorInterface $container, $name = null, $requestedName = null)
+    {
+        $this->cache = $container->get('CacheService');
+        $requestedName = $requestedName ?: Navigation::class;
+        return $this($container, $requestedName);
+    }
     protected function getName()
     {
         return 'Main';
     }
-    protected function getPages(ServiceLocatorInterface $serviceLocator)
+    protected function getPages(ContainerInterface $container)
     {
-        $this->cache = $serviceLocator->get('CacheService');
         if (null === $this->pages) {
-            $this->loadPages($serviceLocator);
+            $this->loadPages($container);
         }
         return $this->pages;
     }

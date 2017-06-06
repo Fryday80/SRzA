@@ -3,6 +3,7 @@
 return array(
     'Album\Module'                           => __DIR__ . '/module.php',
     'Album\Controller\GalleryController'     => __DIR__ . '/src/Album/Controller/GalleryController.php',
+    'Album\Factory\GalleryServiceFactory'    => __DIR__ . '/src/Album/Factory/GalleryServiceFactory.php',
     'Album\Factory\RandomImageHelperFactory' => __DIR__ . '/src/Album/Factory/RandomImageHelperFactory.php',
     'Album\Form\AlbumForm'                   => __DIR__ . '/src/Album/Form/AlbumForm.php',
     'Album\Form\ConfirmForm'                 => __DIR__ . '/src/Album/Form/ConfirmForm.php',

@@ -4,8 +4,11 @@ use Album\Service\GalleryService;
 use Album\Controller\AlbumController;
 return array(
     'service_manager' => array(
-        'invokables' => array(
-            'GalleryService' => 'Album\Service\GalleryService'
+//        'invokables' => array(
+//            'GalleryService' => 'Album\Service\GalleryService'
+//        ),
+        'factories' => array(
+            'GalleryService' => 'Album\Factory\GalleryServiceFactory'
         )
     ),
     'controllers' => array(

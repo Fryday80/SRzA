@@ -6,6 +6,7 @@ return array(
     'Media\Controller\FileController'        => __DIR__ . '/src/Media/Controller/FileController.php',
     'Media\Controller\ListController'        => __DIR__ . '/src/Media/Controller/ListController.php',
     'Media\Controller\UploadController'      => __DIR__ . '/src/Media/Controller/UploadController.php',
+    'Media\Factory\MediaServiceFactory'      => __DIR__ . '/src/Media/Factory/MediaServiceFactory.php',
     'Media\Model\FileTable'                  => __DIR__ . '/src/Media/Model/FileTable.php',
     'Media\Service\ERROR_TYPES'              => __DIR__ . '/src/Media/Service/MediaService.php',
     'MediaItem'                              => __DIR__ . '/src/Media/Service/MediaService.php',
