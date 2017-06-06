@@ -3,8 +3,10 @@ namespace Album\Service;
 
 
 use Album\Model\AlbumModel;
+use Application\Service\CacheService;
 use Media\Service\MediaException;
 use Media\Service\MediaService;
+use Tracy\Debugger;
 use Zarganwar\PerformancePanel\Register;
 
 
@@ -20,16 +22,21 @@ Class GalleryService
      * @var MediaService
      */
     private $mediaService;
+    /** @var  CacheService */
+    private $cacheService;
     private $galleryPath = "/gallery";
 
 
     function __construct($sm)
     {
         $this->mediaService = $sm->get('MediaService');
+        $this->cacheService = $sm->get('CacheService');
     }
 
     public function getAllAlbums() {
-        //@todo album chaching
+        if ($this->cacheService->hasCache('album')) {
+            return $this->cacheService->getCache('album');
+        }
         $result = array();
         $galleryDirs = $this->mediaService->getItems($this->galleryPath);
         if ($galleryDirs instanceof MediaException) {
@@ -37,22 +44,39 @@ Class GalleryService
         }
         foreach ($galleryDirs as $key => $value) {
             if ($value->readable == 0) continue;
-            $meta = $this->mediaService->getFolderMeta($value->path);
-            if ($meta instanceof MediaException) {
-                //@todo trigger system warning $meta->msg;
-                continue;
-            }
-            if (is_array($meta) && isset($meta['Album'])) {
-                $a = new AlbumModel($value->path, $this->mediaService);
-                //@todo check if album is created
-                if (!($a instanceof AlbumModel)) continue;
-                $a->loadImages();
-                array_push($result,  $a);
-            }
+            $album = $this->loadAlbum($value->path);
+            if ($album == null) continue;
+            array_push($result,  $album);
         }
+        $this->cacheService->setCache('album', $result);
         return $result;
     }
 
+    private function loadAlbum($path) {
+        $meta = $this->mediaService->getFolderMeta($path);
+        if ($meta instanceof MediaException) {
+            //@todo trigger system warning $meta->msg;
+            return null;
+        }
+        if (is_array($meta) && isset($meta['Album'])) {
+            $a = new AlbumModel($path, $meta);
+
+            if (!($a instanceof AlbumModel)) return null;
+            $items = $this->mediaService->getItems($path);
+            $result = [];
+            foreach ($items as $key => $value) {
+                if ($value->readable == 0) continue;
+                if ($value->type != 'folder' && $value->type != 'conf') {
+                    array_push($result, $value);
+                }
+            }
+            $a->images = $result;
+
+
+//            $a->loadImages();
+            return $a;
+        }
+    }
     public function getAlbum($name) {
         $path = $this->galleryPath.'/'.$name;
         $meta = $this->mediaService->getFolderMeta($path);
@@ -71,10 +95,9 @@ Class GalleryService
     }
 
     public function getRandomImage($count = 1) {
+        Debugger::timer();
         //get random album
-        Register::add("getRandomImage start");
         $galleryDirs = $this->getAllAlbums();
-        Register::add("getRandomImage end");
         if (count($galleryDirs) == 0) return [];
         $randomIndex = rand(0, count($galleryDirs) -1);
         $album = $galleryDirs[$randomIndex];
@@ -88,6 +111,7 @@ Class GalleryService
         for($i = 0; $i < $count; $i++) {
             array_push($result, $allImages[$i]);
         }
+        bdump(Debugger::timer() * 1000);
         return $result;
     }
 

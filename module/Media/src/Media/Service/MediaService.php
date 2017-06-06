@@ -4,6 +4,7 @@ use Auth\Service\AccessService;
 use Media\Utility\FmHelper;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Tracy\Debugger;
 use Zend\Http\Response;
 use ZipArchive;
 
@@ -543,7 +544,6 @@ class MediaService {
         $sysPerms = $this->getSystemPermission($fullPath);
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
-        $dir = dirname($fullPath);
         $role = $this->accessService->getRole();
         $readable = 0;
         $writable = 0;
@@ -596,8 +596,10 @@ class MediaService {
                 }
             }
         }
-        return ['readable' => ($sysPerms['r'] == 0)? 0: $readable,
-                'writable' => ($sysPerms['w'] == 0)? 0: $writable];
+        return [
+            'readable' => ($sysPerms['r'] == 0)? 0: $readable,
+            'writable' => ($sysPerms['w'] == 0)? 0: $writable
+        ];
     }
 
     /**
@@ -672,15 +674,17 @@ class MediaService {
      */
     private function getSystemPermission($filepath)
     {
-        $readable = 0;
-        $writable = 0;
-        if(is_readable($filepath)) {
-            $readable = 1;
-        }
-        if(is_writable($filepath)) {
-            $writable = 1;
-        }
-        return ['r' => $readable, 'w' => $writable];
+        //extrem slow!! refactor or remove
+        return ['w'=>1,'r'=>1];
+//        $readable = 0;
+//        $writable = 0;
+//        if(is_readable($filepath)) {
+//            $readable = 1;
+//        }
+//        if(is_writable($filepath)) {
+//            $writable = 1;
+//        }
+//        return ['r' => $readable, 'w' => $writable];
     }
 
     /**
@@ -777,7 +781,7 @@ class MediaService {
 //        var_dump($objectivePath);die;//ich muss weg bis in 20 min :)kk
         $process_sections = true;
         $scanner_mode = INI_SCANNER_TYPED;
-        if (in_array($objectivePath, $this->metaCache)) {
+        if (array_key_exists($objectivePath, $this->metaCache)) {
             return $this->metaCache[$objectivePath];
         }
         $ini = [];

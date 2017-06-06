@@ -4,6 +4,7 @@ namespace Album\Model;
 
 use Media\Service\MediaItem;
 use Media\Service\MediaService;
+use Tracy\Debugger;
 
 class AlbumModel implements \Iterator, \Countable
 {
@@ -11,7 +12,7 @@ class AlbumModel implements \Iterator, \Countable
     private $mediaService;
     private $path = "";
     /** @var array */
-    private $images = [];
+    public $images = [];
     private $position = 0;
     /* @var MediaItem $previewItem */
     private $previewItem;
@@ -26,28 +27,28 @@ class AlbumModel implements \Iterator, \Countable
         ]
     ];
 
-    public function __construct($path, $mediaService, $options = null) {
+    public function __construct($path, $options = null) {
         $this->position = 0;
         $this->path = $path;
-        $this->mediaService = $mediaService;
-        if ($options == null) {
-            // @todo check if necessary options are present
-            $options = $this->mediaService->getFolderMeta($path);
-        }
+//        $this->mediaService = $mediaService;
+//        if ($options == null) {
+//            // @todo check if necessary options are present
+//            $options = $this->mediaService->getFolderMeta($path);
+//        }
         $this->options = array_replace_recursive($this->options, $options);
         $this->fixDate();
     }
-    public function loadImages() {
-        $items = $this->mediaService->getItems($this->path);
-        $result = [];
-        foreach ($items as $key => $value) {
-            if ($value->readable == 0) continue;
-            if ($value->type != 'folder' && $value->type != 'conf') {
-                array_push($result, $value);
-            }
-        }
-        $this->images = $result;
-    }
+//    public function loadImages() {
+//        $items = $this->mediaService->getItems($this->path);
+//        $result = [];
+//        foreach ($items as $key => $value) {
+//            if ($value->readable == 0) continue;
+//            if ($value->type != 'folder' && $value->type != 'conf') {
+//                array_push($result, $value);
+//            }
+//        }
+//        $this->images = $result;
+//    }
     public function getName() {
         return $this->options['Album']['name'];
     }
