@@ -10,6 +10,7 @@ use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
 use Exception;
 use Zend\Authentication\AuthenticationService;
+use Zend\Authentication\Result;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\LoginForm;
 use Auth\Form\UserForm;
@@ -52,6 +53,45 @@ class AuthController extends AbstractActionController
         return $users;
     }
 
+    private function login($ip, $email, $clearPass) {
+        $valid = true;
+        $result = new Result(500, null, ['Unexpected Server Error']);
+        //check if user exists
+        $userDetails = $this->userTable->getUsersForAuth($email);
+        // email not found
+        if (!$userDetails){
+            $valid = false;
+        }
+        // email found but inactive
+        elseif ($userDetails->status != 1) {
+            $valid = false;
+            $result = new Result(401, null, ['Zugang Verweigert::Dieser Account ist nicht Aktiviert']);
+        }
+        if ($valid) {
+            $userPassword = new UserPassword();
+            $encyptPass = $userPassword->create($clearPass);
+
+            $this->authService->getAdapter()
+                ->setIdentity($email)
+                ->setCredential($encyptPass);
+
+            $result = $this->authService->authenticate();
+        }
+
+        if ($valid && $result->isValid()) {
+            $this->storage->setUserID($userDetails->id);
+            $this->storage->setUserName($userDetails->name);
+            $this->storage->setRoleName($userDetails->role_name);
+            $this->storage->setIP($ip);
+            // check if it has rememberMe : //@todo reimplement
+//            if ($request->getPost('rememberme') == 1) {
+//                $this->storage->setRememberMe(1);
+//            }
+            // set storage again
+            $this->authService->setStorage($this->storage);
+        }
+        return $result;
+    }
     public function loginAction()
     {
         $form = new LoginForm('Login');
@@ -66,60 +106,26 @@ class AuthController extends AbstractActionController
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                $valid = true;
-                //check if user exists
-                $userDetails = $this->userTable->getUsersForAuth($data['email']);
-                // email not found
-                if (!$userDetails){
-                    $valid = false;
-                }
-                // email found but inactive
-                elseif ($userDetails->status != 1) {
-                    $valid = false;
-                    $newMsg = "Zugang Verweigert::Dieser Account ist nicht Aktiviert";
-                }
-                if ($valid) {
-                    //check authentication... @todo move to AccessService
-                    $userPassword = new UserPassword();
-                    $encyptPass = $userPassword->create($data['password']);
 
-                    $this->authService->getAdapter()
-                        ->setIdentity($data['email'])
-                        ->setCredential($encyptPass);
+                $result = $this->login($ip, $data['email'], $data['password']);
 
-                    $result = $this->authService->authenticate();
-                    
+                if ($result->isValid()) {
+                    if (count($ref) > 0) {
+                        return $this->redirect()->toUrl($ref[0]);
+                    }
+                    $this->flashmessenger()->addMessage("You've been logged in");
+                    return $this->redirect()->toUrl($this->getReferer());
+                } else {
                     foreach ($result->getMessages() as $message) {
                         // save message temporary into flashmessenger
                         $this->flashmessenger()->addMessage($message);
                     }
-                }
-        
-                if ($valid && $result->isValid()) {
-                    $this->storage->setUserID($userDetails->id);
-                    $this->storage->setUserName($userDetails->name);
-                    $this->storage->setRoleName($userDetails->role_name);
-                    $this->storage->setIP($ip);
-                    // check if it has rememberMe :
-                    if ($request->getPost('rememberme') == 1) {
-                        $this->storage->setRememberMe(1);
+                    if (true) {//count($result->getMessages()) == 0) {
+                        $form->get('email')->setMessages(['Email oder Passwort falsch']);
+                        $form->get('password')->setMessages(['Email oder Passwort falsch']);
+                    } else {
+                        $form->get('password')->setMessages($result->getMessages());
                     }
-                    // set storage again
-                    $this->authService->setStorage($this->storage);
-
-                    if (count($ref) > 0) {
-                        return $this->redirect()->toUrl($ref[0]);
-                    }
-
-                    $this->flashmessenger()->addMessage("You've been logged in");
-                    return $this->redirect()->toUrl($this->getReferer());
-                } else {
-                    if (!isset ($newMsg)) {
-                        $newMsg = 'Email oder Passwort falsch';
-                    }
-                    $msg = $form->get('password')->getMessages();
-                    array_push($msg, $newMsg);
-                    $form->get('password')->setMessages($msg);
                 }
             }
         }
