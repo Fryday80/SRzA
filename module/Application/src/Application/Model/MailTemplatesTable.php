@@ -2,15 +2,20 @@
 namespace Application\Model;
 
 use Exception;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
 
-class MailTemplatesTable extends AbstractTableGateway implements AdapterAwareInterface
+class MailTemplatesTable extends AbstractTableGateway
 {
 
     public $table = 'mail_templates';
+
+    public function __construct(Adapter $adapter) {
+        $this->adapter = $adapter;
+        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
+        $this->initialize();
+    }
 
     public function getAllTemplates()
     {
@@ -56,17 +61,5 @@ class MailTemplatesTable extends AbstractTableGateway implements AdapterAwareInt
         if ($entry === null) return false;
         if ($entry['build_in'] == 1) return true;
         return false;
-    }
-
-    /**
-     * Set db adapter
-     *
-     * @param Adapter $adapter
-     * @return AdapterAwareInterface
-     */
-    public function setDbAdapter(Adapter $adapter) {
-        $this->adapter = $adapter;
-        $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
-        $this->initialize();
     }
 }

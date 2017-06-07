@@ -9,21 +9,7 @@
 
 namespace Application;
 
-use Application\Model\MailTemplatesTable;
-use Application\Model\SystemLogTable;
-use Application\Model\DynamicHashTable;
-use Application\Service\CacheService;
-use Application\Service\MessageService;
-use Application\Service\StatisticService;
-use Application\View\Helper\DashboardHelper;
-use Application\View\Helper\FormElementErrors;
-use Application\View\Helper\FormRow;
-use Application\View\Helper\InlineFromFile;
-use Application\View\Helper\MyUrl;
-use Application\View\Helper\sraForm;
-use Zend\Db\Adapter\AdapterAwareInterface;
 use Zend\Mvc\MvcEvent;
-use Application\View\Helper\DataTableHelper;
 use Zend\Validator\AbstractValidator;
 
 class Module
@@ -56,17 +42,6 @@ class Module
 //                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
 //                ),
 //            ),
-        );
-    }
-
-    public function getServiceConfig()
-    {
-        return array(
-//            'factories' => array(
-//                'Application\Model\SystemLog' => function ( $serviceManager ) {
-//                    return new SystemLogTable( $serviceManager, $serviceManager->get('Zend\Db\Adapter\Adapter') );
-//                },
-//            )
         );
     }
 }

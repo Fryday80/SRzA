@@ -20,7 +20,7 @@ class DefaultTableGatewayFactory implements AbstractFactoryInterface
     public function canCreateServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
         $nameSpace = explode( '\\', $requestedName);
-        return ($nameSpace[1] == 'Model' )? true: false;
+        return (isset($nameSpace[1]) && $nameSpace[1] == 'Model' )? true: false;
     }
 
     /**

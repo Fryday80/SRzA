@@ -104,25 +104,23 @@ return array(
         ),
     ),
     'service_manager' => array(
-        'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
-        ),
         'aliases' => array(
             'translator' => 'MvcTranslator',
         ),
         'invokables' => array(
             'MessageService' => 'Application\Service\MessageService',
             'CacheService' => 'Application\Service\CacheService',
-            'Application\Model\DynamicHashTable' => 'Application\Model\DynamicHashTable',
-            'Application\Model\MailTemplatesTable' => 'Application\Model\MailTemplatesTable',
-            'Application\Model\SystemLog' => 'Application\Model\SystemLogTable',
+            'Application\Model\SystemLog' => 'Application\Model\SystemLog',
         ),
         'factories' => array(
             'StatisticService' => 'Application\Factory\StatisticServiceFactory'
         ),
         'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
             'Application\Model\SystemLogTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\DynamicHashTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\MailTemplatesTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_helpers' => array(
@@ -130,12 +128,11 @@ return array(
             'form' => 'Application\View\Helper\sraForm',
             'FormRow' => 'Application\View\Helper\FormRow',
             'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
+            'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
         ),
         'factories' => array(
             'asurl' => 'Application\Factory\MyUrlFactory',
-            'DashboardHelper' => 'Application\Factory\DashboardHelperFactory',
             'dataTable' => 'Application\Factory\DataTableHelperFactory',
-            'InlineFromFile' => 'Application\Factory\InlineFromFileFactory',
         )
     ),
     'translator' => array(
