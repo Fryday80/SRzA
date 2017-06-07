@@ -67,10 +67,15 @@ class UserTable extends AbstractTableGateway
     {
         $data = get_object_vars($user);
         unset($data['role_name']);
+        $data['modified_on'] = time();
         $id = (int) $user->id;
         if ($id == 0) {
+            //new user
+            $data['status'] = (isset($data['status'])) ? $data['status'] : 0;
+            $data['created_on'] = $data['modified_on'];
             $this->insert($data);
         } else {
+            //edit user
             if ($this->getUser($id)) {
                 $this->update($data, array('id' => $id));
             } else {
