@@ -1,6 +1,7 @@
 <?php
 namespace Auth\Form;
 
+use Zend\Form\Element\Date;
 use Zend\Form\Form;
 use Auth\Form\Filter\UserFilter;
 
@@ -99,7 +100,7 @@ class UserForm extends Form
 
         $fields[]= array(
             'name' => 'birthday',
-            'type' => 'Text',
+            'type' => 'Zend\Form\Element\Date',
             'options' => array(
                 'label' => 'Geburtstag',
             ),
@@ -123,7 +124,7 @@ class UserForm extends Form
 
         $fields[] = array(
             'name' => 'zip',
-            'type' => 'Text',
+            'type' => 'Zend\Form\Element\Number',
             'options' => array(
                 'label' => 'Postleitzahl',
             ),

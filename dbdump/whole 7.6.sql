@@ -901,7 +901,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `member_number` text,
   `real_surename` text,
   `real_name` text,
-  `birthday` text,
+  `birthday` bigint(20),
   `gender` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;

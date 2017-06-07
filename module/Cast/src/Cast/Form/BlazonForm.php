@@ -84,4 +84,34 @@ class BlazonForm extends Form
         $inputFilter->add($bigBlazonFileInput);
         $this->setInputFilter($inputFilter);
     }
+    public function removeInputFilter(){
+        $inputFilter = new InputFilter();
+
+        // blazon
+        $blazonFileInput = new FileInput('blazon');
+        $blazonFileInput->setRequired(false);
+        $blazonFileInput->getFilterChain()->attachByName(
+            'filerenameupload',
+            array(
+                'target'    => './temp/',
+                'use_upload_name ' => true,
+                'randomize' => true,
+            )
+        );
+        $inputFilter->add($blazonFileInput);
+
+        // blazonBig
+        $bigBlazonFileInput = new FileInput('blazonBig');
+        $bigBlazonFileInput->setRequired(false);
+        $bigBlazonFileInput->getFilterChain()->attachByName(
+            'filerenameupload',
+            array(
+                'target'    => './temp/',
+                'use_upload_name ' => true,
+                'randomize' => true,
+            )
+        );
+        $inputFilter->add($bigBlazonFileInput);
+        $this->setInputFilter($inputFilter);
+    }
 }
