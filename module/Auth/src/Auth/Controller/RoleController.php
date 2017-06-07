@@ -1,27 +1,34 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Service\CacheService;
+use Auth\Model\RoleTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\RoleForm;
 
 class RoleController extends AbstractActionController
 {
-
+    /** @var RoleTable  */
+    protected $roleTable;
     /** @var CacheService */
-    private $cacheService = false;
+    protected $cacheService = false;
     
+    function __construct(RoleTable $roleTable, CacheService $cacheService)
+    {
+        $this->roleTable = $roleTable;
+        $this->cacheService = $cacheService;
+    }
+
     public function indexAction()
     {
         //list all roles
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         return array(
-            'roles' => $roleTable->getUserRoles(),
+            'roles' => $this->roleTable->getUserRoles(),
         );
     }
     public function addAction()
     {
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $form = new RoleForm($roleTable);
+        $form = new RoleForm($this->roleTable);
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -29,8 +36,8 @@ class RoleController extends AbstractActionController
             if ($form->isValid()) {
                 $data = $form->getData();
                 //if role_parent == 0 then set to null
-                $roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
-                $this->getCacheService()->clearCache('acl');
+                $this->roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
+                $this->clearCache();
                 return $this->redirect()->toRoute('role');
             } else {
                 
@@ -44,21 +51,20 @@ class RoleController extends AbstractActionController
     {
         $id = $this->params('id');
         //@todo verify id
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $form = new RoleForm($roleTable);
+        $form = new RoleForm($this->roleTable);
         $form->get('submit')->setValue('Edit');
-        $data = $roleTable->getRoleByID($id);
+        $data = $this->roleTable->getRoleByID($id);
         $form->populateValues($data);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $roleTable->edit(array(
+                $this->roleTable->edit(array(
                     'role_name' => $data['role_name'],
                     'role_parent'=> $data['role_parent']
                 ), $data['rid']);
-                $this->getCacheService()->clearCache('acl');
+                $this->clearCache();
                 return $this->redirect()->toRoute('role');
             }
         }
@@ -70,8 +76,7 @@ class RoleController extends AbstractActionController
     public function deleteAction()
     {
         $id = (int) $this->params()->fromRoute('id', 0);
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $role = $roleTable->getRoleByID($id);
+        $role = $this->roleTable->getRoleByID($id);
         
         if ($role == null) {
             //@todo add error: role with $id dosn't exists
@@ -83,8 +88,8 @@ class RoleController extends AbstractActionController
     
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $roleTable->deleteByID($id);
-                $this->getCacheService()->clearCache('acl');
+                $this->roleTable->deleteByID($id);
+                $this->clearCache();
             }
             //cleanfix @todo remove
 //            $this->navService->removeRole($id);
@@ -95,15 +100,7 @@ class RoleController extends AbstractActionController
             'rolename' => $role['role_name']
         );
     }
-
-    /**
-     * get the CacheService
-     * @return CacheService
-     */
-    private function getCacheService() {
-        if (!$this->cacheService) {
-            $this->cacheService = $this->getServiceLocator()->get('CacheService');
-        }
-        return $this->cacheService;
+    private function clearCache($type = 'acl'){
+        $this->cacheService->clearCache($type);
     }
 }

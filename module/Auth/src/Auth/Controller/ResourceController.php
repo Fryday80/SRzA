@@ -2,21 +2,32 @@
 namespace Auth\Controller;
 
 use Application\Service\CacheService;
+use Auth\Model\PermissionTable;
+use Auth\Model\ResourceTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Auth\Form\ResourceForm;
 
 class ResourceController extends AbstractActionController
 {
+    /** @var ResourceTable  */
+    protected $resTable;
+    /** @var PermissionTable  */
+    protected $permTable;
     /** @var CacheService */
-    private $cacheService = false;
+    protected $cacheService;
+    
+    function __construct(ResourceTable $resTable, PermissionTable $permTable, CacheService $cacheService)
+    {
+        $this->resTable = $resTable;
+        $this->permTable = $permTable;
+        $this->cacheService = $cacheService;
+    }
 
     public function indexAction()
     {
-        $resTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
-        
         return array(
-            'resources' => $resTable->getAllResources()
+            'resources' => $this->resTable->getAllResources()
         );
     }
     public function addAction() {
@@ -32,14 +43,12 @@ class ResourceController extends AbstractActionController
                 $perms = explode( ',', str_replace(" ", "", $data['permissions']) );
                 $name = $data['resource_name'];
                 //create new resource
-                $resTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
-                $resID = $resTable->add($name);
+                $resID = $this->resTable->add($name);
                 //create new permissions
-                $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
                 foreach ($perms as $value) {
-                    $permTable->add($resID, $value);
+                    $this->permTable->add($resID, $value);
                 }
-                $this->getCacheService()->clearCache('acl');
+                $this->clearCache();
                 return $this->redirect()->toRoute('resource');
             } else {
                 
@@ -58,11 +67,9 @@ class ResourceController extends AbstractActionController
             return $this->redirect()->toRoute('resource');
         }
         //find resource with id
-        $resTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
-        $resource = $resTable->getByID($id);
+        $resource = $this->resTable->getByID($id);
         //@todo error if resource with id dosen't exists
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
-        $perms = $permTable->getByResourceID($id);
+        $perms = $this->permTable->getByResourceID($id);
         $permString = '';
         $permNames = array();
         foreach ($perms as $perm) {
@@ -86,21 +93,21 @@ class ResourceController extends AbstractActionController
                 //check if name has changed
                 if ($resource['resource_name'] != $name) {
                     //update resource
-                    $resTable->update(['resource_name' => $name], "id = $id");
+                    $this->resTable->update(['resource_name' => $name], "id = $id");
                 }
                 // remove old permissions
                 foreach ($perms as $perm) {
                     if (!in_array ($perm['permission_name'], $newPerms) ) {
-                        $permTable->delete('id = ' . $perm["id"]);
+                        $this->permTable->delete('id = ' . $perm["id"]);
                     }
                 }
 
                 // add new permissions
                 foreach ($newPerms as $perm) {
                     if (!in_array($perm, $permNames) )
-                        $permTable->add($id, $perm);
+                        $this->permTable->add($id, $perm);
                 }
-                $this->getCacheService()->clearCache('acl');
+                $this->clearCache();
                 return $this->redirect()->toRoute('resource');
             } else {
         
@@ -119,10 +126,7 @@ class ResourceController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('resource');
         }
-    
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
-        $resTable = $this->getServiceLocator()->get("Auth\Model\ResourceTable");
-        $res = $resTable->getByID($id);
+        $res = $this->resTable->getByID($id);
         $request = $this->getRequest();
     
         if ($request->isPost()) {
@@ -130,10 +134,10 @@ class ResourceController extends AbstractActionController
     
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $resTable->deleteByID($id);
-                $permTable->deleteByResourceID($id);
+                $this->resTable->deleteByID($id);
+                $this->permTable->deleteByResourceID($id);
             }
-            $this->getCacheService()->clearCache('acl');
+            $this->clearCache();
             // Redirect to list of albums
             return $this->redirect()->toRoute('resource');
         }
@@ -142,15 +146,7 @@ class ResourceController extends AbstractActionController
             'resourcename' => $res['resource_name']
         );
     }
-
-    /**
-     * get the CacheService
-     * @return CacheService
-     */
-    private function getCacheService() {
-        if (!$this->cacheService) {
-            $this->cacheService = $this->getServiceLocator()->get('CacheService');
-        }
-        return $this->cacheService;
+    private function clearCache($type = 'acl'){
+        $this->cacheService->clearCache($type);
     }
 }

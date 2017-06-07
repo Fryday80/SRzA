@@ -6,6 +6,8 @@ use Auth\Form\ProfileCharacterForm;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
 use Cast\Model\CharacterTable;
+use Cast\Model\FamiliesTable;
+use Cast\Model\JobTable;
 use Cast\Service\CastService;
 use vakata\database\Exception;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -16,29 +18,47 @@ use Zend\View\Model\ViewModel;
 
 class ProfileController extends AbstractActionController
 {
+    /** @var UserTable  */
+    protected $userTable;
+    /** @var CharacterTable  */
+    protected $characterTable;
+    /** @var FamiliesTable  */
+    protected $familyTable;
+    /** @var JobTable  */
+    protected $jobTable;
+    /** @var AccessService  */
+    protected $accessService;
+    /** @var StatisticService  */
+    protected $statsService;
+    /** @var CastService  */
+    protected $castService;
+
+    function __construct(UserTable $userTable, CharacterTable $characterTable, FamiliesTable $familyTable, JobTable $jobTable, AccessService $accessService, StatisticService $statService, CastService $castService)
+    {
+        $this->userTable = $userTable;
+        $this->characterTable = $characterTable;
+        $this->familyTable = $familyTable;
+        $this->jobTable = $jobTable;
+        $this->accessService = $accessService;
+        $this->statsService = $statService;
+        $this->castService = $castService;
+    }
+
     public function indexAction() {
-        /** @var UserTable $userTable */
-        $userTable = $this->getServiceLocator()->get('Auth/Model/UserTable');
-        /** @var CharacterTable $characterTable */
-        $characterTable = $this->getServiceLocator()->get('Cast/Model/CharacterTable');
-        /** @var AccessService $accessService */
-        $accessService = $this->getServiceLocator()->get('AccessService');
-        /** @var StatisticService $statService */
-        $statService = $this->getServiceLocator()->get('StatisticService');
         $viewModel = new ViewModel();
         $username = $this->params()->fromRoute('username');
         $private = (!$username);
         //@todo handle guest if it's private (redirect)
-        $username = ($username)? $username: $accessService->getUserName();
+        $username = ($username)? $username: $this->accessService->getUserName();
         /** @var User $user */
-        $user = $userTable->getUsersWhere(array('name' => $username))->current();
+        $user = $this->userTable->getUsersWhere(array('name' => $username))->current();
         if (!$user) {
             throw Exception("todo");
             //@todo redirect to user list
         }
-        $characters = $characterTable->getByUserId($user->id);
-        $isActive = $statService->isActive($user->name);
-        $askingUser = $accessService->getUserName();
+        $characters = $this->characterTable->getByUserId($user->id);
+        $isActive = $this->statsService->isActive($user->name);
+        $askingUser = $this->accessService->getUserName();
 
         //cleanfix
 //bdump($user);
@@ -49,27 +69,23 @@ class ProfileController extends AbstractActionController
         $viewModel->setVariable('characters', $characters);
 
         if ($private)
-            $this->privateView($viewModel, $user, $userTable, $accessService);
+            $this->privateView($viewModel, $user, $this->userTable, $this->accessService);
         else
             $this->publicView($viewModel, $user);
 
         return $viewModel;
     }
     function jsonAction() {
-        /** @var CharacterTable $charTable */
-        $charTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
-        /** @var AccessService $accessService */
-        $accessService = $this->getServiceLocator()->get('AccessService');
-        $userID = $accessService->getUserID();
+        $userID = $this->accessService->getUserID();
         try {
             switch ($request->method) {
                 case 'getChars':
                     if (!isset($request->userID) ) {
-                        $result['data'] = $charTable->getByUserId($userID);
+                        $result['data'] = $this->characterTable->getByUserId($userID);
                     } else {
-                        $result['data'] = $charTable->getByUserId($request->userID);
+                        $result['data'] = $this->characterTable->getByUserId($request->userID);
                     }
                     break;
                 default:
@@ -85,7 +101,7 @@ class ProfileController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
-    public function privateView(ViewModel &$viewModel, User $user, $userTable, AccessService $accessService) {
+    public function privateView(ViewModel &$viewModel, User $user) {
         $viewModel->setTemplate('auth/profile/private.phtml');
         $request = $this->getRequest();
 
@@ -107,7 +123,7 @@ class ProfileController extends AbstractActionController
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
                     }
-                    $userTable->saveUser($user);
+                    $this->userTable->saveUser($user);
 
                 }
             }
@@ -123,15 +139,9 @@ class ProfileController extends AbstractActionController
     }
 
     private function createCharacterForm() {
-        /** @var FamiliesTable $familyTable */
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
-        $families = $familyTable->getAll();
-        /** @var UserTable $userTable */
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-        $users = $userTable->getUsers()->toArray();
-        /** @var JobTable $jobTable */
-        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
-        $jobs = $jobTable->getAll();
+        $families = $this->familyTable->getAll();
+        $users = $this->userTable->getUsers()->toArray();
+        $jobs = $this->jobTable->getAll();
         return new ProfileCharacterForm($users, $families, $jobs);
     }
     public function charprofileAction(){
@@ -139,11 +149,8 @@ class ProfileController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $charnameURL = $this->params()->fromRoute('charname');
         
-        /** @var  CastService $castService */
-        $castService = $this->getServiceLocator()->get("CastService");
-        
-        $char = $castService->getCharacterData($charnameURL, $username);
-        $charFamily = $castService->getAllCharsFromFamily($char['family_id']);
+        $char = $this->castService->getCharacterData($charnameURL, $username);
+        $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
         
         foreach ($charFamily as $key => $member){
             $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);

@@ -24,14 +24,14 @@ class RoleTable extends AbstractTableGateway
     public $table = 'role';
     private $sorted = false;
     
-    public function __construct(Adapter $adapter, $sm)
+    public function __construct(Adapter $adapter, $permissionTable, $rolePermissionTable, $resourceTable)
     {
         $this->adapter = $adapter;
         $this->resultSetPrototype = new ResultSet(ResultSet::TYPE_ARRAY);
         $this->initialize();
-        $this->permissionTable = $sm->get('Auth\Model\PermissionTable');
-        $this->rolePermissionTable = $sm->get('Auth\Model\RolePermissionTable');
-        $this->resourceTable = $sm->get('Auth\Model\ResourceTable');
+        $this->permissionTable = $permissionTable;
+        $this->rolePermissionTable = $rolePermissionTable;
+        $this->resourceTable = $resourceTable;
         $this->navRolesResourceID = $this->resourceTable->getByName($this->navRolesResource)['id'];
     }
     

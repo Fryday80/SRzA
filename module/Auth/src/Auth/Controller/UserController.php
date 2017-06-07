@@ -1,31 +1,37 @@
 <?php
 namespace Auth\Controller;
 
-
 use Application\Utility\DataTable;
+use Auth\Model\RoleTable;
+use Auth\Model\UserTable;
 use Auth\Service\AccessService;
 use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Permissions\Acl\Role\GenericRole;
 
 class UserController extends AbstractActionController
 {
-
+    /** @var  AccessService */
+    protected $accessService;
+    /** @var UserTable */
     protected $userTable;
+    /** @var  RoleTable */
+    protected $roleTable;
 
-    public function __construct( ) {
-        
+    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable)
+    {
+        $this->accessService = $accessService;
+        $this->userTable = $userTable;
+        $this->roleTable = $roleTable;
     }
     public function indexAction()
     {
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-        $data = $userTable->getUsers()->toArray();
+        $data = $this->userTable->getUsers()->toArray();
 
-        $userTable = new DataTable( array( 'data' => $data ));
-        $userTable->insertLinkButton('/user/add', "Neuer Benutzer");
-        $userTable->setColumns( array (
+        $userDataTable = new DataTable( array( 'data' => $data ));
+        $userDataTable->insertLinkButton('/user/add', "Neuer Benutzer");
+        $userDataTable->setColumns( array (
             array (
                 'name'  => 'name',
                 'label' => 'Name'
@@ -50,20 +56,15 @@ class UserController extends AbstractActionController
             ),
         ) );
         return array(
-            'users' => $userTable
+            'users' => $userDataTable
         );
     }
 
     public function addAction()
     {
-        /**
-         * @var $accessService AccessService
-         */
-        $accessService = $this->getServiceLocator()->get("AccessService");
-        $userRole = $accessService->getRole();
+        $userRole = $this->accessService->getRole();
 
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->getUserRoles();
+        $allRoles = $this->roleTable->getUserRoles();
 
 
         $form = new UserForm($allRoles, $userRole);
@@ -79,8 +80,7 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-                $userTable->saveUser($user);
+                $this->userTable->saveUser($user);
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -95,19 +95,16 @@ class UserController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('user');
         }
-
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
+        
         try {
-            $user = $userTable->getUser($id);
+            $user = $this->userTable->getUser($id);
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('user');
         }
 
-        $accessService = $this->getServiceLocator()->get("AccessService");
-        $userRole = $accessService->getRole();
+        $userRole = $this->accessService->getRole();
 
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->getUserRoles();
+        $allRoles = $this->roleTable->getUserRoles();
 
         $form = new UserForm($allRoles, $userRole);
         $form->setData($user->getArrayCopy());
@@ -122,7 +119,7 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $userTable->saveUser($user);
+                $this->userTable->saveUser($user);
                 
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
@@ -147,18 +144,16 @@ class UserController extends AbstractActionController
             
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-                $userTable->deleteUser($id);
+                $this->userTable->deleteUser($id);
             }
             
             // Redirect to list of Users
             return $this->redirect()->toRoute('user');
         }
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
         
         return array(
             'id' => $id,
-            'user' => $userTable->getUser($id)
+            'user' => $this->userTable->getUser($id)
         );
     }
 }

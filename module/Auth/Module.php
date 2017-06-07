@@ -27,7 +27,7 @@ use Zend\ModuleManager\Feature\ViewHelperProviderInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\View\Helper\Navigation\AbstractHelper;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface, ViewHelperProviderInterface
+class Module
 {
     private $whitelist = array(
         'Auth\Controller\Auth-login',
@@ -105,68 +105,4 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface, Vi
     {
         return include __DIR__ . '/config/module.config.php';
     }
-
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'userinfo' => function (ServiceLocatorInterface $serviceLocator) {
-                    $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
-                    $userInfo = new UserInfo($storage);
-                    return $userInfo;
-                },
-                'loginview' => function (ServiceLocatorInterface $serviceLocator) {
-                    $storage = $serviceLocator->getServiceLocator()->get('Auth\Model\AuthStorage');
-                    $loginview = new LoginView($storage);
-                    return $loginview;
-                }
-            )
-        );
-    }
-
-    public function getServiceConfig()
-    {
-        return array(
-            'factories' => array(
-                'Auth\Model\AuthStorage' => function ($sm) {
-                    $storage = new Model\AuthStorage('sra');
-                    return $storage;
-                },
-                'AuthService' => function ($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $dbTableAuthAdapter = new CredentialTreatmentAdapter($dbAdapter, 'users', 'email', 'password');
-                    $authService = new AuthenticationService();
-                    $authService->setAdapter($dbTableAuthAdapter);
-                    $authService->setStorage($sm->get('Auth\Model\AuthStorage'));
-                    return $authService;
-                },
-                'AccessService' => function ($serviceManager) {
-                    $storage = $serviceManager->get('Auth\Model\AuthStorage');
-                    $aclService = $serviceManager->get('Auth\AclService');
-                    $authService = $serviceManager->get('AuthService');
-                    return new AccessService($aclService, $authService, $storage);
-                },
-                'Auth\AclService' => 'Auth\Factory\AclServiceFactory',
-                'Auth\Model\UserTable' => function ($serviceManager) {
-                    $resultSetPrototype = new HydratingResultSet();
-                    $resultSetPrototype->setHydrator(new ObjectProperty());
-                    $resultSetPrototype->setObjectPrototype(new User());
-                    return new UserTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $resultSetPrototype, $serviceManager);
-                },
-                'Auth\Model\RoleTable' => function ($serviceManager) {
-                    return new RoleTable($serviceManager->get('Zend\Db\Adapter\Adapter'), $serviceManager);
-                },
-                'Auth\Model\PermissionTable' => function ($serviceManager) {
-                    return new PermissionTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Auth\Model\ResourceTable' => function ($serviceManager) {
-                    return new ResourceTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Auth\Model\RolePermissionTable' => function ($serviceManager) {
-                    return new RolePermissionTable($serviceManager->get('Zend\Db\Adapter\Adapter'));
-                }
-            )
-        );
-    }
-
 }

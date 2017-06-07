@@ -1,15 +1,51 @@
 <?php
 namespace Auth;
 
+use Application\Factory\Basic\DefaultTableGatewayFactory;
+
 return array(
     'controllers' => array(
+        'factories' => array(
+            'Auth\Controller\User'       => 'Auth\Factory\Controller\UserControllerFactory',
+            'Auth\Controller\Auth'       => 'Auth\Factory\Controller\AuthControllerFactory',
+            'Auth\Controller\Role'       => 'Auth\Factory\Controller\RoleControllerFactory',
+            'Auth\Controller\Permission' => 'Auth\Factory\Controller\PermissionControllerFactory',
+//            'Auth\Controller\Resource'   => 'Auth\Factory\Controller\ResourceControllerFactory',
+            'Auth\Controller\Profile'    => 'Auth\Factory\Controller\ProfileControllerFactory',
+        ),
         'invokables' => array(
-            'Auth\Controller\User'          => 'Auth\Controller\UserController',
-            'Auth\Controller\Auth'          => 'Auth\Controller\AuthController',
-            'Auth\Controller\Role'          => 'Auth\Controller\RoleController',
-            'Auth\Controller\Permission'    => 'Auth\Controller\PermissionController',
-            'Auth\Controller\Resource'      => 'Auth\Controller\ResourceController',
-            'Auth\Controller\Profile'       => 'Auth\Controller\ProfileController'
+//            'Auth\Controller\Role'       => 'Auth\Controller\RoleController',
+//            'Auth\Controller\Permission' => 'Auth\Controller\PermissionController',
+            'Auth\Controller\Resource'   => 'Auth\Controller\ResourceController',
+//            'Auth\Controller\Profile'    => 'Auth\Controller\ProfileController',
+        )
+    ),
+    'service_manager' => array(
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+        ),
+        'invokables' => array(),
+        'factories' => array(
+            'AccessService'          => 'Auth\Factory\Service\AccessServiceFactory',
+            'Auth\AclService'        => 'Auth\Factory\Service\AclServiceFactory',
+            'AuthService'            => 'Auth\Factory\Service\AuthServiceFactory',
+            'Auth\Model\AuthStorage' => 'Auth\Factory\AuthStorageFactory',
+            'Auth\Model\RoleTable'   => 'Auth\Factory\Table\RoleTableFactory',
+            'Auth\Model\UserTable'   => 'Auth\Factory\Table\UserTableFactory',
+        ),
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+            'Auth\Model\PermissionTable'     => DefaultTableGatewayFactory::class,
+            'Auth\Model\ResourceTable'       => DefaultTableGatewayFactory::class,
+            'Auth\Model\RolePermissionTable' => DefaultTableGatewayFactory::class,
+        )
+    ),
+    'view_helpers' => array(
+        'invokables' => array(),
+        'factories' => array(
+            'loginview' => 'Auth\Factory\Helper\LoginViewFactory',
+            'userinfo'  => 'Auth\Factory\Helper\UserInfoFactory',
         )
     ),
     'view_manager' => array(

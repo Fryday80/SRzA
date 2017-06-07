@@ -1,32 +1,46 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Service\CacheService;
+use Auth\Model\PermissionTable;
+use Auth\Model\RolePermissionTable;
+use Auth\Model\RoleTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\PermissionAddForm;
 use Auth\Form\PermissionDeleteForm;
 
 class PermissionController extends AbstractActionController
 {
-
+    /** @var RoleTable  */
+    protected $roleTable;
+    /** @var RolePermissionTable  */
+    protected $rolePermTable;
+    /** @var PermissionTable  */
+    protected $permTable;
     /** @var CacheService */
-    private $cacheService = false;
+    private $cacheService;
+    
+    function __construct(RoleTable $roleTable, RolePermissionTable $rolePermissionTable, PermissionTable $permissionTable, CacheService $cacheService)
+    {
+        $this->roleTable = $roleTable;
+        $this->rolePermTable = $rolePermissionTable;
+        $this->permTable = $permissionTable;
+        $this->cacheService = $cacheService;
+    }
 
     public function indexAction()
     {
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
         return array(
-            'roles' => $roleTable->getUserRoles()
+            'roles' => $this->roleTable->getUserRoles()
         );
     }
 
     public function editAction()
     {
         $roleID = (int) $this->params('id');
-        $rolePermTable = $this->getServiceLocator()->get("Auth\Model\RolePermissionTable");
-        $permTable = $this->getServiceLocator()->get("Auth\Model\PermissionTable");
         
-        $perms = $rolePermTable->getPermissionsByRoleID($roleID);
-        $allPerms = $permTable->getResourcePermissions();
+        $perms = $this->rolePermTable->getPermissionsByRoleID($roleID);
+        $allPerms = $this->permTable->getResourcePermissions();
 
         $addForm = new PermissionAddForm($allPerms);
         $addForm->get('role_id')->setValue($roleID);
@@ -44,13 +58,12 @@ class PermissionController extends AbstractActionController
 
     public function addAction()
     {
-        $rolePermTable = $this->getServiceLocator()->get("Auth\Model\RolePermissionTable");
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             $roleID = (int) $post['role_id'];
             $permIDs = $post['permissions'];
-            $rolePerms = $rolePermTable->getPermissionsByRoleID($roleID);
+            $rolePerms = $this->rolePermTable->getPermissionsByRoleID($roleID);
             
 
             
@@ -64,10 +77,10 @@ class PermissionController extends AbstractActionController
                 }
                 if ($exists)
                     continue;
-                $rolePermTable->addPermission($roleID, $id);
+                $this->rolePermTable->addPermission($roleID, $id);
             }
         }
-        $this->getCacheService()->clearCache('acl');
+        $this->clearCache();
         
         return $this->redirect()->toRoute('permission/edit', array(
             'id' => $roleID
@@ -80,26 +93,17 @@ class PermissionController extends AbstractActionController
         if ($request->isPost()) {
             $post = $request->getPost();
             $rolePermIDs = $post['role_permission_id'];
-            $rolePermTable = $this->getServiceLocator()->get("Auth\Model\RolePermissionTable");
             foreach ($rolePermIDs as $id) {
-                $rolePermTable->delete("id = $id");
+                $this->rolePermTable->delete("id = $id");
             }
-            $this->getCacheService()->clearCache('acl');
+            $this->clearCache();
         }
         
         return $this->redirect()->toRoute('permission/edit', array(
             'id' => $post['role_id']
         ));
     }
-
-    /**
-     * get the CacheService
-     * @return CacheService
-     */
-    private function getCacheService() {
-        if (!$this->cacheService) {
-            $this->cacheService = $this->getServiceLocator()->get('CacheService');
-        }
-        return $this->cacheService;
+    private function clearCache($type = 'acl'){
+        $this->cacheService->clearCache($type);
     }
 }

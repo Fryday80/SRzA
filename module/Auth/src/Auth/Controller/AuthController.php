@@ -2,7 +2,9 @@
 namespace Auth\Controller;
 
 use Application\Model\DynamicHashTable;
+use Application\Service\MessageService;
 use Auth\Form\EmailForm;
+use Auth\Model\AuthStorage;
 use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
 use Exception;
@@ -17,20 +19,29 @@ class AuthController extends AbstractActionController
 {
     protected $form;
 
+    /** @var AuthStorage */
     protected $storage;
+    /** @var AuthenticationService  */
+    protected $authService;
+    /** @var UserTable  */
+    protected $userTable;
+    /** @var DynamicHashTable  */
+    protected $dynamicHashTable;
+    /** @var  MessageService */
+    protected $msgService;
 
-    private function getSessionStorage()
+    function __construct(AuthStorage $storage, AuthenticationService $authService, UserTable $userTable, DynamicHashTable $dynamicHashTable, MessageService $msgService )
     {
-        if (! $this->storage) {
-            $this->storage = $this->getServiceLocator()->get('Auth\Model\AuthStorage');
-        }
-        return $this->storage;
+        $this->storage = $storage;
+        $this->authService = $authService;
+        $this->userTable = $userTable;
+        $this->dynamicHashTable = $dynamicHashTable;
+        $this->msgService = $msgService;
     }
 
     private function getUserDetails($mail)
     {
-        $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-        $users = $userTable->getUsers(array(
+        $users = $this->userTable->getUsers(array(
                         'email' => $mail
                     ), array(
                         'id' => 'id',
@@ -56,9 +67,7 @@ class AuthController extends AbstractActionController
                 $data = $form->getData();
                 $valid = true;
                 //check if user exists
-                /** @var UserTable $userTable */
-                $userTable = $this->getServiceLocator()->get("Auth\Model\UserTable");
-                $userDetails = $userTable->getUsersForAuth($data['email']);
+                $userDetails = $this->userTable->getUsersForAuth($data['email']);
                 // email not found
                 if (!$userDetails){
                     $valid = false;
@@ -73,14 +82,11 @@ class AuthController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $encyptPass = $userPassword->create($data['password']);
 
-                    /** @var AuthenticationService $authService */
-                    $authService = $this->getServiceLocator()->get('AuthService');
-
-                    $authService->getAdapter()
+                    $this->authService->getAdapter()
                         ->setIdentity($data['email'])
                         ->setCredential($encyptPass);
 
-                    $result = $authService->authenticate();
+                    $result = $this->authService->authenticate();
                     
                     foreach ($result->getMessages() as $message) {
                         // save message temporary into flashmessenger
@@ -89,17 +95,16 @@ class AuthController extends AbstractActionController
                 }
         
                 if ($valid && $result->isValid()) {
-                    $storage = $this->getSessionStorage();
-                    $storage->setUserID($userDetails->id);
-                    $storage->setUserName($userDetails->name);
-                    $storage->setRoleName($userDetails->role_name);
-                    $storage->setIP($ip);
+                    $this->storage->setUserID($userDetails->id);
+                    $this->storage->setUserName($userDetails->name);
+                    $this->storage->setRoleName($userDetails->role_name);
+                    $this->storage->setIP($ip);
                     // check if it has rememberMe :
                     if ($request->getPost('rememberme') == 1) {
-                        $storage->setRememberMe(1);
+                        $this->storage->setRememberMe(1);
                     }
                     // set storage again
-                    $authService->setStorage($storage);
+                    $this->authService->setStorage($this->storage);
 
                     if (count($ref) > 0) {
                         return $this->redirect()->toUrl($ref[0]);
@@ -124,8 +129,8 @@ class AuthController extends AbstractActionController
     }
     public function logoutAction()
     {
-        $this->getSessionStorage()->forgetMe();
-        $this->getServiceLocator()->get('AuthService')->clearIdentity();
+        $this->storage->forgetMe();
+        $this->authService->clearIdentity();
         
         $this->flashmessenger()->addMessage("You've been logged out");
         return $this->redirect()->toUrl($this->getReferer());
@@ -133,7 +138,7 @@ class AuthController extends AbstractActionController
 
     public function successAction()
     {
-        if (! $this->getServiceLocator()->get('AuthService')->hasIdentity()){
+        if (! $this->authService->hasIdentity()){
             return $this->redirect()->toRoute('login');
         }
         return array(
@@ -157,11 +162,9 @@ class AuthController extends AbstractActionController
                 $user->status = "N";
                 $userPassword = new UserPassword();
                 $user->password = $userPassword->create($user->password);
-                $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
                 $user->status = false;
-                $userTable->saveUser($user);
-                $msgService = $this->getServiceLocator()->get('MessageService');
-                $msgService->SendMailFromTemplate(TemplateTypes::SUCCESSFUL_REGISTERED, $user);
+                $this->userTable->saveUser($user);
+                $this->msgService->SendMailFromTemplate(TemplateTypes::SUCCESSFUL_REGISTERED, $user);
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -179,23 +182,19 @@ class AuthController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $email = $form->getData()['email'];
-                $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
                 /** @var User $user */
-                $user = $userTable->getUserByMail($email);
+                $user = $this->userTable->getUserByMail($email);
                 if (!$user) {
                     $form->get('email')->setMessages(array('Email nicht gefunden.'));
                 } else {
 //                    send temp password
-                    /** @var DynamicHashTable $dynamicHashTable */
-                    $dynamicHashTable = $this->getServiceLocator()->get('Application\Model\DynamicHashTable');
-                    $hash = $dynamicHashTable->create(600);//@todo get value from config
-                    $msgService = $this->getServiceLocator()->get('MessageService');
+                    $hash = $this->dynamicHashTable->create(600);//@todo get value from config
                     $templateData = [
                         'userName' => $user->name,
                         'userEmail' => $user->email,
                         'hash' => $hash,
                     ];
-                    if ($msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, $templateData)) {
+                    if ($this->msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, $templateData)) {
                         //@todo redirect to email provider
                         $isSend = true;
 //                        return $this->redirect()->toRoute('home');
@@ -214,13 +213,11 @@ class AuthController extends AbstractActionController
     }
 
     public function resetAction() {
-        /** @var DynamicHashTable $dynamicHashTable */
-        $dynamicHashTable = $this->getServiceLocator()->get('Application\Model\DynamicHashTable');
 
         $request = $this->getRequest();
         $hash = $this->params('hash');
 
-        $savedHash = $dynamicHashTable->getByHash($hash);
+        $savedHash = $this->dynamicHashTable->getByHash($hash);
         if (!$savedHash) {
             //no such a hash
             return array(

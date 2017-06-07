@@ -1,27 +1,19 @@
 <?php
 namespace Auth\Model;
 
-use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\ResultSet\ResultSetInterface;
-use Zend\ServiceManager\ServiceManager;
 
 class UserTable extends AbstractTableGateway
 {
 
     public $table = 'users';
-    /**
-     * @var ServiceManager ServiceManager
-     */
-    public $serviceManager;
     
-    public function __construct(Adapter $adapter, ResultSetInterface $resultSetPrototype, ServiceManager $serviceManager)
+    public function __construct(Adapter $adapter, ResultSetInterface $resultSetPrototype)
     {
         $this->adapter = $adapter;
         $this->resultSetPrototype = $resultSetPrototype;
-        $this->serviceManager = $serviceManager;
         $this->initialize();
     }
     public function getUsersForAuth($email) {
