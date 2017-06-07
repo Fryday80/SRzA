@@ -16,12 +16,12 @@ class ListController extends AbstractActionController  {
     public function indexAction()
     {
         //show a file browser
-        $files = $this->mediaService->getImportPreview();
-        //dumpd($files);
-        return array(
-            'files' => $files,
-            //'jsonFiles' => json_encode($files)
-        );
+//        $files = $this->mediaService->getImportPreview();
+//        //dumpd($files);
+//        return array(
+//            'files' => $files,
+//            //'jsonFiles' => json_encode($files)
+//        );
 
     }
 }

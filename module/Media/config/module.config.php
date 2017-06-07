@@ -1,11 +1,9 @@
 <?php
+use Application\Factory\Basic\DefaultTableGatewayFactory;
 use Media\Factory\GeneralMediaFactory;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Media\Controller\Upload'       => 'Media\Controller\UploadController',
-        ),
         'abstract_factories' => array(
             'Media\Controller\FileBrowser' => GeneralMediaFactory::class,
             'Media\Controller\List'         => GeneralMediaFactory::class,
@@ -15,6 +13,9 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'MediaService' => 'Media\Factory\MediaServiceFactory'
+        ),
+        'abstract_factories' => array(
+            'Media\Model\FileTable' => DefaultTableGatewayFactory::class
         )
     ),
     'view_manager' => array(
@@ -91,15 +92,6 @@ return array(
                             ),
                             'spec' => '/path%path%'
                         ),
-                    ),
-                    'upload' => array(
-                        'type' => 'segment',
-                        'options' => array(
-                            'route' => '/upload/:title',
-                            'constraints' => array(
-                                'title' => '[a-zA-Z_-]+'
-                            )
-                        )
                     ),
 
                 ),//child_routes

@@ -31,7 +31,6 @@ class FileBrowserController extends AbstractActionController  {
         return array();
     }
     public function actionAction() {
-        $this->mediaService = $this->getServiceLocator()->get('MediaService');
         $this->initFileBrowser();
 //        $fm = getFileBrowserFor($dataDir);
         $this->handleRequest();

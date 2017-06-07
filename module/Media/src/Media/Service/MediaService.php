@@ -9,6 +9,8 @@ use Zend\Http\Response;
 use Zend\ServiceManager\ServiceManager;
 use ZipArchive;
 
+
+
 const DATA_PATH = '/Data';
 const TRASH_BIN_PATH = '/_trash';
 const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
@@ -47,67 +49,6 @@ const ERROR_STRINGS = [
     'Folder is not in data path',
 
 ];
-abstract class ERROR_TYPES {
-    const NO_READ_PERMISSION = 0;
-    const NO_WRITE_PERMISSION = 1;
-    const FOLDER_ALREADY_EXISTS = 2;
-    const FILE_ALREADY_EXISTS = 3;
-    const FILE_NOT_FOUND = 4;
-    const FOLDER_NOT_FOUND = 5;
-    const PARENT_NOT_EXISTS = 6;
-    const FORBIDDEN_NAME = 7;
-    const MEDIA_ITEM_NOT_FOUND = 8;
-    const ERROR_RENAMING_FOLDER = 9;
-    const ERROR_RENAMING_FILE = 10;
-    const FORBIDDEN_CHAR_SLASH = 11;
-    const TARGET_FOLDER_NOT_FOUND = 12;
-    const TARGET_NO_WRITE_PERMISSION = 13;
-    const TARGET_ALREADY_EXISTS = 14;
-    const ERROR_MOVING_FOLDER = 15;
-    const ERROR_MOVING_FILE = 16;
-    const ERROR_DELETE_FOLDER = 17;
-    const ERROR_DELETE_FILE = 18;
-    const ERROR_COPYING_FOLDER = 19;
-    const ERROR_COPYING_FILE = 20;
-    const ERROR_READING_FILE = 21;
-    const ERROR_WRITING_FILE = 22;
-    const CAN_NOT_READ_FOLDER = 23;
-    const CAN_NOT_WRITE_FOLDER = 24;
-    const NO_ZIP_EXTENSION = 25;
-    const ERROR_IN_ZIP = 26;
-    const NO_READ_PERMISSION_IN_CHILDS = 27;
-    const NO_WRITE_PERMISSION_IN_CHILDS = 28;
-    const ERROR_FOLDER_NOT_IN_DATA_PATH = 29;
-
-}
-
-class MediaItem {
-    public $name;
-    public $type;
-    public $fullPath;
-    public $parentPath;
-    public $path;
-    public $livePath;
-    public $size;
-    public $extension = '';
-    public $readable  = 0;
-    public $writable  = 0;
-    public $created   = '';
-    public $modified  = '';
-    public $timestamp = '';
-
-    function __construct() {}
-}
-class MediaException {
-    public $code;
-    public $msg;
-    public $path;
-    function __construct($code, $path) {
-        $this->msg = ERROR_STRINGS[$code];
-        $this->code = $code;
-        $this->path = $path;
-    }
-}
 class MediaService {
     protected $dataPath;
     protected $accessService;
@@ -546,7 +487,8 @@ class MediaService {
     public function getPermission($path) {
         $fullPath = $this->realPath($path);
         if (!$fullPath) return ['readable' => 0, 'writable' => 0];
-        $sysPerms = $this->getSystemPermission($fullPath);
+//@todo deprecated systemPermission
+//        $sysPerms = $this->getSystemPermission($fullPath);
         $isDir = is_dir($fullPath);
         $file = basename($fullPath);
         $role = $this->accessService->getRole();
@@ -602,8 +544,11 @@ class MediaService {
             }
         }
         return [
-            'readable' => ($sysPerms['r'] == 0)? 0: $readable,
-            'writable' => ($sysPerms['w'] == 0)? 0: $writable
+//@todo deprecated systemPermission
+//            'readable' => ($sysPerms['r'] == 0)? 0: $readable,
+//            'writable' => ($sysPerms['w'] == 0)? 0: $writable
+            'readable' => 1,//$readable,
+            'writable' => 1//$writable
         ];
     }
 
@@ -672,25 +617,26 @@ class MediaService {
         return $this->loadItem($destination);
     }
 
-    /**
-     * Check if system permission is granted
-     * @param string $filepath
-     * @return array
-     */
-    private function getSystemPermission($filepath)
-    {
-        //extrem slow!! refactor or remove
-        return ['w'=>1,'r'=>1];
-//        $readable = 0;
-//        $writable = 0;
-//        if(is_readable($filepath)) {
-//            $readable = 1;
-//        }
-//        if(is_writable($filepath)) {
-//            $writable = 1;
-//        }
-//        return ['r' => $readable, 'w' => $writable];
-    }
+//    /**
+//     * @todo deprecated systemPermission
+//     * Check if system permission is granted
+//     * @param string $filepath
+//     * @return array
+//     */
+//    private function getSystemPermission($filepath)
+//    {
+//        //extrem slow!! refactor or remove
+//        return ['w'=>1,'r'=>1];
+////        $readable = 0;
+////        $writable = 0;
+////        if(is_readable($filepath)) {
+////            $readable = 1;
+////        }
+////        if(is_writable($filepath)) {
+////            $writable = 1;
+////        }
+////        return ['r' => $readable, 'w' => $writable];
+//    }
 
     /**
      * Check recursive folder permissions

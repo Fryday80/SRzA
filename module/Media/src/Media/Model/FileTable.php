@@ -1,11 +1,9 @@
 <?php
 namespace Media\Model;
 
-use Zend\Db\TableGateway\TableGateway;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Sql\Sql;
 
 class FileTable extends AbstractTableGateway
 {
