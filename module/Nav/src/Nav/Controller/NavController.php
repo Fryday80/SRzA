@@ -17,7 +17,6 @@ class NavController extends AbstractActionController
     private $navTable;
     /** @var $roleTable RoleTable */
     private $roleTable;
-    private $cache;
 
     public function __construct(CacheService $cacheService, NavTable $navTable, RoleTable $roleTable)
     {
@@ -56,7 +55,7 @@ class NavController extends AbstractActionController
                 $data = $form->getData();
                 $this->navTable->append($data);
                 //clear Cache
-                $this->cacheService->clearCache('nav/main');
+                $this->clearCache();
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -97,7 +96,7 @@ class NavController extends AbstractActionController
                     'min_role_id' => $data['min_role_id']
                 ), $data['id']);
                 //clear Cache
-                $this->cacheService->clearCache('nav/main');
+                $this->clearCache();
                 // Redirect
                 return $this->redirect()->toRoute('nav/sort');
             }
@@ -158,7 +157,7 @@ class NavController extends AbstractActionController
             }
             // clear cache
 
-            $this->cacheService->clearCache('nav/main');
+            $this->clearCache();
             
             print('"}');
             die();
@@ -188,7 +187,7 @@ class NavController extends AbstractActionController
                 $this->navTable->deleteByID($id);
             }
             //clear Cache
-            $this->cacheService->clearCache('nav/main');
+            $this->clearCache();
             // Redirect
             return $this->redirect()->toRoute('nav/sort');
         }
@@ -196,5 +195,9 @@ class NavController extends AbstractActionController
             'id' => $id,
             'item' => $this->navTable->getItem($id)
         );
+    }
+    
+    private function clearCache($type = 'nav/main'){
+        $this->cacheService->clearCache('nav/main');
     }
 }
