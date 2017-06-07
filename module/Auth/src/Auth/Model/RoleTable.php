@@ -1,13 +1,11 @@
 <?php
 namespace Auth\Model;
 
+use Exception;
 use Zend\Db\Sql\Sql;
-use Zend\Db\Sql\Select;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class RoleTable extends AbstractTableGateway
 {
@@ -76,33 +74,46 @@ class RoleTable extends AbstractTableGateway
         return null;
     }
     public function getRoleIDByName($name) {
-        $res = $this->getWhere("role_name = $name")->toArray();
+        $res = $this->getWhere("role.role_name = '$name'")->toArray();
         if (count($res) > 0) {
             return $res[0]['rid'];
         }
         return null;
     }
-    public function edit($data, $id) {
-        $this->permissionTable->remove($this->navRolesResourceID, $data['roleName'] );
-        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['roleName'] );
-        $this->rolePermissionTable->delete($id, $permID);
 
-        $this->permissionTable->add($this->navRolesResourceID, $data['roleName'] );
-        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['roleName'] );
+    public function edit($data, $id) {
+        $oldRole = $this->getRoleByID($id);
+        if (!$oldRole) {
+            throw new Exception("can't edit role because Role not found");
+        }
+        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $oldRole['role_name'] );
+        $this->permissionTable->remove($this->navRolesResourceID, $oldRole['role_name'] );
         $this->rolePermissionTable->deletePermission($id, $permID);
+
+        $this->permissionTable->add($this->navRolesResourceID, $data['role_name'] );
+        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['role_name'] );
+        $this->rolePermissionTable->addPermission($id, $permID);
 
         $this->update($data, array('rid' => $id));
     }
+
     public function add($name, $parent, $status = null) {
         $status = ($status === null)? 'Inactive' : 'Active';
-        //@todo add permission to Role resource
-        $roleID = $this->getRoleIDByName($name);
+
+        $this->insert(array('role_name' => $name, 'role_parent' => $parent, 'status' => $status));
+        $roleID = $this->getLastInsertValue();
         $this->permissionTable->add($this->navRolesResourceID, $name );
         $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $name );
+        if (!$roleID) {
+            throw new Exception("Role '$roleID' doesn't exists");
+        }
+        if (!$roleID) {
+            throw new Exception("Permission '$name' doesn't exists");
+        }
         $this->rolePermissionTable->addPermission($roleID, $permID);
-        
-        $this->insert(array('role_name' => $name, 'role_parent' => $parent, 'status' => $status));
+
     }
+
     public function deleteByID($id) {
         $roleName = $this->getRoleByID($id)['role_name'];
         $this->permissionTable->remove($this->navRolesResourceID, $roleName );
@@ -113,10 +124,10 @@ class RoleTable extends AbstractTableGateway
             'rid' => $id
         ]);
     }
+
     public function fetchAll(){
         return $this->getWhere()->toArray();
     }
-
 
     public function fetchAllSorted(){
         if (!$this->sorted) {
