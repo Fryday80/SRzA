@@ -11,18 +11,12 @@ class PWForgetForm extends Form
         parent::__construct('PWForget');
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new PWForgetFilter());
-        
-        $this->add( array(
-            'name' => 'id',
-            'type' => 'Hidden',
-            )
-        );
 
         $this->add( array(
             'name' => 'password',
             'type' => 'Password',
             'options' => array(
-                'label' => 'Password',
+                'label' => 'Neues Password',
                 )
             )
         );

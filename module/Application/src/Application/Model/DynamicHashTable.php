@@ -39,11 +39,12 @@ class DynamicHashTable extends AbstractTableGateway
         }
         return $result[0];
     }
-    public function create($lifetime = 3600) {
+    public function create($email, $lifetime = 3600) {
         try {
             $hash = $this->randomToken();
             $this->insert(array(
                 'hash' => $hash,
+                'email' => $email,
                 'time' => time() + $lifetime
             ));
             return $hash;

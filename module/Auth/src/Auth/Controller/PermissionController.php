@@ -61,30 +61,30 @@ class PermissionController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
-            $roleID = (int) $post['role_id'];
+            $roleID = (int)$post['role_id'];
             $permIDs = $post['permissions'];
-            $rolePerms = $this->rolePermTable->getPermissionsByRoleID($roleID);
-            
+            if (isset($permIDs)) {
+                $rolePerms = $this->rolePermTable->getPermissionsByRoleID($roleID);
 
-            
-            // @todo salt check if the role have the perm allready
-            foreach ($permIDs as $id) {
-                $exists = false;
-                foreach ($rolePerms as $perm) {
-                    if ($id == $perm['permission_id']) {
-                        $exists = true;
+
+                // @todo salt check if the role have the perm allready
+                foreach ($permIDs as $id) {
+                    $exists = false;
+                    foreach ($rolePerms as $perm) {
+                        if ($id == $perm['permission_id']) {
+                            $exists = true;
+                        }
                     }
+                    if ($exists)
+                        continue;
+                    $this->rolePermTable->addPermission($roleID, $id);
                 }
-                if ($exists)
-                    continue;
-                $this->rolePermTable->addPermission($roleID, $id);
+                $this->clearCache();
             }
+            return $this->redirect()->toRoute('permission/edit', array(
+                'id' => $roleID
+            ));
         }
-        $this->clearCache();
-        
-        return $this->redirect()->toRoute('permission/edit', array(
-            'id' => $roleID
-        ));
     }
 
     public function deleteAction()

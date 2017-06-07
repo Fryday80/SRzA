@@ -22,9 +22,9 @@ class AclServiceFactory implements FactoryInterface
             $acl = new AclService();
 
             //get Roles
-            $roles = $this->_getAllRoles();
-            $resources = $this->_getAllResources();
-            $rolePermission = $this->_getRolePermissions();
+            $roles = $this->_getAllRoles($sm);
+            $resources = $this->_getAllResources($sm);
+            $rolePermission = $this->_getRolePermissions($sm);
 
             $acl->initAcl($roles, $resources, $rolePermission);
             $this->cache->setCache('acl', $acl);
@@ -32,17 +32,17 @@ class AclServiceFactory implements FactoryInterface
         return $acl;
     }
 
-    protected function _getAllRoles() {
+    protected function _getAllRoles($sm) {
         $roleTable = $sm->get('Auth\Model\RoleTable');
         return $roleTable->getUserRoles();
     }
 
-    protected function _getAllResources() {
+    protected function _getAllResources($sm) {
         $resourceTable = $sm->get('Auth\Model\ResourceTable');
         return $resourceTable->getAllResources();
     }
 
-    protected function _getRolePermissions() {
+    protected function _getRolePermissions($sm) {
         $rolePermissionTable = $sm->get('Auth\Model\RolePermissionTable');
         return $rolePermissionTable->getRolePermissions();
     }

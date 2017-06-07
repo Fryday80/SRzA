@@ -93,8 +93,8 @@ class RoleTable extends AbstractTableGateway
 
         $this->update($data, array('rid' => $id));
     }
-    public function add($name, $parent, $status) {
-        $status = 'Active';//($status)? 'Active': 'Inactive';
+    public function add($name, $parent, $status = null) {
+        $status = ($status === null)? 'Inactive' : 'Active';
         //@todo add permission to Role resource
         $roleID = $this->getRoleIDByName($name);
         $this->permissionTable->add($this->navRolesResourceID, $name );

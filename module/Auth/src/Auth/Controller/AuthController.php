@@ -195,7 +195,7 @@ class AuthController extends AbstractActionController
                     $form->get('email')->setMessages(array('Email nicht gefunden.'));
                 } else {
 //                    send temp password
-                    $hash = $this->dynamicHashTable->create(600);//@todo get value from config
+                    $hash = $this->dynamicHashTable->create($email, 600);//@todo get value from config
                     $templateData = [
                         'userName' => $user->name,
                         'userEmail' => $user->email,
@@ -220,26 +220,37 @@ class AuthController extends AbstractActionController
     }
 
     public function resetAction() {
-
+        //render form for new pass
+        $form = new PWForgetForm();
         $request = $this->getRequest();
         $hash = $this->params('hash');
-
         $savedHash = $this->dynamicHashTable->getByHash($hash);
+        //hash accepted?
         if (!$savedHash) {
             //no such a hash
             return array(
-                'message' => 'hash nicht gefunden. eventuel ist der hash schon zu alt.',
-                'hashError' => true
+                'message' => 'Hash nicht gefunden. Eventuell ist der hash schon zu alt.',
+                'error' => true
             );
         }
 
-        //hash accepted
-        //render form for new pass
-        $form = new PWForgetForm();
+        if ($request->isPost())
+        {
+            $form->setData($request->getPost());
+            if($form->isValid()){
+                $this->changePW($savedHash['email'], $request->getPost('password'));
+            } else {
+                return array(
+                    'pwForm' => $form,
+                    'message' => 'Die beiden eingegebenen Passwörter müssen gleich sein!',
+                    'error' => true
+                );
+            }
+        }
 
         return array(
             'pwForm' => $form,
-            'hashError' => false
+            'error' => false,
         );
 
     }
@@ -250,5 +261,13 @@ class AuthController extends AbstractActionController
         $referringPage = str_replace($base_url, "", $_SERVER['HTTP_REFERER']);
         $referringPage = ($referringPage == "")? 'home' : $referringPage;
         return $referringPage;
+    }
+    protected function changePW($email, $newPW){
+        $userPassword = new UserPassword();
+        $encyptPass = $userPassword->create($newPW);
+        /** @var User $user */
+        $user = $this->userTable->getUserByMail($email);
+        $user->password = $encyptPass;
+        $this->userTable->saveUser($user);
     }
 }

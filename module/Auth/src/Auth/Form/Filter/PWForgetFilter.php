@@ -9,15 +9,6 @@ class PWForgetFilter extends InputFilter
     public function __construct()
     {
         $this->add(array(
-            'name' => 'id',
-            'required' => true,
-            'filters' => array(
-                array(
-                    'name' => 'Int'
-                )
-            )
-        ));
-        $this->add(array(
             'name' => 'password',
             'required' => false,
             'filters' => array(

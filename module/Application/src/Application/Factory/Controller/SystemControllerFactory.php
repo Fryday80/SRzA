@@ -8,8 +8,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class SystemControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        $statService = $sm->get('StatisticService');
-        $mailTemplateTable = $sm->get('Application\Model\MailTemplatesTable');
+        $statService = $sm->getServiceLocator()->get('StatisticService');
+        $mailTemplateTable = $sm->getServiceLocator()->get('Application\Model\MailTemplatesTable');
         return new SystemController($statService, $mailTemplateTable);
     }
 }

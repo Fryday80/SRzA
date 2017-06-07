@@ -35,8 +35,9 @@ class RoleController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
+                bdump($data);
                 //if role_parent == 0 then set to null
-                $this->roleTable->add($data['role_name'], $data['role_parent'], $data['status']);
+                $this->roleTable->add($data['role_name'], $data['role_parent']);
                 $this->clearCache();
                 return $this->redirect()->toRoute('role');
             } else {
