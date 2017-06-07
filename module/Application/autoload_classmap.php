@@ -10,6 +10,7 @@ return array(
     'Application\Factory\InlineFromFileFactory'      => __DIR__ . '/src/Application/Factory/InlineFrormFileFactory.php',
     'Application\Factory\MyUrlFactory'               => __DIR__ . '/src/Application/Factory/MyUrlFactory.php',
     'Application\Factory\StatisticServiceFactory'    => __DIR__ . '/src/Application/Factory/StatisticServiceFactory.php',
+    'Application\Factory\SystemControllerFactory'    => __DIR__ . '/src/Application/Factory/SystemControllerFactory.php',
     'Application\Form\MailTemplatesForm'             => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
     'Application\Form\TestForm'                      => __DIR__ . '/src/Application/Form/TestForm.php',
     'Application\Form\TestFormFilter'                => __DIR__ . '/src/Application/Form/TestFormFilter.php',

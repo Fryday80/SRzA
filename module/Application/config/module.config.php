@@ -13,7 +13,7 @@ return array(
 
     'controllers' => array(
         'factories' => array(
-            'Application\Controller\System' => 'Application\Controller\SystemControllerFactory',
+            'Application\Controller\System' => 'Application\Factory\SystemControllerFactory',
         )
     ),
     'router' => array(
