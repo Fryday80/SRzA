@@ -171,7 +171,7 @@ class AuthController extends AbstractActionController
                 $user->password = $userPassword->create($user->password);
                 $user->status = false;
                 $this->userTable->saveUser($user);
-                $this->msgService->SendMailFromTemplate(TemplateTypes::SUCCESSFUL_REGISTERED, $user);
+                $this->msgService->SendMailFromTemplate($user->email, TemplateTypes::SUCCESSFUL_REGISTERED, $user->getArrayCopy());
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -239,6 +239,8 @@ class AuthController extends AbstractActionController
             $form->setData($request->getPost());
             if($form->isValid()){
                 $this->changePW($savedHash['email'], $request->getPost('password'));
+                //clean hash
+                $this->dynamicHashTable->deleteByHash($hash);
             } else {
                 return array(
                     'pwForm' => $form,
