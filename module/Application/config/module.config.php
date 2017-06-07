@@ -7,13 +7,13 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-use Application\Factory\DefaultTableGatewayFactory;
+use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
 
     'controllers' => array(
         'factories' => array(
-            'Application\Controller\System' => 'Application\Factory\SystemControllerFactory',
+            'Application\Controller\System' => 'Application\Factory\Controller\SystemControllerFactory',
         )
     ),
     'router' => array(
@@ -113,7 +113,7 @@ return array(
             'Application\Model\SystemLog' => 'Application\Model\SystemLog',
         ),
         'factories' => array(
-            'StatisticService' => 'Application\Factory\StatisticServiceFactory'
+            'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory'
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
@@ -131,8 +131,8 @@ return array(
             'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
         ),
         'factories' => array(
-            'asurl' => 'Application\Factory\MyUrlFactory',
-            'dataTable' => 'Application\Factory\DataTableHelperFactory',
+            'asurl' => 'Application\Factory\Helper\MyUrlFactory',
+            'dataTable' => 'Application\Factory\Helper\DataTableHelperFactory',
         )
     ),
     'translator' => array(
