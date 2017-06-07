@@ -1,15 +1,14 @@
 <?php
 namespace Application\Factory\Helper;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Application\View\Helper\DataTableHelper;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class DataTableHelperFactory extends MyDefaultFactory
+class DataTableHelperFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $view = $this->get('viewhelpermanager')->get('basePath')->getView();
+        $view = $sm->getServiceLocator()->get('viewhelpermanager')->get('basePath')->getView();
         return new DataTableHelper($view);
     }
 }

@@ -1,15 +1,14 @@
 <?php
 namespace Application\Factory\Helper;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Application\View\Helper\MyUrl;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class MyUrlFactory extends MyDefaultFactory
+class MyUrlFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $accessService = $this->getServiceLocator()->get('AccessService');
+        $accessService = $sm->getServiceLocator()->get('AccessService');
         return new MyUrl($accessService);
     }
 }

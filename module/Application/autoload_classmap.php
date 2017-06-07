@@ -9,6 +9,7 @@ return array(
     'Application\Factory\Controller\SystemControllerFactory' => __DIR__ . '/src/Application/Factory/Controller/SystemControllerFactory.php',
     'Application\Factory\Helper\DataTableHelperFactory'      => __DIR__ . '/src/Application/Factory/Helper/DataTableHelperFactory.php',
     'Application\Factory\Helper\MyUrlFactory'                => __DIR__ . '/src/Application/Factory/Helper/MyUrlFactory.php',
+    'Application\Factory\Service\MessageServiceFactory'      => __DIR__ . '/src/Application/Factory/Service/MessageServiceFactory.php',
     'Application\Factory\Service\StatisticServiceFactory'    => __DIR__ . '/src/Application/Factory/Service/StatisticServiceFactory.php',
     'Application\Form\MailTemplatesForm'                     => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
     'Application\Form\TestForm'                              => __DIR__ . '/src/Application/Form/TestForm.php',

@@ -1,14 +1,19 @@
 <?php
 namespace Application\Service;
 
+use Application\Model\MailTemplatesTable;
 use Exception;
 use Zend\ServiceManager\ServiceManager;
-use Zend\ServiceManager\ServiceManagerAwareInterface;
 
-class MessageService implements ServiceManagerAwareInterface
+class MessageService
 {
+    protected $mailTemplatesTable;
     /** @var  ServiceManager */
     private $serviceManager;
+    function __construct(MailTemplatesTable $mailTemplatesTable)
+    {
+        $this->mailTemplatesTable = $mailTemplatesTable;
+    }
 
     public function SendMail($address, $Subject, $message, $sender, $senderAddress) {
         try {
@@ -32,8 +37,7 @@ class MessageService implements ServiceManagerAwareInterface
     public function SendMailFromTemplate($target, $templateID, $templateVars) {
         try {
             //load template from db
-            $mailTemplatesTable = $this->serviceManager->get('Application\Model\MailTemplatesTable');
-            $template = $mailTemplatesTable->getByID($templateID);
+            $template = $this->mailTemplatesTable->getByID($templateID);
 
             if (!$template) {
                 //@todo error: "no template with this id"
@@ -65,14 +69,6 @@ class MessageService implements ServiceManagerAwareInterface
 //     */
 //    public function chatSay($channel, $msg, $media) {}
 //    public function chatGetChannel($channel, $since) {}
-    /**
-     * Set service manager
-     *
-     * @param ServiceManager $serviceManager
-     */
-    public function setServiceManager(ServiceManager $serviceManager) {
-        $this->serviceManager = $serviceManager;
-    }
     private function buildTemplateString($string, $data) {
         if (preg_match_all("/{{(.*?)}}/", $string, $result)) {
             bdump($result);

@@ -16,6 +16,82 @@ return array(
             'Application\Controller\System' => 'Application\Factory\Controller\SystemControllerFactory',
         )
     ),
+    'service_manager' => array(
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+        ),
+        'invokables' => array(
+            'CacheService' => 'Application\Service\CacheService',
+            'Application\Model\SystemLog' => 'Application\Model\SystemLog',
+        ),
+        'factories' => array(
+            'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory',
+            'MessageService'   => 'Application\Factory\Service\MessageServiceFactory',
+        ),
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+            'Application\Model\SystemLogTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\DynamicHashTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\MailTemplatesTable' => DefaultTableGatewayFactory::class,
+        )
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'form' => 'Application\View\Helper\sraForm',
+            'FormRow' => 'Application\View\Helper\FormRow',
+            'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
+            'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
+        ),
+        'factories' => array(
+            'asurl' => 'Application\Factory\Helper\MyUrlFactory',
+            'dataTable' => 'Application\Factory\Helper\DataTableHelperFactory',
+        )
+    ),
+    'view_manager' => array(
+        'display_not_found_reason' => true,
+        'display_exceptions'       => true,
+        'doctype'                  => 'HTML5',
+        'not_found_template'       => 'error/404',
+        'exception_template'       => 'error/index',
+        'template_map' => array(
+            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            'application/index/index' => __DIR__ . '/../view/dashboard/index/index.phtml',
+            'error/404'               => __DIR__ . '/../view/error/404.phtml',
+            'error/index'             => __DIR__ . '/../view/error/index.phtml',
+        ),
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
+    ),
+    // Placeholder for console routes
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+            ),
+        ),
+    ),
+    'translator' => array(
+        'locale' => 'de_DE',
+        'translation_file_patterns' => array(
+            array(
+                'type'     => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.mo',
+            ),
+            array(
+                'type'     => 'phpArray',
+                //zend defaults
+                //'base_dir' => './vendor/zendframework/zendframework/resources/languages',
+                //overwrite
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%.2s/Zend_Validate.php',
+            ),
+        ),
+    ),
     'router' => array(
         'routes' => array(
             'system' => array(
@@ -100,82 +176,6 @@ return array(
                         )
                     ),
                 ),
-            ),
-        ),
-    ),
-    'service_manager' => array(
-        'aliases' => array(
-            'translator' => 'MvcTranslator',
-        ),
-        'invokables' => array(
-            'MessageService' => 'Application\Service\MessageService',
-            'CacheService' => 'Application\Service\CacheService',
-            'Application\Model\SystemLog' => 'Application\Model\SystemLog',
-        ),
-        'factories' => array(
-            'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory'
-        ),
-        'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
-            'Application\Model\SystemLogTable' => DefaultTableGatewayFactory::class,
-            'Application\Model\DynamicHashTable' => DefaultTableGatewayFactory::class,
-            'Application\Model\MailTemplatesTable' => DefaultTableGatewayFactory::class,
-        )
-    ),
-    'view_helpers' => array(
-        'invokables' => array(
-            'form' => 'Application\View\Helper\sraForm',
-            'FormRow' => 'Application\View\Helper\FormRow',
-            'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
-            'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
-        ),
-        'factories' => array(
-            'asurl' => 'Application\Factory\Helper\MyUrlFactory',
-            'dataTable' => 'Application\Factory\Helper\DataTableHelperFactory',
-        )
-    ),
-    'translator' => array(
-        'locale' => 'de_DE',
-        'translation_file_patterns' => array(
-            array(
-                'type'     => 'gettext',
-                'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
-            ),
-            array(
-                'type'     => 'phpArray',
-                //zend defaults
-                //'base_dir' => './vendor/zendframework/zendframework/resources/languages',
-                //overwrite
-                'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%.2s/Zend_Validate.php',
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'display_not_found_reason' => true,
-        'display_exceptions'       => true,
-        'doctype'                  => 'HTML5',
-        'not_found_template'       => 'error/404',
-        'exception_template'       => 'error/index',
-        'template_map' => array(
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
-            'application/index/index' => __DIR__ . '/../view/dashboard/index/index.phtml',
-            'error/404'               => __DIR__ . '/../view/error/404.phtml',
-            'error/index'             => __DIR__ . '/../view/error/index.phtml',
-        ),
-        'template_path_stack' => array(
-            __DIR__ . '/../view',
-        ),
-        'strategies' => array(
-            'ViewJsonStrategy',
-        ),
-    ),
-    // Placeholder for console routes
-    'console' => array(
-        'router' => array(
-            'routes' => array(
             ),
         ),
     ),
