@@ -21,6 +21,7 @@ class NavControllerFactory implements FactoryInterface
         $cache = $sm->get('CacheService');
         $navTable = $sm->get('Nav\Model\NavTable');
         $roleTable = $sm->get('Auth\Model\RoleTable');
-        return new NavController($cache, $navTable, $roleTable);
+        $config = $sm->get('Config');
+        return new NavController($cache, $navTable, $roleTable, $config);
     }
 }

@@ -4,6 +4,7 @@ namespace Nav\Controller;
 use Application\Service\CacheService;
 use Auth\Model\RoleTable;
 use Nav\Model\NavTable;
+use Zend\Config\Config;
 use Zend\Mvc\Controller\AbstractActionController;
 use Nav\Form\NavForm;
 use Zend\Json\Json;
@@ -17,12 +18,15 @@ class NavController extends AbstractActionController
     private $navTable;
     /** @var $roleTable RoleTable */
     private $roleTable;
+    /** @var  Array */
+    private $config;
 
-    public function __construct(CacheService $cacheService, NavTable $navTable, RoleTable $roleTable)
+    public function __construct(CacheService $cacheService, NavTable $navTable, RoleTable $roleTable, Array $conf)
     {
         $this->cacheService = $cacheService;
         $this->navTable = $navTable;
         $this->roleTable = $roleTable;
+        $this->config = $conf;
     }
     public function indexAction()
     {
@@ -32,9 +36,7 @@ class NavController extends AbstractActionController
     {
         $form = new NavForm($this->roleTable->fetchAllSorted());
         $form->get('submit')->setValue('Add');
-        
-        $config = $this->getServiceLocator()->get('Config');
-        $routes = $config['router']['routes'];
+        $routes = $this->config['router']['routes'];
 
         $routeNames = array();
         foreach ($routes as $name => $route) {
