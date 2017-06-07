@@ -1,5 +1,5 @@
 <?php
-namespace Application\Factory;
+namespace Application\Factory\Basic;
 
 
 use Exception;
