@@ -1,6 +1,8 @@
 <?php
 namespace Calendar\Controller;
 
+use Auth\Model\RoleTable;
+use Auth\Service\AccessService;
 use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;
 use Calendar\Service\CalendarService;
@@ -10,19 +12,30 @@ use Zend\View\Model\ViewModel;
 
 class CalendarController extends AbstractActionController
 {
+    /** @var CalendarService  */
+    protected $calendarService;
+    /** @var AccessService  */
+    protected $accessService;
+    /** @var RoleTable  */
+    protected $roleTable;
+
+    function __construct(CalendarService $calendarService, AccessService $accessService, RoleTable $roleTable)
+    {
+        $this->calendarService = $calendarService;
+        $this->accessService = $accessService;
+        $this->roleTable = $roleTable;
+    }
+
     public function indexAction()
     {
-        /** @var CalendarService $calendarService */
-        $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $calendarService->getUpcoming();
-        $accessService = $this->getServiceLocator()->get('AccessService');
-        $form = new EventForm($calendarService);
+        $this->calendarService->getUpcoming();
+        $form = new EventForm($this->calendarService);
         return new ViewModel(array(
-            'calendars' => $calendarService->getCalendars(),
+            'calendars' => $this->calendarService->getCalendars(),
             'form' => $form,
-            'canAdd' => $accessService->allowed('Calendar\Controller\Calendar', 'addEvent'),
-            'canEdit' => $accessService->allowed('Calendar\Controller\Calendar', 'editEvent'),
-            'canDelete' => $accessService->allowed('Calendar\Controller\Calendar', 'deleteEvent'),
+            'canAdd' => $this->accessService->allowed('Calendar\Controller\Calendar', 'addEvent'),
+            'canEdit' => $this->accessService->allowed('Calendar\Controller\Calendar', 'editEvent'),
+            'canDelete' => $this->accessService->allowed('Calendar\Controller\Calendar', 'deleteEvent'),
         ));
     }
     public function getEventsAction() {
@@ -34,25 +47,21 @@ class CalendarController extends AbstractActionController
             ));
         }
         $post = $request->getPost();
-        $calendarService = $this->getServiceLocator()->get("CalendarService");
-        $results = $calendarService->getEventsFrom($post['start'], $post['end']);
+        $results = $this->calendarService->getEventsFrom($post['start'], $post['end']);
         return new JsonModel($results);
     }
     public function configAction(){
         $calendarSet = array();
-        /** @var CalendarService $calendarService */
-        $calendarService = $this->getServiceLocator()->get('CalendarService');
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost()->toArray();
-            $calendarService->setCalendarOverwrites($post);
+            $this->calendarService->setCalendarOverwrites($post);
             //redirect->calendar/config
         }
-        $calendars = $calendarService->getCalendars();
+        $calendars = $this->calendarService->getCalendars();
 
-        $roleTable = $this->getServiceLocator()->get("Auth\Model\RoleTable");
-        $allRoles = $roleTable->getUserRoles();
+        $allRoles = $this->roleTable->getUserRoles();
 //        $form = new CalendarForm($allRoles);
         foreach ($calendars as $calendar ){
             $form = new CalendarForm($allRoles);

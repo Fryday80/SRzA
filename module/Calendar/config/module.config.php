@@ -1,16 +1,32 @@
 <?php
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Calendar\Controller\Calendar' => 'Calendar\Controller\CalendarController',
+        'factories' => array(
+            'Calendar\Controller\Calendar' => '\Calendar\Factory\Controller\CalendarControllerFactory',
         ),
+    ),
+    'service_manager' => array(
+        'aliases' => array(
+            'translator' => 'MvcTranslator',
+        ),
+        'invokables' => array(),
+        'factories' => array(
+            'CalendarService' => '\Calendar\Factory\Service\CalendarServiceFactory',
+        ),
+        'abstract_factories' => array( )
+    ),
+    'view_helpers' => array(
+        'invokables' => array(),
+        'factories' => array(
+            'upcoming' => '\Calendar\Factory\Helper\UpcomingEventsFactory',
+        )
     ),
     'view_manager' => array(
         'template_path_stack' => array(
             'calendar' => __DIR__ . '/../view',
         ),
     ),
-     'router' => array(
+    'router' => array(
          'routes' => array(
              'calendar' => array(
                  'type'    => 'segment',

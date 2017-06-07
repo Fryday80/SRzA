@@ -10,7 +10,6 @@ return array(
     'Auth\Controller\UserController'                      => __DIR__ . '/src/Auth/Controller/UserController.php',
     'Auth\Factory\AuthStorageFactory'                     => __DIR__ . '/src/Auth/Factory/AuthStorageFactory.php',
     'Auth\Factory\Controller\AuthControllerFactory'       => __DIR__ . '/src/Auth/Factory/Controller/AuthControllerFactory.php',
-    'Auth\Factory\Controller\ControllerFactory'           => __DIR__ . '/src/Auth/Factory/Controller/ControllerFactory.php',
     'Auth\Factory\Controller\PermissionControllerFactory' => __DIR__ . '/src/Auth/Factory/Controller/PermissionControllerFactory.php',
     'Auth\Factory\Controller\ProfileControllerFactory'    => __DIR__ . '/src/Auth/Factory/Controller/ProfileControllerFactory.php',
     'Auth\Factory\Controller\ResourceControllerFactory'   => __DIR__ . '/src/Auth/Factory/Controller/ResourceControllerFactory.php',

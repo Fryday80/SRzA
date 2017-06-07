@@ -23,13 +23,13 @@ class CalendarService {
     private $maxCacheDate;
 
 
-    function __construct($serviceManager) {
+    function __construct(CacheService $cacheService) {
         $confPath = __DIR__.'/../../../config/';
         $this->APPLICATION_NAME = 'SRA Events';
         $this->CREDENTIALS_PATH = $confPath.'accessToken.json';
         $this->CLIENT_SECRET_PATH = realpath($confPath.'client_secret.json');
         //load cached events
-        $this->cacheService = $serviceManager->get('CacheService');
+        $this->cacheService = $cacheService;
         $this->minCacheDate = date("Y-m-d", mktime(0, 0, 0, date("m") - 10, date("d"), date("Y")));
         $this->maxCacheDate = date("Y-m-d", mktime(0, 0, 0, date("m") + 10, date("d"), date("Y")));
     }
