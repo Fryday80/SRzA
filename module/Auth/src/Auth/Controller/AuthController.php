@@ -4,6 +4,7 @@ namespace Auth\Controller;
 use Application\Model\DynamicHashTable;
 use Application\Service\MessageService;
 use Auth\Form\EmailForm;
+use Auth\Form\PWForgetForm;
 use Auth\Model\AuthStorage;
 use Auth\Model\UserTable;
 use Auth\Utility\UserPassword;
@@ -228,7 +229,7 @@ class AuthController extends AbstractActionController
 
         //hash accepted
         //render form for new pass
-        $form = new UserForm();
+        $form = new PWForgetForm();
 
         return array(
             'pwForm' => $form,

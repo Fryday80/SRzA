@@ -2,10 +2,8 @@
 <div class="spacer_line"></div><br>
 <?php if ($hashError): ?>
     <h2>Hash Ungültig</h2>
-
 <?php
 else:
-    ?><p>//@todo anderes formular benutzen</p><?php
     $pwForm->prepare();
     echo $this->form($pwForm);
 endif;
