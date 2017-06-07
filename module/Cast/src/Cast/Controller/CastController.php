@@ -1,26 +1,25 @@
 <?php
 namespace Cast\Controller;
 
-use Auth\Model\UserTable;
-use Cast\Form\CharacterForm;
-use Cast\Model\FamiliesTable;
 use Cast\Service\CastService;
-use Cast\Utility\CharacterDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Exception;
 
 class CastController extends AbstractActionController
 {
+    /** @var CastService $castService */
+    private $castService;
+
+    public function __construct(CastService $castService) {
+        $this->castService = $castService;
+    }
+
     public function indexAction() {
         $this->layout()->setVariable('showSidebar', false);
         /** @var CastService $castService */
-        $castService = $this->getServiceLocator()->get("CastService");
-        $castService->getStanding();
-//        $characterTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
-//        bdump($characterTable->getAllCastData());
+        $this->castService->getStanding();
         return new ViewModel(array(
-            'root' => $castService->getStanding(),
+            'root' => $this->castService->getStanding(),
         ));
     }
 }

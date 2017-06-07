@@ -10,11 +10,16 @@ use Zend\View\Model\ViewModel;
 
 class BlazonController extends AbstractActionController
 {
+    /** @var BlazonService $blaService */
+    private $blaService;
+
+    public function __construct(BlazonService $blazonService) {
+        $this->blaService = $blazonService;
+    }
+
     public function indexAction() {
-        /** @var BlazonService $blaService */
-        $blaService = $this->getServiceLocator()->get("BlazonService");
         $blaTable = new BlazonDataTable( );
-        $blaTable->setData($blaService->getAll());
+        $blaTable->setData($this->blaService->getAll());
         $blaTable->setButtons('all');
         $blaTable->insertLinkButton('/castmanager/wappen/add', 'Neues Wappen');
         $blaTable->insertLinkButton('/castmanager', 'Zurück');
@@ -35,10 +40,7 @@ class BlazonController extends AbstractActionController
                 $request->getFiles()->toArray()
             );
 
-            /** @var BlazonService $blaService */
-            $blaService = $this->getServiceLocator()->get("BlazonService");
-
-            if (!$blaService->exists($post['name'])) {
+            if (!$this->blaService->exists($post['name'])) {
                 $form->setData($post);
                 if ($form->isValid()) {
                     $data = $form->getData();
@@ -51,7 +53,7 @@ class BlazonController extends AbstractActionController
                         $blaBigPath = null;
                     }
                     if ($data['blazon']['error'] == 0) {
-                        $blaService->addNew($data['name'], $blaPath, $blaBigPath);
+                        $this->blaService->addNew($data['name'], $blaPath, $blaBigPath);
                         return $this->redirect()->toRoute('castmanager/wappen');
                     } else {
                         //todo error handling
@@ -75,9 +77,7 @@ class BlazonController extends AbstractActionController
             return $this->redirect()->toRoute('castmanager/wappen');
         }
 
-        /** @var BlazonService $blaService */
-        $blaService = $this->getServiceLocator()->get("BlazonService");
-        if (!$blazon = $blaService->getById($id)) {
+        if (!$blazon = $this->blaService->getById($id)) {
             return $this->redirect()->toRoute('castmanager/wappen');
         }
 
@@ -103,7 +103,7 @@ class BlazonController extends AbstractActionController
                 if ($data['blazonBig']['error'] > 0) {
                     $blaBigPath = null;
                 }
-                if (!$item = $blaService->save($id, $data['name'], $blaPath, $blaBigPath)) {
+                if (!$item = $this->blaService->save($id, $data['name'], $blaPath, $blaBigPath)) {
                     //@todo errors to form
                 } else {
                     return $this->redirect()->toRoute('castmanager/wappen');
@@ -121,15 +121,13 @@ class BlazonController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('castmanager/wappen');
         }
-        /** @var BlazonService $blaService */
-        $blaService = $this->getServiceLocator()->get("BlazonService");
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $blaService->remove($id);
+                $this->blaService->remove($id);
             }
 
             // Redirect to list of Users
@@ -138,7 +136,7 @@ class BlazonController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'blazon' => $blaService->getById($id)
+            'blazon' => $this->blaService->getById($id)
         );
     }
 }

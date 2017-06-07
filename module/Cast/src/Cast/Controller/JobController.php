@@ -9,9 +9,15 @@ use Zend\View\Model\ViewModel;
 
 class JobController extends AbstractActionController
 {
+    /** @var JobTable */
+    private $jobTable;
+
+    public function __construct(JobTable $jobTable) {
+        $this->jobTable = $jobTable;
+    }
+
     public function indexAction() {
-        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
-        $jobs = $jobTable->getAll();
+        $jobs = $this->jobTable->getAll();
         $jobsTable = new JobDataTable();
         $jobsTable->setData($jobs);
         $jobsTable->setButtons('all');
@@ -31,9 +37,8 @@ class JobController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
                 $data = $form->getData();
-                $jobTable->add($data);
+                $this->jobTable->add($data);
                 return $this->redirect()->toRoute('castmanager/jobs');
             }
         }
@@ -47,8 +52,7 @@ class JobController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
-        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
-        if (!$family = $jobTable->getById($id)) {
+        if (!$family = $this->jobTable->getById($id)) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
         $form = new JobForm();
@@ -60,7 +64,7 @@ class JobController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $jobTable->save($id, $form->getData());
+                $this->jobTable->save($id, $form->getData());
                 return $this->redirect()->toRoute('castmanager/jobs');
             }
         }
@@ -74,14 +78,13 @@ class JobController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
-        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $jobTable->remove($id);
+                $this->jobTable->remove($id);
             }
 
             // Redirect to list of Users
@@ -90,7 +93,7 @@ class JobController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'job' => $jobTable->getById($id)
+            'job' => $this->jobTable->getById($id)
         );
     }
 }

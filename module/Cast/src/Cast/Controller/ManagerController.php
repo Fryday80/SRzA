@@ -2,20 +2,34 @@
 namespace Cast\Controller;
 
 use Cast\Form\FamilyForm;
-use Cast\Utility\FamilyDataTable;
+use Cast\Model\CharacterTable;
+use Cast\Model\FamiliesTable;
+use Cast\Model\JobTable;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class ManagerController extends AbstractActionController
 {
+    /** @var CharacterTable $characterTable */
+    private $characterTable;
+    /** @var JobTable $jobTable */
+    private $jobTable;
+    /** @var FamiliesTable $familiesTable */
+    private $familiesTable;
+
+    public function __construct(CharacterTable $characterTable,
+                                JobTable $jobTable,
+                                FamiliesTable $familiesTable)
+    {
+        $this->characterTable = $characterTable;
+        $this->jobTable = $jobTable;
+        $this->familiesTable = $familiesTable;
+    }
+
     public function indexAction() {
         //fine presentation of the cast
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
-        $families = $familyTable->getAll();
-        $jobTable = $this->getServiceLocator()->get("Cast\Model\JobTable");
-        $jobs = $jobTable->getAll();
-        $characterTable = $this->getServiceLocator()->get("Cast\Model\CharacterTable");
-        $characters = $characterTable->getAll();
+        $families = $this->familiesTable->getAll();
+        $jobs = $this->jobTable->getAll();
+        $characters = $this->characterTable->getAll();
         $return['items'] = array ('families', 'jobs', 'characters');
         foreach ($return['items'] as $item){
             $return[$item.'Count'] = count($$item);
@@ -31,9 +45,8 @@ class ManagerController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
                 $data = $form->getData();
-                $familyTable->add($data);
+                $this->familiesTable->add($data);
                 return $this->redirect()->toRoute('families');
             }
         }
@@ -47,8 +60,7 @@ class ManagerController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('/families');
         }
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
-        if (!$family = $familyTable->getById($id)) {
+        if (!$family = $this->familiesTable->getById($id)) {
             return $this->redirect()->toRoute('/families');
         }
         $form = new FamilyForm();
@@ -60,7 +72,7 @@ class ManagerController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $familyTable->save($id, $form->getData());
+                $this->familiesTable->save($id, $form->getData());
                 return $this->redirect()->toRoute('families');
             }
         }
@@ -74,14 +86,13 @@ class ManagerController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('families');
         }
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $familyTable->remove($id);
+                $this->familiesTable->remove($id);
             }
 
             // Redirect to list of Users
@@ -90,7 +101,7 @@ class ManagerController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'family' => $familyTable->getById($id)
+            'family' => $this->familiesTable->getById($id)
         );
     }
 }

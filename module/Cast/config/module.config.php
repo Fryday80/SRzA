@@ -1,28 +1,38 @@
 <?php
+use Application\Factory\Basic\DefaultTableGatewayFactory;
+
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Cast\Controller\Manager'       => 'Cast\Controller\ManagerController',
-            'Cast\Controller\Character'     => 'Cast\Controller\CharacterController',
-            'Cast\Controller\Family'        => 'Cast\Controller\FamilyController',
-            'Cast\Controller\Job'           => 'Cast\Controller\JobController',
-            'Cast\Controller\Cast'          => 'Cast\Controller\CastController',
-            'Cast\Controller\Blazon'          => 'Cast\Controller\BlazonController',
         ),
-//        'factories' => array(
-//            'Cast\Controller\Cast' => function($controllerManager) {
-//                $sm = $controllerManager->getServiceLocator();
-//                $userTable = $sm->get('Auth\Model\UserTable');
-//                $accessService = $sm->get('AccessService');
-//
-//                return new UsermanagerController($userTable, $accessService);
-//            },
-//        ),
+        'factories' => array(
+            'Cast\Controller\Blazon'        => 'Cast\Factory\BlazonControllerFactory',
+            'Cast\Controller\Cast'          => 'Cast\Factory\CastControllerFactory',
+            'Cast\Controller\Character'     => 'Cast\Factory\CharacterControllerFactory',
+            'Cast\Controller\Manager'       => 'Cast\Factory\ManagerControllerFactory',
+            'Cast\Controller\Family'        => 'Cast\Factory\FamilyControllerFactory',
+            'Cast\Controller\Job'           => 'Cast\Factory\JobControllerFactory',
+        ),
     ),
     'view_helpers' => array(
         'factories' => array(
             'blazon' => 'Cast\Factory\BlazonHelperFactory',
         ),
+        'invokables' => array(
+            'CharProfile' => 'Cast\View\Helper\BlazonHelper'
+        )
+    ),
+    'service_manager' => array(
+        'factories' => array(
+            'CastService' => 'Cast\Factory\CastServiceFactory',
+            'BlazonService' => 'Cast\Factory\BlazonServiceFactory'
+        ),
+        'abstract_factories' => array(
+            'Cast\Model\CharacterTable' => DefaultTableGatewayFactory::class,
+            'Cast\Model\FamiliesTable' => DefaultTableGatewayFactory::class,
+            'Cast\Model\JobTable' => DefaultTableGatewayFactory::class,
+            'Cast\Model\BlazonTable' => DefaultTableGatewayFactory::class,
+        )
     ),
     'view_manager' => array(
         'template_path_stack' => array(

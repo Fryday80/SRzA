@@ -16,36 +16,22 @@ use Tracy\Debugger;
 use Zend\ServiceManager\ServiceLocatorAwareInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class CastService implements ServiceLocatorAwareInterface
+//@todo refactoring
+class CastService
 {
-    private $serviceLocator;
     private $loaded = false;
     private $userSet = false;
     private $data;
 
-    function __construct() {
+    /** @var CharacterTable $jobTable */
+    private $characterTable;
+    /** @var UserTable $userTable */
+    private $userTable;
 
+    public function __construct(CharacterTable $characterTable, UserTable $userTable) {
+        $this->characterTable = $characterTable;
+        $this->userTable = $userTable;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-     * ich hab des mal hier runter gepackt reil des ein bisal refactoring braucht
-     */
     private $charsById = [];
     private $depth = 0;
     private $tempFamsHash;
@@ -145,30 +131,11 @@ class CastService implements ServiceLocatorAwareInterface
      * */
     private function loadData() {
         if (!$this->loaded) {
-            /** @var CharacterTable $charTable */
-            $charTable = $this->getServiceLocator()->get('Cast\Model\CharacterTable');
-            $this->data = $charTable->getAllCastData();
+            $this->data = $this->characterTable->getAllCastData();
             //insert user names for linking
             $this->getUserNames();
             $this->loaded = true;
         }
-    }
-
-
-    /**
-     * Set service locator
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Get service locator
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator() {
-        return $this->serviceLocator;
     }
 
     /**
@@ -176,11 +143,9 @@ class CastService implements ServiceLocatorAwareInterface
      * @throws \Exception
      */
     private function getUserNames(){
-        /** @var UserTable $userTable */
-        $userTable = $this->getServiceLocator()->get('Auth\Model\UserTable');
         foreach ($this->data as $key => $char) {
             /** @var User $newData */
-            $newData = $userTable->getUsersBy('id', $char['user_id']);
+            $newData = $this->userTable->getUsersBy('id', $char['user_id']);
             $this->data[$key]['userName'] = $newData->name;
             $this->data[$key]['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
         }

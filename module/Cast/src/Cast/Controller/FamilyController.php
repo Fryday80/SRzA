@@ -2,6 +2,7 @@
 namespace Cast\Controller;
 
 use Cast\Form\FamilyForm;
+use Cast\Model\FamiliesTable;
 use Cast\Service\BlazonService;
 use Cast\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -9,10 +10,19 @@ use Zend\View\Model\ViewModel;
 
 class FamilyController extends AbstractActionController
 {
+    /** @var FamiliesTable $familiesTable */
+    private $familiesTable;
+    /** @var  BlazonService */
+    private $blazonService;
+
+    public function __construct(FamiliesTable $familiesTable, BlazonService $blazonService) {
+        $this->familiesTable = $familiesTable;
+        $this->blazonService = $blazonService;
+    }
+
     public function indexAction() {
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
         $famTable = new FamilyDataTable( );
-        $famTable->setData($familyTable->getAll());
+        $famTable->setData($this->familiesTable->getAll());
         $famTable->setButtons('all');
         $famTable->insertLinkButton('/castmanager/families/add', 'add new familiy');
         $famTable->insertLinkButton('/castmanager', 'Zurück');
@@ -21,9 +31,7 @@ class FamilyController extends AbstractActionController
         ) );
     }
     public function addAction() {
-        /** @var BlazonService $blaService */
-        $blaService = $this->getServiceLocator()->get("BlazonService");
-        $form = new FamilyForm($blaService->getAll());
+        $form = new FamilyForm($this->blazonService->getAll());
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/families/add');
 
@@ -37,11 +45,10 @@ class FamilyController extends AbstractActionController
 
             $form->setData($post);
             if ($form->isValid()) {
-                $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
                 $data = $form->getData();
                 //cleanfix
 //bdump($data);
-//                $familyTable->add($data);
+//                $this->familiesTable->add($data);
 //                return $this->redirect()->toRoute('castmanager/families');
             }
         }
@@ -55,13 +62,10 @@ class FamilyController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
-        if (!$family = $familyTable->getById($id)) {
+        if (!$family = $this->familiesTable->getById($id)) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        /** @var BlazonService $blaService */
-        $blaService = $this->getServiceLocator()->get("BlazonService");
-        $form = new FamilyForm($blaService->getAll());
+        $form = new FamilyForm($this->blazonService->getAll());
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
         $form->populateValues($family);
@@ -70,7 +74,7 @@ class FamilyController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $familyTable->save($id, $form->getData());
+                $this->familiesTable->save($id, $form->getData());
                 return $this->redirect()->toRoute('castmanager/families');
             }
         }
@@ -84,14 +88,13 @@ class FamilyController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        $familyTable = $this->getServiceLocator()->get("Cast\Model\FamiliesTable");
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $familyTable->remove($id);
+                $this->familiesTable->remove($id);
             }
 
             // Redirect to list of Users
@@ -100,7 +103,7 @@ class FamilyController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'family' => $familyTable->getById($id)
+            'family' => $this->familiesTable->getById($id)
         );
     }
 }

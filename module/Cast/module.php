@@ -30,42 +30,5 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
     {
         return include __DIR__ . '/config/module.config.php';
     }
-    
-    public function getServiceConfig()
-    {
-        return array(
-            'invokables' => array(
-                'CastService' => 'Cast\Service\CastService',
-                'BlazonService' => 'Cast\Service\BlazonService'
-            ),
-            'factories' => array(
-//                'CastService' =>  function($sm) {
-//                    return new CharacterTable($sm->get('Zend\Db\Adapter\Adapter'));
-//                },
-                'Cast\Model\CharacterTable' =>  function($sm) {
-                    return new CharacterTable($sm->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Cast\Model\FamiliesTable' =>  function($sm) {
-                    return new FamiliesTable($sm->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Cast\Model\JobTable' =>  function($sm) {
-                    return new JobTable($sm->get('Zend\Db\Adapter\Adapter'));
-                },
-                'Cast\Model\BlazonTable' =>  function($sm) {
-                    return new BlazonTable($sm->get('Zend\Db\Adapter\Adapter'));
-                },
-            ),
-        );
-    }
 
-    public function getViewHelperConfig()
-    {
-        return array(
-            'factories' => array(
-                'CharProfile' => function (ServiceLocatorInterface $serviceLocator) {
-                    return new CharProfile();
-                }
-            )
-        );
-    }
 }

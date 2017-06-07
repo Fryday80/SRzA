@@ -4,11 +4,9 @@ namespace Cast\Service;
 
 use Cast\Model\BlazonTable;
 use Error;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 
-class BlazonService implements ServiceLocatorAwareInterface
+class BlazonService
 {
     const BLAZON_IMAGE_PATH = './data/wappen/';
     const BLAZON_IMAGE_URL = '/wappen/';
@@ -19,11 +17,13 @@ class BlazonService implements ServiceLocatorAwareInterface
         'ERROR_NAME_NOT_FOUND'
     ];
     public $lastError;
-    private $serviceLocator;
     private $loaded = false;
     private $data;
+    /** @var  BlazonTable */
+    private $blazonTable;
 
-    function __construct() {
+    function __construct(BlazonTable $blazonTable) {
+        $this->blazonTable = $blazonTable;
     }
 
     public function getAll() {
@@ -97,9 +97,7 @@ class BlazonService implements ServiceLocatorAwareInterface
             //@todo! resize file
         }
 
-        /** @var BlazonTable $blaTable */
-        $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
-        $newID = $blaTable->add(array(
+        $newID = $this->blazonTable->add(array(
             'name' => $name,
             'filename' => $fileName,
             'bigFilename' => $bigFileName
@@ -134,9 +132,7 @@ class BlazonService implements ServiceLocatorAwareInterface
         if ($fileName !== null) $data['filename'] = $fileName;
         if ($bigFileName !== null) $data['bigFilename'] = $bigFileName;
 
-        /** @var BlazonTable $blaTable */
-        $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
-        $blaTable->save($id, $data);
+        $this->blazonTable->save($id, $data);
         //@todo add also to this->data
         return $item;
     }
@@ -145,9 +141,7 @@ class BlazonService implements ServiceLocatorAwareInterface
         $item = $this->getById($id);
         if(!$item) return false;
 
-        /** @var BlazonTable $blaTable */
-        $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
-        if ($blaTable->remove($id) ) {
+        if ($this->blazonTable->remove($id) ) {
             //remove file
             $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
             $path = $wappenPath.'/'.$item['filename'];
@@ -167,26 +161,6 @@ class BlazonService implements ServiceLocatorAwareInterface
         }
         return false;
     }
-
-    /**
-     * Set service locator
-     * @param ServiceLocatorInterface $serviceLocator
-     */
-    public function setServiceLocator(ServiceLocatorInterface $serviceLocator) {
-        $this->serviceLocator = $serviceLocator;
-    }
-
-    /**
-     * Get service locator
-     * @return ServiceLocatorInterface
-     */
-    public function getServiceLocator() {
-        return $this->serviceLocator;
-    }
-
-
-
-
 
     /** moves file to
      * @param $path string
@@ -221,9 +195,7 @@ class BlazonService implements ServiceLocatorAwareInterface
 
     private function loadData() {
         if (!$this->loaded) {
-            /** @var BlazonTable $blaTable */
-            $blaTable = $this->getServiceLocator()->get('Cast\Model\BlazonTable');
-            $this->data = $blaTable->getAll();
+            $this->data = $this->blazonTable->getAll();
             foreach ($this->data as $value) {
                 $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
             }
