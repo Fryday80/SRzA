@@ -10,15 +10,10 @@ return array(
             'Auth\Controller\Auth'       => 'Auth\Factory\Controller\AuthControllerFactory',
             'Auth\Controller\Role'       => 'Auth\Factory\Controller\RoleControllerFactory',
             'Auth\Controller\Permission' => 'Auth\Factory\Controller\PermissionControllerFactory',
-//            'Auth\Controller\Resource'   => 'Auth\Factory\Controller\ResourceControllerFactory',
+            'Auth\Controller\Resource'   => 'Auth\Factory\Controller\ResourceControllerFactory',
             'Auth\Controller\Profile'    => 'Auth\Factory\Controller\ProfileControllerFactory',
         ),
-        'invokables' => array(
-//            'Auth\Controller\Role'       => 'Auth\Controller\RoleController',
-//            'Auth\Controller\Permission' => 'Auth\Controller\PermissionController',
-            'Auth\Controller\Resource'   => 'Auth\Controller\ResourceController',
-//            'Auth\Controller\Profile'    => 'Auth\Controller\ProfileController',
-        )
+        'invokables' => array( )
     ),
     'service_manager' => array(
         'aliases' => array(
