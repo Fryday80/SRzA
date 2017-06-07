@@ -1,12 +1,16 @@
 <?php
+use Media\Factory\GeneralMediaFactory;
+
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Media\Controller\List'         => 'Media\Controller\ListController',
             'Media\Controller\Upload'       => 'Media\Controller\UploadController',
-            'Media\Controller\File'         => 'Media\Controller\FileController',
-            'Media\Controller\FileBrowser'  => 'Media\Controller\FileBrowserController',
         ),
+        'abstract_factories' => array(
+            'Media\Controller\FileBrowser' => GeneralMediaFactory::class,
+            'Media\Controller\List'         => GeneralMediaFactory::class,
+            'Media\Controller\File'         => GeneralMediaFactory::class,
+        )
     ),
     'service_manager' => array(
         'factories' => array(

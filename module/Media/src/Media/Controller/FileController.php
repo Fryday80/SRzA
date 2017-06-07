@@ -6,19 +6,25 @@ use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class FileController extends AbstractActionController  {
-    
-    
+
+    /**
+     * @var $mediaService MediaService
+     */
+    private $mediaService;
+
+    public function __construct(MediaService $mediaService)
+    {
+        $this->mediaService = $mediaService;
+    }
 
     public function fileAction()
     {
-        $mediaService = $this->getServiceLocator()->get('MediaService');
         $path = $this->params('path');
-        return $mediaService->createFileResponse($path, $this->getResponse());
+        return $this->mediaService->createFileResponse($path, $this->getResponse());
     }
     public function imageAction()
     {
-        $mediaService = $this->getServiceLocator()->get('MediaService');
         $path = $this->params('path');
-        return $mediaService->createFileResponse($path, $this->getResponse());
+        return $this->mediaService->createFileResponse($path, $this->getResponse());
     }
 }
