@@ -1,14 +1,14 @@
 <?php
 namespace Auth\Factory;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Model\AuthStorage;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AuthStorageFactory extends MyDefaultFactory
+class AuthStorageFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
+        
         $storage = new AuthStorage('sra');
         return $storage;
     }

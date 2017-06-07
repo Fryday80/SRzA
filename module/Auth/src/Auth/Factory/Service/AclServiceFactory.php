@@ -2,20 +2,19 @@
 
 namespace Auth\Factory\Service;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Application\Service\CacheService;
 use Auth\Service\AclService;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AclServiceFactory extends MyDefaultFactory
+class AclServiceFactory implements FactoryInterface
 {
     /** @var  CacheService */
     private $cache;
 
     public function createService(ServiceLocatorInterface $sm)
     {
-        parent::createService($sm);
-        $this->cache = $this->get('CacheService');
+        $this->cache = $sm->get('CacheService');
         $acl = null;
         if ($this->cache->hasCache('acl')) {
             $acl = $this->cache->getCache('acl');
@@ -34,17 +33,17 @@ class AclServiceFactory extends MyDefaultFactory
     }
 
     protected function _getAllRoles() {
-        $roleTable = $this->get('Auth\Model\RoleTable');
+        $roleTable = $sm->get('Auth\Model\RoleTable');
         return $roleTable->getUserRoles();
     }
 
     protected function _getAllResources() {
-        $resourceTable = $this->get('Auth\Model\ResourceTable');
+        $resourceTable = $sm->get('Auth\Model\ResourceTable');
         return $resourceTable->getAllResources();
     }
 
     protected function _getRolePermissions() {
-        $rolePermissionTable = $this->get('Auth\Model\RolePermissionTable');
+        $rolePermissionTable = $sm->get('Auth\Model\RolePermissionTable');
         return $rolePermissionTable->getRolePermissions();
     }
 

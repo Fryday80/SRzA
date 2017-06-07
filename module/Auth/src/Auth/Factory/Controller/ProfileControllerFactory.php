@@ -1,22 +1,22 @@
 <?php
 namespace Auth\Factory\Controller;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Controller\ProfileController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ProfileControllerFactory extends MyDefaultFactory
+class ProfileControllerFactory implements FactoryInterface
 {
     
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $userTable      = $this->get('Auth\Model\UserTable');
-        $characterTable = $this->get('Cast\Model\CharacterTable');
-        $familyTable    = $this->get('Cast\Model\FamiliesTable');
-        $jobTable       = $this->get('Cast\Model\JobTable');
-        $accessService  = $this->get('AccessService');
-        $statService    = $this->get('StatisticService');
-        $castService    = $this->get('CastService');
+        $pL = $sm->getServiceLocator();
+        $userTable      = $pL->get('Auth\Model\UserTable');
+        $characterTable = $pL->get('Cast\Model\CharacterTable');
+        $familyTable    = $pL->get('Cast\Model\FamiliesTable');
+        $jobTable       = $pL->get('Cast\Model\JobTable');
+        $accessService  = $pL->get('AccessService');
+        $statService    = $pL->get('StatisticService');
+        $castService    = $pL->get('CastService');
         return new ProfileController($userTable, $characterTable, $familyTable, $jobTable, $accessService, $statService, $castService);
     }
 }

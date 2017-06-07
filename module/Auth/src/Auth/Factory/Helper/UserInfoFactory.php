@@ -1,15 +1,15 @@
 <?php
 namespace Auth\Factory\Helper;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\View\Helper\UserInfo;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class UserInfoFactory extends MyDefaultFactory
+class UserInfoFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $storage = $this->get('Auth\Model\AuthStorage');
+        $pL = $sm->getServiceLocator();
+        $storage = $pL->get('Auth\Model\AuthStorage');
         return new UserInfo($storage);
     }
 }

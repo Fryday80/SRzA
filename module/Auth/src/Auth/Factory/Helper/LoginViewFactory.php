@@ -1,15 +1,15 @@
 <?php
 namespace Auth\Factory\Helper;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\View\Helper\LoginView;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class LoginViewFactory extends MyDefaultFactory
+class LoginViewFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $storage = $this->get('Auth\Model\AuthStorage');
+        $pL = $sm->getServiceLocator();
+        $storage = $pL->get('Auth\Model\AuthStorage');
         $loginview = new LoginView($storage);
         return $loginview;
     }

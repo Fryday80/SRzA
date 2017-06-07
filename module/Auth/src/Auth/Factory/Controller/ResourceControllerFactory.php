@@ -1,17 +1,17 @@
 <?php
 namespace Auth\Factory\Controller;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Controller\ResourceController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class ResourceControllerFactory extends MyDefaultFactory
+class ResourceControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $resTable = $this->get('Auth\Model\ResourceTable');
-        $permTable = $this->get('Auth\Model\PermissionTable');
-        $cacheService = $this->get('CacheService');
+        $pL = $sm->getServiceLocator();
+        $resTable = $pL->get('Auth\Model\ResourceTable');
+        $permTable = $pL->get('Auth\Model\PermissionTable');
+        $cacheService = $pL->get('CacheService');
         return new ResourceController($resTable, $permTable, $cacheService);
     }
 }

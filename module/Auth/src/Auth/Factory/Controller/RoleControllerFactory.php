@@ -1,16 +1,16 @@
 <?php
 namespace Auth\Factory\Controller;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Controller\RoleController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class RoleControllerFactory extends MyDefaultFactory
+class RoleControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $roleTable = $this->get('Auth\Model\RoleTable');
-        $cacheService = $this->get('CacheService');
+        $pL = $sm->getServiceLocator();
+        $roleTable = $pL->get('Auth\Model\RoleTable');
+        $cacheService = $pL->get('CacheService');
         return new RoleController($roleTable, $cacheService);
     }
 }

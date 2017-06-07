@@ -1,17 +1,16 @@
 <?php
 namespace Auth\Factory\Service;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Service\AccessService;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AccessServiceFactory extends MyDefaultFactory
+class AccessServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $storage     = $this->get('Auth\Model\AuthStorage');
-        $aclService  = $this->get('Auth\AclService');
-        $authService = $this->get('AuthService');
+        $storage     = $sm->get('Auth\Model\AuthStorage');
+        $aclService  = $sm->get('Auth\AclService');
+        $authService = $sm->get('AuthService');
         return new AccessService($aclService, $authService, $storage);
     }
 }

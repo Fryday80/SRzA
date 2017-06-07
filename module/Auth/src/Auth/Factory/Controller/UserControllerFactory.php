@@ -1,17 +1,17 @@
 <?php
 namespace Auth\Factory\Controller;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Auth\Controller\UserController;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class UserControllerFactory extends MyDefaultFactory
+class UserControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $accessService = $this->get('AccessService');
-        $userTable = $this->get('Auth\Model\UserTable');
-        $roleTable = $this->get('Auth\Model\RoleTable');
+        $pL = $sm->getServiceLocator();
+        $accessService = $pL->get('AccessService');
+        $userTable = $pL->get('Auth\Model\UserTable');
+        $roleTable = $pL->get('Auth\Model\RoleTable');
         return new UserController($userTable, $accessService, $roleTable);
     }
 }

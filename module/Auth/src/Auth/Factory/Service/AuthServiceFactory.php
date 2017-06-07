@@ -1,20 +1,19 @@
 <?php
 namespace Auth\Factory\Service;
 
-use Application\Factory\Basic\MyDefaultFactory;
+use Zend\ServiceManager\FactoryInterface;
 use Zend\Authentication\Adapter\DbTable\CredentialTreatmentAdapter;
 use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class AuthServiceFactory extends MyDefaultFactory
+class AuthServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        parent::createService($sm);
-        $dbAdapter = $this->get('Zend\Db\Adapter\Adapter');
+        $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
         $dbTableAuthAdapter = new CredentialTreatmentAdapter($dbAdapter, 'users', 'email', 'password');
         $authService = new AuthenticationService();
         $authService->setAdapter($dbTableAuthAdapter);
-        $authService->setStorage($this->get('Auth\Model\AuthStorage'));
+        $authService->setStorage($sm->get('Auth\Model\AuthStorage'));
         return $authService;
     }
 }
