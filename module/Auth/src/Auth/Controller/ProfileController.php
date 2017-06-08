@@ -148,8 +148,9 @@ class ProfileController extends AbstractActionController
         $hasFamily = false;
         $username = $this->params()->fromRoute('username');
         $charnameURL = $this->params()->fromRoute('charname');
-        
+
         $char = $this->castService->getCharacterData($charnameURL, $username);
+        $char['userData'] = $this->userTable->getUsersBy('name', $username);
         $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
         
         foreach ($charFamily as $key => $member){

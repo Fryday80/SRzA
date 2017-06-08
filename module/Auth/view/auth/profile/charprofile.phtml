@@ -1,40 +1,49 @@
 <style>
-    .charprofile.headimages {
+    div.charprofile.familyimages,
+    div.charprofile.headimages {
         float: right;
-        margin-left: 15%;
-        width: 100px;
+        position: relative;
+        /*display: inline;*/
+        margin-left: 5px;
+        width: 40%;
     }
+    div.charprofile.headimages.headblazon{
+        float: left;
+    }
+    .charprofile.familyimages .blazon,
     .charprofile.headimages .blazon
     {
         width: 100px
     }
     box.familyMember
     {
+        display: inline-block;
         margin-top: 0;
-        margin-bottom: 3px;
+        margin-bottom: 5px;
+        margin-right: 5px;
+        width: 40%;
     }
+
+    /*
+    blazon settings in _blazons.less
+    */
 </style>
 
 <?php
-// $char = character array
-//$char = $char;
-//cleanfix dummy
-//bdump($char);
-//bdump($hasFamily);
 
 /** @var \Cast\View\Helper\BlazonHelper $bh */
 $bh = $this->blazon();
-
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 ?>
 
+    <?php echo '<div class="charprofile headimages headblazon">' . $bh->blazon() . '</div>' ?>
+    <div class="charprofile headimages">
+        <?php echo (isset($char['userData']->pic)) ? '<img style="float: right;" src="">' : 'Bild nicht gefunden' ?>
+    </div>
+<div class="clear"></div>
 <h1>
     <span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span>
-    <?php echo '<div class="charprofile headimages">' . $bh->blazon() . '</div>' ?>
-    <div class="charprofile headimages">
-        <?php echo (isset($char['pic'])) ? '<img style="float: right;" src="">' : 'bild nicht gefunden' ?>
-    </div>
 </h1>
 <br/>
 <br/>
@@ -42,17 +51,23 @@ $this->headTitle($title);
     <boxtitle>
     </boxtitle>
     <boxcontent>
-        <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita'?></p>
+        <h1><span class="own_text_small">Vita</span></h1><br/>
+        <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita nicht gefunden'?></p>
         <?php if ($hasFamily):
             echo '<br/><h1><span class="own_text_small">Familie</span></h1><br/>';
             foreach ($charFamily as $member): ?>
                 <a href="/profile/<?php echo $member['userName'] . '/' . $member['charURL'] ?>">
                     <box class = "familyMember">
                         <boxtitle>
-                            <span><?php echo $member['name'] ?></span>
+                            <span><?php
+                                echo $member['name'] . ' ';
+                                echo ( isset( $member['surename'] ) )? $member['surename'] : ''
+                            ?></span>
+                            <?php echo '<div class="charprofile familyimages">' . $bh->blazon() . '</div>' ?>
                         </boxtitle>
                         <boxcontent>
-                            <div>info + links</div>
+                            <div>
+                            </div>
                         </boxcontent>
                     </box>
                 </a>
@@ -60,6 +75,7 @@ $this->headTitle($title);
         endif; ?>
     </boxcontent>
 </box>
+<div class="clear"></div>
 <a href="/profile/<?php echo $username ?>">
     <button><?php echo $username ?></button>
 </a>

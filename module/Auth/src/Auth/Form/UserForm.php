@@ -130,6 +130,17 @@ class UserForm extends Form
             ),
         );
 
+        $fields[] = array(
+            'name' => 'pic',
+            'type' => 'file',
+            'options' => array(
+                'label' => 'Profilbild',
+            ),
+            'attributes' => array(
+                'accept' => 'image/*'
+            )
+        );
+
         foreach ($fields as $field){
             $this->add(
                 $field,
@@ -199,6 +210,7 @@ class UserForm extends Form
             'email' => 19,
             'password' => 18,
             'passwordConfirm' => 17,
+            'pic' => 16,
             'real_name' => 15,
             'real_surename' => 14,
             'gender' => 13,

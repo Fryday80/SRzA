@@ -1472,6 +1472,40 @@ fieldset ul {
   margin: 0 auto;
   height: 90px;
 }
+.charprofile.headimages .blazon {
+  position: relative;
+  padding: 40px !important;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+}
+.charprofile.headimages .blazon .blazon-sub-0 {
+  position: absolute;
+  z-index: 1;
+  height: 200px;
+  top: 50px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+}
+.charprofile.headimages .blazon .blazon-sub-1 {
+  position: absolute;
+  z-index: 2;
+  top: 30%;
+  left: 6%;
+  right: 0;
+  margin: 0 auto;
+  height: 87px;
+}
+.charprofile.headimages .blazon .blazon-sub-2 {
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 16px;
+  right: 0;
+  margin: 0 auto;
+  height: 90px;
+}
 /* media queries for Basic Layout */
 @media only screen and (max-width: 700px) {
   /* ------------------- vars --------------------------- */

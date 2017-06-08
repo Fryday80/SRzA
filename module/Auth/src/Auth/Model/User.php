@@ -20,6 +20,7 @@ class User
     public $real_surename;
     public $birthday;
     public $gender;
+    public $pic;
 
     public function exchangeArray($data)
     {
@@ -40,6 +41,7 @@ class User
         $this->real_surename = (! empty($data['real_surename'])) ? $data['real_surename'] : $this->real_surename;
         $this->birthday      = (! empty($data['birthday']))      ? $data['birthday']      : $this->birthday;
         $this->gender        = (! empty($data['gender']))        ? $data['gender']        : $this->gender;
+        $this->pic           = (! empty($data['pic']))           ? $data['pic']           : $this->gender;
     }
 
     public function getArrayCopy()
