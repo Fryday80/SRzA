@@ -59,7 +59,7 @@ class SystemController extends AbstractActionController
     }
     public function jsonAction() {
         /** @var  $statsService StatisticService */
-        $this->statsService = $statsService = $this->getServiceLocator()->get('StatisticService');
+        $statsService = $this->statsService;
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
         if (!property_exists($request, 'method') ) {

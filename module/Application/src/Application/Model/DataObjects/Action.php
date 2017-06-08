@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model;
+namespace Application\Model\DataObjects;
 
 class Action extends DataItem
 {

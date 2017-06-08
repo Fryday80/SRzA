@@ -2,6 +2,7 @@
 
 namespace Application\Model;
 
+use Application\Model\DataObjects\SystemLog;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
 

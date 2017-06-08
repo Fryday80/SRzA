@@ -1,12 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 25.04.2017
- * Time: 15:26
- */
 
-namespace Application\Model;
+namespace Application\Model\DataObjects;
 
 
 class DataItem

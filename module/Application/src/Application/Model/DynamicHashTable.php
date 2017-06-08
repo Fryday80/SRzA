@@ -9,7 +9,6 @@ use Zend\Db\Adapter\Adapter;
 
 class DynamicHashTable extends AbstractTableGateway
 {
-
     public $table = 'dynamic_hash';
 
     public function __construct(Adapter $adapter) {

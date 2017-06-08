@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model;
+namespace Application\Model\DataObjects;
 
 use Application\Model\Abstracts\CounterType;
 use Application\Model\Abstracts\FilterType;

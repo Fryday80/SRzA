@@ -1,25 +1,26 @@
 <?php
 namespace Application\Service;
 
-use Application\Model\Abstracts\ActionType;
-use Application\Model\Abstracts\CounterType;
-use Application\Model\Abstracts\FilterType;
+use Exception;
+use Zend\Mvc\MvcEvent;
+use Zend\Http\Response;
+use Zend\Mvc\Application;
+use Auth\Service\AccessService;
+use Zend\Http\Header\SetCookie;
+use Zarganwar\PerformancePanel\Register;
+use Application\Model\SystemLogTable;
+// data items
+use Application\Model\DataObjects\Stats;
+use Application\Model\DataObjects\Action;
+use Application\Model\DataObjects\ActiveUser;
+use Application\Model\DataObjects\SystemLog;
+// abstracts
 use Application\Model\Abstracts\HitType;
 use Application\Model\Abstracts\LogType;
 use Application\Model\Abstracts\OrderType;
-use Application\Model\Action;
-use Application\Model\ActiveUser;
-use Application\Model\SystemLogTable;
-use Application\Model\Stats;
-use Application\Model\SystemLog;
-use Auth\Service\AccessService;
-use Exception;
-use Zarganwar\PerformancePanel\Register;
-use Zend\Http\Header\SetCookie;
-use Zend\Http\Response;
-use Zend\Mvc\Application;
-use Zend\Mvc\MvcEvent;
-use Zend\ServiceManager\ServiceManager;
+use Application\Model\Abstracts\FilterType;
+use Application\Model\Abstracts\ActionType;
+use Application\Model\Abstracts\CounterType;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const AJAX_BLACK_LIST = array(
@@ -27,6 +28,7 @@ const AJAX_BLACK_LIST = array(
     '/system/json',
     '/system/dashboard'
 );
+//@todo cleanfix dev speed check
 /** "true" logs speed in Tracy "false" don't */
 const SPEED_CHECK = false;
 
@@ -54,8 +56,8 @@ class StatisticService
         if($data['request']->isXmlHttpRequest() && in_array($data['url'], AJAX_BLACK_LIST)) return;
 
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::PAGE_CALL , 'Call', $data['url']));
-        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $data['url'], $data['mTime']);
         $this->stats->updateActiveUser( new ActiveUser($data['userId'], $data['userName'], $data['mTime'], $data['ip'], $data['url']) , $data['sid']);
+        $this->stats->logPageHit(($this->accessService->hasIdentity())? HitType::MEMBER : HitType::GUEST, $data['url'], $data['mTime']);
 
         $this->checkCookie($e);
     }
@@ -92,7 +94,7 @@ class StatisticService
                         'name' => get_class($exception),
                         'file' => $exception->getFile(),
                         'line' => $exception->getLine(),
-                        'msg' => $exception->getMessage(),
+                        'msg'  => $exception->getMessage(),
                         'stackTrace' => $exception->getTraceAsString()
                     ));
                 } while($exception = $exception->getPrevious());
@@ -237,6 +239,7 @@ class StatisticService
 
         // not used -- prepared for redirect logging
         if (isset ($serverData['HTTP_REFERER']) ) {
+            //@todo log if referred
             // prepared if referring data is needed
 //        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
 //        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";
@@ -271,5 +274,4 @@ class StatisticService
         if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
     }
-
 }

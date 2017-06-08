@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Model;
+namespace Application\Model\DataObjects;
 
 
 class SystemLog extends DataItem
