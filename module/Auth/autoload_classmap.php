@@ -24,6 +24,7 @@ return array(
     'Auth\Factory\Table\UserTableFactory'                 => __DIR__ . '/src/Auth/Factory/Table/UserTableFactory.php',
     'Auth\Form\Element\RoleSelectElement'                 => __DIR__ . '/src/Auth/Form/Element/RoleSelectElement.php',
     'Auth\Form\EmailForm'                                 => __DIR__ . '/src/Auth/Form/EmailForm.php',
+    'Auth\Form\Filter\EmailFilter'                        => __DIR__ . '/src/Auth/Form/Filter/EmailFilter.php',
     'Auth\Form\Filter\LoginFilter'                        => __DIR__ . '/src/Auth/Form/Filter/LoginFilter.php',
     'Auth\Form\Filter\PWForgetFilter'                     => __DIR__ . '/src/Auth/Form/Filter/PWForgetFilter.php',
     'Auth\Form\Filter\ResourceFilter'                     => __DIR__ . '/src/Auth/Form/Filter/ResourceFilter.php',

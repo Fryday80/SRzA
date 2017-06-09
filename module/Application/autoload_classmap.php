@@ -12,6 +12,7 @@ return array(
     'Application\Factory\Service\MailTemplateServiceFactory' => __DIR__ . '/src/Application/Factory/Service/MailTemplateServiceFactory.php',
     'Application\Factory\Service\MessageServiceFactory'      => __DIR__ . '/src/Application/Factory/Service/MessageServiceFactory.php',
     'Application\Factory\Service\StatisticServiceFactory'    => __DIR__ . '/src/Application/Factory/Service/StatisticServiceFactory.php',
+    'Application\Form\Filter\MailTemplatesFilter'            => __DIR__ . '/src/Application/Form/Filter/MailTemplatesFilter.php',
     'Application\Form\MailTemplatesForm'                     => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
     'Application\Form\TestForm'                              => __DIR__ . '/src/Application/Form/TestForm.php',
     'Application\Form\TestFormFilter'                        => __DIR__ . '/src/Application/Form/TestFormFilter.php',

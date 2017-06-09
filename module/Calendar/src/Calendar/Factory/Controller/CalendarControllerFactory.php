@@ -11,7 +11,6 @@ class CalendarControllerFactory implements FactoryInterface
         $calendarService = $sm->getServiceLocator()->get('CalendarService');
         $accessService   = $sm->getServiceLocator()->get('AccessService');
         $roleTable       = $sm->getServiceLocator()->get('Auth\Model\RoleTable');
-        $allRoles        = $roleTable->getUserRoles();
-        return new CalendarController($calendarService, $accessService, $allRoles);
+        return new CalendarController($calendarService, $accessService, $roleTable);
     }
 }

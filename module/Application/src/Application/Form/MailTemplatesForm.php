@@ -1,6 +1,7 @@
 <?php
 namespace Application\Form;
 
+use Application\Form\Filter\MailTemplatesFilter;
 use Zend\Form\Form;
 
 class MailTemplatesForm extends Form
@@ -10,6 +11,7 @@ class MailTemplatesForm extends Form
     {
         parent::__construct("MailTemplates");
         $this->setAttribute('method', 'post');
+        $this->setInputFilter(new MailTemplatesFilter());
 
         $this->add(array(
             'name' => 'id',
@@ -42,6 +44,14 @@ class MailTemplatesForm extends Form
         $this->add(array(
             'name' => 'build_in',
             'type' => 'Hidden'
+        ));
+        $this->add(array(
+            'name' => 'submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'value' => 'Submit',
+                'class' => 'btn btn-primary'
+            )
         ));
     }
 }

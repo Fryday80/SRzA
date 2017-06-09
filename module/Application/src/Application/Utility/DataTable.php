@@ -31,6 +31,31 @@ class DataTable
         $this->validateDataType($data, 'setData');
         $this->data = $data;
     }
+
+    /**
+     * @param array $link array ( array ('url', 'text') )
+     * @param string $columnName
+     */
+    public function addRowLink(Array $link, $columnName = 'Aktion')
+    {
+        $insert = '';
+        if (isset($link[0])) {
+            $i = 0;
+            while (isset($link[$i])) {
+                $insert .= '<a href="' . $link[$i]['url'] . '">' . $link[$i]['text'] . '</a>';
+                $i++;
+            }
+        }
+        elseif (isset($link['url'])){
+            $insert .= '<a href="' . $link['url'] . '">' . $link['text'] . '</a>';
+        }
+        else return;
+
+        foreach ($this->data as $key => $row){
+            $this->data[$key][$columnName] = $insert;
+        }
+        return;
+    }
     public function setColumns($columns) {
         //@todo validate $data ??   ja
         foreach ($columns as $key => $value) {

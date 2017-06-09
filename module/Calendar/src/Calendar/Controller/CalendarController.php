@@ -16,13 +16,14 @@ class CalendarController extends AbstractActionController
     protected $calendarService;
     /** @var AccessService  */
     protected $accessService;
-    private $allRoles;
+    /** @var RoleTable  */
+    private $roleTable;
 
-    function __construct(CalendarService $calendarService, AccessService $accessService, $allRoles)
+    function __construct(CalendarService $calendarService, AccessService $accessService, RoleTable $roleTable)
     {
         $this->calendarService = $calendarService;
         $this->accessService = $accessService;
-        $this->allRoles = $allRoles;
+        $this->roleTable = $roleTable;
     }
 
     public function indexAction()
@@ -61,7 +62,7 @@ class CalendarController extends AbstractActionController
         $calendars = $this->calendarService->getCalendars();
         
         foreach ($calendars as $calendar ){
-            $form = new CalendarForm($this->allRoles);
+            $form = new CalendarForm($this->roleTable->getUserRoles());
             $form->setData($calendar);
             array_push($calendarSet, $form);
         }

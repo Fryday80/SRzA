@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+use Application\Form\MailTemplatesForm;
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
 use Application\Service\MailTemplateService;
@@ -130,18 +131,102 @@ class SystemController extends AbstractActionController
     }
     public function mailTemplatesIndexAction() {
         $templates = $this->mailTemplateService->getAllTemplates();
-        $data = new DataTable();
-        $data->setData($templates);
-        $data->insertLinkButton('/system/mailTemplates/add', 'Neu');
+        $templates = $this->refactorMailTemplates($templates);
+        $dataTable = new DataTable();
+        $dataTable->setData($templates);
+        $dataTable->insertLinkButton('/system/mailTemplates/add', 'Neu');
         return array(
-          'data' => $data,
+          'data' => $dataTable,
         );
     }
     public function mailTemplateAction() {
         $templateID = $this->params()->fromRoute('templateName');
+        if ($templateID == 'add'){
+            $vars = $this->addMailTemplate();
+        }
+        elseif ($templateID == 'delete'){
+            $vars = $this->deleteMailTemplate($templateID);
+        }
+        else{
+            $vars = $this->editMailTemplate($templateID);
+        }
+        return $vars;
+    }
+
+    private function addMailTemplate($name = null)
+    {
+        $form = new MailTemplatesForm();
+        $form->get('submit')->setValue('Add');
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $form->setData($request->getPost()->toArray());
+            if ($form->isValid()){
+                $post = $form->getData();
+                unset($post['submit']);
+            $this->mailTemplateService->save($post);
+                return $this->redirect()->toRoute('system/mailTemplates');
+            }
+        }
+
+//        if (!$name === null) $form->get('id')->setValue($name);
+        $vars = array(
+            'form'  => $form,
+        );
+        return $vars;
+    }
+
+    private function editMailTemplate($templateID)
+    {
+        $form = new MailTemplatesForm();
         $template = $this->mailTemplateService->getByID($templateID);
+        $form->setData($template);
+        $form->get('submit')->setValue('Edit');
+        $request = $this->getRequest();
+        if($request->isPost()){
+            $form->setData($request->getPost()->toArray());
+            if ($form->isValid()){
+                $post = $form->getData();
+                unset($post['submit']);
+                $this->mailTemplateService->save($post);
+                return $this->redirect()->toRoute('system/mailTemplates');
+            }
+        }
         return array(
           'template' => $template,
+            'form'  => $form,
         );
+    }
+
+    private function deleteMailTemplate($templateID)
+    {
+        //@todo comfirm page
+        $this->mailTemplateService->deleteByID($templateID);
+        return $this->redirect()->toRoute('system/mailTemplates');
+    }
+
+    private function refactorMailTemplates($templates)
+    {
+        $i = 0;
+        while( isset($templates[$i]) ){
+            //add links
+            if ($templates[$i]['build_in'] !== "1") {
+                $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $templates[$i]['id'] . '">Edit</a><br/>';
+                $templates[$i]['Aktion'] .= '<a href="/system/mailTemplates/delete">delete</a> ';
+            }
+            else {
+                $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $templates[$i]['id'] . '">Edit</a><br/>';
+            }
+            // get variables
+            $from = '{{';
+            $to = '}}';
+            $aMatches = array();
+            preg_match_all("/\\".$from."(.*?)\\".$to."/", $templates[$i]['msg'], $aMatches);
+            $templates[$i]['variables'] = implode (' <br/>', $aMatches[1]);
+            // remove
+            unset ($templates[$i]['build_in']);
+            //next
+            $i++;
+        }
+        return $templates;
     }
 }
