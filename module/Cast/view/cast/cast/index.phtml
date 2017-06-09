@@ -1,7 +1,5 @@
-<style>
-</style>
-<?php echo $this->inlineFromFile('cast', 'cast', 'cast.css');  ?>
 <?php
+echo $this->inlineFromFile('cast', 'cast', 'cast.css');
 $this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
 $this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
 $GLOBALS['bhelper'] = $this->blazon();
@@ -9,16 +7,19 @@ $GLOBALS['bhelper'] = $this->blazon();
 //cleanfix
 bdump($root);
 
-//function createReference($char){
-//    $GLOBALS['parentBlazons'][$char['id']] = $char['blazon_id'];
-//    if (isset($char['employ'])){
-//        foreach ($char['employ'] as $employee){
-//            createReference($employee);
-//        }
-//    }
-//}
-//createReference($root);
+function linkCreator($parent){
+    $profileRoot = 'profile/' . $parent['userName'];
+    $castProfile = $profileRoot . '/' . $parent['charURL'];
 
+    $link1 = '<br/><div class="onlyCentered">';
+    $link1 .= '<a href="' . $castProfile . '">Darstellung</a>';
+    $link1 .= '</div>';
+
+    $link2 = '<div class="onlyCentered">';
+    $link2 .= '<a href="' . $profileRoot . '">Darsteller</a>';
+    $link2 .= '</div><br/>';
+    return $link1 . $link2;
+}
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
     echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
@@ -98,19 +99,6 @@ function createList($parent, $level) {
         echo '</ul>';
     }
     echo '</li>';
-}
-function linkCreator($parent){
-    $profileRoot = 'profile/' . $parent['userName'];
-    $castProfile = $profileRoot . '/' . $parent['charURL'];
-
-    $link1 = '<br/><div class="onlyCentered">';
-    $link1 .= '<a href="' . $castProfile . '">Darstellung</a>';
-    $link1 .= '</div>';
-
-    $link2 = '<div class="onlyCentered">';
-    $link2 .= '<a href="' . $profileRoot . '">Darsteller</a>';
-    $link2 .= '</div><br/>';
-    return $link1 . $link2;
 }
 ?>
 
