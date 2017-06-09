@@ -81,8 +81,8 @@ class BlazonController extends AbstractActionController
             return $this->redirect()->toRoute('castmanager/wappen');
         }
 
-        $form = new BlazonForm();
         $operator = 'Edit';
+        $form = new BlazonForm($operator);
         if (isset($blazon['filename'])) {
             $form->get('blazon')->setAttribute('value', $blazon['filename']);
         }
@@ -99,7 +99,6 @@ class BlazonController extends AbstractActionController
                 $request->getFiles()->toArray()
             );
             $form->setData($post);
-            $form->removeInputFilter(); //needed for edit
             if ($form->isValid()) {
                 $data = $form->getData();
                 $blaPath = $data['blazon']['tmp_name'];
@@ -114,8 +113,6 @@ class BlazonController extends AbstractActionController
                     //@todo errors to form
                 } else {
                     // on success
-                    //@todo cleanfix necessary ??
-                    $form->addInputFilter();
                     return $this->redirect()->toRoute('castmanager/wappen');
                 }
             }

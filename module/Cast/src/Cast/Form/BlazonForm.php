@@ -1,17 +1,16 @@
 <?php
 namespace Cast\Form;
 
-use Zend\Form\Element\File;
+use Cast\Form\Filter\BlazonFilter;
 use Zend\Form\Form;
-use Zend\InputFilter\FileInput;
-use Zend\InputFilter\InputFilter;
 
 class BlazonForm extends Form
 {
-    public function __construct()
+    public function __construct($filterFlag = null)
     {
         parent::__construct("Blazon");
         $this->setAttribute('method', 'post');
+        $this->setInputFilter(new BlazonFilter($filterFlag));
 
         $this->add(array(
             'name' => 'id',
@@ -51,67 +50,5 @@ class BlazonForm extends Form
                 'value' => 'Submit',
             )
         ));
-        $this->addInputFilter();
-    }
-    public function addInputFilter()
-    {
-        $inputFilter = new InputFilter();
-
-        // blazon
-        $blazonFileInput = new FileInput('blazon');
-        $blazonFileInput->setRequired(true);
-        $blazonFileInput->getFilterChain()->attachByName(
-            'filerenameupload',
-            array(
-                'target'    => './temp/',
-                'use_upload_name ' => true,
-                'randomize' => true,
-            )
-        );
-        $inputFilter->add($blazonFileInput);
-
-        // blazonBig
-        $bigBlazonFileInput = new FileInput('blazonBig');
-        $bigBlazonFileInput->setRequired(false);
-        $bigBlazonFileInput->getFilterChain()->attachByName(
-            'filerenameupload',
-            array(
-                'target'    => './temp/',
-                'use_upload_name ' => true,
-                'randomize' => true,
-            )
-        );
-        $inputFilter->add($bigBlazonFileInput);
-        $this->setInputFilter($inputFilter);
-    }
-    public function removeInputFilter(){
-        $inputFilter = new InputFilter();
-
-        // blazon
-        $blazonFileInput = new FileInput('blazon');
-        $blazonFileInput->setRequired(false);
-        $blazonFileInput->getFilterChain()->attachByName(
-            'filerenameupload',
-            array(
-                'target'    => './temp/',
-                'use_upload_name ' => true,
-                'randomize' => true,
-            )
-        );
-        $inputFilter->add($blazonFileInput);
-
-        // blazonBig
-        $bigBlazonFileInput = new FileInput('blazonBig');
-        $bigBlazonFileInput->setRequired(false);
-        $bigBlazonFileInput->getFilterChain()->attachByName(
-            'filerenameupload',
-            array(
-                'target'    => './temp/',
-                'use_upload_name ' => true,
-                'randomize' => true,
-            )
-        );
-        $inputFilter->add($bigBlazonFileInput);
-        $this->setInputFilter($inputFilter);
     }
 }

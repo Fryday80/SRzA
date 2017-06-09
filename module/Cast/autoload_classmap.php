@@ -23,6 +23,7 @@ return array(
     'Cast\Form\CharacterForm'                 => __DIR__ . '/src/Cast/Form/CharacterForm.php',
     'Cast\Form\ConfirmForm'                   => __DIR__ . '/src/Cast/Form/ConfirmForm.php',
     'Cast\Form\FamilyForm'                    => __DIR__ . '/src/Cast/Form/FamilyForm.php',
+    'Cast\Form\Filter\BlazonFilter'           => __DIR__ . '/src/Cast/Form/Filter/BlazonFilter.php',
     'Cast\Form\Filter\CharacterFilter'        => __DIR__ . '/src/Cast/Form/Filter/CharacterFilter.php',
     'Cast\Form\JobForm'                       => __DIR__ . '/src/Cast/Form/JobForm.php',
     'Cast\Model\BlazonTable'                  => __DIR__ . '/src/Cast/Model/BlazonTable.php',
