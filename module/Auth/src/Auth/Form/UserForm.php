@@ -16,7 +16,7 @@ class UserForm extends Form
         $this->allRoles = $roles;
         $this->role = $role;
         $this->setAttribute('method', 'post');
-//        $this->setInputFilter(new UserFilter());
+        $this->setInputFilter(new UserFilter());
 
         $fields = array();
         $adminFields = array(); // only shown for admins

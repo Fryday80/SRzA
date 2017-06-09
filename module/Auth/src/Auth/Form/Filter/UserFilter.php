@@ -87,5 +87,14 @@ class UserFilter extends InputFilter
                 ),
             ),
         ));
+
+        $this->add(array(
+            'name' => 'birthday',
+            'required' => false,
+        ));
+        $this->add(array(
+            'name' => 'zip',
+            'required' => false,
+        ));
     }
 }
