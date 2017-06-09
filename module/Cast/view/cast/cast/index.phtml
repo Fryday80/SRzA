@@ -7,19 +7,6 @@ $GLOBALS['bhelper'] = $this->blazon();
 //cleanfix
 bdump($root);
 
-function linkCreator($parent){
-    $profileRoot = 'profile/' . $parent['userName'];
-    $castProfile = $profileRoot . '/' . $parent['charURL'];
-
-    $link1 = '<br/><div class="onlyCentered">';
-    $link1 .= '<a href="' . $castProfile . '">Darstellung</a>';
-    $link1 .= '</div>';
-
-    $link2 = '<div class="onlyCentered">';
-    $link2 .= '<a href="' . $profileRoot . '">Darsteller</a>';
-    $link2 .= '</div><br/>';
-    return $link1 . $link2;
-}
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
     echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';
@@ -32,7 +19,14 @@ function createFamilyList($parent, $level) {
     echo '<span>Family: </span>';
     echo '<span data-id="'. $parent['family_id'] .'">'.$parent['family_name'].'</span>';
     echo '</p>';
-    echo linkCreator($parent);
+    $link1 = '<br/><div class="onlyCentered">';
+    $link1 .= '<a href="' . $parent['charProfileURL'] . '">Darstellung</a>';
+    $link1 .= '</div>';
+
+    $link2 = '<div class="onlyCentered">';
+    $link2 .= '<a href="' . $parent['profileURL'] . '">Darsteller</a>';
+    $link2 .= '</div><br/>';
+    echo $link1 . $link2;
     echo '</familymember>';
     if (count($parent['dependent']) > 0) {
         echo '<ul>';
@@ -66,7 +60,14 @@ function createList($parent, $level) {
         }
     }
     echo '</p>';
-    echo linkCreator($parent);
+    $link1 = '<br/><div class="onlyCentered">';
+    $link1 .= '<a href="' . $parent['charProfileURL'] . '">Darstellung</a>';
+    $link1 .= '</div>';
+
+    $link2 = '<div class="onlyCentered">';
+    $link2 .= '<a href="' . $parent['profileURL'] . '">Darsteller</a>';
+    $link2 .= '</div><br/>';
+    echo $link1 . $link2;
     echo '</character>';
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {

@@ -5,7 +5,6 @@ use Application\Service\StatisticService;
 use Auth\Form\ProfileCharacterForm;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
-use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
 use Cast\Model\JobTable;
 use Cast\Service\CastService;
@@ -20,8 +19,6 @@ class ProfileController extends AbstractActionController
 {
     /** @var UserTable  */
     protected $userTable;
-    /** @var CharacterTable  */
-    protected $characterTable;
     /** @var FamiliesTable  */
     protected $familyTable;
     /** @var JobTable  */
@@ -33,10 +30,9 @@ class ProfileController extends AbstractActionController
     /** @var CastService  */
     protected $castService;
 
-    function __construct(UserTable $userTable, CharacterTable $characterTable, FamiliesTable $familyTable, JobTable $jobTable, AccessService $accessService, StatisticService $statService, CastService $castService)
+    function __construct(UserTable $userTable, FamiliesTable $familyTable, JobTable $jobTable, AccessService $accessService, StatisticService $statService, CastService $castService)
     {
         $this->userTable = $userTable;
-        $this->characterTable = $characterTable;
         $this->familyTable = $familyTable;
         $this->jobTable = $jobTable;
         $this->accessService = $accessService;
@@ -56,7 +52,8 @@ class ProfileController extends AbstractActionController
             throw Exception("todo");
             //@todo redirect to user list
         }
-        $characters = $this->characterTable->getByUserId($user->id);
+        
+        $characters = $this->castService->getByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
         $askingUser = $this->accessService->getUserName();
 
@@ -83,9 +80,9 @@ class ProfileController extends AbstractActionController
             switch ($request->method) {
                 case 'getChars':
                     if (!isset($request->userID) ) {
-                        $result['data'] = $this->characterTable->getByUserId($userID);
+                        $result['data'] = $this->castService->getByUserId($userID);
                     } else {
-                        $result['data'] = $this->characterTable->getByUserId($request->userID);
+                        $result['data'] = $this->castService->getByUserId($request->userID);
                     }
                     break;
                 default:

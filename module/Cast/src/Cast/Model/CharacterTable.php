@@ -19,43 +19,23 @@ class CharacterTable extends AbstractTableGateway
     }
 
     public function getAll () {
-        $row = $this->select();
-        if (!$row)
-            return false;
-
-        return $row->toArray();
+        return $this->getAllCastData();
     }
-    
     public function getById($id) {
-        /** @var ResultSet $row */
-        $row = $this->select(array('id' => (int) $id));
-        if (count($row) > 0)
-            return $row->current()->getArrayCopy();
-
-        return false;
+        $result = $this->getAllCastData(array('id' => (int) $id));
+        return $result;
     }
-
     public function getByUserId($id) {
-        $row = $this->select(array('user_id' => (int) $id));
-        if (!$row)
-            return false;
-
-        return $row->toArray();
+        $result = $this->getAllCastData(array('user_id' => (int) $id));
+        return $result;
     }
-
     public function getByTrossId($id) {
-        $row = $this->select(array('tross_id' => (int) $id));
-        if (!$row)
-            return false;
-
-        return $row->toArray();
+        $result = $this->getAllCastData(array('tross_id' => (int) $id));
+        return $result;
     }
     public function getByFamilyId($id) {
-        $row = $this->select(array('family_id' => (int) $id));
-        if (!$row)
-            return false;
-
-        return $row->toArray();
+        $result = $this->getAllCastData(array('family_id' => (int) $id));
+        return $result;
     }
 
     public function getAllPossibleSupervisorsFor($familyID) {
@@ -75,10 +55,14 @@ class CharacterTable extends AbstractTableGateway
             throw new \Exception($e->getMessage());
         }
     }
+
     /**
      * returns all characters and there jobs, families and so on
+     * @param array $where
+     * @return array results
+     * @throws \Exception
      */
-    public function getAllCastData() {
+    public function getAllCastData(Array $where = array()) {//so meinte ich das
         try {
             $sql = new Sql($this->getAdapter());
 
@@ -110,7 +94,8 @@ class CharacterTable extends AbstractTableGateway
                 ), 'job.id = char.job_id', array(
                     'job_id' => 'id',
                     'job_name' => 'job'
-                ), 'left');
+                ), 'left')
+                ->where($where);
 
             $statement = $sql->prepareStatementForSqlObject($select);
             $result = $this->resultSetPrototype->initialize($statement->execute())
@@ -138,6 +123,4 @@ class CharacterTable extends AbstractTableGateway
     public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
-
-
 }

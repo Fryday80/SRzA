@@ -13,6 +13,7 @@ class GalleryController extends AbstractActionController
     {
         $this->galleryService = $galleryService;
     }
+    
     public function indexAction()
     {
         $albums = $this->galleryService->getAllAlbums();

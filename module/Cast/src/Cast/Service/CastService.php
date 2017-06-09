@@ -20,7 +20,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class CastService
 {
     private $loaded = false;
-    private $userSet = false;
     private $data;
 
     /** @var CharacterTable $jobTable */
@@ -32,6 +31,43 @@ class CastService
         $this->characterTable = $characterTable;
         $this->userTable = $userTable;
     }
+
+    public function getAll () {
+        $this->loadData();
+        return $this->data;
+    }
+    public function getById($id) {
+        $result = $this->characterTable->getById($id);
+        $result = $this->process($result);
+        return $result;
+    }
+    public function getByUserId($id) {
+        $result = $this->characterTable->getByUserId($id);
+        $result = $this->process($result);
+        return $result;
+    }
+    public function getByTrossId($id) {
+        $result = $this->characterTable->getByTrossId($id);
+        $result = $this->process($result);
+        return $result;
+    }
+    public function getByFamilyId($id) {
+        $result = $this->characterTable->getByFamilyId($id);
+        $result = $this->process($result);
+        return $result;
+    }
+
+    public function getCharacterData($name, $username){
+        if (!$this->loaded) $this->loadData();
+
+        foreach ($this->data as $key => $char){
+            if ($char['charURL'] == $name && $char['userName'] == $username){
+                return $char;
+            }
+        }
+        return null;
+    }
+
     private $charsById = [];
     private $depth = 0;
     private $tempFamsHash;
@@ -65,9 +101,6 @@ class CastService
         }
         return $root;
     }
-    public function getFamilyMembers() {
-
-    }
     public function getAllCharsFromFamily($id) {
         $result = [];
         foreach ($this->data as $char) {
@@ -77,6 +110,11 @@ class CastService
         }
         return $result;
     }
+//    cleanfix
+//    public function getFamilyMembers() {
+//
+//    }
+    
     private function buildStandingTree(&$parent) {
         $this->depth++;
         if (isset($this->tempFamsHash[$parent['family_id']])) {
@@ -129,12 +167,27 @@ class CastService
     }
 
      * */
+
     private function loadData() {
         if (!$this->loaded) {
-            $this->data = $this->characterTable->getAllCastData();
+            $this->data = $this->characterTable->getAll();
             //insert user names for linking
-            $this->getUserNames();
+            $this->process();
             $this->loaded = true;
+        }
+    }
+
+    private function process($data = null)
+    {
+        if ($data === null) {
+                $this->getUserNames();
+                $this->injectLinks();
+            return $this->data;
+        } else {
+
+            $data = $this->getUserNames($data);
+            $data = $this->injectLinks($data);
+            return $data;
         }
     }
 
@@ -142,24 +195,26 @@ class CastService
      * Adds the username of the Character to the user objects
      * @throws \Exception
      */
-    private function getUserNames(){
-        foreach ($this->data as $key => $char) {
+    private function getUserNames($data = null){
+        $result = ($data === null) ? $this->data : $data;
+        foreach ($result as $key => $char) {
             /** @var User $newData */
             $newData = $this->userTable->getUsersBy('id', $char['user_id']);
-            $this->data[$key]['userName'] = $newData->name;
-            $this->data[$key]['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
+            $result[$key]['userName'] = $newData->name;
         }
-        $this->userSet = true;
+        return ($data === null)? $this->data = $result : $result;
     }
-    public function getCharacterData($name, $username){
-        if (!$this->loaded) $this->loadData();
-        if (!$this->userSet) $this->getUserNames();
+    private function injectLinks($data = null){
+        $result = ($data === null) ? $this->data : $data;
+        foreach ($result as $key => $char){
+            $char['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
+            $profileRoot = '/profile/' . $char['userName'];
+            $castProfile = $profileRoot . '/' . $char['charURL'];
 
-        foreach ($this->data as $key => $char){
-            if ($char['charURL'] == $name && $char['userName'] == $username){
-                return $char;
-            }
+            $result[$key]['charURL'] = $char['charURL'];
+            $result[$key]['profileURL'] = $profileRoot;
+            $result[$key]['charProfileURL'] = $castProfile;
         }
-        return null;
+        return ($data === null)? $this->data = $result : $result;
     }
 }

@@ -11,12 +11,11 @@ class ProfileControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $pL = $sm->getServiceLocator();
         $userTable      = $pL->get('Auth\Model\UserTable');
-        $characterTable = $pL->get('Cast\Model\CharacterTable');
         $familyTable    = $pL->get('Cast\Model\FamiliesTable');
         $jobTable       = $pL->get('Cast\Model\JobTable');
         $accessService  = $pL->get('AccessService');
         $statService    = $pL->get('StatisticService');
         $castService    = $pL->get('CastService');
-        return new ProfileController($userTable, $characterTable, $familyTable, $jobTable, $accessService, $statService, $castService);
+        return new ProfileController($userTable, $familyTable, $jobTable, $accessService, $statService, $castService);
     }
 }
