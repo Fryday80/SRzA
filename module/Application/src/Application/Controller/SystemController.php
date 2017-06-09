@@ -3,7 +3,7 @@ namespace Application\Controller;
 
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
-use Application\Model\MailTemplatesTable;
+use Application\Service\MailTemplateService;
 use Application\Service\StatisticService;
 use Application\Utility\DataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -14,12 +14,12 @@ class SystemController extends AbstractActionController
 {
     /** @var  $statsService StatisticService */
     private $statsService;
-    private $mailTemplateTable;
+    private $mailTemplateService;
 
-    public function __construct(StatisticService $statisticService, MailTemplatesTable $mailTemplateTable)
+    public function __construct(StatisticService $statisticService,  MailTemplateService $mailTemplateService)
     {
         $this->statsService = $statisticService;
-        $this->mailTemplateTable = $mailTemplateTable;
+        $this->mailTemplateService = $mailTemplateService;
     }
     public function dashboardAction()
     {
@@ -129,7 +129,7 @@ class SystemController extends AbstractActionController
         );
     }
     public function mailTemplatesIndexAction() {
-        $templates = $this->mailTemplateTable->getAllTemplates();
+        $templates = $this->mailTemplateService->getAllTemplates();
         $data = new DataTable();
         $data->setData($templates);
         $data->insertLinkButton('/system/mailTemplates/add', 'Neu');
@@ -139,7 +139,7 @@ class SystemController extends AbstractActionController
     }
     public function mailTemplateAction() {
         $templateID = $this->params()->fromRoute('templateName');
-        $template = $this->mailTemplateTable->getByID($templateID);
+        $template = $this->mailTemplateService->getByID($templateID);
         return array(
           'template' => $template,
         );

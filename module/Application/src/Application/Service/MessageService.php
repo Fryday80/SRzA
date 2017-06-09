@@ -1,18 +1,15 @@
 <?php
 namespace Application\Service;
 
-use Application\Model\MailTemplatesTable;
 use Exception;
-use Zend\ServiceManager\ServiceManager;
 
 class MessageService
 {
-    protected $mailTemplatesTable;
-    /** @var  ServiceManager */
-    private $serviceManager;
-    function __construct(MailTemplatesTable $mailTemplatesTable)
+    protected $mailTemplateService;
+    
+    function __construct(MailTemplateService $mailTemplateService)
     {
-        $this->mailTemplatesTable = $mailTemplatesTable;
+        $this->mailTemplateService = $mailTemplateService;
     }
 
     public function SendMail($address, $Subject, $message, $sender, $senderAddress) {
@@ -37,7 +34,7 @@ class MessageService
     public function SendMailFromTemplate($target, $templateID, $templateVars) {
         try {
             //load template from db
-            $template = $this->mailTemplatesTable->getByID($templateID);
+            $template = $this->mailTemplateService->getByID($templateID);
 
             if (!$template) {
                 //@todo error: "no template with this id"

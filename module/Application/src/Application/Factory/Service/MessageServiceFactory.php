@@ -8,7 +8,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class MessageServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        $mailTemplatesTable = $sm->get('Application\Model\MailTemplatesTable');
-        return new MessageService($mailTemplatesTable);
+        $mailTemplateService = $sm->get('MailTemplateService');
+        return new MessageService($mailTemplateService);
     }
 }

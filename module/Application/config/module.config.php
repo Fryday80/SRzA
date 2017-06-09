@@ -27,6 +27,7 @@ return array(
         'factories' => array(
             'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory',
             'MessageService'   => 'Application\Factory\Service\MessageServiceFactory',
+            'MailTemplateService'   => 'Application\Factory\Service\MailTemplateServiceFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

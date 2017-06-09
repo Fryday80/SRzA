@@ -21,7 +21,6 @@ class MailTemplatesTable extends AbstractTableGateway
     {
         return $this->select()->toArray();
     }
-
     public function getByID($id)
     {
         $result = $this->select([
@@ -48,7 +47,6 @@ class MailTemplatesTable extends AbstractTableGateway
         }
         return $this->lastInsertValue;
     }
-
     public function deleteByID($id)
     {
         if( $this->isBuildIn($id) ) return false;
@@ -56,6 +54,7 @@ class MailTemplatesTable extends AbstractTableGateway
                 'id' => $id
             ]);
     }
+    
     public function isBuildIn($id) {
         $entry = $this->getByID($id);
         if ($entry === null) return false;
