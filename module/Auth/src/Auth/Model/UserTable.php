@@ -44,6 +44,11 @@ class UserTable extends AbstractTableGateway
         }
         return $row;
     }
+
+    /**
+     * @param $id
+     * @return User|bool
+     */
     public function getUser($id)
     {
         $id  = (int) $id;

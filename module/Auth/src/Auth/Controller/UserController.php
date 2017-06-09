@@ -8,6 +8,9 @@ use Auth\Service\AccessService;
 use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
+use Exception;
+use Media\Service\MediaService;
+use Zend\Form\View\Helper\FormDate;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class UserController extends AbstractActionController
@@ -18,12 +21,15 @@ class UserController extends AbstractActionController
     protected $userTable;
     /** @var  RoleTable */
     protected $roleTable;
+    /** @var MediaService */
+    private $mediaService;
 
-    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable)
+    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable, MediaService $mediaService)
     {
         $this->accessService = $accessService;
         $this->userTable = $userTable;
         $this->roleTable = $roleTable;
+        $this->mediaService = $mediaService;
     }
     public function indexAction()
     {
@@ -72,15 +78,35 @@ class UserController extends AbstractActionController
         
         $request = $this->getRequest();
         if ($request->isPost()) {
+            //merge post data and files
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
             $user = new User();
-            $form->setData($request->getPost());
+            $form->setData($post);
             if ($form->isValid()) {
-                $user->exchangeArray($form->getData());
+                $formData = $form->getData();
+                $user->exchangeArray($formData);
+
                 if (strlen($form->getData()['password']) > 4) {
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
                 $this->userTable->saveUser($user);
+
+                //handle user image
+                if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
+                    //@todo no image or image upload error
+                } else {
+                    $userPic = $formData['user_image']['tmp_name'];
+                    $dataPath = realpath('./data');
+                    @mkdir($dataPath . '/_users', 0755);
+                    @mkdir($dataPath . '/_users/' . $user->name, 0755);
+                    $newPath = realpath('./data/_users/' . $user->name);
+                    $newPath = $newPath . '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    rename($userPic, $newPath);
+                }
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -112,15 +138,36 @@ class UserController extends AbstractActionController
         
         $request = $this->getRequest();
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            //merge post data and files
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+            $form->setData($post);
             if ($form->isValid()) {
-                $user->exchangeArray($form->getData());
+                $formData = $form->getData();
+                $user->exchangeArray($formData);
                 if (strlen($form->getData()['password']) > 3) {
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
                 $this->userTable->saveUser($user);
-                
+
+                //handle user image
+                if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
+                    //@todo no image or image upload error
+                } else {
+                    $userPic = $formData['user_image']['tmp_name'];
+                    $dataPath = realpath('./data');
+                    @mkdir($dataPath . '/_users', 0755);
+                    @mkdir($dataPath . '/_users/' . $user->name, 0755);
+                    $newPath = realpath('./data/_users/' . $user->name);
+                    $newPath = $newPath . '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    //@todo serach old image and unlink (files can have different extensions)
+                    @unlink($newPath);
+                    rename($userPic, $newPath);
+                }
+
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
             }
@@ -138,6 +185,11 @@ class UserController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('user');
         }
+        $user = $this->userTable->getUser($id);
+        if (!$user) {
+            //user dosen't exists
+            throw new Exception("User with id '$id' does not exists");
+        }
         $request = $this->getRequest();
         if ($request->isPost()) {
             $del = $request->getPost('del', 'No');
@@ -145,15 +197,30 @@ class UserController extends AbstractActionController
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
                 $this->userTable->deleteUser($id);
+                //@todo der löscht nicht arrrg
+                $this->deleteRecursive('_users/'.$user->name);
             }
-            
             // Redirect to list of Users
             return $this->redirect()->toRoute('user');
         }
         
         return array(
             'id' => $id,
-            'user' => $this->userTable->getUser($id)
+            'user' => $user,
         );
+    }
+    private function deleteRecursive($path) {
+        $realPath = realpath($path);
+        if (is_dir($realPath)){
+            $files = glob($realPath.'/*', GLOB_MARK); //GLOB_MARK adds a slash to directories returned
+            foreach ($files as $file)
+            {
+                $this->deleteRecursive( $file );
+            }
+
+            rmdir($realPath);
+        } elseif (is_file($realPath)) {
+            unlink($realPath);
+        }
     }
 }

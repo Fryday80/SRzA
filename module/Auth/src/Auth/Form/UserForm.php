@@ -16,7 +16,7 @@ class UserForm extends Form
         $this->allRoles = $roles;
         $this->role = $role;
         $this->setAttribute('method', 'post');
-        $this->setInputFilter(new UserFilter());
+//        $this->setInputFilter(new UserFilter());
 
         $fields = array();
         $adminFields = array(); // only shown for admins
@@ -47,16 +47,27 @@ class UserForm extends Form
             'type' => 'Password',
             'options' => array(
                 'label' => 'Password',
-                )
-            );
+            )
+        );
 
         $fields[] = array(
             'name'       => 'passwordConfirm',
             'type'       => 'Password',
             'options' => array(
                 'label' => 'Password confirm',
-                )
-            );
+            )
+        );
+
+        $fields[] = array(
+            'name' => 'user_image',
+            'type' => 'file',
+            'options' => array(
+                'label' => 'UserImage',
+            ),
+            'attributes' => array(
+                'accept' => 'image/*'
+            )
+        );
 
         $fields[] = array(
             'name' => 'submit',
@@ -218,7 +229,8 @@ class UserForm extends Form
             'street' => 10,
             'city' => 9,
             'zip' => 8,
-            'submit' => 1
+            'submit' => 1,
+            'user_image' => 80
         );
         if (!isset ($order[$name]) ){
             $prio = 7;

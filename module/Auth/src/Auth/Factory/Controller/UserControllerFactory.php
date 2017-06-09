@@ -12,6 +12,7 @@ class UserControllerFactory implements FactoryInterface
         $accessService = $pL->get('AccessService');
         $userTable = $pL->get('Auth\Model\UserTable');
         $roleTable = $pL->get('Auth\Model\RoleTable');
-        return new UserController($userTable, $accessService, $roleTable);
+        $mediaService = $pL->get('MediaService');
+        return new UserController($userTable, $accessService, $roleTable, $mediaService);
     }
 }
