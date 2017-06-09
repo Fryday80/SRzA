@@ -21,9 +21,11 @@ class BlazonService
     private $data;
     /** @var  BlazonTable */
     private $blazonTable;
+    private $parentBlazons = false;
 
-    function __construct(BlazonTable $blazonTable) {
+    function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
+        $this->castService = $castService;
     }
 
     public function getAll() {
@@ -47,6 +49,27 @@ class BlazonService
         }
         $lastError = $this::ERROR_NAME_NOT_FOUND;
         return false;
+    }
+
+    public function createReference($char){
+        $this->parentBlazons[$char['id']] = $char['blazon_id'];
+        if (isset($char['employ'])){
+            foreach ($char['employ'] as $employee){
+                $this->createReference($employee);
+            }
+        }
+        $this->getParentBlazons();
+    }
+
+    public function getParentBlazons()
+    {
+        if(!$this->parentBlazons) $this->createReference($this->castService->getStanding());
+        return $this->parentBlazons;
+    }
+
+    public function resetParentBlazons()
+    {
+        $this->parentBlazons = false;
     }
 
     public function getBigBlazonUrl($selector){

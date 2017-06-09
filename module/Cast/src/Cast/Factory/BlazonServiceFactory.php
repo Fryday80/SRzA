@@ -9,6 +9,6 @@ class BlazonServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $blazonTable = $sm->get('Cast\Model\BlazonTable');
-        return new BlazonService($blazonTable);
+        return new BlazonService($blazonTable, $sm->get('CastService'));
     }
 }

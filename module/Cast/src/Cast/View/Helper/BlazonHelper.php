@@ -9,11 +9,11 @@ class BlazonHelper extends AbstractHelper
 {
     /** @var  BlazonService */
     private $service;
+    private $parentBlazons = false;
 
-    function __construct($sm)
+    function __construct(BlazonService $service)
     {
-        $parentLocator = $sm->getServiceLocator();
-        $this->service = $parentLocator->get('BlazonService');
+        $this->service = $service;
     }
 
     /**
@@ -72,5 +72,29 @@ class BlazonHelper extends AbstractHelper
     {
         $picUrl = ($size == 'big') ? $this->service->getBigBlazonUrl($selector) : $this->service->getBlazonUrl($selector);
         return $picUrl;
+    }
+    
+    public function getBlazonHelperArgumentsByCharacter($character){
+        if(!$this->parentBlazons)$this->parentBlazons = $this->service->getParentBlazons();
+        $overlay1 = $overlay2 = '';
+        if ($character['job_name'] !== null){
+            $overlay1 = $character['job_name'];
+        }
+        if ( $character['supervisor_id'] !== "0" ) { //not set should be unused when in use
+            if ( $character['supervisor_id'] !== "1" ) {    //first level Chars under fictive supervisor
+                $overlay2 = (int)$this->parentBlazons[$character['supervisor_id']];
+            }
+        }
+        $base = ($character['blazon_id'] == "0") ? 'standard' : (int)$character['blazon_id'];
+
+        if ($character['id'] == "1") $overlay1 = 'king'; //special rule for the king
+        if ($base == $overlay2) $overlay2 = null;
+
+        return array($base, $overlay1, $overlay2);
+    }
+    public function resetParentBlazons()
+    {
+        $this->parentBlazons = false;
+        $this->service->resetParentBlazons();
     }
 }

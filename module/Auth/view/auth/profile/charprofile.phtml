@@ -33,11 +33,12 @@
 
 /** @var \Cast\View\Helper\BlazonHelper $bh */
 $bh = $this->blazon();
+$char['bhArg'] = $bh->getBlazonHelperArgumentsByCharacter($char);
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 ?>
 
-    <?php echo '<div class="charprofile headimages headblazon">' . $bh->blazon() . '</div>' ?>
+    <?php echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
     <div class="charprofile headimages">
         <?php echo (isset($char['userData']->pic)) ? '<img style="float: right;" src="">' : 'Bild nicht gefunden' ?>
     </div>
