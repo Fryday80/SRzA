@@ -27,7 +27,6 @@ return array(
         'factories' => array(
             'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory',
             'MessageService'   => 'Application\Factory\Service\MessageServiceFactory',
-            'MailTemplateService'   => 'Application\Factory\Service\MailTemplateServiceFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
@@ -130,10 +129,21 @@ return array(
                         ),
                         'may_terminate' => true,
                         'child_routes' => array(
+                            'add' => array(
+                                'type' => 'Segment',
+                                'options' => array(
+                                    'route' => '/add',
+                                    'constraints' => array(),
+                                    'defaults' => array(
+                                        'action' => 'addMailTemplate',
+                                    )
+                                ),
+                                'may_terminate' => true,
+                            ),
                             'template' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/:templateName[/:delete]',
+                                    'route' => '/:templateName',
                                     'constraints' => array(),
                                     'defaults' => array(
                                         'action' => 'mailTemplate',

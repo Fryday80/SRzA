@@ -4,7 +4,7 @@ namespace Application\Controller;
 use Application\Form\MailTemplatesForm;
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
-use Application\Service\MailTemplateService;
+use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Application\Utility\DataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -15,12 +15,13 @@ class SystemController extends AbstractActionController
 {
     /** @var  $statsService StatisticService */
     private $statsService;
-    private $mailTemplateService;
+    /** @var MessageService  */
+    private $messageService;
 
-    public function __construct(StatisticService $statisticService,  MailTemplateService $mailTemplateService)
+    public function __construct(StatisticService $statisticService,  MessageService $messageService)
     {
         $this->statsService = $statisticService;
-        $this->mailTemplateService = $mailTemplateService;
+        $this->messageService = $messageService;
     }
     public function dashboardAction()
     {
@@ -130,9 +131,17 @@ class SystemController extends AbstractActionController
         );
     }
     public function mailTemplatesIndexAction() {
-        $templates = $this->mailTemplateService->getAllTemplates();
-        $templates = $this->refactorMailTemplates($templates);
-        bdump($templates);
+        $templates = $this->messageService->getAllTemplates();
+        //refactor data:
+        $i = 0;
+        while( isset($templates[$i]) ){
+            //add links
+            $edit = $templates[$i]['name'];
+            $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $edit . '">Edit</a><br/>';
+            //next
+            $i++;
+        }
+
         $dataTable = new DataTable();
         $dataTable->setData($templates);
         $dataTable->insertLinkButton('/system/mailTemplates/add', 'Neu');
@@ -142,43 +151,8 @@ class SystemController extends AbstractActionController
     }
     public function mailTemplateAction() {
         $templateName = $this->params()->fromRoute('templateName');
-        $operator = $this->params()->fromRoute('delete');
-        if ($templateName == 'add'){
-            $vars = $this->addMailTemplate();
-        }
-        elseif ($operator == 'delete'){
-            $vars = $this->deleteMailTemplate($templateName);
-        }
-        else{
-            $vars = $this->editMailTemplate($templateName);
-        }
-        return $vars;
-    }
-
-    private function addMailTemplate($name = null)
-    {
         $form = new MailTemplatesForm();
-        $form->get('submit')->setValue('Add');
-        $request = $this->getRequest();
-        if($request->isPost()){
-            $form->setData($request->getPost()->toArray());
-            if ($form->isValid()){
-                $post = $form->getData();
-                $this->mailTemplateService->save($post);
-                return $this->redirect()->toRoute('system/mailTemplates');
-            }
-        }
-        if (!$name == null) $form->get('name')->setValue($name);
-        return array(
-            'form'  => $form,
-            'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
-        );;
-    }
-
-    private function editMailTemplate($templateName)
-    {
-        $form = new MailTemplatesForm();
-        $template = $this->mailTemplateService->getByName($templateName);
+        $template = $this->messageService->getTemplateByName($templateName);
         if($template == null) return $this->addMailTemplate($templateName);
         $form->setData($template);
         $form->get('submit')->setValue('Edit');
@@ -187,7 +161,7 @@ class SystemController extends AbstractActionController
             $form->setData($request->getPost()->toArray());
             if ($form->isValid()){
                 $post = $form->getData();
-                $this->mailTemplateService->save($post);
+                $this->messageService->saveTemplate($post);
                 return $this->redirect()->toRoute('system/mailTemplates');
             }
         }
@@ -195,39 +169,5 @@ class SystemController extends AbstractActionController
             'form'  => $form,
             'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
         );
-    }
-
-    private function deleteMailTemplate($templateName)
-    {
-        $form = new MailTemplatesForm();
-        $template = $this->mailTemplateService->getByName($templateName);
-        $form->setData($template);
-        $form->get('submit')->setValue('Endgültig Löschen?');
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $this->mailTemplateService->deleteByName($templateName);
-            return $this->redirect()->toRoute('system/mailTemplates');
-        }
-        return array(
-            'form' => $form,
-            'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
-        );
-    }
-
-    private function refactorMailTemplates($templates)
-    {
-        $i = 0;
-        while( isset($templates[$i]) ){
-            //add links
-            $edit = $templates[$i]['name'];
-            $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $edit . '">Edit</a><br/>';
-            $templates[$i]['Aktion'] .= ($templates[$i]['build_in'] !== "1") ? '<a href="/system/mailTemplates/'.$edit.'/delete">delete</a> ' : '';
-            // remove
-            unset ($templates[$i]['build_in']);
-            unset ($templates[$i]['id']);
-            //next
-            $i++;
-        }
-        return $templates;
     }
 }

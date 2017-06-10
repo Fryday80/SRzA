@@ -12,11 +12,7 @@ class MailTemplatesForm extends Form
         parent::__construct("MailTemplates");
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new MailTemplatesFilter());
-
-        $this->add(array(
-            'name' => 'id',
-            'type' => 'hidden',
-        ));
+        
         $this->add(array(
             'name' => 'name',
             'type' => 'text',
@@ -47,10 +43,6 @@ class MailTemplatesForm extends Form
         ));
         $this->add(array(
             'name' => 'variables',
-            'type' => 'Hidden'
-        ));
-        $this->add(array(
-            'name' => 'build_in',
             'type' => 'Hidden'
         ));
         $this->add(array(

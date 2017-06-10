@@ -9,7 +9,7 @@ class SystemControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $statService = $sm->getServiceLocator()->get('StatisticService');
-        $mailTemplateService = $sm->getServiceLocator()->get('MailTemplateService');
+        $mailTemplateService = $sm->getServiceLocator()->get('MessageService');
         return new SystemController($statService, $mailTemplateService);
     }
 }

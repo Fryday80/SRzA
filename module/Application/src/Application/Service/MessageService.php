@@ -1,15 +1,17 @@
 <?php
 namespace Application\Service;
 
+use Application\Model\MailTemplatesTable;
 use Exception;
 
 class MessageService
 {
-    protected $mailTemplateService;
+    /** @var MailTemplatesTable  */
+    protected $mailTemplatesTable;
     
-    function __construct(MailTemplateService $mailTemplateService)
+    function __construct(MailTemplatesTable $mailTemplatesTable)
     {
-        $this->mailTemplateService = $mailTemplateService;
+        $this->mailTemplatesTable = $mailTemplatesTable;
     }
 
     public function SendMail($address, $Subject, $message, $sender, $senderAddress) {
@@ -26,15 +28,15 @@ class MessageService
 
     /**
      * @param $target
-     * @param $templateID
+     * @param $templateName
      * @param $templateVars
      * @return bool
      * @throws Exception
      */
-    public function SendMailFromTemplate($target, $templateID, $templateVars) {
+    public function SendMailFromTemplate($target, $templateName, $templateVars) {
         try {
             //load template from db
-            $template = $this->mailTemplateService->getByID($templateID);
+            $template = $this->mailTemplatesTable->getBy(array( 'name' => $templateName));
 
             if (!$template) {
                 //@todo error: "no template with this id"
@@ -54,6 +56,32 @@ class MessageService
         }
     }
 
+    public function getAllTemplates()
+    {
+        return $this->mailTemplatesTable->getAllTemplates();
+    }
+    public function getTemplateByName($name)
+    {
+        return $this->mailTemplatesTable->getBy(array( 'name' => $name));
+    }
+
+    public function saveTemplate(Array $data)
+    {
+        return $this->mailTemplatesTable->save($data);
+    }
+    
+    private function buildTemplateString($string, $data) {
+        if (preg_match_all("/{{(.*?)}}/", $string, $result)) {
+            bdump($result);
+            foreach ($result[1] as $i => $varName) {
+                if (isset($data[$varName]))
+                    $string = str_replace($result[0][$i], $data[$varName], $string);
+            }
+        }
+        return $string;
+    }
+
+
 
 //    public function pmTo($userId, $msg) {}
 //    public function getUnreadPms() {}
@@ -66,16 +94,6 @@ class MessageService
 //     */
 //    public function chatSay($channel, $msg, $media) {}
 //    public function chatGetChannel($channel, $since) {}
-    private function buildTemplateString($string, $data) {
-        if (preg_match_all("/{{(.*?)}}/", $string, $result)) {
-            bdump($result);
-            foreach ($result[1] as $i => $varName) {
-                if (isset($data[$varName]))
-                    $string = str_replace($result[0][$i], $data[$varName], $string);
-            }
-        }
-        return $string;
-    }
 }
 class TemplateTypes {
     const SUCCESSFUL_REGISTERED = 'SUCCESSFUL_REGISTERED';
