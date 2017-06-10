@@ -161,11 +161,8 @@ class SystemController extends AbstractActionController
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
         if($request->isPost()){
-            bdump('post');
             $form->setData($request->getPost()->toArray());
-            bdump($form->isValid());
             if ($form->isValid()){
-                bdump('valid');
                 $post = $form->getData();
                 $this->mailTemplateService->save($post);
                 return $this->redirect()->toRoute('system/mailTemplates');

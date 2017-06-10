@@ -39,8 +39,6 @@ class MailTemplatesTable extends AbstractTableGateway
             $this->insert($data);
         } else {
             $select = array( 'id' => $data['id']);
-            bdump (array( 'id' => $data['id'])        );
-            bdump($this->getBy($select));
             if ($this->getBy($select)) {
                 if( $this->isBuildIn($select) ) return false;
                 $this->update($data, $select);
