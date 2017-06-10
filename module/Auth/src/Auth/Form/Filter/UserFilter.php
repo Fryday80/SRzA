@@ -6,7 +6,7 @@ use Zend\InputFilter\InputFilter;
 class UserFilter extends InputFilter
 {
 
-    public function __construct()
+    public function __construct($filterFlag = null)
     {
         $this->add(array(
             'name' => 'id',
@@ -96,5 +96,13 @@ class UserFilter extends InputFilter
             'name' => 'zip',
             'required' => false,
         ));
+        if ($filterFlag !== null) $this->modify($filterFlag);
+    }
+
+    private function modify($filterFlag)
+    {
+        if ($filterFlag == 'adminedit'){
+            
+        }
     }
 }

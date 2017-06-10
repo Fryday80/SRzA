@@ -108,7 +108,7 @@ class AuthController extends AbstractActionController
                 $data = $form->getData();
 
                 $result = $this->login($ip, $data['email'], $data['password']);
-
+                
                 if ($result->isValid()) {
                     if (count($ref) > 0) {
                         return $this->redirect()->toUrl($ref[0]);

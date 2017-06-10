@@ -10,13 +10,14 @@ class UserForm extends Form
     private $allRoles;
     private $roles;
     private $role;
+    private $filterFlag = null;
     public function __construct($roles = null, $role = null)
     {
         parent::__construct('User');
         $this->allRoles = $roles;
         $this->role = $role;
         $this->setAttribute('method', 'post');
-        $this->setInputFilter(new UserFilter());
+        $this->setInputFilter(new UserFilter($this->filterFlag));
 
         $fields = array();
         $adminFields = array(); // only shown for admins
@@ -151,6 +152,15 @@ class UserForm extends Form
                 'accept' => 'image/*'
             )
         );
+        $fields[] = array(
+            'name' => 'status',
+            'type' => 'hidden'
+        );
+
+        $fields[] = array(
+            'name' => 'role_id',
+            'type' => 'hidden'
+        );
 
         foreach ($fields as $field){
             $this->add(
@@ -187,6 +197,9 @@ class UserForm extends Form
             }
         }
 
+    }
+    public function setFilterType($type){
+        $this->filterFlag = strtolower($type);
     }
     private function getRolesForSelect() {
         if (!$this->roles) {

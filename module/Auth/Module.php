@@ -71,7 +71,7 @@ class Module
             return $target->redirect()->toUrl('/logout');
         }
         if( !in_array($requestedResourse, $this->whitelist)){
-            if( !$accessService->allowed($controller, $action) ){ // der hier ergibt true
+            if( !$accessService->allowed($controller, $action) ){
                 //@todo log to stats
 //                $statsService->getSysLog()
                 if ($request->isXmlHttpRequest()) {
