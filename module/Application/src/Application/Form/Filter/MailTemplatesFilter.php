@@ -9,7 +9,7 @@ class MailTemplatesFilter extends InputFilter
     public function __construct($filterFlag = null)
     {
         $this->add(array(
-            'name' => 'id',
+            'name' => 'name',
             'required' => true,
         ));
         $this->add(array(

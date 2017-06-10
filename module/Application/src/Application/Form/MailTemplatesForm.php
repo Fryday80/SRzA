@@ -15,6 +15,10 @@ class MailTemplatesForm extends Form
 
         $this->add(array(
             'name' => 'id',
+            'type' => 'hidden',
+        ));
+        $this->add(array(
+            'name' => 'name',
             'type' => 'text',
             'options' => array(
                 'label' => 'Template'
@@ -40,6 +44,10 @@ class MailTemplatesForm extends Form
             'options' => array(
                 'label' => 'Nachricht'
             )
+        ));
+        $this->add(array(
+            'name' => 'variables',
+            'type' => 'Hidden'
         ));
         $this->add(array(
             'name' => 'build_in',

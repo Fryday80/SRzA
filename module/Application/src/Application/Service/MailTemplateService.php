@@ -17,25 +17,42 @@ class MailTemplateService
     {
         return $this->mailTemplatesTable->getAllTemplates();
     }
+    public function getBy(Array $select){
+        return $this->mailTemplatesTable->getBy($select);
+    }
     public function getByID($id)
     {
-        return $this->mailTemplatesTable->getByID($id);
+        return $this->getBy(array('id' => $id));
+    }
+    public function getByName($name)
+    {
+        return $this->getBy(array( 'name' => $name));
     }
 
     public function save(Array $data)
     {
         return $this->mailTemplatesTable->save($data);
     }
+    
+    public function deleteBy(Array $select)
+    {
+        return $this->mailTemplatesTable->deleteBy($select);
+    }
     public function deleteByID($id)
     {
-        return $this->mailTemplatesTable->deleteByID($id);
+        return $this->deleteBy(array('id' => $id));
+    }
+    public function deleteByName($name)
+    {
+        return $this->deleteBy(array('name' => $name));
     }
 
-    public function isBuildIn($id)
-    {
-        $entry = $this->getByID($id);
-        if ($entry === null) return false;
-        if ($entry['build_in'] == 1) return true;
-        return false;
+    public function isBuildIn($key, $column = null) {
+        if ($column === null) {
+            $select = (is_array($key))                     ? $key                  : null;
+            $select = ($entry === null || is_string($key)) ? array('name' => $key) : null;
+            $select = ($entry === null || is_int($key))    ? array('id' => $key)   : null;
+        }
+        return $this->mailTemplatesTable->isBuildIn($select);
     }
 }

@@ -133,7 +133,7 @@ return array(
                             'template' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/:templateName',
+                                    'route' => '/:templateName[/:delete]',
                                     'constraints' => array(),
                                     'defaults' => array(
                                         'action' => 'mailTemplate',

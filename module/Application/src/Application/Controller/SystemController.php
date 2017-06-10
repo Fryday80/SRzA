@@ -132,6 +132,7 @@ class SystemController extends AbstractActionController
     public function mailTemplatesIndexAction() {
         $templates = $this->mailTemplateService->getAllTemplates();
         $templates = $this->refactorMailTemplates($templates);
+        bdump($templates);
         $dataTable = new DataTable();
         $dataTable->setData($templates);
         $dataTable->insertLinkButton('/system/mailTemplates/add', 'Neu');
@@ -140,15 +141,16 @@ class SystemController extends AbstractActionController
         );
     }
     public function mailTemplateAction() {
-        $templateID = $this->params()->fromRoute('templateName');
-        if ($templateID == 'add'){
+        $templateName = $this->params()->fromRoute('templateName');
+        $operator = $this->params()->fromRoute('delete');
+        if ($templateName == 'add'){
             $vars = $this->addMailTemplate();
         }
-        elseif ($templateID == 'delete'){
-            $vars = $this->deleteMailTemplate($templateID);
+        elseif ($operator == 'delete'){
+            $vars = $this->deleteMailTemplate($templateName);
         }
         else{
-            $vars = $this->editMailTemplate($templateID);
+            $vars = $this->editMailTemplate($templateName);
         }
         return $vars;
     }
@@ -159,26 +161,28 @@ class SystemController extends AbstractActionController
         $form->get('submit')->setValue('Add');
         $request = $this->getRequest();
         if($request->isPost()){
+            bdump('post');
             $form->setData($request->getPost()->toArray());
+            bdump($form->isValid());
             if ($form->isValid()){
+                bdump('valid');
                 $post = $form->getData();
-                unset($post['submit']);
-            $this->mailTemplateService->save($post);
+                $this->mailTemplateService->save($post);
                 return $this->redirect()->toRoute('system/mailTemplates');
             }
         }
-
-//        if (!$name === null) $form->get('id')->setValue($name);
-        $vars = array(
+        if (!$name == null) $form->get('name')->setValue($name);
+        return array(
             'form'  => $form,
-        );
-        return $vars;
+            'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
+        );;
     }
 
-    private function editMailTemplate($templateID)
+    private function editMailTemplate($templateName)
     {
         $form = new MailTemplatesForm();
-        $template = $this->mailTemplateService->getByID($templateID);
+        $template = $this->mailTemplateService->getByName($templateName);
+        if($template == null) return $this->addMailTemplate($templateName);
         $form->setData($template);
         $form->get('submit')->setValue('Edit');
         $request = $this->getRequest();
@@ -186,22 +190,31 @@ class SystemController extends AbstractActionController
             $form->setData($request->getPost()->toArray());
             if ($form->isValid()){
                 $post = $form->getData();
-                unset($post['submit']);
                 $this->mailTemplateService->save($post);
                 return $this->redirect()->toRoute('system/mailTemplates');
             }
         }
         return array(
-          'template' => $template,
             'form'  => $form,
+            'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
         );
     }
 
-    private function deleteMailTemplate($templateID)
+    private function deleteMailTemplate($templateName)
     {
-        //@todo comfirm page
-        $this->mailTemplateService->deleteByID($templateID);
-        return $this->redirect()->toRoute('system/mailTemplates');
+        $form = new MailTemplatesForm();
+        $template = $this->mailTemplateService->getByName($templateName);
+        $form->setData($template);
+        $form->get('submit')->setValue('Endgültig Löschen?');
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $this->mailTemplateService->deleteByName($templateName);
+            return $this->redirect()->toRoute('system/mailTemplates');
+        }
+        return array(
+            'form' => $form,
+            'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
+        );
     }
 
     private function refactorMailTemplates($templates)
@@ -209,21 +222,12 @@ class SystemController extends AbstractActionController
         $i = 0;
         while( isset($templates[$i]) ){
             //add links
-            if ($templates[$i]['build_in'] !== "1") {
-                $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $templates[$i]['id'] . '">Edit</a><br/>';
-                $templates[$i]['Aktion'] .= '<a href="/system/mailTemplates/delete">delete</a> ';
-            }
-            else {
-                $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $templates[$i]['id'] . '">Edit</a><br/>';
-            }
-            // get variables
-            $from = '{{';
-            $to = '}}';
-            $aMatches = array();
-            preg_match_all("/\\".$from."(.*?)\\".$to."/", $templates[$i]['msg'], $aMatches);
-            $templates[$i]['variables'] = implode (' <br/>', $aMatches[1]);
+            $edit = $templates[$i]['name'];
+            $templates[$i]['Aktion'] = '<a href="/system/mailTemplates/' . $edit . '">Edit</a><br/>';
+            $templates[$i]['Aktion'] .= ($templates[$i]['build_in'] !== "1") ? '<a href="/system/mailTemplates/'.$edit.'/delete">delete</a> ' : '';
             // remove
             unset ($templates[$i]['build_in']);
+            unset ($templates[$i]['id']);
             //next
             $i++;
         }
