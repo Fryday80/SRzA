@@ -15,6 +15,7 @@ use Auth\Model\User;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
+
 class ProfileController extends AbstractActionController
 {
     /** @var UserTable  */
@@ -47,7 +48,7 @@ class ProfileController extends AbstractActionController
         //@todo handle guest if it's private (redirect)
         $username = ($username)? $username: $this->accessService->getUserName();
         /** @var User $user */
-        $user = $this->userTable->getUsersWhere(array('name' => $username))->current();
+        $user = $this->userTable->getUsersBy('name', $username);
         if (!$user) {
             throw Exception("todo");
             //@todo redirect to user list
@@ -57,9 +58,6 @@ class ProfileController extends AbstractActionController
         $isActive = $this->statsService->isActive($user->name);
         $askingUser = $this->accessService->getUserName();
 
-        //cleanfix
-//bdump($user);
-//        bdump($characters);
         $viewModel->setVariable('askingUser', $askingUser);
         $viewModel->setVariable('isActive', $isActive);
         $viewModel->setVariable('user', $user);
@@ -114,9 +112,14 @@ class ProfileController extends AbstractActionController
             if ($request->getPost('email') !== null) {
                 //user form
                 $form->setData($request->getPost());
+                
                 if ($form->isValid()) {
+                    $id = $this->accessService->getUserID();
+                    if ($id === 0) return;
+                    if ($id == $form->get('id')->getValue()) return;
+                    $form->get('id')->setValue($id);
                     $user->exchangeArray($form->getData());
-                    if (strlen($form->getData()['password']) > 3) {
+                    if (strlen($form->getData()['password']) > MIN_PW_LENGTH) {
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
                     }

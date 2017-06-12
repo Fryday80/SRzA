@@ -36,11 +36,15 @@ $bh = $this->blazon();
 $char['bhArg'] = $bh->getBlazonHelperArgumentsByCharacter($char);
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
+$img = (isset($char['userData']->user_image)) ? $char['userData']->user_image : false;
+//@todo resize
+
+
 ?>
 
     <?php echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
     <div class="charprofile headimages">
-        <?php echo (isset($char['userData']->pic)) ? '<img style="float: right;" src="">' : 'Bild nicht gefunden' ?>
+        <?php echo ($char['userData']->user_image) ? '<img style="float: right;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
     </div>
 <div class="clear"></div>
 <h1>

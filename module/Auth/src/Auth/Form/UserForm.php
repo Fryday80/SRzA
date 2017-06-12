@@ -41,6 +41,9 @@ class UserForm extends Form
             'options' => array(
                 'label' => 'Benutzername',
             ),
+//            'attributes'    => array(
+//                'disabled' => 'disabled'
+//            ),
         );
 
         $fields[] = array(
@@ -56,17 +59,6 @@ class UserForm extends Form
             'type'       => 'Password',
             'options' => array(
                 'label' => 'Password confirm',
-            )
-        );
-
-        $fields[] = array(
-            'name' => 'user_image',
-            'type' => 'file',
-            'options' => array(
-                'label' => 'UserImage',
-            ),
-            'attributes' => array(
-                'accept' => 'image/*'
             )
         );
 
@@ -143,7 +135,7 @@ class UserForm extends Form
         );
 
         $fields[] = array(
-            'name' => 'pic',
+            'name' => 'user_image',
             'type' => 'file',
             'options' => array(
                 'label' => 'Profilbild',
@@ -152,6 +144,7 @@ class UserForm extends Form
                 'accept' => 'image/*'
             )
         );
+        
         $fields[] = array(
             'name' => 'status',
             'type' => 'hidden'
@@ -234,7 +227,7 @@ class UserForm extends Form
             'email' => 19,
             'password' => 18,
             'passwordConfirm' => 17,
-            'pic' => 16,
+            'user_image' => 16,
             'real_name' => 15,
             'real_surename' => 14,
             'gender' => 13,
@@ -243,7 +236,6 @@ class UserForm extends Form
             'city' => 9,
             'zip' => 8,
             'submit' => 1,
-            'user_image' => 80
         );
         if (!isset ($order[$name]) ){
             $prio = 7;

@@ -70,7 +70,7 @@ class UserTable extends AbstractTableGateway
     }
     public function saveUser(User $user)
     {
-        $data = get_object_vars($user);
+        $data = $user->getArrayCopy();
         unset($data['role_name']);
         $data['modified_on'] = time();
         $id = (int) $user->id;
@@ -94,14 +94,14 @@ class UserTable extends AbstractTableGateway
         //@todo remove characters from cast
     }
 
-    /**
+    /** Get users by params without password
      * @param array $where
-     * @param array $columns
      * @return ResultSetInterface
      * @throws \Exception
      */
-    public function getUsersWhere($where = array(), $columns = array())
+    private function getUsersWhere($where = array())
     {
+
         try {
             $sql = $this->getSql();
             $select = $sql->select();
@@ -109,13 +109,27 @@ class UserTable extends AbstractTableGateway
             if (count($where) > 0) {
                 $select->where($where);
             }
-
-            if (count($columns) > 0) {
-                $select->columns($columns);
-            }
+            $select->columns(array(
+                'id',
+                'email',
+                'name',
+                'status',
+                'role_id',
+                'created_on',
+                'modified_on',
+                'street',
+                'city',
+                'zip',
+                'member_number',
+                'real_name',
+                'real_surename',
+                'birthday',
+                'gender',
+                'user_image',
+            ));
             $select->join(array('role' => 'role'), 'users.role_id = role.rid', array('role_name'), 'LEFT');
-
             $users = $this->selectWith($select);
+
             return $users;
         } catch (\Exception $e) {
             throw new \Exception($e->getMessage());

@@ -6,6 +6,8 @@
 //phpinfo();die;
 chdir(dirname(__DIR__));
 
+//constants
+const MIN_PW_LENGTH = 3;
 
 //tracy debug
 $logPath = realpath(__DIR__ . '/../logs');

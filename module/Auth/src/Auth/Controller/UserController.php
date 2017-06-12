@@ -93,7 +93,6 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $this->userTable->saveUser($user);
 
                 //handle user image
                 if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
@@ -102,11 +101,18 @@ class UserController extends AbstractActionController
                     $userPic = $formData['user_image']['tmp_name'];
                     $dataPath = realpath('./data');
                     @mkdir($dataPath . '/_users', 0755);
-                    @mkdir($dataPath . '/_users/' . $user->name, 0755);
-                    $newPath = realpath('./data/_users/' . $user->name);
-                    $newPath = $newPath . '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
+                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
+
+                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
+
+                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
+                    $newPath = $newPath . $imageName;
                     rename($userPic, $newPath);
+                    $user->user_image = $url;
                 }
+                $this->userTable->saveUser($user);
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -151,7 +157,6 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-                $this->userTable->saveUser($user);
 
                 //handle user image
                 if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
@@ -160,14 +165,20 @@ class UserController extends AbstractActionController
                     $userPic = $formData['user_image']['tmp_name'];
                     $dataPath = realpath('./data');
                     @mkdir($dataPath . '/_users', 0755);
-                    @mkdir($dataPath . '/_users/' . $user->name, 0755);
-                    $newPath = realpath('./data/_users/' . $user->name);
-                    $newPath = $newPath . '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
+                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
+
+                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
+
+                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
+                    $newPath = $newPath . $imageName;
                     //@todo serach old image and unlink (files can have different extensions)
                     @unlink($newPath);
                     rename($userPic, $newPath);
+                    $user->user_image = $url;
                 }
-
+                $this->userTable->saveUser($user);
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
             }
@@ -198,7 +209,7 @@ class UserController extends AbstractActionController
                 $id = (int) $request->getPost('id');
                 $this->userTable->deleteUser($id);
                 //@todo der löscht nicht arrrg
-                $this->deleteRecursive('_users/'.$user->name);
+                $this->deleteRecursive('./Data/_users/'.$user->id);
             }
             // Redirect to list of Users
             return $this->redirect()->toRoute('user');
