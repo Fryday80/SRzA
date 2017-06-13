@@ -13,23 +13,30 @@
         box-shadow: 0px 1px 5px 0px #656565;
         filter:progid:DXImageTransform.Microsoft.Shadow(color=#656565, Direction=180, Strength=5);
     }
-</style><?php
-// cleanfix
-//bdump($template);
-?>
+</style>
+
 <h1>Edit Template</h1>
 <div id="page-edit">
+    <?php $this->headScript()->appendFile('/libs/ckeditor/ckeditor.js'); ?>
+    <br/><br/>
+    <p class="own_text_small">
+        <?php echo $form->get('name')->getValue()?>
+    </p>
     <?php
-    // $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
-    $this->headScript()->appendFile('/libs/ckeditor/ckeditor.js');
-//    $form = $this->form;
-//    $form->setAttribute('action', $this->url('cms/edit', array(), true));
-//    $form->prepare();
-//    $form->get('submit')->setValue('Update');
-
     echo $this->form($form);
-    if (isset($back)) echo $back;
+    echo $back;
     ?>
+    <br/><br/>
+    <p class="own-text-small">
+        <?php
+        $text = 'Mögliche Variablen: ';
+        $var = $form->get('variables')->getValue();
+        $varParts = explode(", ",$var);
+        foreach ($varParts as $var)
+            $text .= '<b> {{' . $var . '}} </b>' ;
+        echo $text;
+        ?>
+    </p>
 </div>
 <script>
     $($('#page-edit textarea')[0]).attr("id","editor");

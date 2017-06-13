@@ -15,10 +15,7 @@ class MailTemplatesForm extends Form
         
         $this->add(array(
             'name' => 'name',
-            'type' => 'text',
-            'options' => array(
-                'label' => 'Template'
-            )
+            'type' => 'hidden',
         ));
         $this->add(array(
             'name' => 'sender',
@@ -35,15 +32,15 @@ class MailTemplatesForm extends Form
             )
         ));
         $this->add(array(
+            'name' => 'variables',
+            'type' => 'hidden',
+        ));
+        $this->add(array(
             'name' => 'msg',
-            'type' => 'text',
+            'type' => 'Zend\Form\Element\Textarea',
             'options' => array(
                 'label' => 'Nachricht'
             )
-        ));
-        $this->add(array(
-            'name' => 'variables',
-            'type' => 'Hidden'
         ));
         $this->add(array(
             'name' => 'submit',
