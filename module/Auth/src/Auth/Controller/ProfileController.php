@@ -148,7 +148,7 @@ class ProfileController extends AbstractActionController
 
     private function createCharacterForm() {
         $families = $this->familyTable->getAll();
-        $users = $this->userService->getAllUsers();
+        $users = $this->userService->getAllUsers()->toArray();
         $jobs = $this->jobTable->getAll();
         return new ProfileCharacterForm($users, $families, $jobs);
     }

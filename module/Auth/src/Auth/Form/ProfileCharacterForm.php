@@ -6,7 +6,6 @@ use Zend\Form\Form;
 
 class ProfileCharacterForm extends Form
 {
-    /** @var User[] */
     public $userList = array();
     public $familyList = array();
     public $jobs = array();
@@ -142,7 +141,7 @@ class ProfileCharacterForm extends Form
         $selectData = array();
         $selectData[0] = 'keiner';
         foreach ($this->userList as $user) {
-            $selectData[$user->id] = $user->name;
+            $selectData[$user->id] = $user['name'];
         }
         return $selectData;
     }
