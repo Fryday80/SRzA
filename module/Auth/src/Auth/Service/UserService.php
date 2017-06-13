@@ -10,22 +10,19 @@ use Auth\Model\UserTable;
 class UserService
 {
     private $loaded = false;
+    /** @var array [ 'name', 'id']  */
+    public $clientInfo;
+    /** @var  array ['id'] */
+    private $idNameHash;
     /** @var UserTable  */
     private $userTable;
     /** @var CacheService  */
     private $cacheService;
-    /** @var array [[idUserName],[userNameID]] */
-    private $usersHash;
     /** @var array [ 'name', 'id']  */
     private $defaultInfo = array (
         'name'  => 'Gast',
         'id'    => 0
     );
-
-    /** @var array [ 'name', 'id']  */
-    public $clientInfo;
-    /** @var User[] */
-    private $allUsers = array();
 
     function __construct(UserTable $userTable, CacheService $cacheService)
     {
@@ -40,7 +37,7 @@ class UserService
     {
         $this->load();
         $this->clientInfo['id'] = $userId;
-        $this->clientInfo['name'] = $this->usersHash['idUserName'][$userId];
+        $this->clientInfo['name'] = $this->idNameHash[$userId];
     }
 
     public function getClientInfo($key = null){
@@ -49,46 +46,29 @@ class UserService
         }
         return $this->clientInfo;
     }
-
-    public function getClientName()
-    {
-        $this->load();
-        return $this->getClientInfo('name');
-    }
     
     // cached user information
-    public function getUserIDByName($name)
-    {
-        $this->load();
-        return $this->usersHash['userNameID'][$name];
-    }
-
     public function getUserNameByID($id)
     {
-        $this->load();
-        return $this->usersHash['idUserName'][$id];
+        return $this->idNameHash[$id];
     }
     
     // user data
     public function getUserDataBy($column, $value)
     {
-        if ($column == 'id'){
-            $this->load();
-            return $this->allUsers[$value];
-        }
         return $this->userTable->getUsersBy($column, $value);
     }
 
     public function getAllUsers()
     {
-        $this->load();
-        return $this->allUsers;
+        return $this->userTable->getUsers();
     }
     
     public function saveUser(User $user)
     {
         $this->userTable->saveUser($user);
-        $this->updateCache();
+        $this->clearCache();
+        $this->load();
     }
 
     
@@ -96,20 +76,14 @@ class UserService
     {
         if(!$this->loaded) {
             if ($this->cacheService->hasCache('user/info')) {
-                $cache = $this->cacheService->getCache('user/info');
-                $this->usersHash = $cache['hash'];
-                $this->allUsers = $cache['allUsers'];
+                $this->idNameHash = $this->cacheService->getCache('user/info');
 
             } else {
                 $allUsersResultSet = $this->userTable->getUsers();
                 foreach ($allUsersResultSet as $user) {
-                    $this->allUsers[$user->id] = $user;
-                    $this->usersHash['idUserName'][$user->id] = $user->name;
-                    $this->usersHash['userNameID'][$user->name] = $user->id;
+                    $this->idNameHash[$user->id] = $user->name;
                 }
-                $cache['hash'] = $this->usersHash;
-                $cache['allUsers'] = $this->allUsers;
-                $this->cacheService->setCache('user/info', $cache);
+                $this->cacheService->setCache('user/info', $this->idNameHash);
             }
             $this->loaded = true;
         }
@@ -119,11 +93,5 @@ class UserService
     {
         $this->cacheService->clearCache('user/info');
         $this->loaded = false;
-    }
-
-    private function updateCache()
-    {
-        $this->clearCache();
-        $this->load();
     }
 }

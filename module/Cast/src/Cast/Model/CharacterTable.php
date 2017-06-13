@@ -120,6 +120,14 @@ class CharacterTable extends AbstractTableGateway
         return $id;
     }
     
+    public function removeAllCharsFromUser($userid) {
+        $chars = $this->getByUserId($userid);
+        foreach ($chars as $char){
+            $this->remove((int)$char['id']);
+        }
+        return true;
+    }
+
     public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }

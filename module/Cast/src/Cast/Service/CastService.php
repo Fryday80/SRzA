@@ -1,8 +1,6 @@
 <?php
 namespace Cast\Service;
 
-use Auth\Model\User;
-use Auth\Model\UserTable;
 use Auth\Service\UserService;
 use Cast\Model\CharacterTable;
 
@@ -98,6 +96,21 @@ class CastService
         }
         return $result;
     }
+
+    public function deleteChar($name, $username)
+    {
+        $char = $this->getCharacterData($name, $username);
+        $this->prepareDelete($char);
+        //@todo
+//        delete
+//        $this->characterTable->delete(array('user_id' => $this->userService->getUserIDByName($username)));
+    }
+
+    public function deleteAllUserChars($userId)
+    {
+        //@todo
+        $this->characterTable->removeAllCharsFromUser($userId);
+    }
     
     private function buildStandingTree(&$parent) {
         $this->depth++;
@@ -158,5 +171,13 @@ class CastService
         
             $char['profileURL'] = $profileRoot;
             $char['charProfileURL'] = $castProfile;
+    }
+
+    private function prepareDelete(&$char)
+    {
+        // set employees employer to own employer
+        foreach ($char['employ'] as &$employe){
+            $employe['supervisor_id'] = $char['supervisor_id'];
+        }
     }
 }

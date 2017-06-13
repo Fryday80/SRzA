@@ -49,7 +49,7 @@ class ProfileController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $private = (!$username);
         //@todo handle guest if it's private (redirect)
-        $username = ($username)? $username : $this->userService->getClientName();
+        $username = ($username)? $username : $this->userService->getClientInfo('name');
         /** @var User $user */
         $user = $this->userService->getUserDataBy('name', $username);
         if (!$user) {
@@ -59,7 +59,7 @@ class ProfileController extends AbstractActionController
         
         $characters = $this->castService->getByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
-        $askingUser = $this->userService->getClientName();
+        $askingUser = $this->userService->getClientInfo('name');
 
         $viewModel->setVariable('askingUser', $askingUser);
         $viewModel->setVariable('isActive', $isActive);
