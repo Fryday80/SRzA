@@ -8,12 +8,11 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class CharacterControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
-        $sm = $sm->getServiceLocator();
-        $characterTable = $sm->get('Cast\Model\CharacterTable');
-        $jobTable = $sm->get('Cast\Model\JobTable');
-        $familiesTable = $sm->get('Cast\Model\FamiliesTable');
-        $userTable = $sm->get('Auth\Model\UserTable');
-        $accessService = $sm->get('AccessService');
-        return new CharacterController($characterTable, $jobTable, $familiesTable, $userTable, $accessService);
+        $pL = $sm->getServiceLocator();
+        $characterTable = $pL->get('Cast\Model\CharacterTable');
+        $jobTable = $pL->get('Cast\Model\JobTable');
+        $familiesTable = $pL->get('Cast\Model\FamiliesTable');
+        $userService = $pL->get('UserService');
+        return new CharacterController($characterTable, $jobTable, $familiesTable, $userService);
     }
 }

@@ -1,8 +1,7 @@
 <?php
 namespace Cast\Controller;
 
-use Auth\Model\UserTable;
-use Auth\Service\AccessService;
+use Auth\Service\UserService;
 use Cast\Form\CharacterForm;
 use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
@@ -21,22 +20,19 @@ class CharacterController extends AbstractActionController
     private $jobTable;
     /** @var FamiliesTable $familiesTable */
     private $familiesTable;
-    /** @var UserTable $userTable */
-    private $userTable;
-    /** @var AccessService $accessService */
-    private $accessService;
+    /** @var UserService  */
+    private $userService;
 
     public function __construct(CharacterTable $characterTable,
                                 JobTable $jobTable,
                                 FamiliesTable $familiesTable,
-                                UserTable $userTable,
-                                AccessService $accessService)
+                                UserService $userService
+    )
     {
         $this->characterTable = $characterTable;
         $this->jobTable = $jobTable;
         $this->familiesTable = $familiesTable;
-        $this->userTable = $userTable;
-        $this->accessService = $accessService;
+        $this->userService = $userService;
     }
 
     public function indexAction() {
@@ -175,7 +171,7 @@ class CharacterController extends AbstractActionController
                         if ($request->id < 0) {
                             $data['active'] = 0;
                             $data['id'] = 0;
-                            $data['user_id'] = $this->accessService->getUserID();
+                            $data['user_id'] = $this->userService->getClientInfo('id');
 
                             $form = $this->createCharacterForm();
                             $form->setData($data);
@@ -200,7 +196,7 @@ class CharacterController extends AbstractActionController
                                 $result['code'] = 2;
                             } else {
                                 //check if current user is char owner
-                                if ($this->accessService->getUserID() == $charInDb['user_id']) {
+                                if ($this->userService->getClientInfo('id') == $charInDb['user_id']) {
                                     $charInDb['id'] = $request->id;
                                     if ($this->characterTable->save($request->id, $data) ) {
                                         $result['message'] = 'Save Character';
@@ -232,7 +228,7 @@ class CharacterController extends AbstractActionController
     }
     private function createCharacterForm() {
         $families = $this->familiesTable->getAll();
-        $users = $this->userTable->getUsers()->toArray();
+        $users = $this->userService->getAllUsers()->toArray();
         $jobs = $this->jobTable->getAll();
         return new CharacterForm($users, $families, $jobs);
     }

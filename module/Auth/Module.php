@@ -87,7 +87,6 @@ class Module
                 }
             }
         }
-        $userService->logIn($accessService->getUserID());
         AbstractHelper::setDefaultAcl($accessService->getAcl());
         AbstractHelper::setDefaultRole($accessService->getRole());
     }
