@@ -1,35 +1,27 @@
 <?php
-/**
- * Created by IntelliJ IDEA.
- * User: salt
- * Date: 24.04.2017
- * Time: 01:41
- */
-
 namespace Cast\Service;
-
 
 use Auth\Model\User;
 use Auth\Model\UserTable;
+use Auth\Service\UserService;
 use Cast\Model\CharacterTable;
-use Tracy\Debugger;
-use Zend\ServiceManager\ServiceLocatorAwareInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
-//@todo refactoring
 class CastService
 {
     private $loaded = false;
     private $data;
+    private $charsById = [];
+    private $depth = 0;
+    private $tempFamsHash;
 
     /** @var CharacterTable $jobTable */
     private $characterTable;
-    /** @var UserTable $userTable */
-    private $userTable;
+    /** @var UserService $userService */
+    private $userService;
 
-    public function __construct(CharacterTable $characterTable, UserTable $userTable) {
+    public function __construct(CharacterTable $characterTable, UserService $userService) {
         $this->characterTable = $characterTable;
-        $this->userTable = $userTable;
+        $this->userService = $userService;
     }
 
     public function getAll () {
@@ -38,22 +30,22 @@ class CastService
     }
     public function getById($id) {
         $result = $this->characterTable->getById($id);
-        $result = $this->process($result);
+        $this->processChar($result);
         return $result;
     }
     public function getByUserId($id) {
         $result = $this->characterTable->getByUserId($id);
-        $result = $this->process($result);
+        $this->processChar($result);
         return $result;
     }
     public function getByTrossId($id) {
         $result = $this->characterTable->getByTrossId($id);
-        $result = $this->process($result);
+        $this->processChar($result);
         return $result;
     }
     public function getByFamilyId($id) {
         $result = $this->characterTable->getByFamilyId($id);
-        $result = $this->process($result);
+        $this->processChar($result);
         return $result;
     }
 
@@ -68,9 +60,6 @@ class CastService
         return null;
     }
 
-    private $charsById = [];
-    private $depth = 0;
-    private $tempFamsHash;
     public function getStanding($withFam = false) {
         $this->loadData();
 
@@ -78,6 +67,7 @@ class CastService
             $this->charsById[$char['id']] = &$char;
             $char['employ'] = array();
             $char['type'] = 'char';
+            $this->prepareChar($char);
         }
         $root = $this->charsById[1];
         $this->tempFamsHash = [];
@@ -92,10 +82,8 @@ class CastService
             foreach ($famMembersByID as &$char) {
                 if (isset($famMembersByID[$char['guardian_id']])) {
                     $famMembersByID[ $char['guardian_id'] ]['dependent'][$char['id']] = &$char;
-//                    array_push($famMembersByID[$char['guardian_id']]['dependent'], $char);
                 } else if ($char['id'] == $fam['head']) {
                     $fam['members'] = array(&$famMembersByID[$char['id']]);
-//                    array_push($fam['members'], array(&$famMembersByID[$char['id']]) );
                 }
             }
         }
@@ -110,10 +98,6 @@ class CastService
         }
         return $result;
     }
-//    cleanfix
-//    public function getFamilyMembers() {
-//
-//    }
     
     private function buildStandingTree(&$parent) {
         $this->depth++;
@@ -138,83 +122,41 @@ class CastService
             }
         }
     }
-    /*  *
-
-    private $chars = [];
-    private $depth = 0;
-    public function getStanding($withFam = false) {
-        $this->loadData();
-
-        foreach ($this->data as $key => &$char) {
-            $this->chars[$char['id']] = &$char;
-            $char['employ'] = array();
-        }
-        $root = $this->chars[1];
-        $this->buildStandingTree($root);
-        return $root;
-    }
-
-    private function buildStandingTree(&$parent) {
-        $this->depth++;
-        foreach ($this->chars as &$value) {
-            if ($value['supervisor_id'] == $parent['id']) {
-                if ($this->depth < 10) {
-                    $this->buildStandingTree($value);
-                }
-                array_push($parent['employ'], $value);
-            }
-        }
-    }
-
-     * */
-
     private function loadData() {
         if (!$this->loaded) {
             $this->data = $this->characterTable->getAll();
             //insert user names for linking
-            $this->process();
+            $this->processChar($this->data);
             $this->loaded = true;
         }
     }
 
-    private function process($data = null)
+    private function processChar(&$data)
     {
-        if ($data === null) {
-                $this->getUserNames();
-                $this->injectLinks();
-            return $this->data;
-        } else {
-
-            $data = $this->getUserNames($data);
-            $data = $this->injectLinks($data);
-            return $data;
+        foreach ($data as &$char) {
+            $this->prepareChar($char);
         }
+    }
+    private function prepareChar(&$data)
+    {
+        $this->injectUserNames($data);
+        $this->injectURL($data);
     }
 
     /**
      * Adds the username of the Character to the user objects
      * @throws \Exception
      */
-    private function getUserNames($data = null){
-        $result = ($data === null) ? $this->data : $data;
-        foreach ($result as $key => $char) {
-            /** @var User $newData */
-            $newData = $this->userTable->getUsersBy('id', $char['user_id']);
-            $result[$key]['userName'] = $newData->name;
-        }
-        return ($data === null)? $this->data = $result : $result;
+    private function injectUserNames(&$char)
+    {
+        $char['userName'] = $this->userService->getUserNameByID($char['user_id']);
     }
-    private function injectLinks($data = null){
-        $result = ($data === null) ? $this->data : $data;
-        foreach ($result as $key => $char){
+    private function injectURL(&$char){
             $char['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
             $profileRoot = '/profile/' . $char['userName'];
             $castProfile = $profileRoot . '/' . $char['charURL'];
-
-            $result[$key]['charURL'] = $char['charURL'];
-            $result[$key]['profileURL'] = $profileRoot;
-            $result[$key]['charProfileURL'] = $castProfile;
-        }
-        return ($data === null)? $this->data = $result : $result;
+        
+            $char['profileURL'] = $profileRoot;
+            $char['charProfileURL'] = $castProfile;
     }
 }

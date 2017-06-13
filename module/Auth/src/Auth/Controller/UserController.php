@@ -96,6 +96,7 @@ class UserController extends AbstractActionController
 
                 //handle user image
                 if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
+                    $user->user_image = null;
                     //@todo no image or image upload error
                 } else {
                     $userPic = $formData['user_image']['tmp_name'];
@@ -157,9 +158,10 @@ class UserController extends AbstractActionController
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
                 }
-
                 //handle user image
                 if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
+
+                    $user->user_image = null;
                     //@todo no image or image upload error
                 } else {
                     $userPic = $formData['user_image']['tmp_name'];

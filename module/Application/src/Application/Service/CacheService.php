@@ -13,7 +13,7 @@ class CacheService
     }
 
     /**
-     * @param $name in form 'nav/main'
+     * @param $name string form 'nav/main'
      * @param $content string|mixed(serializable)
      * @param bool $serialize
      */
@@ -22,7 +22,7 @@ class CacheService
     }
 
     /**
-     * @param $name in form 'nav/main'
+     * @param $name string form 'nav/main'
      * @param bool $serialize
      * @return string|mixed(serializable)|false
      */
@@ -34,7 +34,7 @@ class CacheService
     }
 
     /**
-     * @param $name in form 'nav/main'
+     * @param $name string form 'nav/main'
      * @return bool
      */
     public function hasCache($name) {

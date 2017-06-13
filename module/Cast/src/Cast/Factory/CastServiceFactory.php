@@ -9,7 +9,7 @@ class CastServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $characterTable = $sm->get('Cast\Model\CharacterTable');
-        $userTable = $sm->get('Auth\Model\UserTable');
-        return new CastService($characterTable, $userTable);
+        $userService = $sm->get('UserService');
+        return new CastService($characterTable, $userService);
     }
 }

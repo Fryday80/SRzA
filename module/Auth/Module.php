@@ -11,6 +11,7 @@ use Auth\Model\RolePermissionTable;
 use Auth\Model\UserRoleTable;
 use Auth\Model\AuthStorage;
 use Auth\Service\AccessService;
+use Auth\Service\UserService;
 use Auth\View\Helper\LoginView;
 use Auth\View\Helper\UserInfo;
 use Zend\Http\Request;
@@ -53,7 +54,9 @@ class Module
         /** @var AccessService $accessService */
         $accessService      = $serviceManager->get('AccessService');
         /** @var StatisticService $statsService */
-        $statsService      = $serviceManager->get('StatisticService');
+        $statsService       = $serviceManager->get('StatisticService');
+        /** @var UserService $userService */
+        $userService        = $serviceManager->get('UserService');
         $request            = $e->getRequest();
         $clientIP           = $request->getServer('REMOTE_ADDR');
         $target             = $e->getTarget();
@@ -84,6 +87,7 @@ class Module
                 }
             }
         }
+        $userService->logIn($accessService->getUserID());
         AbstractHelper::setDefaultAcl($accessService->getAcl());
         AbstractHelper::setDefaultRole($accessService->getRole());
     }

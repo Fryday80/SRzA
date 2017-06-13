@@ -27,6 +27,7 @@ return array(
             'Auth\Model\AuthStorage' => 'Auth\Factory\AuthStorageFactory',
             'Auth\Model\RoleTable'   => 'Auth\Factory\Table\RoleTableFactory',
             'Auth\Model\UserTable'   => 'Auth\Factory\Table\UserTableFactory',
+            'UserService'            => 'Auth\Factory\Service\UserServiceFactory'
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
