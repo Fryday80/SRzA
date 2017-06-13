@@ -44,7 +44,6 @@ class UserService
             $this->clientInfo['userID'] = $userId;
             $this->clientInfo['userName'] = $this->usersHash['idUserName'][$userId];
         }
-        bdump($this->clientInfo);
     }
 
     public function getUserIDByName($name)
