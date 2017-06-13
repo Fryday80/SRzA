@@ -337,7 +337,7 @@ return array(
                                 'username' => '[a-zA-Z][a-zA-Z0-9_-]+'
                             ),
                             'defaults' => array(
-                                'action' => 'index',
+                                'action' => 'publicProfile',
                             )
                         ),
                         'may_terminate' => true,
@@ -357,6 +357,17 @@ return array(
                         )
                     )
                 )
+            ),
+            'myprofile' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/myprofile',
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Profile',
+                        'action' => 'privateProfile',
+                    )
+                ),
+                'may_terminate' => true,
             ),
         )
     )

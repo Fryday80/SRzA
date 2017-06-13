@@ -50,33 +50,7 @@ class ProfileController extends AbstractActionController
     }
 
     public function indexAction() {
-        $viewModel = new ViewModel();
-        $username = $this->params()->fromRoute('username');
-        $private = (!$username);
-        //@todo handle guest if it's private (redirect)
-        $username = ($username)? $username : $this->accessService->getUserName();
-        /** @var User $user */
-        $user = $this->userService->getUserDataBy('name', $username);
-        if (!$user) {
-            throw Exception("todo");
-            //@todo redirect to user list
-        }
-        
-        $characters = $this->castService->getByUserId($user->id);
-        $isActive = $this->statsService->isActive($user->name);
-        $askingUser = $this->accessService->getUserName();
-
-        $viewModel->setVariable('askingUser', $askingUser);
-        $viewModel->setVariable('isActive', $isActive);
-        $viewModel->setVariable('user', $user);
-        $viewModel->setVariable('characters', $characters);
-
-        if ($private)
-            $this->privateView($viewModel, $user);
-        else
-            $this->publicView($viewModel, $user);
-
-        return $viewModel;
+        return $this->redirect()->toRoute('myprofile');
     }
     function jsonAction() {
         $request = json_decode($this->getRequest()->getContent());
@@ -104,8 +78,50 @@ class ProfileController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
-    public function privateView(ViewModel &$viewModel, User $user) {
+
+    public function publicProfileAction()
+    {
+        $viewModel = new ViewModel();
+        $username = $this->params()->fromRoute('username');
+        /** @var User $user */
+        $user = $this->userService->getUserDataBy('name', $username);
+        if (!$user) {
+//            throw Exception("todo");
+            //@todo redirect to user list
+            $this->redirect()->toRoute('home');
+        }
+
+        $characters = $this->castService->getByUserId($user->id);
+        $isActive = $this->statsService->isActive($user->name);
+        $askingUser = $this->accessService->getUserName();
+
+        $viewModel->setVariable('askingUser', $askingUser);
+        $viewModel->setVariable('isActive', $isActive);
+        $viewModel->setVariable('user', $user);
+        $viewModel->setVariable('characters', $characters);
+
+        $viewModel->setTemplate('auth/profile/public.phtml');
+
+        return $viewModel;
+
+    }
+    public function privateProfileAction() {
+
+        $username = $this->accessService->getUserName();
+        if(!$username) return $this->redirect()->toRoute('home');
+        /** @var User $user */
+        $user = $this->userService->getUserDataBy('name', $username);
+
+        $characters = $this->castService->getByUserId($user->id);
+        $isActive = $this->statsService->isActive($user->name);
+
+        $viewModel = new ViewModel();
         $viewModel->setTemplate('auth/profile/private.phtml');
+        $viewModel->setVariable('askingUser', $username);
+        $viewModel->setVariable('isActive', $isActive);
+        $viewModel->setVariable('user', $user);
+        $viewModel->setVariable('characters', $characters);
+
         $request = $this->getRequest();
 
         //create userForm
@@ -140,10 +156,7 @@ class ProfileController extends AbstractActionController
         $charForm = $this->createCharacterForm();
         $charForm->setAttribute('action', '#');
         $viewModel->setVariable('charForm', $charForm);
-    }
-    public function publicView(&$viewModel, User $user) {
-        $viewModel->setTemplate('auth/profile/public.phtml');
-
+        return $viewModel;
     }
 
     private function createCharacterForm() {
@@ -171,13 +184,14 @@ class ProfileController extends AbstractActionController
         
         if ($charFamily) $hasFamily = true;
 
-        return new ViewModel(array(
+        return  new ViewModel(array(
             'char'       => $char,
             'hasFamily'  => $hasFamily,
             'charFamily' => $charFamily,
             'username'   => $username,
             'charname'   => $charnameURL,
         ));
+
 
     }
     //@todo familyprofileAction
