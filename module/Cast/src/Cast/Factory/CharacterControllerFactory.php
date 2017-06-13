@@ -12,7 +12,8 @@ class CharacterControllerFactory implements FactoryInterface
         $characterTable = $pL->get('Cast\Model\CharacterTable');
         $jobTable = $pL->get('Cast\Model\JobTable');
         $familiesTable = $pL->get('Cast\Model\FamiliesTable');
+        $accessService = $pL->get('AccessService');
         $userService = $pL->get('UserService');
-        return new CharacterController($characterTable, $jobTable, $familiesTable, $userService);
+        return new CharacterController($characterTable, $jobTable, $familiesTable, $accessService, $userService);
     }
 }

@@ -15,6 +15,7 @@ class ProfileControllerFactory implements FactoryInterface
         $statService    = $pL->get('StatisticService');
         $castService    = $pL->get('CastService');
         $userService    = $pL->get('UserService');
-        return new ProfileController($familyTable, $jobTable, $statService, $castService, $userService);
+        $accessService  = $pL->get('AccessService');
+        return new ProfileController($familyTable, $jobTable, $statService, $castService, $accessService, $userService);
     }
 }

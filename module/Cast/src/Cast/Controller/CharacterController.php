@@ -1,6 +1,7 @@
 <?php
 namespace Cast\Controller;
 
+use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Cast\Form\CharacterForm;
 use Cast\Model\CharacterTable;
@@ -22,16 +23,20 @@ class CharacterController extends AbstractActionController
     private $familiesTable;
     /** @var UserService  */
     private $userService;
+    /** @var AccessService  */
+    private $accessService;
 
     public function __construct(CharacterTable $characterTable,
                                 JobTable $jobTable,
                                 FamiliesTable $familiesTable,
+                                AccessService $accessService,
                                 UserService $userService
     )
     {
         $this->characterTable = $characterTable;
         $this->jobTable = $jobTable;
         $this->familiesTable = $familiesTable;
+        $this->accessService = $accessService;
         $this->userService = $userService;
     }
 
@@ -171,7 +176,7 @@ class CharacterController extends AbstractActionController
                         if ($request->id < 0) {
                             $data['active'] = 0;
                             $data['id'] = 0;
-                            $data['user_id'] = $this->userService->getClientInfo('id');
+                            $data['user_id'] =  $this->accessService->getUserID();
 
                             $form = $this->createCharacterForm();
                             $form->setData($data);
@@ -196,7 +201,7 @@ class CharacterController extends AbstractActionController
                                 $result['code'] = 2;
                             } else {
                                 //check if current user is char owner
-                                if ($this->userService->getClientInfo('id') == $charInDb['user_id']) {
+                                if ( $this->accessService->getUserID() == $charInDb['user_id']) {
                                     $charInDb['id'] = $request->id;
                                     if ($this->characterTable->save($request->id, $data) ) {
                                         $result['message'] = 'Save Character';
@@ -228,7 +233,7 @@ class CharacterController extends AbstractActionController
     }
     private function createCharacterForm() {
         $families = $this->familiesTable->getAll();
-        $users = $this->userService->getAllUsers()->toArray();
+        $users = $this->userService->getAllUsers();
         $jobs = $this->jobTable->getAll();
         return new CharacterForm($users, $families, $jobs);
     }

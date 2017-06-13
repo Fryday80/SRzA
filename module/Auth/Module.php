@@ -55,8 +55,6 @@ class Module
         $accessService      = $serviceManager->get('AccessService');
         /** @var StatisticService $statsService */
         $statsService       = $serviceManager->get('StatisticService');
-        /** @var UserService $userService */
-        $userService        = $serviceManager->get('UserService');
         $request            = $e->getRequest();
         $clientIP           = $request->getServer('REMOTE_ADDR');
         $target             = $e->getTarget();

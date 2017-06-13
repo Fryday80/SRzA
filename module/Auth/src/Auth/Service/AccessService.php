@@ -17,7 +17,7 @@ class AccessService {
     protected $userIP;
     public $session;
 
-    function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage, UserService $userService) {
+    function __construct(AclService $aclService, AuthenticationService $authService, AuthStorage $storage) {
         $this->session = $storage;
         $this->aclService = $aclService;
         $this->authService = $authService;
@@ -26,8 +26,6 @@ class AccessService {
         $this->userName = $storage->getUserName();
         $this->userIP = $storage->getIP();
         $this->acl = $aclService;
-        //update UserService
-        $userService->updateClientInfo($storage->getUserID());
         
         AbstractHelper::setDefaultAcl($this->acl);
         AbstractHelper::setDefaultRole($this->role);

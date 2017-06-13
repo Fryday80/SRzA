@@ -10,43 +10,20 @@ use Auth\Model\UserTable;
 class UserService
 {
     private $loaded = false;
-    /** @var array [ 'name', 'id']  */
-    public $clientInfo;
-    /** @var  array ['id'] */
-    private $idNameHash;
     /** @var UserTable  */
     private $userTable;
     /** @var CacheService  */
     private $cacheService;
-    /** @var array [ 'name', 'id']  */
-    private $defaultInfo = array (
-        'name'  => 'Gast',
-        'id'    => 0
-    );
+    /** @var  array ['id'] */
+    private $idNameHash;
 
     function __construct(UserTable $userTable, CacheService $cacheService)
     {
         $this->userTable = $userTable;
         $this->cacheService = $cacheService;
-        $this->clientInfo = $this->defaultInfo;
         $this->load();
     }
 
-    //client = logged in user
-    public function updateClientInfo($userId)
-    {
-        $this->load();
-        $this->clientInfo['id'] = $userId;
-        $this->clientInfo['name'] = $this->idNameHash[$userId];
-    }
-
-    public function getClientInfo($key = null){
-        if ($key !== null){
-            if (isset($this->clientInfo[$key])) return $this->clientInfo[$key];
-        }
-        return $this->clientInfo;
-    }
-    
     // cached user information
     public function getUserNameByID($id)
     {
@@ -71,7 +48,7 @@ class UserService
         $this->load();
     }
 
-    
+
     private function load()
     {
         if(!$this->loaded) {

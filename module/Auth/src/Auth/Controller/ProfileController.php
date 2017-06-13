@@ -3,6 +3,7 @@ namespace Auth\Controller;
 
 use Application\Service\StatisticService;
 use Auth\Form\ProfileCharacterForm;
+use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Auth\Utility\UserPassword;
 use Cast\Model\FamiliesTable;
@@ -28,12 +29,15 @@ class ProfileController extends AbstractActionController
     protected $castService;
     /** @var UserService  */
     protected $userService;
+    /** @var AccessService  */
+    private $accessService;
 
     function __construct(
         FamiliesTable $familyTable,
         JobTable $jobTable,
         StatisticService $statService,
         CastService $castService,
+        AccessService $accessService,
         UserService $userService
     )
     {
@@ -41,6 +45,7 @@ class ProfileController extends AbstractActionController
         $this->jobTable = $jobTable;
         $this->statsService = $statService;
         $this->castService = $castService;
+        $this->accessService = $accessService;
         $this->userService = $userService;
     }
 
@@ -49,7 +54,7 @@ class ProfileController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $private = (!$username);
         //@todo handle guest if it's private (redirect)
-        $username = ($username)? $username : $this->userService->getClientInfo('name');
+        $username = ($username)? $username : $this->accessService->getUserName();
         /** @var User $user */
         $user = $this->userService->getUserDataBy('name', $username);
         if (!$user) {
@@ -59,7 +64,7 @@ class ProfileController extends AbstractActionController
         
         $characters = $this->castService->getByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
-        $askingUser = $this->userService->getClientInfo('name');
+        $askingUser = $this->accessService->getUserName();
 
         $viewModel->setVariable('askingUser', $askingUser);
         $viewModel->setVariable('isActive', $isActive);
@@ -76,7 +81,7 @@ class ProfileController extends AbstractActionController
     function jsonAction() {
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
-        $userID = $this->userService->getClientInfo('id');
+        $userID =  $this->accessService->getUserID();
         try {
             switch ($request->method) {
                 case 'getChars':
@@ -117,7 +122,7 @@ class ProfileController extends AbstractActionController
                 $form->setData($request->getPost());
                 
                 if ($form->isValid()) {
-                    $id = $this->userService->getClientInfo('id');
+                    $id =  $this->accessService->getUserID();
                     if ($id === 0) return;
                     if ($id !== $form->get('id')->getValue()) return;
                     $form->get('id')->setValue($id);

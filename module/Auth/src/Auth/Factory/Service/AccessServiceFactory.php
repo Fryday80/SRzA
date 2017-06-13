@@ -11,7 +11,6 @@ class AccessServiceFactory implements FactoryInterface
         $storage     = $sm->get('Auth\Model\AuthStorage');
         $aclService  = $sm->get('Auth\AclService');
         $authService = $sm->get('AuthService');
-        $userService = $sm->get('UserService');
-        return new AccessService($aclService, $authService, $storage, $userService);
+        return new AccessService($aclService, $authService, $storage);
     }
 }
