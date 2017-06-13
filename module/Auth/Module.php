@@ -1,6 +1,9 @@
 <?php
 namespace Auth;
 
+use Application\Model\Abstracts\HitType;
+use Application\Model\Abstracts\LogType;
+use Application\Model\DataObjects\SystemLog;
 use Application\Service\StatisticService;
 use Auth\Model\User;
 use Auth\Model\UserTable;
@@ -75,7 +78,16 @@ class Module
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
                 //@todo log to stats
-//                $statsService->getSysLog()
+                $hitType = ( $accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST;
+                $statsService->logSystem(new SystemLog(
+                    time(), //mTime
+                    ( $hitType == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST, //type
+                    $title,       //msg
+                    $request,   //url
+                    $accessService->getUserID(),    //UserID
+                    $accessService->getUserName(),  //userName
+                    $data = null    //data
+                ));
                 if ($request->isXmlHttpRequest()) {
                     $e->getResponse()->setStatusCode(403);
                     echo json_encode(['error' => true, 'message' => 'Not Allowed', 'code' => 403]);

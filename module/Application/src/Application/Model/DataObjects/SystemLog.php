@@ -13,7 +13,8 @@ class SystemLog extends DataItem
 
     /**
      * SystemLog constructor.
-     * @param $type
+     * @param $mTime
+     * @param null $type
      * @param $msg
      * @param $url
      * @param $userId
