@@ -121,6 +121,7 @@ class ProfileController extends AbstractActionController
                     if ($id == $form->get('id')->getValue()) return;
                     $form->get('id')->setValue($id);
                     $user->exchangeArray($form->getData());
+                    bdump($user);
                     if (strlen($form->getData()['password']) > MIN_PW_LENGTH) {
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
@@ -142,7 +143,7 @@ class ProfileController extends AbstractActionController
 
     private function createCharacterForm() {
         $families = $this->familyTable->getAll();
-        $users = $this->userService->getAllUsers()->toArray();
+        $users = $this->userService->getAllUsers();
         $jobs = $this->jobTable->getAll();
         return new ProfileCharacterForm($users, $families, $jobs);
     }
