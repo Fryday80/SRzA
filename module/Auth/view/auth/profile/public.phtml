@@ -38,6 +38,12 @@
         color: #8B2252;
         text-shadow: 2px 2px 8px red;
     }
+    .userimage{
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+    }
 </style>
 
 
@@ -78,6 +84,7 @@ $this->headTitle($title);
     <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
     echo $user->street . '<br/>';
     echo $user->zip . ' ' . $user->city . '<br/>';?>
+        <img class="userimage" alt="ProfilePic" src="<?php echo $user->user_image ?>">
     </boxcontent>
 </box>
 <box class="public-profile birthday">
