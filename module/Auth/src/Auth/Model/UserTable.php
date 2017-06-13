@@ -82,6 +82,8 @@ class UserTable extends AbstractTableGateway
         } else {
             //edit user
             if ($this->getUser($id)) {
+                if ($data['password'] == null) unset($data['password']);
+                if ($data['user_image'] == null) unset($data['user_image']);
                 $this->update($data, array('id' => $id));
             } else {
                 throw new \Exception('User id does not exist');

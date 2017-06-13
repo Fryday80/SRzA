@@ -4,6 +4,7 @@ namespace Auth\Controller;
 use Application\Service\StatisticService;
 use Auth\Form\ProfileCharacterForm;
 use Auth\Service\UserService;
+use Auth\Utility\UserPassword;
 use Cast\Model\FamiliesTable;
 use Cast\Model\JobTable;
 use Cast\Service\CastService;
@@ -118,10 +119,9 @@ class ProfileController extends AbstractActionController
                 if ($form->isValid()) {
                     $id = $this->userService->getClientInfo('id');
                     if ($id === 0) return;
-                    if ($id == $form->get('id')->getValue()) return;
+                    if ($id !== $form->get('id')->getValue()) return;
                     $form->get('id')->setValue($id);
                     $user->exchangeArray($form->getData());
-                    bdump($user);
                     if (strlen($form->getData()['password']) > MIN_PW_LENGTH) {
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
