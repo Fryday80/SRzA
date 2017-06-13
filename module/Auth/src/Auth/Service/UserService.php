@@ -24,6 +24,30 @@ class UserService
         $this->load();
     }
 
+    public function updateUserImage($userID, $tempImageInfo) {
+        $dataPath = realpath('./data');
+        @mkdir($dataPath . '/_users', 0755);
+        @mkdir($dataPath . '/_users/' . $userID, 0755);
+        @mkdir($dataPath . '/_users/' . $userID . '/pub', 0755);
+
+        $items = scandir($dataPath . '/_users/' . $userID . '/pub');
+        foreach ($items as $item)
+            if (strlen($item) < 3)
+                continue;
+            else
+                @unlink($dataPath . '/_users/' . $userID . '/pub/' . $item);
+
+        $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
+        $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
+
+        $newPath = realpath('./data/_users/' . $userID . '/pub');
+        $newPath = $newPath . $imageName;
+        //@todo serach old image and unlink (files can have different extensions)
+        @unlink($newPath);
+        rename($tempImageInfo['tmp_name'], $newPath);
+        $this->createUserThumbnail($newPath);
+        return $url;
+    }
     // cached user information
     public function getUserNameByID($id)
     {
@@ -70,5 +94,43 @@ class UserService
     {
         $this->cacheService->clearCache('user/info');
         $this->loaded = false;
+    }
+
+    /**
+     * @param $imagePath
+     */
+    private function createUserThumbnail($imagePath)
+    {
+        $img = file_get_contents($imagePath);
+        $im = imagecreatefromstring($img);
+
+        $width = imagesx($im);
+        $height = imagesy($im);
+
+        $thumbSizeLimit = 500;
+        if ($width < $thumbSizeLimit && $height < $thumbSizeLimit) {}
+        else {
+            $newheight = $thumbSizeLimit;
+            $newwidth = $newheight*$width/$height;
+
+            $srcInfo = pathinfo($imagePath);
+            $thumb = imagecreatetruecolor($newwidth, $newheight);
+
+            imagecopyresized($thumb, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+            switch($srcInfo['extension']) {
+                case 'jpg':
+                case 'jpeg':
+                    imagejpeg($thumb, $imagePath);
+                    break;
+                case 'png':
+                    imagepng($thumb, $imagePath);
+                    break;
+                case 'gif':
+                    imagegif($thumb, $imagePath);
+
+            }
+            imagedestroy($thumb);
+            imagedestroy($im);
+        }
     }
 }

@@ -85,7 +85,7 @@ $this->headTitle($title);
         <span class="own_text_small">Geburtstag:</span>
     </boxtitle>
     <boxcontent>
-    <?php echo $user->birthday ;?>
+    <?php echo date('d.m.Y', $user->birthday) ?>
     </boxcontent>
 </box>
 <box class="public-profile">
@@ -94,8 +94,6 @@ $this->headTitle($title);
     </boxtitle>
     <boxcontent>
         <?php foreach ($characters as $character):
-            bdump($characters);
-            bdump($character['charProfileURL']);
             echo $character['name'] . ' ' . $character['surename'];
             echo $bh->blazon($bh->getBlazonHelperArgumentsByCharacter($character)) ;?>
             <a href="<?php echo $character['charProfileURL'] ?>">

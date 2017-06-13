@@ -33,12 +33,29 @@ $userForm->prepare();
     #addCharButton {
         float: right;
     }
+    .profile-addons{
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .profile-pic{
+        height: 300px;
+    }
 </style>
 
 <box>
     <boxtitle><span class="own_text_medium">User Details</span></boxtitle>
     <boxcontent>
-        <?php echo $this->form($userForm); ?>
+        <?php
+        /** @var \Auth\Model\User $user */
+        $user = $user;
+        echo $this->form($userForm);
+        ?>
+        <div class="profile-addons">
+            <img class="profile-pic" src="<?php echo $user->user_image ?>" alt="ProfilePic">
+            <br/>
+            <a href="/profile/<?php echo $user->name?>"><button>Öffentliches Profil</button></a>
+        </div>
     </boxcontent>
 </box>
 

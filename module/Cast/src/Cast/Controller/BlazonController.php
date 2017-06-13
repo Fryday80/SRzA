@@ -117,7 +117,6 @@ class BlazonController extends AbstractActionController
                 }
             }
         }
-        bdump($form);
         return array(
             'id' => $id,
             'form' => $form,

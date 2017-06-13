@@ -49,9 +49,6 @@ class ProfileController extends AbstractActionController
         $this->userService = $userService;
     }
 
-    public function indexAction() {
-        return $this->redirect()->toRoute('myprofile');
-    }
     function jsonAction() {
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
@@ -114,9 +111,8 @@ class ProfileController extends AbstractActionController
 
         $characters = $this->castService->getByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
-
+        
         $viewModel = new ViewModel();
-        $viewModel->setTemplate('auth/profile/private.phtml');
         $viewModel->setVariable('askingUser', $username);
         $viewModel->setVariable('isActive', $isActive);
         $viewModel->setVariable('user', $user);
@@ -134,28 +130,44 @@ class ProfileController extends AbstractActionController
         if ($request->isPost()) {
             //check witch form was sent
             if ($request->getPost('email') !== null) {
+                //merge post data and files
+                $post = array_merge_recursive(
+                    $request->getPost()->toArray(),
+                    $request->getFiles()->toArray()
+                );
                 //user form
-                $form->setData($request->getPost());
+                $form->setData($post);
                 
                 if ($form->isValid()) {
+                    $data = $form->getData();
+                    $data['birthday'] = strtotime($data['birthday']);
                     $id =  $this->accessService->getUserID();
-                    if ($id === 0) return;
-                    if ($id !== $form->get('id')->getValue()) return;
-                    $form->get('id')->setValue($id);
-                    $user->exchangeArray($form->getData());
-                    if (strlen($form->getData()['password']) > MIN_PW_LENGTH) {
+                    if ($id === 0) return $this->redirect()->toRoute('profile');
+                    if ($id !== $data['id']) return $this->redirect()->toRoute('profile');
+                    $user->exchangeArray($data);
+                    if (strlen($data['password']) > MIN_PW_LENGTH) {
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
                     }
+
+                    //handle user image
+                    if ($data['user_image'] === null || $data['user_image']['error'] > 0) {
+                        $user->user_image = null;
+                        //@todo no image or image upload error
+                    } else {
+                        $user->user_image = $this->userService->updateUserImage($user->id, $data['user_image']);
+                    }
                     $this->userService->saveUser($user);
+                    //redirect
 
                 }
             }
         }
         //create charForm
         $charForm = $this->createCharacterForm();
-        $charForm->setAttribute('action', '#');
+//        $charForm->setAttribute('action', '#');
         $viewModel->setVariable('charForm', $charForm);
+        $viewModel->setTemplate('auth/profile/private.phtml');
         return $viewModel;
     }
 

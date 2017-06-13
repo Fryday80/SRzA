@@ -324,7 +324,7 @@ return array(
                     'route' => '/profile',
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Profile',
-                        'action' => 'index',
+                        'action' => 'privateProfile',
                     )
                 ),
                 'may_terminate' => true,
@@ -357,17 +357,6 @@ return array(
                         )
                     )
                 )
-            ),
-            'myprofile' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route' => '/myprofile',
-                    'defaults' => array(
-                        'controller' => 'Auth\Controller\Profile',
-                        'action' => 'privateProfile',
-                    )
-                ),
-                'may_terminate' => true,
             ),
         )
     )

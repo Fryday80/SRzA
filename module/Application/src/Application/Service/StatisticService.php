@@ -80,7 +80,7 @@ class StatisticService
             case Application::ERROR_ROUTER_NO_MATCH:
                 // Specifically not handling these
                 //here 404 missmatch is prozessed
-            bdump('onError skipped');
+            if(DEV_DUMPS) bdump('onError skipped');
                 return;
 
             case Application::ERROR_EXCEPTION:
@@ -98,11 +98,11 @@ class StatisticService
                         'stackTrace' => $exception->getTraceAsString()
                     ));
                 } while($exception = $exception->getPrevious());
-                bdump($errors);
+                if(DEV_DUMPS) bdump($errors);
                 break;
         }
 
-        bdump('onError');
+        if(DEV_DUMPS) bdump('onError');
         $data = $this->gatherData($e);
         $data['errors'] = $errors;
 

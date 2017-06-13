@@ -5,6 +5,7 @@ use Application\Utility\DataTable;
 use Auth\Model\RoleTable;
 use Auth\Model\UserTable;
 use Auth\Service\AccessService;
+use Auth\Service\UserService;
 use Auth\Utility\UserPassword;
 use Auth\Form\UserForm;
 use Auth\Model\User;
@@ -23,13 +24,16 @@ class UserController extends AbstractActionController
     protected $roleTable;
     /** @var MediaService */
     private $mediaService;
+    /** @var  UserService */
+    private $userService;
 
-    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable, MediaService $mediaService)
+    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable, MediaService $mediaService, UserService $userService)
     {
         $this->accessService = $accessService;
         $this->userTable = $userTable;
         $this->roleTable = $roleTable;
         $this->mediaService = $mediaService;
+        $this->userService = $userService;
     }
     public function indexAction()
     {
@@ -99,19 +103,20 @@ class UserController extends AbstractActionController
                     $user->user_image = null;
                     //@todo no image or image upload error
                 } else {
-                    $userPic = $formData['user_image']['tmp_name'];
-                    $dataPath = realpath('./data');
-                    @mkdir($dataPath . '/_users', 0755);
-                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
-                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
-
-                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
-                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
-
-                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
-                    $newPath = $newPath . $imageName;
-                    rename($userPic, $newPath);
-                    $user->user_image = $url;
+                    $user->user_image = $this->userService->updateUserImage($user->id, $formData['user_image']);
+//                    $userPic = $formData['user_image']['tmp_name'];
+//                    $dataPath = realpath('./data');
+//                    @mkdir($dataPath . '/_users', 0755);
+//                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
+//                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
+//
+//                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
+//                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
+//
+//                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
+//                    $newPath = $newPath . $imageName;
+//                    rename($userPic, $newPath);
+//                    $user->user_image = $url;
                 }
                 $this->userTable->saveUser($user);
                 return $this->redirect()->toRoute('user');
@@ -160,25 +165,10 @@ class UserController extends AbstractActionController
                 }
                 //handle user image
                 if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
-
                     $user->user_image = null;
                     //@todo no image or image upload error
                 } else {
-                    $userPic = $formData['user_image']['tmp_name'];
-                    $dataPath = realpath('./data');
-                    @mkdir($dataPath . '/_users', 0755);
-                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
-                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
-
-                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
-                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
-
-                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
-                    $newPath = $newPath . $imageName;
-                    //@todo serach old image and unlink (files can have different extensions)
-                    @unlink($newPath);
-                    rename($userPic, $newPath);
-                    $user->user_image = $url;
+                    $user->user_image = $this->userService->updateUserImage($user->id, $formData['user_image']);
                 }
                 $this->userTable->saveUser($user);
                 // Redirect to list of Users

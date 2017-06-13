@@ -30,30 +30,16 @@
 </style>
 
 <?php
-
 /** @var \Cast\View\Helper\BlazonHelper $bh */
 $bh = $this->blazon();
 $char['bhArg'] = $bh->getBlazonHelperArgumentsByCharacter($char);
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 $img = (isset($char['userData']->user_image)) ? $char['userData']->user_image : false;
-////@todo resize
-//if($img)
-//{
-//    list($width, $height) = getimagesize($img);
-//    if ($width > $height) {
-        $css = 'width: 200px';
-//    } else {
-//        $css = 'height: 200px';
-//    }
-//}
 
-
-?>
-
-    <?php echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
+echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
     <div class="charprofile headimages">
-        <?php echo ($char['userData']->user_image) ? '<img style="float: right;'. $css .'" src="'. $img .'">' : 'Bild nicht gefunden' ?>
+        <?php echo ($char['userData']->user_image) ? '<img style="float: right;height: 250px;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
     </div>
 <div class="clear"></div>
 <h1>
