@@ -8,7 +8,6 @@ chdir(dirname(__DIR__));
 
 //constants
 const MIN_PW_LENGTH = 3;
-const DEV_DUMPS = true;
 
 //tracy debug
 $logPath = realpath(__DIR__ . '/../logs');

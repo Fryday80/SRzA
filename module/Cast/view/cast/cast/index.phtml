@@ -4,9 +4,6 @@ $this->headScript()->prependFile('/libs/jquery.workspace/jquery.workspace.js');
 $this->headLink()->prependStylesheet('/libs/jquery.workspace/jquery.workspace.css');
 $GLOBALS['bhelper'] = $this->blazon();
 
-//cleanfix
-bdump($root);
-
 function createFamilyList($parent, $level) {
     echo '<li class="familyMember">';
     echo '<familymember name="'. $parent['name'] .'" data-id="'. $parent['id'] .'">';

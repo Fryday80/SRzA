@@ -72,7 +72,6 @@ class MessageService
     
     private function buildTemplateString($string, $data) {
         if (preg_match_all("/{{(.*?)}}/", $string, $result)) {
-            bdump($result);
             foreach ($result[1] as $i => $varName) {
                 if (isset($data[$varName]))
                     $string = str_replace($result[0][$i], $data[$varName], $string);

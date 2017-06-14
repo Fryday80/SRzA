@@ -1,0 +1,39 @@
+zuerst less->css
+
+Keine Ahnung:
+- .setting/
+- config/autoload/zenddevelopertools.local.php --> wenn skip, dann config/application.config.php -> 'ZendDeveloperTools' löschen
+- Data/
+
+Skip
+- .vagrant/
+- cache/*.*
+- config/autoload/fry.local.php
+- config/autoload/salt.local.php
+- dbdump/
+- GNUCash/
+- less/
+- logs/
+- module/demo/
+- module/Application -> alles mit formtest?
+- node_modules/
+- storage/stats.log
+- temp/*.*
+- Upload/*.*
+- zendCache/*.*
+- .gitignore
+- .gitmodules
+- .project
+- composer.lock
+- Gruntfile.js
+- liveVersionSkip.txt ^^
+- package.json
+- Vagrantfile
+
+Change
+- public/.htaccess  : APPLICATION_ENV=development -> APPLICATION_ENV=production
+- public/index.php  : Debugger::enable(Debugger::DEVELOPMENT, $logPath) -> Debugger::enable(Debugger::PRODUCTION, $logPath) ??
+
+Create
+ z.b. zip mit den geskippten sachen bzw irgendwas, damit man das ganze wieder importieren kann in intelliJ...
+ oder reicht das auf git und wir bauen ne release version draus? dann sollte man aber noch die DB und Calendar login daten im release löschen

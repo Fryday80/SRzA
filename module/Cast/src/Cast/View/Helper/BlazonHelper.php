@@ -28,8 +28,6 @@ class BlazonHelper extends AbstractHelper
         $baseBlazon = (isset($call[0]) && $call[0] !== 0 ) ? $call[0] : 'standard';
         $overlay1 = (isset($call[1]))   ? $call[1] : null;
         $overlay2 = (isset($call[2]))   ? $call[2] : null;
-        //cleanfix
-//bdump($call);
 
         $base = ($overlay1 === null && $overlay2 === null)? $this->getBlazonData($baseBlazon, 'big') : $this->getBlazonData($baseBlazon);
         $return = '<div class="blazon">';
