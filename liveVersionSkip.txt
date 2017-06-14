@@ -51,8 +51,6 @@ Create
 ** Workflow -> build **
 
 //init build
--remove(if exists already) and create build folder
--cd ./build
 -create ./temp folder
 -create ./result folder
 -cd ..

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "mailServ": "maildev -s 25",
+    "build": "node ./build/build.js",
     "build:classmap": "cd module/  ../../vendor/bin/classmap_generator.php.bat"
   },
   "repository": {
@@ -17,12 +18,16 @@
   },
   "homepage": "https://github.com/Fryday80/SRzA#readme",
   "devDependencies": {
+    "colors": "^1.1.2",
+    "glob": "^7.1.2",
     "google-closure-compiler": "^20170521.0.0",
     "grunt": "^1.0.1",
     "grunt-contrib-less": "^1.4.1",
     "grunt-contrib-uglify": "^3.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "jit-grunt": "^0.10.0",
-    "maildev": "^1.0.0-rc2"
+    "maildev": "^1.0.0-rc2",
+    "shelljs": "^0.7.8",
+    "uglify-es": "^3.0.15"
   }
 }
