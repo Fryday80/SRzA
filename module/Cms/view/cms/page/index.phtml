@@ -6,3 +6,4 @@ $this->headTitle($title);
 <article data-page-id="<?= $page->getId(); ?>">
      <?= $page->getContent(); ?>
 </article>
+<span style="float:right;">upgedatet <?php echo date('d.m.Y', strtotime($page->getUpdated()) ) ?></span>

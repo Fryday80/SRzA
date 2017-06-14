@@ -28,6 +28,8 @@ class Post implements PostInterface
      */
     protected $exceptedRoles;
 
+    protected $updated;
+
     /**
      * {@inheritDoc}
      */
@@ -104,5 +106,15 @@ class Post implements PostInterface
     public function setContent($content)
     {
         $this->content = $content;
+    }
+
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
     }
 }

@@ -7,7 +7,7 @@ use Cms\Model\PostInterface;
 class PostService implements PostServiceInterface
 {
     /**
-     * @var \Blog\Mapper\PostMapperInterface
+     * @var \Cms\Mapper\PostMapperInterface
      */
     protected $postMapper;
 
