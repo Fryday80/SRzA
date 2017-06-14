@@ -6,7 +6,7 @@ Keine Ahnung:
 - Data/
 
 Skip
-- .vagrant/
+- .vagrant/    @todo generel löschen, brauchen wir nicht
 - cache/*.*
 - config/autoload/fry.local.php
 - config/autoload/salt.local.php
@@ -37,3 +37,36 @@ Change
 Create
  z.b. zip mit den geskippten sachen bzw irgendwas, damit man das ganze wieder importieren kann in intelliJ...
  oder reicht das auf git und wir bauen ne release version draus? dann sollte man aber noch die DB und Calendar login daten im release löschen
+
+ es giebt mehrere lösungen wie wir des jetzt machen aber ich würde 2 ins auge fassen.
+ 1.in einem build ordner einfach einen build von allem erstellen. und wenn du willst auch noch als zip packen
+ 2.einen branch erstellen und da einfach alles ändern. da kann man auch immer den selben branch nehmen
+
+
+
+
+
+
+
+** Workflow -> build **
+
+//init build
+-remove(if exists already) and create build folder
+-cd ./build
+-create ./temp folder
+-create ./result folder
+-cd ..
+
+//compile src
+-compile css
+-compile js
+--compile files for inline scripts in place
+--compile js files
+--concat files
+
+//pack files
+-copy all needed files to ./build/result
+-zip result
+
+//clean up
+-remove /build/temp folder
