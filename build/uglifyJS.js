@@ -67,13 +67,6 @@ exports.uglify = function(srcPath, destPath){
     "use strict";
     var options = {};
     glob(srcPath, options, function (er, files) {
-        console.log('aaaa')
-        console.log(files)
-        // files is an array of filenames.
-        // If the `nonull` option is set, and nothing
-        // was found, then files is ["**/*.js"]
-        // er is an error object or null.
-
         for(var i = 0; i < files.length; i++) {
             var srcPath = files[i];
             var code = fs.readFileSync(srcPath);
@@ -81,30 +74,14 @@ exports.uglify = function(srcPath, destPath){
             if (result.error) {
                 console.log(cPre + result.error);
             } else {
-                if (!destPath) {
+                if (files.length > 1 || !destPath) {
                     destPath = srcPath.substring(0, srcPath.lastIndexOf(".")) + ".min" + srcPath.substring(srcPath.lastIndexOf("."));
                 }
                 fs.writeFileSync(destPath, result.code);
+                console.log(cPre + 'Add File: %s', srcPath);
             }
         }
-
-
-
-    })
-    try {
-        var code = fs.readFileSync(srcPath);
-        var result = UglifyJS.minify(code.toString(), options);
-        if (result.error) {
-            console.log(cPre + result.error);
-        } else {
-            if (!destPath) {
-                destPath = srcPath.substring(0, srcPath.lastIndexOf(".")) + ".min" + srcPath.substring(srcPath.lastIndexOf("."));
-            }
-            fs.writeFileSync(destPath, result.code);
-        }
-    } catch (e) {
-        console.log(cPre + e.message.red);
-    }
+    });
 };
 exports.add = function(file) {
     "use strict";
