@@ -2,6 +2,7 @@
 
 namespace Application\Service;
 
+use Exception;
 const CACHE_PATH = '/cache'; //relative to root, start with /
 class CacheService
 {
@@ -12,6 +13,37 @@ class CacheService
         $this->cachePath = realpath(getcwd().CACHE_PATH).'/';
     }
 
+    public function getCacheList() {
+        return $this->recursiveCacheInfo($this->cachePath)['childes'];
+    }
+    private function recursiveCacheInfo($path) {
+        $childItems = [];
+        if (!is_file($path)) {
+            $childes = scandir($path);
+            foreach($childes as $child) {
+                if ($child == '.' || $child == '..') continue;
+                $childPath = realpath($path.'/'.$child);
+                array_push($childItems, $this->recursiveCacheInfo($childPath) );
+            }
+        }
+        //windows <=> unix path fix
+        $cachePath = str_replace('\\', '/', $this->cachePath);
+        $path = str_replace('\\', '/', $path);
+
+        $relativePath = str_replace($cachePath, '', $path);
+        if ($relativePath == '') {
+            $itemName = '_ROOT_';
+        } else {
+            $itemName = str_replace('.cache', '', $relativePath);
+        }
+        $size = $this->FileSizeConvert(filesize($path));
+        $item = array(
+            'name' => $itemName,
+            'size' => $size,
+            'childes' => $childItems
+        );
+        return $item;
+    }
     /**
      * @param $name string form 'nav/main'
      * @param $content string|mixed(serializable)
@@ -127,4 +159,49 @@ class CacheService
         $path = $this->cachePath.$name.$this->fileExtension;
         return $path;
     }
+    /**
+     * Converts bytes into human readable file size.
+     *
+     * @param string $bytes
+     * @return string human readable file size (2,87 Мб)
+     * @author Mogilev Arseny
+     */
+    function FileSizeConvert($bytes)
+    {
+        $bytes = floatval($bytes);
+        $arBytes = array(
+            0 => array(
+                "UNIT" => "TB",
+                "VALUE" => pow(1024, 4)
+            ),
+            1 => array(
+                "UNIT" => "GB",
+                "VALUE" => pow(1024, 3)
+            ),
+            2 => array(
+                "UNIT" => "MB",
+                "VALUE" => pow(1024, 2)
+            ),
+            3 => array(
+                "UNIT" => "KB",
+                "VALUE" => 1024
+            ),
+            4 => array(
+                "UNIT" => "B",
+                "VALUE" => 1
+            ),
+        );
+        $result = 0;
+        foreach($arBytes as $arItem)
+        {
+            if($bytes >= $arItem["VALUE"])
+            {
+                $result = $bytes / $arItem["VALUE"];
+                $result = str_replace(".", "," , strval(round($result, 2)))." ".$arItem["UNIT"];
+                break;
+            }
+        }
+        return $result;
+    }
+
 }
