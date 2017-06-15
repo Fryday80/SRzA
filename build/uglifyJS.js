@@ -4,6 +4,7 @@ var UglifyJS    = require("uglify-es"),
     fs          = require('fs'),
     colors      = require('colors'),
     glob        = require('glob'),
+    filesize    = require('filesize'),
     cPre = 'JS -> '.yellow, //console prefix
     files = {},
     target,
@@ -37,7 +38,12 @@ function reset() {
     files = {};
     target = null;
 }
-exports.testPath = function(path, options) {
+function getFilesizeInBytes(filename) {
+    const stats = fs.statSync(filename)
+    const fileSizeInBytes = stats.size
+    return fileSizeInBytes
+}
+exports.testPath = function(path, options = {}) {
     var files = glob.sync(path, options);
     console.log(cPre + 'Test glob pattern: %s', path);
     if (files.length === 0) {
@@ -45,26 +51,68 @@ exports.testPath = function(path, options) {
     }
 
     for(var i = 0; i < files.length; i++) {
-        console.log(cPre + 'found: %s', files[i]);
+        var size = getFilesizeInBytes(files[i]);
+        size = filesize(size, {base: 10});
+        console.log(cPre + 'found: %s | %s', size, files[i]);
     }
 };
+/**
+ * if destPath is true, src will be overwritten.
+ * if destPath is null, compiled version gets the min extension
+ * @param {string} srcPath with glob patterns
+ * @param {string|bool|null} destPath without glob patterns
+ */
 exports.uglify = function(srcPath, destPath){
     "use strict";
-    var options = {};
+    var options = {},
+        overwrite = destPath;
+    if (typeof destPath === 'string' && glob.hasMagic(destPath) ) {
+        console.log(cPre + 'Destination path must be a blank path without patterns: %s'.red, destPath);
+        return;
+    }
     glob(srcPath, options, function (er, files) {
+        var size = 0,
+            sizeCompressed = 0,
+            collection = '';
+
+        size = filesize(size, {base: 10});
         for(var i = 0; i < files.length; i++) {
             var srcPath = files[i];
+            var srcSize = getFilesizeInBytes(srcPath);
             var code = fs.readFileSync(srcPath);
-            var result = UglifyJS.minify(code.toString(), options);
+            var result = UglifyJS.minify(code.toString());
+            var desSize = 0;
             if (result.error) {
                 console.log(cPre + result.error);
+                continue;
             } else {
-                if (files.length > 1 || !destPath) {
-                    destPath = srcPath.substring(0, srcPath.lastIndexOf(".")) + ".min" + srcPath.substring(srcPath.lastIndexOf("."));
+                if (typeof destPath === 'string') {
+                    //concat to one file
+                    desSize = Buffer.byteLength(result.code, 'utf8');
+                    collection += result.code;
+                } else {
+                    if (destPath === true) {
+                        //overwrite
+                        destPath = srcPath;
+                    } else {
+                        //add min extension
+                        console.log('is null');
+                        destPath = srcPath.substring(0, srcPath.lastIndexOf(".")) + ".min" + srcPath.substring(srcPath.lastIndexOf("."));
+                    }
+                    fs.writeFileSync(destPath, result.code);
+                    desSize = getFilesizeInBytes(destPath);
                 }
-                fs.writeFileSync(destPath, result.code);
-                console.log(cPre + 'Add File: %s', srcPath);
             }
+            size += srcSize;
+            sizeCompressed += desSize;
+            var beforSize = filesize(srcSize, {base: 10});
+            var afterSize = filesize(desSize, {base: 10});
+            console.log(cPre + 'File: [%s -> %s] %s', beforSize, afterSize, afterSize);
+        }
+        if (typeof overwrite === 'string') {
+            //save all to one file
+            console.log(cPre + 'Write to: %s', destPath);
+            fs.writeFileSync(destPath, collection);
         }
     });
 };
