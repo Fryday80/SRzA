@@ -107,7 +107,7 @@ exports.uglify = function(srcPath, destPath){
             sizeCompressed += desSize;
             var beforSize = filesize(srcSize, {base: 10});
             var afterSize = filesize(desSize, {base: 10});
-            console.log(cPre + 'File: [%s -> %s] %s', beforSize, afterSize, afterSize);
+            console.log(cPre + 'File: [%s -> %s] %s', beforSize, afterSize, srcPath);
         }
         if (typeof overwrite === 'string') {
             //save all to one file

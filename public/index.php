@@ -13,8 +13,11 @@ const MIN_PW_LENGTH = 3;
 $logPath = realpath(__DIR__ . '/../logs');
 require 'vendor/tracy/tracy/src/tracy.php';
 use Tracy\Debugger;
-
-Debugger::enable(Debugger::DEVELOPMENT, $logPath);
+if (getenv('APPLICATION_ENV') == 'development') {
+    Debugger::enable(Debugger::DEVELOPMENT, $logPath);
+} else {
+    Debugger::enable(Debugger::DEVELOPMENT, $logPath);
+}
 Debugger::$strictMode = true;
 Debugger::$maxDepth = 12; // default: 3
 Debugger::$maxLength = 550; // default: 150
