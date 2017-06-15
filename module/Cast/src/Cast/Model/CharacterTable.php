@@ -62,7 +62,7 @@ class CharacterTable extends AbstractTableGateway
      * @return array results
      * @throws \Exception
      */
-    public function getAllCastData(Array $where = array()) {//so meinte ich das
+    public function getAllCastData(Array $where = array()) {
         try {
             $sql = new Sql($this->getAdapter());
 

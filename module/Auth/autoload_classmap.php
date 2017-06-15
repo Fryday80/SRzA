@@ -34,7 +34,6 @@ return array(
     'Auth\Form\LoginForm'                                 => __DIR__ . '/src/Auth/Form/LoginForm.php',
     'Auth\Form\PermissionAddForm'                         => __DIR__ . '/src/Auth/Form/PermissionAddForm.php',
     'Auth\Form\PermissionDeleteForm'                      => __DIR__ . '/src/Auth/Form/PermissionDeleteForm.php',
-    'Auth\Form\ProfileCharacterForm'                      => __DIR__ . '/src/Auth/Form/ProfileCharacterForm.php',
     'Auth\Form\PWForgetForm'                              => __DIR__ . '/src/Auth/Form/PWForgetForm.php',
     'Auth\Form\ResourceForm'                              => __DIR__ . '/src/Auth/Form/ResourceForm.php',
     'Auth\Form\RoleForm'                                  => __DIR__ . '/src/Auth/Form/RoleForm.php',

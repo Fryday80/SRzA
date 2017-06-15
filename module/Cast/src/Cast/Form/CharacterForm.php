@@ -89,19 +89,7 @@ class CharacterForm extends Form
         ));
         $this->add(array(
             'name' => 'user_id',
-            'type' => 'Zend\Form\Element\Select',
-            'attributes' => array(
-            ),
-            'options' => array(
-                'label' => 'Darsteller',
-                'value_options' => $this->getUsersForSelect(),
-            ),
-            'required' => true,
-            'allow_empty' => false,
-            'filters' => array(
-                ['name' => 'StringTrim'],
-            ),
-
+            'type' => 'hidden'
         ));
 //        $this->add(array(
 //            'name' => 'family_id',
@@ -137,46 +125,60 @@ class CharacterForm extends Form
 
     public function isBackend()
     {
+        $this->add(array(
+            'name' => 'user_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Darsteller',
+                'value_options' => $this->getUsersForSelect(),
+            ),
+            'required' => true,
+            'allow_empty' => false,
+            'filters' => array(
+                ['name' => 'StringTrim'],
+            ),
+        ));
+        $this->add(array(
+            'name' => 'tross_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Tross',
+                'value_options' => $this->getFamiliesForSelect(),
+            )
+        ));
+        $this->add(array(
+            'name' => 'job_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Job',
+                'value_options' => $this->getJobsForSelect(),
+            )
+        ));
 
-//        $this->add(array(
-//            'name' => 'tross_id',
-//            'type' => 'Zend\Form\Element\Select',
-//            'attributes' => array(
-//            ),
-//            'options' => array(
-//                'label' => 'Tross',
-//                'value_options' => $this->getFamiliesForSelect(),
-//            )
-//        ));
-//        $this->add(array(
-//            'name' => 'job_id',
-//            'type' => 'Zend\Form\Element\Select',
-//            'attributes' => array(
-//            ),
-//            'options' => array(
-//                'label' => 'Job',
-//                'value_options' => $this->getJobsForSelect(),
-//            )
-//        ));
-//
-//        $this->add(array(
-//            'name' => 'supervisor_id',
-//            'type' => 'Zend\Form\Element\Select',
-//            'attributes' => array(
-//            ),
-//            'options' => array(
-//                'disable_inarray_validator' => true,
-//                'label' => 'Vorgesetzter',
-//                'value_options' => $this->getSupervisorForSelect(),
-//            )
-//        ));
-//        $this->add(array(
-//            'name' => 'active',
-//            'type' => 'checkbox',
-//            'options' => array(
-//                'label' => 'Aktiv',
-//            ),
-//        ));
+        $this->add(array(
+            'name' => 'supervisor_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'disable_inarray_validator' => true,
+                'label' => 'Vorgesetzter',
+                'value_options' => $this->getSupervisorForSelect(),
+            )
+        ));
+        $this->add(array(
+            'name' => 'active',
+            'type' => 'checkbox',
+            'options' => array(
+                'label' => 'Aktiv',
+            ),
+        ));
     }
 
     public function getUsersForSelect()

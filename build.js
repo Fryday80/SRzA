@@ -1,19 +1,27 @@
-var shell = require('shelljs');
+const replace = require('replace-in-file');
 var js = require('./build/uglifyJS.js');
 var colors = require('colors');
-const replace = require('replace-in-file');
+var shell = require('shelljs');
+// Shell operations CheatSheet:
+// shell.mkdir('-p', '/tmp/a/b/c/d', '/tmp/e/f/g');
+// cp('file1', 'dir1');
+// cp('-R', 'path/to/dir/', '~/newCopy/');
 
 var cPre = 'Main -> '.yellow;
+var Message = false;
+var progress = '';
 
-var TempPath = 'build/temp';
-var Out = 'build/release';
-var bRoot = Out + '/';
-var msg;
+var TempPath = 'build/temp/';
+var Out = 'build/release/';
+
+//==== SETTINGS ====
+var clearExisting = false;
+var ZendSkeletonUpdated = false;
 
 // ---------- prepare system
-// MODE: overwrite mode   .. out commentate for merge moode
-// shell.rm('-r', Out);
-
+if (clearExisting) {
+    shell.rm('-r', Out);
+}
 // output folder
 shell.mkdir(Out);
 // temp folder
@@ -21,41 +29,41 @@ shell.mkdir(TempPath);
 
 //build css
 shell.exec('grunt build');
+console.log('\x1Bc');
 
 // ---------- create folder structure
-// shell.mkdir('-p', '/tmp/a/b/c/d', '/tmp/e/f/g');
 // site's folder
 // empty folders
-shell.mkdir(bRoot + 'cache');
-shell.mkdir(bRoot + 'Data');
-shell.mkdir(bRoot + 'logs');
-shell.mkdir(bRoot + 'storage');
-shell.mkdir(bRoot + 'temp');
-shell.mkdir(bRoot + 'Upload');
+shell.mkdir(Out + 'cache');
+shell.mkdir(Out + 'Data');
+shell.mkdir(Out + 'logs');
+shell.mkdir(Out + 'storage');
+shell.mkdir(Out + 'temp');
+shell.mkdir(Out + 'Upload');
 // data folders
-shell.mkdir('-p', bRoot + 'config/autoload');
-shell.mkdir('-p', bRoot + 'public/img');
+shell.mkdir('-p', Out + 'config/autoload');
+shell.mkdir('-p', Out + 'public/img');
 
-// only if Zend was updated
-// shell.cp('-r', 'vendor/', bRoot);
+if (ZendSkeletonUpdated){
+    // only if Zend was updated
+    shell.cp('-r', 'vendor/', Out);
+}
 
 // ---------- copy data
-// cp('file1', 'dir1');
-// cp('-R', 'path/to/dir/', '~/newCopy/');
-shell.cp('config/application.config.php', bRoot + 'config/');
-shell.cp('config/autoload/global.php', bRoot + 'config/autoload/');
-shell.cp('-r', 'module/', bRoot);
-shell.cp('-r', 'public/.htaccess',  bRoot + 'public/');
-shell.cp('-r', 'public/index.php', bRoot + 'public/');
-shell.cp('-r', ['public/css/', 'public/fonts/', 'public/img/', 'public/js/', 'public/libs/'], bRoot + 'public/');
-shell.rm('-r', bRoot + 'public/img/psd');
-shell.cp('-r', 'init_autoloader.php', bRoot);
+shell.cp('config/application.config.php', Out + 'config/');
+shell.cp('config/autoload/global.php', Out + 'config/autoload/');
+shell.cp('-r', 'module/', Out);
+shell.cp('-r', 'public/.htaccess',  Out + 'public/');
+shell.cp('-r', 'public/index.php', Out + 'public/');
+shell.cp('-r', ['public/css/', 'public/fonts/', 'public/img/', 'public/js/', 'public/libs/'], Out + 'public/');
+shell.rm('-r', Out + 'public/img/psd');
+shell.cp('-r', 'init_autoloader.php', Out);
 
-// change contents
+// modify contents
 try {
     let changedFiles = replace.sync({
-        files: bRoot + 'public/.htaccess',
-        //Replacement to make (string or regex) 
+        files: Out + 'public/.htaccess',
+        //Replacement to make (string or regex)
         from: /development/g,
         to: 'production',
     });
@@ -69,7 +77,7 @@ catch (error) {
 //and a test function to view what files found by the pattern. secound argument is a options object(see node-glob)
 // js.testPath(Out + '/module/**/*.js');
 
-js.uglify(bRoot + 'module/**/*.js', true);
+js.uglify(Out + 'module/**/*.js', true);
 // js.uglify('public/js/globalUsage/loggingDesigner/loggingDesigner.js', 'public/js/globalUsage/loggingDesigner/loggingDesigner.min.js');
 
 // global js
@@ -86,8 +94,7 @@ shell.cat([
     'public/js/globalUsage/jquery/jquery-3.2.0.min.js',
     'public/libs/globalUsage/jquery-ui/jquery-ui.min.js',
     TempPath+'/main.js'
-]).to(bRoot + 'public/loadJS.js');
+]).to(Out + 'public/loadJS.js');
 
 // clean up
-shell.rm('-rf', TempPath);
-js.stats();
+shell.rm('-rf', TempPath);js.stats();

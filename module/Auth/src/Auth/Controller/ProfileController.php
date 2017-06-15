@@ -2,7 +2,7 @@
 namespace Auth\Controller;
 
 use Application\Service\StatisticService;
-use Auth\Form\ProfileCharacterForm;
+use Cast\Form\CharacterForm;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Auth\Utility\UserPassword;
@@ -180,7 +180,7 @@ class ProfileController extends AbstractActionController
         $families = $this->familyTable->getAll();
         $users = $this->userService->getAllUsers()->toArray();
         $jobs = $this->jobTable->getAll();
-        return new ProfileCharacterForm($users, $families, $jobs);
+        return new CharacterForm($users, $families, $jobs);
     }
     public function charprofileAction(){
         $hasFamily = false;

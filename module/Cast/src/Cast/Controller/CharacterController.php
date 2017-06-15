@@ -82,6 +82,7 @@ class CharacterController extends AbstractActionController
         }
         $form = $this->createCharacterForm();
         $operator = 'Edit';
+        $form->isBackend();
         $form->get('submit')->setAttribute('value', $operator);
 
         $possibleGuardians = $this->characterTable->getByFamilyId($character['family_id']);
@@ -235,6 +236,7 @@ class CharacterController extends AbstractActionController
         $families = $this->familiesTable->getAll();
         $users = $this->userService->getAllUsers();
         $jobs = $this->jobTable->getAll();
-        return new CharacterForm($users, $families, $jobs);
+        $form = new CharacterForm($users, $families, $jobs);
+        return $form;
     }
 }

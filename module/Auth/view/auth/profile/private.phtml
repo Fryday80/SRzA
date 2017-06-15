@@ -73,6 +73,7 @@ $userForm->prepare();
         <box id="charForm" class="animatable hide">
             <boxtitle><span class="own_text_small"><span class="command">Edit</span> <span>Charakter</span> <span class="charName"></span></span></boxtitle>
             <boxcontent>
+                <div><span class="own_title_small"><?php echo $user->name ?></span></div>
                 <?php echo $this->form($charForm); ?>
             </boxcontent>
         </box>
