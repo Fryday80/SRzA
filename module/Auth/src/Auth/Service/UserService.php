@@ -107,7 +107,7 @@ class UserService
         $width = imagesx($im);
         $height = imagesy($im);
 
-        $thumbSizeLimit = 500;
+        $thumbSizeLimit = 600;
         if ($width < $thumbSizeLimit && $height < $thumbSizeLimit) {}
         else {
             $newheight = $thumbSizeLimit;

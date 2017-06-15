@@ -44,7 +44,7 @@ return array(
                  'type'    => 'segment',
                  'may_terminate' => true,
                  'options' => array(
-                     'route'    => '/castmanager',
+                     'route'    => '/castmanager[/]',
                      'defaults' => array(
                          'controller' => 'Cast\Controller\Manager',
                          'action'     => 'index',
@@ -55,7 +55,7 @@ return array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/families',
+                             'route'    => 'families[/]',
                              'defaults' => array(
                                  'controller' => 'Cast\Controller\Family',
                                  'action'     => 'index',
@@ -66,7 +66,7 @@ return array(
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/delete[/:id]',
+                                     'route' => 'delete[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -78,7 +78,7 @@ return array(
                              'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/add[/:id]',
+                                     'route' => 'add[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -90,7 +90,7 @@ return array(
                              'edit' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/edit[/:id]',
+                                     'route' => 'edit[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -105,7 +105,7 @@ return array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/jobs',
+                             'route'    => 'jobs[/]',
                              'defaults' => array(
                                  'controller' => 'Cast\Controller\Job',
                                  'action'     => 'index',
@@ -116,7 +116,7 @@ return array(
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/delete[/:id]',
+                                     'route' => 'delete[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -128,7 +128,7 @@ return array(
                              'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/add[/:id]',
+                                     'route' => 'add[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -140,7 +140,7 @@ return array(
                              'edit' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/edit[/:id]',
+                                     'route' => 'edit[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -155,7 +155,7 @@ return array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/characters',
+                             'route'    => 'characters[/]',
                              'defaults' => array(
                                  'controller' => 'Cast\Controller\Character',
                                  'action'     => 'index',
@@ -166,7 +166,7 @@ return array(
                              'json' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/json',
+                                     'route' => 'json[/]',
                                      'constraints' => array(),
                                      'defaults' => array(
                                          'action' => 'json'
@@ -176,7 +176,7 @@ return array(
                              'jsonOwnerEdit' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/jsonOwnerEdit',
+                                     'route' => 'jsonOwnerEdit[/]',
                                      'constraints' => array(),
                                      'defaults' => array(
                                          'action' => 'jsonOwnerEdit'
@@ -186,7 +186,7 @@ return array(
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/delete[/:id]',
+                                     'route' => 'delete[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -198,7 +198,7 @@ return array(
                              'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/add[/:id]',
+                                     'route' => 'add[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -210,7 +210,7 @@ return array(
                              'edit' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/edit[/:id]',
+                                     'route' => 'edit[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -225,7 +225,7 @@ return array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/wappen',
+                             'route'    => 'wappen[/]',
                              'defaults' => array(
                                  'controller' => 'Cast\Controller\Blazon',
                                  'action'     => 'index',
@@ -236,7 +236,7 @@ return array(
                              'delete' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/delete[/:id]',
+                                     'route' => 'delete[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -248,7 +248,7 @@ return array(
                              'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/add[/:id]',
+                                     'route' => 'add[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -260,7 +260,7 @@ return array(
                              'edit' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/edit[/:id]',
+                                     'route' => 'edit[/:id][/]',
                                      'constraints' => array(
                                          'id' => '[0-9]+'
                                      ),
@@ -278,7 +278,7 @@ return array(
                  'type'    => 'segment',
                  'may_terminate' => true,
                  'options' => array(
-                     'route'    => '/cast',
+                     'route'    => '/cast[/]',
                      'defaults' => array(
                          'controller' => 'Cast\Controller\Cast',
                          'action'     => 'index',

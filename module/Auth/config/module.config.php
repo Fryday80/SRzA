@@ -54,7 +54,7 @@ return array(
             'user' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/user',
+                    'route' => '/user[/]',
                     'constraints' => array(),
                     'defaults' => array(
                         'controller' => 'Auth\Controller\User',
@@ -66,7 +66,7 @@ return array(
                     'delete' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/delete[/:id]',
+                            'route' => 'delete[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -79,7 +79,7 @@ return array(
                     'add' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/add[/:id]',
+                            'route' => 'add[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -92,7 +92,7 @@ return array(
                     'edit' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit[/:id]',
+                            'route' => 'edit[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -107,7 +107,7 @@ return array(
             'login' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/login',
+                    'route' => '/login[/]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
@@ -119,7 +119,7 @@ return array(
                     'process' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:action]',
+                            'route' => '/[:action][/]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
@@ -132,7 +132,7 @@ return array(
             'logout' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/logout',
+                    'route' => '/logout[/]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
@@ -143,7 +143,7 @@ return array(
             'success' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/success',
+                    'route' => '/success[/]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
@@ -154,7 +154,7 @@ return array(
             'role' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/role',
+                    'route' => '/role[/]',
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Role',
                         'action' => 'index'
@@ -165,7 +165,7 @@ return array(
                     'delete' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/delete/:id',
+                            'route' => 'delete/:id[/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -178,7 +178,7 @@ return array(
                     'add' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/add[/:id]',
+                            'route' => 'add[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -191,7 +191,7 @@ return array(
                     'edit' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit[/:id]',
+                            'route' => 'edit[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -206,7 +206,7 @@ return array(
             'permission' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/permission',
+                    'route' => '/permission[/]',
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Permission',
                         'action' => 'index'
@@ -217,7 +217,7 @@ return array(
                     'delete' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/delete[/:id]',
+                            'route' => 'delete[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -230,7 +230,7 @@ return array(
                     'add' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/add[/:id]',
+                            'route' => 'add[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -243,7 +243,7 @@ return array(
                     'edit' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/edit[/:id]',
+                            'route' => 'edit[/:id][/]',
                             'constraints' => array(
                                 'id' => '[0-9]+'
                             ),
@@ -258,7 +258,7 @@ return array(
             'resource' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/resource[/:action][/:id]',
+                    'route' => '/resource[/:action][/:id][/]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                         'id' => '[0-9]+'
@@ -272,7 +272,7 @@ return array(
             'register' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/register',
+                    'route' => '/register[/]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
@@ -283,7 +283,7 @@ return array(
             'passwordReset' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/password/reset',
+                    'route' => '/password/reset[/]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Auth\Controller',
                         'controller' => 'Auth',
@@ -295,7 +295,7 @@ return array(
                     'hash' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/:hash',
+                            'route' => ':hash[/]',
 //                            'constraints' => array(
 //                                'hash' => '[0-9]+'
 //                            ),
@@ -310,7 +310,7 @@ return array(
             'profileJson' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/profileJson',
+                    'route' => '/profileJson[/]',
                     'constraints' => array(),
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Profile',
@@ -321,7 +321,7 @@ return array(
             'profile' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/profile',
+                    'route' => '/profile[/]',
                     'defaults' => array(
                         'controller' => 'Auth\Controller\Profile',
                         'action' => 'privateProfile',
@@ -332,7 +332,7 @@ return array(
                     'username' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/:username',
+                            'route' => ':username[/]',
                             'constraints' => array(
                                 'username' => '[a-zA-Z][a-zA-Z0-9_-]+'
                             ),
@@ -345,7 +345,7 @@ return array(
                             'charname' => array(
                                 'type' => 'Segment',
                                 'options' => array(
-                                    'route' => '/:charname',
+                                    'route' => ':charname[/]',
                                     'constraints' => array(
                                         'charname' => '[a-zA-Z][a-zA-Z0-9_-]+'
                                     ),
