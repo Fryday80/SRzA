@@ -97,4 +97,5 @@ shell.cat([
 ]).to(Out + 'public/loadJS.js');
 
 // clean up
-shell.rm('-rf', TempPath);js.stats();
+shell.rm('-rf', TempPath);
+js.stats();
