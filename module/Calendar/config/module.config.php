@@ -31,7 +31,7 @@ return array(
              'calendar' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar[/]',
+                     'route'    => '/calendar',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'index',
@@ -42,7 +42,7 @@ return array(
              'getevents' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/getEvents[/]',
+                     'route'    => '/calendar/getEvents',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'getEvents',
@@ -52,7 +52,7 @@ return array(
              'config' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/config[/]',
+                     'route'    => '/calendar/config',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'config',
@@ -62,7 +62,7 @@ return array(
              'addEvent' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/addEvent[/]',
+                     'route'    => '/calendar/addEvent',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'addEvent',
@@ -72,7 +72,7 @@ return array(
              'editEvent' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/editEvent[/]',
+                     'route'    => '/calendar/editEvent',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'editEvent',
@@ -82,7 +82,7 @@ return array(
              'deleteEvent' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/deleteEvent[/]',
+                     'route'    => '/calendar/deleteEvent',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'deleteEvent',

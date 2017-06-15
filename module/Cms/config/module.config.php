@@ -36,7 +36,7 @@ return array(
                     'title' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => ':title[/]',
+                            'route' => ':title',
                             'constraints' => array(
                                 'title' => '[a-zA-Z_-]+'
                             )
@@ -59,7 +59,7 @@ return array(
             'cms' => array(
                 'type' => 'literal',
                 'options' => array(
-                    'route' => '/cms[/]',
+                    'route' => '/cms',
                     'defaults' => array(
                         'controller' => 'Cms\Controller\Content',
                         'action' => 'index'
@@ -70,7 +70,7 @@ return array(
                     'detail' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => ':id[/]',
+                            'route' => '/:id',
                             'defaults' => array(
                                 'action' => 'detail'
                             ),
@@ -82,7 +82,7 @@ return array(
                     'add' => array(
                         'type' => 'literal',
                         'options' => array(
-                            'route' => 'add[/]',
+                            'route' => '/add',
                             'defaults' => array(
                                 'action' => 'add'
                             )
@@ -91,7 +91,7 @@ return array(
                     'edit' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => 'edit/:id[/]',
+                            'route' => '/edit/:id',
                             'defaults' => array(
                                 'action' => 'edit'
                             ),
@@ -103,7 +103,7 @@ return array(
                     'delete' => array(
                         'type' => 'segment',
                         'options' => array(
-                            'route' => 'delete/:id[/]',
+                            'route' => '/delete/:id',
                             'defaults' => array(
                                 'action' => 'delete'
                             ),

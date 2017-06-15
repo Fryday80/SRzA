@@ -97,7 +97,7 @@ return array(
             'system' => array(
                 'type'    => 'segment',
                 'options' => array(
-                    'route'    => '/system[/]',
+                    'route'    => '/system',
                     'constraints' => array(),
                     'defaults' => array(
 //                        '__NAMESPACE__' => 'Application\Controller',
@@ -110,7 +110,7 @@ return array(
                     'dashboard' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => 'dashboard[/]',
+                            'route' => '/dashboard[/]',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'dashboard',
@@ -121,7 +121,7 @@ return array(
                     'mailTemplates' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => 'mailTemplates[/]',
+                            'route' => '/mailTemplates',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'mailTemplatesIndex',
@@ -156,7 +156,7 @@ return array(
 //                    'settings' => array(
 //                        'type' => 'Segment',
 //                        'options' => array(
-//                            'route' => 'delete[/:id][/]',
+//                            'route' => '/delete[/:id]',
 //                            'constraints' => array(
 //                                'id' => '[0-9]+'
 //                            ),
@@ -169,7 +169,7 @@ return array(
                     'json' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => 'json[/]',
+                            'route' => '/json',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'json'
@@ -179,7 +179,7 @@ return array(
                     'formtest' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => 'formtest[/]',
+                            'route' => '/formtest',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'formtest',

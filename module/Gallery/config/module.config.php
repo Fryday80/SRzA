@@ -26,7 +26,7 @@ return array(
                  'type'    => 'segment',
                  'may_terminate' => true,
                  'options' => array(
-                     'route'    => '/gallery[/]',
+                     'route'    => '/gallery',
                      'defaults' => array(
                          '__NAMESPACE__' => 'Gallery\Controller',
                          'controller' => 'Gallery',
@@ -37,7 +37,7 @@ return array(
                     'small' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => 'small[/:id][/]',
+                            'route' => '/small[/:id]',
                             'constraints' => array(
                               //  'id' => '[*]+'
                             ),
