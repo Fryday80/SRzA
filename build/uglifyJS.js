@@ -6,9 +6,6 @@ var UglifyJS    = require("uglify-es"),
     glob        = require('glob'),
     cPre = 'JS -> '.yellow, //console prefix
     files = {},
-    count = 0,
-    readyCount = 0,
-    doMake = false,
     target,
     options = {
         toplevel: true,
@@ -35,24 +32,12 @@ function make() {
     reset();
     console.log(cPre + 'COMPLETE'.green);
 }
-function makeWhenComplet() {
-    "use strict";
-    //check if make command was called
-    if (!doMake) return;
-    //check if we are ready
-    if (count != readyCount) return;
-    //check if we have a target
-    if (!target) return;
-    make();
-}
 function reset() {
     "use strict";
-    count = 0;
-    readyCount = 0;
     files = {};
     target = null;
 }
-exports.testPath = function(path, options = {}) {
+exports.testPath = function(path, options) {
     var files = glob.sync(path, options);
     console.log(cPre + 'Test glob pattern: %s', path);
     if (files.length === 0) {
@@ -83,21 +68,13 @@ exports.uglify = function(srcPath, destPath){
         }
     });
 };
-exports.add = function(file) {
+exports.add = function(filePath) {
     "use strict";
     //@todo check if file exists
-    count++;
-    fs.readFile(file, (err, code) => {
-        if (err) {
-            files[file] = null;
-            console.log(cPre + 'Warning: ', err);
-        } else {
-            console.log(cPre + 'Add File: %s ', file);
-            files[file] = code.toString();
-        }
-        readyCount++;
-        makeWhenComplet();
-    });
+    // count++;
+    var content = fs.readFileSync(filePath);
+    if (!content) return;
+    files[filePath] = content.toString();
 };
 exports.make = function(targetPath, options) {
     "use strict";
@@ -107,6 +84,5 @@ exports.make = function(targetPath, options) {
     }
     //@todo merge options
     target = targetPath;
-    doMake = true;
-    makeWhenComplet();
+    make();
 };

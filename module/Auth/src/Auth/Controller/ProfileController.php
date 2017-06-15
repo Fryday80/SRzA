@@ -56,10 +56,15 @@ class ProfileController extends AbstractActionController
         try {
             switch ($request->method) {
                 case 'getChars':
-                    if (!isset($request->userID) ) {
-                        $result['data'] = $this->castService->getByUserId($userID);
-                    } else {
-                        $result['data'] = $this->castService->getByUserId($request->userID);
+                    try {
+                        if (!isset($request->userID)) {
+                            $result['data'] = $this->castService->getByUserId($userID);
+                        } else {
+                            $result['data'] = $this->castService->getByUserId($request->userID);
+                        }
+                    } catch (Exception $e) {
+                        $result['error'] = true;
+                        $result['message'] = $e->getMessage();
                     }
                     break;
                 default:
