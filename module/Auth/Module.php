@@ -38,6 +38,7 @@ class Module
         'Auth\Controller\Auth-logout',
         'Auth\Controller\Auth-reset',
         'Auth\Controller\Auth-resetRequest',
+        'Application\Controller\System-maintenance',
     );
 
     public function onBootstrap(MvcEvent $e)

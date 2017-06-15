@@ -192,4 +192,10 @@ class SystemController extends AbstractActionController
         //output
         return new JsonModel($result);
     }
+
+    public function maintenanceAction() {
+        $viewModel = new ViewModel();
+        $viewModel->setTerminal(true);
+        return $viewModel;
+    }
 }

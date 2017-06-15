@@ -25,6 +25,7 @@ return array(
             'Application\Model\SystemLog' => 'Application\Model\SystemLog',
         ),
         'factories' => array(
+            'SystemService'    => 'Application\Factory\Service\SystemServiceFactory',
             'StatisticService' => 'Application\Factory\Service\StatisticServiceFactory',
             'MessageService'   => 'Application\Factory\Service\MessageServiceFactory',
         ),

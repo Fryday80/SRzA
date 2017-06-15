@@ -3,16 +3,18 @@ namespace Application\Service;
 
 use Auth\Service\AccessService;
 use Exception;
+use Zend\Mvc\MvcEvent;
 
 class SystemService
 {
+    public $configPath = '/storage/system.json';
     /** @var  AccessService */
     private $accessService;
 
     private $config = array(
         'maintenance' => array(
             'type' => 'boolean',
-            'value' => false
+            'value' => true
         ),
         'logoutUsers' => array(
             'type' => 'function',
@@ -22,10 +24,14 @@ class SystemService
 
     public function __construct(AccessService $accessService) {
         $this->accessService = $accessService;
+        $this->configPath = getcwd().$this->configPath;
         $this->loadConfig();
     }
 
-    public function getConfig($key) {
+    public function getConfig($key = null) {
+        if ($key === null) {
+            return $this->config;
+        }
         if (key_exists($key, $this->config)) {
             if ($this->config[$key]['type'] === 'function') {
                 throw new Exception('Config key not readable!');
@@ -68,19 +74,30 @@ class SystemService
                     }
                     break;
             }
-            $this->saveConfig();
         } else {
             throw new Exception('Key not exists!');
         }
     }
+
     public function logoutUsers() {
         //@todo logout all users except admins
     }
 
-    private function saveConfig() {
-        //@todo save config to file
+    public function onFinish(MvcEvent $e) {
+        $this->saveConfig();
     }
+
+    private function saveConfig() {
+        $content = serialize($this->config);
+        file_put_contents($this->configPath, $content);
+    }
+
     private function loadConfig() {
-        //@todo load config to file
+        if (!file_exists($this->configPath) ) {
+            $this->saveConfig();
+        }
+        $content = file_get_contents(realpath($this->configPath));
+        $content = unserialize($content);
+        return $content;
     }
 }

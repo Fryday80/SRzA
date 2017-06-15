@@ -2,7 +2,6 @@
 
 namespace Application\Service;
 
-use Exception;
 const CACHE_PATH = '/cache'; //relative to root, start with /
 class CacheService
 {
