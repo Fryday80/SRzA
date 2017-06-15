@@ -28,9 +28,6 @@ const AJAX_BLACK_LIST = array(
     '/system/json',
     '/system/dashboard'
 );
-//@todo cleanfix dev speed check
-/** "true" logs speed in Tracy "false" don't */
-const SPEED_CHECK = false;
 
 class StatisticService
 {
@@ -160,21 +157,15 @@ class StatisticService
      */
     public function getSystemLogWhere($where = null, $options = array("filterType" => FilterType::EQUAL, "sortKey" => "time", "sortOrder" => OrderType::DESCENDING))
     {
-        if (SPEED_CHECK) Register::add('StatService get SysLog start');
 //        $data = $this->stats->systemLog;
         //@todo re-build to db
         $data = $this->sysLog->getSystemLogs();
-        if (SPEED_CHECK) Register::add('StatService get SysLog db/var fetched');
         // just fetch all
-        if (!is_array($where)) {
-            if (SPEED_CHECK) Register::add('StatService get SysLog return & end');
+        if (!is_array($where))
             return $this->stats->sortByKey($data, $options['sortKey'], $options['sortOrder']);
-        }
         // fetch since if only since is given
-        if (key_exists('since', $where) && count($where) == 1){
-            if (SPEED_CHECK) Register::add('StatService get SysLog return & end');
+        if (key_exists('since', $where) && count($where) == 1)
             return $this->stats->getSinceOf($data, $where['since']);
-        }
         foreach ($where as $sKey => $sValue){
             if ($sKey == 'since'){
                 $data = $this->stats->getSinceOf($data, $where['since']);
@@ -182,7 +173,6 @@ class StatisticService
                 $data = $this->stats->filterByKey($data, $sKey, $sValue, $options['filterType']);
             }
         }
-        if (SPEED_CHECK) Register::add('StatService get SysLog return & end');
         return $this->stats->sortByKey($data, $options['sortKey'], $options['sortOrder']);
 
     }
@@ -217,7 +207,6 @@ class StatisticService
      */
     private function gatherData($e)
     {
-        if (SPEED_CHECK) Register::add('StatService ->gatherData start');
         $data = array(
             'mTime' => microtime(true),
             'request' => $e->getApplication()->getRequest(),
@@ -245,7 +234,6 @@ class StatisticService
 //        $data['redirect']= (isset ($data['serverPHPData']['REDIRECT_STATUS'])) ? $data['serverPHPData']['REDIRECT_STATUS'] : "no redirect"; //set if redirected
 //        $data['redirectedTo']= (isset ($data['serverPHPData']['REDIRECT_URL']) ) ? $data['serverPHPData']['REDIRECT_URL'] : "no redirect";
         }
-        if (SPEED_CHECK) Register::add('StatService ->gatherData end');
         return $data;
     }
 
@@ -266,10 +254,8 @@ class StatisticService
     }
 
     private function loadFile() {
-        if (SPEED_CHECK) Register::add('load and unserialize');
         $content = file_get_contents($this->storagePath);
         $content = unserialize($content);
-        if (SPEED_CHECK) Register::add('load and unserialize end');
         return $content;
     }
 }

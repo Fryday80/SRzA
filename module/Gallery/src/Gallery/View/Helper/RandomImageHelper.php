@@ -37,7 +37,6 @@ class RandomImageHelper extends AbstractHelper
     function createRandoms()
     {
         $this->result = $this->galleryService->getRandomImage($count = 3);
-        bdump($this->result);
     }
 
     function scroller()
