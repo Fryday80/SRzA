@@ -90,3 +90,4 @@ shell.cat([
 
 // clean up
 shell.rm('-rf', TempPath);
+js.stats();
