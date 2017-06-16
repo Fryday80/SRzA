@@ -1,5 +1,6 @@
 <style>
-    div.onlineStatus
+    div.onlineStatus,
+    a.onlineStatus
     {
         float: right;
         margin 5px;
@@ -55,12 +56,13 @@ $bh = $this->blazon();
 $stateUrl = ($isActive) ? '/img/uikit/led-green.png' : '/img/uikit/led-red.png';
 $state    = ($isActive) ? 'online' : 'offline';
 $activityState = " <div class='onlineStatus' data-balloon=$state data-balloon-pos='down' ><img src=$stateUrl class='onlineStatus' alt=$state></div>";
+$editOwnProfile = ($user->isActiveUser()) ? '<a class="onlineStatus" href="/profile"><button>Editieren</button></a>' : '';
 
 $title =$user->name;
 $this->headTitle($title);
 ?>
 
-<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; ?></span></h1><br/>
+<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; echo $editOwnProfile; ?></span></h1><br/>
 <br/>
 <box class="public-profile summary">
     <span>

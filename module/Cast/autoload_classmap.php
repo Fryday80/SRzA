@@ -39,4 +39,5 @@ return array(
     'Cast\Utility\JobDataTable'               => __DIR__ . '/src/Cast/Utility/JobDataTable.php',
     'Cast\Utility\UserDataTable'              => __DIR__ . '/src/Cast/Utility/UserDataTable.php',
     'Cast\View\Helper\BlazonHelper'           => __DIR__ . '/src/Cast/View/Helper/BlazonHelper.php',
+    'Cast\View\Helper\CharDateHelper'         => __DIR__ . '/src/Cast/View/Helper/CharDateHelper.php',
 );

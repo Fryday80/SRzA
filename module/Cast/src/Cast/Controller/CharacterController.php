@@ -80,6 +80,7 @@ class CharacterController extends AbstractActionController
         if (!$character = $this->characterTable->getById($id)) {
             return $this->redirect()->toRoute('castmanager/characters');
         }
+        bdump($character);
         $form = $this->createCharacterForm();
         $operator = 'Edit';
         $form->isBackend();
@@ -236,7 +237,7 @@ class CharacterController extends AbstractActionController
         $families = $this->familiesTable->getAll();
         $users = $this->userService->getAllUsers();
         $jobs = $this->jobTable->getAll();
-        $form = new CharacterForm($users, $families, $jobs);
+        $form = new CharacterForm($users->toArray(), $families, $jobs);
         return $form;
     }
 }

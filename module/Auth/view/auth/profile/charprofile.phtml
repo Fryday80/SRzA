@@ -41,10 +41,19 @@ echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhAr
     <div class="charprofile headimages">
         <?php echo ($char['userData']->user_image) ? '<img style="float: right;height: 250px;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
     </div>
+    <div class="charprofile headimages">
+        <?php 
+        if ($isOwner)
+            echo "<a href='/profile/$username/$charnameURL/edit'><button>Bearbeiten</button></a>";
+        ?>
+    </div>
 <div class="clear"></div>
 <h1>
     <span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span>
 </h1>
+<?php
+echo $this->charDate($char['birthday'])
+?>
 <br/>
 <br/>
 <box class="public-char-profile">

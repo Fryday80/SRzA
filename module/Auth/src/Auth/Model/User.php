@@ -21,6 +21,7 @@ class User
     public $birthday;
     public $gender;
     public $user_image;
+    public $activeUser = false;
 
     public function exchangeArray($data)
     {
@@ -48,5 +49,18 @@ class User
     public function getArrayCopy()
     {
         return get_object_vars($this);
+    }
+
+    public function setActiveUser($activeUserName)
+    {
+        if ($activeUserName == $this->name)
+            $this->activeUser = true;
+        else
+        $this->activeUser = false;
+    }
+
+    public function isActiveUser()
+    {
+        return $this->activeUser;
     }
 }

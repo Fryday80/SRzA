@@ -81,6 +81,7 @@ class ProfileController extends AbstractActionController
         return new JsonModel($result);
     }
 
+    //show profile (public)
     public function publicProfileAction()
     {
         $viewModel = new ViewModel();
@@ -96,6 +97,7 @@ class ProfileController extends AbstractActionController
         $characters = $this->castService->getByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
         $askingUser = $this->accessService->getUserName();
+        $user->setActiveUser($askingUser);
 
         $viewModel->setVariable('askingUser', $askingUser);
         $viewModel->setVariable('isActive', $isActive);
@@ -107,6 +109,7 @@ class ProfileController extends AbstractActionController
         return $viewModel;
 
     }
+    //edit own profile
     public function privateProfileAction() {
 
         $username = $this->accessService->getUserName();
@@ -182,6 +185,7 @@ class ProfileController extends AbstractActionController
         $jobs = $this->jobTable->getAll();
         return new CharacterForm($users, $families, $jobs);
     }
+    //show char profile
     public function charprofileAction(){
         $hasFamily = false;
         $username = $this->params()->fromRoute('username');
@@ -190,7 +194,7 @@ class ProfileController extends AbstractActionController
         $char = $this->castService->getCharacterData($charnameURL, $username);
         $char['userData'] = $this->userService->getUserDataBy('name', $username);
         $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
-        
+
         foreach ($charFamily as $key => $member){
             $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);
             if ($wholeName == $charnameURL){
@@ -202,14 +206,53 @@ class ProfileController extends AbstractActionController
         if ($charFamily) $hasFamily = true;
 
         return  new ViewModel(array(
+            'isOwner'    => ($username == $this->accessService->getUserName()) ? true : false,
             'char'       => $char,
             'hasFamily'  => $hasFamily,
             'charFamily' => $charFamily,
             'username'   => $username,
-            'charname'   => $charnameURL,
+            'charnameURL'   => $charnameURL,
         ));
+    }
+    //edit own char profile
+    public function privatecharprofileAction()
+    {
+        $hasFamily = false;
+        $askingUser['name'] = $this->accessService->getUserName();
+        $username = $this->params()->fromRoute('username');
+        if ($username !== $askingUser['name'])
+            return $this->redirect()->toRoute('home');
 
+        $askingUser['id'] = $this->accessService->getUserID();
+        $charnameURL = $this->params()->fromRoute('charname');
+        $char = $this->castService->getCharacterData($charnameURL, $username);
+        if ((int)$char['user_id'] !== $askingUser['id'])
+            return $this->redirect()->toRoute('home');
 
+        $char['userData'] = $this->userService->getUserDataBy('name', $username);
+        $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
+
+        foreach ($charFamily as $key => $member){
+            $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);
+            if ($wholeName == $charnameURL){
+                unset($charFamily[$key]);
+                break;
+            }
+        }
+
+        if ($charFamily) $hasFamily = true;
+        $form = $this->createCharacterForm();
+        $form->setData($char);
+
+        return  new ViewModel(array(
+            'char'       => $char,
+            'username'   => $username,
+            'charnameURL'=> $charnameURL,
+            'form'       => $form,
+
+            'hasFamily'  => $hasFamily,
+            'charFamily' => $charFamily,
+        ));
     }
     //@todo familyprofileAction
 //    public function familyprofileAction(){

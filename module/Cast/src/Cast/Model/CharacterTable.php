@@ -80,11 +80,11 @@ class CharacterTable extends AbstractTableGateway
                     'guardian_id',
                     'supervisor_id',
                     'vita',
-                    'active'
+                    'active',
                 ))
                 ->join(array(
                     'family' => 'families'
-                ), 'char.family_id = family.id', array(
+                ), 'family.id = char.family_id', array(
                     'family_id' => 'id',
                     'family_name' => 'name',
                     'blazon_id' => 'blazon_id',

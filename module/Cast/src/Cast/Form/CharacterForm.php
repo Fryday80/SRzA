@@ -91,35 +91,22 @@ class CharacterForm extends Form
             'name' => 'user_id',
             'type' => 'hidden'
         ));
-//        $this->add(array(
-//            'name' => 'family_id',
-//            'type' => 'Zend\Form\Element\Select',
-//            'attributes' => array(
-//            ),
-//            'options' => array(
-//                'label' => 'Familie',
-//                'value_options' => $this->getFamiliesForSelect(),
-//            )
-//        ));
-//        $this->add(array(
-//            'name' => 'guardian_id',
-//            'type' => 'Zend\Form\Element\Select',
-//            'attributes' => array(
-//            ),
-//            'options' => array(
-//                'disable_inarray_validator' => true,
-//                'label' => 'Vormund',
-//                'value_options' => $this->getGuardianForSelect(),
-//            )
-//        ));
+        $this->add(array(
+            'name' => 'family_id',
+            'type' => 'hidden'
+        ));
+        $this->add(array(
+            'name' => 'guardian_id',
+            'type' => 'hidden'
+        ));
 
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
             'attributes' => array(
                 'type' => 'submit',
-                'value' => 'Submit',
-            )
+                'value' => 'Speichern',
+            ),
         ));
     }
 
