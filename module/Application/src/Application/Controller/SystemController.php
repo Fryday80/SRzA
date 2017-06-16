@@ -4,6 +4,7 @@ namespace Application\Controller;
 use Application\Form\MailTemplatesForm;
 use Application\Form\TestForm;
 use Application\Model\Abstracts\Microtime;
+use Application\Service\CacheService;
 use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Application\Service\SystemService;
@@ -20,12 +21,15 @@ class SystemController extends AbstractActionController
     private $messageService;
     /** @var StatisticService */
     private $statsService;
+    /** @var CacheService  */
+    private $cacheService;
 
-    public function __construct(SystemService $systemService, StatisticService $statisticService,  MessageService $messageService)
+    public function __construct(SystemService $systemService, StatisticService $statisticService,  MessageService $messageService, CacheService $cacheService)
     {
         $this->systemService = $systemService;
         $this->statsService = $statisticService;
         $this->messageService = $messageService;
+        $this->cacheService = $cacheService;
     }
     public function dashboardAction()
     {
@@ -43,9 +47,13 @@ class SystemController extends AbstractActionController
         }
         $sysLogTable = new DataTable(array( 'data' => $sysLogMod ));
         $sysLogTable->prepare();
-
-
+        $sysConf = $this->systemService->getConfig();
+        $cacheList = $this->cacheService->getCacheList();
+        bdump($sysConf);
+        bdump($cacheList);
         return new ViewModel(array(
+            'systemConfig' => $sysConf,
+            'cacheList' => $cacheList,
             'top10'     => $top10,
             'sysLog'    => ($sysLog == null) ? null : array_reverse($sysLog),
             'userStats' => array(
@@ -186,7 +194,12 @@ class SystemController extends AbstractActionController
 //                    $result['error'] = true;
 //                    $result['msg'] = "need param 'microtime'!";
 //                }
-//                break;
+                break;
+            case 'getSystemState':
+                break;
+            case 'setSystem' :
+//                (with arguments: valueName and value)
+                break;
         };
 
         //output

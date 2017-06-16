@@ -1,3 +1,12 @@
+<style>
+    /* pannels */
+    div box.panelBox{
+        width: 45%;
+        float: left !important;
+        margin-right: 5%;
+    }
+</style>
+
 <?php
 $title = 'Dashboard';
     $this->headTitle($title);
@@ -5,6 +14,71 @@ $title = 'Dashboard';
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
 <?php echo $this->inlineFromFile('Application', 'system', 'dashboard.css'); ?>
+<div>
+    <box class="dashboard panelBox">
+        <boxtitle class="system">System</boxtitle>
+        <boxcontent>
+            <ul>
+                <?php
+                $selector = '';
+                    foreach ($systemConfig as $key => $item):
+                        switch ($item['type']){
+                            case 'function':
+                                //buttom
+                                $selector = '<button class="' . $item['type'] . '">-->Go</button>';
+                                break;
+                            case 'boolean':
+                                //checkbox
+                                $selector = '<input type="checkbox" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                break;
+                            case 'string':
+                                //input
+                                $selector = '<input type="text" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                break;
+                            case 'number':
+//                                input type number
+                                $selector = '<input type="number" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                break;
+                            default:
+                        }
+                ?>
+                        <li>
+                            <?php echo $key .', ' . $selector; ?>
+                        </li>
+                <?php
+                    endforeach;
+                ?>
+            </ul>
+        </boxcontent>
+    </box>
+    <box class="dashboard panelBox">
+        <boxtitle class="cache">Cache</boxtitle>
+        <boxcontent>
+            <ul>
+                <?php
+                    function createCacheList($data) {
+                        $return = '';
+                        foreach ($data as $item) {
+                            $name = $item['name'];
+                            $return .= '<li>';
+                            //                        $return .= 'test';
+                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache ' . $name . '">Clear ' . $name . ' Cache</button>';
+                            if (isset($item['childes'][0])) {
+                                $return .= '<ul>';
+                                $return .= createCacheList($item['childes']);
+                                $return .= '</ul>';
+                            }
+                            $return .= '</li>';
+                        }
+                        return $return;
+                    }
+                echo createCacheList($cacheList);
+                ?>
+            </ul>
+        </boxcontent>
+    </box>
+</div>
+<div class="clear"></div>
 <div>
 <?php
 // ************************************************************************************* QUICK LINKS
