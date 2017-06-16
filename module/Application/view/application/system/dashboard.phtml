@@ -44,19 +44,19 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
                         switch ($item['type']){
                             case 'function':
                                 //buttom
-                                $selector = '<button class="' . $item['type'] . '">-->Go</button>';
+                                $selector = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '" name="' . $key . '">-->Go</button>';
                                 break;
                             case 'boolean':
                                 //checkbox
-                                $selector = '<input type="checkbox" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                $selector = '<input type="checkbox" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'string':
                                 //input
-                                $selector = '<input type="text" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                $selector = '<input type="text" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'number':
 //                                input type number
-                                $selector = '<input type="number" name="' . $key . '" data-configkey="' . $item['type'] . '"><button class="' . $item['type'] . '">-->Go</button>';
+                                $selector = '<input type="number" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             default:
                         }
