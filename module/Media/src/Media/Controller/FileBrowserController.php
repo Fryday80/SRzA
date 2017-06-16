@@ -474,6 +474,13 @@ class FileBrowserController extends AbstractActionController  {
      */
     public function actionUpload()
     {
+
+        $request = $this->getRequest();
+        $this->mediaService->createFile($request->getPost()->toArray(), $request->getFiles()->toArray());
+
+
+
+        //@todo remove old logic
         $target_path = $this->post['path'];
         $target_fullpath = $this->getFullPath($target_path, true);
         //Log::info('uploading to "' . $target_fullpath . '"');

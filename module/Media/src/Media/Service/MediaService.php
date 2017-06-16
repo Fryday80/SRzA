@@ -64,43 +64,6 @@ class MediaService {
             bdump($e);
         }
     }
-    //@todo need to be replaced by getItems -- only used in galleryService.
-    /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
-     * @param $path
-     * @return array
-     */
-    function getFolderNames($path) {
-        $rootPath = $this->realPath($path);
-        //check folder restrictions
-        $meta = $this->getFolderMeta($path);
-        if ($meta && isset($meta['Restrictions']) ) {
-            if (isset($meta['Restrictions']['folder'])) {
-                if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
-                    //@not allowed
-                    return [];
-                }
-            }
-        }
-        $dir = scandir($rootPath);
-        $result = array();
-        foreach ($dir as $key => $value) {
-            if ($value == '.' || $value == '..') continue;
-            if( is_dir ($rootPath.'/'.$value) ) {
-                //check folder restrictions in /folder/folder.conf
-                $meta = $this->getFolderMeta($path.'/'.$value);
-                if ($meta && isset($meta['Restrictions']) ) {
-                    if (isset($meta['Restrictions']['folder'])) {
-                        if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
-                            //@not allowed
-                            continue;
-                        }
-                    }
-                }
-                array_push($result, array('name' => $value, 'path' => $path.'/'.$value, 'fullPath' => $rootPath.'/'.$value) );
-            }
-        }
-        return $result;
-    }
 
     /**
      * @param $path
@@ -118,7 +81,7 @@ class MediaService {
      * @param $path
      * @return bool
      */
-    function isDir($path) {
+    public function isDir($path) {
         $filePath = $this->realPath($path);
         if (is_dir($filePath)) {
             return true;
@@ -142,7 +105,7 @@ class MediaService {
         return in_array($mime, $imagesMime);
     }
 
-    function createFolder($path) {
+    public function createFolder($path) {
         //check if the parent folder exists
         if (!$this->isDir(dirname($path))) {
             return new MediaException(ERROR_TYPES::PARENT_NOT_EXISTS, $path);
@@ -166,6 +129,15 @@ class MediaService {
 
     }
 
+    public function createFile($destPath, $uploadData) {
+        //@todo move file
+        //@todo if image create thumbs
+        ob_start();
+        var_dump($destPath);
+        var_dump($uploadData);
+        $result = ob_get_clean();
+        file_put_contents(getcwd().'/temp/debug.php', $result);
+    }
     function renameItem($path, $newName) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException) {
@@ -250,6 +222,7 @@ class MediaService {
         //@todo move item in item cache, when cache is implemented :)
         return $this->getItem($fullTargetPath);
     }
+
     function copyItem($path, $targetParentPath) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException)
