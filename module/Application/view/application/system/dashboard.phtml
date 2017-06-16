@@ -1,6 +1,8 @@
 <style>
     /* pannels */
-    div box.panelBox{
+    div box.systemPanel,
+    div box.cachePanel
+    {
         width: 45%;
         float: left !important;
         margin-right: 5%;
@@ -15,8 +17,10 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
 <?php echo $this->inlineFromFile('Application', 'system', 'dashboard.css'); ?>
 <div>
-    <box class="dashboard panelBox">
-        <boxtitle class="system">System</boxtitle>
+    <box class="dashboard systemPanel">
+        <boxtitle class="system">
+            <span class="own_text_small">System</span>
+        </boxtitle>
         <boxcontent>
             <ul>
                 <?php
@@ -51,8 +55,10 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
             </ul>
         </boxcontent>
     </box>
-    <box class="dashboard panelBox">
-        <boxtitle class="cache">Cache</boxtitle>
+    <box class="dashboard cachePanel">
+        <boxtitle class="cache">
+            <span class="own_text_small">Cache</span>
+        </boxtitle>
         <boxcontent>
             <ul>
                 <?php
@@ -211,9 +217,6 @@ if($sysLog !== null) {
 </box>
     <?php
     endif;
- //@todo add cache clerer e.g.
-// $this->cache->clearCache('acl');    do in controller
-
     ?>
 </div>
 <div id="sysTable" class="hidden">
