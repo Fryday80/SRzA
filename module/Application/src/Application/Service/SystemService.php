@@ -12,6 +12,22 @@ class SystemService
     private $accessService;
 
     private $config = array(
+        'testBoolean' => array(
+            'type' => 'boolean',
+            'value' => true
+        ),
+        'testNumber' => array(
+            'type' => 'number',
+            'value' => 42
+        ),
+        'testString' => array(
+            'type' => 'string',
+            'value' => 'nothing :)'
+        ),
+        'testFunction' => array(
+            'type' => 'function',
+            'value' => array()
+        ),
         'maintenance' => array(
             'type' => 'boolean',
             'value' => true
