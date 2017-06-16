@@ -71,6 +71,7 @@ class SystemController extends AbstractActionController
             //'table' => $albumsTable
         ));
     }
+    
     public function formtestAction() {
         $form = new TestForm();
         $form->setData(array(
@@ -107,6 +108,7 @@ class SystemController extends AbstractActionController
             'form' => $form
         );
     }
+
     public function mailTemplatesIndexAction() {
         $templates = $this->messageService->getAllTemplates();
         //refactor data:
@@ -147,6 +149,7 @@ class SystemController extends AbstractActionController
             'back' => '<a href = "/system/mailTemplates" ><button>Nein, Zurück</button></a>',
         );
     }
+
     public function jsonAction() {
         /** @var  $statsService StatisticService */
         $statsService = $this->statsService;
@@ -178,30 +181,32 @@ class SystemController extends AbstractActionController
                 }
                 break;
             case 'getCacheStats' :
-//                if (property_exists($request, 'microtime') ) {
-//                    $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
-//                } else {
-//                    $this->response->setStatusCode(400);
-//                    $result['error'] = true;
-//                    $result['msg'] = "need param 'microtime'!";
-//                }
-//                break;
+                    $result['cacheList'] = $this->cacheService->getCacheList();
+                break;
             case 'clearCache' :
-//                if (property_exists($request, 'microtime') ) {
-//                    $result['users'] = Microtime::addDateTime( $statsService->getActiveUsers($request->microtime) );
-//                } else {
-//                    $this->response->setStatusCode(400);
-//                    $result['error'] = true;
-//                    $result['msg'] = "need param 'microtime'!";
-//                }
+                if (property_exists($request, 'name') ) {
+                    $this->cacheService->clearCache($request->name);
+                    $result['msg'] = ($this->cacheService->hasCache($request->name))? 'error' : 'success';
+                } else {
+                    $this->response->setStatusCode(400);
+                    $result['error'] = true;
+                    $result['msg'] = "need param 'name'!";
+                }
                 break;
-            case 'getSystemState':
+            case 'getSystemConfig':
+                $result['systemConfig'] = $this->systemService->getConfig();
                 break;
-            case 'setSystem' :
-//                (with arguments: valueName and value)
+            case 'setSystemConfig' :
+                if(property_exists($request, 'valueName') && property_exists($request, 'value')){
+                    $this->systemService->setConfig($request->valueName, $request->value);
+                    $result['msg'] = 'success';
+                } else {
+                    $this->response->setStatusCode(400);
+                    $result['error'] = true;
+                    $result['msg'] = "need params 'valueName' and 'value'!";
+                }
                 break;
         };
-
         //output
         return new JsonModel($result);
     }
