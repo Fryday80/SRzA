@@ -138,8 +138,7 @@
 
     $("button", $cachePanel).on('click', function(e) {
         let cacheName = $(this).data('name');
-        console.log(cacheName);
-        // clearCache(cacheName);
+        clearCache(cacheName);
     });
 
     function getSystemConfig() {
