@@ -28,6 +28,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "jit-grunt": "^0.10.0",
     "maildev": "^1.0.0-rc2",
+    "prompt": "^1.0.0",
     "replace-in-file": "^2.5.0",
     "shelljs": "^0.7.8",
     "uglify-es": "^3.0.15"
