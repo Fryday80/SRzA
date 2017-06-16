@@ -137,6 +137,13 @@
             setSystemConfig(valueName, value);
         }
     });
+
+    $("button", $cachePanel).on('click', function(e) {
+        let cacheName = $(this).attr('name');
+        console.log('clear');
+        clearCache(cacheName);
+    });
+
     function getSystemConfig() {
         send({
             method: 'getSystemConfig'
@@ -152,9 +159,19 @@
             valueName: key,
             value: value,
         }).fail(function() {
-            console.log('######### fail');
+            console.log('fail setting system config');
         }).done(function() {
-            console.log('############ nice');
+            console.log('set system config');
+        });
+    }
+    function clearCache(name) {
+        send({
+            method: 'clearCache',
+            name: name,
+        }).fail(function() {
+            console.log('failed clearing cache');
+        }).done(function() {
+            console.log('Cache cleared');
         });
     }
     function send(data) {
@@ -164,40 +181,4 @@
             data: JSON.stringify(data),
         });
     }
-    // function loadLive(e) {
-    //     e.fail(function(jqXHR, textStatus, errorThrown) {
-    //         console.error(jqXHR.responseJSON.msg);
-    //     });
-    //     e.done(function(e, textStatus, jqXHR) {
-    //         let actions = e.actions;
-    //         if (actions !== null) {
-    //             //                actions.reverse();
-    //             for (let i = 0; i < actions.length; i++) {
-    //                 //                    var dateRaw = new Date (actions[i].time*1000);
-    //                 //                    var hours = '0' + dateRaw.getHours();
-    //                 //                    var minutes = '0' + dateRaw.getMinutes();
-    //                 //                    var date = hours.substr(-2) + ':' + minutes.substr(-2);
-    //                 $('#dashLiveList').prepend("<li class='entry' data-timestamp='" + actions[i].microtime + "'>" +
-    //                     actions[i].dateTime + ": " + actions[i].userName + " ...called: " + actions[i].url + "</li>");
-    //             }
-    //         }
-    //         setTimeout(function() {
-    //             let ele =  $('#dashLiveList li:nth-child(1)');
-    //             let since = ele.data('timestamp');
-    //             livereload(since);
-    //         }, 4500);
-    //     });
-    // }
-    // function livereload(since) {
-    //     let data = {
-    //         method: "getLiveActions",
-    //         since: since,
-    //     };
-    //     $.ajax({
-    //         url: "/system/json",
-    //         type: "POST",
-    //         data: JSON.stringify(data),
-    //         complete: loadLive,
-    //     });
-    // }
 })();
