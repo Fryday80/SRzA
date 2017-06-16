@@ -39,30 +39,36 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         <boxcontent>
             <ul>
                 <?php
-                $selector = '';
+                $input = '';
+                $button = '';
                     foreach ($systemConfig as $key => $item):
                         switch ($item['type']){
                             case 'function':
                                 //buttom
-                                $selector = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '" name="' . $key . '">-->Go</button>';
+                                $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '" name="' . $key . '">-->Go</button>';
                                 break;
                             case 'boolean':
                                 //checkbox
-                                $selector = '<input type="checkbox" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
+                                $input = '<input type="checkbox" name="' . $key . '" value="' . $item['value'] . '" >';
+                                $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'string':
                                 //input
-                                $selector = '<input type="text" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
+                                $input = '<input type="text" name="' . $key . '" value="' . $item['value'] . '" >';
+                                $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'number':
 //                                input type number
-                                $selector = '<input type="number" name="' . $key . '" ><button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
+                                $input = '<input type="number" name="' . $key . '" value="' . $item['value'] . '" >';
+                                $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             default:
                         }
                 ?>
                         <li>
-                            <?php echo $key .', ' . $selector; ?>
+                            <div style="width: 100px; float: left"><?php echo $key .' ';?></div>
+                            <span><?php echo $input; ?></span>
+                            <?php echo $button; ?>
                         </li>
                 <?php
                     endforeach;
@@ -83,7 +89,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
                             $name = $item['name'];
                             $return .= '<li>';
                             //                        $return .= 'test';
-                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache ' . $name . '">Clear Cache</button>';
+                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache"  data-name="' . $name . '">Clear Cache</button>';
                             if (isset($item['childes'][0])) {
                                 $return .= '<ul>';
                                 $return .= createCacheList($item['childes']);
@@ -112,7 +118,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         <ul class="dash-links">
             <li><a href='/'><b>Home</b></a></li>
             <li><a href='/cms'><b>Content</b></a></li>
-            <li><a href='/media/filebrowser'><b>BrowserFile</b></a></li>
+            <li><a href='/media/filebrowser'><b>File Browser</b></a></li>
             <li><a href='/nav/sort'><b>Navigation</b></a></li>
             <li><a href='/system/dashboard'><b>Dashboard Reload</b></a></li>
         </ul></boxcontent>
