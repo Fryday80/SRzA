@@ -83,7 +83,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
                             $name = $item['name'];
                             $return .= '<li>';
                             //                        $return .= 'test';
-                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache ' . $name . '">Clear ' . $name . ' Cache</button>';
+                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache ' . $name . '">Clear Cache</button>';
                             if (isset($item['childes'][0])) {
                                 $return .= '<ul>';
                                 $return .= createCacheList($item['childes']);
