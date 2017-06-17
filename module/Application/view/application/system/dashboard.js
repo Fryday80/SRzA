@@ -4,7 +4,8 @@
     //script for live ticks
     function loadLive(e) {
         e.fail(function(jqXHR, textStatus, errorThrown) {
-            console.error(jqXHR.responseJSON.msg);
+            console.error(jqXHR.responseJSON);
+            // console.error(jqXHR.responseJSON.msg);
         });
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
@@ -46,7 +47,8 @@
     //script for live ticks
     function loadActive(e) {
         e.fail(function(jqXHR, textStatus, errorThrown) {
-            console.error(jqXHR.responseJSON.msg);
+            console.error(jqXHR.responseJSON);
+            // console.error(jqXHR.responseJSON.msg);
         });
         e.done(function(e, textStatus, jqXHR) {
             let user = e.users;
@@ -110,6 +112,7 @@
     "use strict";
     //scan system vars and register handler
     var $systemPanel = $('.systemPanel'),
+        $systemPanelList = $('boxcontent ul', $systemPanel),
         $cachePanel = $('.cachePanel');
 
     $("button", $systemPanel).on('click', function(e) {
@@ -118,27 +121,37 @@
             let valueName = $(this).attr('name');
             //handle function
             console.log(valueName, type);
-            setSystemConfig(valueName, []);
+            setSystemConfig(valueName, [], $(this));
         } else if (type === 'boolean') {
             //handle string, number
-            let $input = $(this).parent().children('input');
+            let $input = $('input', $(this).parent())
             let valueName = $input.attr('name');
             let value = $input.prop('checked');
             //handle checkbox
             console.log(valueName, value, type);
-            setSystemConfig(valueName, value);
+            setSystemConfig(valueName, value, $(this));
         } else {
-            let $input = $(this).parent().children('input');
+            let $input = $('input', $(this).parent())
             let valueName = $input.attr('name');
             let value = $input.val();
             console.log(valueName, value, type);
-            setSystemConfig(valueName, value);
+            setSystemConfig(valueName, value, $(this));
         }
     });
 
     $("button", $cachePanel).on('click', function(e) {
         let cacheName = $(this).data('name');
-        clearCache(cacheName);
+        let $li = $(this).parent('li');
+        clearCache(cacheName, function() {
+            console.log('success');
+            $li.remove();
+        }, function() {
+            $li.stop();
+            $li.show();
+            $li.css('opacity', 1);
+            //@todo show error
+        });
+        $li.fadeOut(500);
     });
 
     function getSystemConfig() {
@@ -150,25 +163,35 @@
             console.log('############ nice');
         });
     }
-    function setSystemConfig(key, value) {
+    function setSystemConfig(key, value, $button) {
+        $button.removeClass('failMark');
+        $button.removeClass('checkMark');
+        $button.addClass('pendingMark');
         send({
             method: 'setSystemConfig',
             valueName: key,
             value: value,
         }).fail(function() {
-            console.log('fail setting system config');
+            //@todo fetch config and flush whole config
+            $button.removeClass('pendingMark');
+            $button.addClass('failMark');
         }).done(function() {
-            console.log('set system config');
+            //@todo show symbol and add timeout to fadeout in a few secs
+            $button.removeClass('pendingMark');
+            $button.addClass('checkMark');
+            setTimeout(function() {
+                this.removeClass('checkMark');
+            }.bind($button), 3000);
         });
     }
-    function clearCache(name) {
+    function clearCache(name, success, fail) {
         send({
             method: 'clearCache',
             name: name,
         }).fail(function() {
-            console.log('failed clearing cache');
+            if (typeof fail === 'function') fail();
         }).done(function() {
-            console.log('Cache cleared');
+            if (typeof success === 'function') success();
         });
     }
     function send(data) {

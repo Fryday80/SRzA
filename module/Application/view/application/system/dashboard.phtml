@@ -23,6 +23,54 @@
         float: right;
         margin-top: -15px;
     }
+    .systemPanel button {
+        position: relative;
+    }
+    @keyframes centerCircle {
+        0%   {
+            transform: rotate(0deg);
+        }
+        25%  {
+            transform: rotate(90deg);
+        }
+        50%  {
+            transform: rotate(180deg);
+        }
+        75%  {
+            transform: rotate(270deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    .faildMark::before {
+        content: '\002718';
+        color: red;
+        font-size: 30px;
+        position: absolute;
+        top: -5px;
+        left: -30px;
+    }
+    .pendingMark::before {
+        content: '\00263e';
+        color: green;
+        font-size: 30px;
+        position: absolute;
+        top: -5px;
+        left: -30px;
+        transform-origin: 50% 50%;
+        animation-iteration-count:infinite;
+        animation-name: centerCircle;
+        animation-duration: 1s;
+    }
+    .checkMark::before {
+        content: '\002714';
+        color: green;
+        font-size: 30px;
+        position: absolute;
+        top: -5px;
+        left: -30px;
+    }
 </style>
 <?php
 $title = 'Dashboard';
