@@ -21,9 +21,10 @@ class CharacterTable extends AbstractTableGateway
     public function getAll () {
         return $this->getAllCastData();
     }
+
     public function getById($id) {
         $result = $this->getAllCastData(array('char.id' => (int) $id));
-        return $result;
+        return (isset($result[0])) ? $result[0] : false;
     }
     public function getByUserId($id) {
         $result = $this->getAllCastData(array('user_id' => (int) $id));
