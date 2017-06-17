@@ -3,7 +3,5 @@
 <?php if ($error){
     echo $message;
 }
-else {
-    $pwForm->prepare();
-    echo $this->form($pwForm);
-}
+$pwForm->prepare();
+echo $this->form($pwForm);

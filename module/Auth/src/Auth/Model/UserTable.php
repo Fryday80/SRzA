@@ -72,6 +72,7 @@ class UserTable extends AbstractTableGateway
     {
         $data = $user->getArrayCopy();
         unset($data['role_name']);
+        if (isset($data['activeUser'])) unset($data['activeUser']);
         $data['modified_on'] = time();
         $id = (int) $user->id;
         if ($id == 0) {

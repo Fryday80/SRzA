@@ -241,6 +241,7 @@ class AuthController extends AbstractActionController
                 $this->changePW($savedHash['email'], $request->getPost('password'));
                 //clean hash
                 $this->dynamicHashTable->deleteByHash($hash);
+                return $this->redirect()->toRoute('login');
             } else {
                 return array(
                     'pwForm' => $form,
