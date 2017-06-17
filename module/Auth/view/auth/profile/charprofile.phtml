@@ -52,7 +52,7 @@ echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhAr
     <span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span>
 </h1>
 <?php
-echo $this->charDate($char['birthday'])
+echo $this->convert()->myDate($char['birthday'])
 ?>
 <br/>
 <br/>

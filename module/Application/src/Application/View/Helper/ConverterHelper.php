@@ -7,6 +7,22 @@ use Application\Utility\DataTable;
 
 Class ConverterHelper extends AbstractHelper {
 
+// ====================== Date Conversion =============================================
+    /**
+     * Coverts saved time format to readable format
+     * @param mixed $date timestamp | forms date format
+     * @return string date in format 'd.m.Y'
+     */
+    public function myDate($date)
+    {
+        if ($date == 0 || $date == null) return '';
+        //prepare forms date format .. array length 1 if timestamp
+        $parts = explode('-', $date);
+        //        "is timestamp"    ? create from timestamp  :  create from form date format
+        return (count($parts) == 1 )? date( 'd.m.Y', $date ) : $parts[2] . '.' . $parts[1] . '.' .$parts[0];;
+    }
+
+// ====================== Byte Conversion =============================================
     public function beautyBytes($bytes) {
         return $this->fileSizeConvert($bytes);
     }

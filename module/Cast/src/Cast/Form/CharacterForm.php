@@ -91,14 +91,6 @@ class CharacterForm extends Form
             'name' => 'user_id',
             'type' => 'hidden'
         ));
-        $this->add(array(
-            'name' => 'family_id',
-            'type' => 'hidden'
-        ));
-        $this->add(array(
-            'name' => 'guardian_id',
-            'type' => 'hidden'
-        ));
 
         $this->add(array(
             'name' => 'submit',

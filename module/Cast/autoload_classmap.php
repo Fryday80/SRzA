@@ -28,6 +28,7 @@ return array(
     'Cast\Form\JobForm'                       => __DIR__ . '/src/Cast/Form/JobForm.php',
     'Cast\Model\BlazonTable'                  => __DIR__ . '/src/Cast/Model/BlazonTable.php',
     'Cast\Model\CastTable'                    => __DIR__ . '/src/Cast/Model/CastTable.php',
+    'Cast\Model\Char'                         => __DIR__ . '/src/Cast/Model/Char.php',
     'Cast\Model\CharacterTable'               => __DIR__ . '/src/Cast/Model/CharacterTable.php',
     'Cast\Model\FamiliesTable'                => __DIR__ . '/src/Cast/Model/FamiliesTable.php',
     'Cast\Model\JobTable'                     => __DIR__ . '/src/Cast/Model/JobTable.php',
@@ -39,5 +40,4 @@ return array(
     'Cast\Utility\JobDataTable'               => __DIR__ . '/src/Cast/Utility/JobDataTable.php',
     'Cast\Utility\UserDataTable'              => __DIR__ . '/src/Cast/Utility/UserDataTable.php',
     'Cast\View\Helper\BlazonHelper'           => __DIR__ . '/src/Cast/View/Helper/BlazonHelper.php',
-    'Cast\View\Helper\CharDateHelper'         => __DIR__ . '/src/Cast/View/Helper/CharDateHelper.php',
 );

@@ -29,7 +29,7 @@ class User
         $this->email         = (! empty($data['email']))         ? $data['email']         : $this->email;
         $this->name          = (! empty($data['name']))          ? $data['name']          : $this->name;
         $this->password      = (! empty($data['password']))      ? $data['password']      : $this->password;
-        $this->status        = (isset($data['status']))        ? $data['status']        : $this->status;
+        $this->status        = (isset($data['status']))          ? $data['status']        : $this->status;
         $this->role_id       = (! empty($data['role_id']))       ? $data['role_id']       : $this->role_name;
         $this->role_name     = (! empty($data['role_name']))     ? $data['role_name']     : $this->role_name;
         $this->created_on    = (! empty($data['created_on']))    ? $data['created_on']    : $this->created_on;
@@ -49,6 +49,13 @@ class User
     public function getArrayCopy()
     {
         return get_object_vars($this);
+    }
+
+    public function getArrayCopyPlainDate()
+    {
+        $return = get_object_vars($this);
+        $return['birthday'] = date('Y-m-d', $return['birthday']);
+        return $return;
     }
 
     public function setActiveUser($activeUserName)

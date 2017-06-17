@@ -109,7 +109,6 @@ class UserForm extends Form
                 'label' => 'Geburtstag',
             ),
         );
-
         $fields[] = array(
             'name' => 'street',
             'type' => 'Text',
@@ -189,7 +188,6 @@ class UserForm extends Form
                 );
             }
         }
-
     }
     public function setFilterType($type){
         $this->filterFlag = strtolower($type);
@@ -243,5 +241,12 @@ class UserForm extends Form
             $prio = $order[$name];
         }
         return array('priority' => $prio);
+    }
+
+    public function setData($data)
+    {
+        if(isset($data['birthday']))
+            $data['birthday'] = date($data['birthday']);
+        parent::setData($data);
     }
 }

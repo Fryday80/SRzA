@@ -132,7 +132,7 @@ class ProfileController extends AbstractActionController
         $form = new UserForm();
         $viewModel->setVariable('userForm', $form);
 
-        $form->setData($user->getArrayCopy());
+        $form->setData($user->getArrayCopyPlainDate());
         $form->get('submit')->setAttribute('value', 'Edit');
 
         if ($request->isPost()) {
@@ -218,6 +218,7 @@ class ProfileController extends AbstractActionController
     public function privatecharprofileAction()
     {
         $hasFamily = false;
+        $form = $this->createCharacterForm();
         $askingUser['name'] = $this->accessService->getUserName();
         $username = $this->params()->fromRoute('username');
         if ($username !== $askingUser['name'])
@@ -241,7 +242,6 @@ class ProfileController extends AbstractActionController
         }
 
         if ($charFamily) $hasFamily = true;
-        $form = $this->createCharacterForm();
         $form->setData($char);
 
         return  new ViewModel(array(

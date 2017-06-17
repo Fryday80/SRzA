@@ -18,9 +18,7 @@ return array(
         'factories' => array(
             'blazon' => 'Cast\Factory\BlazonHelperFactory',
         ),
-        'invokables' => array(
-            'charDate' => 'Cast\View\Helper\CharDateHelper',
-        )
+        'invokables' => array( )
     ),
     'service_manager' => array(
         'factories' => array(

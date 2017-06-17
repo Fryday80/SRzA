@@ -50,8 +50,6 @@ class SystemController extends AbstractActionController
         $sysLogTable->prepare();
         $sysConf = $this->systemService->getConfig();
         $cacheList = $this->cacheService->getCacheList();
-        bdump($sysConf);
-        bdump($cacheList);
         return new ViewModel(array(
             'systemConfig' => $sysConf,
             'cacheList' => $cacheList,
