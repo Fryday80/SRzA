@@ -177,7 +177,7 @@ class CharacterController extends AbstractActionController
                         throw new Exception('id or data is not set');
                     } else {
                         $data = get_object_vars($request->data);
-                        if ($request->id < 0) {
+                        if ($request->id <= 0) {
                             $data['active'] = 0;
                             $data['id'] = 0;
 //                            $data['user_id'] =  $this->accessService->getUserID();
@@ -193,7 +193,7 @@ class CharacterController extends AbstractActionController
 //                                ,'guardian_id'
 //                                ,'supervisor_id'
                                 ,'vita'
-                                ,'active'
+//                                ,'active'
 //                                ,'family_id'
 //                                ,'family_name'
 //                                ,'blazon_id'
@@ -216,32 +216,57 @@ class CharacterController extends AbstractActionController
                                 $result['formErrors'] = $form->getMessages();
                             }
                         } else {
-                            $charInDb = $this->characterTable->getById($request->id);
-                            if (!$charInDb) {
-                                $result['error'] = true;
-                                $result['message'] = "Character id dose't exists";
-                                $result['code'] = 2;
-                            } else {
-                                //check if current user is char owner
-                                $charInDb = $charInDb[0];
-                                if ( $this->accessService->getUserID() == $charInDb['user_id']) {
-                                    $data['id'] = $request->id;
-                                    $data['user_id'] = $this->accessService->getUserID();
-                                    if ($this->characterTable->save($request->id, $data) ) {
-                                        $result['message'] = 'Save Character';
-                                        $result['data'] = $charInDb;
-                                        $result['code'] = 200;
+                            $form = $this->createCharacterForm();
+                            $form->setValidationGroup(
+                                'id'
+                                ,'user_id'
+                                ,'name'
+                                ,'surename'
+                                ,'gender'
+                                ,'birthday'
+//                                ,'guardian_id'
+//                                ,'supervisor_id'
+                                ,'vita'
+//                                ,'active'
+//                                ,'family_id'
+//                                ,'family_name'
+//                                ,'blazon_id'
+//                                ,'job_id'
+//                                ,'job_name'
+                            );
+                            $form->setData($data);
+                            if ($form->isValid() ){
+                                $charInDb = $this->characterTable->getById($request->id);
+                                if (!$charInDb) {
+                                    $result['error'] = true;
+                                    $result['message'] = "Character id dose't exists";
+                                    $result['code'] = 2;
+                                } else {
+                                    $charInDb = $charInDb[0];
+                                    //check if current user is char owner
+                                    if ( $this->accessService->getUserID() == $charInDb['user_id']) {
+                                        $data['id'] = $request->id;
+                                        $data['user_id'] = $this->accessService->getUserID();
+                                        if ($this->characterTable->save($request->id, $data) ) {
+                                            $result['message'] = 'Save Character';
+                                            $result['data'] = $data;
+                                            $result['code'] = 200;
+                                        } else {
+                                            $result['error'] = true;
+                                            $result['message'] = "Can't save Character";
+                                            $result['code'] = 3;
+                                        }
                                     } else {
                                         $result['error'] = true;
-                                        $result['message'] = "Can't save Character";
-                                        $result['code'] = 3;
+                                        $result['message'] = "Forbidden Character for you";
+                                        $result['code'] = 403;
                                     }
-                                } else {
-                                    $result['error'] = true;
-                                    $result['message'] = "Forbidden Character for you";
-                                    $result['code'] = 403;
                                 }
-
+                            } else {
+                                $result['error'] = true;
+                                $result['message'] = 'form errors';
+                                $result['code'] = 1;
+                                $result['formErrors'] = $form->getMessages();
                             }
                         }
                     }

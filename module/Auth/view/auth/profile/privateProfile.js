@@ -28,14 +28,25 @@
         $charFormBox.addClass('show');
     }
     function hideCharForm() {
-        $charFormBox.addClass('show');
-        $charFormBox.removeClass('hide');
+        $charFormBox.addClass('hide');
+        $charFormBox.removeClass('show');
     }
     function getCharByID(id) {
         for(let i = 0; i < characters.length; i++) {
             if (parseInt(characters[i].id) == id) {
                 return characters[i];
             }
+        }
+    }
+    function updateCharElements() {
+        $charList.empty();
+        for(var charKey in characters) {
+            let char = characters[charKey];
+            var clone = document.importNode(template.content, true);
+            $('li', clone)
+                .data('id', char.id)
+                .text(char.name);
+            $charList.append(clone);
         }
     }
     function createCharElement(char) {
@@ -97,13 +108,8 @@
         });
         promise.fail(function(jqXHR, textStatus, errorThrown) {
             // @todo handle error
-            // console.error(textStatus);
-            //@todo remove load animation and show element
         });
         promise.done(function(e, textStatus, jqXHR) {
-            // console.log(e);
-            //@todo on error is not decoded
-            //e = JSON.parse(e);
             if (e.error) {
                 if (e.code == 1) {
                     removeAllCharFormErrors();
@@ -116,11 +122,13 @@
                         //saved
                         let char = getCharByID(id);
                         characters[characters.indexOf(char)] = e.data;
+                        console.log(e.data);
+                        updateCharElements();
                         break;
                     case 201:
                         //new created
-                        characters.push(e.data);
-                        createCharElement(e.data);
+                        characters.push(e.data[0]);
+                        createCharElement(e.data[0]);
                         break;
                 }
                 scrollToCharSelect();
