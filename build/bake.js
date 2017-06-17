@@ -1,6 +1,7 @@
 var shell   = require('shelljs');
 var colors  = require('colors');
 var fs      = require('fs');
+var toArray	= require('lodash.toarray');
 var util    = require('util');
 global.prompt = require('prompt');
 
@@ -12,9 +13,9 @@ var section = 'Start',
 
 
 var oldLog = console.log;
-console.log = function(...args) {
-    oldLog(...args);
-};
+// console.log = function(...args) {
+//     oldLog(logPrefix, ...args);
+// };
 global.ask = function() {
 }
 global.section = function(name) {
@@ -22,13 +23,13 @@ global.section = function(name) {
     logPrefix = section + ' -> ';
 };
 global.log = function(...args) {
-    console.log(logPrefix.white.inverse, ...args);
+    oldLog(logPrefix.white.inverse, ...args);
 };
 global.warn = function(...args) {
-    console.log(logPrefix.yellow, ...args);
+    oldLog(logPrefix.yellow, ...args);
 };
 global.error = function(...args) {
-    console.log(logPrefix.red, ...args);
+    oldLog(logPrefix.red, ...args);
 };
 
 // function myConsole() {
@@ -53,8 +54,7 @@ global.shell = shell;
  * exec(command [, options] [, callback])
  * @param args
  */
-global.exc = function(...args) {
+global.exec = function(...args) {
     shell.exec.apply(null, args);
 };
-
 require('./test.js');

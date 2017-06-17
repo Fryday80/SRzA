@@ -27,6 +27,7 @@
     "grunt-contrib-uglify": "^3.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "jit-grunt": "^0.10.0",
+    "lodash.toarray": "^4.4.0",
     "maildev": "^1.0.0-rc2",
     "prompt": "^1.0.0",
     "replace-in-file": "^2.5.0",
