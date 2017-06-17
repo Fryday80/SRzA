@@ -220,6 +220,7 @@
             scrollToCharForm();
             //populate values to form
             $('#Character input[name="id"]').val(char.id);
+            $('#Character input[name="user_id"]').val(char.user_id);
             $('#Character input[name="name"]').val(char.name);
             $('#Character input[name="surename"]').val(char.surename);
 
@@ -259,6 +260,7 @@
         $('.characterList li').removeClass('selected');
         //clear form and open
         $('#Character input[name="id"]').val(-1);
+        $('#Character select[name="user_id"]').val(0);
         $('#Character input[name="name"]').val('');
         $('#Character input[name="surename"]').val('');
 

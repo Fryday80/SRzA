@@ -76,7 +76,7 @@ class Module
         }
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
-                //@todo log to stats
+                //log to stats
                 $hitType = ( $accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST;
                 $statsService->logSystem(new SystemLog(
                     time(), //mTime
