@@ -175,6 +175,7 @@
             //@todo fetch config and flush whole config
             $button.removeClass('pendingMark');
             $button.addClass('failMark');
+            console.log('error');
         }).done(function() {
             //@todo show symbol and add timeout to fadeout in a few secs
             $button.removeClass('pendingMark');

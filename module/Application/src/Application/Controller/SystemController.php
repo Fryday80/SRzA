@@ -9,6 +9,7 @@ use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Application\Service\SystemService;
 use Application\Utility\DataTable;
+use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -198,14 +199,24 @@ class SystemController extends AbstractActionController
                 break;
             case 'setSystemConfig' :
                 if(property_exists($request, 'valueName') && property_exists($request, 'value')){
-                    $this->systemService->setConfig($request->valueName, $request->value);
-                    $result['msg'] = 'success';
+                    try {
+                        $this->systemService->setConfig($request->valueName, $request->value);
+                        $result['msg'] = 'success';
+                    } catch (Exception $e) {
+                        $this->response->setStatusCode(500);
+                        $result['error'] = true;
+                        $result['msg'] = $e->getMessage();
+                    }
                 } else {
                     $this->response->setStatusCode(400);
                     $result['error'] = true;
                     $result['msg'] = "need params 'valueName' and 'value'!";
                 }
                 break;
+            default:
+                $this->response->setStatusCode(400);
+                $result['error'] = true;
+                $result['msg'] = "Method do not exist!";
         };
         //output
         return new JsonModel($result);

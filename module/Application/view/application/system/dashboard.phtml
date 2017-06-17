@@ -43,13 +43,14 @@
             transform: rotate(360deg);
         }
     }
-    .faildMark::before {
+    .failMark::before {
         content: '\002718';
         color: red;
         font-size: 30px;
         position: absolute;
         top: -5px;
         left: -30px;
+        border: 0px;
     }
     .pendingMark::before {
         content: '\00263e';
@@ -70,6 +71,12 @@
         position: absolute;
         top: -5px;
         left: -30px;
+        border: 0px;
+    }
+    .failMark:focus,
+    .pendingMark:focus,
+    .checkMark:focus {
+        outline:0;
     }
 </style>
 <?php
@@ -79,6 +86,25 @@ $title = 'Dashboard';
 echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 ?>
 <?php echo $this->inlineFromFile('Application', 'system', 'dashboard.css'); ?>
+<?php
+// ************************************************************************************* QUICK LINKS
+?>
+<box class = 'dashboard'>
+    <boxtitle>
+        <span class='own_text_small'></span>
+    </boxtitle>
+    <boxcontent>
+        <ul class="dash-links">
+            <li><a href='/'><b>Home</b></a></li>
+            <li><a href='/cms'><b>Content</b></a></li>
+            <li><a href='/media/filebrowser'><b>File Browser</b></a></li>
+            <li><a href='/nav/sort'><b>Navigation</b></a></li>
+            <li><a href='/system/dashboard'><b>Dashboard Reload</b></a></li>
+        </ul></boxcontent>
+</box>
+<?php
+// ************************************************************************************* SYSTEM PANEL
+?>
 <div>
     <box class="dashboard systemPanel">
         <boxtitle class="system">
@@ -128,6 +154,9 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
     </box>
 
     <?php
+    // ************************************************************************************* CACHE PANEL
+    ?>
+    <?php
     $GLOBALS['conv'] = $this->convert();
 
     function createCacheList($data, $level = 0) {
@@ -174,23 +203,6 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
 </div>
 <div class="clear"></div>
 <div>
-<?php
-// ************************************************************************************* QUICK LINKS
-?>
-<box class = 'dashboard'>
-    <boxtitle>
-        <span class='own_text_small'></span>
-    </boxtitle>
-    <boxcontent>
-        <ul class="dash-links">
-            <li><a href='/'><b>Home</b></a></li>
-            <li><a href='/cms'><b>Content</b></a></li>
-            <li><a href='/media/filebrowser'><b>File Browser</b></a></li>
-            <li><a href='/nav/sort'><b>Navigation</b></a></li>
-            <li><a href='/system/dashboard'><b>Dashboard Reload</b></a></li>
-        </ul></boxcontent>
-</box>
-
 <?php
 // ************************************************************************************* USER STATS
 $li = '';

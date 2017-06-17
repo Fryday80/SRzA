@@ -12,22 +12,6 @@ class SystemService
     private $accessService;
 
     private $config = array(
-        'testBoolean' => array(
-            'type' => 'boolean',
-            'value' => true
-        ),
-        'testNumber' => array(
-            'type' => 'number',
-            'value' => 42
-        ),
-        'testString' => array(
-            'type' => 'string',
-            'value' => 'nothing :)'
-        ),
-        'testFunction' => array(
-            'type' => 'function',
-            'value' => array()
-        ),
         'maintenance' => array(
             'type' => 'boolean',
             'value' => true
@@ -43,6 +27,11 @@ class SystemService
         $this->configPath = getcwd().$this->configPath;
         $this->loadConfig();
     }
+
+    public function logoutUsers() {
+        //@todo logout all users except admins
+    }
+
 
     public function getConfig($key = null) {
         if ($key === null) {
@@ -60,17 +49,17 @@ class SystemService
 
     public function setConfig($key, $value) {
         if (key_exists($key, $this->config)) {
-            switch($this->config[$key]) {
+            switch($this->config[$key]['type']) {
                 case 'boolean':
                     if (is_bool($value)) {
-                        $this->config[$key]['value'] = $value;
+                        $this->config[$key]['value'] = ($value)? true: false;
                     } else {
                         throw new Exception('Value must be of type boolean!');
                     }
                 break;
                 case 'number':
-                    if (is_numeric($value)) {
-                        $this->config[$key]['value'] = $value;
+                    if (is_numeric((float)$value)) {
+                        $this->config[$key]['value'] = (float)$value;
                     } else {
                         throw new Exception('Value must be of a numeric type!');
                     }
@@ -95,10 +84,6 @@ class SystemService
         }
     }
 
-    public function logoutUsers() {
-        //@todo logout all users except admins
-    }
-
     public function onFinish(MvcEvent $e) {
         $this->saveConfig();
     }
@@ -113,7 +98,6 @@ class SystemService
             $this->saveConfig();
         }
         $content = file_get_contents(realpath($this->configPath));
-        $content = unserialize($content);
-        return $content;
+        $this->config = unserialize($content);
     }
 }
