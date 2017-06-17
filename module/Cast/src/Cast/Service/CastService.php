@@ -28,22 +28,22 @@ class CastService
     }
     public function getById($id) {
         $result = $this->characterTable->getById($id);
-        $this->processChar($result);
+        $this->prepareChar($result);
         return $result;
     }
     public function getByUserId($id) {
         $result = $this->characterTable->getByUserId($id);
-        $this->processChar($result);
+        $this->processChars($result);
         return $result;
     }
     public function getByTrossId($id) {
         $result = $this->characterTable->getByTrossId($id);
-        $this->processChar($result);
+        $this->processChars($result);
         return $result;
     }
     public function getByFamilyId($id) {
         $result = $this->characterTable->getByFamilyId($id);
-        $this->processChar($result);
+        $this->processChars($result);
         return $result;
     }
 
@@ -139,12 +139,12 @@ class CastService
         if (!$this->loaded) {
             $this->data = $this->characterTable->getAll();
             //insert user names for linking
-            $this->processChar($this->data);
+            $this->processChars($this->data);
             $this->loaded = true;
         }
     }
 
-    private function processChar(&$data)
+    private function processChars(&$data)
     {
         foreach ($data as &$char) {
             $this->prepareChar($char);
