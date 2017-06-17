@@ -78,6 +78,12 @@
     .checkMark:focus {
         outline:0;
     }
+    .status
+    {
+        margin-top: -8px;
+        height: 25px;
+        float: right;
+    }
 </style>
 <?php
 $title = 'Dashboard';
@@ -116,25 +122,31 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
                 bdump($systemConfig);
                 $input = '';
                 $button = '';
+                $indicator = '';
                     foreach ($systemConfig as $key => $item):
                         switch ($item['type']){
                             case 'function':
                                 //buttom
+                                $indicator = '';
                                 $input = 'ausführen';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '" name="' . $key . '">-->Go</button>';
                                 break;
                             case 'boolean':
                                 //checkbox
+                                $pic = (($item['value'])? '/img/uikit/led-on.png" alt="on': '/img/uikit/led-off.png" alt="off');
+                                $indicator = '<img class="status" src="' . $pic . '">';
                                 $input = '<input type="checkbox" name="' . $key . '" value="' . $item['value'] . '" '. (($item['value'])? 'checked': '') .'>';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'string':
                                 //input
+                                $indicator = '';
                                 $input = '<input type="text" name="' . $key . '" value="' . $item['value'] . '" >';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'number':
-//                                input type number
+                                //input type=number
+                                $indicator = '';
                                 $input = '<input type="number" name="' . $key . '" value="' . $item['value'] . '" >';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
@@ -144,7 +156,7 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
                         <li>
                             <div style="width: 100px; float: left"><?php echo $key .' ';?></div>
                             <span><?php echo $input; ?></span>
-                            <?php echo $button; ?>
+                            <?php echo $button . $indicator; ?>
                         </li>
                 <?php
                     endforeach;
