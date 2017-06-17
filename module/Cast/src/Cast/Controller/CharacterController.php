@@ -242,7 +242,6 @@ class CharacterController extends AbstractActionController
                                     $result['message'] = "Character id dose't exists";
                                     $result['code'] = 2;
                                 } else {
-                                    $charInDb = $charInDb[0];
                                     //check if current user is char owner
                                     if ( $this->accessService->getUserID() == $charInDb['user_id']) {
                                         $data['id'] = $request->id;
