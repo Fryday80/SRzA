@@ -1,7 +1,8 @@
-section('init'.blue);
-log('sers');
-exec('ls');
-shell.ls('./');
+section('init');
+testPath('../module/**/*.js');
+// log('sers');
+// exec('ls');
+// shell.ls('./');
 
 // console.log();
 // section('Do something');

@@ -31,17 +31,44 @@ $(function() {
     function clearErrors(formEle) {
         $('.form-error-messages', formEle).remove();
     }
-
     $.fn.formSetErrors = function(errors = {}, clear = true) {
         if (clear) clearErrors(this);
-        $('input, select, textarea', this).each(function() {
+        //clean array data
+        for (var errorName in errors) {
+            if (errors.hasOwnProperty(errorName)) {
+                var error = errors[errorName];
+                if (typeof errors[errorName] === 'object' && !Array.isArray(errors[errorName]) ) {
+                    var asArray = [];
+                    for (var errorMsg in errors[errorName]) {
+                        asArray.push(errors[errorName][errorMsg]);
+                    }
+                    errors[errorName] = asArray;
+                }
+            }
+        }
+        $('input[type="radio"]', this).each(function() {
             let name = $(this).attr('name');
-            if (errors.hasOwnProperty(name) && Array.isArray(errors[name]) ) {
+            if (errors.hasOwnProperty(name)) {
+                //continue till last label
+                if ($(this).parent('label').next('label').length > 0) return;
+                let error = errors[name];
+                let $errorUl = $('<ul class="form-error-messages"></ul>');
+                console.log($(this).parent('label').parent('fieldset'));
+                $(this).parent('label').after($errorUl);
+                for (let i = 0; i < error.length; i++) {
+                    let $li = $errorUl.append('<li>' + error[i] + '</li>');
+                    $errorUl.append($li);
+                }
+            }
+        });
+        $('input:not([type="radio"]), select, textarea', this).each(function() {
+            let name = $(this).attr('name');
+            if (errors.hasOwnProperty(name)) {
                 let error = errors[name];
                 let $errorUl = $('<ul class="form-error-messages"></ul>');
                 $(this).after($errorUl);
-                for(let i = 0; i < error.length; i++) {
-                    let $li = $errorUl.append('<li>'+ error[i] +'</li>');
+                for (let i = 0; i < error.length; i++) {
+                    let $li = $errorUl.append('<li>' + error[i] + '</li>');
                     $errorUl.append($li);
                 }
             }

@@ -107,6 +107,7 @@ class CharacterController extends AbstractActionController
             'form' => $form
         );
     }
+
     public function deleteAction() {
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
@@ -130,6 +131,7 @@ class CharacterController extends AbstractActionController
             'family' => $this->familiesTable->getById($id)
         );
     }
+
     function jsonAction() {
         if (!$this->getRequest()->isXmlHttpRequest())
             return $this->notFoundAction();
@@ -178,12 +180,30 @@ class CharacterController extends AbstractActionController
                         if ($request->id < 0) {
                             $data['active'] = 0;
                             $data['id'] = 0;
-                            $data['user_id'] =  $this->accessService->getUserID();
+//                            $data['user_id'] =  $this->accessService->getUserID();
 
                             $form = $this->createCharacterForm();
+                            $form->setValidationGroup(
+                                'id'
+                                ,'user_id'
+                                ,'name'
+                                ,'surename'
+                                ,'gender'
+                                ,'birthday'
+//                                ,'guardian_id'
+//                                ,'supervisor_id'
+                                ,'vita'
+                                ,'active'
+//                                ,'family_id'
+//                                ,'family_name'
+//                                ,'blazon_id'
+//                                ,'job_id'
+//                                ,'job_name'
+                            );
                             $form->setData($data);
                             if ($form->isValid() ){
                                 unset($data['submit']);
+                                $data['user_id'] = $this->accessService->getUserID();
                                 $id = $this->characterTable->add($data);
                                 $newOwn = $this->characterTable->getById($id);
                                 $result['message'] = 'new char created';
@@ -203,8 +223,10 @@ class CharacterController extends AbstractActionController
                                 $result['code'] = 2;
                             } else {
                                 //check if current user is char owner
+                                $charInDb = $charInDb[0];
                                 if ( $this->accessService->getUserID() == $charInDb['user_id']) {
-                                    $charInDb['id'] = $request->id;
+                                    $data['id'] = $request->id;
+                                    $data['user_id'] = $this->accessService->getUserID();
                                     if ($this->characterTable->save($request->id, $data) ) {
                                         $result['message'] = 'Save Character';
                                         $result['data'] = $charInDb;
