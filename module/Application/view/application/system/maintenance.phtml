@@ -1,8 +1,69 @@
+<style>
+    body
+    {
+        background: #430c0c url('/img/html.bg.png') fixed;
+        background-size: 100px;
+        color: #00bcd4;
+    }
+    .body {
+        border-radius: 5px;
+        margin: 3vw;
+        margin-left: 6vw;
+        margin-right: 6vw;
+        background-image: none;
+        background-color: #FAEBd7;
+        position: relative;
+        text-shadow: 1px 1px #f3ffff;
+        text-align: center;
+    }
+    @-webkit-keyframes rotate {
+          0% { transform: rotate(0deg);   }
+        100% { transform: rotate(360deg); }
+    }
+    @-moz-keyframes rotate {
+          0% { transform: rotate(0deg);   }
+        100% { transform: rotate(360deg); }
+    }
+    @-o-keyframes rotate {
+          0% { transform: rotate(0deg);   }
+        100% { transform: rotate(360deg); }
+    }
+    @keyframes rotate {
+          0% { transform: rotate(0deg);   }
+        100% { transform: rotate(360deg); }
+    }
+    .rotation {
+        -webkit-animation: rotate 10s infinite linear;
+        -moz-animation: rotate 10s infinite linear;
+        -o-animation: rotate 10s infinite linear;
+        animation: rotate 10s infinite linear;
+    }
+    .maintenanceImg
+    {
+        width: 400px;
+    }
+</style>
 <html>
 <head>
 
 </head>
 <body>
-    <h1>Under Maintenance</h1>
+<div class="body">
+    <div class="maintenance">
+        <h1>Under Maintenance</h1>
+        <h1>Serverwartung</h1>
+        <br/>
+        <img alt="logo" src="img/wappen_S.png">
+        <br/>
+        <h2>
+            We're sorry for this, please come back later
+        </h2>
+        <h2>
+            Entschuldigung, wir sind bald wieder für dich da
+        </h2>
+        <img alt="logo" src="img/maintenance.gif" class="maintenanceImg rotation">
+    </div>
+
+</div>
 </body>
 </html>
