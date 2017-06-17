@@ -43,6 +43,7 @@ return array(
             'FormRow' => 'Application\View\Helper\FormRow',
             'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
             'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
+            'convert' => 'Application\View\Helper\ConverterHelper',
         ),
         'factories' => array(
             'asurl' => 'Application\Factory\Helper\MyUrlFactory',
