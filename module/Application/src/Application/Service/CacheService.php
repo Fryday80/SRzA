@@ -35,10 +35,12 @@ class CacheService
         } else {
             $itemName = str_replace('.cache', '', $relativePath);
         }
-        $size = $this->FileSizeConvert(filesize($path));
+        $sizeInBytes = filesize($path);
+        $size = $this->FileSizeConvert($sizeInBytes);
         $item = array(
             'name' => $itemName,
             'size' => $size,
+            'sizeInBytes' => $sizeInBytes,
             'childes' => $childItems
         );
         return $item;

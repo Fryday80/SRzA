@@ -76,30 +76,47 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
             </ul>
         </boxcontent>
     </box>
+
+    <?php
+    $GLOBALS['conv'] = $this->convert();
+
+    function createCacheList($data, $level = 0) {
+        // get view helper
+        $conv = $GLOBALS['conv'];
+        $return = '';
+        $setSize = 0;
+
+        foreach ($data as $item) {
+            $name = $item['name'];
+            $hasChild  = (isset($item['childes'][0])) ? true : false;
+
+            $childData = ($hasChild) ? createCacheList($item['childes'], $level+1 ) : '';
+            $setSize   = ($hasChild) ? $setSize + $childData[2]          : $setSize + $item['sizeInBytes'];
+            $subSize   = ($hasChild) ? $childData[1]                     : $conv->beautyBytes($item['sizeInBytes']);
+            $b1 = ($level == 0 || $hasChild) ? '<b>' : '';
+            $b2 = ($level == 0 || $hasChild) ? '</b>' : '';
+            // create html
+            $return .= '<li>';
+            $return .= $b1 . $name . ', Size: ' . $subSize . $b2 . ' <button class="clearCache"  data-name="' . $name . '">Clear Cache</button>';
+            if ($hasChild) {
+                $return .= '<ul>'
+                            . $childData[0]
+                            . '</ul>';
+            }
+            $return .= '</li>';
+        }
+        return array($return, $conv->beautyBytes($setSize), $setSize);
+    }
+    $cacheListData = createCacheList($cacheList);
+    ?>
     <box class="dashboard cachePanel">
         <boxtitle class="cache">
-            <span class="own_text_small">Cache</span>
+            <span class="own_text_small">Cache -> <?php echo $cacheListData[1] ?></span>
         </boxtitle>
         <boxcontent>
             <ul>
                 <?php
-                    function createCacheList($data) {
-                        $return = '';
-                        foreach ($data as $item) {
-                            $name = $item['name'];
-                            $return .= '<li>';
-                            //                        $return .= 'test';
-                            $return .= $name . ', Size: ' . $item['size'] . ' <button class="clearCache"  data-name="' . $name . '">Clear Cache</button>';
-                            if (isset($item['childes'][0])) {
-                                $return .= '<ul>';
-                                $return .= createCacheList($item['childes']);
-                                $return .= '</ul>';
-                            }
-                            $return .= '</li>';
-                        }
-                        return $return;
-                    }
-                echo createCacheList($cacheList);
+                echo $cacheListData [0];
                 ?>
             </ul>
         </boxcontent>

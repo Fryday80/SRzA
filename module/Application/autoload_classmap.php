@@ -40,6 +40,7 @@ return array(
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
     'Application\Utility\FormConfiguration'                  => __DIR__ . '/src/Application/Utility/FormConfiguration.php',
+    'Application\View\Helper\ConverterHelper'                => __DIR__ . '/src/Application/View/Helper/ConverterHelper.php',
     'Application\View\Helper\DataTableHelper'                => __DIR__ . '/src/Application/View/Helper/DataTableHelper.php',
     'Application\View\Helper\FormElementErrors'              => __DIR__ . '/src/Application/View/Helper/FormElementErrors.php',
     'Application\View\Helper\FormRow'                        => __DIR__ . '/src/Application/View/Helper/FormRow.php',
