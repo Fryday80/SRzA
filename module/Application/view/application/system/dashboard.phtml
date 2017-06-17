@@ -87,17 +87,19 @@ echo '<h1>' . $this->escapeHtml($title) . '</h1>';
         <boxcontent>
             <ul>
                 <?php
+                bdump($systemConfig);
                 $input = '';
                 $button = '';
                     foreach ($systemConfig as $key => $item):
                         switch ($item['type']){
                             case 'function':
                                 //buttom
+                                $input = 'ausführen';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '" name="' . $key . '">-->Go</button>';
                                 break;
                             case 'boolean':
                                 //checkbox
-                                $input = '<input type="checkbox" name="' . $key . '" value="' . $item['value'] . '" >';
+                                $input = '<input type="checkbox" name="' . $key . '" value="' . $item['value'] . '" '. (($item['value'])? 'checked': '') .'>';
                                 $button = '<button class="' . $item['type'] . '" data-type="' . $item['type'] . '">-->Go</button>';
                                 break;
                             case 'string':
