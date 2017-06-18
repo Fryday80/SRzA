@@ -214,46 +214,6 @@ class ProfileController extends AbstractActionController
             'charnameURL'   => $charnameURL,
         ));
     }
-    //edit own char profile
-    public function privatecharprofileAction()
-    {
-        $hasFamily = false;
-        $form = $this->createCharacterForm();
-        $askingUser['name'] = $this->accessService->getUserName();
-        $username = $this->params()->fromRoute('username');
-        if ($username !== $askingUser['name'])
-            return $this->redirect()->toRoute('home');
-
-        $askingUser['id'] = $this->accessService->getUserID();
-        $charnameURL = $this->params()->fromRoute('charname');
-        $char = $this->castService->getCharacterData($charnameURL, $username);
-        if ((int)$char['user_id'] !== $askingUser['id'])
-            return $this->redirect()->toRoute('home');
-
-        $char['userData'] = $this->userService->getUserDataBy('name', $username);
-        $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
-
-        foreach ($charFamily as $key => $member){
-            $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);
-            if ($wholeName == $charnameURL){
-                unset($charFamily[$key]);
-                break;
-            }
-        }
-
-        if ($charFamily) $hasFamily = true;
-        $form->setData($char);
-
-        return  new ViewModel(array(
-            'char'       => $char,
-            'username'   => $username,
-            'charnameURL'=> $charnameURL,
-            'form'       => $form,
-
-            'hasFamily'  => $hasFamily,
-            'charFamily' => $charFamily,
-        ));
-    }
     //@todo familyprofileAction
 //    public function familyprofileAction(){
 //        $username = $this->params()->fromRoute('username');

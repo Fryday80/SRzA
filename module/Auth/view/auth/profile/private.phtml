@@ -41,7 +41,22 @@ $userForm->prepare();
     .profile-pic{
         height: 300px;
     }
+    .profileNav
+    {
+        float:right;
+        margin-left: 5px;
+    }
 </style>
+
+<a class="profileNav" href="/cast">
+    <button>Tree view</button>
+</a>
+
+<a class="profileNav" href="/profile/<?php echo $user->name?>">
+    <button>Öffentliches Profil</button>
+</a>
+<br class="clear"/>
+
 
 <box>
     <boxtitle><span class="own_text_medium">User Details</span></boxtitle>
@@ -54,7 +69,6 @@ $userForm->prepare();
         <div class="profile-addons">
             <img class="profile-pic" src="<?php echo $user->user_image ?>" alt="ProfilePic">
             <br/>
-            <a href="/profile/<?php echo $user->name?>"><button>Öffentliches Profil</button></a>
         </div>
     </boxcontent>
 </box>

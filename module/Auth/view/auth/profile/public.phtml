@@ -1,9 +1,13 @@
 <style>
-    div.onlineStatus,
-    a.onlineStatus
+    div.onlineStatus
     {
         float: right;
         margin 5px;
+    }
+    a.onlineStatus
+    {
+        margin-right: 10px;
+        float: right;
     }
     img.onlineStatus
     {
@@ -27,7 +31,8 @@
     }
     .charbutton
     {
-        margin-left: 2vw;
+        margin-right: 2vw;
+        float: right;
     }
     .online
     {
@@ -45,6 +50,11 @@
         right: 0;
         height: 100%;
     }
+    .profileNav
+    {
+        float: right;
+        margin-left: 5px;
+    }
 </style>
 
 
@@ -56,14 +66,23 @@ $bh = $this->blazon();
 $stateUrl = ($isActive) ? '/img/uikit/led-green.png' : '/img/uikit/led-red.png';
 $state    = ($isActive) ? 'online' : 'offline';
 $activityState = " <div class='onlineStatus' data-balloon=$state data-balloon-pos='down' ><img src=$stateUrl class='onlineStatus' alt=$state></div>";
-$editOwnProfile = ($user->isActiveUser()) ? '<a class="onlineStatus" href="/profile"><button>Editieren</button></a>' : '';
+$editOwnProfile = '';
+$editOwnChars ='';
+if($user->isActiveUser()){
+    $editOwnProfile .= '<a class="profileNav" href="/profile"><button>Editieren</button></a>';
+    $editOwnChars .= '<a class="profileNav" href="/profile#characters"><button>Charactere Bearbeiten</button></a>';
+}
 
-$title =$user->name;
+$title = $user->name;
 $this->headTitle($title);
-?>
+// view ?>
+<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; ?> </span></h1><br/>
+<?php echo $editOwnProfile; ?>
+<a class="profileNav" href="/cast">
+    <button>Tree view</button>
+</a>
+<br class="clear"/>
 
-<h1><span class="own_text_medium"><?php echo $this->escapeHtml($title); echo $activityState; echo $editOwnProfile; ?></span></h1><br/>
-<br/>
 <box class="public-profile summary">
     <span>
         <b>Funktion:</b> <?php echo $user->role_name;?>
@@ -100,6 +119,8 @@ $this->headTitle($title);
 <box class="public-profile">
     <boxtitle>
         <span class="own_text_small">Darstellungen</span>
+        <?php echo $editOwnChars ?>
+        <br/><br/>
     </boxtitle>
     <boxcontent>
         <?php foreach ($characters as $character):
@@ -108,11 +129,7 @@ $this->headTitle($title);
             <a href="<?php echo $character['charProfileURL'] ?>">
                 <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
             </a>
-            <br/>
+            <br/><br/><br/><br/>
         <?php endforeach; ?>
     </boxcontent>
 </box>
-<a href="/cast">
-    <button>Tree view</button>
-</a>
-<br/>

@@ -21,6 +21,24 @@
 </style>
 <?php
 //$logOutList = $myMenuService->getLogoutData();
+$logOutList = array(
+    0 => array(
+        'name'  => 'Benutzer Daten',
+        'class' => 'myMenu',
+        'list'  => array(
+            0 => array(
+                'name' => 'Mein Profil Bearbeiten',
+                'url'  => '/profile'
+            ),
+            1 => array(
+                'name' => 'Meine Charaktere Bearbeiten',
+                'url'  => '/profile#characters'
+            ),
+        ),
+    ),
+);
+echo createLogoutList($logOutList);
+
 
 function createLogoutList($logOutList){
     $return = '<ul class="logout-list">';

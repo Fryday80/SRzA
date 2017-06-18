@@ -23,6 +23,11 @@
         margin-right: 5px;
         width: 40%;
     }
+    .profileNav
+    {
+        float:right;
+        margin-left: 5px;
+    }
 
     /*
     blazon settings in _blazons.less
@@ -36,25 +41,27 @@ $char['bhArg'] = $bh->getBlazonHelperArgumentsByCharacter($char);
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 $img = (isset($char['userData']->user_image)) ? $char['userData']->user_image : false;
-
-echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
-    <div class="charprofile headimages">
-        <?php echo ($char['userData']->user_image) ? '<img style="float: right;height: 250px;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
-    </div>
-    <div class="charprofile headimages">
-        <?php 
-        if ($isOwner)
-            echo "<a href='/profile/$username/$charnameURL/edit'><button>Bearbeiten</button></a>";
-        ?>
-    </div>
-<div class="clear"></div>
+$ownerLinks = '';
+if($isOwner){
+    $ownerLinks .= '<a class="profileNav" href="/profile#characters"><button>Bearbeiten</button></a>';
+}
+$userProfileLink = "<a class='profileNav' href='/profile/$username'><button>Darsteller</button></a>";
+// view
+echo $ownerLinks . $userProfileLink; ?>
+<a class="profileNav" href="/cast">
+    <button>Tree view</button>
+</a>
+<br class="clear"/>
 <h1>
     <span class="own_text_medium"><?php echo $this->escapeHtml($title);?></span>
 </h1>
 <?php
-echo $this->convert()->myDate($char['birthday'])
-?>
-<br/>
+echo $this->convert()->myDate($char['birthday']);
+echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
+    <div class="charprofile headimages">
+        <?php echo ($char['userData']->user_image) ? '<img style="float: right;height: 250px;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
+    </div>
+<div class="clear"></div>
 <br/>
 <box class="public-char-profile">
     <boxtitle>
