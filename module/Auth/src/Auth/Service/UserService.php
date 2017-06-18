@@ -104,6 +104,8 @@ class UserService
         $img = file_get_contents($imagePath);
         $im = imagecreatefromstring($img);
 
+        ImageAlphaBlending($im, true);
+        
         $width = imagesx($im);
         $height = imagesy($im);
 
@@ -115,6 +117,8 @@ class UserService
 
             $srcInfo = pathinfo($imagePath);
             $thumb = imagecreatetruecolor($newwidth, $newheight);
+            $transparent = imagecolortransparent($thumb, imagecolorallocatealpha($thumb, 255, 255, 255, 127));
+            imagefill($thumb, 0, 0, $transparent);
 
             imagecopyresized($thumb, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
             switch($srcInfo['extension']) {

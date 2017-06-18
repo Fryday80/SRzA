@@ -258,6 +258,8 @@ class BlazonService
         $img = file_get_contents($imagePath);
         $im = imagecreatefromstring($img);
 
+        ImageAlphaBlending($im, true);
+
         $width = imagesx($img);
         $height = imagesy($img);
 
@@ -268,28 +270,35 @@ class BlazonService
         else // refactor pic
         {
             $newsize = 0;
-            if ($width > $height)
+            if ($width > $height) {
                 $newheight = $newwidth = $width;
-            else
-                $newheight = $newwidth = $height;
-
+                $startWidth = 0;
+                $startHeight = ($newheight - $height) /2;
+            }
+        else {
+            $newheight = $newwidth = $height;
+            $startWidth = ($newwidth-$width) /2;
+            $startHeight = 0;
+        }
             $srcInfo = pathinfo($imagePath);
-            $thumb = imagecreatetruecolor($newwidth, $newheight);
+            $blazon = imagecreatetruecolor($newwidth, $newheight);
+            $transparent = imagecolortransparent($blazon, imagecolorallocatealpha($blazon, 255, 255, 255, 127));
+            imagefill($blazon, 0, 0, $transparent);
 
-            imagecopyresized($thumb, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+            imagecopyresized($blazon, $im, $startWidth, $startHeight, 0, 0, $newwidth, $newheight, $width, $height);
             switch($srcInfo['extension']) {
                 case 'jpg':
                 case 'jpeg':
-                    imagejpeg($thumb, $imagePath);
+                    imagejpeg($blazon, $imagePath);
                     break;
                 case 'png':
-                    imagepng($thumb, $imagePath);
+                    imagepng($blazon, $imagePath);
                     break;
                 case 'gif':
-                    imagegif($thumb, $imagePath);
+                    imagegif($blazon, $imagePath);
 
             }
-            imagedestroy($thumb);
+            imagedestroy($blazon);
             imagedestroy($im);
         }
     }
