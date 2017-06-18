@@ -1,40 +1,42 @@
+//standard Blazons relation:
+// 1 x 1 !important
+
+
 .blazonstyle(@height: 50px;) {
-  @left: (@height * 0.08);
-  @height1: (@height * 0.435);
+  @width: @height;
+  @adaptionFor3DGrapic: (@width * 0.02);
+  @padding: (@height / 5)!important;
+  @width1: (@width * 0.45);
+  @left1: ((@width * 0.5) + @adaptionFor3DGrapic);
   @height2: (@height * 0.45);
+  @left2: ((@width * 0.5) + (2 * @adaptionFor3DGrapic));
 
   .blazon {
     position: relative;
-    padding: (@height / 5)!important;
+    padding: @padding;
     height: @height;
-    width: @height;
+    width: @width;
     border-radius: 50%;
 
     .blazon-sub-0 {
       position: absolute;
       z-index: 1;
+      width: @width;
       height: @height;
-      top: (@height / 4);
-      left: 0;
-      right: 0;
-      margin: 0 auto;
+      left: @padding;
     }
     .blazon-sub-1 {
+      width: @width1;
       position: absolute;
       z-index: 2;
       top: 30%;
-      left: 6%;
-      right: 0;
-      margin: 0 auto;
-      height: @height1;
+      left: @left1;
     }
     .blazon-sub-2 {
       position: absolute;
       z-index: 3;
       bottom: 0;
-      left: @left;
-      right: 0;
-      margin: 0 auto;
+      left: @left2;
       height: @height2;
     }
   }
