@@ -253,5 +253,44 @@ class BlazonService
     private function error($code) {
         return new Error($this::ERROR_MSG[$code], $code);
     }
+    private function adjustUploadPic($imagePath){
 
+        $img = file_get_contents($imagePath);
+        $im = imagecreatefromstring($img);
+
+        $width = imagesx($img);
+        $height = imagesy($img);
+
+        if ($width == $height) //save pic
+        {
+            //@todo
+        }
+        else // refactor pic
+        {
+            $newsize = 0;
+            if ($width > $height)
+                $newheight = $newwidth = $width;
+            else
+                $newheight = $newwidth = $height;
+
+            $srcInfo = pathinfo($imagePath);
+            $thumb = imagecreatetruecolor($newwidth, $newheight);
+
+            imagecopyresized($thumb, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
+            switch($srcInfo['extension']) {
+                case 'jpg':
+                case 'jpeg':
+                    imagejpeg($thumb, $imagePath);
+                    break;
+                case 'png':
+                    imagepng($thumb, $imagePath);
+                    break;
+                case 'gif':
+                    imagegif($thumb, $imagePath);
+
+            }
+            imagedestroy($thumb);
+            imagedestroy($im);
+        }
+    }
 }
