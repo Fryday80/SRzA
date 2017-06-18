@@ -138,7 +138,7 @@
                 imgAlt = 'off';
             }
             $img.attr('src', imgSrc)
-                .atrr('alt', imgAlt);
+                .attr('alt', imgAlt);
             //handle checkbox
             console.log(valueName, value, type);
             console.log($img);
