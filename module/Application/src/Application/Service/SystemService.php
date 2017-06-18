@@ -14,7 +14,7 @@ class SystemService
     private $config = array(
         'maintenance' => array(
             'type' => 'boolean',
-            'value' => true
+            'value' => false
         ),
         'logoutUsers' => array(
             'type' => 'function',
