@@ -127,8 +127,21 @@
             let $input = $('input', $(this).parent())
             let valueName = $input.attr('name');
             let value = $input.prop('checked');
+            let $img = $('img', $(this).parent());
+            let imgSrc;
+            let imgAlt;
+            if (value == true){
+                imgSrc = '/img/uikit/led-on.png';
+                imgAlt = 'on';
+            } else {
+                imgSrc = '/img/uikit/led-off.png';
+                imgAlt = 'off';
+            }
+            $img.attr('src', imgSrc)
+                .atrr('alt', imgAlt);
             //handle checkbox
             console.log(valueName, value, type);
+            console.log($img);
             setSystemConfig(valueName, value, $(this));
         } else {
             let $input = $('input', $(this).parent())
