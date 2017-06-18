@@ -40,6 +40,7 @@ shell.mkdir(Out + 'logs');
 shell.mkdir(Out + 'storage');
 shell.mkdir(Out + 'temp');
 shell.mkdir(Out + 'Upload');
+shell.mkdir(Out + 'zendCache');
 // data folders
 shell.mkdir('-p', Out + 'config/autoload');
 shell.mkdir('-p', Out + 'public/img');
@@ -58,6 +59,7 @@ shell.cp('-r', 'public/index.php', Out + 'public/');
 shell.cp('-r', ['public/css/', 'public/fonts/', 'public/img/', 'public/js/', 'public/libs/'], Out + 'public/');
 shell.rm('-r', Out + 'public/img/psd');
 shell.cp('-r', 'init_autoloader.php', Out);
+shell.cp('-r', 'vendor/', Out);
 
 // modify contents
 try {
