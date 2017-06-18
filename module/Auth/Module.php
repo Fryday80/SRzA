@@ -1,8 +1,10 @@
 <?php
 namespace Auth;
 
+use Application\Model\Abstracts\ActionType;
 use Application\Model\Abstracts\HitType;
 use Application\Model\Abstracts\LogType;
+use Application\Model\DataObjects\Action;
 use Application\Model\DataObjects\SystemLog;
 use Application\Service\StatisticService;
 use Auth\Model\User;
@@ -76,6 +78,17 @@ class Module
         }
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
+                $action = new Action(
+                    microtime(),
+                    $requestedResourse,
+                    $accessService->getUserID(),
+                    $accessService->getUserName(),
+                    ActionType::NOT_ALLOWED,
+                    $title,
+                    'access not allowed',
+                    $data = null
+                );
+                $statsService->logAction($action);
                 //log to stats
                 $hitType = ( $accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST;
                 $statsService->logSystem(new SystemLog(

@@ -45,6 +45,7 @@ class StatisticService
         $this->storagePath = getcwd().STORAGE_PATH;
         $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
     }
+    
 //======================================================================================================= EVENTS
     public function onDispatch(MvcEvent $e)
     {
@@ -110,8 +111,14 @@ class StatisticService
         $this->saveFile($this->stats);
     }
 
+//======================================================================================================= LOGGING
     public function logSystem(SystemLog $log){
         $this->sysLog->updateSystemLog($log);
+    }
+
+    public function logAction(Action $action)
+    {
+        $this->stats-$this->logAction($action);
     }
 
 //======================================================================================================= PUBLIC GET
@@ -236,8 +243,7 @@ class StatisticService
         }
         return $data;
     }
-
-
+    
     private function checkCookie(MvcEvent $e) {
         if (!$e->getRequest()->getCookie() || !$e->getRequest()->getCookie()->offsetExists('srzaiknowyou')) {
             $this->stats->logNewUser();

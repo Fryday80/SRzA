@@ -12,6 +12,7 @@ namespace Application\Model\Abstracts;
 abstract class ActionType {
     const PAGE_CALL = 0;
     const ERROR = 1;
+    const NOT_ALLOWED = 2;
 
     /**
      * Translates the constants of ActionType abstract class to string
@@ -23,5 +24,7 @@ abstract class ActionType {
             return 'Page Call';
         if ( $type == ActionType::ERROR )
             return 'Error';
+        if ( $type == ActionType::NOT_ALLOWED )
+            return 'requested resource ist not allowed for this user';
     }
 }
