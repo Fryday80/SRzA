@@ -12,7 +12,7 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'MediaService' => 'Media\Factory\MediaServiceFactory'
+            'MediaService' => 'Media\Factory\MediaServiceFactory',
         ),
         'abstract_factories' => array(
             'Media\Model\FileTable' => DefaultTableGatewayFactory::class
