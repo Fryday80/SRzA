@@ -50,6 +50,11 @@ return array(
             'dataTable' => 'Application\Factory\Helper\DataTableHelperFactory',
         )
     ),
+    'controller_plugins' => array(
+        'invokables' => array(
+            'MessageRedirect' => 'Application\Controller\Plugin\MessageRedirect',
+        )
+    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
