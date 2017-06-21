@@ -8,7 +8,7 @@ use Error;
 
 class BlazonService
 {
-    const BLAZON_IMAGE_PATH = './data/wappen/';
+    const BLAZON_IMAGE_PATH = './Data/wappen/';
     const BLAZON_IMAGE_URL = '/wappen/';
     const ERROR_ID_NOT_FOUND = 0;
     const ERROR_NAME_NOT_FOUND = 1;
@@ -33,6 +33,10 @@ class BlazonService
         return $this->data;
     }
 
+    /**
+     * @param $id
+     * @return mixed bool|array
+     */
     public function getById($id) {
         $this->loadData();
         foreach ($this->data as $value) {
@@ -128,56 +132,59 @@ class BlazonService
 
     /**
      * @param $name string
-     * @param $filePath string
-     * @param null $bigFilePath
+     * @param null $blazonData
+     * @param null $blazonBigData
      * @return bool
      */
-    public function addNew($name, $filePath, $bigFilePath = null) {
+    public function addNew($name, $blazonData = null, $blazonBigData = null) {
         if ($this->exists($name)) return false;
-        $bigFileName = null;
-        //move file to wappen folder
-        $fileName = $this->moveFile($filePath, $name);
-        //@todo! resize file
-
-        if ($bigFilePath) {
-            $bigFileName = $this->moveFile($bigFilePath, $name.'_big');
-            //@todo! resize file
+        $fileData['fileName'] = null;
+        $bigFileData['fileName'] = null;
+        // small blazon uploaded ?
+        if (!($blazonData['error'] > 0)) {
+            $fileData = $this->moveFile($blazonData['tmp_name'], $name, $blazonData['name']);
+            $this->adjustUploadPic($fileData['filePath']);
+        }
+        // big blazon uploaded ?
+        if (!($blazonBigData['error'] > 0)) {
+            $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $name.'_big', $blazonBigData['name']);
+            $this->adjustUploadPic($bigFileData['filePath']);
         }
 
         $newID = $this->blazonTable->add(array(
             'name' => $name,
-            'filename' => $fileName,
-            'bigFilename' => $bigFileName
+            'filename' => $fileData['fileName'],
+            'bigFilename' => $bigFileData['fileName']
         ));
         //@todo add also to this->data
         return true;
     }
 
-    public function save($id, $name = null, $filePath = null, $bigFilePath = null) {
+    public function save($id, $name = null, $blazonData = null, $blazonBigData = null) {
         $item = $this->getById($id);
         if(!$item) return false;
-        $fileName = null;
-        $bigFileName = null;
+        $fileData['fileName'] = null;
+        $bigFileData['fileName'] = null;
+        // name changed ?
         if ($name !== null && $item['name'] != $name) {
-            $fileName = $this->renameItem($item, $name);
+            $fileData['fileName'] = $this->renameItem($item, $name);
+            $bigFileData['fileName'] = $this->renameItem($item, $name . '_big');
             $item['name'] = $name;
         }
-        if ($filePath) {
-            //@todo! unset old file
-            $fileName = $this->moveFile($filePath, $item['name']);
-            //@todo! resize file
+        // small blazon uploaded ?
+        if (!($blazonData['error'] > 0)) {
+            $fileData = $this->moveFile($blazonData['tmp_name'], $item['name'], $blazonData['name']);
+            $this->adjustUploadPic($fileData['filePath']);
         }
-        if ($bigFilePath) {
-            //@todo! unset old file
-            $bigFileName = $this->moveFile($bigFilePath, $item['name'].'_big');
-            //@todo! resize file
+        // big blazon uploaded ?
+        if (!($blazonBigData['error'] > 0)) {
+            $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $item['name'].'_big', $blazonBigData['name']);
+            $this->adjustUploadPic($bigFileData['filePath']);
         }
-        if ($fileName !== null) $item['filename'] = $fileName;;
-        if ($bigFileName !== null) $item['bigFilename'] = $bigFileName;
         $data = [];
         if ($name !== null) $data['name'] = $name;
-        if ($fileName !== null) $data['filename'] = $fileName;
-        if ($bigFileName !== null) $data['bigFilename'] = $bigFileName;
+        if ($fileData['fileName'] !== null) $data['filename'] = $fileData['fileName'];
+        if ($bigFileData['fileName'] !== null) $data['bigFilename'] = $bigFileData['fileName'];
 
         $this->blazonTable->save($id, $data);
         //@todo add also to this->data
@@ -212,17 +219,24 @@ class BlazonService
     /** moves file to
      * @param $path string
      * @param $name string filename with extension
+     * @param $originalFileName
      * @return string file name with extension
      */
-    private function moveFile($path, $name) {
+    private function moveFile($path, $name, $originalFileName) {
         $this->loadData();
+        $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
         $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
         if (!$wappenPath) {
-            //@todo create "wappen" folder in ./data
+            //@todo create "wappen" folder in ./Data
+            // not tested
+//            mkdir ($wappenPath);
         }
-        $newPath = $wappenPath.'/'.$name.'.'.pathinfo($path, PATHINFO_EXTENSION);
+        $newPath = $wappenPath.'/'.$name.'.'.$ext;
         rename($path, $newPath);
-        return pathinfo($newPath, PATHINFO_BASENAME);
+        return array(
+            'fileName' => pathinfo($newPath, PATHINFO_BASENAME),
+            'filePath' => $newPath,
+        );
     }
 
     /**
@@ -233,11 +247,14 @@ class BlazonService
     private function renameItem(&$item, $newName) {
         $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
         $path = $wappenPath.'/'.$item['filename'];
-        $newPath = $wappenPath.'/'.$newName.'.'.pathinfo($path, PATHINFO_EXTENSION);
-        rename($path, $newPath);
-        $item['name'] = $newName;
-        $item['filename'] = pathinfo($newPath, PATHINFO_BASENAME);
+        if (file_exists($path)) {
+            $newPath = $wappenPath . '/' . $newName . '.' . pathinfo($path, PATHINFO_EXTENSION);
+            rename($path, $newPath);
+            $item['name'] = $newName;
+            $item['filename'] = pathinfo($newPath, PATHINFO_BASENAME);
         return $item['filename'];
+        }
+        return null;
     }
 
     private function loadData() {
@@ -256,12 +273,12 @@ class BlazonService
     private function adjustUploadPic($imagePath){
 
         $img = file_get_contents($imagePath);
-        $im = imagecreatefromstring($img);
+        $im  = imagecreatefromstring($img);
 
         ImageAlphaBlending($im, true);
 
-        $width = imagesx($img);
-        $height = imagesy($img);
+        $width  = imagesx($im);
+        $height = imagesy($im);
 
         if ($width == $height) //save pic
         {
@@ -271,13 +288,13 @@ class BlazonService
         {
             $newsize = 0;
             if ($width > $height) {
-                $newheight = $newwidth = $width;
-                $startWidth = 0;
+                $newheight   = $newwidth = $width;
+                $startWidth  = 0;
                 $startHeight = ($newheight - $height) /2;
             }
         else {
-            $newheight = $newwidth = $height;
-            $startWidth = ($newwidth-$width) /2;
+            $newheight   = $newwidth = $height;
+            $startWidth  = ($newwidth-$width) /2;
             $startHeight = 0;
         }
             $srcInfo = pathinfo($imagePath);
@@ -296,7 +313,6 @@ class BlazonService
                     break;
                 case 'gif':
                     imagegif($blazon, $imagePath);
-
             }
             imagedestroy($blazon);
             imagedestroy($im);

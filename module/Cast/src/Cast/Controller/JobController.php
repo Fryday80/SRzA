@@ -2,22 +2,22 @@
 namespace Cast\Controller;
 
 use Cast\Form\JobForm;
-use Cast\Model\JobTable;
+use Cast\Service\CastService;
 use Cast\Utility\JobDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class JobController extends AbstractActionController
 {
-    /** @var JobTable */
-    private $jobTable;
+    /** @var CastService  */
+    private $castService;
 
-    public function __construct(JobTable $jobTable) {
-        $this->jobTable = $jobTable;
+    public function __construct(CastService $castService) {
+        $this->castService = $castService;
     }
 
     public function indexAction() {
-        $jobs = $this->jobTable->getAll();
+        $jobs = $this->castService->getAllJobs();
         $jobsTable = new JobDataTable();
         $jobsTable->setData($jobs);
         $jobsTable->setButtons('all');
@@ -38,7 +38,7 @@ class JobController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->jobTable->add($data);
+                $this->castService->addJob($data);
                 return $this->redirect()->toRoute('castmanager/jobs');
             }
         }
@@ -52,7 +52,7 @@ class JobController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
-        if (!$family = $this->jobTable->getById($id)) {
+        if (!$family = $this->castService->getJobById($id)) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
         $form = new JobForm();
@@ -64,7 +64,7 @@ class JobController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->jobTable->save($id, $form->getData());
+                $this->castService->saveJob($id, $form->getData());
                 return $this->redirect()->toRoute('castmanager/jobs');
             }
         }
@@ -84,7 +84,7 @@ class JobController extends AbstractActionController
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->jobTable->remove($id);
+                $this->castService->removeJob($id);
             }
 
             // Redirect to list of Users
@@ -93,7 +93,7 @@ class JobController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'job' => $this->jobTable->getById($id)
+            'job' => $this->castService->getJobById($id)
         );
     }
 }

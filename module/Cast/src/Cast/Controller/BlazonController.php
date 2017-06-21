@@ -44,16 +44,8 @@ class BlazonController extends AbstractActionController
                 $form->setData($post);
                 if ($form->isValid()) {
                     $data = $form->getData();
-                    $blaPath = $data['blazon']['tmp_name'];
-                    $blaBigPath = $data['blazonBig']['tmp_name'];
-                    if ($data['blazon']['error'] > 0) {
-                        $blaPath = null;
-                    }
-                    if ($data['blazonBig']['error'] > 0) {
-                        $blaBigPath = null;
-                    }
                     if ($data['blazon']['error'] == 0) {
-                        $this->blaService->addNew($data['name'], $blaPath, $blaBigPath);
+                        $this->blaService->addNew($data['name'], $data['blazon'], $data['blazonBig']);
                         return $this->redirect()->toRoute('castmanager/wappen');
                     } else {
                         //todo error handling
@@ -101,15 +93,8 @@ class BlazonController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $data = $form->getData();
-                $blaPath = $data['blazon']['tmp_name'];
-                $blaBigPath = $data['blazonBig']['tmp_name'];
-                if ($data['blazon']['error'] > 0) {
-                    $blaPath = null;
-                }
-                if ($data['blazonBig']['error'] > 0) {
-                    $blaBigPath = null;
-                }
-                if (!$item = $this->blaService->save($id, $data['name'], $blaPath, $blaBigPath)) {
+                if (!$item = $this->blaService->save($id, $data['name'], $data['blazon'], $data['blazonBig']))
+                {
                     //@todo errors to form
                 } else {
                     // on success

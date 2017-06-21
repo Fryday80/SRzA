@@ -2,6 +2,7 @@
 namespace Cast\Form;
 
 use Cast\Form\Filter\CharacterFilter;
+use Cast\Service\CastService;
 use Zend\Form\Form;
 
 class CharacterForm extends Form
@@ -11,20 +12,28 @@ class CharacterForm extends Form
     public $jobs = array();
     public $guardians = array();
     public $supervisors = array();
+    /** @var CastService  */
+    private $castService;
 
-    public function __construct(Array $users, Array $families, Array $jobs)
+    public function __construct( CastService $castService )
     {
         parent::__construct("Character");
-        $this->userList = $users;
-        $this->familyList = $families;
-        $this->jobs = $jobs;
+        $this->castService = $castService;
+        $this->userList    = $castService->getAllUsers()->toArray();
+        $this->familyList  = $castService->getAllFamilies();
+        $this->jobs = $castService->getAllJobs();
 
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new CharacterFilter());
+        // fields
         $this->add(array(
             'name' => 'id',
             'type' => 'Hidden',
-        ));
+        ));  // id       - hidden
+        $this->add(array(
+            'name' => 'user_id',
+            'type' => 'hidden'
+        ));  // user_id  - hidden
         $this->add(array(
             'name' => 'name',
             'type' => 'text',
@@ -36,7 +45,7 @@ class CharacterForm extends Form
             'filters' => array(
                 ['name' => 'StringTrim'],
             ),
-        ));
+        ));  // name     - text
         $this->add(array(
             'name' => 'surename',
             'type' => 'text',
@@ -48,7 +57,7 @@ class CharacterForm extends Form
             'filters' => array(
                 ['name' => 'StringTrim'],
             ),
-        ));
+        ));  // surename - text
         $this->add(array(
             'name' => 'gender',
             'type' => 'Zend\Form\Element\Radio',
@@ -63,7 +72,7 @@ class CharacterForm extends Form
             'required' => true,
             'allow_empty' => false,
 
-        ));
+        ));  // gender   - radio
         $this->add(array(
             'name' => 'birthday',
             'type' => 'Zend\Form\Element\Date',
@@ -74,7 +83,7 @@ class CharacterForm extends Form
             'required' => true,
             'allow_empty' => false,
 
-        ));
+        ));  // birthday - date
         $this->add(array(
             'name' => 'vita',
             'type' => 'textarea',
@@ -86,11 +95,7 @@ class CharacterForm extends Form
             'filters' => array(
                 ['name' => 'StringTrim'],
             ),
-        ));
-        $this->add(array(
-            'name' => 'user_id',
-            'type' => 'hidden'
-        ));
+        ));  // vita     - textarea
 
         $this->add(array(
             'name' => 'submit',
@@ -99,11 +104,12 @@ class CharacterForm extends Form
                 'type' => 'submit',
                 'value' => 'Speichern',
             ),
-        ));
+        ));  // submit
     }
 
     public function isBackend()
     {
+        $this->setInputFilter(new CharacterFilter('backend'));
         $this->add(array(
             'name' => 'user_id',
             'type' => 'Zend\Form\Element\Select',
@@ -118,17 +124,7 @@ class CharacterForm extends Form
             'filters' => array(
                 ['name' => 'StringTrim'],
             ),
-        ));
-        $this->add(array(
-            'name' => 'tross_id',
-            'type' => 'Zend\Form\Element\Select',
-            'attributes' => array(
-            ),
-            'options' => array(
-                'label' => 'Tross',
-                'value_options' => $this->getFamiliesForSelect(),
-            )
-        ));
+        ));  // user_id       - select
         $this->add(array(
             'name' => 'job_id',
             'type' => 'Zend\Form\Element\Select',
@@ -138,8 +134,17 @@ class CharacterForm extends Form
                 'label' => 'Job',
                 'value_options' => $this->getJobsForSelect(),
             )
-        ));
-
+        ));  // job_id        - select
+        $this->add(array(
+            'name' => 'tross_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Tross',
+                'value_options' => $this->getFamiliesForSelect(),
+            )
+        ));  // tross_id      - select
         $this->add(array(
             'name' => 'supervisor_id',
             'type' => 'Zend\Form\Element\Select',
@@ -150,14 +155,45 @@ class CharacterForm extends Form
                 'label' => 'Vorgesetzter',
                 'value_options' => $this->getSupervisorForSelect(),
             )
-        ));
+        ));  // supervisor_id - select
+        $this->add(array(
+            'name' => 'family_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'label' => 'Family',
+                'value_options' => $this->getFamiliesForSelect(),
+            )
+        ));  // family_id     - select
+        //@todo guardian ID
+        $this->add(array(
+            'name' => 'guardian_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'disable_inarray_validator' => true,
+                'label' => 'Familien "Vorgesetzter"',
+                'value_options' => $this->getGuardianForSelect(),
+            )
+        ));  // guardian_id   - select
         $this->add(array(
             'name' => 'active',
             'type' => 'checkbox',
             'options' => array(
                 'label' => 'Aktiv',
             ),
-        ));
+        ));  // active        - checkbox
+
+        $this->add(array(
+            'name' => 'submit',
+            'type' => 'Submit',
+            'attributes' => array(
+                'type' => 'submit',
+                'value' => 'Speichern',
+            ),
+        ));  // submit
     }
 
     public function getUsersForSelect()
@@ -197,7 +233,7 @@ class CharacterForm extends Form
     }
     private function getGuardianForSelect() {
         $selectData = array();
-        $selectData[0] = 'keiner';
+        $selectData[0] = 'selbst Oberhaupt';
         foreach ($this->guardians as $guardian) {
             $selectData[$guardian['id']] = $guardian['name'];
         }

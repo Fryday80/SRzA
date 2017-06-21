@@ -6,16 +6,29 @@ use Zend\InputFilter\InputFilter;
 class CharacterFilter extends InputFilter
 {
 
-    public function __construct()
+    public function __construct($flag = null)
     {
+        $this->commonFilter();
+        switch ($flag) {
+            case 'backend':
+                $this->backendFilter();
+                break;
+        }
+    }
+
+    private function commonFilter(){
         $this->add(array(
             'name' => 'id',
             'required' => true,
             'filters' => array(
                 array(
-                    'name' => 'Int'
+                    'name' => 'Int',
                 )
             )
+        ));
+        $this->add(array(
+            'name' => 'birthday',
+            'required' => false,
         ));
         $this->add(array(
             'name' => 'name',
@@ -124,5 +137,10 @@ class CharacterFilter extends InputFilter
                 )
             )
         ));
+    }
+
+    private function backendFilter()
+    {
+        //@todo
     }
 }

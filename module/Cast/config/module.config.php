@@ -6,24 +6,32 @@ return array(
         'invokables' => array(
         ),
         'factories' => array(
-            'Cast\Controller\Blazon'        => 'Cast\Factory\BlazonControllerFactory',
-            'Cast\Controller\Cast'          => 'Cast\Factory\CastControllerFactory',
-            'Cast\Controller\Character'     => 'Cast\Factory\CharacterControllerFactory',
-            'Cast\Controller\Manager'       => 'Cast\Factory\ManagerControllerFactory',
-            'Cast\Controller\Family'        => 'Cast\Factory\FamilyControllerFactory',
-            'Cast\Controller\Job'           => 'Cast\Factory\JobControllerFactory',
+            'Cast\Controller\Blazon'        => 'Cast\Factory\Controller\BlazonControllerFactory',
+            'Cast\Controller\Cast'          => 'Cast\Factory\Controller\CastControllerFactory',
+            'Cast\Controller\Character'     => 'Cast\Factory\Controller\CharacterControllerFactory',
+            'Cast\Controller\Manager'       => 'Cast\Factory\Controller\ManagerControllerFactory',
+            'Cast\Controller\Family'        => 'Cast\Factory\Controller\FamilyControllerFactory',
+            'Cast\Controller\Job'           => 'Cast\Factory\Controller\JobControllerFactory',
+        ),
+    ),
+    //so mein ich des zu verstehen
+    'lazy_services' => array(
+        // mapping services to their class names is required
+        // since the ServiceManager is not a declarative DIC
+        'class_map' => array(
+            'buzzer' => 'MyApp\Buzzer',
         ),
     ),
     'view_helpers' => array(
         'factories' => array(
-            'blazon' => 'Cast\Factory\BlazonHelperFactory',
+            'blazon' => 'Cast\Factory\Helper\BlazonHelperFactory',
         ),
         'invokables' => array( )
     ),
     'service_manager' => array(
         'factories' => array(
-            'CastService' => 'Cast\Factory\CastServiceFactory',
-            'BlazonService' => 'Cast\Factory\BlazonServiceFactory'
+            'CastService'   => 'Cast\Factory\Service\CastServiceFactory',
+            'BlazonService' => 'Cast\Factory\Service\BlazonServiceFactory'
         ),
         'abstract_factories' => array(
             'Cast\Model\CharacterTable' => DefaultTableGatewayFactory::class,

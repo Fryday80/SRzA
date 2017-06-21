@@ -38,6 +38,7 @@ function createFamilyList($parent, $level) {
 function createList($parent, $level) {
     /** @var \Cast\View\Helper\BlazonHelper $bh */
     $bh = $GLOBALS['bhelper'];
+    $skip = ($level == 0)? true : false;
     $blazonArguments = $bh->getBlazonHelperArgumentsByCharacter($parent);
     echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
@@ -57,14 +58,16 @@ function createList($parent, $level) {
         }
     }
     echo '</p>';
-    $link1 = '<br/><div class="onlyCentered">';
-    $link1 .= '<a href="' . $parent['charProfileURL'] . '">Darstellung</a>';
-    $link1 .= '</div>';
+    if (!$skip) {
+        $link1 = '<br/><div class="onlyCentered">';
+        $link1 .= '<a href="' . $parent['charProfileURL'] . '">Darstellung</a>';
+        $link1 .= '</div>';
 
-    $link2 = '<div class="onlyCentered">';
-    $link2 .= '<a href="' . $parent['profileURL'] . '">Darsteller</a>';
-    $link2 .= '</div><br/>';
-    echo $link1 . $link2;
+        $link2 = '<div class="onlyCentered">';
+        $link2 .= '<a href="' . $parent['profileURL'] . '">Darsteller</a>';
+        $link2 .= '</div><br/>';
+        echo $link1 . $link2;
+    }
     echo '</character>';
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
@@ -75,7 +78,7 @@ function createList($parent, $level) {
             echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
             echo '<br>';
             //Todo family blazon
-            echo $bh->getSingleBlazon($blazonArguments, 'big');
+            echo $bh->getSingleBlazonByName($blazonArguments, 'big');
             echo '<br>';
             echo '<div class="details">';
             echo $parent['family']['name'];

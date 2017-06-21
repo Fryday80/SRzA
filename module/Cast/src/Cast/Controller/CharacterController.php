@@ -2,11 +2,8 @@
 namespace Cast\Controller;
 
 use Auth\Service\AccessService;
-use Auth\Service\UserService;
 use Cast\Form\CharacterForm;
-use Cast\Model\CharacterTable;
-use Cast\Model\FamiliesTable;
-use Cast\Model\JobTable;
+use Cast\Service\CastService;
 use Cast\Utility\CharacterDataTable;
 use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -15,45 +12,33 @@ use Zend\View\Model\ViewModel;
 
 class CharacterController extends AbstractActionController
 {
-    /** @var CharacterTable $characterTable */
-    private $characterTable;
-    /** @var JobTable $jobTable */
-    private $jobTable;
-    /** @var FamiliesTable $familiesTable */
-    private $familiesTable;
-    /** @var UserService  */
-    private $userService;
     /** @var AccessService  */
     private $accessService;
+    
+    /** @var CastService  */
+    private $castService;
 
-    public function __construct(CharacterTable $characterTable,
-                                JobTable $jobTable,
-                                FamiliesTable $familiesTable,
-                                AccessService $accessService,
-                                UserService $userService
-    )
+    public function __construct( AccessService $accessService, CastService $castService )
     {
-        $this->characterTable = $characterTable;
-        $this->jobTable = $jobTable;
-        $this->familiesTable = $familiesTable;
         $this->accessService = $accessService;
-        $this->userService = $userService;
+        $this->castService = $castService;
     }
 
     public function indexAction() {
-        $families = $this->familiesTable->getAll();
-        $famTable = new CharacterDataTable();
-        $famTable->setData($families);
-        $famTable->setButtons('all');
-        $famTable->insertLinkButton('/castmanager/characters/add', 'neuer Charakter');
-        $famTable->insertLinkButton('/castmanager', 'Zurück');
+        $characters = $this->castService->getAllChars();
+        $charTable = new CharacterDataTable();
+        $charTable->setData($characters);
+        $charTable->setButtons('all');
+        $charTable->insertLinkButton('/castmanager/characters/add', 'neuer Charakter');
+        $charTable->insertLinkButton('/castmanager', 'Zurück');
         return new ViewModel(array(
-            'families' => $famTable,
+            'families' => $charTable,
         ));
     }
 
     public function addAction() {
-        $form = $this->createCharacterForm();
+        $form = new CharacterForm($this->castService);
+        $form->isBackend();
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/characters/add');
 
@@ -62,7 +47,7 @@ class CharacterController extends AbstractActionController
             $form->setData($request->getPost());
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->characterTable->add($data);
+                $this->castService->addChar($data);
                 return $this->redirect()->toRoute('castmanager/characters');
             }
         }
@@ -77,20 +62,23 @@ class CharacterController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/characters');
         }
-        if (!$character = $this->characterTable->getById($id)) {
+        if ( !$character = $this->castService->getCharById( $id ) ) {
             return $this->redirect()->toRoute('castmanager/characters');
         }
-        bdump($character);
-        $form = $this->createCharacterForm();
-        $operator = 'Edit';
+        $form = new CharacterForm($this->castService);
         $form->isBackend();
+        $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
 
-        $possibleGuardians = $this->characterTable->getByFamilyId($character['family_id']);
-        $possibleSupervisors = $this->characterTable->getAllPossibleSupervisorsFor($character['tross_id']);
+        $possibleGuardians = $this->castService->getCharByFamilyId ( $character['family_id']);
+        $possibleSupervisors = $this->castService->getAllPossibleSupervisorsFor($character['tross_id']);
 
         $form->setPossibleGuardians($possibleGuardians);
         $form->setPossibleSupervisors($possibleSupervisors);
+
+
+//        $form-get('su')
+
 
         $form->populateValues($character);
         $form->setAttribute('action', '/castmanager/characters/edit/' . $id);
@@ -98,7 +86,7 @@ class CharacterController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->characterTable->save($id, $form->getData());
+                $this->castService->saveChar($id, $form->getData());
                 return $this->redirect()->toRoute('castmanager/characters');
             }
         }
@@ -119,7 +107,7 @@ class CharacterController extends AbstractActionController
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->familiesTable->remove($id);
+                $this->castService->deleteCharById($id);
             }
 
             // Redirect to list of Users
@@ -128,7 +116,7 @@ class CharacterController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'family' => $this->familiesTable->getById($id)
+            'char' => $this->castService->getCharById($id),
         );
     }
 
@@ -144,14 +132,14 @@ class CharacterController extends AbstractActionController
                     if (!isset($request->familyID) ) {
                         $result['data'] = false;
                     } else {
-                        $result['data'] = $this->characterTable->getAllPossibleSupervisorsFor($request->familyID);
+                        $result['data'] = $this->castService->getAllPossibleSupervisorsFor($request->familyID);
                     }
                     break;
                 case 'getPossibleGuardians':
                     if (!isset($request->familyID) ) {
                         $result['data'] = false;
                     } else {
-                        $result['data'] = $this->characterTable->getByFamilyId($request->familyID);
+                        $result['data'] = $this->castService->getCharByFamilyId( $request->familyID);
                     }
                     break;
             };
@@ -182,7 +170,8 @@ class CharacterController extends AbstractActionController
                             $data['id'] = 0;
 //                            $data['user_id'] =  $this->accessService->getUserID();
 
-                            $form = $this->createCharacterForm();
+                            $form = new CharacterForm($this->castService);
+                            $form->isBackend();
                             $form->setValidationGroup(
                                 'id'
                                 ,'user_id'
@@ -204,8 +193,8 @@ class CharacterController extends AbstractActionController
                             if ($form->isValid() ){
                                 unset($data['submit']);
                                 $data['user_id'] = $this->accessService->getUserID();
-                                $id = $this->characterTable->add($data);
-                                $newOwn = $this->characterTable->getById($id);
+                                $id = $this->castService->addChar($data);
+                                $newOwn = $this->castService->getCharById($id);
                                 $result['message'] = 'new char created';
                                 $result['code'] = 201;
                                 $result['data'] = $newOwn;
@@ -216,7 +205,8 @@ class CharacterController extends AbstractActionController
                                 $result['formErrors'] = $form->getMessages();
                             }
                         } else {
-                            $form = $this->createCharacterForm();
+                            $form = new CharacterForm($this->castService);
+                            $form->isBackend();
                             $form->setValidationGroup(
                                 'id'
                                 ,'user_id'
@@ -236,7 +226,7 @@ class CharacterController extends AbstractActionController
                             );
                             $form->setData($data);
                             if ($form->isValid() ){
-                                $charInDb = $this->characterTable->getById($request->id);
+                                $charInDb = $this->castService->getCharById( $request->id );
                                 if (!$charInDb) {
                                     $result['error'] = true;
                                     $result['message'] = "Character id dose't exists";
@@ -246,7 +236,7 @@ class CharacterController extends AbstractActionController
                                     if ( $this->accessService->getUserID() == $charInDb['user_id']) {
                                         $data['id'] = $request->id;
                                         $data['user_id'] = $this->accessService->getUserID();
-                                        if ($this->characterTable->save($request->id, $data) ) {
+                                        if ($this->castService->saveChar($request->id, $data) ) {
                                             $result['message'] = 'Save Character';
                                             $result['data'] = $data;
                                             $result['code'] = 200;
@@ -278,12 +268,5 @@ class CharacterController extends AbstractActionController
 
         //output
         return new JsonModel($result);
-    }
-    private function createCharacterForm() {
-        $families = $this->familiesTable->getAll();
-        $users = $this->userService->getAllUsers();
-        $jobs = $this->jobTable->getAll();
-        $form = new CharacterForm($users->toArray(), $families, $jobs);
-        return $form;
     }
 }

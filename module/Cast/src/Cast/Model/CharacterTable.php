@@ -19,23 +19,23 @@ class CharacterTable extends AbstractTableGateway
     }
 
     public function getAll () {
-        return $this->getAllCastData();
+        return $this->fetchAllCastData();
     }
 
     public function getById($id) {
-        $result = $this->getAllCastData(array('char.id' => (int) $id));
+        $result = $this->fetchAllCastData(array('char.id' => (int) $id));
         return (isset($result[0])) ? $result[0] : false;
     }
     public function getByUserId($id) {
-        $result = $this->getAllCastData(array('user_id' => (int) $id));
+        $result = $this->fetchAllCastData(array('user_id' => (int) $id));
         return $result;
     }
     public function getByTrossId($id) {
-        $result = $this->getAllCastData(array('tross_id' => (int) $id));
+        $result = $this->fetchAllCastData(array('tross_id' => (int) $id));
         return $result;
     }
     public function getByFamilyId($id) {
-        $result = $this->getAllCastData(array('family_id' => (int) $id));
+        $result = $this->fetchAllCastData(array('family_id' => (int) $id));
         return $result;
     }
 
@@ -57,13 +57,18 @@ class CharacterTable extends AbstractTableGateway
         }
     }
 
+    public function getAllCastData()
+    {
+        return $this->fetchAllCastData();
+    }
+
     /**
      * returns all characters and there jobs, families and so on
      * @param array $where
      * @return array results
      * @throws \Exception
      */
-    public function getAllCastData(Array $where = array()) {
+    private function fetchAllCastData(Array $where = array()) {
         try {
             $sql = new Sql($this->getAdapter());
 
@@ -80,6 +85,7 @@ class CharacterTable extends AbstractTableGateway
                     'birthday',
                     'guardian_id',
                     'supervisor_id',
+                    'tross_id',
                     'vita',
                     'active',
                 ))
@@ -106,6 +112,8 @@ class CharacterTable extends AbstractTableGateway
             throw new \Exception($e->getMessage());
         }
     }
+
+    
     public function add($data) {
         unset($data['id']);
         unset($data['submit']);

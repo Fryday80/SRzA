@@ -30,7 +30,7 @@ class FamilyForm extends Form
             'options' => array(
                 'label' => 'Wappen',
                 'value_options' => array(
-                    0 => 'ds'
+                    0 => 'set by $this->setBlazonsForSelect()'
                 )
             ),
             'required' => true,

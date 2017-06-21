@@ -36,7 +36,13 @@ class FamiliesTable extends AbstractTableGateway
     }
     
     public function save($id, $data) {
-        if (!$this->update(array('name' => $data['name']), array('id' => (int)$id)))
+        if (!isset($data['name'])) return false;
+        if (!isset($data['blazon_id'])) $data['blazon_id'] = 1;
+        $dataSet = array(
+            'name' => $data['name'],
+            'blazon_id' => $data['blazon_id']
+        );
+        if (!$this->update($dataSet, array('id' => (int)$id)))
             return false;
         return $id;
     }

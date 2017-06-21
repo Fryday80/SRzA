@@ -57,13 +57,18 @@ class BlazonHelper extends AbstractHelper
         return $return;
     }
 
-    public function getSingleBlazon($name, $size = 'small')
+    public function getSingleBlazonByName($name, $size = 'small')
     {
         $base = ($size == 'small')? $this->getBlazonData($name[0]) : $this->getBlazonData($name[0], 'big');
         $return = '<div class="blazon">';
         $return .= '<img class="blazon-sub-0" src="' . $base . '" >';
         $return .= '</div>';
         return $return;
+    }
+
+    public function getSingleBlazonById($id, $size = 'small')
+    {
+        return $this->getSingleBlazonByName(array($this->service->getById($id)), $size);
     }
     
     private function getBlazonData( $selector, $size = 'small' )

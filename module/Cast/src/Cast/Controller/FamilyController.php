@@ -4,25 +4,26 @@ namespace Cast\Controller;
 use Cast\Form\FamilyForm;
 use Cast\Model\FamiliesTable;
 use Cast\Service\BlazonService;
+use Cast\Service\CastService;
 use Cast\Utility\FamilyDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 class FamilyController extends AbstractActionController
 {
-    /** @var FamiliesTable $familiesTable */
-    private $familiesTable;
     /** @var  BlazonService */
     private $blazonService;
+    /** @var CastService  */
+    private $castService;
 
-    public function __construct(FamiliesTable $familiesTable, BlazonService $blazonService) {
-        $this->familiesTable = $familiesTable;
+    public function __construct(CastService $castService, BlazonService $blazonService) {
+        $this->castService = $castService;
         $this->blazonService = $blazonService;
     }
 
     public function indexAction() {
         $famTable = new FamilyDataTable( );
-        $famTable->setData($this->familiesTable->getAll());
+        $famTable->setData($this->castService->getAllFamilies());
         $famTable->setButtons('all');
         $famTable->insertLinkButton('/castmanager/families/add', 'add new familiy');
         $famTable->insertLinkButton('/castmanager', 'Zurück');
@@ -46,7 +47,7 @@ class FamilyController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $data = $form->getData();
-                $this->familiesTable->add($data);
+                $this->castService->addFamily($data);
                 return $this->redirect()->toRoute('castmanager/families');
             }
         }
@@ -60,7 +61,7 @@ class FamilyController extends AbstractActionController
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        if (!$family = $this->familiesTable->getById($id)) {
+        if (!$family = $this->castService->getFamilyById($id)) {
             return $this->redirect()->toRoute('castmanager/families');
         }
         $form = new FamilyForm($this->blazonService->getAll());
@@ -72,13 +73,18 @@ class FamilyController extends AbstractActionController
         if ($request->isPost()) {
             $form->setData($request->getPost());
             if ($form->isValid()) {
-                $this->familiesTable->save($id, $form->getData());
+                $this->castService->saveFamily($id, $form->getData());
                 return $this->redirect()->toRoute('castmanager/families');
             }
         }
         return array(
             'id' => $id,
-            'form' => $form
+            'form' => $form,
+            'filePath' => '/media/file/wappen/',
+            'data' => array(
+                'family' => $family,
+                'blazon' => $this->blazonService->getById( $family['blazon_id'] )
+            ),
         );
     }
     public function deleteAction() {
@@ -92,7 +98,7 @@ class FamilyController extends AbstractActionController
 
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->familiesTable->remove($id);
+                $this->castService->removeFamily($id);
             }
 
             // Redirect to list of Users
@@ -101,7 +107,7 @@ class FamilyController extends AbstractActionController
 
         return array(
             'id' => $id,
-            'family' => $this->familiesTable->getById($id)
+            'family' => $this->castService->getFamilyById($id)
         );
     }
 }

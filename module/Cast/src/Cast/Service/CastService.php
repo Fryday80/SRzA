@@ -1,8 +1,10 @@
 <?php
 namespace Cast\Service;
 
-use Auth\Service\UserService;
+use Auth\Model\UserTable;
 use Cast\Model\CharacterTable;
+use Cast\Model\FamiliesTable;
+use Cast\Model\JobTable;
 
 class CastService
 {
@@ -14,44 +16,64 @@ class CastService
 
     /** @var CharacterTable $jobTable */
     private $characterTable;
-    /** @var UserService $userService */
-    private $userService;
+    /** @var JobTable  */
+    private $jobTable;
+    /** @var FamiliesTable  */
+    private $familiesTable;
+    /** @var UserTable  */
+    private  $userTable;
 
-    public function __construct(CharacterTable $characterTable, UserService $userService) {
+    public function __construct
+    ( CharacterTable $characterTable, JobTable $jobTable, FamiliesTable $familiesTable, UserTable $userTable )
+    {
         $this->characterTable = $characterTable;
-        $this->userService = $userService;
+        $this->jobTable       = $jobTable;
+        $this->familiesTable  = $familiesTable;
+        $this->userTable    = $userTable;
     }
 
-    public function getAll () {
+    // =========================================================== char table
+    public function getAllChars () {
         $this->loadData();
         return $this->data;
     }
-    public function getById($id) {
-        $result = $this->characterTable->getById($id);
+
+    public function getCharById($id) {
+        $result = $this->characterTable->getById( $id );
         $this->prepareChar($result);
         return $result;
     }
-    public function getByUserId($id) {
-        $result = $this->characterTable->getByUserId($id);
+    public function getCharsByUserId($id) {
+        $result = $this->characterTable->getByUserId( $id );
         $this->processChars($result);
         return $result;
     }
-    public function getByTrossId($id) {
-        $result = $this->characterTable->getByTrossId($id);
+    public function getCharByTrossId($id) {
+        $result = $this->characterTable->getByTrossId( $id );
         $this->processChars($result);
         return $result;
     }
-    public function getByFamilyId($id) {
-        $result = $this->characterTable->getByFamilyId($id);
+    public function getCharByFamilyId($id) {
+        $result = $this->characterTable->getByFamilyId( $id );
         $this->processChars($result);
         return $result;
     }
 
-    public function getCharacterData($name, $username){
+    public function getCharacterDataById($id){
         if (!$this->loaded) $this->loadData();
 
         foreach ($this->data as $key => $char){
-            if ($char['charURL'] == $name && $char['userName'] == $username){
+            if ($char['id'] == $id){
+                return $char;
+            }
+        }
+        return null;
+    }
+    public function getCharacterDataByName($wholeNameLikeURL, $username){
+        if (!$this->loaded) $this->loadData();
+
+        foreach ($this->data as $key => $char){
+            if ($char['charURL'] == $wholeNameLikeURL && $char['userName'] == $username){
                 return $char;
             }
         }
@@ -87,6 +109,7 @@ class CastService
         }
         return $root;
     }
+    
     public function getAllCharsFromFamily($id) {
         $result = [];
         foreach ($this->data as $char) {
@@ -96,20 +119,8 @@ class CastService
         }
         return $result;
     }
-
-    public function deleteChar($name, $username)
-    {
-        $char = $this->getCharacterData($name, $username);
-        $this->prepareDelete($char);
-        //@todo
-//        delete
-//        $this->characterTable->delete(array('user_id' => $this->userService->getUserIDByName($username)));
-    }
-
-    public function deleteAllUserChars($userId)
-    {
-        //@todo
-        $this->characterTable->removeAllCharsFromUser($userId);
+    public function getAllPossibleSupervisorsFor($familyID){
+        return $this->characterTable->getAllPossibleSupervisorsFor($familyID);
     }
     
     private function buildStandingTree(&$parent) {
@@ -135,6 +146,7 @@ class CastService
             }
         }
     }
+    
     private function loadData() {
         if (!$this->loaded) {
             $this->data = $this->characterTable->getAll();
@@ -144,40 +156,167 @@ class CastService
         }
     }
 
+    /**
+     * prepares data for multiple chars
+     * for single char use ->prepareChar
+     */
     private function processChars(&$data)
     {
         foreach ($data as &$char) {
             $this->prepareChar($char);
         }
     }
-    private function prepareChar(&$data)
+    /**
+     * prepares data for ONE char
+     */
+    private function prepareChar(&$char)
     {
-        $this->injectUserNames($data);
-        $this->injectURL($data);
+        // inject usernames
+        $char['userName'] = $this->userTable->getUser($char['user_id'])->name;
+        
+        // injectURL(&$char)
+        $char['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
+        $profileRoot = '/profile/' . $char['userName'];
+        $castProfile = $profileRoot . '/' . $char['charURL'];
+        $char['profileURL'] = $profileRoot;
+        $char['charProfileURL'] = $castProfile;
     }
 
-    /**
-     * Adds the username of the Character to the user objects
-     * @throws \Exception
-     */
-    private function injectUserNames(&$char)
+    private function trimDataForCharTable(&$char)
     {
-        $char['userName'] = $this->userService->getUserNameByID($char['user_id']);
-    }
-    private function injectURL(&$char){
-            $char['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
-            $profileRoot = '/profile/' . $char['userName'];
-            $castProfile = $profileRoot . '/' . $char['charURL'];
-        
-            $char['profileURL'] = $profileRoot;
-            $char['charProfileURL'] = $castProfile;
+        $charTableFields = array(
+            //'id',
+            'user_id',
+            'name',
+            'surename',
+            'gender',
+            'birthday',
+            'job_id',
+            'family_id',
+            'guardian_id',
+            'supervisor_id',
+            'tross_id',
+            'vita',
+            'active',
+        );
+        foreach ($char as $key => $field){
+            if(!in_array($key, $charTableFields)) {
+                unset($char[$key]);
+            }
+        }
     }
 
     private function prepareDelete(&$char)
     {
-        // set employees employer to own employer
-        foreach ($char['employ'] as &$employe){
-            $employe['supervisor_id'] = $char['supervisor_id'];
+        $this->loadData();
+        $dependents = array(
+            'charIsSupervisorOf' => array(),
+            'charIsGuardianOf'   => array(),
+        );
+        foreach ($this->data as $character){
+            if ($character['supervisor_id'] == $char['id']) array_push($dependents['charIsSupervisorOf'], $character);
+            if ($character['guardian_id'] == $char['id'])   array_push($dependents['charIsGuardianOf'], $character);
         }
+        foreach($dependents['charIsSupervisorOf'] as $dependent){
+            $dependentData = $dependent;
+            $this->trimDataForCharTable($dependentData);
+            $dependentData['supervisor_id'] = $char['supervisor_id'];
+            $this->saveChar($dependent['id'], $dependentData);
+        }
+        foreach($dependents['charIsGuardianOf'] as $dependent){
+            $dependentData = $dependent;
+            $this->trimDataForCharTable($dependentData);
+            $dependentData['guardian_id'] = $char['guardian_id'];
+            $this->saveChar($dependent['id'], $dependentData);
+        }
+        $this->removeChar($char['id']);
+    }
+
+    public function deleteCharById($id)
+    {
+        $char = $this->getCharacterDataById($id);
+        $this->prepareDelete($char);
+    }
+
+    public function deleteAllUserChars($userId)
+    {
+        $usersChars = $this->getCharsByUserId($userId);
+        foreach ($usersChars as $char)
+            $this->deleteCharById($char['id']);
+    }
+    /////// std
+    public function addChar($data)
+    {
+        if ($data['user_id'] == "0") $data['user_id'] = 1;
+        return $this->characterTable->add($data);
+    }
+    public function saveChar($id, $data)
+    {
+        if ($data['user_id'] == "0") $data['user_id'] = 1;
+        return $this->characterTable->save($id, $data);
+    }
+    private function removeChar($id)
+    {
+        return $this->characterTable->remove($id);
+    }
+
+    // =========================================================== family table
+    public function getAllFamilies()
+    {
+        return $this->familiesTable->getAll();
+    }
+
+    public function getFamilyById ($id){
+        return $result = $this->familiesTable->getById($id);
+    }
+
+    /////// std
+    public function addFamily ($data)
+    {
+        return $this->familiesTable->add($data);
+    }
+    public function saveFamily ($id, $data)
+    {
+        return $this->familiesTable->save($id, $data);
+    }
+    public function removeFamily ($id)
+    {
+        return $this->familiesTable->remove($id);
+    }
+
+    // =========================================================== jobs table
+    public function getAllJobs()
+    {
+        return $this->jobTable->getAll();
+    }
+
+    public function getJobById($id)
+    {
+        return $this->jobTable->getById($id);
+    }
+
+    /////// std
+    public function addJob ($data)
+    {
+        return $this->jobTable->add($data);
+    }
+    public function saveJob ($id, $data)
+    {
+        return $this->jobTable->save($id, $data);
+    }
+    public function removeJob ($id)
+    {
+        return $this->jobTable->remove($id);
+    }
+
+    // =========================================================== user table
+    public function getAllUsers()
+    {
+        return $this->userTable->getUsers();
+    }
+
+    public function getUserNameById($id)
+    {
+        return $this->userTable->getUser($id);
     }
 }
