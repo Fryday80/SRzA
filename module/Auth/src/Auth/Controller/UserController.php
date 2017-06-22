@@ -183,6 +183,7 @@ class UserController extends AbstractActionController
 
         return array(
             'id' => $id,
+            'user' => $user,
             'form' => $form
         );
     }

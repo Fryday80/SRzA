@@ -29,7 +29,7 @@ class UserService
     }
 
     public function updateUserImage($userID, $tempImageInfo) {
-        $dataPath = realpath('./data');
+        $dataPath = realpath('./Data');
         @mkdir($dataPath . '/_users', 0755);
         @mkdir($dataPath . '/_users/' . $userID, 0755);
         @mkdir($dataPath . '/_users/' . $userID . '/pub', 0755);
