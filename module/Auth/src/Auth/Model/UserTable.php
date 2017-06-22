@@ -36,7 +36,13 @@ class UserTable extends AbstractTableGateway
     public function getUsers() {
         return $this->getUsersWhere();
     }
-    public function getUsersBy($columnName, $value) {
+
+    public function getUserByName($username)
+    {
+        return $this->getUsersBy('name', $username);
+    }
+    
+    private function getUsersBy($columnName, $value) {
         $rowset = $this->getUsersWhere(array($columnName => $value));
         $row = $rowset->current();
         if (!$row) {

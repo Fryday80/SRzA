@@ -48,7 +48,9 @@ class User
 
     public function getArrayCopy()
     {
-        return get_object_vars($this);
+        $set = get_object_vars($this);
+        unset($set['userURL']);
+        return $set;
     }
 
     public function getArrayCopyPlainDate()

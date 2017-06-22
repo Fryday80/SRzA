@@ -81,13 +81,14 @@ class ProfileController extends AbstractActionController
         return new JsonModel($result);
     }
 
-    //show profile (public)
+    //show profile (public) route: /profile/:username
     public function publicProfileAction()
     {
         $viewModel = new ViewModel();
         $username = $this->params()->fromRoute('username');
+        $username = str_replace("-", " ", $username);
         /** @var User $user */
-        $user = $this->userService->getUserDataBy('name', $username);
+        $user = $this->userService->getUserDataByName($username);
         if (!$user) {
 //            throw Exception("todo");
             //@todo redirect to user list
@@ -110,13 +111,13 @@ class ProfileController extends AbstractActionController
         return $viewModel;
 
     }
-    //edit own profile
+    //edit own profile route: /profile
     public function privateProfileAction() {
 
         $username = $this->accessService->getUserName();
         if(!$username) return $this->redirect()->toRoute('home');
         /** @var User $user */
-        $user = $this->userService->getUserDataBy('name', $username);
+        $user = $this->userService->getUserDataByName($username);
 
         $characters = $this->castService->getCharsByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
@@ -183,14 +184,15 @@ class ProfileController extends AbstractActionController
     private function createCharacterForm() {
         return new CharacterForm($this->castService);
     }
-    //show char profile
+    //show char profile route: /profile/:username/:charname
     public function charprofileAction(){
         $hasFamily = false;
         $username = $this->params()->fromRoute('username');
+        $username = str_replace("-", " ", $username);
         $charnameURL = $this->params()->fromRoute('charname');
 
         $char = $this->castService->getCharacterDataByName($charnameURL, $username);
-        $char['userData'] = $this->userService->getUserDataBy('name', $username);
+        $char['userData'] = $this->userService->getUserDataByName($username);
         $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
 
         foreach ($charFamily as $key => $member){

@@ -5,6 +5,7 @@ namespace Auth\Service;
 
 use Application\Service\CacheService;
 use Auth\Model\User;
+use Auth\Model\UserSet;
 use Auth\Model\UserTable;
 use Cast\Service\CastService;
 
@@ -28,30 +29,6 @@ class UserService
         $this->load();
     }
 
-    public function updateUserImage($userID, $tempImageInfo) {
-        $dataPath = realpath('./Data');
-        @mkdir($dataPath . '/_users', 0755);
-        @mkdir($dataPath . '/_users/' . $userID, 0755);
-        @mkdir($dataPath . '/_users/' . $userID . '/pub', 0755);
-
-        $items = scandir($dataPath . '/_users/' . $userID . '/pub');
-        foreach ($items as $item)
-            if (strlen($item) < 3)
-                continue;
-            else
-                @unlink($dataPath . '/_users/' . $userID . '/pub/' . $item);
-
-        $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
-        $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
-
-        $newPath = realpath('./Data/_users/' . $userID . '/pub');
-        $newPath = $newPath . $imageName;
-        //@todo serach old image and unlink (files can have different extensions)
-        @unlink($newPath);
-        rename($tempImageInfo['tmp_name'], $newPath);
-        $this->createUserThumbnail($newPath);
-        return $url;
-    }
     // cached user information
     public function getUserNameByID($id)
     {
@@ -59,19 +36,28 @@ class UserService
     }
     
     // user data
-    public function getUserDataBy($column, $value)
+    public function getUserDataByName($username)
     {
-        return $this->userTable->getUsersBy($column, $value);
+        $return = $this->userTable->getUserByName($username);
+        $return = $this->appendUserURL($return);
+        return $return;
     }
 
     public function getAllUsers()
     {
-        return $this->userTable->getUsers();
+        $return = array();
+        $res = $this->userTable->getUsers();
+        foreach ($res as $user)
+            $return[] = $user;
+        $return = $this->appendUsersURLs($return);
+        return $return;
     }
 
     public function getUserById($id)
     {
-        return $this->userTable->getUser($id);
+        $return = $this->userTable->getUser($id);
+        $return = $this->appendUserURL($return);
+        return $return;
     }
     
     public function saveUser(User $user)
@@ -108,6 +94,31 @@ class UserService
     {
         $this->cacheService->clearCache('user/info');
         $this->loaded = false;
+    }
+
+    public function updateUserImage($userID, $tempImageInfo) {
+        $dataPath = realpath('./Data');
+        @mkdir($dataPath . '/_users', 0755);
+        @mkdir($dataPath . '/_users/' . $userID, 0755);
+        @mkdir($dataPath . '/_users/' . $userID . '/pub', 0755);
+
+        $items = scandir($dataPath . '/_users/' . $userID . '/pub');
+        foreach ($items as $item)
+            if (strlen($item) < 3)
+                continue;
+            else
+                @unlink($dataPath . '/_users/' . $userID . '/pub/' . $item);
+
+        $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
+        $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
+
+        $newPath = realpath('./Data/_users/' . $userID . '/pub');
+        $newPath = $newPath . $imageName;
+        //@todo serach old image and unlink (files can have different extensions)
+        @unlink($newPath);
+        rename($tempImageInfo['tmp_name'], $newPath);
+        $this->createUserThumbnail($newPath);
+        return $url;
     }
 
     /**
@@ -150,5 +161,19 @@ class UserService
             imagedestroy($thumb);
             imagedestroy($im);
         }
+    }
+
+    private function appendUsersURLs($data)
+    {
+        $return = new UserSet();
+        foreach ($data as $key => $user)
+            $return->addUser($this->appendUserURL($user));
+        return $return;
+    }
+
+    private function appendUserURL(User $user)
+    {
+        $user->userURL = str_replace(" ", "-", $user->name);
+        return $user;
     }
 }
