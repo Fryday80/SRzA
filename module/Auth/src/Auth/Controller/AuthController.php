@@ -237,6 +237,7 @@ class AuthController extends AbstractActionController
         if (!$savedHash) {
             //no such a hash
             return array(
+                'pwForm' => null,
                 'message' => 'Hash nicht gefunden. Eventuell ist der hash schon zu alt.',
                 'error' => true
             );

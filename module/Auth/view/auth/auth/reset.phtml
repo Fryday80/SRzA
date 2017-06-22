@@ -3,5 +3,7 @@
 <?php if ($error){
     echo $message;
 }
-$pwForm->prepare();
-echo $this->form($pwForm);
+if ($pwForm !== null) {
+    $pwForm->prepare();
+    echo $this->form($pwForm);
+}
