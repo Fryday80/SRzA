@@ -44,7 +44,7 @@ class UserService
         $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
         $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
 
-        $newPath = realpath('./data/_users/' . $userID . '/pub');
+        $newPath = realpath('./Data/_users/' . $userID . '/pub');
         $newPath = $newPath . $imageName;
         //@todo serach old image and unlink (files can have different extensions)
         @unlink($newPath);
