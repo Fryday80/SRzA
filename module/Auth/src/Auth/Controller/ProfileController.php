@@ -2,6 +2,7 @@
 namespace Auth\Controller;
 
 use Application\Service\StatisticService;
+use Application\Utility\URLModifier;
 use Cast\Form\CharacterForm;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
@@ -84,9 +85,10 @@ class ProfileController extends AbstractActionController
     //show profile (public) route: /profile/:username
     public function publicProfileAction()
     {
+        $url = new URLModifier();
         $viewModel = new ViewModel();
         $username = $this->params()->fromRoute('username');
-        $username = str_replace("-", " ", $username);
+        $username = $url->fromURL($username);
         /** @var User $user */
         $user = $this->userService->getUserDataByName($username);
         if (!$user) {
@@ -111,6 +113,7 @@ class ProfileController extends AbstractActionController
         return $viewModel;
 
     }
+
     //edit own profile route: /profile
     public function privateProfileAction() {
 
@@ -174,21 +177,19 @@ class ProfileController extends AbstractActionController
             }
         }
         //create charForm
-        $charForm = $this->createCharacterForm();
+        $charForm = new CharacterForm($this->castService);
 //        $charForm->setAttribute('action', '#');
         $viewModel->setVariable('charForm', $charForm);
         $viewModel->setTemplate('auth/profile/private.phtml');
         return $viewModel;
     }
 
-    private function createCharacterForm() {
-        return new CharacterForm($this->castService);
-    }
     //show char profile route: /profile/:username/:charname
     public function charprofileAction(){
+        $url = new URLModifier();
         $hasFamily = false;
         $username = $this->params()->fromRoute('username');
-        $username = str_replace("-", " ", $username);
+        $username = $url->fromURL($username);
         $charnameURL = $this->params()->fromRoute('charname');
 
         $char = $this->castService->getCharacterDataByName($charnameURL, $username);
@@ -196,7 +197,7 @@ class ProfileController extends AbstractActionController
         $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
 
         foreach ($charFamily as $key => $member){
-            $wholeName = str_replace(" ", "-", $member['name']) . "-" . str_replace(" ", "-", $member['surename']);
+            $wholeName = $url->toURL($member['name']) . "-" . $url->toURL($member['surename']);
             if ($wholeName == $charnameURL){
                 unset($charFamily[$key]);
                 break;

@@ -1,6 +1,7 @@
 <?php
 namespace Cast\Service;
 
+use Application\Utility\URLModifier;
 use Auth\Model\UserTable;
 use Cast\Model\CharacterTable;
 use Cast\Model\FamiliesTable;
@@ -171,10 +172,11 @@ class CastService
      */
     private function prepareChar(&$char)
     {
+        $url = new URLModifier();
         // inject usernames
         $char['userName'] = $this->userTable->getUser($char['user_id'])->name;
         // injectURL(&$char)
-        $char['charURL'] = str_replace(" ", "-", $char['name']) . "-" . str_replace(" ", "-", $char['surename']);
+        $char['charURL'] = $url->toURL($char['name']) . "-" . $url->toURL($char['surename']);
         $profileRoot = '/profile/' . str_replace(" ", "-", $char['userName']);
         $castProfile = $profileRoot . '/' . $char['charURL'];
         $char['profileURL'] = $profileRoot;

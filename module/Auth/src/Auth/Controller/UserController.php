@@ -38,7 +38,6 @@ class UserController extends AbstractActionController
     public function indexAction()
     {
         $data = $this->userService->getAllUsers()->toArray();
-        bdump($data);
 
         $userDataTable = new DataTable( array( 'data' => $data ));
         $userDataTable->insertLinkButton('/user/add', "Neuer Benutzer");

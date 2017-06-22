@@ -4,6 +4,7 @@ namespace Auth\Service;
 
 
 use Application\Service\CacheService;
+use Application\Utility\URLModifier;
 use Auth\Model\User;
 use Auth\Model\UserSet;
 use Auth\Model\UserTable;
@@ -173,7 +174,8 @@ class UserService
 
     private function appendUserURL(User $user)
     {
-        $user->userURL = str_replace(" ", "-", $user->name);
+        $url = new URLModifier();
+        $user->userURL = $url->toURL($user->name);
         return $user;
     }
 }

@@ -39,7 +39,7 @@ class UserForm extends Form
             'name' => 'name',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Benutzername keine Freizeichen!!!',
+                'label' => 'Benutzername',
             ),
 //            'attributes'    => array(
 //                'disabled' => 'disabled'
