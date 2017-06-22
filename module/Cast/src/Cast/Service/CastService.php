@@ -177,7 +177,7 @@ class CastService
         $char['userName'] = $this->userTable->getUser($char['user_id'])->name;
         // injectURL(&$char)
         $char['charURL'] = $url->toURL($char['name']) . "-" . $url->toURL($char['surename']);
-        $profileRoot = '/profile/' . str_replace(" ", "-", $char['userName']);
+        $profileRoot = '/profile/' . $url->toURL($char['userName']);
         $castProfile = $profileRoot . '/' . $char['charURL'];
         $char['profileURL'] = $profileRoot;
         $char['charProfileURL'] = $castProfile;
