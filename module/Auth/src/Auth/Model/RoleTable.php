@@ -32,10 +32,39 @@ class RoleTable extends AbstractTableGateway
         $this->resourceTable = $resourceTable;
         $this->navRolesResourceID = $this->resourceTable->getByName($this->navRolesResource)['id'];
     }
-
-    public function getAllRoles()
+    
+    public function getUserRoles($where = array(), $columns = array())
     {
-        return $this->getUserRoles();
+        try {
+            $sql = new Sql($this->getAdapter());
+            $select = $sql->select()->from(array(
+                'role' => $this->table
+            ));
+            $select->columns(array(
+                'rid',
+                'role_name',
+                'role_parent',
+            ));
+            $select->join(array(
+                    'parent' => $this->table
+                ), 
+                    'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
+                );
+            
+            if (count($where) > 0) {
+                $select->where($where);
+            }
+            
+            if (count($columns) > 0) {
+                $select->columns($columns);
+            }
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $roles = $this->resultSetPrototype->initialize($statement->execute())
+                ->toArray();
+            return $roles;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getPrevious()->getMessage());
+        }
     }
     public function getRoleByID($id) {
         $res = $this->getWhere("role.rid = '$id'")->toArray();
@@ -96,12 +125,10 @@ class RoleTable extends AbstractTableGateway
         ]);
     }
 
-    //@todo deprecated -> moved to service
     public function fetchAll(){
         return $this->getWhere()->toArray();
     }
 
-    //@todo deprecated -> moved to service
     public function fetchAllSorted(){
         if (!$this->sorted) {
             $megalomaniac = 'Administrator';
@@ -127,40 +154,6 @@ class RoleTable extends AbstractTableGateway
         return $this->sorted;
     }
 
-    //@todo turn private duplicate entry ??
-    public function getUserRoles($where = array(), $columns = array())
-    {
-        try {
-            $sql = new Sql($this->getAdapter());
-            $select = $sql->select()->from(array(
-                'role' => $this->table
-            ));
-            $select->columns(array(
-                'rid',
-                'role_name',
-                'role_parent',
-            ));
-            $select->join(array(
-                'parent' => $this->table
-            ),
-                'parent.rid = role.role_parent', array('role_parent_name' => 'role_name'), 'left'
-            );
-
-            if (count($where) > 0) {
-                $select->where($where);
-            }
-
-            if (count($columns) > 0) {
-                $select->columns($columns);
-            }
-            $statement = $sql->prepareStatementForSqlObject($select);
-            $roles = $this->resultSetPrototype->initialize($statement->execute())
-                ->toArray();
-            return $roles;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getPrevious()->getMessage());
-        }
-    }
     private function getWhere($where = array(), $columns = array())
     {
         try {

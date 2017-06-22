@@ -6,6 +6,7 @@ namespace Auth\Service;
 use Application\Service\CacheService;
 use Auth\Model\User;
 use Auth\Model\UserTable;
+use Cast\Service\CastService;
 
 class UserService
 {
@@ -14,13 +15,16 @@ class UserService
     private $userTable;
     /** @var CacheService  */
     private $cacheService;
+    /** @var CastService  */
+    private $castService;
     /** @var  array ['id'] */
     private $idNameHash;
 
-    function __construct(UserTable $userTable, CacheService $cacheService)
+    function __construct(UserTable $userTable, CacheService $cacheService, CastService $castService)
     {
         $this->userTable = $userTable;
         $this->cacheService = $cacheService;
+        $this->castService = $castService;
         $this->load();
     }
 
@@ -64,6 +68,11 @@ class UserService
     {
         return $this->userTable->getUsers();
     }
+
+    public function getUserById($id)
+    {
+        return $this->userTable->getUser($id);
+    }
     
     public function saveUser(User $user)
     {
@@ -72,6 +81,11 @@ class UserService
         $this->load();
     }
 
+    public function deleteUserById($id)
+    {
+        $this->castService->deleteAllUserChars($id);
+        $this->userTable->deleteUser($id);
+    }
 
     private function load()
     {

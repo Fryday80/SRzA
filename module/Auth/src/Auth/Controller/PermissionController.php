@@ -50,8 +50,6 @@ class PermissionController extends AbstractActionController
             else
                 $notGiven[] = $perm;
         }
-        bdump($allPerms);
-//        $addForm = new PermissionAddForm($allPerms);
         $addForm = new PermissionAddForm($notGiven);
         $addForm->get('role_id')->setValue($roleID);
         $addForm->get('submit')->setValue('Add');

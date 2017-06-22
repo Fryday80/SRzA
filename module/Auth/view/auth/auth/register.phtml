@@ -1,12 +1,11 @@
 <own_text_big>Registrieren</own_text_big>
 <div class="spacer_line"></div><br>
+<span>Mit <?php echo ($decorators[0] == '')? $decorators[1] : $decorators[0] . 'Bezeichnung' . $decorators[1] ?> markierte Felder sind Pflicht</span>
 <?php
 $form = $this->form;
 $form->prepare();
- 
-echo $this->form()->openTag($form);
-echo $this->formCollection($form);
-echo $this->form()->closeTag();
+
+echo $this->form($form);
  
 if ($this->messages){
     echo '<ul>';

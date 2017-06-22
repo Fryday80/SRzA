@@ -1,9 +1,10 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Service\MessageService;
+use Application\Service\TemplateTypes;
 use Application\Utility\DataTable;
 use Auth\Model\RoleTable;
-use Auth\Model\UserTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Auth\Utility\UserPassword;
@@ -11,33 +12,32 @@ use Auth\Form\UserForm;
 use Auth\Model\User;
 use Exception;
 use Media\Service\MediaService;
-use Zend\Form\View\Helper\FormDate;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class UserController extends AbstractActionController
 {
     /** @var  AccessService */
     protected $accessService;
-    /** @var UserTable */
-    protected $userTable;
     /** @var  RoleTable */
     protected $roleTable;
     /** @var MediaService */
     private $mediaService;
     /** @var  UserService */
     private $userService;
+    /** @var  MessageService */
+    private $messageService;
 
-    public function __construct(UserTable $userTable, AccessService $accessService, RoleTable $roleTable, MediaService $mediaService, UserService $userService)
+    public function __construct(AccessService $accessService, RoleTable $roleTable, MediaService $mediaService, UserService $userService, MessageService $messageService)
     {
         $this->accessService = $accessService;
-        $this->userTable = $userTable;
         $this->roleTable = $roleTable;
         $this->mediaService = $mediaService;
         $this->userService = $userService;
+        $this->messageService = $messageService;
     }
     public function indexAction()
     {
-        $data = $this->userTable->getUsers()->toArray();
+        $data = $this->userService->getAllUsers()->toArray();
 
         $userDataTable = new DataTable( array( 'data' => $data ));
         $userDataTable->insertLinkButton('/user/add', "Neuer Benutzer");
@@ -118,7 +118,7 @@ class UserController extends AbstractActionController
 //                    rename($userPic, $newPath);
 //                    $user->user_image = $url;
                 }
-                $this->userTable->saveUser($user);
+                $this->userService->saveUser($user);
                 return $this->redirect()->toRoute('user');
             }
         }
@@ -135,7 +135,7 @@ class UserController extends AbstractActionController
         }
         
         try {
-            $user = $this->userTable->getUser($id);
+            $user = $this->userService->getUserById($id);
         } catch (\Exception $ex) {
             return $this->redirect()->toRoute('user');
         }
@@ -147,6 +147,7 @@ class UserController extends AbstractActionController
         $form = new UserForm($allRoles, $userRole);
         $form->setData($user->getArrayCopy());
         $form->get('submit')->setAttribute('value', 'Edit');
+        $status = $form->get('status')->getValue();
         
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -155,6 +156,10 @@ class UserController extends AbstractActionController
                 $request->getPost()->toArray(),
                 $request->getFiles()->toArray()
             );
+            if ($post['status'] != $status && $post['status'] != null) {
+                $type = ($post['status'] == "1") ? TemplateTypes::ACTIVATION : TemplateTypes::DEACTIVATION;
+                $this->messageService->SendMailFromTemplate($post['email'], $type, $user->getArrayCopy());
+            }
             $form->setData($post);
             if ($form->isValid()) {
                 $formData = $form->getData();
@@ -170,7 +175,7 @@ class UserController extends AbstractActionController
                 } else {
                     $user->user_image = $this->userService->updateUserImage($user->id, $formData['user_image']);
                 }
-                $this->userTable->saveUser($user);
+                $this->userService->saveUser($user);
                 // Redirect to list of Users
                 return $this->redirect()->toRoute('user');
             }
@@ -188,7 +193,7 @@ class UserController extends AbstractActionController
         if (! $id) {
             return $this->redirect()->toRoute('user');
         }
-        $user = $this->userTable->getUser($id);
+        $user = $this->userService->getUserById($id);
         if (!$user) {
             //user dosen't exists
             throw new Exception("User with id '$id' does not exists");
@@ -199,7 +204,7 @@ class UserController extends AbstractActionController
             
             if ($del == 'Yes') {
                 $id = (int) $request->getPost('id');
-                $this->userTable->deleteUser($id);
+                $this->userService->deleteUserById($id);
                 //@todo der löscht nicht arrrg
                 $this->deleteRecursive('./Data/_users/'.$user->id);
             }

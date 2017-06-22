@@ -23,11 +23,11 @@ class UserFilter extends InputFilter
             'required' => true,
             'filters' => array(
                 array(
-                    'name' => 'StripTags'
+                    'name' => 'StringTrim'
                 ),
                 array(
-                    'name' => 'StringTrim'
-                )
+                    'name' => 'StripTags'
+                ),
             ),
             'validators' => array(
                 array(
@@ -41,10 +41,10 @@ class UserFilter extends InputFilter
             'required' => true,
             'filters' => array(
                 array(
-                    'name' => 'StripTags'
+                    'name' => 'StringTrim',
                 ),
                 array(
-                    'name' => 'StringTrim'
+                    'name' => 'StripTags'
                 )
             ),
             'validators' => array(

@@ -50,11 +50,6 @@ return array(
             'dataTable' => 'Application\Factory\Helper\DataTableHelperFactory',
         )
     ),
-    'controller_plugins' => array(
-        'invokables' => array(
-            'MessageRedirect' => 'Application\Controller\Plugin\MessageRedirect',
-        )
-    ),
     'view_manager' => array(
         'display_not_found_reason' => true,
         'display_exceptions'       => true,
@@ -195,6 +190,19 @@ return array(
                     ),
                 ),
             ),
+            'message' => array(
+                'type'    => 'segment',
+                'options' => array(
+                    'route'    => '/message',
+                    'constraints' => array(),
+                    'defaults' => array(
+//                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller'    => 'Application\Controller\System',
+                        'action'        => 'message',
+                    ),
+                ),
+                'may_terminate' => true,
+            )
         ),
     ),
 );

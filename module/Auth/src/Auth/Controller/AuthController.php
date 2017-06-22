@@ -158,6 +158,7 @@ class AuthController extends AbstractActionController
     {
         $form = new UserForm();
         $form->remove('status');
+        $form->setRegistrationMode();
         $form->get('submit')->setValue('Registrieren');
 
         $request = $this->getRequest();
@@ -172,11 +173,16 @@ class AuthController extends AbstractActionController
                 $user->status = false;
                 $this->userTable->saveUser($user);
                 $this->msgService->SendMailFromTemplate($user->email, TemplateTypes::SUCCESSFUL_REGISTERED, $user->getArrayCopy());
-                return $this->redirect()->toRoute('user');
+                // message
+                $msgTitle = 'Registrierung';
+                $msgText = 'Dir wurde eine Nachricht geschickt!';
+                $this->flashmessenger()->addMessage("$msgTitle:::$msgText", 'messagePage');
+                return $this->redirect()->toRoute('message');
             }
         }
         return array(
-            'form' => $form
+            'form' => $form,
+            'decorators' => $form->getDecorators(),
         );
     }
     //password reset action
@@ -204,11 +210,13 @@ class AuthController extends AbstractActionController
                     if ($this->msgService->SendMailFromTemplate($user->email, TemplateTypes::RESET_PASSWORD, $templateData)) {
                         //@todo redirect to email provider
                         $isSend = true;
-//                        return $this->redirect()->toRoute('home');
-//$this->flashMessenger()->getMessagesFromNamespace("PasswordReset"),
-
+                        // message
+                        $msgTitle = 'Passwort Zurückgesetzt';
+                        $msgText = 'Dir wurde eine Nachricht geschickt!';
+                        $this->flashmessenger()->addMessage("$msgTitle:::$msgText", 'messagePage');
+                        return $this->redirect()->toRoute('message');
                     } else {
-                        throw new Exception('Die nachricht konnte nicht gesendet werden.');
+                        throw new Exception('Die Nachricht konnte nicht gesendet werden.');
                     }
                 }
             }

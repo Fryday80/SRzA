@@ -58,9 +58,9 @@ class ProfileController extends AbstractActionController
                 case 'getChars':
                     try {
                         if (!isset($request->userID)) {
-                            $result['data'] = $this->castService->getByUserId($userID);
+                            $result['data'] = $this->castService->getCharsByUserId($userID);
                         } else {
-                            $result['data'] = $this->castService->getByUserId($request->userID);
+                            $result['data'] = $this->castService->getCharsByUserId($request->userID);
                         }
                     } catch (Exception $e) {
                         $result['error'] = true;
@@ -94,7 +94,7 @@ class ProfileController extends AbstractActionController
             $this->redirect()->toRoute('home');
         }
 
-        $characters = $this->castService->getByUserId($user->id);
+        $characters = $this->castService->getCharsByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
         $askingUser = $this->accessService->getUserName();
         $user->setActiveUser($askingUser);
@@ -103,6 +103,7 @@ class ProfileController extends AbstractActionController
         $viewModel->setVariable('isActive', $isActive);
         $viewModel->setVariable('user', $user);
         $viewModel->setVariable('characters', $characters);
+        $viewModel->setVariable('askingRole', $this->accessService->getRole());
 
         $viewModel->setTemplate('auth/profile/public.phtml');
 
@@ -117,7 +118,7 @@ class ProfileController extends AbstractActionController
         /** @var User $user */
         $user = $this->userService->getUserDataBy('name', $username);
 
-        $characters = $this->castService->getByUserId($user->id);
+        $characters = $this->castService->getCharsByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
         
         $viewModel = new ViewModel();
@@ -180,10 +181,7 @@ class ProfileController extends AbstractActionController
     }
 
     private function createCharacterForm() {
-        $families = $this->familyTable->getAll();
-        $users = $this->userService->getAllUsers()->toArray();
-        $jobs = $this->jobTable->getAll();
-        return new CharacterForm($users, $families, $jobs);
+        return new CharacterForm($this->castService);
     }
     //show char profile
     public function charprofileAction(){
@@ -191,7 +189,7 @@ class ProfileController extends AbstractActionController
         $username = $this->params()->fromRoute('username');
         $charnameURL = $this->params()->fromRoute('charname');
 
-        $char = $this->castService->getCharacterData($charnameURL, $username);
+        $char = $this->castService->getCharacterDataByName($charnameURL, $username);
         $char['userData'] = $this->userService->getUserDataBy('name', $username);
         $charFamily = $this->castService->getAllCharsFromFamily($char['family_id']);
 
@@ -214,6 +212,7 @@ class ProfileController extends AbstractActionController
             'charnameURL'   => $charnameURL,
         ));
     }
+    
     //@todo familyprofileAction
 //    public function familyprofileAction(){
 //        $username = $this->params()->fromRoute('username');

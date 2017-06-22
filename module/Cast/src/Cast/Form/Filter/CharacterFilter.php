@@ -54,7 +54,7 @@ class CharacterFilter extends InputFilter
         ));
         $this->add(array(
             'name' => 'surename',
-            'required' => true,
+            'required' => false,
             'filters' => array(
                 array(
                     'name' => 'StripTags'

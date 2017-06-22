@@ -6,11 +6,3 @@ $this->headTitle($title);
 
 <?php
 $this->dataTable()->render($blazons);
-?>
-<div class="exampleBlazon">
- <?php
-/** @var \Cast\View\BlazonHelper $bh */
-$bh = $this->blazon();
-echo $bh->blazon(array(1, 'soldat', 'zuLeym'));
-?>
-</div>

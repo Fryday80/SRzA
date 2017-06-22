@@ -118,7 +118,7 @@ class StatisticService
 
     public function logAction(Action $action)
     {
-        $this->stats-$this->logAction($action);
+        $this->stats->logAction($action);
     }
 
 //======================================================================================================= PUBLIC GET

@@ -10,6 +10,7 @@ class UserServiceFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $table     = $sm->get('Auth\Model\UserTable');
         $cacheService  = $sm->get('CacheService');
-        return new UserService($table, $cacheService);
+        $castService   = $sm->get('CastService');
+        return new UserService($table, $cacheService, $castService);
     }
 }

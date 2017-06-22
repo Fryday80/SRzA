@@ -225,4 +225,17 @@ class SystemController extends AbstractActionController
         $viewModel->setTerminal(true);
         return $viewModel;
     }
+
+    public function messageAction()
+    {    
+        $msg = $this->flashmessenger()->getCurrentMessagesFromNamespace('messagePage');
+        
+        $msg[0] = (isset ($msg[0]) ) ? $msg[0] : 'Sorry:::No Message Found';
+        $msg = explode(':::', $msg[0]);
+        $msg[1] = (isset ($msg[1]) ) ? $msg[1] : $msg[0];
+        return array(
+            'title' => $msg[0],
+            'message' => $msg[1]
+        );
+    }
 }

@@ -451,6 +451,7 @@ class MediaService {
                 $response
                     ->getHeaders()
                     ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+                    ->addHeaderLine('Expires', date('D, d M Y H:i:s \G\M\T', time() + (60 * 60)))
                     ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($fullPath))
                     ->addHeaderLine('Content-Length', strlen($fileContent));
             }

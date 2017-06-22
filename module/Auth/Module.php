@@ -41,6 +41,7 @@ class Module
         'Auth\Controller\Auth-reset',
         'Auth\Controller\Auth-resetRequest',
         'Application\Controller\System-maintenance',
+        'Application\Controller\System-message',
     );
 
     public function onBootstrap(MvcEvent $e)

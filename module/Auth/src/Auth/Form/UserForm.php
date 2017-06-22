@@ -1,7 +1,5 @@
 <?php
 namespace Auth\Form;
-
-use Zend\Form\Element\Date;
 use Zend\Form\Form;
 use Auth\Form\Filter\UserFilter;
 
@@ -11,6 +9,8 @@ class UserForm extends Form
     private $roles;
     private $role;
     private $filterFlag = null;
+    private $decoratorPre = '';
+    private $decoratorPost = ' *';
     public function __construct($roles = null, $role = null)
     {
         parent::__construct('User');
@@ -39,7 +39,7 @@ class UserForm extends Form
             'name' => 'name',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Benutzername',
+                'label' => 'Benutzername keine Freizeichen!!!',
             ),
 //            'attributes'    => array(
 //                'disabled' => 'disabled'
@@ -189,9 +189,73 @@ class UserForm extends Form
             }
         }
     }
+
     public function setFilterType($type){
         $this->filterFlag = strtolower($type);
     }
+
+    public function setData($data)
+    {
+        if(isset($data['birthday']))
+            $data['birthday'] = date($data['birthday']);
+        parent::setData($data);
+    }
+
+    public function setRegistrationMode()
+    {
+        $fields[] = array(
+            'name' => 'email',
+            'type' => 'Text',
+            'options' => array(
+                'label' => $this->decoratorPre . 'eMail' . $this->decoratorPost,
+            )
+        );
+
+        $fields[] = array(
+            'name' => 'name',
+            'type' => 'Text',
+            'options' => array(
+                'label' => $this->decoratorPre . 'Benutzername' . $this->decoratorPost,
+            ),
+//            'attributes'    => array(
+//                'disabled' => 'disabled'
+//            ),
+        );
+
+        $fields[] = array(
+            'name' => 'password',
+            'type' => 'Password',
+            'options' => array(
+                'label' => $this->decoratorPre . 'Password' . $this->decoratorPost,
+            )
+        );
+
+        $fields[] = array(
+            'name'       => 'passwordConfirm',
+            'type'       => 'Password',
+            'options' => array(
+                'label' => $this->decoratorPre . 'Password confirm' . $this->decoratorPost,
+            )
+        );
+        foreach ($fields as $field){
+            $this->add(
+                $field,
+                $this->getPriority($field['name'])
+            );
+        }
+    }
+
+    public function getDecorators()
+    {
+        return array($this->decoratorPre,$this->decoratorPost);
+    }
+
+    public function setDecorators($post, $pre = null)
+    {
+        $this->decoratorPre = ($pre != null) ? $pre : $this->decoratorPre;
+        $this->decoratorPost = $post;
+    }
+
     private function getRolesForSelect() {
         if (!$this->roles) {
             $this->roles = [];
@@ -241,12 +305,5 @@ class UserForm extends Form
             $prio = $order[$name];
         }
         return array('priority' => $prio);
-    }
-
-    public function setData($data)
-    {
-        if(isset($data['birthday']))
-            $data['birthday'] = date($data['birthday']);
-        parent::setData($data);
     }
 }

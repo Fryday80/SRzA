@@ -95,6 +95,8 @@ class MessageService
 //    public function chatGetChannel($channel, $since) {}
 }
 class TemplateTypes {
-    const SUCCESSFUL_REGISTERED = 'SUCCESSFUL_REGISTERED';
+    const SUCCESSFUL_REGISTERED = 'successfulRegistered';
     const RESET_PASSWORD = 'passwordForgotten';
+    const ACTIVATION = 'activation';
+    const DEACTIVATION = 'deactivation';
 }
