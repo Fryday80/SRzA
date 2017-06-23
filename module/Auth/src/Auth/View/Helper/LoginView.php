@@ -66,7 +66,7 @@ class LoginView extends AbstractHelper
 
         foreach ($activeUsers as $activeUser) {
             $userUrl = $url->toURL($activeUser->userName);
-            $activeImg = '<img alt="active" src="img/uikit/led-on.png" style="float: right; height: 15px;">';
+            $activeImg = '<img alt="active" src="/img/uikit/led-on.png" style="float: right; height: 15px;">';
             $actives[] = array(
                 'name' => $activeUser->userName . $activeImg,
                 'url'  => "/profile/$userUrl"

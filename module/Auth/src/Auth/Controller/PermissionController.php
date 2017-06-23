@@ -45,7 +45,7 @@ class PermissionController extends AbstractActionController
         $sortedRoles = array();
         foreach ($sorted as $role)
             $sortedRoles[] = array(
-                'id' => $this->roleTable->getRoleIDByName($role),
+                'id' => (int)$this->roleTable->getRoleIDByName($role),
                 'name' => $role
             );
         $skip = false;
