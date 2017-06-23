@@ -59,6 +59,7 @@ class PermissionController extends AbstractActionController
         $deleteForm->get('submit')->setValue('Delete');
         return array(
             'roleID' => $roleID,
+            'roleName' => $this->roleTable->getRoleByID($roleID)['role_name'],
             'addForm' => $addForm,
             'deleteForm' => $deleteForm
         );
