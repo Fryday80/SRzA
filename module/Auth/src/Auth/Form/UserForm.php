@@ -32,7 +32,10 @@ class UserForm extends Form
             'type' => 'Text',
             'options' => array(
                 'label' => 'eMail',
-            )
+            ),
+            'attributes' => array(
+                'autofocus' => 'autofocus',
+            ),
         );
 
         $fields[] = array(

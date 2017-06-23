@@ -27,7 +27,8 @@ class PermissionDeleteForm extends Form
             'type' => 'Zend\Form\Element\Select',
             'attributes' => array(
                 'size' => 20,
-                'multiple' => 'multiple'
+                'multiple' => 'multiple',
+                'autofocus' => 'autofocus',
             ),
             'options' => array(
                 'value_options' => $this->getPermissionsForSelect(),

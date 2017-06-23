@@ -29,7 +29,8 @@ class RoleForm extends Form
             'type' => 'text',
             'attributes' => array(
                 'id' => 'role_name',
-                'class' => 'input-sm'
+                'class' => 'input-sm',
+                'autofocus' => 'autofocus',
             ),
             'options' => array(
                 'label' => 'Role'

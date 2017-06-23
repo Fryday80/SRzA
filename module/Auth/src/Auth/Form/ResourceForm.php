@@ -20,6 +20,9 @@ class ResourceForm extends Form
             'options' => array(
                 'label' => 'Resource',
             ),
+            'attributes' => array(
+                'autofocus' => 'autofocus',
+            ),
         ));
         $this->add(array(
             'name' => 'permissions',

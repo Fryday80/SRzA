@@ -17,7 +17,10 @@ class PWForgetForm extends Form
             'type' => 'Password',
             'options' => array(
                 'label' => 'Neues Password',
-                )
+            ),
+            'attributes' => array(
+                'autofocus' => 'autofocus',
+            ),
             )
         );
 

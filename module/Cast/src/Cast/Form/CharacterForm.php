@@ -40,6 +40,9 @@ class CharacterForm extends Form
             'options' => array(
                 'label' => 'Vorname'
             ),
+            'attributes' => array(
+                'autofocus' => 'autofocus',
+            ),
             'required' => true,
             'allow_empty' => false,
             'filters' => array(

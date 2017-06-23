@@ -19,7 +19,8 @@ class LoginForm extends Form
             'name' => 'email',
             'type' => 'text',
             'attributes' => array(
-                'placeholder' => 'example@example.com'
+                'autofocus' => 'autofocus',
+                'placeholder' => 'example@example.com',
             ),
             'options' => array(
                 'label' => 'Email',
@@ -55,5 +56,10 @@ class LoginForm extends Form
                 'class' => 'btn btn-primary'
             )
         ));
+    }
+
+    public function unFocus()
+    {
+        $this->get('email')->setAttribute('autofocus', false);
     }
 }
