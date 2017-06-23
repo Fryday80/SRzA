@@ -73,9 +73,6 @@ class PermissionController extends AbstractActionController
             $permIDs = $post['permissions'];
             if (isset($permIDs)) {
                 $rolePerms = $this->rolePermTable->getPermissionsByRoleID($roleID);
-
-
-                // @todo salt check if the role have the perm allready
                 foreach ($permIDs as $id) {
                     $exists = false;
                     foreach ($rolePerms as $perm) {
