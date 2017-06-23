@@ -47,6 +47,10 @@ class MessageService
             $template['subject'] = $this->buildTemplateString($template['subject'], $templateVars);
             $template['msg'] = $this->buildTemplateString($template['msg'], $templateVars);
 
+            //@todo move to db?
+            $standardFooter = '<br/><p>Diese Nachricht wurde automatisch erstellt. Antworten auf diese eMailadresse werden nicht empfangen.</p>';
+            $template['msg'] .= $standardFooter;
+
             //send
             $this->SendMail($target, $template['subject'], $template['msg'], $template['sender'], $template['sender_address']);
             return true;
