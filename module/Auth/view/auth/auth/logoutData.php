@@ -18,47 +18,20 @@
         width: 20px;
         float: right;
     }
+    .logout-list li>a
+    {
+        padding-left: 5px;
+    }
 </style>
 <?php
-//$logOutList = $myMenuService->getLogoutData();
-$logOutList = array(
-    0 => array(
-        'name'  => 'Benutzer Daten',
-        'class' => 'myMenu',
-        'list'  => array(
-            0 => array(
-                'name' => 'Mein Profil Bearbeiten',
-                'url'  => '/profile'
-            ),
-            1 => array(
-                'name' => 'Meine Charaktere Bearbeiten',
-                'url'  => '/profile#characters'
-            ),
-        ),
-    ),
-);
-echo createLogoutList($logOutList);
-
-
-function createLogoutList($logOutList){
-    $return = '<ul class="logout-list">';
-    foreach ($logOutList as $subList){
-        $return .= '<li class="logout-list '. $subList['class'] . '"> <span>' . $subList['name'] . '</span> <ul>';
-        foreach ($subList['list'] as $item){
-            $return .= '<li><a href="' . $item['url'] . '">'. $item['name'] .'</a> </li>';
-        }
-        $return .= '</ul></li>';
+$return = '<ul class="logout-list">';
+foreach ($logOutList as $subList){
+    $return .= '<li class="logout-list '. $subList['class'] . '"> <span>' . $subList['name'] . '</span> <ul>';
+    foreach ($subList['list'] as $item){
+        $return .= '<li><a href="' . $item['url'] . '">'. $item['name'] .'</a> </li>';
     }
-    $return .= '</ul>';
-    return $return;
+    $return .= '</ul></li>';
 }
+$return .= '</ul>';
+echo $return;
 ?>
-<br/>
-<div>
-    <div>
-        <br/>
-    </div>
-    <div>
-<!--        --><?php //echo createLogoutList($logOutList); ?>
-    </div>
-</div>

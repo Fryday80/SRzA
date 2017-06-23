@@ -1,6 +1,8 @@
 <?php
 namespace Auth\View\Helper;
 
+use Application\Service\StatisticService;
+use Application\Utility\URLModifier;
 use Auth\Service\MyMenuService;
 use Zend\View\Helper\AbstractHelper;
 use Zend\View\Model\ViewModel;
@@ -14,9 +16,12 @@ class LoginView extends AbstractHelper
      * @var AuthStorage
      */
     protected $storage;
+    /** @var StatisticService  */
+    private $statsService;
 
-    public function __construct(AuthStorage $storage) {
+    public function __construct(AuthStorage $storage, StatisticService $statisticService) {
         $this->storage = $storage;
+        $this->statsService = $statisticService;
         return $this;
     }
     public function __invoke()
@@ -24,16 +29,54 @@ class LoginView extends AbstractHelper
         $role = $this->storage->getRoleName();
         $name = $this->storage->getUserName();
         $viewModel = new ViewModel();
-        if ($role == 'guest' || $role == 'Guest') {
+        if (strtolower($role) == 'guest') {
             $viewModel->setTemplate("auth/auth/login.phtml");
             $viewModel->setVariable('form', new LoginForm('Login'));
             return $this->getView()->render($viewModel);
         } else {
+            $logOutList = array(
+                0 => array(
+                    'name'  => 'Benutzer Daten',
+                    'class' => 'myMenu',
+                    'list'  => array(
+                        0 => array(
+                            'name' => 'Mein Profil Bearbeiten',
+                            'url'  => '/profile'
+                        ),
+                        1 => array(
+                            'name' => 'Meine Charaktere Bearbeiten',
+                            'url'  => '/profile#characters'
+                        ),
+                    ),
+                ),
+                1 => $this->createActiveUsers($this->statsService->getActiveUsers()),
+            );
+            
             $viewModel->setTemplate("auth/auth/logout.phtml");
-//            $viewModel->setVariable('user', $name);
-//            $viewModel->setVariable('role', $role);
+            $viewModel->setVariable('logOutList', $logOutList);
             return $this->getView()->render($viewModel);
         }
 
+    }
+
+    public function createActiveUsers($activeUsers)
+    {
+        $actives = array ();
+        $url = new URLModifier();
+
+        foreach ($activeUsers as $activeUser) {
+            $userUrl = $url->toURL($activeUser->userName);
+            $activeImg = '<img alt="active" src="img/uikit/led-on.png" style="float: right; height: 15px;">';
+            $actives[] = array(
+                'name' => $activeUser->userName . $activeImg,
+                'url'  => "/profile/$userUrl"
+            );
+        }
+
+        return array(
+            'name' => 'Aktive Benutzer',
+            'class' => 'myMenu',
+            'list' => $actives,
+        );
     }
 }

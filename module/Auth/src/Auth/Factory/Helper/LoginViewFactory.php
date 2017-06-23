@@ -10,7 +10,8 @@ class LoginViewFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $pL = $sm->getServiceLocator();
         $storage = $pL->get('Auth\Model\AuthStorage');
-        $loginview = new LoginView($storage);
+        $statsService = $pL->get('StatisticService');
+        $loginview = new LoginView($storage, $statsService);
         return $loginview;
     }
 }
