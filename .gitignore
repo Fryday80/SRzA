@@ -8,6 +8,7 @@ config/autoload/salt.local.php
 
 cache/
 storage/
+node_modules/
 
 module/demo/
 module/src/Application/Utility/0815 array DataTable - Kopie.php
