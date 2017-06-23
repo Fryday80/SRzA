@@ -112,7 +112,6 @@ class AuthController extends AbstractActionController
                 if ($result->isValid()) {
                     if (count($ref) > 0) {
                         if($ref == 'login')
-                            bdump('sad');
                         return $this->redirect()->toUrl($ref[0]);
                     }
                     $this->flashmessenger()->addMessage("You've been logged in");
