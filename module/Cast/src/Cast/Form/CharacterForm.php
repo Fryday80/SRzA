@@ -166,7 +166,6 @@ class CharacterForm extends Form
                 'value_options' => $this->getFamiliesForSelect(),
             )
         ));  // family_id     - select
-        //@todo guardian ID
         $this->add(array(
             'name' => 'guardian_id',
             'type' => 'Zend\Form\Element\Select',

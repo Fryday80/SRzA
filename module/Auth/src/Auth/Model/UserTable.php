@@ -100,7 +100,6 @@ class UserTable extends AbstractTableGateway
     public function deleteUser($id)
     {
         $this->delete(array('id' => (int) $id));
-        //@todo remove characters from cast
     }
 
     /** Get users by params without password

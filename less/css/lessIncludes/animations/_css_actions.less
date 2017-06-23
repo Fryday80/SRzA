@@ -130,10 +130,13 @@
         max-height: @3;
     }
     .ani-action() {
-        from {
+        0% {
             .ani-style(20vw; 20; @login-max-height);
         }
-        to {
+        50% {
+            .ani-style(20vw; 20; @login-max-height);
+        }
+        100% {
             .ani-style(10vw; 1; 2.8vw);
         }
     }

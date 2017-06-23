@@ -81,11 +81,4 @@ class AccessService {
     function getUserIP() {
         return $this->userIP;
     }
-// @todo remove
-//    /**
-//     * @return array
-//     */
-//    public function fetchAllRoles(){
-//        return $this->aclService->fetchAllRoles();
-//    }
 }
