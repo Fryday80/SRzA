@@ -65,6 +65,7 @@ class LoginView extends AbstractHelper
         $url = new URLModifier();
 
         foreach ($activeUsers as $activeUser) {
+            if ($activeUser->userName == 'Guest')continue;
             $userUrl = $url->toURL($activeUser->userName);
             $activeImg = '<img alt="active" src="/img/uikit/led-on.png" style="float: right; height: 15px;">';
             $actives[] = array(
