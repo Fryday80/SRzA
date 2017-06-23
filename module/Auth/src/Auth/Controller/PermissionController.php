@@ -37,10 +37,24 @@ class PermissionController extends AbstractActionController
 
     public function editAction()
     {
+        $perms = [];
         $pHash = [];
         $notGiven = [];
         $roleID = (int) $this->params('id');
-        $perms = $this->rolePermTable->getPermissionsByRoleID($roleID);
+        $sorted = $this->roleTable->fetchAllSorted();
+        $sortedRoles = array();
+        foreach ($sorted as $role)
+            $sortedRoles[] = array(
+                'id' => $this->roleTable->getRoleIDByName($role),
+                'name' => $role
+            );
+        $skip = false;
+        foreach ($sortedRoles as $role){
+            if (!$skip)
+                if ($role['id'] == $roleID)
+                    $skip = true;
+            $perms = $this->rolePermTable->getPermissionsByRoleID($role['id']);
+        }
         $allPerms = $this->permTable->getResourcePermissions();
         foreach ($perms as $perm){
             $pHash[$perm['resource_name'] . '-' . $perm['permission_name']] = 1;
