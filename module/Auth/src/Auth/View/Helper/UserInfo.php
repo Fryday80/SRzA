@@ -24,13 +24,14 @@ class UserInfo extends AbstractHelper
         if ($role == 'Guest') {
             return 'Hallo Gast';
         } else {
-            $showrole = '';
-            if ($role = 'Administrator') {
-                $showrole = ' <span class="js-S-view">|</span> '.$role;
-            }
+            if ($role == 'Member') $roleName = 'Mitglied';
+            elseif ($role == 'Vorstand') $roleName = $role;
+            elseif ($role == 'Administrator') $roleName = $role;
+            else $roleName = 'erweiterter Vorstand';
+            $showrole = ' <span class="js-S-view">|</span> '.$roleName;
             $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showrole. '</span>';
             return $expression;
         }
-        return $role;           //müsste er da nicht irgendwo noch die $role ausgeben???
+        return $role;
     }
 }
