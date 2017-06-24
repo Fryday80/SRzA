@@ -62,15 +62,16 @@ class PermissionController extends AbstractActionController
             if ($skip) continue;
             $permsByRole[$role['role_name']] = $this->rolePermTable->getPermissionsByRoleID($role['id']);
         }
-
+        
         $i=0;
-        foreach ($permsByRole as $byRolename)
-            foreach ($byRolename as $item){
+        foreach ($permsByRole as $byRolename) {
+            foreach ($byRolename as $item) {
                 if (!$i == 0) $item['disabled'] = true;
                 $item['id'] = $item['permission_id'];
                 $given[$item['resource_name'] . ' - ' . $item['permission_name']] = $item;
-                $i++;
             }
+            $i++;
+        }
 
         foreach ($allPerms as $key => $perm) {
             $needle = $perm['resource_name'] . ' - ' . $perm['permission_name'];
