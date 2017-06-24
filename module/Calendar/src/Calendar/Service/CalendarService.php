@@ -167,13 +167,12 @@ class CalendarService {
     }
 
 
-
-
-
-
-
-
-
+    public function resetEventCache()
+    {
+        if ($this->cacheService->hasCache('calendar/events'))
+            $this->cacheService->clearCache('calendar/events');
+        return true;
+    }
 
 
     private function cacheEvents() {

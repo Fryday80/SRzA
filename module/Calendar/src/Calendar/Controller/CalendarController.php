@@ -57,6 +57,7 @@ class CalendarController extends AbstractActionController
         if ($request->isPost()) {
             $post = $request->getPost()->toArray();
             $this->calendarService->setCalendarOverwrites($post);
+            $this->calendarService->resetEventCache();
             //redirect->calendar/config
         }
         $calendars = $this->calendarService->getCalendars();
