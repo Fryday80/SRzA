@@ -1,36 +1,67 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 24.06.2017
- * Time: 11:57
- */
 
 namespace Equipment\Models\DataObjects\Single;
 
-
-use Equipment\Models\Abstracts\TentForm;
+use Equipment\Models\Abstracts\TentShape;
 
 class Tent
 {
-    protected $form;
-    protected $width;
-    protected $length;
+    public $shapeType;
+    public $shape = false;
+    public $width;
+    public $length;
 
-
-    public function getFormString()
+    public function __construct($data)
     {
-        return TentForm::translateConst($this->form);
+        $this->setData($data);
     }
 
-    public function getForm()
+    public function getData()
     {
-        return $this->form;
+        return array(
+            'shapeType' => $this->shapeType,
+            'shape'     => $this->shape, 
+            'width'     => $this->width,
+            'length'    => $this->length
+        );
     }
 
-    public function setForm($formType)
+    public function setData($data)
     {
-        $this->form = $formType;
+        foreach ($data as $key => $item) {
+            if ($key = 'shapeType' || $key = 'shape'|| $key = 'type'){
+                // if value is string
+                if (is_string($item) && strlen($item) > 1){
+                    $this->shape = TentShape::translateToConst($item);
+                    $this->shapeType = TentShape::translateToConst($this->shape);
+                }
+                // if value is int or string with length 1 (e.g. "1")
+                if (is_int($item) || strlen($item) == 1){
+                    $this->shapeType = (int)$item;
+                    $this->shape = TentShape::translateFromConst($item);
+                }
+            }
+            if ($key = 'width')  $this->width = $item;
+            if ($key = 'lenght') $this->length = $item;
+        }
+    }
+
+    /**
+     * @param int $shapeType use Tentshape::
+     */
+    public function setshapeType($shapeType)
+    {
+        $this->shapeType = $shapeType;
+    }
+
+    public function setSize($width, $lenght = null)
+    {
+        if ($this->shape == TentShape::ROUND || $this->shape == TentShape::SQUARE) {
+            $this->width = $this->length = $width;
+        } else {
+            $this->width = $width;
+            $this->length = $lenght;
+        }
     }
 
 }
