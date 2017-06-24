@@ -61,16 +61,28 @@ class LoginView extends AbstractHelper
 
     public function createActiveUsers($activeUsers)
     {
+        $guestCount = 0;
         $actives = array ();
         $url = new URLModifier();
+        $role = $this->storage->getRoleName();
 
         foreach ($activeUsers as $activeUser) {
-            if ($activeUser->userName == 'Guest')continue;
-            $userUrl = $url->toURL($activeUser->userName);
-            $activeImg = '<img alt="active" src="/img/uikit/led-on.png" style="float: right; height: 15px;">';
+            if ($activeUser->userName == 'Guest')
+                $guestCount++;
+            else {
+                $userUrl = $url->toURL($activeUser->userName);
+                $activeImg = '<img alt="active" src="/img/uikit/led-on.png" style="float: right; height: 15px;">';
+                $actives[] = array(
+                    'name' => $activeUser->userName . $activeImg,
+                    'url' => "/profile/$userUrl"
+                );
+            }
+        }
+        if ($role == 'Administrator') {
+            $call = ($guestCount == 1) ? ' Gast' : ' Gäste';
             $actives[] = array(
-                'name' => $activeUser->userName . $activeImg,
-                'url'  => "/profile/$userUrl"
+                'name' => $guestCount . $call . ' online',
+                'url' => '#'
             );
         }
 
