@@ -37,38 +37,55 @@ class PermissionController extends AbstractActionController
 
     public function editAction()
     {
+        $sortedRoles = [];
         $perms = [];
+        $permsByRole = [];
+        $thisRolePerms = [];
         $pHash = [];
         $notGiven = [];
+        $given = [];
+        $skip = true;
+
+        $allPerms = $this->permTable->getResourcePermissions();
         $roleID = (int) $this->params('id');
         $sorted = $this->roleTable->fetchAllSorted();
-        $sortedRoles = array();
+
         foreach ($sorted as $role)
             $sortedRoles[] = array(
                 'id' => (int)$this->roleTable->getRoleIDByName($role),
-                'name' => $role
+                'role_name' => $role
             );
-        $skip = false;
+
         foreach ($sortedRoles as $role){
-            if (!$skip)
-                if ($role['id'] == $roleID)
-                    $skip = true;
-            $perms = $this->rolePermTable->getPermissionsByRoleID($role['id']);
+            if ($role['id'] == $roleID)
+                $skip = false;
+            if ($skip) continue;
+            $permsByRole[$role['role_name']] = $this->rolePermTable->getPermissionsByRoleID($role['id']);
         }
-        $allPerms = $this->permTable->getResourcePermissions();
-        foreach ($perms as $perm){
-            $pHash[$perm['resource_name'] . '-' . $perm['permission_name']] = 1;
+
+        $i=0;
+        foreach ($permsByRole as $byRolename)
+            foreach ($byRolename as $item){
+                if (!$i == 0) $item['disabled'] = true;
+                $item['id'] = $item['permission_id'];
+                $given[$item['resource_name'] . ' - ' . $item['permission_name']] = $item;
+                $i++;
+            }
+
+        foreach ($allPerms as $key => $perm) {
+            $needle = $perm['resource_name'] . ' - ' . $perm['permission_name'];
+            if (!isset($given[$needle]))
+                $notGiven[$perm['resource_name'] . ' - ' . $perm['permission_name']] = $perm;
         }
-        foreach ($allPerms as $perm) {
-            if(isset($pHash[$perm['resource_name'] . '-' . $perm['permission_name']])) continue;
-            else
-                $notGiven[] = $perm;
-        }
+        
+        ksort($given);
+        ksort($notGiven);
+
         $addForm = new PermissionAddForm($notGiven);
         $addForm->get('role_id')->setValue($roleID);
         $addForm->get('submit')->setValue('Add');
 
-        $deleteForm = new PermissionDeleteForm($perms);
+        $deleteForm = new PermissionDeleteForm($given);
         $deleteForm->get('role_id')->setValue($roleID);
         $deleteForm->get('submit')->setValue('Delete');
         return array(

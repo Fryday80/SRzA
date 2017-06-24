@@ -57,7 +57,11 @@ class PermissionDeleteForm extends Form
     {
         $selectData = array();
         foreach ($this->permTable as $res) {
-            $selectData[$res['role_permission_id']] = $res['resource_name'] . ' - ' . $res['permission_name'];
+            $selectData[$res['id']] = array(
+                'label' =>  $res['resource_name'] . ' - ' . $res['permission_name'],
+                'disabled' => (isset($res['disabled']))? true : false,
+                'value' => $res['id']
+            );
             
         }
         return $selectData;

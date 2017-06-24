@@ -1,9 +1,24 @@
+<style>
+    .parentRole,
+    option[disabled]
+    {
+        color: red;
+    }
+    .permEdit
+    {
+        margin-left: 10vh;
+    }
+</style>
 <?php
-
 $title = 'Edit Permissions of "' . $roleName . '"';
 $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
+<ul class="permEdit">
+    <li class="parentRole">Permissions of parent roles</li>
+    <li>This roles permissions</li>
+</ul>
+<br/>
 <div style="float: left">
     <?php
     $deleteForm->setAttribute('action', $this->url('permission/delete', array('id' => $roleID)));

@@ -28,7 +28,7 @@ class PermissionAddForm extends Form
             ),
             'options' => array(
                 'value_options' => $this->getPermissionsForSelect(),
-            )
+            ),
         ));
         $this->add(array(
             'type' => 'Zend\Form\Element\Csrf',
@@ -52,7 +52,6 @@ class PermissionAddForm extends Form
     public function getPermissionsForSelect()
     {
         $selectData = array();
-        
         foreach ($this->permTable as $res) {
             $selectData[$res['id']] = $res['resource_name'] . ' - ' . $res['permission_name'];
         }
