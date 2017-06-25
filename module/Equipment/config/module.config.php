@@ -1,9 +1,12 @@
 <?php
+use Application\Factory\Basic\DefaultTableGatewayFactory;
+
 return array(
     'controllers' => array(
         'invokables' => array( ),
         'factories' => array(
             'Equipment\Controller\SitePlanner' => 'Equipment\Factory\SitePlannerControllerFactory',
+            'Equipment\Controller\Equipment' => 'Equipment\Factory\Controller\EquipmentControllerFactory',
         ),
     ),
     'view_helpers' => array(
@@ -11,9 +14,15 @@ return array(
         'invokables' => array( )
     ),
     'service_manager' => array(
-        'factories' => array( ),
+        'factories' => array(
+            'TentService' => 'Equipment\Service\TentServiceFactory',
+        ),
         'abstract_factories' => array(
-//            'Cast\Model\CharacterTable' => DefaultTableGatewayFactory::class,
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+            'Equipment\Model\TentTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\TentColorsTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(
