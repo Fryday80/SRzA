@@ -1,8 +1,8 @@
 <?php
 
-namespace Equipment\Models\DataObjects\Single;
+namespace Equipment\Model;
 
-use Equipment\Models\Abstracts\TentShape;
+use Equipment\Model\EnumTentShape;
 
 class Tent
 {
@@ -19,10 +19,10 @@ class Tent
      * @param array $data possible keys:
      * <br/>                            array (
      * <p style="margin-left: 15px">            'ownerId' => int                                   </p>
-     * <p style="margin-left: 15px">             'shape' => int         { use TentShape:: }        </p>
+     * <p style="margin-left: 15px">             'shape' => int         { use EnumTentShape:: }    </p>
      * <p style="margin-left: 15px">             'width' => int         { in meters }              </p>
      * <p style="margin-left: 15px">             'length' => int        { in meters }              </p>
-     * <p style="margin-left: 15px">             'spareBeds' => int                                 </p>
+     * <p style="margin-left: 15px">             'spareBeds' => int                                </p>
      * <p style="margin-left: 15px">             'isShowTent' => int    { 0 = false, 1 = true }    </p>
      * <p style="margin-left: 15px">             'isGroupEquip' => int  { 0 = false, 1 = true }    </p>
      *                                  );
@@ -63,20 +63,20 @@ class Tent
     }
 
     /**
-     * @param int $shapeType use Tentshape::
+     * @param int $shapeType use EnumTentShape::
      */
     public function setshapeType($shapeType)
     {
-        $this->shapeType = $shapeType;
+        $this->shape = $shapeType;
     }
 
-    public function setSize($width, $lenght = null)
+    public function setSize($width, $length = null)
     {
-        if ($this->shape == TentShape::ROUND || $this->shape == TentShape::SQUARE) {
+        if ($this->shape == EnumTentShape::ROUND) {
             $this->width = $this->length = $width;
         } else {
             $this->width = $width;
-            $this->length = $lenght;
+            $this->length = $length;
         }
     }
 

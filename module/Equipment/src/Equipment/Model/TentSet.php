@@ -1,9 +1,8 @@
 <?php
 
-namespace Equipment\Models\DataObjects\Groups;
+namespace Equipment\Model;
 
-
-use Equipment\Models\DataObjects\Single\Tent;
+use Equipment\Model\Tent;
 
 class TentSet
 {
