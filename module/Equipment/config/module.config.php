@@ -24,232 +24,87 @@ return array(
      'router' => array(
          'routes' => array(
 
-             'castmanager' => array(
+             'equipmanager' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,
                  'options' => array(
-                     'route'    => '/castmanager',
+                     'route'    => '/equip',
                      'defaults' => array(
-                         'controller' => 'Cast\Controller\Manager',
+                         'controller' => 'Equipment\Controller\Equipment',
                          'action'     => 'index',
                      ),
                  ),
                  'child_routes' => array(
-                     'families' => array(
+                     'tent' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/families',
+                             'route'    => '/tent',
                              'defaults' => array(
-                                 'controller' => 'Cast\Controller\Family',
-                                 'action'     => 'index',
+                                 'controller' => 'Equipment\Controller\Equipment',
+                                 'action'     => 'tent',
                              ),
                          ),
                          //children
                          'child_routes' => array(
-                             'delete' => array(
+                             'usertentall' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/delete[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
+                                     'route'    => '/:user',
+                                     'defaults' => array(
+                                         'controller' => 'Equipment\Controller\Equipment',
+                                         'action'     => 'usertentall',
                                      ),
-                                     'defaults' => array(
-                                         'action' => 'delete'
-                                     )
-                                 )
-                             ),
-                             'add' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/add[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
+                                 ),
+                                 'may_terminate' => true,
+                                 'child_routes' => array(
+                                     'usertent' => array(
+                                     'type' => 'Segment',
+                                     'options' => array(
+                                         'route'    => '/:tentId',
+                                         'defaults' => array(
+                                             'controller' => 'Equipment\Controller\Equipment',
+                                             'action'     => 'usertent',
+                                         ),
                                      ),
-                                     'defaults' => array(
-                                         'action' => 'add'
-                                     )
-                                 )
-                             ),
-                             'edit' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/edit[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'edit'
-                                     )
-                                 )
-                             )
-                         ),
-                     ),
-                     'jobs' => array(
-                         'type'    => 'segment',
-                         'may_terminate' => true,
-                         'options' => array(
-                             'route'    => '/jobs',
-                             'defaults' => array(
-                                 'controller' => 'Cast\Controller\Job',
-                                 'action'     => 'index',
-                             ),
-                         ),
-                         //children
-                         'child_routes' => array(
-                             'delete' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/delete[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'delete'
-                                     )
-                                 )
-                             ),
-                             'add' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/add[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'add'
-                                     )
-                                 )
-                             ),
-                             'edit' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/edit[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'edit'
-                                     )
-                                 )
-                             )
-                         ),
-                     ),
-                     'characters' => array(
-                         'type'    => 'segment',
-                         'may_terminate' => true,
-                         'options' => array(
-                             'route'    => '/characters',
-                             'defaults' => array(
-                                 'controller' => 'Cast\Controller\Character',
-                                 'action'     => 'index',
-                             ),
-                         ),
-                         //children
-                         'child_routes' => array(
-                             'json' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/json',
-                                     'constraints' => array(),
-                                     'defaults' => array(
-                                         'action' => 'json'
-                                     )
-                                 )
-                             ),
-                             'jsonOwnerEdit' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/jsonOwnerEdit',
-                                     'constraints' => array(),
-                                     'defaults' => array(
-                                         'action' => 'jsonOwnerEdit'
-                                     )
-                                 )
-                             ),
-                             'delete' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/delete[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'delete'
-                                     )
-                                 )
-                             ),
-                             'add' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/add[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'add'
-                                     )
-                                 )
-                             ),
-                             'edit' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/edit[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'edit'
-                                     )
-                                 )
-                             )
-                         ),
-                     ),
-                     'wappen' => array(
-                         'type'    => 'segment',
-                         'may_terminate' => true,
-                         'options' => array(
-                             'route'    => '/wappen',
-                             'defaults' => array(
-                                 'controller' => 'Cast\Controller\Blazon',
-                                 'action'     => 'index',
-                             ),
-                         ),
-                         //children
-                         'child_routes' => array(
-                             'delete' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/delete[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'delete'
-                                     )
-                                 )
-                             ),
-                             'add' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/add[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'add'
-                                     )
-                                 )
-                             ),
-                             'edit' => array(
-                                 'type' => 'Segment',
-                                 'options' => array(
-                                     'route' => '/edit[/:id]',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
-                                     'defaults' => array(
-                                         'action' => 'edit'
+                                     'may_terminate' => true,
+                                     'child_routes' => array(
+                                         'delete' => array(
+                                             'type' => 'Segment',
+                                             'options' => array(
+                                                 'route' => '/delete[/:id]',
+                                                 'constraints' => array(
+                                                     'id' => '[0-9]+'
+                                                 ),
+                                                 'defaults' => array(
+                                                     'action' => 'delete'
+                                                 )
+                                             )
+                                         ),
+                                         'add' => array(
+                                             'type' => 'Segment',
+                                             'options' => array(
+                                                 'route' => '/add[/:id]',
+                                                 'constraints' => array(
+                                                     'id' => '[0-9]+'
+                                                 ),
+                                                 'defaults' => array(
+                                                     'action' => 'add'
+                                                 )
+                                             )
+                                         ),
+                                         'edit' => array(
+                                             'type' => 'Segment',
+                                             'options' => array(
+                                                 'route' => '/edit[/:id]',
+                                                 'constraints' => array(
+                                                     'id' => '[0-9]+'
+                                                 ),
+                                                 'defaults' => array(
+                                                     'action' => 'edit'
+                                                 )
+                                             )
+                                         )
                                      )
                                  )
                              )
@@ -257,21 +112,30 @@ return array(
                      ),
                  ),
              ),
-
-             'cast' => array(
+         ),
+             'siteplan' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,
                  'options' => array(
-                     'route'    => '/cast',
+                     'route'    => '/siteplan',
                      'defaults' => array(
-                         'controller' => 'Cast\Controller\Cast',
+                         'controller' => 'Equipment\Controller\SitePlan',
                          'action'     => 'index',
                      ),
                  ),
-
-                 'child_routes' => array()
+                 'child_routes' => array(
+                     'eventplan' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/:event',
+                             'defaults' => array(
+                                 'controller' => 'Equipment\Controller\SitePlan',
+                                 'action'     => 'event',
+                             ),
+                         ),
+                     )
+                 ),
              ),
-
-         ),
      ),
 );
