@@ -6,25 +6,30 @@ use Equipment\Model\EnumTentShape;
 
 class Tent
 {
-    public $ownerId;
+    public $id = null;
+    public $userId;
     public $shape;
+    public $type;
     public $width;
     public $length;
     public $spareBeds;
     public $isShowTent = 0;
     public $isGroupEquip = 0;
+    public $color;
 
     /**
      * Tent constructor.
      * @param array $data possible keys:
      * <br/>                            array (
-     * <p style="margin-left: 15px">            'ownerId' => int                                   </p>
+     * <p style="margin-left: 15px">             'id' => int                                       </p>
+     * <p style="margin-left: 15px">             'userId' => int                                   </p>
      * <p style="margin-left: 15px">             'shape' => int         { use EnumTentShape:: }    </p>
      * <p style="margin-left: 15px">             'width' => int         { in meters }              </p>
      * <p style="margin-left: 15px">             'length' => int        { in meters }              </p>
      * <p style="margin-left: 15px">             'spareBeds' => int                                </p>
      * <p style="margin-left: 15px">             'isShowTent' => int    { 0 = false, 1 = true }    </p>
      * <p style="margin-left: 15px">             'isGroupEquip' => int  { 0 = false, 1 = true }    </p>
+     * <p style="margin-left: 15px">             'color' => int                                    </p>
      *                                  );
      */
     public function __construct($data)
@@ -40,19 +45,24 @@ class Tent
     /**
      * @param array $data possible keys:
      * <br/>                            array (
-     * <p style="margin-left: 15px">            'ownerId' => int                                   </p>
+     * <p style="margin-left: 15px">             'id' => int                                       </p>
+     * <p style="margin-left: 15px">             'userId' => int                                   </p>
      * <p style="margin-left: 15px">             'shape' => int         { use TentShape:: }        </p>
+     * <p style="margin-left: 15px">             'type' => int                                     </p>
      * <p style="margin-left: 15px">             'width' => int         { in meters }              </p>
      * <p style="margin-left: 15px">             'length' => int        { in meters }              </p>
-     * <p style="margin-left: 15px">             'spareBeds' => int                                 </p>
+     * <p style="margin-left: 15px">             'spareBeds' => int                                </p>
      * <p style="margin-left: 15px">             'isShowTent' => int    { 0 = false, 1 = true }    </p>
      * <p style="margin-left: 15px">             'isGroupEquip' => int  { 0 = false, 1 = true }    </p>
+     * <p style="margin-left: 15px">             'color' => int                                    </p>
      *                                  );
      */
     public function setData(Array $data)
     {
         foreach ($data as $key => $value) {
-            if ($key == 'ownerId') $this->$key = $value;
+            if ($key == 'id') $this->$key = $value;
+            if ($key == 'color') $this->$key = $value;
+            if ($key == 'userId') $this->$key = $value;
             if ($key == 'shape') $this->$key = $value;
             if ($key == 'width') $this->$key = $value;
             if ($key == 'length') $this->$key = $value;

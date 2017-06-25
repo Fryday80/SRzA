@@ -1,0 +1,108 @@
+<?php
+
+use Auth\Service\UserService;
+use Equipment\Model\EnumTentShape;
+use Equipment\Service\TentService;
+use Zend\Form\View\Helper\Form;
+
+class TentForm extends Form
+{
+    /** @var  UserService */
+    private $userService;
+    /** @var TentService  */
+    private $tentService;
+
+    public function __construct(TentService $tentService, UserService $userService)
+    {
+        $this->tentService = $tentService;
+        $this->userService = $userService;
+        parent::__construct("Tent");
+        $this->setAttribute('method', 'post');
+        
+        $this->add(array(
+            'name' => 'id',
+            'type' => 'hidden'
+        ));
+        // userId int
+        $this->add(array(
+            'name' => 'userId',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array (
+                'value_options' => $this->getUsersForSelect(),
+            ),
+        ));
+        // shape int
+        $this->add(array(
+            'name' => 'shape',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array (
+                'value_options' => $this->getShapesForSelect(),
+            ),
+        ));
+        // type int
+        $this->add(array(
+            'name' => 'type',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array (
+                'value_options' => $this->getTypesForSelect(),
+            ),
+        ));
+        // width int
+        $this->add(array(
+            'name' => 'width',
+            'type' => 'Number'
+        ));
+        // length int
+        $this->add(array(
+            'name' => 'length',
+            'type' => 'Number'
+        ));
+        // spareBeds int
+        $this->add(array(
+            'name' => 'spareBeds',
+            'type' => 'Number'
+        ));
+        // showtent int
+        $this->add(array(
+            'name' => 'isShowTent',
+            'type' => 'Zend\Form\Element\Checkbox'
+        ));
+        // groupEquip int
+        $this->add(array(
+            'name' => 'isGroupEquip',
+            'type' => 'Zend\Form\Element\Checkbox'
+        ));
+        // color int
+        $this->add(array(
+            'name' => 'color',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array (
+                'value_options' => $this->getColorsForSelect(),
+            ),
+        ));
+    }
+
+    /**
+     *
+     */
+    private function getUsersForSelect()
+    {
+        return $this->userService->getUserIdUserNameList();
+    }
+    private function getShapesForSelect()
+    {
+        return array (
+            EnumTentShape::ROUND => EnumTentShape::TRANSLATION[EnumTentShape::ROUND],
+            EnumTentShape::RECTANGLE => EnumTentShape::TRANSLATION[EnumTentShape::RECTANGLE]
+        );
+    }
+    private function getTypesForSelect()
+    {
+        return $this->tentService->getTypeIDTypeNameList();
+    }
+    private function getColorsForSelect()
+    {
+        return $this->tentService->getColorIDColorNameList();
+    }
+
+}
