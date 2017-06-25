@@ -451,7 +451,6 @@ class MediaService {
                 $response
                     ->getHeaders()
                     ->addHeaderLine('Content-Transfer-Encoding', 'binary')
-                    ->addHeaderLine('Expires', date('D, d M Y H:i:s \G\M\T', time() + (60 * 60)))
                     ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($fullPath))
                     ->addHeaderLine('Content-Length', strlen($fileContent));
             }
@@ -470,11 +469,13 @@ class MediaService {
             }
             return $response->setStatusCode(404);
         }
+
         $fileContent =  file_get_contents($fullPath);
         $response->setContent($fileContent);
         $response
             ->getHeaders()
             ->addHeaderLine('Content-Transfer-Encoding', 'binary')
+            ->addHeaderLine('Expires', date('D, d M Y H:i:s \G\M\T', time() + (60 * 60 * 24 * 31) ))
             ->addHeaderLine('Content-Type', FmHelper::mime_type_by_extension($path))
             ->addHeaderLine('Content-Length', strlen($fileContent));
 
