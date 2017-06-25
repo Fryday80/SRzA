@@ -1,0 +1,101 @@
+<?php
+$title = $this->translate("SitePlanner");
+$this->headTitle($title);
+
+// $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
+$this->headScript()->appendFile('/libs/fabric.js/fabric.js');
+// $this->headScript()->appendFile('/libs/jstree/jstree.min.js');
+
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<button id="test1">Test 1</button>
+<canvas id="site-planner">{"myData": "please parse me"}</canvas>
+<img src="my_image.png" id="my-image">
+<script>
+
+    //site planner
+    (function($) {
+        "use strict";
+        var defaultOptions = {
+            color: "#556b2f",
+            backgroundColor: "white"
+        };
+
+        /**
+         * Main class, holds everything together
+         */
+        class SitePlanner {
+
+            constructor(canvas, settings) {
+                this.data = JSON.parse($(canvas).html());
+                $(canvas).html('');
+
+                //create fabric
+                this.canvas = new fabric.Canvas($(canvas)[0], {
+                    width: 900,
+                    height: 600,
+                    background: '#ff0000'
+                });
+//                fabric.Object.prototype.set({
+//                    transparentCorners: false,
+//                    borderColor: '#ff00ff',
+//                    cornerColor: '#ff0000',
+//                });
+
+                // create map
+            }
+            addItem() {
+                var rect = new fabric.Rect({
+                    left: 100,
+                    top: 100,
+                    fill: 'red',
+                    width: 20,
+                    height: 20
+                });
+                rect.setControlsVisibility({
+                    bl: false,
+                    br: false,
+                    mb: false,
+                    ml: false,
+                    mr: false,
+                    mt: false,
+                    tl: false,
+                    tr: false,
+                    mtr: true,
+                });
+                // "add" rectangle onto canvas
+                this.canvas.add(rect);
+            }
+            getItem() {
+            }
+        }
+
+
+
+        $.fn.SitePlanner = function(options) {
+            var settings = $.extend(defaultOptions, options);
+            return new SitePlanner(this, settings);
+        };
+    }(jQuery));
+
+
+    var planner = $('#site-planner').SitePlanner();
+    $('#test1').click(function (e) {
+        planner.addItem();
+    });
+    // create a wrapper around native canvas element (with id="c")
+//            var canvas = new fabric.Canvas('site-planner');
+//
+//            // create a rectangle object
+//            var rect = new fabric.Rect({
+//                left: 100,
+//                top: 100,
+//                fill: 'red',
+//                width: 20,
+//                height: 20
+//            });
+//
+//            // "add" rectangle onto canvas
+//            canvas.add(rect);
+</script>

@@ -1,10 +1,10 @@
 <?php
-use Application\Factory\Basic\DefaultTableGatewayFactory;
-
 return array(
     'controllers' => array(
         'invokables' => array( ),
-        'factories' => array( ),
+        'factories' => array(
+            'Equipment\Controller\SitePlanner' => 'Equipment\Factory\SitePlannerControllerFactory',
+        ),
     ),
     'view_helpers' => array(
         'factories' => array( ),
@@ -23,7 +23,6 @@ return array(
     ),
      'router' => array(
          'routes' => array(
-
              'equipmanager' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,
@@ -110,19 +109,19 @@ return array(
                              )
                          ),
                      ),
+                     ),
                  ),
              ),
-         ),
-             'siteplan' => array(
+             'site_planner' => array(
                  'type'    => 'segment',
-                 'may_terminate' => true,
                  'options' => array(
                      'route'    => '/siteplan',
                      'defaults' => array(
-                         'controller' => 'Equipment\Controller\SitePlan',
+                         'controller' => 'Equipment\Controller\SitePlanner',
                          'action'     => 'index',
                      ),
                  ),
+                 'may_terminate' => true,
                  'child_routes' => array(
                      'eventplan' => array(
                          'type'    => 'segment',
@@ -130,12 +129,13 @@ return array(
                          'options' => array(
                              'route'    => '/:event',
                              'defaults' => array(
-                                 'controller' => 'Equipment\Controller\SitePlan',
+                                 'controller' => 'Equipment\Controller\SitePlaner',
                                  'action'     => 'event',
                              ),
                          ),
                      )
                  ),
              ),
+         ),
      ),
 );

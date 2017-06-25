@@ -3,7 +3,7 @@ namespace Equipment\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
-class SitePlanController extends AbstractActionController
+class SitePlannerController extends AbstractActionController
 {
     
     public function __construct() {
