@@ -10,8 +10,13 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <button id="test1">Test 1</button>
-<canvas id="site-planner">{"myData": "please parse me"}</canvas>
-<img src="my_image.png" id="my-image">
+<button id="zoomin">ZoomIn</button>
+<button id="zoomout">ZoomOut</button>
+<ul>
+    <li>Liste Aller möglichen objecte</li>
+    <li></li>
+</ul>
+<canvas id="site-planner"><?php echo json_encode($tents); ?></canvas>
 <script>
 
     //site planner
@@ -22,6 +27,59 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
             backgroundColor: "white"
         };
 
+
+        var TentEntity = fabric.util.createClass(fabric.Object, {
+            type: 'tent',
+            radius: 40,
+            startAngle: 0,
+            endAngle: Math.PI * 2,
+
+
+            _render: function(ctx) {
+                switch (parseInt(this.tent.shape)) {
+                    case 0:
+                        ctx.beginPath();
+                        ctx.arc(0,
+                            0,
+                            this.tent.width * 5,
+                            this.startAngle,
+                            this.endAngle, false);
+
+//                        this._renderFill(ctx);
+//                        this._renderStroke(ctx);
+                        break;
+                    case 1:
+                        console.log(this.tent);
+                        var x = -this.width / 2,
+                            y = -this.height / 2,
+                            w = this.width,
+                            h = this.height,
+                            cs = 10;//corner size
+
+                        ctx.beginPath();
+                        ctx.moveTo(x + cs, y);
+                        ctx.lineTo(x + w - cs, y);
+                        ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+
+                        ctx.lineTo(x + w, y + h - cs);
+                        ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
+                        ctx.lineTo(x + cs, y + h);
+                        ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
+                        ctx.lineTo(x, y + cs);
+                        ctx.quadraticCurveTo(x, y, x + cs, y);
+                        break;
+                }
+                ctx.fillStyle = "#ffffff";
+                ctx.strokeStyle = "#000000";
+                ctx.lineWidth = 2;
+                ctx.fill();
+                ctx.stroke();
+            },
+        });
+
+
+
+
         /**
          * Main class, holds everything together
          */
@@ -30,30 +88,73 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
             constructor(canvas, settings) {
                 this.data = JSON.parse($(canvas).html());
                 $(canvas).html('');
-
                 //create fabric
                 this.canvas = new fabric.Canvas($(canvas)[0], {
                     width: 900,
                     height: 600,
-                    background: '#ff0000'
+                    backgroundColor : "#000000",
                 });
-//                fabric.Object.prototype.set({
-//                    transparentCorners: false,
-//                    borderColor: '#ff00ff',
-//                    cornerColor: '#ff0000',
-//                });
+                this.viewPos = {x:0, y:0};
+                this.zoomValue = 1;
+                fabric.Object.prototype.set({
+                    transparentCorners: false,
+                    borderColor: '#ff00ff',
+                    cornerColor: '#ff0000',
+                });
+                var self = this;
+                // create map image
+                fabric.Image.fromURL('https://www.lib.utexas.edu/maps/historical/ward_1912/world_1910.jpg', function(img) {
+                    self.canvas.add(img.scale(1).set({
+                        left: -200,
+                        top: -200,
+                        scale: 2,
+                        selectable: false,
+                    }));
+                    img.moveTo(-11);
+                    self.canvas.renderAll();
+                });
 
-                // create map
+                console.log(this.data);
+                for(var tent in this.data) {
+                    this.addTent(this.data[tent]);
+                }
+//                var imgElement = document.getElementById('my-image');
+//                var imgInstance = new fabric.Image(imgElement, {
+//                    left: 100,
+//                    top: 100,
+//                    angle: 30,
+//                    opacity: 0.85
+//                });
+//                this.group.add(imgInstance);
+                this.canvas.on({
+//                    'object:moving' : moveHandler,
+//                    'object:modified' : modifiedHandler,
+//                    'custom:event' : customEvtHandler
+                });
+                console.log($(canvas));
             }
-            addItem() {
-                var rect = new fabric.Rect({
+            zoom(value) {
+                this.zoomValue = Math.max(1, this.zoomValue + value);
+                this.canvas.setZoom(this.zoomValue);
+            }
+            moveViewPort(deltax = 1, deltay = 1) {
+                this.viewPos.x += deltax;
+                this.viewPos.y += deltay;
+                this.canvas.absolutePan({
+                    x: this.viewPos.x,
+                    y: this.viewPos.y
+                });
+            }
+            addTent(tent) {
+                var tentEntity = new TentEntity({
+                    tent: tent,
                     left: 100,
                     top: 100,
                     fill: 'red',
-                    width: 20,
-                    height: 20
+                    width: parseInt(tent.width) * 10,
+                    height: parseInt(tent.length) * 10
                 });
-                rect.setControlsVisibility({
+                tentEntity.setControlsVisibility({
                     bl: false,
                     br: false,
                     mb: false,
@@ -65,13 +166,13 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                     mtr: true,
                 });
                 // "add" rectangle onto canvas
-                this.canvas.add(rect);
+                this.canvas.add(tentEntity);
+                tentEntity.moveTo(100);
+                return tentEntity;
             }
             getItem() {
             }
         }
-
-
 
         $.fn.SitePlanner = function(options) {
             var settings = $.extend(defaultOptions, options);
@@ -81,8 +182,14 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 
 
     var planner = $('#site-planner').SitePlanner();
-    $('#test1').click(function (e) {
-        planner.addItem();
+//    $('#test1').click(function (e) {
+//        planner.addItem();
+//    });
+    $('#zoomin').click(function (e) {
+        planner.zoom(1);
+    });
+    $('#zoomout').click(function (e) {
+        planner.zoom(-1);
     });
     // create a wrapper around native canvas element (with id="c")
 //            var canvas = new fabric.Canvas('site-planner');
