@@ -11,6 +11,19 @@ class TestForm extends Form
         $this->setAttribute('method', 'post');
         $this->setInputFilter(new TestFormFilter());
 
+/// TextSearch
+        $this->add(array(
+            'name' => 'TextSearch',
+            'type' => Element\TextSearch::class,
+            'required' => true,
+            'attributes' => array(
+                'placeholder' => 'Text',
+            ),
+            'options' => array(
+                'label' => 'TextSearch',
+                'value_options' => array('eins' => 'Eins', 'zwei' => 'Zwei'),
+            ),
+        ));
 /// Text
         $this->add(array(
             'name' => 'Text',
