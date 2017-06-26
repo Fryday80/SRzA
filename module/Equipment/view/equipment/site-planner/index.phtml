@@ -4,19 +4,24 @@ $this->headTitle($title);
 
 // $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
 $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
+$this->headScript()->appendFile('/libs/map.js');
 // $this->headScript()->appendFile('/libs/jstree/jstree.min.js');
 
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-
-<button id="test1">Test 1</button>
+<input id="lon" type="number" value="48.249238">
+<input id="lat" type="number" value="11.562762">
+<button id="setMap">Set map</button>
 <button id="zoomin">ZoomIn</button>
 <button id="zoomout">ZoomOut</button>
 <ul>
     <li>Liste Aller möglichen objecte</li>
+<!--    --><?php //for(): ?>
+<!--    --><?php //endfor; ?>
     <li></li>
 </ul>
-<canvas id="site-planner"><?php echo json_encode($tents); ?></canvas>
+<div id="testt"></div>
+<canvas id="site-planner"><?php echo json_encode($tents->data); ?></canvas>
 <script>
 
     //site planner
@@ -26,19 +31,60 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
             color: "#556b2f",
             backgroundColor: "white"
         };
-
-
+        function createGoogleMapStaticImageUrls(lonLat) {
+            var urlLive = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
+                zoom: 21,
+                size: '640x640',
+                center: lonLat[0] + ',' + (lonLat[1] - 0.000214), //could be string address or "lat,lon"
+                maptype: 'satellite',
+                scale: 3
+            });
+            var urlLive2 = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
+                zoom: 21,
+                size: '640x640',
+                center: lonLat[0] + ',' + (lonLat[1] + 0.000214),
+                maptype: 'satellite',
+                scale: 3
+            });
+            return [urlLive, urlLive2];
+        }
         var TentEntity = fabric.util.createClass(fabric.Object, {
             type: 'tent',
             radius: 40,
             startAngle: 0,
             endAngle: Math.PI * 2,
 
+            /**
+             * Constructor
+             * @param {Object} [options] Options object
+             * @return {fabric.Circle} thisArg
+             */
+            initialize: function(tent) {
+                this.callSuper('initialize', {
+                    tent: tent,
+                    left: 100,
+                    top: 100,
+                    fill: 'red',
+                    width: parseInt(tent.width) / 5,
+                    height: parseInt(tent.length) / 5
+                });
+
+                this.setControlsVisibility({
+                    bl: false,
+                    br: false,
+                    mb: false,
+                    ml: false,
+                    mr: false,
+                    mt: false,
+                    tl: false,
+                    tr: false,
+                    mtr: true,
+                });
+            },
 
             _render: function(ctx) {
                 switch (parseInt(this.tent.shape)) {
                     case 0:
-                        console.log(this.tent);
                         ctx.beginPath();
                         ctx.arc(0,
                             0,
@@ -49,7 +95,6 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                         this._renderStroke(ctx);
                         break;
                     case 1:
-                        console.log(this.tent);
                         var x = -this.width / 2,
                             y = -this.height / 2,
                             w = this.width,
@@ -57,16 +102,23 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                             cs = 10;//corner size
 
                         ctx.beginPath();
-                        ctx.moveTo(x + cs, y);
-                        ctx.lineTo(x + w - cs, y);
-                        ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+                        ctx.moveTo(x, y);
+                        ctx.lineTo(x + w, y);
 
-                        ctx.lineTo(x + w, y + h - cs);
-                        ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
-                        ctx.lineTo(x + cs, y + h);
-                        ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
-                        ctx.lineTo(x, y + cs);
-                        ctx.quadraticCurveTo(x, y, x + cs, y);
+                        ctx.lineTo(x + w, y + h);
+                        ctx.lineTo(x, y + h);
+                        ctx.lineTo(x, y);
+//                        ctx.beginPath();
+//                        ctx.moveTo(x + cs, y);
+//                        ctx.lineTo(x + w - cs, y);
+//                        ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+//
+//                        ctx.lineTo(x + w, y + h - cs);
+//                        ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
+//                        ctx.lineTo(x + cs, y + h);
+//                        ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
+//                        ctx.lineTo(x, y + cs);
+//                        ctx.quadraticCurveTo(x, y, x + cs, y);
                         break;
                 }
                 ctx.fillStyle = "#ffffff";
@@ -86,37 +138,27 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
         class SitePlanner {
 
             constructor(canvas, settings) {
+                this.viewPos = {x:0, y:0};
+                this.zoomValue = 1;
                 this.data = JSON.parse($(canvas).html());
+                this.mapImages = [];
+                //init
+
                 $(canvas).html('');
                 //create fabric
                 this.canvas = new fabric.Canvas($(canvas)[0], {
-                    width: 900,
-                    height: 600,
+                    width: 1280,
+                    height: 640,
                     backgroundColor : "#000000",
                 });
-                this.viewPos = {x:0, y:0};
-                this.zoomValue = 1;
                 fabric.Object.prototype.set({
                     transparentCorners: false,
                     borderColor: '#ff00ff',
                     cornerColor: '#ff0000',
                 });
-                var self = this;
-                // create map image
-                fabric.Image.fromURL('https://www.lib.utexas.edu/maps/historical/ward_1912/world_1910.jpg', function(img) {
-                    self.canvas.add(img.scale(1).set({
-                        left: -200,
-                        top: -200,
-                        scale: 2,
-                        selectable: false,
-                    }));
-                    img.moveTo(-11);
-                    self.canvas.renderAll();
-                });
-
-                console.log(this.data);
-                for(var tent in this.data) {
-                    this.addTent(this.data[tent]);
+                this.setMap([48.249238, 11.562762]);
+                for(var i = 0; i < this.data.length; i++ ) {
+                    this.addTent(this.data[i]);
                 }
                 this.canvas.renderAll();
 //                var imgElement = document.getElementById('my-image');
@@ -132,7 +174,39 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 //                    'object:modified' : modifiedHandler,
 //                    'custom:event' : customEvtHandler
                 });
-                console.log($(canvas));
+            }
+            setMap(lonLat) {
+                var self = this;
+                //remove old map images
+                for (var i = 0; i < this.mapImages.length; i++) {
+                    this.canvas.remove(this.mapImages[i]);
+                }
+                this.mapImages = [];
+                // create map image
+                console.log(lonLat);
+                var urls = createGoogleMapStaticImageUrls(lonLat);
+                fabric.Image.fromURL(urls[0], function(img) {
+                    self.canvas.add(img.scale(1).set({
+                        left: 0,
+                        top: 0,
+                        scale: 2,
+                        selectable: false,
+                    }));
+                    img.moveTo(-111);
+                    self.mapImages.push(img);
+                    self.canvas.renderAll();
+                });
+                fabric.Image.fromURL(urls[1], function(img) {
+                    self.canvas.add(img.scale(1).set({
+                        left: 640,
+                        top: 0,
+                        scale: 2,
+                        selectable: false,
+                    }));
+                    img.moveTo(-111);
+                    self.mapImages.push(img);
+                    self.canvas.renderAll();
+                });
             }
             zoom(value) {
                 this.zoomValue = Math.max(1, this.zoomValue + value);
@@ -147,26 +221,7 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                 });
             }
             addTent(tent) {
-                var tentEntity = new TentEntity({
-                    tent: tent,
-                    left: 100,
-                    top: 100,
-                    fill: 'red',
-                    width: parseInt(tent.width) * 10,
-                    height: parseInt(tent.length) * 10
-                });
-                tentEntity.setControlsVisibility({
-                    bl: false,
-                    br: false,
-                    mb: false,
-                    ml: false,
-                    mr: false,
-                    mt: false,
-                    tl: false,
-                    tr: false,
-                    mtr: true,
-                });
-                // "add" rectangle onto canvas
+                var tentEntity = new TentEntity(tent);
                 this.canvas.add(tentEntity);
                 tentEntity.moveTo(100);
                 return tentEntity;
@@ -183,9 +238,12 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 
 
     var planner = $('#site-planner').SitePlanner();
-//    $('#test1').click(function (e) {
-//        planner.addItem();
-//    });
+    $('#setMap').click(function () {
+        planner.setMap([
+            parseFloat($('#lon').val()),
+            parseFloat($('#lat').val())
+        ]);
+    });
     $('#zoomin').click(function (e) {
         planner.zoom(1);
     });

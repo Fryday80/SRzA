@@ -14,7 +14,8 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
-        $a = $this->tentService->getAllTents();
+
+        $this->layout()->setVariable('showSidebar', false);
         return array(
             'tents' => $this->tentService->getAllTents(),
         );
