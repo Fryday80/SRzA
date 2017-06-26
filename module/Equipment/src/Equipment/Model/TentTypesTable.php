@@ -22,25 +22,32 @@ class TentTypesTable extends AbstractTableGateway
 
         return $row->toArray();
     }
-    
-    public function getById($id) {
-        $row = $this->select(array('id' => (int) $id));
+
+    public function getById($id)
+    {
+        $row = $this->select();
         if (!$row)
             return false;
-        
+
         return $row->toArray()[0];
     }
 
     public function add($data) {
-        if (!$this->insert(array('job' => $data['job'])))
+        if (!$this->insert(array(
+            'name'  => $data['name'],
+            'shape' => $data['shape']
+        )))
             return false;
         return $this->getLastInsertValue();
     }
     
-    public function save($id, $data) {
-        if (!$this->update(array('job' => $data['job']), array('id' => (int)$id)))
+    public function save($data) {
+        if (!$this->update(array(
+            'name'  => $data['name'],
+            'shape' => $data['shape']
+        ), array('id' => (int)$data['id'])))
             return false;
-        return $id;
+        return $data['id'];
     }
     
     public function remove($id) {

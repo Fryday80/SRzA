@@ -2,6 +2,7 @@
 
 namespace Equipment\Model;
 
+use Auth\Service\UserService;
 use Equipment\Model\EnumTentShape;
 
 class Tent
@@ -15,7 +16,11 @@ class Tent
     public $spareBeds;
     public $isShowTent = 0;
     public $isGroupEquip = 0;
-    public $color;
+    public $color1;
+    public $biColor = null;
+    public $color2 = null;
+
+    public $readable;
 
     /**
      * Tent constructor.
@@ -32,9 +37,10 @@ class Tent
      * <p style="margin-left: 15px">             'color' => int                                    </p>
      *                                  );
      */
-    public function __construct($data)
+    public function __construct($data = null)
     {
-        $this->setData($data);
+        if ($data !== null)
+            $this->setData($data);
     }
 
     public function getData()
@@ -57,36 +63,15 @@ class Tent
      * <p style="margin-left: 15px">             'color' => int                                    </p>
      *                                  );
      */
-    public function setData(Array $data)
+    public function setData($data)
     {
+        $oneToOne = array( 'id', 'color1', 'color2', 'biColor', 'shape', 'width', 'length', 'type');
         foreach ($data as $key => $value) {
-            if ($key == 'id') $this->$key = $value;
-            if ($key == 'color') $this->$key = $value;
-            if ($key == 'userId') $this->$key = $value;
-            if ($key == 'shape') $this->$key = $value;
-            if ($key == 'width') $this->$key = $value;
-            if ($key == 'length') $this->$key = $value;
-            if ($key == 'spareBeds') $this->$key = $value;
-            if ($key == 'isShowTent') $this->$key = $value;
-            if ($key == 'isGroupEquip') $this->$key = $value;
-        }
-    }
-
-    /**
-     * @param int $shapeType use EnumTentShape::
-     */
-    public function setshapeType($shapeType)
-    {
-        $this->shape = $shapeType;
-    }
-
-    public function setSize($width, $length = null)
-    {
-        if ($this->shape == EnumTentShape::ROUND) {
-            $this->width = $this->length = $width;
-        } else {
-            $this->width = $width;
-            $this->length = $length;
+            if (in_array($key, $oneToOne)) $this->$key = $value;
+            if ($key == 'userId'       || $key == 'user_id') $this->userId = $value;
+            if ($key == 'spareBeds'    || $key == 'spare_beds' ) $this->spareBeds = $value;
+            if ($key == 'isShowTent'   || $key == 'is_show_tent' ) $this->isShowTent = $value;
+            if ($key == 'isGroupEquip' || $key == 'is_group_equip' ) $this->isGroupEquip = $value;
         }
     }
 

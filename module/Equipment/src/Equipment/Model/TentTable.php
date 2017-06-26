@@ -16,11 +16,11 @@ class TentTable extends AbstractTableGateway
     }
 
     public function getAll () {
-        $row = $this->select();
-        if (!$row)
+        $result = $this->select();
+        if (!$result)
             return false;
-
-        return $row->toArray();
+        
+        return new TentSet($result->toArray());
     }
 
     /**
@@ -32,7 +32,7 @@ class TentTable extends AbstractTableGateway
         if (!$row)
             return false;
         
-        return $row->toArray()[0];
+        return new Tent($row->toArray()[0]);
     }
 
     /**
@@ -40,23 +40,25 @@ class TentTable extends AbstractTableGateway
      * @return bool| array
      */
     public function getByUserId($id) {
-        $row = $this->select(array('user_id' => (int) $id));
-        if (!$row)
+        $result = $this->select(array('user_id' => (int) $id));
+        if (!$result)
             return false;
 
-        return $row->toArray();
+        return new TentSet($result->toArray());
     }
 
     public function add(Tent $tentData) {
         if (!$this->insert(array(
-                'color' => $tentData->color,
-                'userId' => $tentData->userId,
-                'shape' => $tentData->shape,
-                'width' => $tentData->width,
-                'length' => $tentData->length,
-                'spareBeds' => $tentData->spareBeds,
-                'isShowTent' => $tentData->isShowTent,
-                'isGroupEquip' => $tentData->isGroupEquip,
+            'user_id' => $tentData->userId,
+            'shape' => $tentData->shape,
+            'type' => $tentData->type,
+            'color1' => $tentData->color1,
+            'color2' => $tentData->color2,
+            'width' => $tentData->width,
+            'length' => $tentData->length,
+            'spare_beds' => $tentData->spareBeds,
+            'is_show_tent' => $tentData->isShowTent,
+            'is_group_equip' => $tentData->isGroupEquip,
         )))
             return false;
         return $this->getLastInsertValue();
@@ -67,14 +69,16 @@ class TentTable extends AbstractTableGateway
         if ( !$this->update(
             //data
             array(
-                'color' => $tentData->color,
-                'userId' => $tentData->userId,
+                'user_id' => $tentData->userId,
                 'shape' => $tentData->shape,
+                'type' => $tentData->type,
+                'color1' => $tentData->color1,
+                'color2' => ($tentData->biColor) ? $tentData->color2 : null,
                 'width' => $tentData->width,
                 'length' => $tentData->length,
-                'spareBeds' => $tentData->spareBeds,
-                'isShowTent' => $tentData->isShowTent,
-                'isGroupEquip' => $tentData->isGroupEquip,
+                'spare_beds' => $tentData->spareBeds,
+                'is_show_tent' => $tentData->isShowTent,
+                'is_group_equip' => $tentData->isGroupEquip,
             ),
             //where
             array( 'id' => $tentData->id )

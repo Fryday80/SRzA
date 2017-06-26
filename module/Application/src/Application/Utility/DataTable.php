@@ -26,7 +26,7 @@ class DataTable
         }
     }
 
-/*****************PUBLIC methods**************/
+// ==============================================
     public function setData($data) {
         $this->validateDataType($data, 'setData');
         $this->data = $data;
@@ -61,11 +61,43 @@ class DataTable
         foreach ($columns as $key => $value) {
             $this->add($value);
         }
+        $this->prepare();
     }
+
+    /**
+     * @param array $columnConf array (
+     * <br/>                        'name' => string
+     * <br/>                        'type' => string
+     * <br/>                        'label' => string )
+     */
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
         if (! is_array($this->columns) ) $this->columns = array();
         array_push($this->columns, $columnConf);
+        bdump($this->columns);
+        $this->prepare();
+    }
+
+    /**
+     * @param string $columnName
+     * @param array $columnConf array (
+     * <br/>                        'name' => new name string [optional]
+     * <br/>                        'type' => string [optional]
+     * <br/>                        'label' => string [optional] )
+     */
+    public function change($columnName, $columnConf)
+    {
+        foreach ($this->columns as $cKey => $column)
+            if ($column['name'] === $columnName)
+                array_merge_recursive($this->columns[$cKey], $columnConf);
+        $this->prepare();
+    }
+
+    public function remove($columnName) {
+        foreach ($this->columns as $key => $columnConf)
+            if ($columnConf['name'] === $columnName)
+                unset ($this->columns[$key]);
+        $this->prepare();
     }
     public function setJSConfig($jsConfig) {
         //@todo validate $data
@@ -147,10 +179,13 @@ class DataTable
         return;
     }
 
-/*****************PRIVATE methods******************/
+// ==================================================
     /**
-     * validates data, sets up given parts
-     * @param array $config
+     * Sets up given parts
+     * @param array $config array(
+     * <br/>                    'data' => array(),
+     * <br/>                    'columns' => array(),
+     * <br/>                    'jsConfig'  )
      */
     private function setupConfig($config)
     {
@@ -165,6 +200,7 @@ class DataTable
         if (key_exists('jsConfig', $config)){
             $this->setJSConfig($config['jsConfig']);
         }
+        $this->prepare();
     }
 
     /**

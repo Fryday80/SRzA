@@ -8,6 +8,11 @@ class TentSet
 {
     private $data = array();
 
+    public function __construct($arrayOfTents)
+    {
+        $this->addTents($arrayOfTents);
+    }
+
     public function add(Tent $tent)
     {
         $this->data[] = $tent;
@@ -17,10 +22,7 @@ class TentSet
     {
         foreach ($arrayOfTents as $tent) {
             if ($tent instanceof Tent) $this->data[] = $tent;
-            else {
-                bdump('item must be instance of Tent!');
-                continue;
-            }
+            else $this->data[] = new Tent ($tent);
         }
     }
 

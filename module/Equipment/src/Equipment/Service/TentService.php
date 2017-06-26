@@ -4,6 +4,8 @@ namespace Equipment\Service;
 
 
 use Application\Service\CacheService;
+use Auth\Service\UserService;
+use Equipment\Model\EnumTentShape;
 use Equipment\Model\Tent;
 use Equipment\Model\TentTable;
 use Equipment\Model\TentTypesTable;
@@ -20,65 +22,50 @@ class TentService
     private $colorsTable;
 
     // services
+    /** @var UserService  */
+    private $userService;
     /** @var CacheService  */
     private $cache;
 
-    // hashes
-    /** @var bool  */
-    private $tentHashLoaded = false;
-    /** @var  Tent[] */
-    private $tentIdTent;
-    /** @var  Tent[] */
-    private $userIdTent;
 
-
-    public function __construct(TentTable $tentTable, TentTypesTable $tentTypesTable, TentColorsTable $tentColorsTable, CacheService $cacheService)
+    public function __construct (
+        TentTable $tentTable, TentTypesTable $tentTypesTable, TentColorsTable $tentColorsTable,
+        UserService $userService, CacheService $cacheService )
     {
         $this->tentTable = $tentTable;
         $this->typesTable = $tentTypesTable;
         $this->colorsTable = $tentColorsTable;
+        $this->userService = $userService;
         $this->cache = $cacheService;
+    }
+    //==========================================================
+    
+    public function makeTentReadable(Tent $tent)
+    {
+        $tent->readable['User'] = $this->userService->getUserById($tent->userId);
+        $tent->readable['Form'] = EnumTentShape::TRANSLATION[$tent->shape];
+        $tent->readable['Type'] = $this->typesTable->getById($tent->type);
     }
     
     //======================================================== Tent Table
     public function getAllTents()
     {
-        if (!$this->tentHashLoaded)
-        {
-            $res = $this->tentTable->getAll();
-            foreach ($res as $item) {
-                $this->updateTentHash(new Tent($item));
-            }
-            $this->tentHashLoaded = true;
-        }
-        //@todo caching and hashing
-        return $this->tentIdTent;
+        return $this->tentTable->getAll();
     }
 
     public function getTentsByUserId($id)
     {
-        if (!isset($this->userIdTent[$id])) {
-            $res = $this->tentTable->getByUserId($id);
-            foreach ($res as $item) {
-                $this->updateTentHash(new Tent($item));
-            }
-        }
-        return $this->userIdTent[$id];
+        return $this->tentTable->getByUserId($id);
     }
 
     public function getTentById($id)
     {
-        if (!isset($this->tentIdTent[$id])) {
-            $tent = new Tent($this->tentTable->getById($id));
-            $this->updateTentHash($tent);
-        }
-        return $this->tentIdTent[$id];
+        return $this->tentTable->getById($id);
     }
 
     public function saveTent(Tent $tentData)
     {
         $tentData->id =  $this->tentTable->save($tentData);
-        $this->updateTentHash($tentData);
     }
 
     public function deleteTentById($id)
@@ -91,27 +78,9 @@ class TentService
         return $this->tentTable->removeByUserId($userId);
     }
 
-    private function updateTentHash($tentData)
-    {
-        $replace = false;
-        $this->tentIdTent[$tentData->id] = $tentData;
-        if (isset($this->userIdTent[$tentData->userId][0]))
-        {
-            foreach ($this->userIdTent[$tentData->userId] as $key => $item) {
-                if ($item->id == $tentData->id) {
-                    $this->userIdTent[$tentData->userId][$key] = $tentData;
-                    $replace = true;
-                }
-            }
-            if (!$replace)
-                $this->userIdTent[$tentData->userId][] = $tentData;
-        }
-        else $this->userIdTent[$tentData->userId][] = $tentData;
-    }
     //======================================================== TentTypes Table
     public function getAllTypes()
     {
-        //@todo caching and hashing
         return $this->typesTable->getAll();
     }
 
@@ -125,19 +94,19 @@ class TentService
         return $return;
     }
 
-    public function saveType()
+    public function saveType($data)
     {
-        return;
+        if ($data['id'] == "") return $this->typesTable->add($data);
+        return $this->typesTable->save($data);
     }
 
-    public function deleteType()
+    public function deleteType($id)
     {
-        return;
+        return $this->typesTable->remove($id);
     }
     //======================================================== TentColors Table
     public function getAllColors()
     {
-        //@todo caching and hashing
         return $this->colorsTable->getAll();
     }
 
@@ -151,12 +120,13 @@ class TentService
         return $return;
     }
 
-    public function saveColor()
+    public function saveColor($data)
     {
-        return;
+        if ($data['id'] == "") return $this->colorsTable->add($data);
+        return $this->colorsTable->save($data);
     }
-    public function deleteColor()
+    public function deleteColor($id)
     {
-        return;
+        return $this->colorsTable->remove($id);
     }
 }

@@ -101,21 +101,46 @@ class TentForm extends Form
             ),
         ));
         $this->add(array(
+            'name' => 'color1',
+            'type' => 'Zend\Form\Element\Color',
+            'required' => true,
+            'options' => array(
+                'label' => 'Farbe1',
+            )
+        ));
+
+        $this->add(array(
+            'name' => 'biColor',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'options' => array (
+                'label' => 'Zweifarbig',
+            ),
+        ));
+/// Color
+        $this->add(array(
+            'name' => 'color2',
+            'type' => 'Zend\Form\Element\Color',
+            'required' => true,
+            'options' => array(
+                'label' => 'Farbe2',
+            )
+        ));
+        $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
-            'options' => array (
-                'label' => 'Go',
+            'attributes' => array(
+                'value' => 'Go',
+                'id' => 'submitbutton',
             ),
 
         ));
     }
 
-    /**
-     *
-     */
     private function getUsersForSelect()
     {
-        return $this->userService->getUserIdUserNameList();
+        $list = $this->userService->getUserIdUserNameList();
+        $list[0] = 'Verein';
+        return $list;
     }
     private function getShapesForSelect()
     {
@@ -123,15 +148,30 @@ class TentForm extends Form
         foreach (EnumTentShape::TRANSLATION as $key => $value) {
             $list[$key] = $value;
         }
+        ksort($list);
         return $list;
     }
     private function getTypesForSelect()
     {
-        return $this->tentService->getTypeIDTypeNameList();
+        $list = $this->tentService->getTypeIDTypeNameList();
+        $list[0] = array(
+                'label' => 'Sonstige',
+                'value' => 0,
+                'selected' => true,
+        );
+        ksort($list);
+        return $list;
     }
     private function getColorsForSelect()
     {
-        return $this->tentService->getColorIDColorNameList();
+        $list = $this->tentService->getColorIDColorNameList();
+        $list[0] = array(
+            'label' => 'Sonstige',
+            'value' => 0,
+            'selected' => true,
+        );
+        ksort($list);
+        return $list;
     }
 
 }

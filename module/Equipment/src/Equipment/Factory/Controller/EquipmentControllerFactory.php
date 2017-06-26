@@ -11,7 +11,8 @@ class EquipmentControllerFactory implements FactoryInterface
         $pL = $sm->getServiceLocator();
         $tentService = $pL->get('TentService');
         $userService = $pL->get('UserService');
+        $accessService = $pL->get('AccessService');
 
-        return new EquipmentController($tentService, $userService);
+        return new EquipmentController($tentService, $userService, $accessService);
     }
 }
