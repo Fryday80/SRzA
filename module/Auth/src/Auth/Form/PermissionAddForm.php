@@ -53,6 +53,12 @@ class PermissionAddForm extends Form
     {
         $selectData = array();
         foreach ($this->permTable as $res) {
+            if ($res['id'] == 9999)
+                $selectData[$res['id']] = array(
+                    'label' =>  $res['resource_name'] . ' - ' . $res['permission_name'],
+                    'disabled' => (isset($res['disabled']))? true : false,
+                    'value' => $res['id']
+                );
             $selectData[$res['id']] = $res['resource_name'] . ' - ' . $res['permission_name'];
         }
         return $selectData;

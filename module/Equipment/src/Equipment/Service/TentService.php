@@ -7,6 +7,7 @@ use Application\Service\CacheService;
 use Auth\Service\UserService;
 use Equipment\Model\EnumTentShape;
 use Equipment\Model\Tent;
+use Equipment\Model\TentSet;
 use Equipment\Model\TentTable;
 use Equipment\Model\TentTypesTable;
 
@@ -35,12 +36,20 @@ class TentService
         $this->cache = $cacheService;
     }
     //==========================================================
-    
-    public function makeTentReadable(Tent $tent)
+
+    public function makeTentSetReadables(TentSet $tentSet)
     {
-        $tent->readable['User'] = $this->userService->getUserById($tent->userId);
-        $tent->readable['Form'] = EnumTentShape::TRANSLATION[$tent->shape];
-        $tent->readable['Type'] = $this->typesTable->getById($tent->type);
+        foreach ($tentSet->data as $key => $tent)
+            $tentSet->data[$key] = $this->makeTentReadables($tent);
+        return $tentSet;
+    }
+    
+    public function makeTentReadables(Tent $tent)
+    {
+        $tent->readableUser  = $this->userService->getUserNameByID($tent->userId);
+        $tent->readableShape = EnumTentShape::TRANSLATION[$tent->shape];
+        $tent->readableType  = $this->typesTable->getById($tent->type)['name'];
+        return $tent;
     }
     
     //======================================================== Tent Table

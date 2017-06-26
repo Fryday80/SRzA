@@ -20,7 +20,9 @@ class Tent
     public $biColor;
     public $color2;
 
-    public $readable;
+    public $readableUser;
+    public $readableShape;
+    public $readableType;
 
     /**
      * Tent constructor.

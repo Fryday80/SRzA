@@ -82,6 +82,13 @@ class PermissionController extends AbstractActionController
         ksort($given);
         ksort($notGiven);
 
+        bdump($given);
+        if(empty($notGiven)) $notGiven['Du bist der König der Welt!'] = array(
+            'id' => 9999,
+            'resource_name'=>'Du bist',
+            'permission_name' => 'der König der Welt!'
+        );
+
         $addForm = new PermissionAddForm($notGiven);
         $addForm->get('role_id')->setValue($roleID);
         $addForm->get('submit')->setValue('Add');

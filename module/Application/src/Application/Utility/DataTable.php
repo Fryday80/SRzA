@@ -74,22 +74,6 @@ class DataTable
         $columnConf = $this->prepareColumnConfig($columnConf);
         if (! is_array($this->columns) ) $this->columns = array();
         array_push($this->columns, $columnConf);
-        bdump($this->columns);
-        $this->prepare();
-    }
-
-    /**
-     * @param string $columnName
-     * @param array $columnConf array (
-     * <br/>                        'name' => new name string [optional]
-     * <br/>                        'type' => string [optional]
-     * <br/>                        'label' => string [optional] )
-     */
-    public function change($columnName, $columnConf)
-    {
-        foreach ($this->columns as $cKey => $column)
-            if ($column['name'] === $columnName)
-                array_merge_recursive($this->columns[$cKey], $columnConf);
         $this->prepare();
     }
 
