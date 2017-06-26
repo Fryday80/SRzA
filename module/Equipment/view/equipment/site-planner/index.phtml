@@ -38,15 +38,15 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
             _render: function(ctx) {
                 switch (parseInt(this.tent.shape)) {
                     case 0:
+                        console.log(this.tent);
                         ctx.beginPath();
                         ctx.arc(0,
                             0,
                             this.tent.width * 5,
                             this.startAngle,
                             this.endAngle, false);
-
-//                        this._renderFill(ctx);
-//                        this._renderStroke(ctx);
+                        this._renderFill(ctx);
+                        this._renderStroke(ctx);
                         break;
                     case 1:
                         console.log(this.tent);
@@ -118,6 +118,7 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                 for(var tent in this.data) {
                     this.addTent(this.data[tent]);
                 }
+                this.canvas.renderAll();
 //                var imgElement = document.getElementById('my-image');
 //                var imgInstance = new fabric.Image(imgElement, {
 //                    left: 100,

@@ -9,7 +9,6 @@ use Equipment\Model\EnumTentShape;
 use Equipment\Model\Tent;
 use Equipment\Model\TentTable;
 use Equipment\Model\TentTypesTable;
-use Equipment\Model\TentColorsTable;
 
 class TentService
 {
@@ -18,8 +17,6 @@ class TentService
     private $tentTable;
     /** @var  TentTypesTable */
     private $typesTable;
-    /** @var  TentColorsTable */
-    private $colorsTable;
 
     // services
     /** @var UserService  */
@@ -29,12 +26,11 @@ class TentService
 
 
     public function __construct (
-        TentTable $tentTable, TentTypesTable $tentTypesTable, TentColorsTable $tentColorsTable,
+        TentTable $tentTable, TentTypesTable $tentTypesTable,
         UserService $userService, CacheService $cacheService )
     {
         $this->tentTable = $tentTable;
         $this->typesTable = $tentTypesTable;
-        $this->colorsTable = $tentColorsTable;
         $this->userService = $userService;
         $this->cache = $cacheService;
     }
@@ -103,30 +99,5 @@ class TentService
     public function deleteType($id)
     {
         return $this->typesTable->remove($id);
-    }
-    //======================================================== TentColors Table
-    public function getAllColors()
-    {
-        return $this->colorsTable->getAll();
-    }
-
-    public function getColorIDColorNameList()
-    {
-        $return = array();
-        $res = $this->getAllColors();
-        foreach ($res as $item) {
-            $return[$item['id']] = $item['name'];
-        }
-        return $return;
-    }
-
-    public function saveColor($data)
-    {
-        if ($data['id'] == "") return $this->colorsTable->add($data);
-        return $this->colorsTable->save($data);
-    }
-    public function deleteColor($id)
-    {
-        return $this->colorsTable->remove($id);
     }
 }

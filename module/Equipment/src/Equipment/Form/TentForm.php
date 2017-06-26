@@ -51,15 +51,6 @@ class TentForm extends Form
                 'value_options' => $this->getTypesForSelect(),
             ),
         ));
-        // color int
-        $this->add(array(
-            'name' => 'color',
-            'type' => 'Zend\Form\Element\Select',
-            'options' => array (
-                'label' => 'Farbe',
-                'value_options' => $this->getColorsForSelect(),
-            ),
-        ));
         // length int
         $this->add(array(
             'name' => 'length',
@@ -158,17 +149,6 @@ class TentForm extends Form
                 'label' => 'Sonstige',
                 'value' => 0,
                 'selected' => true,
-        );
-        ksort($list);
-        return $list;
-    }
-    private function getColorsForSelect()
-    {
-        $list = $this->tentService->getColorIDColorNameList();
-        $list[0] = array(
-            'label' => 'Sonstige',
-            'value' => 0,
-            'selected' => true,
         );
         ksort($list);
         return $list;

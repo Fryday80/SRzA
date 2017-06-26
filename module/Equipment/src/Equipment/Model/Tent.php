@@ -7,7 +7,7 @@ use Equipment\Model\EnumTentShape;
 
 class Tent
 {
-    public $id = null;
+    public $id;
     public $userId;
     public $shape;
     public $type;
@@ -17,8 +17,8 @@ class Tent
     public $isShowTent = 0;
     public $isGroupEquip = 0;
     public $color1;
-    public $biColor = null;
-    public $color2 = null;
+    public $biColor;
+    public $color2;
 
     public $readable;
 

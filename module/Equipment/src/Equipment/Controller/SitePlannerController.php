@@ -14,7 +14,7 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
-
+        $a = $this->tentService->getAllTents();
         return array(
             'tents' => $this->tentService->getAllTents(),
         );

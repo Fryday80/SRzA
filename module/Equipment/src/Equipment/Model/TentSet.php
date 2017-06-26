@@ -6,7 +6,7 @@ use Equipment\Model\Tent;
 
 class TentSet
 {
-    private $data = array();
+    public $data = array();
 
     public function __construct($arrayOfTents)
     {

@@ -20,7 +20,6 @@ return array(
         'abstract_factories' => array(
             'Equipment\Model\TentTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\TentColorsTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(

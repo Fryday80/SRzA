@@ -28,15 +28,13 @@ class EquipmentController extends AbstractActionController
     }
 
     public function indexAction() {
+        $a = $this->tentService->getAllTents();
+
         $test = 'empty';
         $dataTable = 'empty';
-        
+        $test = json_encode($a);
         $hide = array();
         $dataTableData = $this->tentService->getAllTents()->toArray();
-        foreach ($dataTableData as $key => $tentData){
-            $tentData['User'] = $this->userService->getUserById($tentData['user_id']);
-            $hide[] = 'user_id';
-        }
 
         $dataTable = new DataTable(array('data' => $dataTableData));
         $dataTable->remove('id');
