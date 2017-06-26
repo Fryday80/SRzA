@@ -56,7 +56,7 @@ class TentForm extends Form
             'name' => 'length',
             'type' => 'Number',
             'options' => array (
-                'label' => 'Breite in Metern',
+                'label' => 'Breite in Zentimeter',
             ),
         ));
         // width int
@@ -64,7 +64,7 @@ class TentForm extends Form
             'name' => 'width',
             'type' => 'Number',
             'options' => array (
-                'label' => 'Tiefe in Metern',
+                'label' => 'Tiefe in Zentimeter',
             ),
         ));
         // spareBeds int
