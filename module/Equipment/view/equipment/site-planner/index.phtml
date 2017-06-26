@@ -10,8 +10,11 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 
 <button id="test1">Test 1</button>
+<ul>
+    <li>Liste Aller möglichen objecte</li>
+    <li></li>
+</ul>
 <canvas id="site-planner">{"myData": "please parse me"}</canvas>
-<img src="my_image.png" id="my-image">
 <script>
 
     //site planner
@@ -35,15 +38,31 @@ $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
                 this.canvas = new fabric.Canvas($(canvas)[0], {
                     width: 900,
                     height: 600,
-                    background: '#ff0000'
+                    backgroundColor : "#000000",
                 });
 //                fabric.Object.prototype.set({
 //                    transparentCorners: false,
 //                    borderColor: '#ff00ff',
 //                    cornerColor: '#ff0000',
 //                });
-
-                // create map
+                var self = this;
+                // create map image
+//                fabric.Image.fromURL('https://www.lib.utexas.edu/maps/historical/ward_1912/world_1910.jpg', function(img) {
+//                    self.canvas.add(img.scale(0.1).set({
+//                        left: -200,
+//                        top: -200,
+//                        scale: 2,
+//                    }));
+//                    self.canvas.renderAll();
+//                });
+//                var imgElement = document.getElementById('my-image');
+//                var imgInstance = new fabric.Image(imgElement, {
+//                    left: 100,
+//                    top: 100,
+//                    angle: 30,
+//                    opacity: 0.85
+//                });
+//                this.group.add(imgInstance);
             }
             addItem() {
                 var rect = new fabric.Rect({
