@@ -1,5 +1,5 @@
 <?php
-namespace Cast\Form\Filter;
+namespace Equipment\Form\Filter;
 
 use Zend\InputFilter\InputFilter;
 
@@ -12,7 +12,7 @@ class TentFilter extends InputFilter
     }
 
     private function commonFilter(){
-       
+
     }
 
     private function backendFilter()

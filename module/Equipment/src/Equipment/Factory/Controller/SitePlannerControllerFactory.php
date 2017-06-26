@@ -1,5 +1,5 @@
 <?php
-namespace Equipment\Factory;
+namespace Equipment\Factory\Controller;
 
 use Equipment\Controller\SitePlannerController;
 use Zend\ServiceManager\FactoryInterface;

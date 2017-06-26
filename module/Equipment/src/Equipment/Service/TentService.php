@@ -112,7 +112,7 @@ class TentService
     public function getAllTypes()
     {
         //@todo caching and hashing
-        return;
+        return $this->typesTable->getAll();
     }
 
     public function getTypeIDTypeNameList()
@@ -138,7 +138,7 @@ class TentService
     public function getAllColors()
     {
         //@todo caching and hashing
-        return;
+        return $this->colorsTable->getAll();
     }
 
     public function getColorIDColorNameList()

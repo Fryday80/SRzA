@@ -5,8 +5,8 @@ return array(
     'controllers' => array(
         'invokables' => array( ),
         'factories' => array(
-            'Equipment\Controller\SitePlanner' => 'Equipment\Factory\SitePlannerControllerFactory',
-            'Equipment\Controller\Equipment' => 'Equipment\Factory\Controller\EquipmentControllerFactory',
+            'Equipment\Controller\SitePlanner' => 'Equipment\Factory\Controller\SitePlannerControllerFactory',
+            'Equipment\Controller\Equipment'   => 'Equipment\Factory\Controller\EquipmentControllerFactory',
         ),
     ),
     'view_helpers' => array(
@@ -15,11 +15,9 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'TentService' => 'Equipment\Service\TentServiceFactory',
+            'TentService' => 'Equipment\Factory\Service\TentServiceFactory',
         ),
         'abstract_factories' => array(
-            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
-            'Zend\Log\LoggerAbstractServiceFactory',
             'Equipment\Model\TentTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\TentColorsTable' => DefaultTableGatewayFactory::class,
