@@ -26,7 +26,7 @@ class TentTable extends AbstractTableGateway
 
     /**
      * @param $id
-     * @return bool| array
+     * @return bool| Tent
      */
     public function getById($id) {
         $row = $this->select(array('id' => (int) $id));
@@ -60,7 +60,6 @@ class TentTable extends AbstractTableGateway
             'length' => $tentData->length,
             'spare_beds' => $tentData->spareBeds,
             'is_show_tent' => $tentData->isShowTent,
-            'is_group_equip' => $tentData->isGroupEquip,
         )))
             return false;
         return $this->getLastInsertValue();
@@ -81,7 +80,6 @@ class TentTable extends AbstractTableGateway
                 'length' => $tentData->length,
                 'spare_beds' => $tentData->spareBeds,
                 'is_show_tent' => $tentData->isShowTent,
-                'is_group_equip' => $tentData->isGroupEquip,
             ),
             //where
             array( 'id' => $tentData->id )

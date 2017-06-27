@@ -15,16 +15,17 @@ class Tent
     public $length;
     public $spareBeds;
     public $isShowTent = 0;
-    public $isGroupEquip = 0;
     public $color1;
     public $biColor;
     public $color2;
 
+    // readables
     public $readableUser;
     public $readableShape;
     public $readableType;
     public $shapeImg;
     public $colorField;
+    public $isShowTentValue;
 
     /**
      * Tent constructor.
@@ -79,4 +80,14 @@ class Tent
         }
     }
 
+    public function isGroupEquip()
+    {
+        if ($this->userId == 0) return true;
+        return false;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
+    }
 }

@@ -1,0 +1,17 @@
+<?php
+$title = 'delete';
+$this->headTitle($title);
+/** @var \Equipment\Model\Tent $tent */
+$tent = $tent;
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<p>Sicher, dass <?php echo $tent->readableType ?> gelöscht werden soll?</p>
+
+<form action="<?php echo $url; ?>" method="post">
+    <div>
+        <input type="hidden" name="id" value="<?php echo (int) $tent->id; ?>" />
+        <input type="submit" name="del" value="Yes" />
+        <input type="submit" name="del" value="No" />
+    </div>
+</form>

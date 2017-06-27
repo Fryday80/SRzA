@@ -46,10 +46,14 @@ class TentService
     
     public function createTentReadables(Tent $tent)
     {
-        $tent->readableUser  = $this->userService->getUserNameByID($tent->userId);
+        if ($tent->userId == 0)
+            $tent->readableUser = 'Verein';
+        else
+            $tent->readableUser  = $this->userService->getUserNameByID($tent->userId);
         $tent->readableShape = EnumTentShape::TRANSLATION[$tent->shape];
         $tent->shapeImg = EnumTentShape::IMAGINATION[$tent->shape];
         $tent->readableType  = $this->typesTable->getById($tent->type)['name'];
+        $tent->isShowTentValue = ($tent->isShowTent == 0) ? 'nein' : 'ja';
         $c1 = $tent->color1;
         $c2 = $tent->color2;
         $tent->colorField = '<div style="

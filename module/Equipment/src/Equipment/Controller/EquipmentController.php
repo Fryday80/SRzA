@@ -4,10 +4,10 @@ namespace Equipment\Controller;
 use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
-use Equipment\Form\TentTypeForm;
 use Equipment\Model\Tent;
 use Equipment\Service\TentService;
 use Equipment\Form\TentForm;
+use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class EquipmentController extends AbstractActionController
@@ -65,17 +65,8 @@ class EquipmentController extends AbstractActionController
                 array (
                     'name' => 'colorField', 'label' => 'Farbe'
                 ),
-//                array (
-//                    'name' => 'biColor', 'label' => 'Zwei-<br/>farbig'
-//                ),
-//                array (
-//                    'name' => 'color2', 'label' => 'Farbe 2'
-//                ),
                 array (
-                    'name' => 'isShowTent', 'label' => 'Schauzelt'
-                ),
-                array (
-                    'name' => 'isGroupEquip', 'label' => 'Gruppen-<br/>eigentum'
+                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?'
                 ),
                 array (
                     'name'  => 'href',
@@ -90,7 +81,7 @@ class EquipmentController extends AbstractActionController
                         $link2 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
                         if ( $row['userId'] == $askingId || $askingRole == 'Administrator' ) {
                             $edit   = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                            $delete = '<a href="/equip/tent/delete/' . $row['id'] . '">Delete</a>';
+                            $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
                         }
                         return $link1. '<br/>' .$link2. '<br/>' .$edit.'<br/>'.$delete;
                     }
@@ -113,9 +104,6 @@ class EquipmentController extends AbstractActionController
         $dataTable = new DataTable(array(
             'data' => $dataTableData,
             'columns' => array(
-//                array(
-//                    'name' => 'readableUser', 'label' => 'Von'
-//                ),
                 array (
                     'name' => 'shapeImg', 'label' => 'Form'
                 ),
@@ -129,22 +117,13 @@ class EquipmentController extends AbstractActionController
                     'name' => 'length', 'label' => 'Tiefe'
                 ),
                 array (
-                    'name' => 'spareBeds', 'label' => 'freie Schlaf- plätze'
+                    'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
                 ),
                 array (
-                    'name' => 'color1', 'label' => 'Farbe'
+                    'name' => 'colorField', 'label' => 'Farbe'
                 ),
                 array (
-                    'name' => 'biColor', 'label' => 'Zwei- farbig'
-                ),
-                array (
-                    'name' => 'color2', 'label' => 'Farbe 2'
-                ),
-                array (
-                    'name' => 'isShowTent', 'label' => 'Schauzelt'
-                ),
-                array (
-                    'name' => 'isGroupEquip', 'label' => 'Gruppen- eigentum'
+                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?'
                 ),
                 array (
                     'name'  => 'href',
@@ -158,7 +137,7 @@ class EquipmentController extends AbstractActionController
                         $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
                         if ( $row['userId'] == $askingId || $askingRole == 'Administrator' ) {
                             $edit   = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                            $delete = '<a href="/equip/tent/delete/' . $row['id'] . '">Delete</a>';
+                            $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
                         }
                         return $link1. '<br/>' .$edit.'<br/>'.$delete;
                     }
@@ -169,8 +148,39 @@ class EquipmentController extends AbstractActionController
             'dataTable' => $dataTable
         );
     }
-    public function usertentAction(){}
-    public function deletetentAction(){}
+    public function usertentAction(){
+        $tentId = (int) $this->params()->fromRoute('tentId');
+        return array(
+            'tent' => $this->tentService->getTentById($tentId),
+        );
+    }
+    public function deletetentAction(){
+        $tentId = (int) $this->params()->fromRoute('tentId');
+        $userId = (int) $this->params()->fromRoute('userId');
+        $askingUserId = $this->accessService->getUserID();
+        $askingRole = $this->accessService->getRole();
+        if ($userId !== $askingUserId && $askingRole !== 'Administrator') return $this->redirect()->toRoute('home');
+        $url = "/equip/tent/$userId/delete/$tentId";
+        $tent = $this->tentService->getTentById($tentId);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $post = $request->getPost();
+            bdump($post->del);
+            bdump(($post->del == 'Yes'));
+            if ($post['del'] == 'Yes' && $tentId == $post['id']){
+                $checkTent = $this->tentService->getTentById($tentId);
+                if ($askingUserId !== $checkTent->userId)
+                    if ($askingRole !== 'Administrator')
+                        return $this->redirect()->toRoute('home');
+                $this->tentService->deleteTentById($tentId);
+                return $this->redirect()->toRoute('equipmanager/tent');
+            }
+        }
+        return array(
+            'tent' => $tent,
+            'url' => $url,
+        );
+    }
     public function addtentAction()
     {
         $form = new TentForm($this->tentService, $this->userService);
@@ -183,9 +193,30 @@ class EquipmentController extends AbstractActionController
                 $this->tentService->saveTent($data);
             }
         }
+        return array(
+            'form' => $form,
+        );
 
     }
-    public function edittentAction(){}
+    public function edittentAction(){
+        $tentId = (int) $this->params()->fromRoute('tentId');
+        $tent = $this->tentService->getTentById($tentId);
+
+        $form = new TentForm($this->tentService, $this->userService);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $post = $request->getPost();
+            $form->setData($post);
+            if ($form->isValid()){
+                $tent = new Tent($form->getData());
+                $this->tentService->saveTent($tent);
+            }
+        }
+        $form->setData($tent->toArray());
+        return array(
+            'form' => $form,
+        );
+    }
 
     private function getConfiguration()
     {

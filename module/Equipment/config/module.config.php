@@ -54,14 +54,12 @@ return array(
                          //children
                          'child_routes' => array(
                              // /equip/tent/add
-                             'add' => array(
+                             'add_tent' => array(
                                  'type' => 'Segment',
                                  'options' => array(
                                      'route' => '/add',
-                                     'constraints' => array(
-                                         'id' => '[0-9]+'
-                                     ),
                                      'defaults' => array(
+                                         'controller' => 'Equipment\Controller\Equipment',
                                          'action' => 'addtent'
                                      )
                                  ),
@@ -72,6 +70,9 @@ return array(
                                  'type' => 'Segment',
                                  'options' => array(
                                      'route'    => '/:userId',
+                                     'constraints' => array(
+                                         'userId' => '[0-9]+'
+                                     ),
                                      'defaults' => array(
                                          'controller' => 'Equipment\Controller\Equipment',
                                          'action'     => 'usertentall',
@@ -84,6 +85,9 @@ return array(
                                          'type' => 'Segment',
                                          'options' => array(
                                              'route'    => '/show/:tentId',
+                                             'constraints' => array(
+                                                 'tentId' => '[0-9]+'
+                                             ),
                                              'defaults' => array(
                                                  'controller' => 'Equipment\Controller\Equipment',
                                                  'action'     => 'usertent',
@@ -92,12 +96,12 @@ return array(
                                          'may_terminate' => true,
                                      ),
                                      // /equip/tent/:userId/delete/:tentId
-                                     'delete' => array(
+                                     'delete_tent' => array(
                                          'type' => 'Segment',
                                          'options' => array(
                                              'route' => '/delete/:tentId',
                                              'constraints' => array(
-                                                 'id' => '[0-9]+'
+                                                 'tentId' => '[0-9]+'
                                              ),
                                              'defaults' => array(
                                                  'action' => 'deletetent'
@@ -106,12 +110,12 @@ return array(
                                          'may_terminate' => true,
                                      ),
                                      // /equip/tent/:userId/edit/:tentId
-                                     'edit' => array(
+                                     'edit_tent' => array(
                                          'type' => 'Segment',
                                          'options' => array(
                                              'route' => '/edit/:tentId',
                                              'constraints' => array(
-                                                 'id' => '[0-9]+'
+                                                 'tentId' => '[0-9]+'
                                              ),
                                              'defaults' => array(
                                                  'action' => 'edittent'
