@@ -25,7 +25,7 @@ class TentTypesTable extends AbstractTableGateway
 
     public function getById($id)
     {
-        $row = $this->select();
+        $row = $this->select(array('id' => $id));
         if (!$row)
             return false;
 

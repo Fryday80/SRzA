@@ -83,14 +83,6 @@ class TentForm extends Form
                 'label' => 'Schauzelt',
             ),
         ));
-        // groupEquip int
-        $this->add(array(
-            'name' => 'isGroupEquip',
-            'type' => 'Zend\Form\Element\Checkbox',
-            'options' => array (
-                'label' => 'Gruppeneigentum',
-            ),
-        ));
         $this->add(array(
             'name' => 'color1',
             'type' => 'Zend\Form\Element\Color',
