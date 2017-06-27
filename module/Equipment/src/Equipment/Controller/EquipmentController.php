@@ -28,6 +28,30 @@ class EquipmentController extends AbstractActionController
     }
 
     public function indexAction() {
+//        return $this->redirect()->toRoute('tent');
+        $test = 'empty';
+
+        $form = new TentForm($this->tentService, $this->userService);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $post = $request->getPost();
+            $form->setData($post);
+            if ($form->isValid()){
+                $data = new Tent($form->getData());
+                $this->tentService->saveTent($data);
+            }
+        }
+
+        return array(
+            'form' => $form,
+            'test' => $test,
+//            'dataTable' => $dataTable
+        );
+
+    }
+
+    public function tentAction()
+    {
         $test = 'empty';
         $dataTable = 'empty';
         $form = new Tent();
@@ -40,37 +64,37 @@ class EquipmentController extends AbstractActionController
             'columns' => array(
                 array(
                     'name' => 'readableUser', 'label' => 'Von'
-                    ),
+                ),
                 array (
                     'name' => 'readableShape', 'label' => 'Form'
-                    ),
+                ),
                 array (
                     'name' => 'readableType', 'label' => 'Typ'
-                    ),
+                ),
                 array (
                     'name' => 'width', 'label' => 'Breite'
-                    ),
+                ),
                 array (
                     'name' => 'length', 'label' => 'Tiefe'
-                    ),
+                ),
                 array (
                     'name' => 'spareBeds', 'label' => 'freie Schlafplätze'
-                    ),
+                ),
                 array (
                     'name' => 'color1', 'label' => 'Farbe'
-                    ),
+                ),
                 array (
                     'name' => 'biColor', 'label' => 'Zweifarbig'
-                    ),
+                ),
                 array (
                     'name' => 'color2', 'label' => 'Farbe 2'
-                    ),
+                ),
                 array (
                     'name' => 'isShowTent', 'label' => 'Schauzelt'
-                    ),
+                ),
                 array (
                     'name' => 'isGroupEquip', 'label' => 'Gruppeneigentum'
-                    ),
+                ),
                 array (
                     'name'  => 'href',
                     'label' => 'Aktion',
@@ -89,12 +113,13 @@ class EquipmentController extends AbstractActionController
                 ),
             )
         ));
-        
+
         return array(
             'form' => $form,
             'test' => $test,
             'dataTable' => $dataTable
         );
+
     }
 
     public function addAction()

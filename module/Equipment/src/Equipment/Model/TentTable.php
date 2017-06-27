@@ -1,6 +1,7 @@
 <?php
 namespace Equipment\Model;
 
+use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
@@ -94,6 +95,58 @@ class TentTable extends AbstractTableGateway
 
     public function removeById($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
+    }
+
+    /**
+     * returns all characters and there jobs, families and so on
+     * @param array $where
+     * @return array results
+     * @throws \Exception
+     */
+    public function fetchAllCastData(Array $where = array()) {
+        try {
+            $sql = new Sql($this->getAdapter());
+
+            $select = $sql->select()
+                ->from(array(
+                    'tent' => 'tent'                // main table (alias => table possible)
+                ))
+                ->columns(array(                    // selected columns (alias => column possible)
+                    'id' => 'id',
+                    'user_id' => 'user_id',
+                    'shape' => 'shape',
+                    'type' => 'type',
+                    'color1' => 'color1',
+                    'color2' => 'color2',
+                    'width' => 'width',
+                    'length' => 'length',
+                    'spare_beds' => 'spare_beds',
+                    'is_show_tent' => 'is_show_tent',
+                    'is_group_equip' => 'is_group_equip',
+                ))
+                ->join(array(
+                    'types' => 'tent_types'                        // second table (alias => table possible)
+                ),
+                    'types.id = tent.type',    // join where
+                    array(                          // other columns (alias => column possible)
+                    'type_name' => 'name',
+                ), 'left')
+                ->join(array(
+                    'jusers' => 'users'                        // second table (alias => table possible)
+                ),
+                    'jusers.id = tent.user_id',    // join where
+                    array(                          // other columns (alias => column possible)
+                        'user_name' => 'name',
+                    ), 'left')
+                ->where(array());                   // where from data set...
+
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $result = $this->resultSetPrototype->initialize($statement->execute())
+                ->toArray();
+            return $result;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 
 }

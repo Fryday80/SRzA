@@ -68,6 +68,11 @@ class TentService
         return $this->tentTable->getById($id);
     }
 
+    public function getCanvasData()
+    {
+        return $this->tentTable->fetchAllCastData();
+    }
+
     public function saveTent(Tent $tentData)
     {
         $tentData->id =  $this->tentTable->save($tentData);

@@ -38,10 +38,7 @@ class PermissionController extends AbstractActionController
     public function editAction()
     {
         $sortedRoles = [];
-        $perms = [];
         $permsByRole = [];
-        $thisRolePerms = [];
-        $pHash = [];
         $notGiven = [];
         $given = [];
         $skip = true;
@@ -82,10 +79,9 @@ class PermissionController extends AbstractActionController
         ksort($given);
         ksort($notGiven);
 
-        bdump($given);
         if(empty($notGiven)) $notGiven['Du bist der König der Welt!'] = array(
             'id' => 9999,
-            'resource_name'=>'Du bist',
+            'resource_name'   => 'Du bist',
             'permission_name' => 'der König der Welt!'
         );
 
@@ -104,7 +100,7 @@ class PermissionController extends AbstractActionController
         );
     }
 
-    public function addAction()
+    public function addAction() //ja die posts gehen nicht auf die selbe url die gehen nach add oder delete
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -139,7 +135,8 @@ class PermissionController extends AbstractActionController
             $post = $request->getPost();
             $rolePermIDs = $post['role_permission_id'];
             foreach ($rolePermIDs as $id) {
-                $this->rolePermTable->delete("id = $id");
+//                $this->rolePermTable->delete("id = $id");
+                $this->rolePermTable->deletePermission($post['role_id'], $id);
             }
             $this->clearCache();
         }
