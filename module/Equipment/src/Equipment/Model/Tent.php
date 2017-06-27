@@ -23,6 +23,8 @@ class Tent
     public $readableUser;
     public $readableShape;
     public $readableType;
+    public $shapeImg;
+    public $colorField;
 
     /**
      * Tent constructor.

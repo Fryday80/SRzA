@@ -37,18 +37,29 @@ class TentService
     }
     //==========================================================
 
-    public function makeTentSetReadables(TentSet $tentSet)
+    public function createTentSetReadables(TentSet $tentSet)
     {
         foreach ($tentSet->data as $key => $tent)
-            $tentSet->data[$key] = $this->makeTentReadables($tent);
+            $tentSet->data[$key] = $this->createTentReadables($tent);
         return $tentSet;
     }
     
-    public function makeTentReadables(Tent $tent)
+    public function createTentReadables(Tent $tent)
     {
         $tent->readableUser  = $this->userService->getUserNameByID($tent->userId);
         $tent->readableShape = EnumTentShape::TRANSLATION[$tent->shape];
+        $tent->shapeImg = EnumTentShape::IMAGINATION[$tent->shape];
         $tent->readableType  = $this->typesTable->getById($tent->type)['name'];
+        $c1 = $tent->color1;
+        $c2 = $tent->color2;
+        $tent->colorField = '<div style="
+            width: 0;
+            height: 0;
+            border-left:   20px solid ' .$c1. ';
+            border-top:    20px solid ' .$c1. ';
+            border-right:  20px solid ' .$c2. ';
+            border-bottom: 20px solid ' .$c2. ';
+            "></div>';
         return $tent;
     }
     

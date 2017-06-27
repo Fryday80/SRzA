@@ -38,7 +38,7 @@ class TentTable extends AbstractTableGateway
 
     /**
      * @param $id
-     * @return bool| array
+     * @return bool| TentSet
      */
     public function getByUserId($id) {
         $result = $this->select(array('user_id' => (int) $id));
@@ -54,6 +54,7 @@ class TentTable extends AbstractTableGateway
             'shape' => $tentData->shape,
             'type' => $tentData->type,
             'color1' => $tentData->color1,
+            'bi_color' => $tentData->biColor,
             'color2' => $tentData->color2,
             'width' => $tentData->width,
             'length' => $tentData->length,
@@ -74,7 +75,8 @@ class TentTable extends AbstractTableGateway
                 'shape' => $tentData->shape,
                 'type' => $tentData->type,
                 'color1' => $tentData->color1,
-                'color2' => ($tentData->biColor) ? $tentData->color2 : null,
+                'bi_color' => $tentData->biColor,
+                'color2' => ($tentData->biColor == 1) ? $tentData->color2 : $tentData->color1,
                 'width' => $tentData->width,
                 'length' => $tentData->length,
                 'spare_beds' => $tentData->spareBeds,

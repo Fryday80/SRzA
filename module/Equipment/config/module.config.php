@@ -40,6 +40,7 @@ return array(
                      ),
                  ),
                  'child_routes' => array(
+                     // /equip/tent
                      'tent' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
@@ -52,10 +53,25 @@ return array(
                          ),
                          //children
                          'child_routes' => array(
-                             'usertentall' => array(
+                             // /equip/tent/add
+                             'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route'    => '/:user',
+                                     'route' => '/add',
+                                     'constraints' => array(
+                                         'id' => '[0-9]+'
+                                     ),
+                                     'defaults' => array(
+                                         'action' => 'addtent'
+                                     )
+                                 ),
+                                 'may_terminate' => true,
+                             ),
+                             // /equip/tent/:userId
+                             'usertent_all' => array(
+                                 'type' => 'Segment',
+                                 'options' => array(
+                                     'route'    => '/:userId',
                                      'defaults' => array(
                                          'controller' => 'Equipment\Controller\Equipment',
                                          'action'     => 'usertentall',
@@ -63,58 +79,49 @@ return array(
                                  ),
                                  'may_terminate' => true,
                                  'child_routes' => array(
+                                     // /equip/tent/:userId/show/:tentId
                                      'usertent' => array(
-                                     'type' => 'Segment',
-                                     'options' => array(
-                                         'route'    => '/:tentId',
-                                         'defaults' => array(
-                                             'controller' => 'Equipment\Controller\Equipment',
-                                             'action'     => 'usertent',
+                                         'type' => 'Segment',
+                                         'options' => array(
+                                             'route'    => '/show/:tentId',
+                                             'defaults' => array(
+                                                 'controller' => 'Equipment\Controller\Equipment',
+                                                 'action'     => 'usertent',
+                                             ),
                                          ),
+                                         'may_terminate' => true,
                                      ),
-                                     'may_terminate' => true,
-                                     'child_routes' => array(
-                                         'delete' => array(
-                                             'type' => 'Segment',
-                                             'options' => array(
-                                                 'route' => '/delete[/:id]',
-                                                 'constraints' => array(
-                                                     'id' => '[0-9]+'
-                                                 ),
-                                                 'defaults' => array(
-                                                     'action' => 'delete'
-                                                 )
+                                     // /equip/tent/:userId/delete/:tentId
+                                     'delete' => array(
+                                         'type' => 'Segment',
+                                         'options' => array(
+                                             'route' => '/delete/:tentId',
+                                             'constraints' => array(
+                                                 'id' => '[0-9]+'
+                                             ),
+                                             'defaults' => array(
+                                                 'action' => 'deletetent'
                                              )
                                          ),
-                                         'add' => array(
-                                             'type' => 'Segment',
-                                             'options' => array(
-                                                 'route' => '/add[/:id]',
-                                                 'constraints' => array(
-                                                     'id' => '[0-9]+'
-                                                 ),
-                                                 'defaults' => array(
-                                                     'action' => 'add'
-                                                 )
+                                         'may_terminate' => true,
+                                     ),
+                                     // /equip/tent/:userId/edit/:tentId
+                                     'edit' => array(
+                                         'type' => 'Segment',
+                                         'options' => array(
+                                             'route' => '/edit/:tentId',
+                                             'constraints' => array(
+                                                 'id' => '[0-9]+'
+                                             ),
+                                             'defaults' => array(
+                                                 'action' => 'edittent'
                                              )
                                          ),
-                                         'edit' => array(
-                                             'type' => 'Segment',
-                                             'options' => array(
-                                                 'route' => '/edit[/:id]',
-                                                 'constraints' => array(
-                                                     'id' => '[0-9]+'
-                                                 ),
-                                                 'defaults' => array(
-                                                     'action' => 'edit'
-                                                 )
-                                             )
-                                         )
-                                     )
+                                         'may_terminate' => true,
+                                     ),
                                  )
                              )
                          ),
-                     ),
                      ),
                  ),
              ),
