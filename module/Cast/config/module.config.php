@@ -41,7 +41,7 @@ return array(
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'profiles' => __DIR__ . '/../view',
+            'cast' => __DIR__ . '/../view',
         ),
     ),
      'router' => array(

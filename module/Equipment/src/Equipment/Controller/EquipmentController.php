@@ -34,6 +34,7 @@ class EquipmentController extends AbstractActionController
         );
     }
 
+    //=================================== Tent
     public function tentAction()
     {
         $links = array(
