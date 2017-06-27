@@ -9,21 +9,54 @@ $this->headScript()->appendFile('/libs/map.js');
 
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
-<input id="lon" type="number" value="48.249238">
-<input id="lat" type="number" value="11.562762">
-<button id="setMap">Set map</button>
-<button id="zoomin">ZoomIn</button>
-<button id="zoomout">ZoomOut</button>
-<ul>
-    <li>Liste Aller möglichen objecte</li>
-<!--    --><?php //for(): ?>
-<!--    --><?php //endfor; ?>
-    <li></li>
-</ul>
-<div id="testt"></div>
-<canvas id="site-planner"><?php echo json_encode($tents->data); ?></canvas>
-<script>
+<style>
+    #sitePlanner {
+        display: flex;
+    }
+    #sitePlanner .canvas {
+        flex-grow: 1;
+    }
+    .planner-controls {
+        flex: 1;
+        width: 200px;
+        padding: 5px;
+    }
+    .planner-controls ul {
+        list-style: none;
+    }
 
+</style>
+<box id="sitePlanner">
+    <div class="planner-controls">
+        <button class="setMap" style="float: right; margin: 0px 5px 10px 0;height: 33px">Set Map</button>
+        <input style="float: left" id="lon" type="number" value="48.249238">
+        <input style="float: left" id="lat" type="number" value="11.562762">
+        <hr style="clear:both; margin: 0 0 10px 0">
+        <button class="zoomin">ZoomIn</button>
+        <button class="zoomout">ZoomOut</button>
+        <button class="save">Save Plan</button>
+        <button class="createImage">Create Image</button>
+        <hr style="clear:both; margin: 10px 0 10px 0">
+        <ul>
+            <li>Liste Aller möglichen objecte</li>
+            <?php
+            foreach($tents as $tent): ?>
+                <li>
+                    <span class="type">
+                        <?php echo $tent['type'] ?>
+                    </span>
+                    <span class="user">
+                        <?php echo $tent['user_name'] ?>
+                    </span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+    <div class="canvas">
+        <canvas class="site-planner-canvas"><?php echo json_encode($tents); ?></canvas>
+    </div>
+</box>
+<script>
     //site planner
     (function($) {
         "use strict";
@@ -31,23 +64,54 @@ $this->headScript()->appendFile('/libs/map.js');
             color: "#556b2f",
             backgroundColor: "white"
         };
-        function createGoogleMapStaticImageUrls(lonLat) {
-            var urlLive = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
-                zoom: 21,
-                size: '640x640',
-                center: lonLat[0] + ',' + (lonLat[1] - 0.000214), //could be string address or "lat,lon"
-                maptype: 'satellite',
-                scale: 3
-            });
-            var urlLive2 = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
-                zoom: 21,
-                size: '640x640',
-                center: lonLat[0] + ',' + (lonLat[1] + 0.000214),
-                maptype: 'satellite',
-                scale: 3
-            });
-            return [urlLive, urlLive2];
+
+        function loadImage(url, callback) {
+            var img = new Image();
+            img.onload = callback;
+            img.src = url;
         }
+        function preloadImages(urls, callback, progress){
+            var pointer = 0;
+            var images = [];
+
+            function onload() {
+                //console.log('image loaded: %s', this.src);
+                images.push(this);
+                pointer++;
+                if (pointer < urls.length) {
+                    progress(pointer / urls.length);
+                    loadImage(urls[pointer], onload);
+                } else {
+                    callback(images);
+                }
+            }
+            loadImage(urls[pointer], onload);
+        }
+        function createGoogleMapStaticImageUrls(lonLat, diameter) {
+            var result = [];
+
+            for (var line = 0; line < diameter; line++) {
+                for (var pos = 0; pos < diameter; pos++) {
+                    var center = [
+                        Math.floor( (lonLat[0] - line * 0.000277) * 1000000  ) / 1000000,
+                        Math.floor( (lonLat[1] + pos * 0.000429) * 1000000  ) / 1000000,
+                    ];
+//                    console.log('line: %i  |  pos: %i', line, pos);
+//                    console.log(center);
+                    var url = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
+                        zoom: 21,
+                        size: '640x640',
+                        center: center[0] + ',' + center[1],
+                        maptype: 'satellite',
+                        scale: 3
+                    });
+                    result.push(url);
+                }
+            }
+
+            return result;
+        }
+
         var TentEntity = fabric.util.createClass(fabric.Object, {
             type: 'tent',
             radius: 40,
@@ -80,9 +144,15 @@ $this->headScript()->appendFile('/libs/map.js');
                     tr: false,
                     mtr: true,
                 });
+                this.on('deselected', function(e) {
+                    this.moveTo(100);
+                }.bind(this));
             },
-
             _render: function(ctx) {
+//                ctx.rotate();
+                // 0 = eckig
+                // 1 = rechteck
+                // 2 = sachs
                 switch (parseInt(this.tent.shape)) {
                     case 0:
                         ctx.beginPath();
@@ -130,91 +200,192 @@ $this->headScript()->appendFile('/libs/map.js');
         });
 
 
-
-
         /**
          * Main class, holds everything together
          */
         class SitePlanner {
-
-            constructor(canvas, settings) {
+            constructor(element, settings) {
+                var $canvas = $('.site-planner-canvas', element);
+                this.progressBarWidth = 250;
                 this.viewPos = {x:0, y:0};
                 this.zoomValue = 1;
-                this.data = JSON.parse($(canvas).html());
+                this.isDragging = false;
+                this.data = JSON.parse($canvas.html());
                 this.mapImages = [];
+                this.isBusy = false;
                 //init
 
-                $(canvas).html('');
+                $canvas.html('');
                 //create fabric
-                this.canvas = new fabric.Canvas($(canvas)[0], {
-                    width: 1280,
-                    height: 640,
+                this.canvas = new fabric.Canvas($canvas[0], {
+                    width: 900,
+                    height: 600,
                     backgroundColor : "#000000",
                 });
+                this.canvas.selection = false;
                 fabric.Object.prototype.set({
                     transparentCorners: false,
                     borderColor: '#ff00ff',
                     cornerColor: '#ff0000',
                 });
-                this.setMap([48.249238, 11.562762]);
+                var progressBarText = new fabric.Text('load map', {
+                    left: this.progressBarWidth / 2,
+                    top: 0,
+                    fill: '#ffffff',
+                    fontSize: 12,
+                    originX: 'center',
+                    originY: 'center'
+                });
+                this.progressBar = new fabric.Rect({
+                    left: 0,
+                    top: 20,
+                    fill: 'red',
+                    width: 50,
+                    height: 20,
+                });
+                var progressBarBorder = new fabric.Rect({
+                    left: 0,
+                    top: 20,
+                    stroke: 'red',
+                    width: this.progressBarWidth,
+                    height: 20,
+                });
+
+                this.progressGroup = new fabric.Group([progressBarText, progressBarBorder, this.progressBar], {
+                    left: 300,
+                    top: 100,
+                    angle: 0
+                });
+
+                this.setMap([48.249338, 11.562762]);
+//                this.setMap([48.376848, 10.889686]);
                 for(var i = 0; i < this.data.length; i++ ) {
                     this.addTent(this.data[i]);
                 }
-                this.canvas.renderAll();
-//                var imgElement = document.getElementById('my-image');
-//                var imgInstance = new fabric.Image(imgElement, {
-//                    left: 100,
-//                    top: 100,
-//                    angle: 30,
-//                    opacity: 0.85
-//                });
-//                this.group.add(imgInstance);
+
+                var self = this;
                 this.canvas.on({
-//                    'object:moving' : moveHandler,
-//                    'object:modified' : modifiedHandler,
-//                    'custom:event' : customEvtHandler
+                    'mouse:down' : this.mouseDownHandler.bind(this),
+                    'mouse:up' : this.mouseUpHandler.bind(this),
+                    'mouse:move' : this.mouseMoveHandler.bind(this),
+                    'mouse:over' : this.mouseOverHandler.bind(this),
+                });
+                $('button.setMap', element).click(function () {
+                    self.setMap([
+                        parseFloat($('#lon').val()),
+                        parseFloat($('#lat').val())
+                    ]);
+                });
+                $('button.save', element).click(function (e) {
+                    if (self.isBusy) return;
+                    //@todo save plann
+                });
+                $('button.createImage', element).click(function (e) {
+                    if (self.isBusy) return;
+                    //@todo create image from canvas and open a new canvas to crop. than upload
+                });
+                $('button.zoomin', element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.zoomIn();
+                });
+                $('button.zoomout', element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.zoomOut();
                 });
             }
-            setMap(lonLat) {
+            hideProgressBar() {
+                this.canvas.remove(this.progressGroup);
+            }
+            updateProgressBar(value) {
                 var self = this;
+                if (typeof value === 'number') {
+                    if (value === 0) {
+                        //show progress group and set value to 0
+                        this.progressBar.set('width', 0);
+                        this.canvas.remove(this.progressGroup);
+                        this.canvas.add(this.progressGroup);
+                    }
+                    this.progressBar.animate('width', value * 250, {
+                        onChange: this.canvas.renderAll.bind(this.canvas),
+                        duration: 200,
+                        easing: fabric.util.ease.easeInCirc(),
+                        onComplete: function() {
+                        },
+                        abort: function(){
+//                            return true;
+                        }
+                    });
+
+                    //set progress bar length
+                } else if (value === false) {
+                    //hide progress element
+                }
+            }
+            setMap(lonLat) {
+                if (this.isBusy) return;
+                var self = this;
+                this.isBusy = true;
+                this.updateProgressBar(0);
                 //remove old map images
                 for (var i = 0; i < this.mapImages.length; i++) {
                     this.canvas.remove(this.mapImages[i]);
                 }
                 this.mapImages = [];
-                // create map image
-                console.log(lonLat);
-                var urls = createGoogleMapStaticImageUrls(lonLat);
-                fabric.Image.fromURL(urls[0], function(img) {
-                    self.canvas.add(img.scale(1).set({
-                        left: 0,
-                        top: 0,
-                        scale: 2,
-                        selectable: false,
-                    }));
-                    img.moveTo(-111);
-                    self.mapImages.push(img);
-                    self.canvas.renderAll();
-                });
-                fabric.Image.fromURL(urls[1], function(img) {
-                    self.canvas.add(img.scale(1).set({
-                        left: 640,
-                        top: 0,
-                        scale: 2,
-                        selectable: false,
-                    }));
-                    img.moveTo(-111);
-                    self.mapImages.push(img);
-                    self.canvas.renderAll();
+
+                var diameter = 5;
+                var urls = createGoogleMapStaticImageUrls(lonLat, diameter);
+
+                function createFromUrl(url, line, pos, zIndex) {
+                    fabric.Image.fromURL(url, function(img) {
+//                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
+//                        console.log(
+//                            pos * 640,
+//                            line * 640);
+                        img.set('isMap', true);
+                        self.canvas.add(img.scale(1).set({
+                            left: pos * 640,
+                            top: line * 620,
+                            scale: 2,
+                            selectable: false,
+                            originX: 'left',
+                            originY: 'top',
+                            transparentCorners: false
+                        }));
+//                        self.canvas.bringToFront(img);
+                        self.canvas.moveTo(img, zIndex);
+                        self.mapImages.push(img);
+                    });
+                }
+
+                preloadImages(urls, function(images) {
+                    self.updateProgressBar(1);
+                    for (var line = 0; line < diameter; line++) {
+                        for (var pos = 0; pos < diameter; pos++) {
+                            createFromUrl(images[line * diameter + pos].src, line, pos, -line);
+                        }
+//                        break;
+                    }
+                    self.hideProgressBar();
+                    self.isBusy = false;
+                }, function(value) {
+                    self.updateProgressBar(value);
                 });
             }
             zoom(value) {
                 this.zoomValue = Math.max(1, this.zoomValue + value);
                 this.canvas.setZoom(this.zoomValue);
             }
-            moveViewPort(deltax = 1, deltay = 1) {
-                this.viewPos.x += deltax;
-                this.viewPos.y += deltay;
+            zoomIn() {
+                this.zoomValue *= 2;
+                this.canvas.setZoom(this.zoomValue);
+            }
+            zoomOut() {
+                this.zoomValue /= 2;
+                this.canvas.setZoom(this.zoomValue);
+            }
+            moveViewPort(deltax = 0, deltay = 0) {
+                this.viewPos.x -= deltax;
+                this.viewPos.y -= deltay;
                 this.canvas.absolutePan({
                     x: this.viewPos.x,
                     y: this.viewPos.y
@@ -224,44 +395,36 @@ $this->headScript()->appendFile('/libs/map.js');
                 var tentEntity = new TentEntity(tent);
                 this.canvas.add(tentEntity);
                 tentEntity.moveTo(100);
+                tentEntity.bringToFront();
                 return tentEntity;
             }
-            getItem() {
+            mouseDownHandler(e) {
+                if (this.isBusy) return;
+                if (!e.target || e.target.get('isMap')) {
+                    console.log('start drag');
+                    this.isDragging = true;
+                }
+            }
+            mouseUpHandler(e) {
+                this.isDragging = false;
+            }
+            mouseMoveHandler(e) {
+                if (this.isDragging) {
+                    //drag
+                    this.moveViewPort(e.e.movementX, e.e.movementY);
+                }
+            }
+            mouseOverHandler(e) {
+                if (this.isBusy) return;
+//                console.log('over', e)
             }
         }
 
         $.fn.SitePlanner = function(options) {
             var settings = $.extend(defaultOptions, options);
-            return new SitePlanner(this, settings);
+            new SitePlanner(this, settings);
         };
     }(jQuery));
 
-
-    var planner = $('#site-planner').SitePlanner();
-    $('#setMap').click(function () {
-        planner.setMap([
-            parseFloat($('#lon').val()),
-            parseFloat($('#lat').val())
-        ]);
-    });
-    $('#zoomin').click(function (e) {
-        planner.zoom(1);
-    });
-    $('#zoomout').click(function (e) {
-        planner.zoom(-1);
-    });
-    // create a wrapper around native canvas element (with id="c")
-//            var canvas = new fabric.Canvas('site-planner');
-//
-//            // create a rectangle object
-//            var rect = new fabric.Rect({
-//                left: 100,
-//                top: 100,
-//                fill: 'red',
-//                width: 20,
-//                height: 20
-//            });
-//
-//            // "add" rectangle onto canvas
-//            canvas.add(rect);
+    $('#sitePlanner').SitePlanner();
 </script>

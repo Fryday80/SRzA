@@ -14,11 +14,9 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
-        bdump($this->tentService->getCanvasData());
-
         $this->layout()->setVariable('showSidebar', false);
         return array(
-            'tents' => $this->tentService->getAllTents(),
+            'tents' => $this->tentService->getCanvasData(),
         );
     }
 
