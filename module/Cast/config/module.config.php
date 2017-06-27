@@ -14,7 +14,6 @@ return array(
             'Cast\Controller\Job'           => 'Cast\Factory\Controller\JobControllerFactory',
         ),
     ),
-    //so mein ich des zu verstehen
     'lazy_services' => array(
         // mapping services to their class names is required
         // since the ServiceManager is not a declarative DIC

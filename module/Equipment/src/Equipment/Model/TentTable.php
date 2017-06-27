@@ -117,6 +117,7 @@ class TentTable extends AbstractTableGateway
                     'shape' => 'shape',
                     'type' => 'type',
                     'color1' => 'color1',
+                    'bi_color' => 'biColor',
                     'color2' => 'color2',
                     'width' => 'width',
                     'length' => 'length',

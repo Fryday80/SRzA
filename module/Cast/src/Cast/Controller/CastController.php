@@ -1,7 +1,6 @@
 <?php
 namespace Cast\Controller;
 
-use Cast\Service\BlazonService;
 use Cast\Service\CastService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -10,8 +9,6 @@ class CastController extends AbstractActionController
 {
     /** @var CastService $castService */
     private $castService;
-    /** @var BlazonService  */
-    private $blaService;
 
     public function __construct(CastService $castService) {
         $this->castService = $castService;
