@@ -5,6 +5,7 @@ use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Form\TentTypeForm;
+use Equipment\Model\EnumTentShape;
 use Equipment\Model\Tent;
 use Equipment\Service\EquipmentService;
 use Equipment\Form\TentForm;
@@ -49,13 +50,22 @@ class EquipmentController extends AbstractActionController
             'data' => $this->equipService->getAllTents()->toArray(),
             'columns' => array(
                 array(
-                    'name' => 'readableUser', 'label' => 'Von'
+                    'name' => 'readableUser', 'label' => 'Von', 'type' => 'custom',
+                    'render' => function ($row) {
+                        return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
+                    }
                 ),
                 array (
-                    'name' => 'shapeImg', 'label' => 'Form'
+                    'name' => 'image', 'label' => 'Form', 'type' => 'custom',
+                    'render' => function ($row){
+                        return '<img alt="' . EnumTentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
+                    }
                 ),
                 array (
-                    'name' => 'readableType', 'label' => 'Typ'
+                    'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
+                    'render'=> function($row){
+                        return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                    }
                 ),
                 array (
                     'name' => 'width', 'label' => 'Breite'
@@ -67,10 +77,25 @@ class EquipmentController extends AbstractActionController
                     'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
                 ),
                 array (
-                    'name' => 'colorField', 'label' => 'Farbe'
+                    'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
+                    'render' => function($row){
+                        $c1 = $row['color1'];
+                        $c2 = $row['color2'];
+                        return '<div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left:   20px solid ' .$c1. ';
+                                    border-top:    20px solid ' .$c1. ';
+                                    border-right:  20px solid ' .$c2. ';
+                                    border-bottom: 20px solid ' .$c2. ';
+                                    "></div>';
+                    }
                 ),
                 array (
-                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?'
+                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?', 'type' => 'custom',
+                    'render' => function($row){
+                        return ($row['isShowTent'] == 0) ? 'nein' : 'ja';
+                    }
                 ),
                 array (
                     'name'  => 'href',
@@ -117,11 +142,18 @@ class EquipmentController extends AbstractActionController
         $dataTable = new DataTable(array(
             'data' => $this->equipService->getTentsByUserId($userId)->toArray(),
             'columns' => array(
+
                 array (
-                    'name' => 'shapeImg', 'label' => 'Form'
+                    'name' => 'image', 'label' => 'Form', 'type' => 'custom',
+                    'render' => function ($row){
+                        return '<img alt="' . EnumTentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
+                    }
                 ),
                 array (
-                    'name' => 'readableType', 'label' => 'Typ'
+                    'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
+                    'render'=> function($row){
+                        return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                    }
                 ),
                 array (
                     'name' => 'width', 'label' => 'Breite'
@@ -133,10 +165,25 @@ class EquipmentController extends AbstractActionController
                     'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
                 ),
                 array (
-                    'name' => 'colorField', 'label' => 'Farbe'
+                    'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
+                    'render' => function($row){
+                        $c1 = $row['color1'];
+                        $c2 = $row['color2'];
+                        return '<div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left:   20px solid ' .$c1. ';
+                                    border-top:    20px solid ' .$c1. ';
+                                    border-right:  20px solid ' .$c2. ';
+                                    border-bottom: 20px solid ' .$c2. ';
+                                    "></div>';
+                    }
                 ),
                 array (
-                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?'
+                    'name' => 'isShowTentValue', 'label' => 'Schauzelt?', 'type' => 'custom',
+                    'render' => function($row){
+                        return ($row['isShowTent'] == 0) ? 'nein' : 'ja';
+                    }
                 ),
                 array (
                     'name'  => 'href',

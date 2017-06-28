@@ -33,14 +33,6 @@ class Tent extends DataItemEquipmentModel
     public $biColor;
     public $color2;
 
-    // readables
-    public $readableUser;
-    public $readableShape;
-    public $readableType;
-    public $shapeImg;
-    public $colorField;
-    public $isShowTentValue;
-
     /**
      * is this group equip
      * @return bool

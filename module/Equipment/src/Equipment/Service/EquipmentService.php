@@ -46,18 +46,17 @@ class EquipmentService
     //======================================================== Tent Table
     public function getAllTents()
     {
-        $result = $this->equipTable->getAllByType(EnumEquipTypes::TENT);
-        return $this->createTentSetReadables($result);
+        return $this->equipTable->getAllByType(EnumEquipTypes::TENT);
     }
 
     public function getTentsByUserId($id)
     {
-        return $this->createTentSetReadables($this->equipTable->getByUserIdAndType($id, EnumEquipTypes::TENT));
+        return $this->equipTable->getByUserIdAndType($id, EnumEquipTypes::TENT);
     }
 
     public function getTentById($id)
     {
-        return $this->createTentReadables($this->equipTable->getById($id));
+        return $this->equipTable->getById($id);
     }
 
     public function getCanvasData()
@@ -67,6 +66,7 @@ class EquipmentService
 
     public function saveTent(Tent $tentData)
     {
+        $tentData->image = EnumTentShape::IMAGES[$tentData->shape];
         if($tentData->id == "") {
             $tentData->itemType = EnumEquipTypes::TENT;
             return $this->equipTable->add($tentData);
@@ -90,6 +90,11 @@ class EquipmentService
         return $this->typesTable->getAll();
     }
 
+    public function getTypeNameById($id)
+    {
+        return $this->typesTable->getById($id)['name'];
+    }
+
     public function getTypeIDTypeNameList()
     {
         $return = array();
@@ -110,39 +115,4 @@ class EquipmentService
 //    {
 //        return $this->typesTable->remove($id);
 //    }
-
-    //==========================================================
-
-    private function createTentSetReadables(DataSet $tentSet)
-    {
-        foreach ($tentSet->data as $key => $tent)
-            $tentSet->data[$key] = $this->createTentReadables($tent);
-        return $tentSet;
-    }
-
-    private function createTentReadables(Tent $tent)
-    {
-        if ($tent->userId == 0)
-            $tent->readableUser = 'Verein';
-        else
-            $tent->readableUser  = $this->userService->getUserNameByID($tent->userId);
-        if ($tent->type == 0)
-            $tent->readableType = 'Sonstige';
-        else
-            $tent->readableType = $this->typesTable->getById($tent->type)['name'];
-        $tent->readableShape = EnumTentShape::TRANSLATION[$tent->shape];
-        $tent->shapeImg = EnumTentShape::IMAGINATION[$tent->shape];
-        $tent->isShowTentValue = ($tent->isShowTent == 0) ? 'nein' : 'ja';
-        $c1 = $tent->color1;
-        $c2 = $tent->color2;
-        $tent->colorField = '<div style="
-            width: 0;
-            height: 0;
-            border-left:   20px solid ' .$c1. ';
-            border-top:    20px solid ' .$c1. ';
-            border-right:  20px solid ' .$c2. ';
-            border-bottom: 20px solid ' .$c2. ';
-            "></div>';
-        return $tent;
-    }
 }

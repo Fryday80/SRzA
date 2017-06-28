@@ -16,10 +16,10 @@ abstract class EnumTentShape
         2 => 'rechteckiges Zelt, Zweimast',
         3 => 'verbreitertes Rundzelt, Zweimast(z.B. Sachs 4m x 6m)'
     );
-    const IMAGINATION = array(
-        0 => '<img alt="' . self::TRANSLATION[0] . '" src="/img/roundtent.png" style="width: 50px">',
-        1 => '<img alt="' . self::TRANSLATION[1] . '" src="/img/squaretent.png" style="width: 50px">',
-        2 => '<img alt="' . self::TRANSLATION[2] . '" src="/img/squaretentTwoMast.png" style="width: 50px">',
-        3 => '<img alt="' . self::TRANSLATION[3] . '" src="/img/sachs.png" style="width: 50px">',
+    const IMAGES = array(
+        0 => '/img/roundtent.png',
+        1 => '/img/squaretent.png',
+        2 => '/img/squaretentTwoMast.png',
+        3 => '/img/sachs.png',
     );
 }
