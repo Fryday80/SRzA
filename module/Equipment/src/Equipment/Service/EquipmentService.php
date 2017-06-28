@@ -67,10 +67,8 @@ class EquipmentService
     public function saveTent(Tent $tentData)
     {
         $tentData->image = EnumTentShape::IMAGES[$tentData->shape];
-        if($tentData->id == "") {
-            $tentData->itemType = EnumEquipTypes::TENT;
+        if($tentData->id == "")
             return $this->equipTable->add($tentData);
-        }
         return $this->equipTable->save($tentData);
     }
 

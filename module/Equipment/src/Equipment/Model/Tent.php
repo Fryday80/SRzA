@@ -2,7 +2,7 @@
 
 namespace Equipment\Model;
 
-class Tent extends DataItemEquipmentModel
+class Tent extends EquipmentStdDataItemModel
 {
     protected $dbColumns = array(
         'user_id',
@@ -17,8 +17,8 @@ class Tent extends DataItemEquipmentModel
         'is_show_tent',
     );
 
+    public $itemType = EnumEquipTypes::TENT;
     public $name = 'Zelt';
-    public $itemType;
     public $image;
 
     public $id;
@@ -33,15 +33,6 @@ class Tent extends DataItemEquipmentModel
     public $biColor;
     public $color2;
 
-    /**
-     * is this group equip
-     * @return bool
-     */
-    public function isGroupEquip()
-    {
-        if ($this->userId == 0) return true;
-        return false;
-    }
 
     public function setData($data)
     {

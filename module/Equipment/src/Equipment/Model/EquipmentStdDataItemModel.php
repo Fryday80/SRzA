@@ -1,10 +1,9 @@
 <?php
 namespace Equipment\Model;
 
-
 use Application\Model\DataObjects\DataItem;
 
-class DataItemEquipmentModel extends DataItem implements IEquipment
+class EquipmentStdDataItemModel extends DataItem implements IEquipment
 {
     public $name;
     public $itemType;
@@ -19,5 +18,15 @@ class DataItemEquipmentModel extends DataItem implements IEquipment
 
     public function getType(){
         return $this->itemType;
+    }
+    
+    /**
+     * is this group equip
+     * @return bool
+     */
+    public function isGroupEquip()
+    {
+        if ($this->userId == 0) return true;
+        return false;
     }
 }
