@@ -11,10 +11,11 @@ namespace Application\Model\DataObjects;
  */
 class DataItem
 {
+    public $name;
     public $id;
     
     protected $dbColumns = array();
-    
+
     function __construct($data = null)
     {
         if ($data !== null)

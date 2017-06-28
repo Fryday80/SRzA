@@ -19,6 +19,10 @@ class Tent extends DataItem
         'is_show_tent',
     );
 
+    public $name = 'Zelt';
+    public $itemType;
+    public $image;
+
     public $id;
     public $userId;
     public $shape;
@@ -38,7 +42,7 @@ class Tent extends DataItem
     public $shapeImg;
     public $colorField;
     public $isShowTentValue;
-    
+
     /**
      * is this group equip
      * @return bool
