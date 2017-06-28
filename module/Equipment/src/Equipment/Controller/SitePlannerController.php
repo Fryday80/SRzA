@@ -1,22 +1,22 @@
 <?php
 namespace Equipment\Controller;
 
-use Equipment\Service\TentService;
+use Equipment\Service\EquipmentService;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class SitePlannerController extends AbstractActionController
 {
-    /** @var TentService  */
-    private $tentService;
+    /** @var EquipmentService  */
+    private $equipmentService;
 
-    public function __construct(TentService $tentService) {
-        $this->tentService = $tentService;
+    public function __construct(EquipmentService $equipmentService) {
+        $this->equipmentService = $equipmentService;
     }
 
     public function indexAction() {
         $this->layout()->setVariable('showSidebar', false);
         return array(
-            'tents' => $this->tentService->getCanvasData(),
+            'tents' => $this->equipmentService->getCanvasData(),
         );
     }
 

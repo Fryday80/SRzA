@@ -4,26 +4,26 @@ namespace Equipment\Controller;
 use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
+use Equipment\Form\TentTypeForm;
 use Equipment\Model\Tent;
-use Equipment\Service\TentService;
+use Equipment\Service\EquipmentService;
 use Equipment\Form\TentForm;
-use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class EquipmentController extends AbstractActionController
 {
-
-    /** @var TentService  */
-    private $tentService;
+    /** @var EquipmentService  */
+    private $equipService;
     /** @var UserService  */
     private $userService;
     /** @var AccessService  */
     private $accessService;
 
-    public function __construct(TentService $tentService, UserService $userService, AccessService $accessService) {
-        $this->tentService = $tentService;
+
+    public function __construct(EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
         $this->userService = $userService;
         $this->accessService = $accessService;
+        $this->equipService = $equipmentService;
     }
 
     public function indexAction() {
@@ -46,7 +46,7 @@ class EquipmentController extends AbstractActionController
         $site = $this->getConfiguration()['tent'];
 
         $dataTable = new DataTable(array(
-            'data' => $this->tentService->getAllTents()->toArray(),
+            'data' => $this->equipService->getAllTents()->toArray(),
             'columns' => array(
                 array(
                     'name' => 'readableUser', 'label' => 'Von'
@@ -92,6 +92,7 @@ class EquipmentController extends AbstractActionController
                 ),
             )
         ));
+        $dataTable->insertLinkButton('/equip/tent/add', 'Neues Zelt');
 
         return array(
             'site' => $site,
@@ -114,7 +115,7 @@ class EquipmentController extends AbstractActionController
         $userId = (int) $this->params()->fromRoute('userId');
 
         $dataTable = new DataTable(array(
-            'data' => $this->tentService->getTentsByUserId($userId)->toArray(),
+            'data' => $this->equipService->getTentsByUserId($userId)->toArray(),
             'columns' => array(
                 array (
                     'name' => 'shapeImg', 'label' => 'Form'
@@ -156,6 +157,7 @@ class EquipmentController extends AbstractActionController
                 ),
             )
         ));
+        $dataTable->insertLinkButton('/equip/tent/add/' . $userId, 'Neues Zelt');
         return array(
             'dataTable' => $dataTable,
             'links' => $links,
@@ -179,7 +181,7 @@ class EquipmentController extends AbstractActionController
             ),
         );
         return array(
-            'tent' => $this->tentService->getTentById($tentId),
+            'tent' => $this->equipService->getTentById($tentId),
             'links' => $links,
         );
     }
@@ -204,18 +206,16 @@ class EquipmentController extends AbstractActionController
         $askingRole = $this->accessService->getRole();
         if ($userId !== $askingUserId && $askingRole !== 'Administrator') return $this->redirect()->toRoute('home');
         $url = "/equip/tent/$userId/delete/$tentId";
-        $tent = $this->tentService->getTentById($tentId);
+        $tent = $this->equipService->getTentById($tentId);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
-            bdump($post->del);
-            bdump(($post->del == 'Yes'));
             if ($post['del'] == 'Yes' && $tentId == $post['id']){
-                $checkTent = $this->tentService->getTentById($tentId);
+                $checkTent = $this->equipService->getTentById($tentId);
                 if ($askingUserId !== $checkTent->userId)
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
-                $this->tentService->deleteTentById($tentId);
+                $this->equipService->deleteTentById($tentId);
                 return $this->redirect()->toRoute('equipmanager/tent');
             }
         }
@@ -227,6 +227,7 @@ class EquipmentController extends AbstractActionController
     }
     public function addtentAction()
     {
+        $userId = (int) $this->params()->fromRoute('userId');
         $links = array(
             array(
                 'name' => 'zurück zur Managerübersicht',
@@ -237,14 +238,16 @@ class EquipmentController extends AbstractActionController
                 'url'  => '/equip/tent',
             ),
         );
-        $form = new TentForm($this->tentService, $this->userService);
+        $form = new TentForm($this->equipService, $this->userService);
+        $form->get('userId')->setValue($userId);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             $form->setData($post);
             if ($form->isValid()){
                 $data = new Tent($form->getData());
-                $this->tentService->saveTent($data);
+                $this->equipService->saveTent($data);
+                $this->redirect()->toRoute('equipmanager/tent');
             }
         }
         return array(
@@ -270,16 +273,51 @@ class EquipmentController extends AbstractActionController
                 'url'  => "/equip/tent/$userId",
             ),
         );
-        $tent = $this->tentService->getTentById($tentId);
+        $tent = $this->equipService->getTentById($tentId);
 
-        $form = new TentForm($this->tentService, $this->userService);
+        $form = new TentForm($this->equipService, $this->userService);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             $form->setData($post);
             if ($form->isValid()){
                 $tent = new Tent($form->getData());
-                $this->tentService->saveTent($tent);
+                $this->equipService->saveTent($tent);
+                return $this->redirect()->toRoute('equipmanager/tent');
+            }
+        }
+        $form->setData($tent->toArray());
+        return array(
+            'form' => $form,
+            'links' => $links,
+        );
+    }
+    public function edittenttypeAction(){
+        $typeId = (int) $this->params()->fromRoute('id');
+        $links = array(
+            array(
+                'name' => 'zurück zur Managerübersicht',
+                'url'  => '/equip',
+            ),
+            array(
+                'name' => 'zurück zur Zeltverwaltung',
+                'url'  => '/equip/tent',
+            ),
+//            array(
+//                'name' => 'zurück zur User-Übersicht',
+//                'url'  => "/equip/tent/$userId",
+//            ),
+        );
+        $tent = $this->equipService->getTypesByID($typeId);
+
+        $form = new TentTypeForm($this->equipService, $this->userService);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $post = $request->getPost();
+            $form->setData($post);
+            if ($form->isValid()){
+                $tent = new Tent($form->getData());
+                $this->equipService->saveTent($tent);
             }
         }
         $form->setData($tent->toArray());

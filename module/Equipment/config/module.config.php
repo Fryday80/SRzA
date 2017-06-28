@@ -15,10 +15,9 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'TentService' => 'Equipment\Factory\Service\TentServiceFactory',
+            'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',
         ),
         'abstract_factories' => array(
-            'Equipment\Model\TentTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
@@ -59,7 +58,10 @@ return array(
                              'add_tent' => array(
                                  'type' => 'Segment',
                                  'options' => array(
-                                     'route' => '/add',
+                                     'route' => '/add[/:userId]',
+                                     'constraints' => array(
+                                         'userId' => '[0-9]+'
+                                     ),
                                      'defaults' => array(
                                          'controller' => 'Equipment\Controller\Equipment',
                                          'action' => 'addtent'

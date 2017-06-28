@@ -10,76 +10,78 @@ use Equipment\Model\EnumEquipTypes;
 use Equipment\Model\EnumTentShape;
 use Equipment\Model\EquipTable;
 use Equipment\Model\Tent;
-use Equipment\Model\TentSet;
-use Equipment\Model\TentTable;
 use Equipment\Model\TentTypesTable;
 
-class TentService
+class EquipmentService
 {
     // tables
-    /** @var  TentTable */
-    private $tentTable;
     /** @var  TentTypesTable */
     private $typesTable;
+    /** @var EquipTable  */
+    private $equipTable;
 
     // services
     /** @var UserService  */
     private $userService;
     /** @var CacheService  */
     private $cache;
-    /** @var EquipTable  */
-    private $equipTable;
 
 
     public function __construct (
-        TentTable $tentTable, TentTypesTable $tentTypesTable, EquipTable $equipTable,
+        TentTypesTable $tentTypesTable, EquipTable $equipTable,
         UserService $userService, CacheService $cacheService )
     {
-        $this->tentTable = $tentTable;
         $this->typesTable = $tentTypesTable;
         $this->equipTable = $equipTable;
         $this->userService = $userService;
         $this->cache = $cacheService;
     }
+
+
+    public function deleteAllByUserId($userId)
+    {
+        return $this->equipTable->removeByUserId($userId);
+    }
     
     //======================================================== Tent Table
     public function getAllTents()
     {
-        $res = $this->equipTable->getAllByType(EnumEquipTypes::TENT);
-        bdump($res);
-        return $this->createTentSetReadables($this->tentTable->getAll());
+        $result = $this->equipTable->getAllByType(EnumEquipTypes::TENT);
+        return $this->createTentSetReadables($result);
     }
 
     public function getTentsByUserId($id)
     {
-        return $this->createTentSetReadables($this->tentTable->getByUserId($id));
+        return $this->createTentSetReadables($this->equipTable->getByUserIdAndType($id, EnumEquipTypes::TENT));
     }
 
     public function getTentById($id)
     {
-        return $this->createTentReadables($this->tentTable->getById($id));
+        return $this->createTentReadables($this->equipTable->getById($id));
     }
 
     public function getCanvasData()
     {
-        return $this->tentTable->fetchAllCastData();
+        return $this->equipTable->fetchAllCastData();
     }
 
     public function saveTent(Tent $tentData)
     {
-//        if (!$this->equipTable->getById($tentData->id))
-//            $this->equipTable->add($tentData, EnumEquipTypes::TENT);
-        return $tentData->id =  $this->tentTable->save($tentData);
+        if($tentData->id == "") {
+            $tentData->itemType = EnumEquipTypes::TENT;
+            return $this->equipTable->add($tentData);
+        }
+        return $this->equipTable->save($tentData);
     }
 
     public function deleteTentById($id)
     {
-        return $this->tentTable->removeById($id);
+        return $this->equipTable->removeById($id);
     }
 
     public function deleteTentByUserId($userId)
     {
-        return $this->tentTable->removeByUserId($userId);
+        return $this->equipTable->removeByUserIdAndType($userId, EnumEquipTypes::TENT);
     }
 
     //======================================================== TentTypes Table
@@ -98,16 +100,16 @@ class TentService
         return $return;
     }
 
-    public function saveType($data)
-    {
-        if ($data['id'] == "") return $this->typesTable->add($data);
-        return $this->typesTable->save($data);
-    }
-
-    public function deleteType($id)
-    {
-        return $this->typesTable->remove($id);
-    }
+//    public function saveType($data)
+//    {
+//        if ($data['id'] == "") return $this->typesTable->add($data);
+//        return $this->typesTable->save($data);
+//    }
+//
+//    public function deleteType($id)
+//    {
+//        return $this->typesTable->remove($id);
+//    }
 
     //==========================================================
 

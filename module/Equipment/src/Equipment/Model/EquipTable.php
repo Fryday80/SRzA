@@ -1,6 +1,9 @@
 <?php
 namespace Equipment\Model;
 
+use Application\Model\DataObjects\DataItem;
+use Application\Model\DataSet;
+use Zend\Db\ResultSet\AbstractResultSet;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
@@ -17,11 +20,7 @@ class EquipTable extends AbstractTableGateway
     }
 
     public function getAll () {
-        $result = $this->select();
-        if (!$result)
-            return false;
-        
-        return $result->toArray();
+        return $this->getSome();
     }
     public function getAllByType($type){
         return $this->getSome(array('type' => $type));
@@ -31,56 +30,58 @@ class EquipTable extends AbstractTableGateway
         return $this->getOne(array('id' => (int) $id));
     }
 
-    public function getByUserId($id) {
+    public function getByUserId($id)
+    {
         return $this->getSome(array('user_id' => (int) $id));
+    }
+
+    public function getByUserIdAndType($id, $type)
+    {
+        return $this->getSome(array('user_id' => (int) $id, 'type' => (int)$type));
     }
 
     private function getOne($by)
     {
-        $row = $this->select($by);
-        if (!$row)
+        $result = $this->select($by);
+        if (!$result)
             return false;
-        $res = $row->toArray();
-        if (empty($res)) return false;
-        $res[0]['data'] = unserialize($res[0]['data']);
-        return $res[0];
+        $result = $this->refactorResults($result);
+        return $result[0];
     }
 
-    private function getSome($by)
+    private function getSome($by = null)
     {
         $result = $this->select($by);
         if (!$result)
             return false;
-        $return = $result->toArray();
-        foreach ($return as &$item) {
-            $item['data'] = unserialize($item['data']);
-        }
-
-        return $return;
+        $result = $this->refactorResults($result);
+        return new DataSet($result);
     }
 
-    public function add($data, $type, $image = null) {
+    public function add(DataItemEquipmentModel $data) {
         if (!$this->insert(array(
             'data'  => serialize ($data),
-            'type'  => $type,
-            'image' => $image,
+            'type'  => (int)$data->itemType,
+            'image' => $data->image,
+            'user_id' => $data->userId
         )))
             return false;
         return $this->getLastInsertValue();
     }
 
-    public function save($id, $data, $type, $image = null) {
+    public function save(DataItemEquipmentModel $data) {
         if ( !$this->update(
             array(
                 'data'  => serialize($data),
-                'type'  => $type,
-                'image' => $image,
+                'type'  => (int)$data->itemType,
+                'image' => $data->image,
+                'user_id' => $data->userId
             ),
             //where
-            array( 'id' => $id )
+            array( 'id' => (int)$data->id )
         ) )
             return false;
-        return $id;
+        return $data->id;
     }
 
     public function removeByUserId($userId)
@@ -150,4 +151,22 @@ class EquipTable extends AbstractTableGateway
         }
     }
 
+    /**
+     * @param AbstractResultSet $result
+     * @return bool|DataItem[]
+     */
+    private function refactorResults(AbstractResultSet $result)
+    {
+        $result = $result->toArray();
+        if (empty($result))
+            return false;
+
+        $return = array();
+        foreach ($result as $item) {
+            $refItem = unserialize($item['data']);
+            $refItem->id = $item['id'];
+            $return[] = $refItem;
+        }
+        return $return;
+    }
 }

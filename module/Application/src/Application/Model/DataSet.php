@@ -2,6 +2,7 @@
 namespace Application\Model;
 
 
+use Application\Model\DataObjects\DataItem;
 use Zend\Paginator\Adapter\Iterator;
 
 class DataSet
@@ -10,9 +11,11 @@ class DataSet
     public $data = array();
     protected $class;
 
-    public function __construct($subClass, $data = null)
+    public function __construct($data = null, $subClass = null)
     {
-        $this->class = new $subClass();//würd ich mal testen
+        $this->class = $subClass;
+        if ($this->class == null) $this->class = DataItem::class;
+
         if ($data !== null){
             if (is_object($data))
                 $this->addItem($data);
@@ -21,16 +24,18 @@ class DataSet
         }
     }
 
-    public function addItem($data)
+    public function addItem($item)
     {
-        $this->data[] = new $this->class ($data);
+        if (is_object($item))
+            $this->data[] = $item;
+        else
+            $this->data[] = new $this->class ($item);
     }
 
     public function add(Array $data)
     {
-        foreach ($data as $item) {
+        foreach ($data as $item)
             $this->addItem($item);
-        }
     }
 
     public function setData($data)

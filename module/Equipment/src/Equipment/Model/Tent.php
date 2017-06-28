@@ -2,9 +2,7 @@
 
 namespace Equipment\Model;
 
-use Application\Model\DataObjects\DataItem;
-
-class Tent extends DataItem
+class Tent extends DataItemEquipmentModel
 {
     protected $dbColumns = array(
         'user_id',
@@ -51,5 +49,11 @@ class Tent extends DataItem
     {
         if ($this->userId == 0) return true;
         return false;
+    }
+
+    public function setData($data)
+    {
+        if ($data['biColor']== "0") $data['color2'] = $data['color1'];
+        parent::setData($data);
     }
 }

@@ -10,10 +10,9 @@ class TentTypeForm extends Form
     /** @var TentService  */
     private $tentService;
 
-    public function __construct(TentService $tentService)
+    public function __construct()
     {
-        $this->tentService = $tentService;
-        parent::__construct("TentColors");
+        parent::__construct("TentTypes");
         $this->setAttribute('method', 'post');
         
         $this->add(array(
@@ -28,14 +27,6 @@ class TentTypeForm extends Form
                 'label' => 'Bezeichnung',
             ),
         ));
-        $this->add(array(
-            'name' => 'shape',
-            'type' => 'Zend\Form\Element\Select',
-            'options' => array (
-                'label' => 'Form',
-                'value_options' => $this->getShapesForSelect(),
-            ),
-        ));
 
         $this->add(array(
             'name' => 'submit',
@@ -46,15 +37,5 @@ class TentTypeForm extends Form
             ),
 
         ));
-    }
-    
-    private function getShapesForSelect()
-    {
-        $list = array();
-        foreach (EnumTentShape::TRANSLATION as $key => $value) {
-            $list[$key] = $value;
-        }
-        ksort($list);
-        return $list;
     }
 }

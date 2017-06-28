@@ -3,19 +3,19 @@ namespace Equipment\Form;
 
 use Auth\Service\UserService;
 use Equipment\Model\EnumTentShape;
-use Equipment\Service\TentService;
+use Equipment\Service\EquipmentService;
 use Zend\Form\Form;
 
 class TentForm extends Form
 {
     /** @var  UserService */
     private $userService;
-    /** @var TentService  */
-    private $tentService;
+    /** @var EquipmentService  */
+    private $equipService;
 
-    public function __construct(TentService $tentService, UserService $userService)
+    public function __construct(EquipmentService $equipmentService, UserService $userService)
     {
-        $this->tentService = $tentService;
+        $this->equipService = $equipmentService;
         $this->userService = $userService;
         parent::__construct("Tent");
         $this->setAttribute('method', 'post');
@@ -89,7 +89,10 @@ class TentForm extends Form
             'required' => true,
             'options' => array(
                 'label' => 'Farbe1',
-            )
+            ),
+            'attributes' => array(
+                'value' => '#FAEBd7',
+            ),
         ));
 
         $this->add(array(
@@ -106,7 +109,10 @@ class TentForm extends Form
             'required' => true,
             'options' => array(
                 'label' => 'Farbe2',
-            )
+            ),
+            'attributes' => array(
+                'value' => '#FAEBd7',
+            ),
         ));
         $this->add(array(
             'name' => 'submit',
@@ -136,7 +142,7 @@ class TentForm extends Form
     }
     private function getTypesForSelect()
     {
-        $list = $this->tentService->getTypeIDTypeNameList();
+        $list = $this->equipService->getTypeIDTypeNameList();
         $list[0] = array(
                 'label' => 'Sonstige',
                 'value' => 0,

@@ -1,20 +1,19 @@
 <?php
 namespace Equipment\Factory\Service;
 
-use Equipment\Service\TentService;
+use Equipment\Service\EquipmentService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
-class TentServiceFactory implements FactoryInterface
+class EquipmentServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
 //        $pL = $sm->getServiceLocator();
-        $tentTable = $sm->get('Equipment\Model\TentTable');
         $tentTypesTable = $sm->get('Equipment\Model\TentTypesTable');
+        $equipTable = $sm->get('Equipment\Model\EquipTable');
         $userService = $sm->get('UserService');
         $cacheService = $sm->get('CacheService');
-        $equipTable = $sm->get('Equipment\Model\EquipTable');
 
-        return new TentService($tentTable, $tentTypesTable, $equipTable, $userService, $cacheService);
+        return new EquipmentService($tentTypesTable, $equipTable, $userService, $cacheService);
     }
 }

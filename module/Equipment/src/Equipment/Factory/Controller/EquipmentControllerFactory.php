@@ -9,10 +9,10 @@ class EquipmentControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $pL = $sm->getServiceLocator();
-        $tentService = $pL->get('TentService');
         $userService = $pL->get('UserService');
         $accessService = $pL->get('AccessService');
+        $equipService = $pL->get('EquipmentService');
 
-        return new EquipmentController($tentService, $userService, $accessService);
+        return new EquipmentController($equipService, $userService, $accessService);
     }
 }
