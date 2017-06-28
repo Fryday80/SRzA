@@ -3,7 +3,7 @@
 namespace Application\Model\DataObjects;
 
 
-class DataItem
+class StatsDataItem
 {
     public $microtime;
     public $time;

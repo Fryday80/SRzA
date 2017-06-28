@@ -20,11 +20,13 @@ return array(
         'abstract_factories' => array(
             'Equipment\Model\TentTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'profiles' => __DIR__ . '/../view',
+            'equip' => __DIR__ . '/../view',
         ),
     ),
      'router' => array(

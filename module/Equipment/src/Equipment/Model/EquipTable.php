@@ -1,16 +1,14 @@
 <?php
 namespace Equipment\Model;
 
-use Application\Model\DataSet;
-use Exception;
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
-class TentTable extends AbstractTableGateway
+class EquipTable extends AbstractTableGateway
 {
 
-    public $table = 'tent';
+    public $table = 'equip';
 
     public function __construct(Adapter $adapter)
     {
@@ -22,59 +20,77 @@ class TentTable extends AbstractTableGateway
         $result = $this->select();
         if (!$result)
             return false;
-        try {
-
-        return new DataSet(\Equipment\Model\Tent::class, $result->toArray());
-        } catch (Exception $e) {
-            bdump($e);
-        }
+        
+        return $result->toArray();
+    }
+    public function getAllByType($type){
+        return $this->getSome(array('type' => $type));
+    }
+    
+    public function getById($id) {
+        return $this->getOne(array('id' => (int) $id));
     }
 
-    /**
-     * @param $id
-     * @return bool| Tent
-     */
-    public function getById($id) {
-        $row = $this->select(array('id' => (int) $id));
+    public function getByUserId($id) {
+        return $this->getSome(array('user_id' => (int) $id));
+    }
+
+    private function getOne($by)
+    {
+        $row = $this->select($by);
         if (!$row)
             return false;
-        
-        return new Tent($row->toArray()[0]);
+        $res = $row->toArray();
+        if (empty($res)) return false;
+        $res[0]['data'] = unserialize($res[0]['data']);
+        return $res[0];
     }
 
-    /**
-     * @param $id
-     * @return bool| DataSet
-     */
-    public function getByUserId($id) {
-        $result = $this->select(array('user_id' => (int) $id));
+    private function getSome($by)
+    {
+        $result = $this->select($by);
         if (!$result)
             return false;
+        $return = $result->toArray();
+        foreach ($return as &$item) {
+            $item['data'] = unserialize($item['data']);
+        }
 
-        return new DataSet(\Equipment\Model\Tent::class, $result->toArray());
+        return $return;
     }
 
-    public function add(Tent $tentData) {
-        if ( !$this->insert( $tentData->getDBData() ) )
+    public function add($data, $type, $image = null) {
+        if (!$this->insert(array(
+            'data'  => serialize ($data),
+            'type'  => $type,
+            'image' => $image,
+        )))
             return false;
         return $this->getLastInsertValue();
     }
 
-    public function save(Tent $tentData) {
-        if ($tentData->id == null) $this->add($tentData);
+    public function save($id, $data, $type, $image = null) {
         if ( !$this->update(
-            //data
-            $tentData->getDBData(),
+            array(
+                'data'  => serialize($data),
+                'type'  => $type,
+                'image' => $image,
+            ),
             //where
-            array( 'id' => $tentData->id )
+            array( 'id' => $id )
         ) )
             return false;
-        return $tentData->id;
+        return $id;
     }
 
     public function removeByUserId($userId)
     {
         return ($this->delete(array('user_id' => (int)$userId)))? true : false;
+    }
+
+    public function removeByUserIdAndType($userId, $type)
+    {
+        return ($this->delete(array('user_id' => (int)$userId, 'type' => $type)))? true : false;
     }
 
     public function removeById($id) {
@@ -85,7 +101,7 @@ class TentTable extends AbstractTableGateway
      * returns all characters and there jobs, families and so on
      * @param array $where
      * @return array results
-     * @throws Exception
+     * @throws \Exception
      */
     public function fetchAllCastData(Array $where = array()) {
         try {
@@ -129,8 +145,8 @@ class TentTable extends AbstractTableGateway
             $result = $this->resultSetPrototype->initialize($statement->execute())
                 ->toArray();
             return $result;
-        } catch (Exception $e) {
-            throw new Exception($e->getMessage());
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
     }
 

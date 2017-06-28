@@ -1,7 +1,7 @@
 <?php
 namespace Application\Model\DataObjects;
 
-class Action extends DataItem
+class Action extends StatsDataItem
 {
     public $url;
     public $userId;

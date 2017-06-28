@@ -61,27 +61,11 @@ class DataTable
         foreach ($columns as $key => $value) {
             $this->add($value);
         }
-        $this->prepare();
     }
-
-    /**
-     * @param array $columnConf array (
-     * <br/>                        'name' => string
-     * <br/>                        'type' => string
-     * <br/>                        'label' => string )
-     */
     public function add($columnConf) {
         $columnConf = $this->prepareColumnConfig($columnConf);
         if (! is_array($this->columns) ) $this->columns = array();
         array_push($this->columns, $columnConf);
-        $this->prepare();
-    }
-
-    public function remove($columnName) {
-        foreach ($this->columns as $key => $columnConf)
-            if ($columnConf['name'] === $columnName)
-                unset ($this->columns[$key]);
-        $this->prepare();
     }
     public function setJSConfig($jsConfig) {
         //@todo validate $data
@@ -184,7 +168,6 @@ class DataTable
         if (key_exists('jsConfig', $config)){
             $this->setJSConfig($config['jsConfig']);
         }
-        $this->prepare();
     }
 
     /**

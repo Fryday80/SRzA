@@ -3,9 +3,12 @@
 namespace Equipment\Service;
 
 
+use Application\Model\DataSet;
 use Application\Service\CacheService;
 use Auth\Service\UserService;
+use Equipment\Model\EnumEquipTypes;
 use Equipment\Model\EnumTentShape;
+use Equipment\Model\EquipTable;
 use Equipment\Model\Tent;
 use Equipment\Model\TentSet;
 use Equipment\Model\TentTable;
@@ -24,14 +27,17 @@ class TentService
     private $userService;
     /** @var CacheService  */
     private $cache;
+    /** @var EquipTable  */
+    private $equipTable;
 
 
     public function __construct (
-        TentTable $tentTable, TentTypesTable $tentTypesTable,
+        TentTable $tentTable, TentTypesTable $tentTypesTable, EquipTable $equipTable,
         UserService $userService, CacheService $cacheService )
     {
         $this->tentTable = $tentTable;
         $this->typesTable = $tentTypesTable;
+        $this->equipTable = $equipTable;
         $this->userService = $userService;
         $this->cache = $cacheService;
     }
@@ -39,6 +45,8 @@ class TentService
     //======================================================== Tent Table
     public function getAllTents()
     {
+        $res = $this->equipTable->getAllByType(EnumEquipTypes::TENT);
+        bdump($res);
         return $this->createTentSetReadables($this->tentTable->getAll());
     }
 
@@ -59,7 +67,9 @@ class TentService
 
     public function saveTent(Tent $tentData)
     {
-        $tentData->id =  $this->tentTable->save($tentData);
+//        if (!$this->equipTable->getById($tentData->id))
+//            $this->equipTable->add($tentData, EnumEquipTypes::TENT);
+        return $tentData->id =  $this->tentTable->save($tentData);
     }
 
     public function deleteTentById($id)
@@ -101,7 +111,7 @@ class TentService
 
     //==========================================================
 
-    private function createTentSetReadables(TentSet $tentSet)
+    private function createTentSetReadables(DataSet $tentSet)
     {
         foreach ($tentSet->data as $key => $tent)
             $tentSet->data[$key] = $this->createTentReadables($tent);

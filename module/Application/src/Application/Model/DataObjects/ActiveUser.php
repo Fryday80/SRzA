@@ -2,7 +2,7 @@
 
 namespace Application\Model\DataObjects;
 
-class ActiveUser extends DataItem
+class ActiveUser extends StatsDataItem
 {
     public $firstCall;
     public $userId;  

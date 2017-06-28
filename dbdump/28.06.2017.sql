@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 15. Jun 2017 um 10:58
+-- Erstellungszeit: 28. Jun 2017 um 01:04
 -- Server Version: 5.6.13
--- PHP-Version: 5.6.30
+-- PHP-Version: 7.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -15,6 +15,12 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
+
+--
+-- Datenbank: `db2836034`
+--
+CREATE DATABASE IF NOT EXISTS `db2836034` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;
+USE `db2836034`;
 
 -- --------------------------------------------------------
 
@@ -78,6 +84,16 @@ CREATE TABLE IF NOT EXISTS `albumimages` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
 
+--
+-- Daten für Tabelle `albumimages`
+--
+
+INSERT INTO `albumimages` (`id`, `album_id`, `image_id`) VALUES
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 4),
+(4, 2, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +110,15 @@ CREATE TABLE IF NOT EXISTS `albums` (
   `visibility` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=4 ;
+
+--
+-- Daten für Tabelle `albums`
+--
+
+INSERT INTO `albums` (`id`, `folder`, `event`, `timestamp`, `preview_pic`, `visibility`) VALUES
+(1, '2016', 'eventtext', 1480546800, '', 1),
+(2, 'folder 2', 'event 2', 557577678, 'test.jpg', 1),
+(3, 'filder 3', 'event 3', 596934000, 'gibts.ned', 0);
 
 -- --------------------------------------------------------
 
@@ -113,7 +138,18 @@ CREATE TABLE IF NOT EXISTS `blazon` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `blazon_id_uindex` (`id`),
   UNIQUE KEY `blazon_name_uindex` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=10 ;
+
+--
+-- Daten für Tabelle `blazon`
+--
+
+INSERT INTO `blazon` (`id`, `name`, `isOverlay`, `filename`, `bigFilename`, `offsetX`, `offsetY`) VALUES
+(1, 'standard', 0, 'standard.png', NULL, 0, 0),
+(2, 'soldat', 0, 'soldat.png', NULL, 0, 0),
+(3, 'zuLeym', 0, 'zuLeym.png', 'zuLeym_big.png', 0, 0),
+(7, 'king', 0, 'king.png', NULL, 0, 0),
+(9, 'Drachenfels', 0, 'Drachenfels.png', 'Drachenfels_big.png', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -124,20 +160,35 @@ CREATE TABLE IF NOT EXISTS `blazon` (
 DROP TABLE IF EXISTS `characters`;
 CREATE TABLE IF NOT EXISTS `characters` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '1',
   `name` text NOT NULL,
   `surename` text NOT NULL,
   `gender` enum('m','f') NOT NULL,
   `birthday` tinytext NOT NULL,
-  `job_id` int(11) NOT NULL,
-  `family_id` int(11) NOT NULL,
-  `guardian_id` int(11) NOT NULL,
-  `supervisor_id` int(11) NOT NULL,
-  `tross_id` int(11) NOT NULL,
-  `vita` text NOT NULL,
-  `active` tinyint(4) NOT NULL,
+  `job_id` int(11) NOT NULL DEFAULT '0',
+  `family_id` int(11) NOT NULL DEFAULT '0',
+  `guardian_id` int(11) NOT NULL DEFAULT '0',
+  `supervisor_id` int(11) NOT NULL DEFAULT '1',
+  `tross_id` int(11) NOT NULL DEFAULT '1',
+  `vita` text,
+  `active` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
+
+--
+-- Daten für Tabelle `characters`
+--
+
+INSERT INTO `characters` (`id`, `user_id`, `name`, `surename`, `gender`, `birthday`, `job_id`, `family_id`, `guardian_id`, `supervisor_id`, `tross_id`, `vita`, `active`) VALUES
+(1, 1, 'Stadt', 'von Augsburg', 'm', '1784-04-22', 0, 0, 0, 0, 0, '', 1),
+(2, 2, 'Fry', 'zu Leym', 'm', '1748-04-15', 1, 2, 0, 1, 0, 'hgm', 1),
+(3, 2, 'Nane', 'zu Leym', 'f', '2017-04-09', 0, 2, 2, 0, 0, '', 1),
+(4, 2, 'Christoph', 'zu Leym', 'm', '1715-07-29', 5, 2, 3, 0, 0, '', 1),
+(9, 2, 'Lara', 'zu Leym', 'f', '2017-04-23', 0, 2, 3, 0, 0, '', 1),
+(11, 2, 'Ben', 'zu Leym', 'm', '', 0, 2, 3, 0, 0, '', 1),
+(12, 23, 'der Basti', 'Bogis chutze', 'm', '2017-12-01', 2, 3, 0, 1, 0, '', 1),
+(13, 2, 'Wasser', 'Platsch', 'f', '2017-01-01', 4, 4, 0, 2, 2, '', 1),
+(18, 3, 'asd dad', 'ads hjpüü', 'm', '', 0, 0, 0, 1, 0, '', 1);
 
 -- --------------------------------------------------------
 
@@ -153,6 +204,38 @@ CREATE TABLE IF NOT EXISTS `dynamic_hash` (
   UNIQUE KEY `id` (`hash`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
+--
+-- Daten für Tabelle `dynamic_hash`
+--
+
+INSERT INTO `dynamic_hash` (`hash`, `time`, `email`) VALUES
+('8c9a5ac0eba3b79030c8c47ca55969e6', 1498219080, 'testuser@example.com'),
+('9dc6a84711295133ff4d133470f56717', 1498218824, 'testuser@example.com');
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `equip`
+--
+
+DROP TABLE IF EXISTS `equip`;
+CREATE TABLE IF NOT EXISTS `equip` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `data` longtext COLLATE utf8_bin,
+  `type` int(11) NOT NULL DEFAULT '1',
+  `image` text COLLATE utf8_bin,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+
+--
+-- Daten für Tabelle `equip`
+--
+
+INSERT INTO `equip` (`id`, `data`, `type`, `image`) VALUES
+(3, 'O:20:"Equipment\\Model\\Tent":17:{s:2:"id";s:1:"1";s:6:"userId";s:1:"2";s:5:"shape";s:1:"1";s:4:"type";s:1:"0";s:5:"width";s:3:"600";s:6:"length";s:3:"400";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#8080c0";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#80ffff";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:8:"shapeImg";N;s:10:"colorField";N;s:15:"isShowTentValue";N;}', 0, NULL),
+(4, 'O:20:"Equipment\\Model\\Tent":17:{s:2:"id";s:1:"2";s:6:"userId";s:1:"1";s:5:"shape";s:1:"1";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#000000";s:7:"biColor";s:1:"0";s:6:"color2";s:7:"#000000";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:8:"shapeImg";N;s:10:"colorField";N;s:15:"isShowTentValue";N;}', 0, NULL),
+(5, 'O:20:"Equipment\\Model\\Tent":17:{s:2:"id";s:0:"";s:6:"userId";s:1:"1";s:5:"shape";s:1:"1";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#000000";s:7:"biColor";s:1:"0";s:6:"color2";s:7:"#000000";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:8:"shapeImg";N;s:10:"colorField";N;s:15:"isShowTentValue";N;}', 0, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -166,6 +249,16 @@ CREATE TABLE IF NOT EXISTS `families` (
   `blazon_id` int(11) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=5 ;
+
+--
+-- Daten für Tabelle `families`
+--
+
+INSERT INTO `families` (`id`, `name`, `blazon_id`) VALUES
+(1, 'BurgerKing', 1),
+(2, 'zu Leym', 3),
+(3, 'vom Drachenstein', 4),
+(4, 'Fam3', 6);
 
 -- --------------------------------------------------------
 
@@ -184,6 +277,16 @@ CREATE TABLE IF NOT EXISTS `images` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci AUTO_INCREMENT=5 ;
 
+--
+-- Daten für Tabelle `images`
+--
+
+INSERT INTO `images` (`id`, `filename`, `extension`, `text_1`, `text_2`, `visibility`) VALUES
+(1, 'testimage', 'jpg', 'Test text 1 i1', 'Test text 2 i1', 1),
+(2, 'testimage2', 'jpg', 'Test text 1 i2', 'Test text 2 i2', 1),
+(3, 'sgfgsf', 'gfd', 'fdg', 'dgf', NULL),
+(4, 'sgs', 'gsg', 'gsgsfg', 'sgfgsgg', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -195,7 +298,19 @@ CREATE TABLE IF NOT EXISTS `job` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `job` text COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=6 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=7 ;
+
+--
+-- Daten für Tabelle `job`
+--
+
+INSERT INTO `job` (`id`, `job`) VALUES
+(1, 'Ritter'),
+(2, 'Bogenschütze'),
+(3, 'Schmied'),
+(4, 'Bader'),
+(5, 'Hofnarr'),
+(6, 'Hauptmann');
 
 -- --------------------------------------------------------
 
@@ -213,6 +328,17 @@ CREATE TABLE IF NOT EXISTS `mail_templates` (
   `variables` mediumtext COLLATE utf8_bin,
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Daten für Tabelle `mail_templates`
+--
+
+INSERT INTO `mail_templates` (`name`, `sender`, `sender_address`, `msg`, `subject`, `variables`) VALUES
+('passwordForgotten', 'Administration@schwarze-ritter-augsburg.com', 'Administration@schwarze-ritter-augsburg.com', '<h3>Hallo {{userName}}, du willst dein Passwort Reseten?</h3><p>Um dein Passwort zu ändern clicke auf folgenden link.</p><a href="http://localhost/password/reset/{{hash}}">Reset Passwort</a>', 'pw', 'userName, hash, userEmail'),
+('successfulRegistered', 'Administration@schwarze-ritter-augsburg.com', 'info@srza.Administration@schwarze-ritter-augsburg.com', '<h3>Hallo {{userName}}, du hast dich erfolgreich registriert</h3><p>Nach der Aktivierung durch einen Administrator hast du vollen Zugriff.</p><p> Du erhältst eine Mail sobald das erledigt ist.</p>', 'registration', NULL),
+('activation', 'Administration@schwarze-ritter-augsburg.com', 'Administration@schwarze-ritter-augsburg.com', '<h3>Hallo {{name}}, dein Acoount {{email}} wurde soeben aktiviert</h3>', 'activation', 'name, email'),
+('deactivation', 'Administration@schwarze-ritter-augsburg.com', 'Administration@schwarze-ritter-augsburg.com', '<h3>Hallo {{name}}, dein Account {{email}} wurde deaktiviert</h3>', 'deactivation', NULL),
+('noReply', 'Administration@schwarze-ritter-augsburg.com', 'Administration@schwarze-ritter-augsburg.com', '<br/><p>Diese Nachricht wurde automatisch erstellt. Antworten auf diese eMailadresse werden nicht empfangen.</p>', 'noReply', NULL);
 
 -- --------------------------------------------------------
 
@@ -243,7 +369,7 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=31 ;
 
 --
 -- Daten für Tabelle `nav`
@@ -277,7 +403,9 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `target`, `min_role_id`, `lf
 (25, 0, 'Links', '/links', '', 1, 55, 56),
 (26, 0, 'Wappen', '/castmanager/wappen', '_self', 4, 24, 25),
 (27, 0, 'Mail Templates', '/system/mailTemplates', '_self', 4, 22, 23),
-(28, 0, 'Calendar Config', '/calendar/config', '_self', 4, 52, 53);
+(28, 0, 'Calendar Config', '/calendar/config', '_self', 4, 52, 53),
+(29, 0, 'Equipmanager', '/equip', '_self', 5, 57, 58),
+(30, 0, 'Site Planner', '/siteplan', '_self', 5, 59, 60);
 
 -- --------------------------------------------------------
 
@@ -328,6 +456,39 @@ CREATE TABLE IF NOT EXISTS `page_hits` (
   UNIQUE KEY `url` (`url`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=787 ;
 
+--
+-- Daten für Tabelle `page_hits`
+--
+
+INSERT INTO `page_hits` (`id`, `url`, `time`, `counter`) VALUES
+(1, '/?_tr_error', 1434, 9),
+(2, '/?_tracy_skip_error', 14766434, 3),
+(11, '/website/dashboard', 1492194508, 24),
+(12, '/website/json', 1492194509, 22),
+(13, '/login', 1492194509, 31),
+(17, '/register', 1492194844, 3),
+(20, '/Veranstalter', 1492195305, 3),
+(21, '/nav/sort', 1492195318, 5),
+(23, '/', 1492195322, 72),
+(25, '/user', 1492195342, 1),
+(32, '/gallery', 1492201936, 25),
+(99, '/system/dashboard', 1492205817, 320),
+(103, '/system/dashboard?_tracy_skip_error', 1492212264, 13),
+(130, '/home', 1492217771, 6),
+(134, '/cast', 1492218115, 7),
+(169, '/system/json', 1492222376, 372),
+(174, '/resource', 1492222467, 2),
+(175, '/resource/edit/32', 1492222474, 2),
+(176, '/role', 1492222485, 2),
+(177, '/permission/edit/4', 1492222489, 3),
+(374, '/links', 1492377112, 3),
+(377, '/disclaimer', 1492377293, 13),
+(379, '/Angebote', 1492377371, 6),
+(513, '/gallery/small/Facebook', 1492382864, 1),
+(768, '/media/filebrowser', 1492384366, 1),
+(784, '/termine', 1492427891, 2),
+(786, '/AGB', 1492427896, 5);
+
 -- --------------------------------------------------------
 
 --
@@ -340,7 +501,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=177 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=196 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -412,7 +573,6 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (147, 'dashboard', 32),
 (148, 'settings', 32),
 (149, 'index', 33),
-(150, 'Administrator', 34),
 (151, 'json', 32),
 (152, 'index', 35),
 (153, 'json', 28),
@@ -432,10 +592,22 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (169, 'mailTemplatesIndex', 32),
 (170, 'mailTemplate', 32),
 (171, 'Guest', 34),
-(172, 'Member', 34),
 (173, 'publicProfile', 35),
 (174, 'privateProfile', 35),
-(176, 'charprofile', 35);
+(176, 'charprofile', 35),
+(179, 'Leitung', 34),
+(181, 'Member', 34),
+(182, 'Vorstand', 34),
+(183, 'Administrator', 34),
+(184, 'message', 32),
+(185, 'index', 38),
+(186, 'index', 39),
+(187, 'tent', 38),
+(188, 'usertent', 38),
+(189, 'usertentall', 38),
+(193, 'deletetent', 38),
+(194, 'edittent', 38),
+(195, 'addtent', 38);
 
 -- --------------------------------------------------------
 
@@ -448,7 +620,7 @@ CREATE TABLE IF NOT EXISTS `resource` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `resource_name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=40 ;
 
 --
 -- Daten für Tabelle `resource`
@@ -476,7 +648,9 @@ INSERT INTO `resource` (`id`, `resource_name`) VALUES
 (34, 'Role'),
 (35, 'Auth\\Controller\\Profile'),
 (36, 'Cast\\Controller\\Blazon'),
-(37, 'Calendar\\Controller\\Calendar');
+(37, 'Calendar\\Controller\\Calendar'),
+(38, 'Equipment\\Controller\\Equipment'),
+(39, 'Equipment\\Controller\\SitePlanner');
 
 -- --------------------------------------------------------
 
@@ -491,7 +665,7 @@ CREATE TABLE IF NOT EXISTS `role` (
   `role_parent` int(11) unsigned DEFAULT NULL,
   `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
   PRIMARY KEY (`rid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
 -- Daten für Tabelle `role`
@@ -499,9 +673,10 @@ CREATE TABLE IF NOT EXISTS `role` (
 
 INSERT INTO `role` (`rid`, `role_name`, `role_parent`, `status`) VALUES
 (1, 'Guest', NULL, 'Active'),
-(2, 'Role2', 1, 'Active'),
-(3, 'Member', 2, 'Active'),
-(4, 'Administrator', 3, 'Active');
+(2, 'Member', 1, 'Active'),
+(3, 'Leitung', 2, 'Active'),
+(4, 'Vorstand', 3, 'Active'),
+(5, 'Administrator', 4, 'Active');
 
 -- --------------------------------------------------------
 
@@ -515,7 +690,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=348 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=467 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -523,15 +698,10 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
 
 INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (2, 1, 2),
-(5, 2, 1),
 (6, 2, 2),
-(7, 2, 60),
-(8, 2, 59),
 (10, 1, 2),
-(13, 2, 1),
 (14, 2, 2),
 (18, 1, 2),
-(21, 2, 1),
 (22, 2, 2),
 (92, 4, 3),
 (93, 4, 4),
@@ -544,29 +714,9 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (152, 2, 66),
 (153, 2, 3),
 (154, 2, 4),
-(155, 2, 52),
-(156, 2, 53),
-(157, 2, 58),
-(158, 2, 61),
-(159, 2, 64),
-(160, 2, 65),
-(161, 2, 62),
-(162, 2, 63),
-(163, 2, 54),
-(164, 2, 55),
-(165, 2, 56),
-(166, 2, 57),
-(167, 2, 5),
-(168, 2, 67),
-(169, 2, 6),
-(170, 2, 7),
 (174, 4, 72),
 (177, 1, 74),
 (185, 4, 82),
-(186, 4, 83),
-(187, 4, 84),
-(188, 4, 86),
-(189, 4, 85),
 (190, 4, 88),
 (191, 4, 87),
 (192, 1, 85),
@@ -621,13 +771,6 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (264, 4, 89),
 (265, 4, 91),
 (266, 4, 93),
-(267, 3, 81),
-(268, 3, 98),
-(269, 3, 99),
-(270, 3, 1),
-(271, 3, 74),
-(272, 3, 52),
-(273, 3, 53),
 (274, 3, 94),
 (275, 3, 89),
 (276, 1, 117),
@@ -666,9 +809,6 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (310, 4, 143),
 (311, 4, 144),
 (312, 4, 145),
-(313, 2, 116),
-(314, 2, 75),
-(315, 2, 81),
 (316, 4, 146),
 (317, 4, 147),
 (318, 4, 148),
@@ -695,11 +835,138 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (340, 4, 170),
 (341, 1, 171),
 (342, 2, 172),
-(343, 4, 150),
 (344, 4, 173),
 (345, 4, 174),
 (346, 4, 175),
-(347, 4, 176);
+(347, 4, 176),
+(348, 4, 177),
+(349, 4, 178),
+(352, 3, 179),
+(353, 2, 181),
+(354, 4, 182),
+(355, 5, 183),
+(356, 5, 115),
+(357, 5, 116),
+(358, 5, 1),
+(359, 5, 117),
+(360, 5, 114),
+(361, 5, 147),
+(362, 5, 148),
+(363, 5, 169),
+(364, 5, 157),
+(366, 5, 151),
+(367, 5, 52),
+(368, 5, 53),
+(369, 5, 74),
+(370, 5, 123),
+(371, 5, 58),
+(372, 5, 59),
+(373, 5, 60),
+(374, 5, 61),
+(375, 5, 152),
+(376, 5, 173),
+(377, 5, 174),
+(378, 5, 154),
+(379, 5, 176),
+(380, 5, 64),
+(381, 5, 65),
+(382, 5, 62),
+(383, 5, 63),
+(384, 5, 54),
+(385, 5, 55),
+(386, 5, 56),
+(387, 5, 57),
+(388, 5, 67),
+(389, 5, 5),
+(390, 5, 6),
+(391, 5, 7),
+(392, 5, 165),
+(393, 5, 166),
+(394, 5, 167),
+(395, 5, 162),
+(396, 5, 163),
+(397, 5, 164),
+(398, 5, 159),
+(399, 5, 160),
+(400, 5, 161),
+(401, 5, 158),
+(402, 5, 142),
+(403, 5, 138),
+(404, 5, 139),
+(405, 5, 153),
+(406, 5, 140),
+(407, 5, 156),
+(408, 5, 137),
+(409, 5, 129),
+(410, 5, 130),
+(411, 5, 131),
+(412, 5, 132),
+(413, 5, 133),
+(414, 5, 134),
+(415, 5, 135),
+(416, 5, 136),
+(417, 5, 127),
+(418, 5, 128),
+(419, 5, 124),
+(420, 5, 126),
+(421, 5, 141),
+(422, 5, 78),
+(423, 5, 79),
+(424, 5, 75),
+(425, 5, 76),
+(426, 5, 77),
+(427, 5, 149),
+(428, 5, 81),
+(429, 5, 98),
+(430, 5, 99),
+(431, 5, 144),
+(432, 5, 143),
+(433, 5, 71),
+(434, 5, 73),
+(435, 5, 145),
+(436, 5, 69),
+(437, 5, 70),
+(438, 5, 181),
+(439, 5, 182),
+(440, 5, 179),
+(441, 5, 180),
+(442, 5, 171),
+(443, 1, 184),
+(446, 4, 184),
+(447, 5, 184),
+(448, 1, 173),
+(449, 5, 170),
+(450, 2, 142),
+(451, 5, 185),
+(452, 5, 186),
+(453, 5, 192),
+(454, 5, 190),
+(455, 5, 191),
+(456, 5, 187),
+(458, 5, 189),
+(459, 5, 9999),
+(460, 5, 9999),
+(462, 5, 188),
+(463, 5, 9999),
+(464, 5, 195),
+(465, 5, 193),
+(466, 5, 194);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `site_plan`
+--
+
+DROP TABLE IF EXISTS `site_plan`;
+CREATE TABLE IF NOT EXISTS `site_plan` (
+  `id` int(11) NOT NULL,
+  `name` text COLLATE utf8_bin,
+  `data` longtext COLLATE utf8_bin,
+  `longitude` float DEFAULT NULL,
+  `latitude` float DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -719,6 +986,81 @@ CREATE TABLE IF NOT EXISTS `system_log` (
   `data` longblob,
   UNIQUE KEY `microtime` (`microtime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+--
+-- Daten für Tabelle `system_log`
+--
+
+INSERT INTO `system_log` (`type`, `msg`, `url`, `userId`, `userName`, `microtime`, `time`, `data`) VALUES
+(1, 'Argument 1 passed to AlbumControllerGalleryController::__construct() must be an instance of AlbumControllerGalleryService, none given, called in D:WebWebprojekteSRzAvendorzendframeworkzend-servicemanagersrcAbstractPluginManager.php on line 252 and defined', '/gallery', 2, 'FryDay', 1496780000, 1496784930, 0x7b2273657276657250485044617461223a7b2252454449524543545f4150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c2252454449524543545f535441545553223a22323030222c224150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c22485454505f484f5354223a226c6f63616c686f7374222c22485454505f434f4e4e454354494f4e223a226b6565702d616c697665222c22485454505f555047524144455f494e5345435552455f5245515545535453223a2231222c22485454505f555345525f4147454e54223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f35382e302e333032392e313130205361666172692f3533372e3336222c22485454505f414343455054223a22746578742f68746d6c2c6170706c69636174696f6e2f7868746d6c2b786d6c2c6170706c69636174696f6e2f786d6c3b713d302e392c696d6167652f776562702c2a2f2a3b713d302e38222c22485454505f444e54223a2231222c22485454505f52454645524552223a22687474703a2f2f6c6f63616c686f73742f70617373776f72642f72657365742f62356663323936613737646266396432396131396362393364653039393934373f5f74726163795f736b69705f6572726f72222c22485454505f4143434550545f454e434f44494e47223a22677a69702c206465666c6174652c20736463682c206272222c22485454505f4143434550545f4c414e4755414745223a2264652d44452c64653b713d302e382c656e2d55533b713d302e362c656e3b713d302e34222c22485454505f434f4f4b4945223a22636f6f6b6965636f6e73656e745f7374617475733d6469736d6973733b2073727a61696b6e6f77796f753d313439323738303337353b205048505345535349443d65736b37646e626a7070663469613176616966307475636e6d333b207a64742d68696464656e3d303b20696f3d55704e57596c38677942495568472d6c41414141222c2250415448223a22433a5c50726f6772616d446174615c4f7261636c655c4a6176615c6a617661706174683b433a5c5065726c36345c736974655c62696e3b433a5c5065726c36345c62696e3b443a5c5765625c57656270726f6a656b74655c54455354494e475c7573627765625c7068703b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c69434c5320436c69656e745c3b433a5c50726f6772616d2046696c65735c496e74656c5c69434c5320436c69656e745c3b433a5c57696e646f77735c73797374656d33323b433a5c57696e646f77733b433a5c57696e646f77735c53797374656d33325c5762656d3b433a5c57696e646f77735c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65732028783836295c4e564944494120436f72706f726174696f6e5c50687973585c436f6d6d6f6e3b433a5c57494e444f57535c73797374656d33323b433a5c57494e444f57533b433a5c57494e444f57535c53797374656d33325c5762656d3b433a5c57494e444f57535c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c436f6d6d6f6e2046696c65735c41646f62655c41474c3b443a5c50726f6772616d2046696c65732028783836295c517569636b54696d655c515453797374656d5c3b443a5c5765625c7573627765625c7068703b433a5c50726f6772616d446174615c436f6d706f73657253657475705c62696e3b433a5c50726f6772616d2046696c65735c6e6f64656a735c3b433a5c50726f6772616d2046696c65732028783836295c427261636b6574735c636f6d6d616e643b433a5c50726f6772616d2046696c65735c4d6963726f736f66742053514c205365727665725c3133305c546f6f6c735c42696e6e5c3b433a5c50726f6772616d2046696c65735c4d6963726f736f66745c57656220506c6174666f726d20496e7374616c6c65725c3b433a5c50726f6772616d2046696c65735c646f746e65745c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3131305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3132305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3133305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c426974766973652053534820436c69656e743b443a5c4861736869436f72705c56616772616e745c62696e3b443a5c50726f6772616d2046696c65735c50755454595c3b443a5c50726f6772616d2046696c65735c4769745c4769745c636d643b443a5c50726f6772616d2046696c65735c4769745c4769745c6d696e677736345c62696e3b443a5c50726f6772616d2046696c65735c4769745c4769745c7573725c62696e3b433a5c50726f6772616d2046696c65732028783836295c476f757263655c636d643b433a5c55736572735c4672795c417070446174615c526f616d696e675c436f6d706f7365725c76656e646f725c62696e3b433a5c55736572735c4672795c417070446174615c526f616d696e675c6e706d3b22443a5c50726f6772616d2046696c65735c507554545922222c2253797374656d526f6f74223a22433a5c57494e444f5753222c22434f4d53504543223a22433a5c57494e444f57535c73797374656d33325c636d642e657865222c2250415448455854223a222e434f4d3b2e4558453b2e4241543b2e434d443b2e5642533b2e5642453b2e4a533b2e4a53453b2e5753463b2e5753483b2e4d5343222c2257494e444952223a22433a5c57494e444f5753222c225345525645525f5349474e4154555245223a22222c225345525645525f534f465457415245223a224170616368652f322e342e36202857696e333229205048502f352e362e3330222c225345525645525f4e414d45223a226c6f63616c686f7374222c225345525645525f41444452223a223a3a31222c225345525645525f504f5254223a223830222c2252454d4f54455f41444452223a223a3a31222c22444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c22524551554553545f534348454d45223a2268747470222c22434f4e544558545f505245464958223a22222c22434f4e544558545f444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c225345525645525f41444d494e223a226d61696c406c6f63616c686f7374222c225343524950545f46494c454e414d45223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c69632f696e6465782e706870222c2252454d4f54455f504f5254223a223536373531222c2252454449524543545f55524c223a222f67616c6c657279222c22474154455741595f494e54455246414345223a224347492f312e31222c225345525645525f50524f544f434f4c223a22485454502f312e31222c22524551554553545f4d4554484f44223a22474554222c2251554552595f535452494e47223a22222c22524551554553545f555249223a222f67616c6c657279222c225343524950545f4e414d45223a222f696e6465782e706870222c225048505f53454c46223a222f696e6465782e706870222c22524551554553545f54494d455f464c4f4154223a313439363738343933302e3235332c22524551554553545f54494d45223a313439363738343933307d7d),
+(1, 'While attempting to create albumcontrollergallery(alias: AlbumControllerGallery) an invalid factory was registered for this instance type.', '/gallery', 2, 'FryDay', 1496790000, 1496784997, 0x7b2273657276657250485044617461223a7b2252454449524543545f4150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c2252454449524543545f535441545553223a22323030222c224150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c22485454505f484f5354223a226c6f63616c686f7374222c22485454505f434f4e4e454354494f4e223a226b6565702d616c697665222c22485454505f43414348455f434f4e54524f4c223a226d61782d6167653d30222c22485454505f555047524144455f494e5345435552455f5245515545535453223a2231222c22485454505f555345525f4147454e54223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f35382e302e333032392e313130205361666172692f3533372e3336222c22485454505f414343455054223a22746578742f68746d6c2c6170706c69636174696f6e2f7868746d6c2b786d6c2c6170706c69636174696f6e2f786d6c3b713d302e392c696d6167652f776562702c2a2f2a3b713d302e38222c22485454505f444e54223a2231222c22485454505f52454645524552223a22687474703a2f2f6c6f63616c686f73742f70617373776f72642f72657365742f62356663323936613737646266396432396131396362393364653039393934373f5f74726163795f736b69705f6572726f72222c22485454505f4143434550545f454e434f44494e47223a22677a69702c206465666c6174652c20736463682c206272222c22485454505f4143434550545f4c414e4755414745223a2264652d44452c64653b713d302e382c656e2d55533b713d302e362c656e3b713d302e34222c22485454505f434f4f4b4945223a22636f6f6b6965636f6e73656e745f7374617475733d6469736d6973733b2073727a61696b6e6f77796f753d313439323738303337353b205048505345535349443d65736b37646e626a7070663469613176616966307475636e6d333b20696f3d55704e57596c38677942495568472d6c414141413b207a64742d68696464656e3d30222c2250415448223a22433a5c50726f6772616d446174615c4f7261636c655c4a6176615c6a617661706174683b433a5c5065726c36345c736974655c62696e3b433a5c5065726c36345c62696e3b443a5c5765625c57656270726f6a656b74655c54455354494e475c7573627765625c7068703b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c69434c5320436c69656e745c3b433a5c50726f6772616d2046696c65735c496e74656c5c69434c5320436c69656e745c3b433a5c57696e646f77735c73797374656d33323b433a5c57696e646f77733b433a5c57696e646f77735c53797374656d33325c5762656d3b433a5c57696e646f77735c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65732028783836295c4e564944494120436f72706f726174696f6e5c50687973585c436f6d6d6f6e3b433a5c57494e444f57535c73797374656d33323b433a5c57494e444f57533b433a5c57494e444f57535c53797374656d33325c5762656d3b433a5c57494e444f57535c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c436f6d6d6f6e2046696c65735c41646f62655c41474c3b443a5c50726f6772616d2046696c65732028783836295c517569636b54696d655c515453797374656d5c3b443a5c5765625c7573627765625c7068703b433a5c50726f6772616d446174615c436f6d706f73657253657475705c62696e3b433a5c50726f6772616d2046696c65735c6e6f64656a735c3b433a5c50726f6772616d2046696c65732028783836295c427261636b6574735c636f6d6d616e643b433a5c50726f6772616d2046696c65735c4d6963726f736f66742053514c205365727665725c3133305c546f6f6c735c42696e6e5c3b433a5c50726f6772616d2046696c65735c4d6963726f736f66745c57656220506c6174666f726d20496e7374616c6c65725c3b433a5c50726f6772616d2046696c65735c646f746e65745c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3131305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3132305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3133305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c426974766973652053534820436c69656e743b443a5c4861736869436f72705c56616772616e745c62696e3b443a5c50726f6772616d2046696c65735c50755454595c3b443a5c50726f6772616d2046696c65735c4769745c4769745c636d643b443a5c50726f6772616d2046696c65735c4769745c4769745c6d696e677736345c62696e3b443a5c50726f6772616d2046696c65735c4769745c4769745c7573725c62696e3b433a5c50726f6772616d2046696c65732028783836295c476f757263655c636d643b433a5c55736572735c4672795c417070446174615c526f616d696e675c436f6d706f7365725c76656e646f725c62696e3b433a5c55736572735c4672795c417070446174615c526f616d696e675c6e706d3b22443a5c50726f6772616d2046696c65735c507554545922222c2253797374656d526f6f74223a22433a5c57494e444f5753222c22434f4d53504543223a22433a5c57494e444f57535c73797374656d33325c636d642e657865222c2250415448455854223a222e434f4d3b2e4558453b2e4241543b2e434d443b2e5642533b2e5642453b2e4a533b2e4a53453b2e5753463b2e5753483b2e4d5343222c2257494e444952223a22433a5c57494e444f5753222c225345525645525f5349474e4154555245223a22222c225345525645525f534f465457415245223a224170616368652f322e342e36202857696e333229205048502f352e362e3330222c225345525645525f4e414d45223a226c6f63616c686f7374222c225345525645525f41444452223a223a3a31222c225345525645525f504f5254223a223830222c2252454d4f54455f41444452223a223a3a31222c22444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c22524551554553545f534348454d45223a2268747470222c22434f4e544558545f505245464958223a22222c22434f4e544558545f444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c225345525645525f41444d494e223a226d61696c406c6f63616c686f7374222c225343524950545f46494c454e414d45223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c69632f696e6465782e706870222c2252454d4f54455f504f5254223a223536383536222c2252454449524543545f55524c223a222f67616c6c657279222c22474154455741595f494e54455246414345223a224347492f312e31222c225345525645525f50524f544f434f4c223a22485454502f312e31222c22524551554553545f4d4554484f44223a22474554222c2251554552595f535452494e47223a22222c22524551554553545f555249223a222f67616c6c657279222c225343524950545f4e414d45223a222f696e6465782e706870222c225048505f53454c46223a222f696e6465782e706870222c22524551554553545f54494d455f464c4f4154223a313439363738343939362e3736362c22524551554553545f54494d45223a313439363738343939367d7d);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tent`
+--
+
+DROP TABLE IF EXISTS `tent`;
+CREATE TABLE IF NOT EXISTS `tent` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `shape` int(11) NOT NULL,
+  `type` int(11) NOT NULL DEFAULT '0',
+  `color1` text COLLATE utf8_bin,
+  `bi_color` int(11) DEFAULT NULL,
+  `color2` text COLLATE utf8_bin,
+  `width` int(11) NOT NULL,
+  `length` int(11) NOT NULL,
+  `spare_beds` int(11) NOT NULL DEFAULT '0',
+  `is_show_tent` int(11) NOT NULL DEFAULT '0',
+  `is_group_equip` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=17 ;
+
+--
+-- Daten für Tabelle `tent`
+--
+
+INSERT INTO `tent` (`id`, `user_id`, `shape`, `type`, `color1`, `bi_color`, `color2`, `width`, `length`, `spare_beds`, `is_show_tent`, `is_group_equip`) VALUES
+(1, 2, 1, 0, '#8080c0', 1, '#80ffff', 600, 400, 5, 0, 0),
+(2, 1, 1, 0, '#000000', 0, '#000000', 300, 300, 5, 0, 0),
+(3, 1, 1, 0, '#564', 1, '#999', 200, 300, 5, 1, 0),
+(5, 2, 0, 1, '#0000ff', 1, '#8080ff', 350, 350, 6, 1, 0),
+(6, 2, 0, 0, '#789', 1, '#555', 400, 300, 2, 1, 0),
+(7, 1, 1, 0, '#633', 1, '#666', 300, 300, 5, 0, 0),
+(8, 2, 2, 4, '#0080c0', 0, '#0080c0', 300, 600, 7, 0, 0),
+(10, 2, 1, 0, '#321', 1, '#788', 400, 300, 7, 0, 0),
+(11, 1, 0, 0, '#789', 1, '#321', 300, 300, 1, 1, 0),
+(12, 2, 0, 0, '#0080c0', 1, '#00ffff', 300, 300, 2, 1, 0),
+(13, 1, 1, 0, '#000000', 0, '#000000', 300, 300, 5, 0, 0),
+(14, 1, 1, 0, '#000000', 0, '#000000', 300, 300, 5, 0, 0),
+(15, 2, 1, 0, '#8080c0', 1, '#80ffff', 600, 400, 5, 0, 0),
+(16, 2, 1, 0, '#8080c0', 1, '#80ffff', 600, 400, 5, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tent_types`
+--
+
+DROP TABLE IF EXISTS `tent_types`;
+CREATE TABLE IF NOT EXISTS `tent_types` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` text COLLATE utf8_bin,
+  `shape` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
+
+--
+-- Daten für Tabelle `tent_types`
+--
+
+INSERT INTO `tent_types` (`id`, `name`, `shape`) VALUES
+(1, 'Alex Rund', 0),
+(2, 'Sachse', 1),
+(3, 'Sachse 2M', 3),
+(4, '2 Mast', 2);
 
 -- --------------------------------------------------------
 
@@ -762,23 +1104,20 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
 
 --
 -- Daten für Tabelle `users`
 --
 
 INSERT INTO `users` (`id`, `email`, `name`, `password`, `role_id`, `status`, `created_on`, `modified_on`, `street`, `city`, `zip`, `member_number`, `real_surename`, `real_name`, `birthday`, `gender`, `user_image`) VALUES
-(1, 'salt@salt.de', 'salt', '', 4, 1, 152151515113, 1497301711, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', './data/_users/salt/profileImage.jpg'),
-(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 4, 1, 67665564, 1497390116, 'Eringerstrasse', 'München', 80689, 'MN-G-02', 'Sonntag', 'Christoph', 330991200, 'm', '/media/file/_users/2/pub/profileImage.gif'),
-(3, 'boluuuu@gmail.com', 'stefan', 'ed8da3d7f461715ddeb6f9217613904b1d98d4fb', 3, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'testuser@example.com', 'Test', 'test', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 'testuser2@example.com', 'Test2', '37c7419816bc29749747704c96b655f2f7ba6d74', 3, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 'Test3@exaple.com', 'NaneTest', '', 2, 1, 0, 1497301117, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', 'D:\\Web\\Webprojekte\\SRzA\\Data\\_users\\NaneTest/profileImage.jpg'),
-(7, 'Test4@exaple.com', 'ChristophTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(8, 'Test5@exaple.com', 'LaraTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(9, 'Test6@exaple.com', 'BenTest', '', 2, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(10, 'BaBo@example.com', 'Basti', '', 3, 0, 345435, 1497377890, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', NULL);
+(1, 'salt@salt.de', 'salt', '', 5, 1, 152151515113, 1497301711, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', './data/_users/salt/profileImage.jpg'),
+(2, 'fryday@example.com', 'FryDay', '8b20508657fb4d3b457198e94c02ac916c72ce02', 5, 1, 67665564, 1498161433, 'Eringerstrasse', 'München', 80689, 'MN-G-02', 'Sonntag', 'Christoph', 330991200, 'm', '/media/file/_users/2/pub/profileImage.png'),
+(3, 'boluuuu@gmail.com', 'stefan', 'ed8da3d7f461715ddeb6f9217613904b1d98d4fb', 3, 1, 0, 1498073961, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', NULL),
+(4, 'testuser@example.com', 'Test', 'ed8da3d7f461715ddeb6f9217613904b1d98d4fb', 2, 1, 0, 1498217444, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', '/media/file/_users/4/pub/profileImage.png'),
+(5, 'testuser2@example.com', 'Test2', '37c7419816bc29749747704c96b655f2f7ba6d74', 3, 1, 0, 1498170634, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', NULL),
+(23, 'member@example.com', 'member', '5089583452187170bbc54511c26b3f62583a480b', 2, 1, 1498171283, 1498243907, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', NULL),
+(24, 'leitung@example.com', 'leitung', '59adb0ca6ddaed0ba85ddc81ac042dfd863993b5', 3, 1, 1498243943, 1498243943, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'm', NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

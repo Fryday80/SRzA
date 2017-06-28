@@ -3,7 +3,7 @@
 namespace Application\Model\DataObjects;
 
 
-class SystemLog extends DataItem
+class SystemLog extends StatsDataItem
 {
     public $type;
     public $msg;

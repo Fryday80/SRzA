@@ -13,7 +13,8 @@ class TentServiceFactory implements FactoryInterface
         $tentTypesTable = $sm->get('Equipment\Model\TentTypesTable');
         $userService = $sm->get('UserService');
         $cacheService = $sm->get('CacheService');
+        $equipTable = $sm->get('Equipment\Model\EquipTable');
 
-        return new TentService($tentTable, $tentTypesTable, $userService, $cacheService);
+        return new TentService($tentTable, $tentTypesTable, $equipTable, $userService, $cacheService);
     }
 }

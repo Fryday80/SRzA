@@ -282,7 +282,7 @@ class EquipmentController extends AbstractActionController
                 $this->tentService->saveTent($tent);
             }
         }
-        $form->setData($tent->getData());
+        $form->setData($tent->toArray());
         return array(
             'form' => $form,
             'links' => $links,
