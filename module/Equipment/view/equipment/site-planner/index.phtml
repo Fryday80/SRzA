@@ -1,5 +1,5 @@
 <?php
-$title = $this->translate("SitePlanner");
+$title = $this->translate("Site Planner");
 $this->headTitle($title);
 
 // $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
@@ -16,29 +16,98 @@ $this->headScript()->appendFile('/libs/map.js');
     #sitePlanner .canvas {
         flex-grow: 1;
     }
-    .planner-controls {
-        flex: 1;
+    #sitePlanner .planner-controls {
+        flex: 0 0 200px;
         width: 200px;
         padding: 5px;
     }
-    .planner-controls ul {
+    #sitePlanner .planner-controls ul {
         list-style: none;
+    }
+    #sitePlanner .plan-select {
+        float: left;
+        width: 120px;
+        margin-left: 0px;
+    }
+    #sitePlanner button.load-plan {
+        float: right;
+        margin-top: 0px;
+    }
+    #sitePlanner hr {
+        clear:both;
+        margin: 10px 0 10px 0;
+        padding: 1px 0 1px 0;
+        background-color: black;
+    }
+    #sitePlanner .planner-controls label[for] {
+        float: left;
+        margin-top: 0px;
+    }
+    #lon,
+    #lat,
+    #zoom,
+    #scale-select,
+    #diameter,
+    #maptype-select {
+        width: 95px;
+        float: right;
+    }
+    #sitePlanner .setMap {
+        margin: 10px 0 10px 0;
+        float: right;
+        height: 33px;
     }
 
 </style>
 <box id="sitePlanner">
     <div class="planner-controls">
-        <button class="setMap" style="float: right; margin: 0px 5px 10px 0;height: 33px">Set Map</button>
-        <input style="float: left" id="lon" type="number" value="48.249238">
-        <input style="float: left" id="lat" type="number" value="11.562762">
-        <hr style="clear:both; margin: 0 0 10px 0">
+        <label>
+            <span>Plänne</span>
+            <select class="plan-select"></select>
+        </label>
+        <button class="load-plan"> Load </button>
+        <div style="clear:both"></div>
+        <label>
+            <span>Name</span>
+            <input id="plan-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+        </label>
+        <button class="save-plan">Save</button>
+        <button class="new-plan" style="float:right">New</button>
+        <hr>
+        <label for="lon">Longitude:</label>
+        <input id="lon" type="number">
+        <br>
+        <label for="lat">Latitude:</label>
+        <input id="lat" type="number">
+        <br>
+        <label for="zoom">Zoom:</label>
+        <input id="zoom" type="number" min="1" max="7" step="1">
+        <br>
+        <label for="scale-select">Quality:</label>
+        <select id="scale-select"> 
+            <option value="1">1</option>
+            <option value="2">2</option>
+        </select>
+        <br>
+        <label for="maptype-select">map type:</label>
+        <select id="maptype-select">
+            <option value="terrain">Terrain</option>
+            <option value="satellite">Satellite</option>
+            <option value="roadmap">Roadmap</option>
+            <option value="hybrid">Hybrid</option>
+        </select>
+        <label for="diameter">Map size:</label>
+        <input id="diameter" type="number" min="1" max="5" step="1">
+        <br>
+        <div style="clear:both"></div>
+        <button class="setMap">Set Map</button>
+
+        <hr>
         <button class="zoomin">ZoomIn</button>
         <button class="zoomout">ZoomOut</button>
-        <button class="save">Save Plan</button>
         <button class="createImage">Create Image</button>
-        <hr style="clear:both; margin: 10px 0 10px 0">
-        <ul>
-            <li>Liste Aller möglichen objecte</li>
+        <hr>
+        <ul class="itemList">
             <?php
             foreach($tents as $tent): ?>
                 <li>
@@ -87,28 +156,32 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             loadImage(urls[pointer], onload);
         }
-        function createGoogleMapStaticImageUrls(lonLat, diameter) {
+        function createGoogleMapStaticImageUrls(options) {
             var result = [];
-
-            for (var line = 0; line < diameter; line++) {
-                for (var pos = 0; pos < diameter; pos++) {
+            var zoom = Math.abs(options.zoom - 7);
+            zoom = Math.pow(2, zoom);
+            var offlong = zoom * 0.000277;
+            var offlat = zoom * 0.000429;
+            for (var line = 0; line < options.diameter; line++) {
+                for (var pos = 0; pos < options.diameter; pos++) {
                     var center = [
-                        Math.floor( (lonLat[0] - line * 0.000277) * 1000000  ) / 1000000,
-                        Math.floor( (lonLat[1] + pos * 0.000429) * 1000000  ) / 1000000,
+                        Math.floor( (options.longitude - line * offlong) * 1000000  ) / 1000000,
+                        Math.floor( (options.latitude + pos * offlat) * 1000000  ) / 1000000,
+//                        options.longitude - line * offlong,
+//                        options.latitude + pos * offlati,
                     ];
 //                    console.log('line: %i  |  pos: %i', line, pos);
 //                    console.log(center);
                     var url = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
-                        zoom: 21,
                         size: '640x640',
                         center: center[0] + ',' + center[1],
-                        maptype: 'satellite',
-                        scale: 3
+                        zoom: 14 + options.zoom,
+                        maptype: options.mapType,
+                        scale: options.scale,
                     });
                     result.push(url);
                 }
             }
-
             return result;
         }
 
@@ -128,7 +201,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     tent: tent,
                     left: 100,
                     top: 100,
-                    fill: 'red',
                     width: parseInt(tent.width) / 5,
                     height: parseInt(tent.length) / 5
                 });
@@ -206,15 +278,25 @@ $this->headScript()->appendFile('/libs/map.js');
         class SitePlanner {
             constructor(element, settings) {
                 var $canvas = $('.site-planner-canvas', element);
+                this.$element = $(element);
                 this.progressBarWidth = 250;
                 this.viewPos = {x:0, y:0};
                 this.zoomValue = 1;
                 this.isDragging = false;
                 this.data = JSON.parse($canvas.html());
                 this.mapImages = [];
+                this.items = [];
                 this.isBusy = false;
+                this.planList = [];
+                this.plan = {
+                    longitude: 48.249238,
+                    latitude: 11.562762,
+                    zoom: 7,
+                    scale: 2,
+                    mapType: 'satellite',
+                    diameter: 2,
+                };
                 //init
-
                 $canvas.html('');
                 //create fabric
                 this.canvas = new fabric.Canvas($canvas[0], {
@@ -257,44 +339,86 @@ $this->headScript()->appendFile('/libs/map.js');
                     angle: 0
                 });
 
-                this.setMap([48.249338, 11.562762]);
+                this.setMap();
 //                this.setMap([48.376848, 10.889686]);
                 for(var i = 0; i < this.data.length; i++ ) {
-                    this.addTent(this.data[i]);
+                    this.addItem(this.data[i]);
                 }
-
+                this.initControls();
+            }
+            initControls() {
                 var self = this;
+                this.loadSitePlanList();
+                this.updateMapConfig();
                 this.canvas.on({
-                    'mouse:down' : this.mouseDownHandler.bind(this),
-                    'mouse:up' : this.mouseUpHandler.bind(this),
-                    'mouse:move' : this.mouseMoveHandler.bind(this),
-                    'mouse:over' : this.mouseOverHandler.bind(this),
+                    'mouse:down': this.mouseDownHandler.bind(this),
+                    'mouse:up': this.mouseUpHandler.bind(this),
+                    'mouse:move': this.mouseMoveHandler.bind(this),
+                    'mouse:over': this.mouseOverHandler.bind(this),
                 });
-                $('button.setMap', element).click(function () {
-                    self.setMap([
-                        parseFloat($('#lon').val()),
-                        parseFloat($('#lat').val())
-                    ]);
+
+                $('button.load-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    var planID = $('.plan-select', this.$element).val();
+                    self.loadSitePlan(planID);
+//                    self.writeMapConfig({
+//                        longitude: ,
+//                        latitude: ,
+//                        zoom: ,
+//                        scale: ,
+//                        mapType:
+//                    });
                 });
-                $('button.save', element).click(function (e) {
+                $('button.save-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.savePlan();
+                    //@todo save plann
+                });
+                $('button.new-plan', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     //@todo save plann
                 });
-                $('button.createImage', element).click(function (e) {
+                $('button.setMap', this.$element).click(function () {
+                    self.readMapConfig();
+                    self.setMap();
+                });
+                
+                
+                $('button.createImage', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     //@todo create image from canvas and open a new canvas to crop. than upload
                 });
-                $('button.zoomin', element).click(function (e) {
+                $('button.zoomin', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     self.zoomIn();
                 });
-                $('button.zoomout', element).click(function (e) {
+                $('button.zoomout', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     self.zoomOut();
                 });
             }
+            readMapConfig() {
+                this.plan.longitude = parseFloat($('#lon').val());
+                this.plan.latitude = parseFloat($('#lat').val());
+                this.plan.zoom = parseInt($('#zoom').val());
+                this.plan.scale = parseInt($('#scale-select').val());
+                this.plan.mapType = $('#maptype-select').val();
+                this.plan.diameter = parseInt($('#diameter').val());
+            }
+            updateMapConfig() {
+                $('#lon')           .val(this.plan.longitude);
+                $('#lat')           .val(this.plan.latitude);
+                $('#zoom')          .val(this.plan.zoom);
+                $('#scale-select')  .val(this.plan.scale);
+                $('#maptype-select').val(this.plan.mapType);
+                $('#diameter')      .val(this.plan.diameter);
+            }
             hideProgressBar() {
-                this.canvas.remove(this.progressGroup);
+                var self = this;
+                setTimeout(function() {
+                    self.canvas.remove(self.progressGroup);
+                    self.isBusy = false;
+                }, 500);
             }
             updateProgressBar(value) {
                 var self = this;
@@ -321,20 +445,33 @@ $this->headScript()->appendFile('/libs/map.js');
                     //hide progress element
                 }
             }
-            setMap(lonLat) {
+            setMap() {
                 if (this.isBusy) return;
                 var self = this;
                 this.isBusy = true;
                 this.updateProgressBar(0);
+
                 //remove old map images
                 for (var i = 0; i < this.mapImages.length; i++) {
                     this.canvas.remove(this.mapImages[i]);
                 }
                 this.mapImages = [];
 
-                var diameter = 5;
-                var urls = createGoogleMapStaticImageUrls(lonLat, diameter);
+                this.setViewPort(0, 0);
+                this.zoom(1);
+                this.canvas.renderAll();
 
+                //@todo hide items?
+                this.showItems(false);
+                this.updateItems();
+
+                var urls = createGoogleMapStaticImageUrls(this.plan);
+                var createUrlProcess = 0;
+                function finish() {
+                    self.showItems(true);
+                    self.updateProgressBar(1);
+                    self.hideProgressBar();
+                }
                 function createFromUrl(url, line, pos, zIndex) {
                     fabric.Image.fromURL(url, function(img) {
 //                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
@@ -342,46 +479,55 @@ $this->headScript()->appendFile('/libs/map.js');
 //                            pos * 640,
 //                            line * 640);
                         img.set('isMap', true);
-                        self.canvas.add(img.scale(1).set({
+                        img.scale(1 / self.plan.scale).set({
                             left: pos * 640,
-                            top: line * 620,
+                            top: line * 610,
                             scale: 2,
                             selectable: false,
                             originX: 'left',
                             originY: 'top',
                             transparentCorners: false
-                        }));
+                        });
+                        self.canvas.add(img);
 //                        self.canvas.bringToFront(img);
                         self.canvas.moveTo(img, zIndex);
                         self.mapImages.push(img);
+                        createUrlProcess++;
+                        if (createUrlProcess >= self.plan.diameter) {
+                            finish();
+                        }
                     });
                 }
 
                 preloadImages(urls, function(images) {
-                    self.updateProgressBar(1);
-                    for (var line = 0; line < diameter; line++) {
-                        for (var pos = 0; pos < diameter; pos++) {
-                            createFromUrl(images[line * diameter + pos].src, line, pos, -line);
+                    for (var line = 0; line < self.plan.diameter; line++) {
+                        for (var pos = 0; pos < self.plan.diameter; pos++) {
+                            createFromUrl(images[line * self.plan.diameter + pos].src, line, pos, -line);
                         }
-//                        break;
                     }
-                    self.hideProgressBar();
-                    self.isBusy = false;
                 }, function(value) {
                     self.updateProgressBar(value);
                 });
             }
             zoom(value) {
-                this.zoomValue = Math.max(1, this.zoomValue + value);
+                this.zoomValue = Math.max(1, value);
                 this.canvas.setZoom(this.zoomValue);
             }
             zoomIn() {
-                this.zoomValue *= 2;
-                this.canvas.setZoom(this.zoomValue);
+//                this.zoomValue *= 2;
+//                this.canvas.setZoom(this.zoomValue);
             }
             zoomOut() {
-                this.zoomValue /= 2;
-                this.canvas.setZoom(this.zoomValue);
+//                this.zoomValue /= 2;
+//                this.canvas.setZoom(this.zoomValue);
+            }
+            setViewPort(deltax = 0, deltay = 0) {
+                this.viewPos.x = deltax;
+                this.viewPos.y = deltay;
+                this.canvas.absolutePan({
+                    x: this.viewPos.x,
+                    y: this.viewPos.y
+                });
             }
             moveViewPort(deltax = 0, deltay = 0) {
                 this.viewPos.x -= deltax;
@@ -391,12 +537,121 @@ $this->headScript()->appendFile('/libs/map.js');
                     y: this.viewPos.y
                 });
             }
-            addTent(tent) {
-                var tentEntity = new TentEntity(tent);
-                this.canvas.add(tentEntity);
-                tentEntity.moveTo(100);
-                tentEntity.bringToFront();
-                return tentEntity;
+            addItem(data) {
+                var entity = new TentEntity(data);
+                this.canvas.add(entity);
+                entity.moveTo(100);
+                entity.bringToFront();
+                this.items.push(entity);
+                this.updateItems();
+                return entity;
+            }
+            updateItems() {
+                //resize items depending on this.plan.zoom
+                for(var i = 0; i < this.items.length; i++) {
+                    var z = Math.abs(this.plan.zoom - 7);
+                    z = Math.pow(2, z);
+                    var item = this.items[i];
+                    item.scale(1 / z);
+                }
+            }
+            showItems(flag = true) {
+                for(var i = 0; i < this.items.length; i++) {
+                    if (flag) {
+                        this.canvas.add(this.items[i]);
+                    } else {
+                        this.items[i].remove();
+                    }
+                }
+            }
+            updatePlanList() {
+                $('.plan-select', this.$element).empty();
+                for(var i = 0; i < this.planList.length; i++) {
+                    $('.plan-select', this.$element).append('<option value="' + this.planList[i].id + '">' + this.planList[i].name + '</option>');
+                }
+            }
+            loadSitePlanList() {
+                $.getJSON("/siteplanner/list", function(result){
+                    //save and update plan list
+                    this.planList = result.data;
+                    this.updatePlanList();
+                }.bind(this));
+            }
+            loadSitePlan(planID) {
+                $.getJSON("/siteplanner/get/" + planID , function(result){
+                    console.log(result.data);
+                    //--then save list and create list
+                });
+                //ajax call to load it
+                //--then save plan in cache
+//                --setMap
+                //--setItems
+            }
+            //save plan
+            savePlan() {
+                if (this.isBusy) return false;
+                this.isBusy = true;
+                this.updateProgressBar(0);
+
+                var self = this,
+                    data = {
+                        id: "1",
+                        name: "Plann 1",
+                        data: "{}",
+                        latitude: "20",
+                        longitude: "49",
+                    };
+                this.ajaxPostJson('/siteplanner/save', data,
+                    function (data) {
+                    console.log('res', data);
+                    self.hideProgressBar();
+                }, function (value) {
+                    self.updateProgressBar(value);
+                });
+                return true;
+            }
+            ajaxPostJson(url, data, success, progress){
+                var progressValue = 0.1,
+                    progressState = 'Start Loading';
+
+                if (!url) {
+                    console.error('url must be set!');
+                }
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function(msg) {
+                        if (success && typeof success === 'function')
+                            success(msg);
+                    },
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                progressState = 'Send request';
+                                progressValue = (evt.loaded / evt.total) / 2;
+                                if (progress)
+                                    progress(progressValue, progressState);
+                            }
+                        }, false);
+
+                        xhr.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                progressState = 'Receiving data';
+                                progressValue = (evt.loaded / evt.total) / 2 + 0.5;
+                                if (progress)
+                                    progress(progressValue, progressState);
+                            }
+                        }, false);
+
+                        return xhr;
+                    }
+                });
+                if (progress)
+                    progress(progressValue, progressState);
             }
             mouseDownHandler(e) {
                 if (this.isBusy) return;
@@ -416,7 +671,6 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             mouseOverHandler(e) {
                 if (this.isBusy) return;
-//                console.log('over', e)
             }
         }
 
@@ -425,6 +679,5 @@ $this->headScript()->appendFile('/libs/map.js');
             new SitePlanner(this, settings);
         };
     }(jQuery));
-
     $('#sitePlanner').SitePlanner();
 </script>

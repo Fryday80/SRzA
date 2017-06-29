@@ -17,6 +17,7 @@ return array(
     'Equipment\Model\EquipmentStdDataItemModel'                 => __DIR__ . '/src/Equipment/Model/EquipmentStdDataItemModel.php',
     'Equipment\Model\EquipTable'                                => __DIR__ . '/src/Equipment/Model/EquipTable.php',
     'Equipment\Model\IEquipment'                                => __DIR__ . '/src/Equipment/Model/IEquipment.php',
+    'Equipment\Model\SitePlan'                                  => __DIR__ . '/src/Equipment/Model/SitePlan.php',
     'Equipment\Model\SitePlannerTable'                          => __DIR__ . '/src/Equipment/Model/SitePlannerTable.php',
     'Equipment\Model\Tent'                                      => __DIR__ . '/src/Equipment/Model/Tent.php',
     'Equipment\Model\TentTypesTable'                            => __DIR__ . '/src/Equipment/Model/TentTypesTable.php',

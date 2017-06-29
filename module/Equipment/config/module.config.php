@@ -136,7 +136,7 @@ return array(
              'site_planner' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/siteplan',
+                     'route'    => '/siteplanner',
                      'defaults' => array(
                          'controller' => 'Equipment\Controller\SitePlanner',
                          'action'     => 'index',
@@ -144,17 +144,56 @@ return array(
                  ),
                  'may_terminate' => true,
                  'child_routes' => array(
-                     'eventplan' => array(
+                     'list' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/:event',
+                             'route'    => '/list',
                              'defaults' => array(
-                                 'controller' => 'Equipment\Controller\SitePlaner',
-                                 'action'     => 'event',
+                                 'controller' => 'Equipment\Controller\SitePlanner',
+                                 'action'     => 'list',
+                             )
+                         )
+                     ),
+                     'get' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/get/:id',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
                              ),
-                         ),
-                     )
+                             'defaults' => array(
+                                 'controller' => 'Equipment\Controller\SitePlanner',
+                                 'action'     => 'get',
+                             )
+                         )
+                     ),
+                     'save' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/save',
+                             'defaults' => array(
+                                 'controller' => 'Equipment\Controller\SitePlanner',
+                                 'action'     => 'save',
+                             )
+                         )
+                     ),
+                     'delete' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/delete/:id',
+                             'constraints' => array(
+                                 'id' => '[0-9]+'
+                             ),
+                             'defaults' => array(
+                                 'controller' => 'Equipment\Controller\SitePlanner',
+                                 'action'     => 'delete',
+                             )
+                         )
+                     ),
                  ),
              ),
          ),
