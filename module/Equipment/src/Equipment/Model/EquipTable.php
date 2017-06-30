@@ -66,9 +66,8 @@ class EquipTable extends AbstractTableGateway
         return $data->id;
     }
 
-    public function removeByUserId($userId)
-    {
-        return ($this->delete(array('user_id' => (int)$userId)))? true : false;
+    public function removeById($id) {
+        return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
     public function removeByUserIdAndType($userId, $type)
@@ -76,8 +75,9 @@ class EquipTable extends AbstractTableGateway
         return ($this->delete(array('user_id' => (int)$userId, 'type' => $type)))? true : false;
     }
 
-    public function removeById($id) {
-        return ($this->delete(array('id' => (int)$id)))? $id : false;
+    public function removeByUserId($userId)
+    {
+        return ($this->delete(array('user_id' => (int)$userId)))? true : false;
     }
 
 

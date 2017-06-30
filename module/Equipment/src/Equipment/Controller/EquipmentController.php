@@ -213,6 +213,12 @@ class EquipmentController extends AbstractActionController
 //        );
 //    }
 
+
+    private function getConfiguration()
+    {
+        $this->config = include_once (getcwd(). '\module\Equipment\config\EquipManager.config.php');
+    }
+
     private function getVars($action, $type, $userId = false)
     {
         $vars = $this->config['functions']['getVars']($action, $this->config);
@@ -222,24 +228,6 @@ class EquipmentController extends AbstractActionController
         $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
         if ($userId)
             $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
-        return $vars;
-    }
-
-    private function getConfiguration()
-    {
-        $this->config = include_once (getcwd(). '\module\Equipment\config\EquipManager.config.php');
-    }
-
-    private function getUserList($items, $vars)
-    {
-        $allUsers = $this->userService->getAllUsers();
-        $userHash[0] = 'Verein';
-
-        foreach ($allUsers->data as $user)
-            $userHash[$user->id] = $user->name;
-
-        foreach ($items as $item)
-            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
         return $vars;
     }
 
@@ -341,5 +329,18 @@ class EquipmentController extends AbstractActionController
         $typeString = EnumEquipTypes::TRANSLATE_TO_STRING[$type];
         $dataTable->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
         return $dataTable;
+    }
+
+    private function getUserList($items, $vars)
+    {
+        $allUsers = $this->userService->getAllUsers();
+        $userHash[0] = 'Verein';
+
+        foreach ($allUsers->data as $user)
+            $userHash[$user->id] = $user->name;
+
+        foreach ($items as $item)
+            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
+        return $vars;
     }
 }
