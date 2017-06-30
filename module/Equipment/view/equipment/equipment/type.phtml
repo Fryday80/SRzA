@@ -15,6 +15,6 @@ if (isset($links)){
 Nur von User:
 <?php
 foreach ($userList as $id => $name) {
-    echo '<a href="/equip/' . $type . '/' . $id . '"><button style="margin-left:5px;">' .$name. '</button></a>';
+    echo '<a href="/equip/' . $typeString . '/' . $id . '"><button style="margin-left:5px;">' .$name. '</button></a>';
 }
 echo $this->dataTable()->render($dataTable);

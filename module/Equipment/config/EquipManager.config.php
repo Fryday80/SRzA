@@ -13,14 +13,14 @@ return array(
             'label'   => 'Lager',
             'vars'    => array(
                 'links' => array(
-                    'Zeltverwaltung' => '/equip/tent',
-                    'Zeugverwaltung' => '/equip/equipment',
+                    'Zeltverwaltung' => '/equip/' .\Equipment\Model\EnumEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EnumEquipTypes::TENT],
+                    'Zeugverwaltung' => '/equip/' .\Equipment\Model\EnumEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EnumEquipTypes::EQUIPMENT],
                     'Lagerplanung'   => '/siteplan',
                 )
             ),
         ),
         'type' => array(
-            'name'  => 'tent',
+            'name'  => 'type',
             'label' => 'Lager',
             'vars'  => array(
                 'links' => $links,
@@ -33,7 +33,7 @@ return array(
                 'links' => $links,
                 'site' => 'add',
                 'formType' => array(
-                    'tent' => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
                 ),
                 'model' => array(
                     'tent' => \Equipment\Model\Tent::class,
@@ -67,10 +67,10 @@ return array(
             'vars' => array(
                 'links' => $links,
                 'formType' => array(
-                    'tent' => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
                 ),
                 'model' => array(
-                    'tent' => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
                 ),
             ),
         ),

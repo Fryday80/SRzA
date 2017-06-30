@@ -38,14 +38,33 @@ class EquipmentService
     }
 
 
-    public function deleteAllByUserId($userId)
+    /**
+     * @param int $type use EnumEquipTypes::
+     * @return DataSet|bool
+     */
+    public function getAllByType($type)
     {
-        return $this->equipTable->removeByUserId($userId);
+        return $this->equipTable->getAllByType($type);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $type use EnumEquipTypes::
+     * @return DataSet|bool
+     */
+    public function getByUserIdAndType($userId, $type)
+    {
+        return $this->equipTable->getByUserIdAndType($userId, $type);
     }
 
     public function getById($id)
     {
         return $this->equipTable->getById($id);
+    }
+
+    public function deleteAllByUserId($userId)
+    {
+        return $this->equipTable->removeByUserId($userId);
     }
     public function deleteById($id)
     {

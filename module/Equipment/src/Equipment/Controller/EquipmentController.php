@@ -5,6 +5,7 @@ use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Form\TentTypeForm;
+use Equipment\Model\EnumEquipTypes;
 use Equipment\Model\EnumTentShape;
 use Equipment\Model\Tent;
 use Equipment\Service\EquipmentService;
@@ -33,32 +34,21 @@ class EquipmentController extends AbstractActionController
     public function indexAction() {
         $vars = $this->config['functions']['getVars']('index', $this->config);
 
-        return array_merge($vars, array(
-        ));
+        return $vars;
     }
 
     public function typeAction()
     {
         $action = 'type';
         $type = $this->params()->fromRoute('type');
-        $userHash[0] = 'Verein';
-        $items = false;
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['type'] = $type;
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $vars = $this->getVars($action, $type);
+
+        // create data table
+        $items = $this->getDataItems($action, $type);
+        $dataTable = $this->getDataTable($action, $type, $items);
         
-        $allUsers = $this->userService->getAllUsers();
-        foreach ($allUsers->data as $user)
-            $userHash[$user->id] = $user->name;
-
-        if($type == 'tent')
-            $items = $this->equipService->getAllTents()->toArray();
-        $dataTable = $this->getDataTable('typeAction', $type, $items);
-        $dataTable->insertLinkButton("/equip/$type/add", 'Neuer Eintrag');
-
-        foreach ($items as $item) {
-            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
-        }
+        $vars = $this->getUserList($items, $vars);
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -69,11 +59,9 @@ class EquipmentController extends AbstractActionController
     {
         $action = 'add';
         $type = $this->params()->fromRoute('type');
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
-        
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['type'] = $type;
+        $vars = $this->getVars($action, $type);
 
         /** @var Form $form */
         $form = new $vars['formType'][$type]($this->equipService, $this->userService);
@@ -86,7 +74,7 @@ class EquipmentController extends AbstractActionController
                 $data = new $vars['model'][$type]($form->getData());
                 
                 $this->equipService->saveTent($data);
-                $this->redirect()->toUrl('/equip/$type');
+                $this->redirect()->toUrl('/equip/'. $vars['typeString']);
             }
         }
         return array_merge($vars, array(
@@ -98,29 +86,16 @@ class EquipmentController extends AbstractActionController
     public function userallAction(){
         $action = 'userall';
         $type = $this->params()->fromRoute('type');
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
+        $vars = $this->getVars($action, $type, $userId);
 
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['links']['zurück zur Übersicht'] = "/equip/$type";
-        $vars['type'] = $type;
-        
-        $allUsers = $this->userService->getAllUsers();
-        foreach ($allUsers->data as $user)
-            $userHash[$user->id] = $user->name;
-
-        $items = $this->equipService->getAllTents()->toArray();
-        foreach ($items as $item) {
-            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
-        }
-
-        if($type == 'tent')
-            $items = $this->equipService->getTentsByUserId($userId)->toArray();
-        
+        // create data table
+        $items = $this->getDataItems($action, $type, $userId);
         $dataTable = $this->getDataTable($action, $type, $items);
         $dataTable->insertLinkButton('/equip/tent/add/' . $userId, 'Neuer Eintrag');
+        $vars = $this->getUserList($items, $vars);
 
-        
         return array_merge($vars, array(
             'dataTable' => $dataTable,
         ));
@@ -129,14 +104,11 @@ class EquipmentController extends AbstractActionController
     public function showAction(){
         $action = 'show';
         $type = $this->params()->fromRoute('type');
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
 
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['links']['zurück zur Übersicht'] = "/equip/$type";
-        $vars['links']['zurück zur User-Übersicht'] = "/equip/$type/$userId";
-        $vars['type'] = $type;
+        $vars = $this->getVars($action, $type, $userId);
 
         return array_merge($vars, array(
             'tent' => $this->equipService->getById($equipId),
@@ -146,14 +118,11 @@ class EquipmentController extends AbstractActionController
     public function deleteAction(){
         $action = 'delete';
         $type = $this->params()->fromRoute('type');
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
 
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['links']['zurück zur Übersicht'] = "/equip/$type";
-        $vars['links']['zurück zur User-Übersicht'] = "/equip/$type/$userId";
-        $vars['type'] = $type;
+        $vars = $this->getVars($action, $type, $userId);
         
         $askingUserId = $this->accessService->getUserID();
         $askingRole = $this->accessService->getRole();
@@ -171,7 +140,7 @@ class EquipmentController extends AbstractActionController
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
                 $this->equipService->deleteById($equipId);
-                return $this->redirect()->toUrl("/equip/$type/$userId");
+                return $this->redirect()->toUrl("/equip/". $vars['typeString'] ."/$userId");
             }
         }
         return array_merge($vars, array(
@@ -183,14 +152,11 @@ class EquipmentController extends AbstractActionController
     public function editAction(){
         $action = 'edit';
         $type = $this->params()->fromRoute('type');
-        $equipId = (int) $this->params()->fromRoute('equipId');
+        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
+        $equipId = (int) $this->params()->fromRoute('equipId');
 
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
-        $vars['links']['zurück zur Übersicht'] = "/equip/$type";
-        $vars['links']['zurück zur User-Übersicht'] = "/equip/$type/$userId";
-        $vars['type'] = $type;
+        $vars = $this->getVars($action, $type, $userId);
         
         $equip = $this->equipService->getById($equipId);
 
@@ -202,7 +168,7 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
                 $tent = new $vars['model'][$type]($form->getData());
                 $this->equipService->saveTent($tent);
-                return $this->redirect()->toUrl("/equip/$type");
+                return $this->redirect()->toUrl("/equip/" . $vars['typeString']);
             }
         }
         $form->setData($equip->toArray());
@@ -247,95 +213,133 @@ class EquipmentController extends AbstractActionController
 //        );
 //    }
 
+    private function getVars($action, $type, $userId = false)
+    {
+        $vars = $this->config['functions']['getVars']($action, $this->config);
+        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
+        $vars['type'] = $type;
+        $vars['typeString'] = $typeString = EnumEquipTypes::TRANSLATE_TO_STRING[$type];
+        $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
+        if ($userId)
+            $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
+        return $vars;
+    }
+
     private function getConfiguration()
     {
         $this->config = include_once (getcwd(). '\module\Equipment\config\EquipManager.config.php');
     }
 
-    private function getDataTable($action, $type, $items)
+    private function getUserList($items, $vars)
     {
-        switch ($type) {
-            case 'tent':
-                $dataTableVarColumns = array();
-                if($action == 'typeAction'){
-                    $dataTableVarColumns[] = array(
-                        'name' => 'readableUser',
-                        'label' => 'Von',
-                        'type' => 'custom',
-                        'render' => function ($row) {
-                            return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
-                        }
-                    );
-                }
+        $allUsers = $this->userService->getAllUsers();
+        $userHash[0] = 'Verein';
 
+        foreach ($allUsers->data as $user)
+            $userHash[$user->id] = $user->name;
 
-                $columns = array(
-                    array(
-                        'name' => 'image', 'label' => 'Form', 'type' => 'custom',
-                        'render' => function ($row) {
-                            return '<img alt="' . EnumTentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
-                        }
-                    ),
-                    array(
-                        'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
-                        'render' => function ($row) {
-                            return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
-                        }
-                    ),
-                    array(
-                        'name' => 'width', 'label' => 'Breite'
-                    ),
-                    array(
-                        'name' => 'length', 'label' => 'Tiefe'
-                    ),
-                    array(
-                        'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
-                    ),
-                    array(
-                        'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
-                        'render' => function ($row) {
-                            $c1 = $row['color1'];
-                            $c2 = $row['color2'];
-                            return '<div style="
-                                            width: 0;
-                                            height: 0;
-                                            border-left:   20px solid ' . $c1 . ';
-                                            border-top:    20px solid ' . $c1 . ';
-                                            border-right:  20px solid ' . $c2 . ';
-                                            border-bottom: 20px solid ' . $c2 . ';
-                                            "></div>';
-                        }
-                    ),
-                    array(
-                        'name' => 'isShowTentValue', 'label' => 'Schauzelt?', 'type' => 'custom',
-                        'render' => function ($row) {
-                            return ($row['isShowTent'] == 0) ? 'nein' : 'ja';
-                        }
-                    ),
-                    array(
-                        'name' => 'href',
-                        'label' => 'Aktion',
-                        'type' => 'custom',
-                        'render' => function ($row) {
-                            $edit = '';
-                            $delete = '';
-                            $askingId = $this->accessService->getUserID();
-                            $askingRole = $this->accessService->getRole();
-                            $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
-                            if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
-                                $edit = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                                $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
-                            }
-                            return $link1 . '<br/>' . $edit . '<br/>' . $delete;
-                        }
-                    ),
-                );
-                $dtColumns = array_merge_recursive($dataTableVarColumns, $columns);
-                return new DataTable(array(
-                    'data' => $items,
-                    'columns' => $dtColumns
-                ));
+        foreach ($items as $item)
+            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
+        return $vars;
+    }
+
+    private function getDataItems($action, $type, $userId = null)
+    {
+        $items = false;
+        switch ($action){
+            case 'type';
+                $items = $this->equipService->getAllByType($type)->toArray();
+                break;
+            case 'userall':
+                $items = $this->equipService->getByUserIdAndType($userId, $type)->toArray();
                 break;
         }
+        return $items;
+    }
+
+    private function getDataTable($action, $type, $items)
+    {
+        $dataTableVarColumns = array();
+        if($action == 'type'){
+            $dataTableVarColumns[] = array(
+                'name' => 'readableUser',
+                'label' => 'Von',
+                'type' => 'custom',
+                'render' => function ($row) {
+                    return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
+                }
+            );
+        }
+
+        $columns = array(
+            array(
+                'name' => 'image', 'label' => 'Form', 'type' => 'custom',
+                'render' => function ($row) {
+                    return '<img alt="' . EnumTentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
+                }
+            ),
+            array(
+                'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
+                'render' => function ($row) {
+                    return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                }
+            ),
+            array(
+                'name' => 'width', 'label' => 'Breite'
+            ),
+            array(
+                'name' => 'length', 'label' => 'Tiefe'
+            ),
+            array(
+                'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
+            ),
+            array(
+                'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
+                'render' => function ($row) {
+                    $c1 = $row['color1'];
+                    $c2 = $row['color2'];
+                    return '<div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left:   20px solid ' . $c1 . ';
+                                    border-top:    20px solid ' . $c1 . ';
+                                    border-right:  20px solid ' . $c2 . ';
+                                    border-bottom: 20px solid ' . $c2 . ';
+                                    "></div>';
+                }
+            ),
+            array(
+                'name' => 'isShowTentValue', 'label' => 'Schauzelt?', 'type' => 'custom',
+                'render' => function ($row) {
+                    return ($row['isShowTent'] == 0) ? 'nein' : 'ja';
+                }
+            ),
+            array(
+                'name' => 'href',
+                'label' => 'Aktion',
+                'type' => 'custom',
+                'render' => function ($row) {
+                    $edit = '';
+                    $delete = '';
+                    $askingId = $this->accessService->getUserID();
+                    $askingRole = $this->accessService->getRole();
+                    $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                    if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
+                        $edit = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
+                        $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
+                    }
+                    return $link1 . '<br/>' . $edit . '<br/>' . $delete;
+                }
+            ),
+        );
+        $dtColumns = array_merge_recursive($dataTableVarColumns, $columns);
+        $dataTable = new DataTable(array(
+            'data' => $items,
+            'columns' => $dtColumns
+        ));
+
+        $typeString = EnumEquipTypes::TRANSLATE_TO_STRING[$type];
+        $dataTable->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
+        return $dataTable;
     }
 }
