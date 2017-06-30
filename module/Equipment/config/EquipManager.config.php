@@ -1,10 +1,8 @@
 <?php
 //======= "in module links":
-$links = array(
+$baseLinks = array(
     'zurück zur Managerübersicht' => '/equip',
 );
-
-
 
 return array(
     'config' => array(
@@ -23,14 +21,14 @@ return array(
             'name'  => 'type',
             'label' => 'Lager',
             'vars'  => array(
-                'links' => $links,
+                'links' => $baseLinks,
             ),
         ),
         'add'  => array(
             'name'  => 'add',
             'label' => 'Neu',
             'vars' => array(
-                'links' => $links,
+                'links' => $baseLinks,
                 'site' => 'add',
                 'formType' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
@@ -44,28 +42,28 @@ return array(
             'name'  => 'userall',
             'label' => 'Alle Zelte',
             'vars' => array(
-                'links' => $links,
+                'links' => $baseLinks,
             ),
         ),
         'show' => array(
             'name' => 'show',
             'label' => 'Details',
             'vars' => array(
-                'links' => $links,
+                'links' => $baseLinks,
             ),
         ),
         'delete'   => array(
             'name' => 'delete',
             'label' => 'Details',
             'vars' => array(
-                'links' => $links,
+                'links' => $baseLinks,
             ),
         ),
         'edit' => array(
             'name' => 'edit',
             'label' => 'Details',
             'vars' => array(
-                'links' => $links,
+                'links' => $baseLinks,
                 'formType' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
                 ),
@@ -78,7 +76,7 @@ return array(
 //            'name' => 'edittenttypes',
 //            'label' => 'edittenttypes',
 //            'vars' => array(
-//                'links' => $links,
+//                'links' => $baseLinks,
 //            ),
 //        ),
     ),

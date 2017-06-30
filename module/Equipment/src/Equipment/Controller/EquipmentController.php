@@ -48,7 +48,7 @@ class EquipmentController extends AbstractActionController
         $items = $this->getDataItems($action, $type);
         $dataTable = $this->getDataTable($action, $type, $items);
         
-        $vars = $this->getUserList($items, $vars);
+        $vars = $this->getUserList($type, $vars);
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -94,7 +94,7 @@ class EquipmentController extends AbstractActionController
         $items = $this->getDataItems($action, $type, $userId);
         $dataTable = $this->getDataTable($action, $type, $items);
         $dataTable->insertLinkButton('/equip/tent/add/' . $userId, 'Neuer Eintrag');
-        $vars = $this->getUserList($items, $vars);
+        $vars = $this->getUserList($type, $vars);
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -111,7 +111,7 @@ class EquipmentController extends AbstractActionController
         $vars = $this->getVars($action, $type, $userId);
 
         return array_merge($vars, array(
-            'tent' => $this->equipService->getById($equipId),
+            'equip' => $this->equipService->getById($equipId),
         ));
     }
 
@@ -168,7 +168,7 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
                 $tent = new $vars['model'][$type]($form->getData());
                 $this->equipService->saveTent($tent);
-                return $this->redirect()->toUrl("/equip/" . $vars['typeString']);
+                return $this->redirect()->toUrl("/equip/" . $vars['typeString'] . "/$userId");
             }
         }
         $form->setData($equip->toArray());
@@ -331,7 +331,7 @@ class EquipmentController extends AbstractActionController
         return $dataTable;
     }
 
-    private function getUserList($items, $vars)
+    private function getUserList($type, $vars)
     {
         $allUsers = $this->userService->getAllUsers();
         $userHash[0] = 'Verein';
@@ -339,6 +339,7 @@ class EquipmentController extends AbstractActionController
         foreach ($allUsers->data as $user)
             $userHash[$user->id] = $user->name;
 
+        $items = $this->equipService->getAllByType($type)->toArray();
         foreach ($items as $item)
             $vars['userList'][$item['userId']] = $userHash[$item['userId']];
         return $vars;
