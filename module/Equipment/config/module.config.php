@@ -41,21 +41,24 @@ return array(
                      ),
                  ),
                  'child_routes' => array(
-                     // /equip/tent
-                     'tent' => array(
+                     // /equip/:type
+                     'type' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
                          'options' => array(
-                             'route'    => '/tent',
+                             'route'    => '/:type',
+                             'constraints' => array(
+                                 'type' => '[a-z]+'
+                             ),
                              'defaults' => array(
                                  'controller' => 'Equipment\Controller\Equipment',
-                                 'action'     => 'tent',
+                                 'action'     => 'type',
                              ),
                          ),
                          //children
                          'child_routes' => array(
-                             // /equip/tent/add
-                             'add_tent' => array(
+                             // /equip/:type/add
+                             'add' => array(
                                  'type' => 'Segment',
                                  'options' => array(
                                      'route' => '/add[/:userId]',
@@ -64,13 +67,13 @@ return array(
                                      ),
                                      'defaults' => array(
                                          'controller' => 'Equipment\Controller\Equipment',
-                                         'action' => 'addtent'
+                                         'action' => 'add'
                                      )
                                  ),
                                  'may_terminate' => true,
                              ),
-                             // /equip/tent/:userId
-                             'usertent_all' => array(
+                             // /equip/:type/:userId
+                             'user_all' => array(
                                  'type' => 'Segment',
                                  'options' => array(
                                      'route'    => '/:userId',
@@ -79,50 +82,50 @@ return array(
                                      ),
                                      'defaults' => array(
                                          'controller' => 'Equipment\Controller\Equipment',
-                                         'action'     => 'usertentall',
+                                         'action'     => 'userall',
                                      ),
                                  ),
                                  'may_terminate' => true,
                                  'child_routes' => array(
-                                     // /equip/tent/:userId/show/:tentId
-                                     'usertent' => array(
+                                     // /equip/:type/:userId/show/:equipId
+                                     'user_show' => array(
                                          'type' => 'Segment',
                                          'options' => array(
-                                             'route'    => '/show/:tentId',
+                                             'route'    => '/show/:equipId',
                                              'constraints' => array(
                                                  'tentId' => '[0-9]+'
                                              ),
                                              'defaults' => array(
                                                  'controller' => 'Equipment\Controller\Equipment',
-                                                 'action'     => 'usertent',
+                                                 'action'     => 'show',
                                              ),
                                          ),
                                          'may_terminate' => true,
                                      ),
-                                     // /equip/tent/:userId/delete/:tentId
-                                     'delete_tent' => array(
+                                     // /equip/:type/:userId/delete/:equipId
+                                     'delete' => array(
                                          'type' => 'Segment',
                                          'options' => array(
-                                             'route' => '/delete/:tentId',
+                                             'route' => '/delete/:equipId',
                                              'constraints' => array(
                                                  'tentId' => '[0-9]+'
                                              ),
                                              'defaults' => array(
-                                                 'action' => 'deletetent'
+                                                 'action' => 'delete'
                                              )
                                          ),
                                          'may_terminate' => true,
                                      ),
-                                     // /equip/tent/:userId/edit/:tentId
-                                     'edit_tent' => array(
+                                     // /equip/:type/:userId/edit/:equipId
+                                     'edit' => array(
                                          'type' => 'Segment',
                                          'options' => array(
-                                             'route' => '/edit/:tentId',
+                                             'route' => '/edit/:equipId',
                                              'constraints' => array(
                                                  'tentId' => '[0-9]+'
                                              ),
                                              'defaults' => array(
-                                                 'action' => 'edittent'
+                                                 'action' => 'edit'
                                              )
                                          ),
                                          'may_terminate' => true,

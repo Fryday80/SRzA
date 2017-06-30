@@ -42,7 +42,15 @@ class EquipmentService
     {
         return $this->equipTable->removeByUserId($userId);
     }
-    
+
+    public function getById($id)
+    {
+        return $this->equipTable->getById($id);
+    }
+    public function deleteById($id)
+    {
+        return $this->equipTable->removeById($id);
+    }
     //======================================================== Tent Table
     public function getAllTents()
     {

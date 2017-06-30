@@ -40,25 +40,7 @@ class EquipTable extends AbstractTableGateway
         return $this->getSome(array('user_id' => (int) $id, 'type' => (int)$type));
     }
 
-    private function getOne($by)
-    {
-        $result = $this->select($by);
-        if (!$result)
-            return false;
-        $result = $this->refactorResults($result);
-        return $result[0];
-    }
-
-    private function getSome($by = null)
-    {
-        $result = $this->select($by);
-        if (!$result)
-            return false;
-        $result = $this->refactorResults($result);
-        return new DataSet($result);
-    }
-
-    public function add(DataItemEquipmentModel $data) {
+    public function add(EquipmentStdDataItemModel $data) {
         if (!$this->insert(array(
             'data'  => serialize ($data),
             'type'  => (int)$data->itemType,
@@ -69,7 +51,7 @@ class EquipTable extends AbstractTableGateway
         return $this->getLastInsertValue();
     }
 
-    public function save(DataItemEquipmentModel $data) {
+    public function save(EquipmentStdDataItemModel $data) {
         if ( !$this->update(
             array(
                 'data'  => serialize($data),
@@ -98,8 +80,10 @@ class EquipTable extends AbstractTableGateway
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 
+
+
     /**
-     * returns all characters and there jobs, families and so on
+     * returns all characters and there equipment
      * @param array $where
      * @return array results
      * @throws \Exception
@@ -140,7 +124,7 @@ class EquipTable extends AbstractTableGateway
                     array(                          // other columns (alias => column possible)
                         'user_name' => 'name',
                     ), 'left')
-                ->where(array());                   // where from data set...
+                ->where($where);                   // where from data set...
 
             $statement = $sql->prepareStatementForSqlObject($select);
             $result = $this->resultSetPrototype->initialize($statement->execute())
@@ -151,6 +135,8 @@ class EquipTable extends AbstractTableGateway
         }
     }
 
+
+    
     /**
      * @param AbstractResultSet $result
      * @return bool|DataItem[]
@@ -168,5 +154,23 @@ class EquipTable extends AbstractTableGateway
             $return[] = $refItem;
         }
         return $return;
+    }
+
+    private function getOne($by)
+    {
+        $result = $this->select($by);
+        if (!$result)
+            return false;
+        $result = $this->refactorResults($result);
+        return $result[0];
+    }
+
+    private function getSome($by = null)
+    {
+        $result = $this->select($by);
+        if (!$result)
+            return false;
+        $result = $this->refactorResults($result);
+        return new DataSet($result);
     }
 }

@@ -1,0 +1,21 @@
+<?php
+$title = $page['label'];
+$this->headTitle($title);
+if (isset($links)){
+    foreach ($links as $key => $value): ?>
+        <a href="<?php echo $value ?>">
+            <button><?php echo $key ?></button>
+        </a>
+    <?php endforeach;
+    echo '<br/>';
+    echo '<br/>';
+}
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+    Wechsle User:
+<?php
+foreach ($userList as $id => $name) {
+    echo '<a href="/equip/' . $type . '/' . $id . '"><button style="margin-left:5px;">' .$name. '</button></a>';
+}
+
+echo $this->dataTable()->render($dataTable);
