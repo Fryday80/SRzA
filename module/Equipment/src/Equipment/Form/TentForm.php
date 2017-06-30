@@ -24,6 +24,15 @@ class TentForm extends Form
             'name' => 'id',
             'type' => 'hidden'
         ));
+
+        $this->add(array(
+            'name' => 'name',
+            'type' => 'Text',
+            'options' => array(
+                'label' => 'Bezeichnung',
+            ),
+        ));
+
         // userId int
         $this->add(array(
             'name' => 'userId',

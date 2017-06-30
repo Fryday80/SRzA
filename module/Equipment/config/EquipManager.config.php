@@ -34,7 +34,7 @@ return array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
                 ),
                 'model' => array(
-                    'tent' => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
                 ),
             ),
         ),

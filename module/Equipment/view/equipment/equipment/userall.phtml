@@ -14,8 +14,8 @@ if (isset($links)){
 <h1><?php echo $this->escapeHtml($title); ?></h1>
     Wechsle User:
 <?php
-foreach ($userList as $id => $name) {
-    echo '<a href="/equip/' . $typeString . '/' . $id . '"><button style="margin-left:5px;">' .$name. '</button></a>';
-}
+if (isset($userList))
+    foreach ($userList as $id => $name)
+        echo '<a href="/equip/' . $typeString . '/' . $id . '"><button style="margin-left:5px;">' .$name. '</button></a>';
 
 echo $this->dataTable()->render($dataTable);

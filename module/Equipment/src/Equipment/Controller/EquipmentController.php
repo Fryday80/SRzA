@@ -93,7 +93,6 @@ class EquipmentController extends AbstractActionController
         // create data table
         $items = $this->getDataItems($action, $type, $userId);
         $dataTable = $this->getDataTable($action, $type, $items);
-        $dataTable->insertLinkButton('/equip/tent/add/' . $userId, 'Neuer Eintrag');
         $vars = $this->getUserList($type, $vars);
 
         return array_merge($vars, array(
@@ -260,6 +259,9 @@ class EquipmentController extends AbstractActionController
         }
 
         $columns = array(
+            array(
+                'name' => 'name', 'label' => 'Name'
+            ),
             array(
                 'name' => 'image', 'label' => 'Form', 'type' => 'custom',
                 'render' => function ($row) {
