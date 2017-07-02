@@ -12,7 +12,8 @@ class EquipmentControllerFactory implements FactoryInterface
         $userService = $pL->get('UserService');
         $accessService = $pL->get('AccessService');
         $equipService = $pL->get('EquipmentService');
+        $config = $pL->get('config');
 
-        return new EquipmentController($equipService, $userService, $accessService);
+        return new EquipmentController($config, $equipService, $userService, $accessService);
     }
 }

@@ -2,6 +2,7 @@
 use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
+    'Equipment' => include (getcwd(). '\module\Equipment\config\EquipManager.config.php'),
     'controllers' => array(
         'invokables' => array( ),
         'factories' => array(

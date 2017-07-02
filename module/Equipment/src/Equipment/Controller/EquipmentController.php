@@ -25,11 +25,11 @@ class EquipmentController extends AbstractActionController
     private $config;
 
 
-    public function __construct(EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
+    public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
+        $this->config = $config['Equipment'];
         $this->userService = $userService;
         $this->accessService = $accessService;
         $this->equipService = $equipmentService;
-        $this->getConfiguration();
     }
 
     public function indexAction() {
@@ -178,12 +178,6 @@ class EquipmentController extends AbstractActionController
         ));
     }
 
-
-    private function getConfiguration()
-    {
-        $this->config = include_once (getcwd(). '\module\Equipment\config\EquipManager.config.php');
-    }
-
     private function getVars($action, $type, $userId = false)
     {
         $vars = $this->config['functions']['getVars']($action, $this->config);
@@ -215,12 +209,7 @@ class EquipmentController extends AbstractActionController
         $dataTableVarColumns = array();
         if($action == 'type'){
             $dataTableVarColumns[] = array(
-                'name' => 'userName',
-                'label' => 'Von',
-//                'type' => 'custom',
-//                'render' => function ($row) {
-//                    return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
-//                }
+                'name' => 'userName', 'label' => 'Von',
             );
         }
 
