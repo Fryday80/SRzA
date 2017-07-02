@@ -34,7 +34,6 @@ class EquipmentController extends AbstractActionController
 
     public function indexAction() {
         $vars = $this->config['functions']['getVars']('index', $this->config);
-
         return $vars;
     }
 
@@ -49,7 +48,7 @@ class EquipmentController extends AbstractActionController
         $items = $this->getDataItems($action, $type);
         $dataTable = $this->getDataTable($action, $type, $items);
         
-        $vars = $this->getUserList($type, $vars);
+        $vars['userList'] = $this->equipService->getUserList($type);
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -94,7 +93,7 @@ class EquipmentController extends AbstractActionController
         // create data table
         $items = $this->getDataItems($action, $type, $userId);
         $dataTable = $this->getDataTable($action, $type, $items);
-        $vars = $this->getUserList($type, $vars);
+        $vars['userList'] = $this->equipService->getUserList($type);
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -384,19 +383,5 @@ class EquipmentController extends AbstractActionController
         $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
         $dataTable->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
         return $dataTable;
-    }
-
-    private function getUserList($type, $vars)
-    {
-        $allUsers = $this->userService->getAllUsers();
-        $userHash[0] = 'Verein';
-
-        foreach ($allUsers->data as $user)
-            $userHash[$user->id] = $user->name;
-
-        $items = $this->equipService->getAllByType($type)->toArray();
-        foreach ($items as $item)
-            $vars['userList'][$item['userId']] = $userHash[$item['userId']];
-        return $vars;
     }
 }

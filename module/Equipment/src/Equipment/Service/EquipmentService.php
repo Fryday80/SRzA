@@ -112,4 +112,14 @@ class EquipmentService
     {
         return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
     }
+
+    /**
+     * @param EEquipTypes $type
+     * @return array|false
+     * @throws \Exception
+     */
+    public function getUserList($type = null)
+    {
+        return $this->equipTable->getUserList($type);
+    }
 }

@@ -80,6 +80,44 @@ class EquipTable extends AbstractTableGateway
         return ($this->delete(array('user_id' => (int)$userId)))? true : false;
     }
 
+    /**
+     * @param EEquipTypes $type
+     * @return array|false
+     * @throws \Exception
+     */
+    public function getUserList($type = null)
+    {
+        $where = ($type !== null) ? array ('equip.type' => $type) : array();
+        try {
+            $sql = new Sql($this->getAdapter());
+
+            $select = $sql->select()
+                ->from(array(
+                    'equip' => 'equip'                // main table (alias => table possible)
+                ))
+                ->columns(array(
+                    'user_id' => 'user_id',
+                ))
+                ->join(array(
+                    'users' => 'users'                        // second table (alias => table possible)
+                ),
+                    'users.id = equip.user_id',    // join where
+                    array(                          // other columns (alias => column possible)
+                        'name' => 'name',
+                    ), 'left')
+                ->where ($where);
+
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $result = $this->resultSetPrototype->initialize($statement->execute())
+                ->toArray();
+            foreach ($result as $user)
+                $list[$user['user_id']] = $user['name'];
+            $list[0] = 'Verein';
+            return $list;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
+    }
 
 
     /**
@@ -102,7 +140,7 @@ class EquipTable extends AbstractTableGateway
                     'shape' => 'shape',
                     'type' => 'type',
                     'color1' => 'color1',
-//                    'bi_color' => 'biColor',
+                    'bi_color' => 'biColor',
                     'color2' => 'color2',
                     'width' => 'width',
                     'length' => 'length',
