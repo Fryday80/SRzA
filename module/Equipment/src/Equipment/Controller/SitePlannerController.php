@@ -21,6 +21,8 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
+        $data = $this->sitePlanTable->getById(2);
+        bdump(json_encode($data));
         $this->layout()->setVariable('showSidebar', false);
         return array(
             'tents' => $this->equipmentService->getCanvasData(),
@@ -29,16 +31,9 @@ class SitePlannerController extends AbstractActionController
     public function listAction() {
         $request = $this->getRequest();
         $data = $this->sitePlanTable->getAll();
-
         if ($request->isXmlHttpRequest()) {
             $result = ['error' => false];
-            if (!$data) {
-                $this->response->setStatusCode(500);
-                $result['error'] = true;
-                $result['msg'] = "internal server error";
-            } else {
-                $result['data'] = $data;
-            }
+            $result['data'] = $data;
             return new JsonModel($result);
         } else {
             $dataTable = new DataTable(array(
@@ -60,6 +55,7 @@ class SitePlannerController extends AbstractActionController
             );
         }
     }
+
     public function getAction() {
         $id = $this->params('id');
         $result = ['error' => false];
@@ -76,6 +72,8 @@ class SitePlannerController extends AbstractActionController
                 $result['msg'] = "Site Plan with id $id not found";
             } else {
                 $result['data'] = $data;
+//                echo json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_NUMERIC_CHECK  );
+//                die;
             }
         }
         return new JsonModel($result);
@@ -85,29 +83,37 @@ class SitePlannerController extends AbstractActionController
         $request = json_decode($this->getRequest()->getContent());
         $result = ['error' => false];
 
-        if (!property_exists($request, 'id') ||
-            !property_exists($request, 'name') ||
+        if (!property_exists($request, 'name') ||
             !property_exists($request, 'data') ||
             !property_exists($request, 'longitude') ||
-            !property_exists($request, 'latitude'))
+            !property_exists($request, 'latitude') ||
+            !property_exists($request, 'diameter') ||
+            !property_exists($request, 'mapType') ||
+            !property_exists($request, 'scale') ||
+            !property_exists($request, 'zoom')
+        )
         {
             $this->response->setStatusCode(400);
             $result['error'] = true;
-            $result['msg'] = "id, name, longitude, latitude and data must be set";
+            $result['msg'] = "name, data, longitude, latitude, diameter, mapType, scale and zoom must be set";
         } else {
             try {
                 $sitePlan = $this->sitePlanTable->hydrate(get_object_vars($request));
-                $this->sitePlanTable->save((int)$request->id, $sitePlan);
-                $result['msg'] = "id, name, longitude, latitude and data must be set";
+                $id = $this->sitePlanTable->save($sitePlan);
+                if (is_numeric($id)) {
+                    $result['msg'] = "Successfully inserted";
+                    $result['newID'] = $id;
+                } else {
+                    $result['msg'] = "Successfully saved";
+                    $result['newID'] = -1;
+                }
             } catch (Exception $e) {
-
                 $result['code'] = 500;
                 $result['msg'] = $e->getMessage();
                 $result['file'] = $e->getFile();
                 $result['line'] = $e->getLine();
                 $result['stack'] = $e->getTrace();
             }
-
         }
 
         return new JsonModel($result);
@@ -133,35 +139,4 @@ class SitePlannerController extends AbstractActionController
         }
         return new JsonModel($result);
     }
-
-    public function jsonAction() {
-        /** @var  $statsService StatisticService */
-        $statsService = $this->statsService;
-        $request = json_decode($this->getRequest()->getContent());
-        $result = ['error' => false];
-        if (!property_exists($request, 'method') ) {
-            $this->response->setStatusCode(400);
-            $result['error'] = true;
-            $result['msg'] = "need param 'method'!";
-            return new JsonModel($result);
-        }
-        switch ($request->method) {
-            case 'getLiveActions' :
-                if (property_exists($request, 'since') ) {
-                    $result['actions'] = Microtime::addDateTime( $statsService->getActionLog($request->since) );
-                } else {
-                    $this->response->setStatusCode(400);
-                    $result['error'] = true;
-                    $result['msg'] = "need param 'since'!";
-                }
-                break;
-            default:
-                $this->response->setStatusCode(400);
-                $result['error'] = true;
-                $result['msg'] = "Method do not exist!";
-        };
-        //output
-        return new JsonModel($result);
-    }
-
 }

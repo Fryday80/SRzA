@@ -5,6 +5,7 @@ use Application\Hydrator\HydratingResultSet;
 use Application\Hydrator\Hydrator;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
+use Zend\Hydrator\Exception\InvalidArgumentException;
 use Zend\Hydrator\NamingStrategy\UnderscoreNamingStrategy;
 
 class DatabaseTable extends AbstractTableGateway
@@ -25,7 +26,7 @@ class DatabaseTable extends AbstractTableGateway
         }
 
         // set naming strategy            https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.namingstrategy.underscorenamingstrategy.html
-        $this->hydrator->setNamingStrategy(new UnderscoreNamingStrategy());
+//        $this->hydrator->setNamingStrategy(new UnderscoreNamingStrategy());
         // set strategies                 https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.strategy.html
         ////$hydrator->addStrategy("data", new SerializableStrategy());
         // set filter                     https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.strategy.html
@@ -57,13 +58,16 @@ class DatabaseTable extends AbstractTableGateway
             return false;
         return $this->getLastInsertValue();
     }
-    public function save($id, $data) {
-
-        var_dump($id);
-        var_dump($data);
-        if ( !$this->update($data, array( 'id' => (int)$id)) )
-            return false;
-        return $id;
+    public function save($data) {
+        if (!isset($data['id']) || !is_integer($data['id']) || $data['id'] == 0) {
+            if (!$this->insert($data) )
+                return false;
+            return $this->getLastInsertValue();
+        }else {
+            if (!$this->update($data, array( 'id' => (int)$data['id'])) )
+                return false;
+        }
+        return true;
     }
     public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
@@ -73,8 +77,6 @@ class DatabaseTable extends AbstractTableGateway
 
     }
 
-
-
     /**
      * Update
      *
@@ -83,25 +85,41 @@ class DatabaseTable extends AbstractTableGateway
      * @param  null|array $joins
      * @return int
      */
-    public function update($set, $where = null, array $joins = null)
-    {
-        if (!$this->isInitialized) {
-            $this->initialize();
+    public function update($set, $where = null, array $joins = null) {
+        $rowData = $this->entityToArray($set);
+        return parent::update($rowData, $where, $joins);
+    }
+    /**
+     * Insert
+     *
+     * @param  array $set
+     * @return int
+     */
+    public function insert($set) {
+        $set = $this->entityToArray($set);
+        if (isset($set['id']) && $set['id'] == null ) {
+            unset($set['id']);
         }
-        $sql = $this->sql;
-        $update = $sql->update();
-        $update->set($set);
-        if ($where !== null) {
-            $update->where($where);
-        }
+        return parent::insert($set);
+    }
 
-        if ($joins) {
-            foreach ($joins as $join) {
-                $type = isset($join['type']) ? $join['type'] : Join::JOIN_INNER;
-                $update->join($join['name'], $join['on'], $type);
+    /**
+     * Uses the hydrator to convert the entity to an array.
+     *
+     * Use this method to ensure that you're working with an array.
+     *
+     * @param object $entity
+     * @return array
+     */
+    protected function entityToArray($entity) {
+        if (is_array($entity)) {
+            return $entity; // cut down on duplicate code
+        } elseif (is_object($entity)) {
+            if (!$this->hydrator) {
+                $this->hydrator = $this->getHydrator();
             }
+            return $this->hydrator->extract($entity);
         }
-
-        return $this->executeUpdate($update);
+        throw new InvalidArgumentException('Entity passed to db mapper should be an array or object.');
     }
 }

@@ -132,6 +132,7 @@ class Hydrator extends ClassMethods
             ));
         }
 
+        $locked = [];
         $objectClass = get_class($object);
 
         // reset the hydrator's hydrator's cache for this object, as the filter may be per-instance
@@ -158,7 +159,6 @@ class Hydrator extends ClassMethods
                     $this->callableMethodFilter->filter($methodFqn))) {
                     continue;
                 }
-
                 $attribute = $method;
 
                 if (strpos($method, 'get') === 0) {
@@ -167,39 +167,39 @@ class Hydrator extends ClassMethods
                         $attribute = lcfirst($attribute);
                     }
                 }
+                $locked[$attribute] = true;
 
                 $this->extractionMethodsCache[$objectClass][$method] = $attribute;
             }
         }
 
         $values = [];
-
         // pass 2 - actually extract data
         foreach ($this->extractionMethodsCache[$objectClass] as $methodName => $attributeName) {
             $realAttributeName          = $this->extractName($attributeName, $object);
             $values[$realAttributeName] = $this->extractValue($realAttributeName, $object->$methodName(), $object);
         }
 
+
         $data   = get_object_vars($object);
         $filter = $this->getFilter();
-
         foreach ($data as $name => $value) {
             // Filter keys, removing any we don't want
 //            if (! $filter->filter($name)) {
-//                unset($data[$name]);
 //                continue;
 //            }
 
+            if (isset($locked[$name]) ) continue;
+
             // Replace name if extracted differ
             $extracted = $this->extractName($name, $object);
-
             if ($extracted !== $name) {
                 unset($data[$name]);
                 $name = $extracted;
             }
-
-            $data[$name] = $this->extractValue($name, $value, $object);
+            $values[$name] = $this->extractValue($name, $value, $object);
         }
+//        var_dump($values);
         return $values;
     }
 }

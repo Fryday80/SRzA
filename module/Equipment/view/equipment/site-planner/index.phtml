@@ -2,7 +2,8 @@
 $title = $this->translate("Site Planner");
 $this->headTitle($title);
 
-// $this->headLink()->prependStylesheet('/libs/jstree/themes/default-dark/style.css');
+$this->headLink()->prependStylesheet('/libs/pnotify/pnotify.custom.min.css');
+$this->headScript()->appendFile('/libs/pnotify/pnotify.custom.min.js');
 $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 $this->headScript()->appendFile('/libs/map.js');
 // $this->headScript()->appendFile('/libs/jstree/jstree.min.js');
@@ -110,7 +111,7 @@ $this->headScript()->appendFile('/libs/map.js');
         <ul class="itemList">
             <?php
             foreach($tents as $tent): ?>
-                <li>
+                <li data-id="<?php echo $tent['id']; ?>">
                     <span class="type">
                         <?php echo $tent['type'] ?>
                     </span>
@@ -126,67 +127,220 @@ $this->headScript()->appendFile('/libs/map.js');
     </div>
 </box>
 <script>
-    //site planner
-    (function($) {
-        "use strict";
-        var defaultOptions = {
-            color: "#556b2f",
-            backgroundColor: "white"
-        };
+    (function() {
+        var RIGHT_CLICK = 3, MIDDLE_CLICK = 2, LEFT_CLICK = 1;
 
-        function loadImage(url, callback) {
-            var img = new Image();
-            img.onload = callback;
-            img.src = url;
+        function checkClick(e, value) {
+            return 'which' in e ? e.which === value : e.button === value - 1;
         }
-        function preloadImages(urls, callback, progress){
-            var pointer = 0;
-            var images = [];
+        fabric.MyCanvas = fabric.util.createClass(fabric.Canvas, fabric.StaticCanvas, /** @lends fabric.Canvas.prototype **/ {
+            _isViewPortDragging: false,
+            setViewPort: function(deltax = 0, deltay = 0) {
+                this.absolutePan({
+                    x: deltax,
+                    y: deltay
+                });
+            },
+            moveViewPort: function(deltax = 0, deltay = 0) {
+                this.relativePan({
+                    x: deltax,
+                    y: deltay
+                });
+            },
+            __onMouseDown: function (e) {
+                var target = this.findTarget(e);
 
-            function onload() {
-                //console.log('image loaded: %s', this.src);
-                images.push(this);
-                pointer++;
-                if (pointer < urls.length) {
-                    progress(pointer / urls.length);
-                    loadImage(urls[pointer], onload);
-                } else {
-                    callback(images);
+                // if right click just fire events
+                if (checkClick(e, RIGHT_CLICK)) {
+                    if (this.fireRightClick) {
+                        this._handleEvent(e, 'down', target ? target : null, RIGHT_CLICK);
+                    }
+                    return;
                 }
-            }
-            loadImage(urls[pointer], onload);
-        }
-        function createGoogleMapStaticImageUrls(options) {
-            var result = [];
-            var zoom = Math.abs(options.zoom - 7);
-            zoom = Math.pow(2, zoom);
-            var offlong = zoom * 0.000277;
-            var offlat = zoom * 0.000429;
-            for (var line = 0; line < options.diameter; line++) {
-                for (var pos = 0; pos < options.diameter; pos++) {
-                    var center = [
-                        Math.floor( (options.longitude - line * offlong) * 1000000  ) / 1000000,
-                        Math.floor( (options.latitude + pos * offlat) * 1000000  ) / 1000000,
-//                        options.longitude - line * offlong,
-//                        options.latitude + pos * offlati,
-                    ];
-//                    console.log('line: %i  |  pos: %i', line, pos);
-//                    console.log(center);
-                    var url = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
-                        size: '640x640',
-                        center: center[0] + ',' + center[1],
-                        zoom: 14 + options.zoom,
-                        maptype: options.mapType,
-                        scale: options.scale,
-                    });
-                    result.push(url);
-                }
-            }
-            return result;
-        }
 
-        var TentEntity = fabric.util.createClass(fabric.Object, {
-            type: 'tent',
+                if (checkClick(e, MIDDLE_CLICK)) {
+                    if (this.fireMiddleClick) {
+                        this._handleEvent(e, 'down', target ? target : null, MIDDLE_CLICK);
+                    }
+                    return;
+                }
+
+                if (this.isDrawingMode) {
+                    this._onMouseDownInDrawingMode(e);
+                    return;
+                }
+
+                // ignore if some object is being transformed at this moment
+                if (this._currentTransform) {
+                    return;
+                }
+
+                // save pointer for check in __onMouseUp event
+                var pointer = this.getPointer(e, true);
+                this._previousPointer = pointer;
+
+                var ctrlKey = e.ctrlKey,
+                    shouldRender = this._shouldRender(target, pointer),
+                    shouldGroup = this._shouldGroup(e, target);
+
+                if (this._shouldClearSelection(e, target)) {
+                    this.deactivateAllWithDispatch(e);
+                }
+                else if (shouldGroup) {
+                    this._handleGrouping(e, target);
+                    target = this.getActiveGroup();
+                }
+
+                if (ctrlKey && this.selection && (!target || (!target.selectable && !target.isEditing))) {
+                    this._groupSelector = {
+                        ex: pointer.x,
+                        ey: pointer.y,
+                        top: 0,
+                        left: 0
+                    };
+                }
+                if (target) {
+                    if (target.selectable && (target.__corner || !shouldGroup)) {
+                        this._beforeTransform(e, target);
+                        this._setupCurrentTransform(e, target);
+                    }
+                    var activeObject = this.getActiveObject();
+                    if (target !== this.getActiveGroup() && target !== activeObject) {
+                        this.deactivateAll();
+                        if (target.selectable) {
+                            activeObject && activeObject.fire('deselected', { e: e });
+                            this.setActiveObject(target, e);
+                        } else if (!ctrlKey) {
+                            this._isViewPortDragging = true;
+                        }
+                    }
+                }
+                else if (!ctrlKey) {
+                    this._isViewPortDragging = true;
+                }
+                this._handleEvent(e, 'down', target ? target : null);
+                // we must renderAll so that we update the visuals
+                shouldRender && this.renderAll();
+            },
+
+            /**
+             * Method that defines the actions when mouse is hovering the canvas.
+             * The currentTransform parameter will definde whether the user is rotating/scaling/translating
+             * an image or neither of them (only hovering). A group selection is also possible and would cancel
+             * all any other type of action.
+             * In case of an image transformation only the top canvas will be rendered.
+             * @private
+             * @param {Event} e Event object fired on mousemove
+             */
+            __onMouseMove: function (e) {
+                var target, pointer;
+
+                if (this.isDrawingMode) {
+                    this._onMouseMoveInDrawingMode(e);
+                    return;
+                }
+                if (typeof e.touches !== 'undefined' && e.touches.length > 1) {
+                    return;
+                }
+
+                if (this._isViewPortDragging) {
+                    this.moveViewPort(e.movementX, e.movementY);
+//                    this.renderAll();
+                }
+                var groupSelector = this._groupSelector;
+                // We initially clicked in an empty area, so we draw a box for multiple selection
+                if (groupSelector) {
+                    pointer = this.getPointer(e, true);
+
+                    groupSelector.left = pointer.x - groupSelector.ex;
+                    groupSelector.top = pointer.y - groupSelector.ey;
+
+                    this.renderTop();
+                } else if (!this._currentTransform) {
+                    target = this.findTarget(e);
+                    this._setCursorFromEvent(e, target);
+                }
+                else {
+                    this._transformObject(e);
+                }
+                this._handleEvent(e, 'move', target ? target : null);
+            },
+
+
+            /**
+             * Method that defines the actions when mouse is released on canvas.
+             * The method resets the currentTransform parameters, store the image corner
+             * position in the image object and render the canvas on top.
+             * @private
+             * @param {Event} e Event object fired on mouseup
+             */
+            __onMouseUp: function (e) {
+                var target;
+                // if right/middle click just fire events and return
+                // target undefined will make the _handleEvent search the target
+                if (checkClick(e, RIGHT_CLICK)) {
+                    if (this.fireRightClick) {
+                        this._handleEvent(e, 'up', target, RIGHT_CLICK);
+                    }
+                    return;
+                }
+
+                if (checkClick(e, MIDDLE_CLICK)) {
+                    if (this.fireMiddleClick) {
+                        this._handleEvent(e, 'up', target, MIDDLE_CLICK);
+                    }
+                    return;
+                }
+
+                this._isViewPortDragging = false;
+                if (this.isDrawingMode && this._isCurrentlyDrawing) {
+                    this._onMouseUpInDrawingMode(e);
+                    return;
+                }
+
+                var searchTarget = true, transform = this._currentTransform,
+                    groupSelector = this._groupSelector,
+                    isClick = (!groupSelector || (groupSelector.left === 0 && groupSelector.top === 0));
+
+                if (transform) {
+                    this._finalizeCurrentTransform();
+                    searchTarget = !transform.actionPerformed;
+                }
+
+                target = searchTarget ? this.findTarget(e, true) : transform.target;
+
+                var shouldRender = this._shouldRender(target, this.getPointer(e));
+
+                if (target || !isClick) {
+                    this._maybeGroupObjects(e);
+                }
+                else {
+                    // those are done by default on mouse up
+                    // by _maybeGroupObjects, we are skipping it in case of no target find
+                    this._groupSelector = null;
+                    this._currentTransform = null;
+                }
+
+                if (target) {
+                    target.isMoving = false;
+                }
+                this._setCursorFromEvent(e, target);
+                this._handleEvent(e, 'up', target ? target : null, LEFT_CLICK, isClick);
+                target && (target.__corner = 0);
+                shouldRender && this.renderAll();
+            },
+            /**
+             * Method that defines actions when an Event Mouse Wheel
+             * @param {Event} e Event object fired on mouseup
+             */
+            __onMouseWheel: function(e) {
+                //@todo implement zooming
+                this._handleEvent(e, 'wheel');
+            },
+        });
+
+        fabric.Equipitem = fabric.util.createClass(fabric.Object, {
+            type: 'Equipitem',
             radius: 40,
             startAngle: 0,
             endAngle: Math.PI * 2,
@@ -196,14 +350,8 @@ $this->headScript()->appendFile('/libs/map.js');
              * @param {Object} [options] Options object
              * @return {fabric.Circle} thisArg
              */
-            initialize: function(tent) {
-                this.callSuper('initialize', {
-                    tent: tent,
-                    left: 100,
-                    top: 100,
-                    width: parseInt(tent.width) / 5,
-                    height: parseInt(tent.length) / 5
-                });
+            initialize: function(options) {
+                this.callSuper('initialize', options);
 
                 this.setControlsVisibility({
                     bl: false,
@@ -219,18 +367,30 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.on('deselected', function(e) {
                     this.moveTo(100);
                 }.bind(this));
+                this.on('mouse:down', function(e) {
+                    console.log('########### mouse down');
+                }.bind(this));
+//                this.on('deselected', function(e) {
+//                    this.moveTo(100);
+//                }.bind(this));
+            },
+            setItem: function (item) {
+                this.width = parseInt(item.width) / 5;
+                this.height = parseInt(item.length) / 5;
+                this.item = item;
+                this.selectable = true;
             },
             _render: function(ctx) {
 //                ctx.rotate();
                 // 0 = eckig
                 // 1 = rechteck
                 // 2 = sachs
-                switch (parseInt(this.tent.shape)) {
+                switch (parseInt(this.item.shape)) {
                     case 0:
                         ctx.beginPath();
                         ctx.arc(0,
                             0,
-                            this.tent.width * 5,
+                            this.item.width * 5,
                             this.startAngle,
                             this.endAngle, false);
                         this._renderFill(ctx);
@@ -269,47 +429,355 @@ $this->headScript()->appendFile('/libs/map.js');
                 ctx.fill();
                 ctx.stroke();
             },
+            /**
+             * Returns an object representation of an instance
+             * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output
+             * @return {Object} Object representation of an instance
+             */
+            toObject: function(propertiesToInclude) {
+                var NUM_FRACTION_DIGITS = fabric.Object.NUM_FRACTION_DIGITS,
+                    toFixed = fabric.util.toFixed,
+
+                    object = {
+                        type:                     this.type,
+                        item:                     this.item,
+                        originX:                  this.originX,
+                        originY:                  this.originY,
+                        left:                     toFixed(this.left, NUM_FRACTION_DIGITS),
+                        top:                      toFixed(this.top, NUM_FRACTION_DIGITS),
+                        width:                    toFixed(this.width, NUM_FRACTION_DIGITS),
+                        height:                   toFixed(this.height, NUM_FRACTION_DIGITS),
+                        fill:                     (this.fill && this.fill.toObject) ? this.fill.toObject() : this.fill,
+                        stroke:                   (this.stroke && this.stroke.toObject) ? this.stroke.toObject() : this.stroke,
+                        strokeWidth:              toFixed(this.strokeWidth, NUM_FRACTION_DIGITS),
+                        strokeDashArray:          this.strokeDashArray ? this.strokeDashArray.concat() : this.strokeDashArray,
+                        strokeLineCap:            this.strokeLineCap,
+                        strokeLineJoin:           this.strokeLineJoin,
+                        strokeMiterLimit:         toFixed(this.strokeMiterLimit, NUM_FRACTION_DIGITS),
+                        scaleX:                   toFixed(this.scaleX, NUM_FRACTION_DIGITS),
+                        scaleY:                   toFixed(this.scaleY, NUM_FRACTION_DIGITS),
+                        angle:                    toFixed(this.getAngle(), NUM_FRACTION_DIGITS),
+                        flipX:                    this.flipX,
+                        flipY:                    this.flipY,
+                        opacity:                  toFixed(this.opacity, NUM_FRACTION_DIGITS),
+                        shadow:                   (this.shadow && this.shadow.toObject) ? this.shadow.toObject() : this.shadow,
+                        visible:                  this.visible,
+                        clipTo:                   this.clipTo && String(this.clipTo),
+                        backgroundColor:          this.backgroundColor,
+                        fillRule:                 this.fillRule,
+                        globalCompositeOperation: this.globalCompositeOperation,
+                        transformMatrix:          this.transformMatrix ? this.transformMatrix.concat() : null,
+                        skewX:                    toFixed(this.skewX, NUM_FRACTION_DIGITS),
+                        skewY:                    toFixed(this.skewY, NUM_FRACTION_DIGITS)
+                    };
+
+                fabric.util.populateWithProperties(this, object, propertiesToInclude);
+
+                if (!this.includeDefaultValues) {
+                    object = this._removeDefaultValues(object);
+                }
+
+                return object;
+            },
+
         });
+        fabric.Equipitem.fromObject = function(object, callback) {
+            return fabric.Object._fromObject('Equipitem', object, callback);
+        };
 
+    })();
 
+    //site planner
+    (function($) {
+        "use strict";
+        var lang = {
+            askSure: 'Are you sure?',
+            warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
+            successSave: 'Plann wurde gespeichert!',
+            ohno: 'Oh No!',
+            needPlanName: '',
+        };
+        function loadImage(url, callback) {
+            var img = new Image();
+            img.onload = callback;
+            img.src = url;
+        }
+        function preloadImages(urls, callback, progress){
+            var pointer = 0;
+            var images = [];
+
+            function onload() {
+                images.push(this);
+                pointer++;
+                if (pointer < urls.length) {
+                    progress(pointer / urls.length);
+                    loadImage(urls[pointer], onload);
+                } else {
+                    callback(images);
+                }
+            }
+            loadImage(urls[pointer], onload);
+        }
+        function createGoogleMapStaticImageUrls(options) {
+            var result = [];
+            var zoom = Math.abs(options.zoom - 7);
+            zoom = Math.pow(2, zoom);
+            var offlong = zoom * 0.000277;
+            var offlat = zoom * 0.000429;
+            for (var line = 0; line < options.diameter; line++) {
+                for (var pos = 0; pos < options.diameter; pos++) {
+                    var center = [
+                        Math.floor( (options.longitude - line * offlong) * 1000000  ) / 1000000,
+                        Math.floor( (options.latitude + pos * offlat) * 1000000  ) / 1000000,
+                    ];
+//                    console.log('line: %i  |  pos: %i', line, pos);
+//                    console.log(center);
+                    var url = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
+                        size: '640x640',
+                        center: center[0] + ',' + center[1],
+                        zoom: 14 + options.zoom,
+                        maptype: options.mapType,
+                        scale: options.scale,
+                    });
+                    result.push(url);
+                }
+            }
+            return result;
+        }
+
+        class ItemList {
+            /**
+             * @param {SitePlanner} sitePlanner
+             */
+            constructor(sitePlanner) {
+                /** @type SitePlanner */
+                this.sitePlanner = sitePlanner;
+                /** @type fabric.Object[] */
+                this.items = [];
+            }
+            hide() {
+
+            }
+            show() {
+
+            }
+            update() {
+                //resize items depending on plan.zoom
+                for(var i = 0; i < this.items.length; i++) {
+                    var z = Math.abs(this.sitePlanner.plan.zoom - 7);
+                    z = Math.pow(2, z);
+                    var item = this.items[i];
+                    item.scale(1 / z);
+                }
+                this.sitePlanner.canvas.renderAll();
+            }
+            create(data, options = {}) {
+                options.originX = 'center';
+                options.originY = 'center';
+                var item = new fabric.Equipitem(options);
+                item.setItem(data);
+                this.items.push(item);
+                this.sitePlanner.canvas.add(item);
+                item.bringToFront();
+                this.update();
+                return item;
+            }
+            removeSelected() {
+                var active = this.sitePlanner.canvas.getActiveObject();
+            }
+            clear() {
+                this.sitePlanner.canvas.deactivateAll().renderAll();
+                for(var i = 0; i < this.items.length; i++) {
+                    this.items[i].remove();
+                }
+                this.items = [];
+                this.sitePlanner.canvas.renderAll();
+            }
+            fromString(str) {
+                var self = this;
+                var canvas = this.sitePlanner.canvas;
+                fabric.util.enlivenObjects(JSON.parse(str), function(objects) {
+                    var origRenderOnAddRemove = canvas.renderOnAddRemove;
+                    canvas.renderOnAddRemove = false;
+
+                    for(var i = 0; i < objects.length; i++) {
+                        canvas.add(objects[i]);
+                        self.items.push(objects[i]);
+                    }
+                    canvas.renderOnAddRemove = origRenderOnAddRemove;
+                    self.update();
+                    canvas.renderAll();
+                }
+                , 'fabric', function(o, obj, error) {}
+                );
+            }
+            toJSON() {
+                return JSON.stringify(this.items);
+            }
+        }
         /**
          * Main class, holds everything together
          */
         class SitePlanner {
-            constructor(element, settings) {
-                var $canvas = $('.site-planner-canvas', element);
+            constructor(element) {
+                var self = this,
+                    $canvas = $('.site-planner-canvas', element);
                 this.$element = $(element);
                 this.progressBarWidth = 250;
                 this.viewPos = {x:0, y:0};
                 this.zoomValue = 1;
                 this.isDragging = false;
-                this.data = JSON.parse($canvas.html());
-                this.mapImages = [];
-                this.items = [];
+                this.itemPool = JSON.parse($canvas.html());
                 this.isBusy = false;
+                this.itemList = new ItemList(this);
+                this.mapImages = [];
+//                this.items = [];
                 this.planList = [];
                 this.plan = {
+                    id: 0,
+                    name: 'Unbennant',
                     longitude: 48.249238,
                     latitude: 11.562762,
-                    zoom: 7,
+                    zoom: 5,
                     scale: 2,
                     mapType: 'satellite',
                     diameter: 2,
+                    data: {}
                 };
+
                 //init
                 $canvas.html('');
-                //create fabric
-                this.canvas = new fabric.Canvas($canvas[0], {
+                this.canvas = new fabric.MyCanvas($canvas[0], {
                     width: 900,
                     height: 600,
-                    backgroundColor : "#000000",
+                    backgroundColor : "#c2c2c2",
                 });
-                this.canvas.selection = false;
+                //alternate image background ----------------------------------
+
+//                var src = '/img/html.bg.png';
+//                this.canvas.backgroundColor = new fabric.Pattern({
+//                    source: src,
+//                    repeat: 'repeat',
+//                    backgroundImageOpacity: 0.5,
+//                    backgroundImageStretch: false,
+//                });
+
+
                 fabric.Object.prototype.set({
                     transparentCorners: false,
                     borderColor: '#ff00ff',
                     cornerColor: '#ff0000',
                 });
+                this.initProgressBar();
+                this.initControls();
+//                this.setMap();
+            }
+            initControls() {
+                var self = this;
+                this.loadSitePlanList();
+                this.updateMapConfig();
+
+                $('button.load-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    var planID = $('.plan-select', this.$element).val();
+                    (new PNotify({
+                        title: lang.askSure,
+                        text: lang.warnSaveData,
+                        icon: 'glyphicon glyphicon-question-sign',
+                        hide: false,
+                        confirm: {
+                            confirm: true
+                        },
+                        buttons: {
+                            closer: false,
+                            sticker: false
+                        },
+                        history: {
+                            history: false
+                        },
+                        addclass: 'stack-modal',
+                        stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
+                    })).get().on('pnotify.confirm', function(){
+                        self.loadSitePlan(planID);
+                    }).on('pnotify.cancel', function(){
+                        self.isBusy = false;
+                    });
+                });
+                $('button.save-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.savePlan();
+                });
+                $('button.new-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.isBusy = true;
+                    (new PNotify({
+                        title: lang.askSure,
+                        text: lang.warnSaveData,
+                        icon: 'glyphicon glyphicon-question-sign',
+                        hide: false,
+                        confirm: {
+                            confirm: true
+                        },
+                        buttons: {
+                            closer: false,
+                            sticker: false
+                        },
+                        history: {
+                            history: false
+                        },
+                        addclass: 'stack-modal',
+                        stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
+                    })).get().on('pnotify.confirm', function(){
+                        self.plan.id = 0;
+                        self.itemList.clear();
+                        self.readMapConfig();
+                        self.isBusy = false;
+                        self.setMap();
+                    }).on('pnotify.cancel', function(){
+                        self.isBusy = false;
+                    });
+                });
+                $('button.setMap', this.$element).click(function () {
+                    self.readMapConfig();
+                    self.setMap();
+                });
+
+                $('button.createImage', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    //@todo create image from canvas and open a new canvas to crop. than upload
+                });
+
+                $('button.zoomin', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.zoomIn();
+                });
+                $('button.zoomout', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.zoomOut();
+                });
+                $('.itemList li', this.$element).click(function(e) {
+                    var id = $(this).data('id');
+                    var templateItem;
+                    for(var i = 0; i < self.itemPool.length; i++) {
+                        if (self.itemPool[i].id == id) {
+                            templateItem = self.itemPool[i];
+                            break;
+                        }
+                    }
+                    /** @type fabric.Object */
+                    var ele = self.itemList.create(templateItem);
+                    var center = self.canvas.getCenter();
+                    center = new fabric.Point(
+                        Math.abs(self.canvas.viewportTransform[4])+ center.left,
+                        Math.abs(self.canvas.viewportTransform[5]) + center.top
+                    );
+                    self.canvas._centerObject(ele, center);
+                    ele.setCoords();
+                    self.canvas.setActiveObject(ele);
+                });
+            }
+            //progressbar
+            initProgressBar() {
                 var progressBarText = new fabric.Text('load map', {
                     left: this.progressBarWidth / 2,
                     top: 0,
@@ -338,80 +806,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     top: 100,
                     angle: 0
                 });
-
-                this.setMap();
-//                this.setMap([48.376848, 10.889686]);
-                for(var i = 0; i < this.data.length; i++ ) {
-                    this.addItem(this.data[i]);
-                }
-                this.initControls();
-            }
-            initControls() {
-                var self = this;
-                this.loadSitePlanList();
-                this.updateMapConfig();
-                this.canvas.on({
-                    'mouse:down': this.mouseDownHandler.bind(this),
-                    'mouse:up': this.mouseUpHandler.bind(this),
-                    'mouse:move': this.mouseMoveHandler.bind(this),
-                    'mouse:over': this.mouseOverHandler.bind(this),
-                });
-
-                $('button.load-plan', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    var planID = $('.plan-select', this.$element).val();
-                    self.loadSitePlan(planID);
-//                    self.writeMapConfig({
-//                        longitude: ,
-//                        latitude: ,
-//                        zoom: ,
-//                        scale: ,
-//                        mapType:
-//                    });
-                });
-                $('button.save-plan', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.savePlan();
-                    //@todo save plann
-                });
-                $('button.new-plan', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    //@todo save plann
-                });
-                $('button.setMap', this.$element).click(function () {
-                    self.readMapConfig();
-                    self.setMap();
-                });
-                
-                
-                $('button.createImage', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    //@todo create image from canvas and open a new canvas to crop. than upload
-                });
-                $('button.zoomin', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.zoomIn();
-                });
-                $('button.zoomout', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.zoomOut();
-                });
-            }
-            readMapConfig() {
-                this.plan.longitude = parseFloat($('#lon').val());
-                this.plan.latitude = parseFloat($('#lat').val());
-                this.plan.zoom = parseInt($('#zoom').val());
-                this.plan.scale = parseInt($('#scale-select').val());
-                this.plan.mapType = $('#maptype-select').val();
-                this.plan.diameter = parseInt($('#diameter').val());
-            }
-            updateMapConfig() {
-                $('#lon')           .val(this.plan.longitude);
-                $('#lat')           .val(this.plan.latitude);
-                $('#zoom')          .val(this.plan.zoom);
-                $('#scale-select')  .val(this.plan.scale);
-                $('#maptype-select').val(this.plan.mapType);
-                $('#diameter')      .val(this.plan.diameter);
             }
             hideProgressBar() {
                 var self = this;
@@ -445,11 +839,31 @@ $this->headScript()->appendFile('/libs/map.js');
                     //hide progress element
                 }
             }
-            setMap() {
-                if (this.isBusy) return;
+            //read/write config from/to html inputs
+            readMapConfig() {
+                this.plan.name          = $('#plan-name').val();
+                this.plan.longitude     = parseFloat($('#lon').val());
+                this.plan.latitude      = parseFloat($('#lat').val());
+                this.plan.zoom          = parseInt($('#zoom').val());
+                this.plan.scale         = parseInt($('#scale-select').val());
+                this.plan.mapType       = $('#maptype-select').val();
+                this.plan.diameter      = parseInt($('#diameter').val());
+            }
+            updateMapConfig() {
+                $('#plan-name')     .val(this.plan.name);
+                $('#lon')           .val(this.plan.longitude);
+                $('#lat')           .val(this.plan.latitude);
+                $('#zoom')          .val(this.plan.zoom);
+                $('#scale-select')  .val(this.plan.scale);
+                $('#maptype-select').val(this.plan.mapType);
+                $('#diameter')      .val(this.plan.diameter);
+            }
+            //load and set the map images
+            setMap(progress) {
+                if (this.isBusy && !progress) return;
                 var self = this;
                 this.isBusy = true;
-                this.updateProgressBar(0);
+                (progress)? progress(0): this.updateProgressBar(0);
 
                 //remove old map images
                 for (var i = 0; i < this.mapImages.length; i++) {
@@ -461,16 +875,15 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.zoom(1);
                 this.canvas.renderAll();
 
-                //@todo hide items?
-                this.showItems(false);
-                this.updateItems();
+                this.itemList.hide();
+                this.itemList.update();
 
                 var urls = createGoogleMapStaticImageUrls(this.plan);
                 var createUrlProcess = 0;
                 function finish() {
-                    self.showItems(true);
-                    self.updateProgressBar(1);
-                    self.hideProgressBar();
+                    self.itemList.show();
+                    (progress)? progress(1): self.updateProgressBar(1);
+                    (!progress)? self.hideProgressBar():'';
                 }
                 function createFromUrl(url, line, pos, zIndex) {
                     fabric.Image.fromURL(url, function(img) {
@@ -506,9 +919,10 @@ $this->headScript()->appendFile('/libs/map.js');
                         }
                     }
                 }, function(value) {
-                    self.updateProgressBar(value);
+                    (progress)? progress(value): self.updateProgressBar(value);
                 });
             }
+            //viewport (zoom and move)
             zoom(value) {
                 this.zoomValue = Math.max(1, value);
                 this.canvas.setZoom(this.zoomValue);
@@ -529,87 +943,91 @@ $this->headScript()->appendFile('/libs/map.js');
                     y: this.viewPos.y
                 });
             }
-            moveViewPort(deltax = 0, deltay = 0) {
-                this.viewPos.x -= deltax;
-                this.viewPos.y -= deltay;
-                this.canvas.absolutePan({
-                    x: this.viewPos.x,
-                    y: this.viewPos.y
-                });
-            }
-            addItem(data) {
-                var entity = new TentEntity(data);
-                this.canvas.add(entity);
-                entity.moveTo(100);
-                entity.bringToFront();
-                this.items.push(entity);
-                this.updateItems();
-                return entity;
-            }
-            updateItems() {
-                //resize items depending on this.plan.zoom
-                for(var i = 0; i < this.items.length; i++) {
-                    var z = Math.abs(this.plan.zoom - 7);
-                    z = Math.pow(2, z);
-                    var item = this.items[i];
-                    item.scale(1 / z);
-                }
-            }
-            showItems(flag = true) {
-                for(var i = 0; i < this.items.length; i++) {
-                    if (flag) {
-                        this.canvas.add(this.items[i]);
-                    } else {
-                        this.items[i].remove();
-                    }
-                }
-            }
+            //plan management (list/get/save) and html select field update
             updatePlanList() {
                 $('.plan-select', this.$element).empty();
                 for(var i = 0; i < this.planList.length; i++) {
                     $('.plan-select', this.$element).append('<option value="' + this.planList[i].id + '">' + this.planList[i].name + '</option>');
                 }
             }
-            loadSitePlanList() {
+            loadSitePlanList(callback) {
                 $.getJSON("/siteplanner/list", function(result){
                     //save and update plan list
                     this.planList = result.data;
                     this.updatePlanList();
+                    callback && callback();
                 }.bind(this));
             }
             loadSitePlan(planID) {
+                if (this.isBusy) return;
+                this.isBusy = true;
+                var self = this;
+                this.updateProgressBar(0);
+                this.itemList.clear();
                 $.getJSON("/siteplanner/get/" + planID , function(result){
-                    console.log(result.data);
-                    //--then save list and create list
+                    self.updateProgressBar(0.2);
+                    var data = result.data;
+                    //search in planList for id and replace -> if not found, push it
+                    var found = false;
+                    for(var i = 0; i < self.planList; i++) {
+                        if (self.planList[i].id == planID) {
+                            found = true;
+                            //replace data
+                            self.planList[i] = data;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        self.planList.push(data);
+                    }
+                    self.plan = data;
+
+                    self.updateMapConfig();
+                    self.readMapConfig();
+                    self.itemList.fromString(self.plan.data);
+
+                    self.setMap(function(value) {
+                        self.updateProgressBar(0.2 + (value * 0.8));
+                        if (value == 1) {
+                            self.hideProgressBar();
+                        }
+                    });
                 });
-                //ajax call to load it
-                //--then save plan in cache
-//                --setMap
-                //--setItems
             }
-            //save plan
             savePlan() {
                 if (this.isBusy) return false;
+                var name = $('#plan-name', this.$element).val();
+                if (!name || name === "") {
+                    //@todo add error class to input --- red boarder or so
+                    new PNotify({
+                        title: lang.ohno,
+                        text: lang.needPlanName,
+                        type: 'error',
+                        addclass: "stack-topleft",
+                    });
+                    return;
+                }
                 this.isBusy = true;
                 this.updateProgressBar(0);
-
-                var self = this,
-                    data = {
-                        id: "1",
-                        name: "Plann 1",
-                        data: "{}",
-                        latitude: "20",
-                        longitude: "49",
-                    };
-                this.ajaxPostJson('/siteplanner/save', data,
-                    function (data) {
-                    console.log('res', data);
-                    self.hideProgressBar();
+                var self = this;
+                this.plan.name = name;
+                this.plan.data = this.itemList.toJSON();
+                this.ajaxPostJson('/siteplanner/save', this.plan, function (data) {
+                    self.loadSitePlanList(function() {
+                        self.hideProgressBar();
+                        new PNotify({
+                            title: lang.success,
+                            text: '',
+                            type: 'success',
+                            addclass: "stack-topleft",
+                        });
+                    });
                 }, function (value) {
                     self.updateProgressBar(value);
                 });
                 return true;
             }
+            //helper //@todo eventuel globale ajax helper bauen die auch global errors mit dem pnotify
             ajaxPostJson(url, data, success, progress){
                 var progressValue = 0.1,
                     progressState = 'Start Loading';
@@ -617,6 +1035,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 if (!url) {
                     console.error('url must be set!');
                 }
+
                 $.ajax({
                     url: url,
                     type: 'POST',
@@ -653,30 +1072,10 @@ $this->headScript()->appendFile('/libs/map.js');
                 if (progress)
                     progress(progressValue, progressState);
             }
-            mouseDownHandler(e) {
-                if (this.isBusy) return;
-                if (!e.target || e.target.get('isMap')) {
-                    console.log('start drag');
-                    this.isDragging = true;
-                }
-            }
-            mouseUpHandler(e) {
-                this.isDragging = false;
-            }
-            mouseMoveHandler(e) {
-                if (this.isDragging) {
-                    //drag
-                    this.moveViewPort(e.e.movementX, e.e.movementY);
-                }
-            }
-            mouseOverHandler(e) {
-                if (this.isBusy) return;
-            }
         }
 
         $.fn.SitePlanner = function(options) {
-            var settings = $.extend(defaultOptions, options);
-            new SitePlanner(this, settings);
+            new SitePlanner(this);
         };
     }(jQuery));
     $('#sitePlanner').SitePlanner();
