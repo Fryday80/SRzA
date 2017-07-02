@@ -89,6 +89,7 @@ class EquipTable extends AbstractTableGateway
      * @internal param array $where
      */
     public function fetchAllCastData() {
+        bdump('DEPRECATED METHOD USED!!!');
         return $this->getSome();
     }
     

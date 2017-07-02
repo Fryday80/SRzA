@@ -92,6 +92,7 @@ class EquipmentService
      */
     public function getAllTents()
     {
+        $this->depMsg();
         return $this->getAllByType(EEquipTypes::TENT);
     }
 
@@ -102,6 +103,7 @@ class EquipmentService
      */
     public function getTentsByUserId($id)
     {
+        $this->$this->depMsg();
         return $this->getByUserIdAndType($id, EEquipTypes::TENT);
     }
 
@@ -112,6 +114,7 @@ class EquipmentService
      */
     public function getTentById($id)
     {
+        $this->$this->depMsg();
         return $this->equipTable->getById($id);
     }
 
@@ -121,6 +124,7 @@ class EquipmentService
      */
     public function getCanvasData()
     {
+        $this->$this->depMsg();
         return $this->equipTable->fetchAllCastData();
     }
 
@@ -131,6 +135,7 @@ class EquipmentService
      */
     public function saveTent(Tent $tentData)
     {
+        $this->$this->depMsg();
         $tentData->image = ETentShape::IMAGES[$tentData->shape];
         if($tentData->id == "")
             return $this->equipTable->add($tentData);
@@ -144,6 +149,7 @@ class EquipmentService
      */
     public function deleteTentById($id)
     {
+        $this->$this->depMsg();
         return $this->deleteById($id);
     }
 
@@ -154,6 +160,12 @@ class EquipmentService
      */
     public function deleteTentByUserId($userId)
     {
+        $this->$this->depMsg();
         return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
+    }
+
+    private function depMsg()
+    {
+        bdump('DEPRECATED METHOD USED!!!');
     }
 }
