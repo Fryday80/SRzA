@@ -23,21 +23,21 @@ class EquipTable extends AbstractTableGateway
         return $this->getSome();
     }
     public function getAllByType($type){
-        return $this->getSome(array('type' => $type));
+        return $this->getSome(array('equip.type' => $type));
     }
     
     public function getById($id) {
-        return $this->getOne(array('id' => (int) $id));
+        return $this->getOne(array('equip.id' => (int) $id));
     }
 
     public function getByUserId($id)
     {
-        return $this->getSome(array('user_id' => (int) $id));
+        return $this->getSome(array('equip.user_id' => (int) $id));
     }
 
     public function getByUserIdAndType($id, $type)
     {
-        return $this->getSome(array('user_id' => (int) $id, 'type' => (int)$type));
+        return $this->getSome(array('equip.user_id' => (int) $id, 'equip.type' => (int)$type));
     }
 
     public function add(EquipmentStdDataItemModel $data) {
