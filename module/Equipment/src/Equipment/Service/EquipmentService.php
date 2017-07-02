@@ -91,6 +91,15 @@ class EquipmentService
         return $this->equipTable->fetchAllCastData();
     }
 
+    public function save($data)
+    {
+        if ($data instanceof Tent) $this->saveTent($data);
+        if($data->id == "")
+            return $this->equipTable->add($data);
+        return $this->equipTable->save($data);
+    }
+
+
     public function saveTent(Tent $tentData)
     {
         $tentData->image = EnumTentShape::IMAGES[$tentData->shape];

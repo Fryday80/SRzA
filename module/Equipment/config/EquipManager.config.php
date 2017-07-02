@@ -32,9 +32,11 @@ return array(
                 'site' => 'add',
                 'formType' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                 ),
                 'model' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                 ),
             ),
         ),
@@ -66,9 +68,11 @@ return array(
                 'links' => $baseLinks,
                 'formType' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                 ),
                 'model' => array(
                     \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                 ),
             ),
         ),

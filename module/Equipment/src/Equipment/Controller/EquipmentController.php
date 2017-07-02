@@ -73,7 +73,7 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
                 $data = new $vars['model'][$type]($form->getData());
                 
-                $this->equipService->saveTent($data);
+                $this->equipService->save($data);
                 $this->redirect()->toUrl('/equip/'. $vars['typeString']);
             }
         }
@@ -258,6 +258,7 @@ class EquipmentController extends AbstractActionController
             );
         }
 
+        if($type == EnumEquipTypes::TENT)
         $columns = array(
             array(
                 'name' => 'name', 'label' => 'Name'
@@ -317,6 +318,57 @@ class EquipmentController extends AbstractActionController
                     if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
                         $edit = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
                         $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
+                    }
+                    return $link1 . '<br/>' . $edit . '<br/>' . $delete;
+                }
+            ),
+        );
+
+        if($type == EnumEquipTypes::EQUIPMENT)
+        $columns = array(
+            array(
+                'name' => 'name', 'label' => 'Name'
+            ),
+            array(
+                'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
+                'render' => function ($row) {
+                    return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                }
+            ),
+            array(
+                'name' => 'width', 'label' => 'Breite'
+            ),
+            array(
+                'name' => 'length', 'label' => 'Tiefe'
+            ),
+            array(
+                'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
+                'render' => function ($row) {
+                    $c1 = $row['color'];
+                    $c2 = $row['color'];
+                    return '<div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left:   20px solid ' . $c1 . ';
+                                    border-top:    20px solid ' . $c1 . ';
+                                    border-right:  20px solid ' . $c2 . ';
+                                    border-bottom: 20px solid ' . $c2 . ';
+                                    "></div>';
+                }
+            ),
+            array(
+                'name' => 'href',
+                'label' => 'Aktion',
+                'type' => 'custom',
+                'render' => function ($row) {
+                    $edit = '';
+                    $delete = '';
+                    $askingId = $this->accessService->getUserID();
+                    $askingRole = $this->accessService->getRole();
+                    $link1 = '<a href="/equip/equipment/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                    if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
+                        $edit = '<a href="/equip/equipment/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
+                        $delete = '<a href="/equip/equipment/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
                     }
                     return $link1 . '<br/>' . $edit . '<br/>' . $delete;
                 }
