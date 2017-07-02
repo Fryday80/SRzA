@@ -52,6 +52,8 @@ class EquipTable extends AbstractTableGateway
     }
 
     public function save(EquipmentStdDataItemModel $data) {
+        if (!isset($data->id) || $data->id == null)
+            return $this->add($data);
         if ( !$this->update(
             array(
                 'data'  => serialize($data),
@@ -79,101 +81,17 @@ class EquipTable extends AbstractTableGateway
     {
         return ($this->delete(array('user_id' => (int)$userId)))? true : false;
     }
-
+    
     /**
-     * @param EEquipTypes $type
-     * @return array|false
-     * @throws \Exception
-     */
-    public function getUserList($type = null)
-    {
-        $where = ($type !== null) ? array ('equip.type' => $type) : array();
-        try {
-            $sql = new Sql($this->getAdapter());
-
-            $select = $sql->select()
-                ->from(array(
-                    'equip' => 'equip'                // main table (alias => table possible)
-                ))
-                ->columns(array(
-                    'user_id' => 'user_id',
-                ))
-                ->join(array(
-                    'users' => 'users'                        // second table (alias => table possible)
-                ),
-                    'users.id = equip.user_id',    // join where
-                    array(                          // other columns (alias => column possible)
-                        'name' => 'name',
-                    ), 'left')
-                ->where ($where);
-
-            $statement = $sql->prepareStatementForSqlObject($select);
-            $result = $this->resultSetPrototype->initialize($statement->execute())
-                ->toArray();
-            foreach ($result as $user)
-                $list[$user['user_id']] = $user['name'];
-            $list[0] = 'Verein';
-            return $list;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
-    }
-
-
-    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
      * returns all characters and there equipment
      * @param array $where
      * @return array results
      * @throws \Exception
      */
-    public function fetchAllCastData(Array $where = array()) {
-        try {
-            $sql = new Sql($this->getAdapter());
-
-            $select = $sql->select()
-                ->from(array(
-                    'tent' => 'tent'                // main table (alias => table possible)
-                ))
-                ->columns(array(                    // selected columns (alias => column possible)
-                    'id' => 'id',
-                    'user_id' => 'user_id',
-                    'shape' => 'shape',
-                    'type' => 'type',
-                    'color1' => 'color1',
-                    'bi_color' => 'biColor',
-                    'color2' => 'color2',
-                    'width' => 'width',
-                    'length' => 'length',
-                    'spare_beds' => 'spare_beds',
-                    'is_show_tent' => 'is_show_tent',
-                    'is_group_equip' => 'is_group_equip',
-                ))
-                ->join(array(
-                    'types' => 'tent_types'                        // second table (alias => table possible)
-                ),
-                    'types.id = tent.type',    // join where
-                    array(                          // other columns (alias => column possible)
-                    'type_name' => 'name',
-                ), 'left')
-                ->join(array(
-                    'jusers' => 'users'                        // second table (alias => table possible)
-                ),
-                    'jusers.id = tent.user_id',    // join where
-                    array(                          // other columns (alias => column possible)
-                        'user_name' => 'name',
-                    ), 'left')
-                ->where($where);                   // where from data set...
-
-            $statement = $sql->prepareStatementForSqlObject($select);
-            $result = $this->resultSetPrototype->initialize($statement->execute())
-                ->toArray();
-            return $result;
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
-        }
+    public function fetchAllCastData() {
+        return $this->getSome();
     }
-
-
     
     /**
      * @param AbstractResultSet $result
@@ -182,13 +100,14 @@ class EquipTable extends AbstractTableGateway
     private function refactorResults(AbstractResultSet $result)
     {
         $result = $result->toArray();
-        if (empty($result))
-            return false;
+        if (empty($result)) return false;
 
         $return = array();
         foreach ($result as $item) {
             $refItem = unserialize($item['data']);
             $refItem->id = $item['id'];
+            if ($refItem->id == 0)
+                $refItem->userName = 'Verein';
             $return[] = $refItem;
         }
         return $return;
@@ -196,7 +115,7 @@ class EquipTable extends AbstractTableGateway
 
     private function getOne($by)
     {
-        $result = $this->select($by);
+        $result = $this->getData($by);
         if (!$result)
             return false;
         $result = $this->refactorResults($result);
@@ -205,10 +124,50 @@ class EquipTable extends AbstractTableGateway
 
     private function getSome($by = null)
     {
-        $result = $this->select($by);
+        $result = $this->getData($by);
         if (!$result)
             return false;
         $result = $this->refactorResults($result);
         return new DataSet($result);
+    }
+
+    /**
+     * @param array $where
+     * @return array|false
+     * @throws \Exception
+     * @internal param EEquipTypes $type
+     */
+    private function getData($where = array())
+    {
+        try {
+            $sql = new Sql($this->getAdapter());
+
+            $select = $sql->select()
+                ->from(array(
+                    'equip' => 'equip'                // main table (alias => table possible)
+                ))
+                ->columns(array(
+                    'id' => 'id',
+                    'data' => 'data',
+                    'type' => 'type',
+                    'image' => 'image',
+                    'user_id' => 'user_id',
+
+                ))
+                ->join(array(
+                    'users' => 'users'                        // second table (alias => table possible)
+                ),
+                    'users.id = equip.user_id',    // join where
+                    array(                          // other columns (alias => column possible)
+                        'user_name' => 'name',
+                    ), 'left')
+                ->where ($where);
+
+            $statement = $sql->prepareStatementForSqlObject($select);
+            $result = $this->resultSetPrototype->initialize($statement->execute());
+            return $result;
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
+        }
     }
 }

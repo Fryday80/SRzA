@@ -47,8 +47,10 @@ class EquipmentController extends AbstractActionController
         // create data table
         $items = $this->getDataItems($action, $type);
         $dataTable = $this->getDataTable($action, $type, $items);
-        
-        $vars['userList'] = $this->equipService->getUserList($type);
+
+        bdump($items);
+        foreach ($items as $item)
+            $vars['userList'][$item['userId']] = $item['userName'];
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -93,7 +95,8 @@ class EquipmentController extends AbstractActionController
         // create data table
         $items = $this->getDataItems($action, $type, $userId);
         $dataTable = $this->getDataTable($action, $type, $items);
-        $vars['userList'] = $this->equipService->getUserList($type);
+        foreach ($items as $item)
+            $vars['userList'][$item['userId']] = $item['userName'];
 
         return array_merge($vars, array(
             'dataTable' => $dataTable,
@@ -134,7 +137,7 @@ class EquipmentController extends AbstractActionController
         if ($request->isPost()) {
             $post = $request->getPost();
             if ($post['del'] == 'Yes' && $equipId == $post['id']){
-                $checkTent = $this->equipService->getTentById($equipId);
+                $checkTent = $this->equipService->getById($equipId);
                 if ($askingUserId !== $checkTent->userId)
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');

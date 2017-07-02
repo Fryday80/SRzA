@@ -10,6 +10,7 @@ class EquipmentStdDataItemModel extends DataItem implements IEquipment
     public $image;
 
     public $userId;
+    public $userName;
     
 
     public function getImage(){

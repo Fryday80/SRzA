@@ -5,18 +5,14 @@ namespace Equipment\Service;
 
 use Application\Model\DataSet;
 use Application\Service\CacheService;
-use Auth\Service\UserService;
 use Equipment\Model\EEquipTypes;
 use Equipment\Model\ETentShape;
 use Equipment\Model\EquipTable;
 use Equipment\Model\Tent;
-use Equipment\Model\TentTypesTable;
 
 class EquipmentService
 {
     // tables
-    /** @var  TentTypesTable */
-    private $typesTable;
     /** @var EquipTable  */
     private $equipTable;
 
@@ -33,6 +29,10 @@ class EquipmentService
     }
 
 
+    public function getAll()
+    {
+        return $this->equipTable->getAll();
+    }
     /**
      * @param int $type use EEquipTypes::
      * @return DataSet|bool
@@ -61,40 +61,74 @@ class EquipmentService
     {
         return $this->equipTable->removeByUserId($userId);
     }
+
+    /**
+     * @param EEquipTypes $type
+     * @param int $userId
+     */
+    public function deleteByTypeAndUSerId($type, $userId)
+    {
+        $this->equipTable->removeByUserIdAndType((int)$userId, $type);
+    }
+
     public function deleteById($id)
     {
         return $this->equipTable->removeById($id);
     }
-    //======================================================== Tent Table
+
+    public function save($data)
+    {
+        if ($data instanceof Tent)
+            $data->image = ETentShape::IMAGES[$data->shape];
+        if($data->id == "")
+            return $this->equipTable->add($data);
+        return $this->equipTable->save($data);
+    }
+    // DEPRECATED!!!!!!!!
+
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by getAllByType
+     * @return DataSet|bool
+     */
     public function getAllTents()
     {
-        return $this->equipTable->getAllByType(EEquipTypes::TENT);
+        return $this->getAllByType(EEquipTypes::TENT);
     }
 
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by getByUserIdAndType
+     * @param $id
+     * @return DataSet|bool
+     */
     public function getTentsByUserId($id)
     {
-        return $this->equipTable->getByUserIdAndType($id, EEquipTypes::TENT);
+        return $this->getByUserIdAndType($id, EEquipTypes::TENT);
     }
 
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by getById
+     * @param $id
+     * @return \Application\Model\DataObjects\DataItem|bool
+     */
     public function getTentById($id)
     {
         return $this->equipTable->getById($id);
     }
 
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
+     * @return array
+     */
     public function getCanvasData()
     {
         return $this->equipTable->fetchAllCastData();
     }
 
-    public function save($data)
-    {
-        if ($data instanceof Tent) $this->saveTent($data);
-        if($data->id == "")
-            return $this->equipTable->add($data);
-        return $this->equipTable->save($data);
-    }
-
-
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by save
+     * @param Tent $tentData
+     * @return bool|int
+     */
     public function saveTent(Tent $tentData)
     {
         $tentData->image = ETentShape::IMAGES[$tentData->shape];
@@ -103,23 +137,23 @@ class EquipmentService
         return $this->equipTable->save($tentData);
     }
 
+    /**
+     * DEPRECATED +++ DEPRECATED +++ replaced by delteById
+     * @param $id
+     * @return bool
+     */
     public function deleteTentById($id)
     {
-        return $this->equipTable->removeById($id);
-    }
-
-    public function deleteTentByUserId($userId)
-    {
-        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
+        return $this->deleteById($id);
     }
 
     /**
-     * @param EEquipTypes $type
-     * @return array|false
-     * @throws \Exception
+     * DEPRECATED +++ DEPRECATED +++ replaced by deleteByTypeAndUSerId
+     * @param $userId
+     * @return bool
      */
-    public function getUserList($type = null)
+    public function deleteTentByUserId($userId)
     {
-        return $this->equipTable->getUserList($type);
+        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
     }
 }
