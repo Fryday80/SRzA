@@ -47,8 +47,7 @@ class EquipmentController extends AbstractActionController
         // create data table
         $items = $this->getDataItems($action, $type);
         $dataTable = $this->getDataTable($action, $type, $items);
-
-        bdump($items);
+        
         foreach ($items as $item)
             $vars['userList'][$item['userId']] = $item['userName'];
 
@@ -169,7 +168,7 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 $tent = new $vars['model'][$type]($form->getData());
-                $this->equipService->saveTent($tent);
+                $this->equipService->save($tent);
                 return $this->redirect()->toUrl("/equip/" . $vars['typeString'] . "/$userId");
             }
         }
@@ -178,42 +177,6 @@ class EquipmentController extends AbstractActionController
             'form' => $form,
         ));
     }
-
-    //@todo
-//    public function edittenttypeAction(){
-//        $typeId = (int) $this->params()->fromRoute('id');
-//        $links = array(
-//            array(
-//                'name' => 'zurück zur Managerübersicht',
-//                'url'  => '/equip',
-//            ),
-//            array(
-//                'name' => 'zurück zur Zeltverwaltung',
-//                'url'  => '/equip/tent',
-//            ),
-////            array(
-////                'name' => 'zurück zur User-Übersicht',
-////                'url'  => "/equip/tent/$userId",
-////            ),
-//        );
-//        $tent = $this->equipService->getTypesByID($typeId);
-//
-//        $form = new TentTypeForm($this->equipService, $this->userService);
-//        $request = $this->getRequest();
-//        if ($request->isPost()) {
-//            $post = $request->getPost();
-//            $form->setData($post);
-//            if ($form->isValid()){
-//                $tent = new Tent($form->getData());
-//                $this->equipService->saveTent($tent);
-//            }
-//        }
-//        $form->setData($tent->toArray());
-//        return array(
-//            'form' => $form,
-//            'links' => $links,
-//        );
-//    }
 
 
     private function getConfiguration()
@@ -252,12 +215,12 @@ class EquipmentController extends AbstractActionController
         $dataTableVarColumns = array();
         if($action == 'type'){
             $dataTableVarColumns[] = array(
-                'name' => 'readableUser',
+                'name' => 'userName',
                 'label' => 'Von',
-                'type' => 'custom',
-                'render' => function ($row) {
-                    return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
-                }
+//                'type' => 'custom',
+//                'render' => function ($row) {
+//                    return ($row['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($row['userId']);
+//                }
             );
         }
 

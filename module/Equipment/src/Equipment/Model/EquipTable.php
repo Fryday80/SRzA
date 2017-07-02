@@ -81,13 +81,12 @@ class EquipTable extends AbstractTableGateway
     {
         return ($this->delete(array('user_id' => (int)$userId)))? true : false;
     }
-    
+
     /**
      * DEPRECATED +++ DEPRECATED +++ replaced by getAll
      * returns all characters and there equipment
-     * @param array $where
      * @return array results
-     * @throws \Exception
+     * @internal param array $where
      */
     public function fetchAllCastData() {
         return $this->getSome();
@@ -106,7 +105,8 @@ class EquipTable extends AbstractTableGateway
         foreach ($result as $item) {
             $refItem = unserialize($item['data']);
             $refItem->id = $item['id'];
-            if ($refItem->id == 0)
+            $refItem->userName = $item['user_name'];
+            if ($refItem->userId == 0)
                 $refItem->userName = 'Verein';
             $return[] = $refItem;
         }
@@ -157,7 +157,7 @@ class EquipTable extends AbstractTableGateway
                 ->join(array(
                     'users' => 'users'                        // second table (alias => table possible)
                 ),
-                    'users.id = equip.user_id',    // join where
+                    'user_id = users.id',    // join where
                     array(                          // other columns (alias => column possible)
                         'user_name' => 'name',
                     ), 'left')
