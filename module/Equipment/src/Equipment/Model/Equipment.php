@@ -5,7 +5,7 @@ namespace Equipment\Model;
 class Equipment extends EquipmentStdDataItemModel
 {
 
-    public $itemType = EnumEquipTypes::EQUIPMENT;
+    public $itemType = EEquipTypes::EQUIPMENT;
 
     public $type;
     public $description;

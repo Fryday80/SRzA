@@ -17,7 +17,7 @@ class Tent extends EquipmentStdDataItemModel
         'is_show_tent',
     );
 
-    public $itemType = EnumEquipTypes::TENT;
+    public $itemType = EEquipTypes::TENT;
     public $name = 'Zelt';
     public $image;
 

@@ -6,8 +6,8 @@ namespace Equipment\Service;
 use Application\Model\DataSet;
 use Application\Service\CacheService;
 use Auth\Service\UserService;
-use Equipment\Model\EnumEquipTypes;
-use Equipment\Model\EnumTentShape;
+use Equipment\Model\EEquipTypes;
+use Equipment\Model\ETentShape;
 use Equipment\Model\EquipTable;
 use Equipment\Model\Tent;
 use Equipment\Model\TentTypesTable;
@@ -21,25 +21,20 @@ class EquipmentService
     private $equipTable;
 
     // services
-    /** @var UserService  */
-    private $userService;
     /** @var CacheService  */
     private $cache;
 
 
     public function __construct (
-        TentTypesTable $tentTypesTable, EquipTable $equipTable,
-        UserService $userService, CacheService $cacheService )
+        EquipTable $equipTable, CacheService $cacheService )
     {
-        $this->typesTable = $tentTypesTable;
         $this->equipTable = $equipTable;
-        $this->userService = $userService;
         $this->cache = $cacheService;
     }
 
 
     /**
-     * @param int $type use EnumEquipTypes::
+     * @param int $type use EEquipTypes::
      * @return DataSet|bool
      */
     public function getAllByType($type)
@@ -49,7 +44,7 @@ class EquipmentService
 
     /**
      * @param int $userId
-     * @param int $type use EnumEquipTypes::
+     * @param int $type use EEquipTypes::
      * @return DataSet|bool
      */
     public function getByUserIdAndType($userId, $type)
@@ -73,12 +68,12 @@ class EquipmentService
     //======================================================== Tent Table
     public function getAllTents()
     {
-        return $this->equipTable->getAllByType(EnumEquipTypes::TENT);
+        return $this->equipTable->getAllByType(EEquipTypes::TENT);
     }
 
     public function getTentsByUserId($id)
     {
-        return $this->equipTable->getByUserIdAndType($id, EnumEquipTypes::TENT);
+        return $this->equipTable->getByUserIdAndType($id, EEquipTypes::TENT);
     }
 
     public function getTentById($id)
@@ -102,7 +97,7 @@ class EquipmentService
 
     public function saveTent(Tent $tentData)
     {
-        $tentData->image = EnumTentShape::IMAGES[$tentData->shape];
+        $tentData->image = ETentShape::IMAGES[$tentData->shape];
         if($tentData->id == "")
             return $this->equipTable->add($tentData);
         return $this->equipTable->save($tentData);
@@ -115,38 +110,6 @@ class EquipmentService
 
     public function deleteTentByUserId($userId)
     {
-        return $this->equipTable->removeByUserIdAndType($userId, EnumEquipTypes::TENT);
+        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
     }
-
-    //======================================================== TentTypes Table
-    public function getAllTypes()
-    {
-        return $this->typesTable->getAll();
-    }
-
-    public function getTypeNameById($id)
-    {
-        return $this->typesTable->getById($id)['name'];
-    }
-
-    public function getTypeIDTypeNameList()
-    {
-        $return = array();
-        $res = $this->getAllTypes();
-        foreach ($res as $item) {
-            $return[$item['id']] = $item['name'];
-        }
-        return $return;
-    }
-
-//    public function saveType($data)
-//    {
-//        if ($data['id'] == "") return $this->typesTable->add($data);
-//        return $this->typesTable->save($data);
-//    }
-//
-//    public function deleteType($id)
-//    {
-//        return $this->typesTable->remove($id);
-//    }
 }

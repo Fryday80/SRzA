@@ -11,8 +11,8 @@ return array(
             'label'   => 'Lager',
             'vars'    => array(
                 'links' => array(
-                    'Zeltverwaltung' => '/equip/' .\Equipment\Model\EnumEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EnumEquipTypes::TENT],
-                    'Zeugverwaltung' => '/equip/' .\Equipment\Model\EnumEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EnumEquipTypes::EQUIPMENT],
+                    'Zeltverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::TENT],
+                    'Zeugverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::EQUIPMENT],
                     'Lagerplanung'   => '/siteplan',
                 )
             ),
@@ -31,12 +31,12 @@ return array(
                 'links' => $baseLinks,
                 'site' => 'add',
                 'formType' => array(
-                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
-                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                    \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                 ),
                 'model' => array(
-                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
-                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                    \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                 ),
             ),
         ),
@@ -67,12 +67,12 @@ return array(
             'vars' => array(
                 'links' => $baseLinks,
                 'formType' => array(
-                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Form\TentForm::class,
-                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                    \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                 ),
                 'model' => array(
-                    \Equipment\Model\EnumEquipTypes::TENT => \Equipment\Model\Tent::class,
-                    \Equipment\Model\EnumEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                    \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                 ),
             ),
         ),

@@ -1,7 +1,7 @@
 <?php
 namespace Equipment\Model;
 
-abstract class EnumEquipTypes
+abstract class EEquipTypes
 {
     const TENT = 0;
     const EQUIPMENT = 1;

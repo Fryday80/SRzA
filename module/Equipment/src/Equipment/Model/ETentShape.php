@@ -3,7 +3,7 @@
 namespace Equipment\Model;
 
 
-abstract class EnumTentShape
+abstract class ETentShape
 {
     const ROUND = 0;
     const RECTANGLE = 1;

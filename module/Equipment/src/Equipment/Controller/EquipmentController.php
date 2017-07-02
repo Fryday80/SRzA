@@ -5,8 +5,9 @@ use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Form\TentTypeForm;
-use Equipment\Model\EnumEquipTypes;
-use Equipment\Model\EnumTentShape;
+use Equipment\Model\EEquipTypes;
+use Equipment\Model\ETentShape;
+use Equipment\Model\ETentType;
 use Equipment\Model\Tent;
 use Equipment\Service\EquipmentService;
 use Equipment\Form\TentForm;
@@ -41,7 +42,7 @@ class EquipmentController extends AbstractActionController
     {
         $action = 'type';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $vars = $this->getVars($action, $type);
 
         // create data table
@@ -59,7 +60,7 @@ class EquipmentController extends AbstractActionController
     {
         $action = 'add';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
         $vars = $this->getVars($action, $type);
 
@@ -86,7 +87,7 @@ class EquipmentController extends AbstractActionController
     public function userallAction(){
         $action = 'userall';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
         $vars = $this->getVars($action, $type, $userId);
 
@@ -103,7 +104,7 @@ class EquipmentController extends AbstractActionController
     public function showAction(){
         $action = 'show';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
 
@@ -117,7 +118,7 @@ class EquipmentController extends AbstractActionController
     public function deleteAction(){
         $action = 'delete';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
 
@@ -151,7 +152,7 @@ class EquipmentController extends AbstractActionController
     public function editAction(){
         $action = 'edit';
         $type = $this->params()->fromRoute('type');
-        $type = EnumEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
 
@@ -223,7 +224,7 @@ class EquipmentController extends AbstractActionController
         $vars = $this->config['functions']['getVars']($action, $this->config);
         $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
         $vars['type'] = $type;
-        $vars['typeString'] = $typeString = EnumEquipTypes::TRANSLATE_TO_STRING[$type];
+        $vars['typeString'] = $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
         $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
         if ($userId)
             $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
@@ -258,7 +259,7 @@ class EquipmentController extends AbstractActionController
             );
         }
 
-        if($type == EnumEquipTypes::TENT)
+        if($type == EEquipTypes::TENT)
         $columns = array(
             array(
                 'name' => 'name', 'label' => 'Name'
@@ -266,13 +267,13 @@ class EquipmentController extends AbstractActionController
             array(
                 'name' => 'image', 'label' => 'Form', 'type' => 'custom',
                 'render' => function ($row) {
-                    return '<img alt="' . EnumTentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
+                    return '<img alt="' . ETentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
                 }
             ),
             array(
                 'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
                 'render' => function ($row) {
-                    return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                    return ETentType::TRANSLATE_TO_STRING[$row['type']];
                 }
             ),
             array(
@@ -324,7 +325,7 @@ class EquipmentController extends AbstractActionController
             ),
         );
 
-        if($type == EnumEquipTypes::EQUIPMENT)
+        if($type == EEquipTypes::EQUIPMENT)
         $columns = array(
             array(
                 'name' => 'name', 'label' => 'Name'
@@ -380,7 +381,7 @@ class EquipmentController extends AbstractActionController
             'columns' => $dtColumns
         ));
 
-        $typeString = EnumEquipTypes::TRANSLATE_TO_STRING[$type];
+        $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
         $dataTable->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
         return $dataTable;
     }

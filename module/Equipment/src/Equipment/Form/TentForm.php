@@ -2,7 +2,8 @@
 namespace Equipment\Form;
 
 use Auth\Service\UserService;
-use Equipment\Model\EnumTentShape;
+use Equipment\Model\ETentShape;
+use Equipment\Model\ETentType;
 use Equipment\Service\EquipmentService;
 use Zend\Form\Form;
 
@@ -57,7 +58,7 @@ class TentForm extends Form
             'type' => 'Zend\Form\Element\Select',
             'options' => array (
                 'label' => 'Typ',
-                'value_options' => $this->getTypesForSelect(),
+                'value_options' => ETentType::TRANSLATE_TO_STRING,
             ),
         ));
         // length int
@@ -143,20 +144,9 @@ class TentForm extends Form
     private function getShapesForSelect()
     {
         $list = array();
-        foreach (EnumTentShape::TRANSLATION as $key => $value) {
+        foreach (ETentShape::TRANSLATION as $key => $value) {
             $list[$key] = $value;
         }
-        ksort($list);
-        return $list;
-    }
-    private function getTypesForSelect()
-    {
-        $list = $this->equipService->getTypeIDTypeNameList();
-        $list[0] = array(
-                'label' => 'Sonstige',
-                'value' => 0,
-                'selected' => true,
-        );
         ksort($list);
         return $list;
     }
