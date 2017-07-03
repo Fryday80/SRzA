@@ -2,7 +2,109 @@
 use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
-    'Equipment' => include (getcwd(). '\module\Equipment\config\EquipManager.config.php'),
+    'Equipment' => array(
+        'config' => array(
+            'default_actionName' => array(
+                'name' => 'actionName',
+                'label'=> 'label',
+                'vars' => array( ),
+            ),
+            'index' => array(
+                'name'    => 'index',
+                'label'   => 'Lager',
+                'vars'    => array(
+                    'links' => array(
+                        'Zeltverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::TENT],
+                        'Zeugverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::EQUIPMENT],
+                        'Lagerplanung'   => '/siteplan',
+                    )
+                ),
+            ),
+            'type' => array(
+                'name'  => 'type',
+                'label' => 'Lager',
+                'vars'  => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                ),
+            ),
+            'add'  => array(
+                'name'  => 'add',
+                'label' => 'Neu',
+                'vars' => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                    'site' => 'add',
+                    'formType' => array(
+                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                    ),
+                    'model' => array(
+                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                    ),
+                ),
+            ),
+            'userall'  => array(
+                'name'  => 'userall',
+                'label' => 'Alle Zelte',
+                'vars' => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                ),
+            ),
+            'show' => array(
+                'name' => 'show',
+                'label' => 'Details',
+                'vars' => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                ),
+            ),
+            'delete'   => array(
+                'name' => 'delete',
+                'label' => 'Details',
+                'vars' => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                ),
+            ),
+            'edit' => array(
+                'name' => 'edit',
+                'label' => 'Details',
+                'vars' => array(
+                    'links' => array(
+                        'zurück zur Managerübersicht' => '/equip',
+                    ),
+                    'formType' => array(
+                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                    ),
+                    'model' => array(
+                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                    ),
+                ),
+            ),
+        ),
+        'functions' => array(
+            'getVars' => function($action, $config){
+                if (isset($config['config'][$action]['vars']))
+                    return $config['config'][$action]['vars'] + $config['config']['default_actionName']['vars'];
+                return $config['config']['default_actionName']['vars'];
+            },
+            'getPageConfig' => function($action, $config){
+                if (isset($config['config'][$action]))
+                    return $config['config'][$action] + $config['config']['default_actionName'];
+                return $config['config']['default_actionName'];
+            },
+        ),
+    ),
     'controllers' => array(
         'invokables' => array( ),
         'factories' => array(
