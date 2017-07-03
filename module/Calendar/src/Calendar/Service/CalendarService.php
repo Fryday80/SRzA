@@ -220,12 +220,12 @@ class CalendarService {
                     'durationEditable' => true,
 //                'source' => null,
 //                'color' => (isset($overwrites['color']))? $overwrites['color'] : $calendar['backgroundColor'],
-                'textColor' => (isset($overwrites['textColor']))? $overwrites['textColor'] : $calendar['textColor'],
-                'backgroundColor' => (isset($overwrites['backgroundColor']))? $overwrites['backgroundColor'] : $calendar['backgroundColor'],
-                'borderColor' => (isset($overwrites['borderColor']) && $overwrites['borderColor'] != '')? $overwrites['borderColor'] : 'rgba(0,0,0,0)',
+                    'textColor' => (isset($overwrites['textColor']))? $overwrites['textColor'] : $calendar['textColor'],
+                    'backgroundColor' => (isset($overwrites['backgroundColor']))? $overwrites['backgroundColor'] : $calendar['backgroundColor'],
+                    'borderColor' => (isset($overwrites['borderColor']) && $overwrites['borderColor'] != '')? $overwrites['borderColor'] : 'rgba(0,0,0,0)',
 
 
-                //recurringEventId  // id of the original event
+                    //recurringEventId  // id of the original event
 
                 ]);
             }
@@ -271,6 +271,19 @@ class CalendarService {
         // Get the API client and construct the service object.
         $client = $this->gGetClient();
         $this->gCalendarService = new Google_Service_Calendar($client);
+    }
+
+    private $gApiAuthUrl;
+    private $gApiAuthCode;
+
+    public function getApiAuthUrl() {
+//        $this->gGetCalendarService();
+        return 'http://google.de';
+    }
+    public function setApiAuthCode($authCode) {
+
+//        $this->gGetCalendarService();
+
     }
     /**
      * Returns an authorized API client.
