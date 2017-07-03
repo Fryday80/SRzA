@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 28. Jun 2017 um 13:49
+-- Erstellungszeit: 03. Jul 2017 um 23:18
 -- Server Version: 5.6.13
 -- PHP-Version: 7.1.6
 
@@ -225,24 +225,29 @@ CREATE TABLE IF NOT EXISTS `equip` (
   `type` int(11) NOT NULL DEFAULT '1',
   `image` text COLLATE utf8_bin,
   `user_id` int(11) DEFAULT NULL,
+  `site_planner_object` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=23 ;
 
 --
 -- Daten für Tabelle `equip`
 --
 
-INSERT INTO `equip` (`id`, `data`, `type`, `image`, `user_id`) VALUES
-(3, 'O:20:"Equipment\\Model\\Tent":21:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:19:"/img/squaretent.png";s:2:"id";s:1:"3";s:6:"userId";s:1:"2";s:5:"shape";s:1:"1";s:4:"type";s:1:"2";s:5:"width";s:3:"600";s:6:"length";s:3:"400";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#8080c0";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#80ffff";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:10:"colorField";N;s:15:"isShowTentValue";N;s:6:"submit";s:2:"Go";}', 0, '/img/squaretent.png', 2),
-(4, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:19:"/img/squaretent.png";s:2:"id";s:1:"4";s:6:"userId";s:1:"1";s:5:"shape";s:1:"1";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ff40";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#0080ff";s:6:"submit";s:2:"Go";}', 0, '/img/squaretent.png', 1),
-(5, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:1:"5";s:6:"userId";s:1:"1";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"500";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#ffff80";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff8080";s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 1),
-(6, 'O:20:"Equipment\\Model\\Tent":21:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"6";s:6:"userId";s:1:"2";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#800040";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#000000";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:10:"colorField";N;s:15:"isShowTentValue";N;s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 2),
-(7, 'O:20:"Equipment\\Model\\Tent":21:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"7";s:6:"userId";s:1:"1";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#8080ff";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#00ffff";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:10:"colorField";N;s:15:"isShowTentValue";N;s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 1),
-(8, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"8";s:6:"userId";s:1:"2";s:5:"shape";s:1:"0";s:4:"type";s:1:"1";s:5:"width";s:3:"400";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ff40";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff0000";s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 2),
-(9, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:1:"9";s:6:"userId";s:1:"2";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"700";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#800040";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#00ff40";s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 2),
-(10, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:14:"/img/sachs.png";s:2:"id";s:2:"10";s:6:"userId";s:1:"2";s:5:"shape";s:1:"3";s:4:"type";s:1:"4";s:5:"width";s:3:"400";s:6:"length";s:3:"600";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#008080";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff8000";s:6:"submit";s:2:"Go";}', 0, '/img/sachs.png', 2),
-(11, 'O:20:"Equipment\\Model\\Tent":21:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:4:"name";s:4:"Zelt";s:8:"itemType";N;s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:2:"11";s:6:"userId";s:1:"2";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ffff";s:7:"biColor";s:1:"0";s:6:"color2";s:7:"#00ffff";s:12:"readableUser";N;s:13:"readableShape";N;s:12:"readableType";N;s:10:"colorField";N;s:15:"isShowTentValue";N;s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 2),
-(12, 'asdsadasdsad', 1, NULL, NULL);
+INSERT INTO `equip` (`id`, `data`, `type`, `image`, `user_id`, `site_planner_object`) VALUES
+(3, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:19:"/img/squaretent.png";s:2:"id";s:1:"3";s:6:"userId";s:1:"2";s:5:"shape";s:1:"1";s:4:"type";s:1:"2";s:5:"width";s:3:"600";s:6:"length";s:3:"400";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#8080c0";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#80ffff";s:6:"submit";s:2:"Go";}', 0, '/img/squaretent.png', 2, 1),
+(4, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:19:"/img/squaretent.png";s:2:"id";s:1:"4";s:6:"userId";s:1:"1";s:5:"shape";s:1:"1";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ff40";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#0080ff";s:6:"submit";s:2:"Go";}', 0, '/img/squaretent.png', 1, 1),
+(5, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:1:"5";s:6:"userId";s:1:"1";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"500";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#ffff80";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff8080";s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 1, 1),
+(6, 'O:20:"Equipment\\Model\\Tent":17:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"6";s:6:"userId";s:1:"2";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"400";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#800040";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#000000";s:8:"userName";N;s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 2, 1),
+(7, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"7";s:6:"userId";s:1:"1";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"300";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#8080ff";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#00ffff";s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 1, 1),
+(8, 'O:20:"Equipment\\Model\\Tent":17:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:1:"8";s:6:"userId";s:1:"2";s:5:"shape";s:1:"0";s:4:"type";s:1:"1";s:5:"width";s:3:"350";s:6:"length";s:3:"350";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ff40";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff0000";s:8:"userName";N;s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 2, 1),
+(9, 'O:20:"Equipment\\Model\\Tent":17:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:1:"9";s:6:"userId";s:1:"2";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"400";s:6:"length";s:3:"600";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#800040";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#00ff40";s:8:"userName";N;s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 2, 1),
+(10, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:14:"/img/sachs.png";s:2:"id";s:2:"10";s:6:"userId";s:1:"2";s:5:"shape";s:1:"3";s:4:"type";s:1:"4";s:5:"width";s:3:"400";s:6:"length";s:3:"600";s:9:"spareBeds";s:1:"2";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#008080";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff8000";s:6:"submit";s:2:"Go";}', 0, '/img/sachs.png', 2, 1),
+(17, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:14:"/img/sachs.png";s:2:"id";s:2:"17";s:6:"userId";s:1:"5";s:5:"shape";s:1:"3";s:4:"type";s:1:"2";s:5:"width";s:3:"234";s:6:"length";s:6:"324234";s:9:"spareBeds";s:3:"234";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#00ffff";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#800040";s:6:"submit";s:2:"Go";}', 0, '/img/sachs.png', 5, 1),
+(18, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:10:"Waffenzelt";s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:2:"18";s:6:"userId";s:1:"0";s:5:"shape";s:1:"0";s:4:"type";s:1:"1";s:5:"width";s:4:"2332";s:6:"length";s:4:"2332";s:9:"spareBeds";s:2:"23";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#0080c0";s:7:"biColor";s:1:"0";s:6:"color2";s:7:"#0080c0";s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 0, 1),
+(19, 'O:20:"Equipment\\Model\\Tent":16:{s:12:"\0*\0dbColumns";a:10:{i:0;s:7:"user_id";i:1;s:5:"shape";i:2;s:4:"type";i:3;s:6:"color1";i:4;s:8:"bi_color";i:5;s:6:"color2";i:6;s:5:"width";i:7;s:6:"length";i:8;s:10:"spare_beds";i:9;s:12:"is_show_tent";}s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:18:"/img/roundtent.png";s:2:"id";s:0:"";s:6:"userId";s:1:"0";s:5:"shape";s:1:"0";s:4:"type";s:1:"0";s:5:"width";s:5:"23224";s:6:"length";s:5:"23224";s:9:"spareBeds";s:2:"23";s:10:"isShowTent";s:1:"1";s:6:"color1";s:7:"#faebd7";s:7:"biColor";s:1:"0";s:6:"color2";s:7:"#faebd7";s:6:"submit";s:2:"Go";}', 0, '/img/roundtent.png', 0, 1),
+(20, 'O:25:"Equipment\\Model\\Equipment":13:{s:8:"itemType";i:1;s:4:"type";N;s:11:"description";s:8:"sASDscds";s:11:"sitePlanner";s:1:"1";s:5:"color";s:7:"#800080";s:6:"length";s:3:"345";s:5:"width";s:7:"3534535";s:4:"name";s:4:"test";s:5:"image";N;s:6:"userId";s:1:"0";s:2:"id";s:0:"";s:12:"\0*\0dbColumns";a:0:{}s:6:"submit";s:2:"Go";}', 1, NULL, 0, 1),
+(21, 'O:20:"Equipment\\Model\\Tent":18:{s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:1:"5";s:6:"userId";s:1:"1";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"500";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#8080ff";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#ff8080";s:17:"sitePlannerObject";i:1;s:8:"userName";N;s:48:"\0Application\\Model\\AbstractModel\0propertiesCache";N;s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 1, 1),
+(22, 'O:20:"Equipment\\Model\\Tent":18:{s:8:"itemType";i:0;s:4:"name";s:4:"Zelt";s:5:"image";s:26:"/img/squaretentTwoMast.png";s:2:"id";s:2:"21";s:6:"userId";s:1:"1";s:5:"shape";s:1:"2";s:4:"type";s:1:"0";s:5:"width";s:3:"300";s:6:"length";s:3:"500";s:9:"spareBeds";s:1:"5";s:10:"isShowTent";s:1:"0";s:6:"color1";s:7:"#8080ff";s:7:"biColor";s:1:"1";s:6:"color2";s:7:"#80ffff";s:17:"sitePlannerObject";i:1;s:8:"userName";N;s:48:"\0Application\\Model\\AbstractModel\0propertiesCache";N;s:6:"submit";s:2:"Go";}', 0, '/img/squaretentTwoMast.png', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -377,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `nav` (
   `lft` int(11) NOT NULL,
   `rgt` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=32 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=33 ;
 
 --
 -- Daten für Tabelle `nav`
@@ -412,9 +417,10 @@ INSERT INTO `nav` (`id`, `menu_id`, `label`, `uri`, `target`, `min_role_id`, `lf
 (26, 0, 'Wappen', '/castmanager/wappen', '_self', 4, 24, 25),
 (27, 0, 'Mail Templates', '/system/mailTemplates', '_self', 4, 22, 23),
 (28, 0, 'Calendar Config', '/calendar/config', '_self', 4, 52, 53),
-(29, 0, 'Equipmanager', '/equip', '_self', 5, 57, 62),
-(30, 0, 'Site Planner', '/siteplan', '_self', 5, 60, 61),
-(31, 0, 'Zelteverwaltung', '/equip/tent', '_self', 5, 58, 59);
+(29, 0, 'Equipmanager', '/equip', '_self', 5, 57, 64),
+(30, 0, 'Site Planner', '/siteplan', '_self', 5, 62, 63),
+(31, 0, 'Zelteverwaltung', '/equip/tent', '_self', 5, 58, 59),
+(32, 0, 'Zeugverwaltung', '/equip/equipment', '_self', 5, 60, 61);
 
 -- --------------------------------------------------------
 
@@ -510,7 +516,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `permission_name` varchar(45) NOT NULL,
   `resource_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=197 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=209 ;
 
 --
 -- Daten für Tabelle `permission`
@@ -611,13 +617,12 @@ INSERT INTO `permission` (`id`, `permission_name`, `resource_id`) VALUES
 (184, 'message', 32),
 (185, 'index', 38),
 (186, 'index', 39),
-(187, 'tent', 38),
-(188, 'usertent', 38),
-(189, 'usertentall', 38),
-(193, 'deletetent', 38),
-(194, 'edittent', 38),
-(195, 'addtent', 38),
-(196, 'edittenttype', 38);
+(203, 'type', 38),
+(204, 'add', 38),
+(205, 'userall', 38),
+(206, 'show', 38),
+(207, 'delete', 38),
+(208, 'edit', 38);
 
 -- --------------------------------------------------------
 
@@ -700,7 +705,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` int(10) unsigned NOT NULL,
   `permission_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=468 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=480 ;
 
 --
 -- Daten für Tabelle `role_permission`
@@ -961,7 +966,19 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 (464, 5, 195),
 (465, 5, 193),
 (466, 5, 194),
-(467, 5, 196);
+(467, 5, 196),
+(468, 5, 202),
+(469, 5, 200),
+(470, 5, 201),
+(471, 5, 197),
+(472, 5, 198),
+(473, 5, 199),
+(474, 5, 203),
+(475, 5, 204),
+(476, 5, 205),
+(477, 5, 206),
+(478, 5, 207),
+(479, 5, 208);
 
 -- --------------------------------------------------------
 
@@ -970,13 +987,17 @@ INSERT INTO `role_permission` (`id`, `role_id`, `permission_id`) VALUES
 --
 
 DROP TABLE IF EXISTS `site_plan`;
-CREATE TABLE IF NOT EXISTS `site_plan` (
-  `id` int(11) NOT NULL,
-  `name` text COLLATE utf8_bin,
-  `data` longtext COLLATE utf8_bin,
-  `longitude` float DEFAULT NULL,
-  `latitude` float DEFAULT NULL,
-  PRIMARY KEY (`id`)
+CREATE TABLE IF NOT EXISTS `site_plan`
+(
+    `id` INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    `name` TEXT,
+    `data` LONGTEXT,
+    `longitude` FLOAT,
+    `latitude` FLOAT,
+    `zoom` INT(11),
+    `scale` INT(11) DEFAULT '1',
+    `map_type` CHAR(30) DEFAULT 'satellite',
+    `diameter` INT(11) DEFAULT '2'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
@@ -1005,30 +1026,6 @@ CREATE TABLE IF NOT EXISTS `system_log` (
 INSERT INTO `system_log` (`type`, `msg`, `url`, `userId`, `userName`, `microtime`, `time`, `data`) VALUES
 (1, 'Argument 1 passed to AlbumControllerGalleryController::__construct() must be an instance of AlbumControllerGalleryService, none given, called in D:WebWebprojekteSRzAvendorzendframeworkzend-servicemanagersrcAbstractPluginManager.php on line 252 and defined', '/gallery', 2, 'FryDay', 1496780000, 1496784930, 0x7b2273657276657250485044617461223a7b2252454449524543545f4150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c2252454449524543545f535441545553223a22323030222c224150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c22485454505f484f5354223a226c6f63616c686f7374222c22485454505f434f4e4e454354494f4e223a226b6565702d616c697665222c22485454505f555047524144455f494e5345435552455f5245515545535453223a2231222c22485454505f555345525f4147454e54223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f35382e302e333032392e313130205361666172692f3533372e3336222c22485454505f414343455054223a22746578742f68746d6c2c6170706c69636174696f6e2f7868746d6c2b786d6c2c6170706c69636174696f6e2f786d6c3b713d302e392c696d6167652f776562702c2a2f2a3b713d302e38222c22485454505f444e54223a2231222c22485454505f52454645524552223a22687474703a2f2f6c6f63616c686f73742f70617373776f72642f72657365742f62356663323936613737646266396432396131396362393364653039393934373f5f74726163795f736b69705f6572726f72222c22485454505f4143434550545f454e434f44494e47223a22677a69702c206465666c6174652c20736463682c206272222c22485454505f4143434550545f4c414e4755414745223a2264652d44452c64653b713d302e382c656e2d55533b713d302e362c656e3b713d302e34222c22485454505f434f4f4b4945223a22636f6f6b6965636f6e73656e745f7374617475733d6469736d6973733b2073727a61696b6e6f77796f753d313439323738303337353b205048505345535349443d65736b37646e626a7070663469613176616966307475636e6d333b207a64742d68696464656e3d303b20696f3d55704e57596c38677942495568472d6c41414141222c2250415448223a22433a5c50726f6772616d446174615c4f7261636c655c4a6176615c6a617661706174683b433a5c5065726c36345c736974655c62696e3b433a5c5065726c36345c62696e3b443a5c5765625c57656270726f6a656b74655c54455354494e475c7573627765625c7068703b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c69434c5320436c69656e745c3b433a5c50726f6772616d2046696c65735c496e74656c5c69434c5320436c69656e745c3b433a5c57696e646f77735c73797374656d33323b433a5c57696e646f77733b433a5c57696e646f77735c53797374656d33325c5762656d3b433a5c57696e646f77735c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65732028783836295c4e564944494120436f72706f726174696f6e5c50687973585c436f6d6d6f6e3b433a5c57494e444f57535c73797374656d33323b433a5c57494e444f57533b433a5c57494e444f57535c53797374656d33325c5762656d3b433a5c57494e444f57535c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c436f6d6d6f6e2046696c65735c41646f62655c41474c3b443a5c50726f6772616d2046696c65732028783836295c517569636b54696d655c515453797374656d5c3b443a5c5765625c7573627765625c7068703b433a5c50726f6772616d446174615c436f6d706f73657253657475705c62696e3b433a5c50726f6772616d2046696c65735c6e6f64656a735c3b433a5c50726f6772616d2046696c65732028783836295c427261636b6574735c636f6d6d616e643b433a5c50726f6772616d2046696c65735c4d6963726f736f66742053514c205365727665725c3133305c546f6f6c735c42696e6e5c3b433a5c50726f6772616d2046696c65735c4d6963726f736f66745c57656220506c6174666f726d20496e7374616c6c65725c3b433a5c50726f6772616d2046696c65735c646f746e65745c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3131305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3132305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3133305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c426974766973652053534820436c69656e743b443a5c4861736869436f72705c56616772616e745c62696e3b443a5c50726f6772616d2046696c65735c50755454595c3b443a5c50726f6772616d2046696c65735c4769745c4769745c636d643b443a5c50726f6772616d2046696c65735c4769745c4769745c6d696e677736345c62696e3b443a5c50726f6772616d2046696c65735c4769745c4769745c7573725c62696e3b433a5c50726f6772616d2046696c65732028783836295c476f757263655c636d643b433a5c55736572735c4672795c417070446174615c526f616d696e675c436f6d706f7365725c76656e646f725c62696e3b433a5c55736572735c4672795c417070446174615c526f616d696e675c6e706d3b22443a5c50726f6772616d2046696c65735c507554545922222c2253797374656d526f6f74223a22433a5c57494e444f5753222c22434f4d53504543223a22433a5c57494e444f57535c73797374656d33325c636d642e657865222c2250415448455854223a222e434f4d3b2e4558453b2e4241543b2e434d443b2e5642533b2e5642453b2e4a533b2e4a53453b2e5753463b2e5753483b2e4d5343222c2257494e444952223a22433a5c57494e444f5753222c225345525645525f5349474e4154555245223a22222c225345525645525f534f465457415245223a224170616368652f322e342e36202857696e333229205048502f352e362e3330222c225345525645525f4e414d45223a226c6f63616c686f7374222c225345525645525f41444452223a223a3a31222c225345525645525f504f5254223a223830222c2252454d4f54455f41444452223a223a3a31222c22444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c22524551554553545f534348454d45223a2268747470222c22434f4e544558545f505245464958223a22222c22434f4e544558545f444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c225345525645525f41444d494e223a226d61696c406c6f63616c686f7374222c225343524950545f46494c454e414d45223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c69632f696e6465782e706870222c2252454d4f54455f504f5254223a223536373531222c2252454449524543545f55524c223a222f67616c6c657279222c22474154455741595f494e54455246414345223a224347492f312e31222c225345525645525f50524f544f434f4c223a22485454502f312e31222c22524551554553545f4d4554484f44223a22474554222c2251554552595f535452494e47223a22222c22524551554553545f555249223a222f67616c6c657279222c225343524950545f4e414d45223a222f696e6465782e706870222c225048505f53454c46223a222f696e6465782e706870222c22524551554553545f54494d455f464c4f4154223a313439363738343933302e3235332c22524551554553545f54494d45223a313439363738343933307d7d),
 (1, 'While attempting to create albumcontrollergallery(alias: AlbumControllerGallery) an invalid factory was registered for this instance type.', '/gallery', 2, 'FryDay', 1496790000, 1496784997, 0x7b2273657276657250485044617461223a7b2252454449524543545f4150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c2252454449524543545f535441545553223a22323030222c224150504c49434154494f4e5f454e56223a22646576656c6f706d656e74222c22485454505f484f5354223a226c6f63616c686f7374222c22485454505f434f4e4e454354494f4e223a226b6565702d616c697665222c22485454505f43414348455f434f4e54524f4c223a226d61782d6167653d30222c22485454505f555047524144455f494e5345435552455f5245515545535453223a2231222c22485454505f555345525f4147454e54223a224d6f7a696c6c612f352e30202857696e646f7773204e542031302e303b2057696e36343b2078363429204170706c655765624b69742f3533372e333620284b48544d4c2c206c696b65204765636b6f29204368726f6d652f35382e302e333032392e313130205361666172692f3533372e3336222c22485454505f414343455054223a22746578742f68746d6c2c6170706c69636174696f6e2f7868746d6c2b786d6c2c6170706c69636174696f6e2f786d6c3b713d302e392c696d6167652f776562702c2a2f2a3b713d302e38222c22485454505f444e54223a2231222c22485454505f52454645524552223a22687474703a2f2f6c6f63616c686f73742f70617373776f72642f72657365742f62356663323936613737646266396432396131396362393364653039393934373f5f74726163795f736b69705f6572726f72222c22485454505f4143434550545f454e434f44494e47223a22677a69702c206465666c6174652c20736463682c206272222c22485454505f4143434550545f4c414e4755414745223a2264652d44452c64653b713d302e382c656e2d55533b713d302e362c656e3b713d302e34222c22485454505f434f4f4b4945223a22636f6f6b6965636f6e73656e745f7374617475733d6469736d6973733b2073727a61696b6e6f77796f753d313439323738303337353b205048505345535349443d65736b37646e626a7070663469613176616966307475636e6d333b20696f3d55704e57596c38677942495568472d6c414141413b207a64742d68696464656e3d30222c2250415448223a22433a5c50726f6772616d446174615c4f7261636c655c4a6176615c6a617661706174683b433a5c5065726c36345c736974655c62696e3b433a5c5065726c36345c62696e3b443a5c5765625c57656270726f6a656b74655c54455354494e475c7573627765625c7068703b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c69434c5320436c69656e745c3b433a5c50726f6772616d2046696c65735c496e74656c5c69434c5320436c69656e745c3b433a5c57696e646f77735c73797374656d33323b433a5c57696e646f77733b433a5c57696e646f77735c53797374656d33325c5762656d3b433a5c57696e646f77735c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c44414c3b433a5c50726f6772616d2046696c65732028783836295c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65735c496e74656c5c496e74656c285229204d616e6167656d656e7420456e67696e6520436f6d706f6e656e74735c4950543b433a5c50726f6772616d2046696c65732028783836295c4e564944494120436f72706f726174696f6e5c50687973585c436f6d6d6f6e3b433a5c57494e444f57535c73797374656d33323b433a5c57494e444f57533b433a5c57494e444f57535c53797374656d33325c5762656d3b433a5c57494e444f57535c53797374656d33325c57696e646f7773506f7765725368656c6c5c76312e305c3b433a5c50726f6772616d2046696c65732028783836295c436f6d6d6f6e2046696c65735c41646f62655c41474c3b443a5c50726f6772616d2046696c65732028783836295c517569636b54696d655c515453797374656d5c3b443a5c5765625c7573627765625c7068703b433a5c50726f6772616d446174615c436f6d706f73657253657475705c62696e3b433a5c50726f6772616d2046696c65735c6e6f64656a735c3b433a5c50726f6772616d2046696c65732028783836295c427261636b6574735c636f6d6d616e643b433a5c50726f6772616d2046696c65735c4d6963726f736f66742053514c205365727665725c3133305c546f6f6c735c42696e6e5c3b433a5c50726f6772616d2046696c65735c4d6963726f736f66745c57656220506c6174666f726d20496e7374616c6c65725c3b433a5c50726f6772616d2046696c65735c646f746e65745c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3131305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3132305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c4d6963726f736f66742053514c205365727665725c3133305c4454535c42696e6e5c3b433a5c50726f6772616d2046696c65732028783836295c426974766973652053534820436c69656e743b443a5c4861736869436f72705c56616772616e745c62696e3b443a5c50726f6772616d2046696c65735c50755454595c3b443a5c50726f6772616d2046696c65735c4769745c4769745c636d643b443a5c50726f6772616d2046696c65735c4769745c4769745c6d696e677736345c62696e3b443a5c50726f6772616d2046696c65735c4769745c4769745c7573725c62696e3b433a5c50726f6772616d2046696c65732028783836295c476f757263655c636d643b433a5c55736572735c4672795c417070446174615c526f616d696e675c436f6d706f7365725c76656e646f725c62696e3b433a5c55736572735c4672795c417070446174615c526f616d696e675c6e706d3b22443a5c50726f6772616d2046696c65735c507554545922222c2253797374656d526f6f74223a22433a5c57494e444f5753222c22434f4d53504543223a22433a5c57494e444f57535c73797374656d33325c636d642e657865222c2250415448455854223a222e434f4d3b2e4558453b2e4241543b2e434d443b2e5642533b2e5642453b2e4a533b2e4a53453b2e5753463b2e5753483b2e4d5343222c2257494e444952223a22433a5c57494e444f5753222c225345525645525f5349474e4154555245223a22222c225345525645525f534f465457415245223a224170616368652f322e342e36202857696e333229205048502f352e362e3330222c225345525645525f4e414d45223a226c6f63616c686f7374222c225345525645525f41444452223a223a3a31222c225345525645525f504f5254223a223830222c2252454d4f54455f41444452223a223a3a31222c22444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c22524551554553545f534348454d45223a2268747470222c22434f4e544558545f505245464958223a22222c22434f4e544558545f444f43554d454e545f524f4f54223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c6963222c225345525645525f41444d494e223a226d61696c406c6f63616c686f7374222c225343524950545f46494c454e414d45223a22443a2f5765622f57656270726f6a656b74652f53527a412f7075626c69632f696e6465782e706870222c2252454d4f54455f504f5254223a223536383536222c2252454449524543545f55524c223a222f67616c6c657279222c22474154455741595f494e54455246414345223a224347492f312e31222c225345525645525f50524f544f434f4c223a22485454502f312e31222c22524551554553545f4d4554484f44223a22474554222c2251554552595f535452494e47223a22222c22524551554553545f555249223a222f67616c6c657279222c225343524950545f4e414d45223a222f696e6465782e706870222c225048505f53454c46223a222f696e6465782e706870222c22524551554553545f54494d455f464c4f4154223a313439363738343939362e3736362c22524551554553545f54494d45223a313439363738343939367d7d);
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `tent_types`
---
-
-DROP TABLE IF EXISTS `tent_types`;
-CREATE TABLE IF NOT EXISTS `tent_types` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` text COLLATE utf8_bin,
-  `shape` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=9 ;
-
---
--- Daten für Tabelle `tent_types`
---
-
-INSERT INTO `tent_types` (`id`, `name`, `shape`) VALUES
-(1, 'Alex Rund', 0),
-(2, 'Sachse', 1),
-(3, 'Sachse 2M', 3),
-(4, '2 Mast', 2);
 
 -- --------------------------------------------------------
 
