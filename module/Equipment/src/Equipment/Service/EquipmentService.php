@@ -31,10 +31,11 @@ class EquipmentService
 
     public function getAll()
     {
-        return $this->equipTable->getAll();
+        return $this->equipTable->getAll()->data;
     }
+
     /**
-     * @param int $type use EEquipTypes::
+     * @param int $type use EnumEquipTypes::
      * @return DataSet|bool
      */
     public function getAllByType($type)

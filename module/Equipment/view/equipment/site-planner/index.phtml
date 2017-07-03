@@ -110,20 +110,20 @@ $this->headScript()->appendFile('/libs/map.js');
         <hr>
         <ul class="itemList">
             <?php
-            foreach($tents as $tent): ?>
-                <li data-id="<?php echo $tent['id']; ?>">
+            foreach($items as $item): ?>
+                <li data-id="<?php /*echo $item['id']; */?>">
                     <span class="type">
-                        <?php echo $tent['type'] ?>
+                        <?php echo $item['type'] ?>
                     </span>
                     <span class="user">
-                        <?php echo $tent['user_name'] ?>
+<!--                        --><?php //echo $item['user_name'] ?>
                     </span>
                 </li>
             <?php endforeach; ?>
         </ul>
     </div>
     <div class="canvas">
-        <canvas class="site-planner-canvas"><?php echo json_encode($tents); ?></canvas>
+        <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
 </box>
 <script>
