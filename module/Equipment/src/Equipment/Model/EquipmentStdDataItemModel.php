@@ -1,26 +1,34 @@
 <?php
 namespace Equipment\Model;
 
-use Application\Model\DataObjects\DataItem;
+use Application\Model\AbstractModel;
 
-class EquipmentStdDataItemModel extends DataItem implements IEquipment
+class EquipmentStdDataItemModel extends AbstractModel
 {
-    public $name;
+    public $id;
     public $itemType;
     public $image;
-
     public $userId;
     public $userName;
+    public $sitePlannerObject;
     
 
-    public function getImage(){
-        return $this->image;
+    public function __construct($data = null)
+    {
+        if ($data !== null)
+        foreach ($data as $key=>$value)
+            $this->$key = $value;
+
     }
 
-    public function getType(){
-        return $this->itemType;
+    public function updateFromDB($data)
+    {
+        $data['user_name'] = ((int)$data['user_id'] == 0) ? 'Verein' : $data['user_name'];
+        $this->id = $data['id'];
+        $this->userId = $data['user_id'];
+        $this->userName = $data['user_name'];
+        $this->sitePlannerObject = $data['site_planner_object'];
     }
-    
     /**
      * is this group equip
      * @return bool
@@ -29,5 +37,15 @@ class EquipmentStdDataItemModel extends DataItem implements IEquipment
     {
         if ($this->userId == 0) return true;
         return false;
+    }
+
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
+    }
+
+    public function toArray()
+    {
+        return $this->getArrayCopy();
     }
 }

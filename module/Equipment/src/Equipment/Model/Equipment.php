@@ -9,7 +9,7 @@ class Equipment extends EquipmentStdDataItemModel
 
     public $type;
     public $description;
-    public $sitePlanner;
+    public $sitePlannerObject;
     public $color;
     public $length;
     public $width;

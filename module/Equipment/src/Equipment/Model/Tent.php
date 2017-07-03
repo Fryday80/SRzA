@@ -4,19 +4,6 @@ namespace Equipment\Model;
 
 class Tent extends EquipmentStdDataItemModel
 {
-    protected $dbColumns = array(
-        'user_id',
-        'shape',
-        'type',
-        'color1',
-        'bi_color',
-        'color2',
-        'width',
-        'length',
-        'spare_beds',
-        'is_show_tent',
-    );
-
     public $itemType = EEquipTypes::TENT;
     public $name = 'Zelt';
     public $image;
@@ -32,6 +19,7 @@ class Tent extends EquipmentStdDataItemModel
     public $color1;
     public $biColor;
     public $color2;
+    public $sitePlannerObject = 1;
 
 
     public function setData($data)

@@ -34,6 +34,7 @@ class EquipmentController extends AbstractActionController
 
     public function indexAction() {
         $vars = $this->config['functions']['getVars']('index', $this->config);
+//        bdump($this->equipService->getAll());
         return $vars;
     }
 

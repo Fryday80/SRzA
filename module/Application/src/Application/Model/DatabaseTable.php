@@ -47,18 +47,20 @@ class DatabaseTable extends AbstractTableGateway
         return $result->toObjectArray();
     }
     public function getById($id) {
-        $result = $this->select(array('id' => $id));
+        $result = $this->select(array($this->table.'.id' => $id));
         if (!$result)
             return false;
 
         return $result->current();
     }
     public function add($data) {
+        $data = $this->prepareDataForSave($data);
         if (!$this->insert($data))
             return false;
         return $this->getLastInsertValue();
     }
     public function save($data) {
+        $data = $this->prepareDataForSave($data);
         if (!isset($data['id']) || !is_integer($data['id']) || $data['id'] == 0) {
             if (!$this->insert($data) )
                 return false;
@@ -77,6 +79,28 @@ class DatabaseTable extends AbstractTableGateway
 
     }
 
+    /**
+     * Select
+     *
+     * @param Where|\Closure|string|array $where
+     * @return ResultSet
+     */
+    public function select($where = null)
+    {
+        if (!$this->isInitialized) {
+            $this->initialize();
+        }
+
+        $select = $this->sql->select();
+        $select = $this->prepareSelect($select);
+
+        if ($where instanceof \Closure) {
+            $where($select);
+        } elseif ($where !== null) {
+            $select->where($where);
+        }
+        return $this->selectWith($select);
+    }
     /**
      * Update
      *
@@ -121,5 +145,14 @@ class DatabaseTable extends AbstractTableGateway
             return $this->hydrator->extract($entity);
         }
         throw new InvalidArgumentException('Entity passed to db mapper should be an array or object.');
+    }
+    
+    protected function prepareSelect($select){
+        return $select;
+    }
+
+    protected function prepareDataForSave($data)
+    {
+        return $data;
     }
 }

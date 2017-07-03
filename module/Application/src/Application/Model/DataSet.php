@@ -14,7 +14,7 @@ class DataSet
     public function __construct($data = null, $subClass = null)
     {
         $this->class = $subClass;
-        if ($this->class == null) $this->class = DataItem::class;
+        if ($this->class == null) $this->class = AbstractModel::class;
 
         if ($data !== null){
             if (is_object($data))

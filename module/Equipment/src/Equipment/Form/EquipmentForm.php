@@ -51,7 +51,7 @@ class EquipmentForm extends Form
         ));
 /// Color
         $this->add(array(
-            'name' => 'sitePlanner',
+            'name' => 'sitePlannerObject',
             'type' => 'Zend\Form\Element\Checkbox',
             'required' => false,
             'options' => array(
