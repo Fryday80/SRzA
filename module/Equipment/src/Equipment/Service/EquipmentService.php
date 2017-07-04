@@ -31,7 +31,7 @@ class EquipmentService
 
     public function getAll()
     {
-        return $this->equipTable->getAll()->data;
+        return $this->equipTable->getAll();
     }
 
     /**
