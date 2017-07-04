@@ -21,11 +21,11 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
-        $data = $this->sitePlanTable->getById(2);
-        bdump(json_encode($data));
+        $data = $this->equipmentService->getAll();
+        bdump($data);
         $this->layout()->setVariable('showSidebar', false);
         return array(
-            'tents' => $this->equipmentService->getCanvasData(),
+            'items' => $data,
         );
     }
     public function listAction() {

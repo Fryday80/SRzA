@@ -33,8 +33,9 @@ class EquipmentService
     {
         return $this->equipTable->getAll();
     }
+
     /**
-     * @param int $type use EEquipTypes::
+     * @param int $type use EnumEquipTypes::
      * @return DataSet|bool
      */
     public function getAllByType($type)

@@ -81,7 +81,7 @@ class EquipTable extends DatabaseTable
      * @param EquipmentStdDataItemModel $data
      * @return array for db save|add
      */
-    protected function prepareDataForSave(EquipmentStdDataItemModel $data){
+    protected function prepareDataForSave($data){
         return array(
             'data'  => serialize ($data),
             'type'  => (int)$data->itemType,

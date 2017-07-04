@@ -110,25 +110,24 @@ $this->headScript()->appendFile('/libs/map.js');
         <hr>
         <ul class="itemList">
             <?php
-            foreach($tents as $tent): ?>
-                <li data-id="<?php echo $tent['id']; ?>">
-                    <span class="type">
-                        <?php echo $tent['type'] ?>
-                    </span>
-                    <span class="user">
-                        <?php echo $tent['user_name'] ?>
-                    </span>
+            foreach($items as $item): ?>
+                <li data-id="<?php echo $item['id']; ?>">
+                    <span class="type"> <?php echo $item['type'] ?> </span>
+                    <span class="user"><?php echo $item['userName'] ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>
     </div>
     <div class="canvas">
-        <canvas class="site-planner-canvas"><?php echo json_encode($tents); ?></canvas>
+        <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
 </box>
 <script>
-    (function() {
-        var RIGHT_CLICK = 3, MIDDLE_CLICK = 2, LEFT_CLICK = 1;
+    (function($) {
+        "use strict";
+        var RIGHT_CLICK = 3,
+            MIDDLE_CLICK = 2,
+            LEFT_CLICK = 1;
 
         function checkClick(e, value) {
             return 'which' in e ? e.which === value : e.button === value - 1;
@@ -379,6 +378,10 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.height = parseInt(item.length) / 5;
                 this.item = item;
                 this.selectable = true;
+                var imageIndex = preloadUrls.indexOf(item.image);
+                if (imageIndex >= 0) {
+                    this.itemImg = preloadedImages[imageIndex];
+                }
             },
             _render: function(ctx) {
 //                ctx.rotate();
@@ -387,16 +390,28 @@ $this->headScript()->appendFile('/libs/map.js');
                 // 2 = sachs
                 switch (parseInt(this.item.shape)) {
                     case 0:
+                        var count = 8,
+                            startAngle = 0,
+                            angleSize = (2 * Math.PI) / count;
+
+                        for(var i = 0; i < count; i++) {
+                            if (this.item.biColor == 0 || i % 2 == 0) {
+                                ctx.fillStyle = this.item.color1;
+                            } else {
+                                ctx.fillStyle = this.item.color2;
+                            }
+
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.arc(0, 0, this.width/2, startAngle, startAngle + angleSize);
+                            ctx.closePath();
+                            ctx.fill();
+                            startAngle += angleSize;
+                        }
                         ctx.beginPath();
-                        ctx.arc(0,
-                            0,
-                            this.item.width * 5,
-                            this.startAngle,
-                            this.endAngle, false);
-                        this._renderFill(ctx);
-                        this._renderStroke(ctx);
+                        ctx.arc(0, 0, this.width * 0., this.startAngle, this.endAngle, false);
                         break;
-                    case 1:
+                    case 11:
                         var x = -this.width / 2,
                             y = -this.height / 2,
                             w = this.width,
@@ -422,12 +437,17 @@ $this->headScript()->appendFile('/libs/map.js');
 //                        ctx.lineTo(x, y + cs);
 //                        ctx.quadraticCurveTo(x, y, x + cs, y);
                         break;
+                    default:
+                        if (this.itemImg) {
+                            ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
+                        }
+                        break;
                 }
-                ctx.fillStyle = "#ffffff";
-                ctx.strokeStyle = "#000000";
-                ctx.lineWidth = 2;
-                ctx.fill();
-                ctx.stroke();
+//                ctx.fillStyle = "#ffffff";
+//                ctx.strokeStyle = "#000000";
+//                ctx.lineWidth = 2;
+//                ctx.fill();
+//                ctx.stroke();
             },
             /**
              * Returns an object representation of an instance
@@ -485,11 +505,11 @@ $this->headScript()->appendFile('/libs/map.js');
             return fabric.Object._fromObject('Equipitem', object, callback);
         };
 
-    })();
+        //site planner
 
-    //site planner
-    (function($) {
-        "use strict";
+        var preloadedImages = [];
+        var preloadUrls = [];
+
         var lang = {
             askSure: 'Are you sure?',
             warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
@@ -501,6 +521,7 @@ $this->headScript()->appendFile('/libs/map.js');
             var img = new Image();
             img.onload = callback;
             img.src = url;
+            return img;
         }
         function preloadImages(urls, callback, progress){
             var pointer = 0;
@@ -638,19 +659,40 @@ $this->headScript()->appendFile('/libs/map.js');
                     name: 'Unbennant',
                     longitude: 48.249238,
                     latitude: 11.562762,
-                    zoom: 5,
-                    scale: 2,
+                    zoom: 7,
+                    scale: 1,
                     mapType: 'satellite',
-                    diameter: 2,
+                    diameter: 1,
                     data: {}
                 };
-
                 //init
                 $canvas.html('');
                 this.canvas = new fabric.MyCanvas($canvas[0], {
                     width: 900,
                     height: 600,
                     backgroundColor : "#c2c2c2",
+                });
+                fabric.Object.prototype.set({
+                    transparentCorners: false,
+                    borderColor: '#ff00ff',
+                    cornerColor: '#ff0000',
+                });
+                this.canvas.dirty = true;
+                this.initProgressBar();
+                this.initControls();
+                this.updateProgressBar(0);
+                //preload all necessary images
+                for(var i = 0; i < this.itemPool.length; i++) {
+                    if (this.itemPool[i].image != null) {
+                        preloadUrls.push(this.itemPool[i].image);
+                    }
+                }
+                preloadImages(preloadUrls, function(images) {
+                    self.updateProgressBar(1);
+                    self.hideProgressBar();
+                    preloadedImages = images;
+                }, function(progress) {
+                    self.updateProgressBar(progress);
                 });
                 //alternate image background ----------------------------------
 
@@ -663,14 +705,6 @@ $this->headScript()->appendFile('/libs/map.js');
 //                });
 
 
-                fabric.Object.prototype.set({
-                    transparentCorners: false,
-                    borderColor: '#ff00ff',
-                    cornerColor: '#ff0000',
-                });
-                this.initProgressBar();
-                this.initControls();
-//                this.setMap();
             }
             initControls() {
                 var self = this;
@@ -778,7 +812,7 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             //progressbar
             initProgressBar() {
-                var progressBarText = new fabric.Text('load map', {
+                var progressBarText = new fabric.Text('Loding...', {
                     left: this.progressBarWidth / 2,
                     top: 0,
                     fill: '#ffffff',
@@ -967,6 +1001,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 $.getJSON("/siteplanner/get/" + planID , function(result){
                     self.updateProgressBar(0.2);
                     var data = result.data;
+                    console.log(result);
                     //search in planList for id and replace -> if not found, push it
                     var found = false;
                     for(var i = 0; i < self.planList; i++) {
