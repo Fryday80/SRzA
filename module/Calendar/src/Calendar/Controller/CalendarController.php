@@ -5,7 +5,7 @@ use Auth\Model\RoleTable;
 use Auth\Service\AccessService;
 use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;
-use Calendar\Form\UpdateTokenForm;
+use Calendar\Form\UpdateSecretForm;
 use Calendar\Service\CalendarService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -52,9 +52,20 @@ class CalendarController extends AbstractActionController
         return new JsonModel($results);
     }
     public function configAction(){
-        $calendarSet = array();
-        $tokenForm = new UpdateTokenForm();
+    //==================== Auth Code
+        $authCodeError = false;
+        // get new Auth Code from url if redirected from google
+        $authCode = $this->params()->fromQuery('code');
+        // set new Auth Code
+        if ($authCode) {
+            if ($this->calendarService->setApiAuthCode($authCode) ) {}
+            else $authCodeError = true;
+        }
+        /** @var string|false $apiAuth link string to new Auth Code | false*/
+        $apiAuth = $this->calendarService->getApiAuthUrl();
+        $apiAuth = (is_string($apiAuth)) ? $apiAuth : false;
 
+    //==================== POST behavior -> calendars & update secret
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost()->toArray();
@@ -66,21 +77,23 @@ class CalendarController extends AbstractActionController
                 $this->calendarService->resetEventCache();
             }
         }
-        $calendars = $this->calendarService->getCalendars();
 
-        $apiAuth = $this->calendarService->getApiAuthUrl();
-        $apiAuth = (is_string($apiAuth)) ? $apiAuth : false;
+    //==================== Calendars
+        $calendarSet = array();
+        $calendars = $this->calendarService->getCalendars();
 
         foreach ($calendars as $calendar ){
             $form = new CalendarForm($this->roleTable->getUserRoles());
             $form->setData($calendar);
             array_push($calendarSet, $form);
         }
+        
         return new ViewModel(array(
             'calendars' => $calendars,
             'calendarSet' => $calendarSet,
-            'tokenForm' => $tokenForm,
+            'secretForm' => new UpdateSecretForm(),
             'apiAuth' => $apiAuth,
+            'authCodeError' => $authCodeError,
         ));
     }
     public function addEventAction() {

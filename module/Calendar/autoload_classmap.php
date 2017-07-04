@@ -8,7 +8,7 @@ return array(
     'Calendar\Factory\Service\CalendarServiceFactory'       => __DIR__ . '/src/Calendar/Factory/Service/CalendarServiceFactory.php',
     'Calendar\Form\CalendarForm'                            => __DIR__ . '/src/Calendar/Form/CalendarForm.php',
     'Calendar\Form\EventForm'                               => __DIR__ . '/src/Calendar/Form/EventForm.php',
-    'Calendar\Form\UpdateTokenForm'                         => __DIR__ . '/src/Calendar/Form/UpdateTokenForm.php',
+    'Calendar\Form\UpdateSecretForm'                        => __DIR__ . '/src/Calendar/Form/UpdateSecretForm.php',
     'Calendar\Service\CalendarService'                      => __DIR__ . '/src/Calendar/Service/CalendarService.php',
     'Calendar\View\Helper\UpcomingEvents'                   => __DIR__ . '/src/Calendar/View/Helper/UpcomingEvents.php',
 );

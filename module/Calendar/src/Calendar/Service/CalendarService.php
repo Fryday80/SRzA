@@ -285,11 +285,18 @@ class CalendarService {
     }
 
     /**
-     * @param $authCode string
+     * @param $authCode
+     * @return bool
      */
     public function setApiAuthCode($authCode) {
-        $this->gApiAuthCode = $authCode;
-        $this->gInitCalendarService();
+        try {
+            $this->gApiAuthCode = $authCode;
+            $this->gInitCalendarService();
+            return true;
+        } catch(Exception $e) {
+            // @todo log to stats
+            return false;
+        }
     }
 
     /**
@@ -310,7 +317,7 @@ class CalendarService {
         $client->setAuthConfig($this->CLIENT_SECRET_PATH);
         $client->setAccessType('offline');
 
-        $client->setRedirectUri('http://localhost');
+        $client->setRedirectUri('http://localhost/calendar/config');
 //        $client->setAccessType('offline');
         $client->setApprovalPrompt('force');
 
@@ -320,6 +327,20 @@ class CalendarService {
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
             $client->setAccessToken($accessToken);
+
+            if ($client->isAccessTokenExpired()) {
+                // save refresh token to some variable
+                $refreshTokenSaved = $client->getRefreshToken();
+                // update access token
+                $client->fetchAccessTokenWithRefreshToken($refreshTokenSaved);
+                // pass access token to some variable
+                $accessTokenUpdated = $client->getAccessToken();
+                // append refresh token
+                $accessTokenUpdated['refresh_token'] = $refreshTokenSaved;
+                // save to file
+                file_put_contents($credentialsPath, json_encode($accessTokenUpdated));
+            }
+
             $this->gApiAuthUrl = null;
             $this->gApiAuthCode = null;
         } else {
@@ -329,15 +350,17 @@ class CalendarService {
             if ($this->gApiAuthCode) {
 //                $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
                 $authCode = trim($this->gApiAuthCode);
-
+bdump($authCode);
                 // Exchange authorization code for an access token.
                 $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
                 // Store the credentials to disk.
                 if(!file_exists(dirname($credentialsPath))) {
                     mkdir(dirname($credentialsPath), 0700, true);
                 }
+                bdump($accessToken);
                 file_put_contents($credentialsPath, json_encode($accessToken));
                 $client->setAccessToken($accessToken);
+                //des brauchts eventuel hier acuh nochmal
                 $this->gApiAuthUrl = null;
                 $this->gApiAuthCode = null;
 
@@ -353,18 +376,6 @@ class CalendarService {
 //        }// Refresh the token if it's expired.
 
 
-        if ($client->isAccessTokenExpired()) {
-            // save refresh token to some variable
-            $refreshTokenSaved = $client->getRefreshToken();
-            // update access token
-            $client->fetchAccessTokenWithRefreshToken($refreshTokenSaved);
-            // pass access token to some variable
-            $accessTokenUpdated = $client->getAccessToken();
-            // append refresh token
-            $accessTokenUpdated['refresh_token'] = $refreshTokenSaved;
-            // save to file
-            file_put_contents($credentialsPath, json_encode($accessTokenUpdated));
-        }
         return $client;
     }
 

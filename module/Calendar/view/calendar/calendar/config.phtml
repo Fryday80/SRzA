@@ -22,12 +22,12 @@
 </accordion>
 <br/>
 <?php
-if ($apiAuth):
+if ($apiAuth || $authCodeError):
     ?>
-<a href="<?php echo $apiAuth; ?>">hol die neuen Codes von GOOGLE</a>
+<a href="<?php echo $apiAuth; ?>" >hol die neuen AuthCodes von GOOGLE</a>
 <?php
-echo $this->form($tokenForm);
 endif;
+echo $this->form($secretForm);
 ?>
 <script>
     $('.color input').change(function() {
