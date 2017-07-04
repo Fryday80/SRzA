@@ -273,17 +273,30 @@ class CalendarService {
         $this->gCalendarService = new Google_Service_Calendar($client);
     }
 
-    private $gApiAuthUrl;
-    private $gApiAuthCode;
+    private $gApiAuthUrl = null;
+    private $gApiAuthCode = null;
 
+    /**
+     * @return string|null
+     */
     public function getApiAuthUrl() {
-//        $this->gGetCalendarService();
-        return 'http://google.de';
+        $this->gGetCalendarService();
+        return $this->gApiAuthUrl;
     }
+
+    /**
+     * @param $authCode string
+     */
     public function setApiAuthCode($authCode) {
+        $this->gApiAuthCode = $authCode;
+        $this->gInitCalendarService();
+    }
 
-//        $this->gGetCalendarService();
-
+    /**
+     * @param $token string
+     */
+    public function setApiSecret($token) {
+        //@todo save secret to file
     }
     /**
      * Returns an authorized API client.
@@ -306,19 +319,28 @@ class CalendarService {
 
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
+            $this->gApiAuthUrl = null;
+            $this->gApiAuthCode = null;
         } else {
             // Request authorization from the user.
-            $authUrl = $client->createAuthUrl();
-            $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
+            $this->gApiAuthUrl = $client->createAuthUrl();
 
-            // Exchange authorization code for an access token.
-            $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-            // Store the credentials to disk.
-            if(!file_exists(dirname($credentialsPath))) {
-                mkdir(dirname($credentialsPath), 0700, true);
-            }
-            file_put_contents($credentialsPath, json_encode($accessToken));
+            if ($this->gApiAuthCode) {
+//                $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
+                $authCode = trim($this->gApiAuthCode);
+
+                // Exchange authorization code for an access token.
+                $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
+                // Store the credentials to disk.
+                if(!file_exists(dirname($credentialsPath))) {
+                    mkdir(dirname($credentialsPath), 0700, true);
+                }
+                file_put_contents($credentialsPath, json_encode($accessToken));
+                $this->gApiAuthUrl = null;
+                $this->gApiAuthCode = null;
+
 //            printf("Credentials saved to %s\n", $credentialsPath);
+            }
         }
         $client->setAccessToken($accessToken);
 
