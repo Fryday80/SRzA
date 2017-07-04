@@ -5,6 +5,7 @@ use Auth\Model\RoleTable;
 use Auth\Service\AccessService;
 use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;
+use Calendar\Form\UpdateTokenForm;
 use Calendar\Service\CalendarService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -52,13 +53,18 @@ class CalendarController extends AbstractActionController
     }
     public function configAction(){
         $calendarSet = array();
+        $tokenForm = new UpdateTokenForm();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost()->toArray();
-            $this->calendarService->setCalendarOverwrites($post);
-            $this->calendarService->resetEventCache();
-            //redirect->calendar/config
+            if (isset($post['newToken']))
+            bdump($post);
+                //@todo save new token
+            else {
+                $this->calendarService->setCalendarOverwrites($post);
+                $this->calendarService->resetEventCache();
+            }
         }
         $calendars = $this->calendarService->getCalendars();
         
@@ -69,7 +75,8 @@ class CalendarController extends AbstractActionController
         }
         return new ViewModel(array(
             'calendars' => $calendars,
-            'calendarSet' => $calendarSet
+            'calendarSet' => $calendarSet,
+            'tokenForm' => $tokenForm,
         ));
     }
     public function addEventAction() {

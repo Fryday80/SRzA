@@ -20,6 +20,10 @@
     <div><?php echo $this->form($calendar); ?></div>
     <?php endforeach; ?>
 </accordion>
+<br/>
+<?php
+echo $this->form($tokenForm);
+?>
 <script>
     $('.color input').change(function() {
         var newColor = $(this).val();
