@@ -11,10 +11,17 @@ class UpdateTokenForm extends Form
         parent::__construct('UpdateToken');
 
         $this->add(array(
-            'name' => 'newToken',
+            'name' => 'newAuthCode',
             'type' => 'Textarea',
             'options' => array(
-                'label' => 'Token',
+                'label' => 'Auth Code',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'newSecret',
+            'type' => 'File',
+            'options' => array(
+                'label' => 'Secret',
             ),
         ));
         $this->add(array(

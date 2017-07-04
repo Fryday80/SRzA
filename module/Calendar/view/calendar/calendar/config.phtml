@@ -22,7 +22,12 @@
 </accordion>
 <br/>
 <?php
+if ($apiAuth):
+    ?>
+<a href="<?php echo $apiAuth; ?>">hol die neuen Codes von GOOGLE</a>
+<?php
 echo $this->form($tokenForm);
+endif;
 ?>
 <script>
     $('.color input').change(function() {

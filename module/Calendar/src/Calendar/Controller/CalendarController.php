@@ -58,7 +58,7 @@ class CalendarController extends AbstractActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost()->toArray();
-            if (isset($post['newToken']))
+            if (isset($post['newAuthCode']))
             bdump($post);
                 //@todo save new token
             else {
@@ -67,7 +67,10 @@ class CalendarController extends AbstractActionController
             }
         }
         $calendars = $this->calendarService->getCalendars();
-        
+
+        $apiAuth = $this->calendarService->getApiAuthUrl();
+        $apiAuth = (is_string($apiAuth)) ? $apiAuth : false;
+
         foreach ($calendars as $calendar ){
             $form = new CalendarForm($this->roleTable->getUserRoles());
             $form->setData($calendar);
@@ -77,6 +80,7 @@ class CalendarController extends AbstractActionController
             'calendars' => $calendars,
             'calendarSet' => $calendarSet,
             'tokenForm' => $tokenForm,
+            'apiAuth' => $apiAuth,
         ));
     }
     public function addEventAction() {
