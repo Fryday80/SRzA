@@ -319,6 +319,7 @@ class CalendarService {
 
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
+            $client->setAccessToken($accessToken);
             $this->gApiAuthUrl = null;
             $this->gApiAuthCode = null;
         } else {
@@ -336,13 +337,14 @@ class CalendarService {
                     mkdir(dirname($credentialsPath), 0700, true);
                 }
                 file_put_contents($credentialsPath, json_encode($accessToken));
+                $client->setAccessToken($accessToken);
                 $this->gApiAuthUrl = null;
                 $this->gApiAuthCode = null;
 
 //            printf("Credentials saved to %s\n", $credentialsPath);
             }
         }
-        $client->setAccessToken($accessToken);
+
 
         // Refresh the token if it's expired.
 //        if ($client->isAccessTokenExpired()) {
