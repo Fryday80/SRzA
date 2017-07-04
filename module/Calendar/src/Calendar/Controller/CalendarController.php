@@ -58,7 +58,7 @@ class CalendarController extends AbstractActionController
         $authCode = $this->params()->fromQuery('code');
         // set new Auth Code
         if ($authCode) {
-            if ($this->calendarService->setApiAuthCode($authCode) ) {}
+            if ($this->calendarService->setApiAuthCode($authCode) ) return $this->redirect()->toUrl('/calendar/config');
             else $authCodeError = true;
         }
         /** @var string|false $apiAuth link string to new Auth Code | false*/
@@ -87,7 +87,7 @@ class CalendarController extends AbstractActionController
             $form->setData($calendar);
             array_push($calendarSet, $form);
         }
-        
+
         return new ViewModel(array(
             'calendars' => $calendars,
             'calendarSet' => $calendarSet,
