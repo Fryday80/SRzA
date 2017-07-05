@@ -510,6 +510,12 @@ $this->headScript()->appendFile('/libs/map.js');
                         break;
                     // 2 = rectangle, two mast tent
                     case 2:
+                        if (!landscape) {
+                            h = this.width;
+                            w = this.height;
+                        }
+                        var sC = 1;
+                        mastCenterX = w/6;
                         // entrance
                         ctx.beginPath();
                         ctx.moveTo(-(w/6), - ((h / 2) - 10));
@@ -522,44 +528,39 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.stroke();
                         ctx.fill();
 
+                        // tent
+                        ctx.beginPath();
                         ctx.fillStyle = this.item.color1;
                         ctx.fillRect(-(w/2), -(h/2), w, h);
 
-                        for (i = 0; i < 4; i++) {
-                            if (i % 2 == 0) {
-                                w = this.width;
-                                h = this.height;
-                            } else {
-                                w = this.height;
-                                h = this.width;
+                        if (this.item.biColor == 1) {
+                            for (i = 0; i < 2; i++) {
+                                sC = -sC;
+                                ctx.beginPath();
+                                ctx.moveTo(sC*mastCenterX, 0);
+                                ctx.lineTo(sC*(w / 2), sC*(h / 2));
+                                ctx.lineTo(sC*(w / 2), sC*(h / 6));
+                                ctx.lineTo(sC*mastCenterX, 0);
+                                ctx.lineTo(sC*(w / 2), -sC*(h / 2));
+                                ctx.lineTo(sC*(w / 2), -sC*(h / 6));
+                                ctx.lineTo(sC*mastCenterX, 0);
+                                ctx.moveTo(sC*mastCenterX, sC*(h/2));
+                                ctx.lineTo(sC*(w/18), sC*(h/2));
+                                ctx.lineTo(sC*(w/18), -sC*(h/2));
+                                ctx.lineTo(sC*mastCenterX, -sC*(h/2));
+                                ctx.lineTo(sC*mastCenterX, sC*(h/2));
+                                ctx.fillStyle = this.item.color2;
+                                ctx.fill();
                             }
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
-                            ctx.lineTo(0, -(h/2) );
-                            ctx.lineTo(w/2, -(h/2) );
-                            ctx.lineTo(0, 0);
-                            ctx.fillStyle = this.item.color2;
-                            ctx.fill();
-                            ctx.rotate(Math.PI / 2);
                         }
 
-                        w = this.width;
-                        h = this.height;
                         // mast 1
                         ctx.beginPath();
-                        if ( landscape ){
-                            mastCenterX = w/3;
-                        } else {
-                            mastCenterY = h/3;
-                        }
-                        ctx.moveTo(mastCenterX, mastCenterY);
-                        ctx.arc (mastCenterX, mastCenterY, 2, 0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
+                        ctx.moveTo(mastCenterX, 0);
+                        ctx.arc (mastCenterX, 0, 2, 0, 2* Math.PI, false);
                         // mast 2
-                        ctx.beginPath();
-                        ctx.moveTo(-mastCenterX, -mastCenterY);
-                        ctx.arc (-mastCenterX, -mastCenterY, 2, 0, 2* Math.PI, false);
+                        ctx.moveTo(-mastCenterX, 0);
+                        ctx.arc (-mastCenterX, 0, 2, 0, 2* Math.PI, false);
                         ctx.fillStyle = designColor;
                         ctx.fill();
 
@@ -568,25 +569,16 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.moveTo( -(w/2), -(h/2));
                         ctx.lineTo( -mastCenterX, -mastCenterY);
                         ctx.lineTo(  mastCenterX, mastCenterY);
-                        if (landscape){
-                            ctx.lineTo( w/2, -(h/2));
-                        } else {
-                            ctx.lineTo( -(w/2), h/2);
-                        }
+                        ctx.lineTo( w/2, -(h/2));
                         ctx.moveTo( w/2, h/2);
                         ctx.lineTo(  mastCenterX, mastCenterY);
                         ctx.lineTo(  -mastCenterX, -mastCenterY);
-                        if (landscape){
-                            ctx.lineTo( -(w/2), h/2);
-                        } else {
-                            ctx.lineTo( w/2, -(h/2));
-                        }
+                        ctx.lineTo( -(w/2), h/2);
                         ctx.strokeStyle = designColor;
                         ctx.stroke();
                         break;
                     // 3 => two mast tent with round corners
                     case 3:
-                        console.log(this.item);
                         if (!landscape) {
                             h = this.item.width;
                             w = this.item.height;
