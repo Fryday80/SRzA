@@ -1,8 +1,10 @@
 <?php
 use Application\Factory\Basic\DefaultTableGatewayFactory;
 
+$module = 'Equipment';
+
 return array(
-    'Equipment' => array(
+    $module => array(
         'config' => array(
             'default_actionName' => array(
                 'name' => 'actionName',
@@ -128,7 +130,7 @@ return array(
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'equip' => __DIR__ . '/../view',
+            $module => __DIR__ . '/../view',
         ),
     ),
      'router' => array(
