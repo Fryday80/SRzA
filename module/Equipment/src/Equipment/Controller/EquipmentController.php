@@ -143,7 +143,7 @@ class EquipmentController extends AbstractActionController
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
                 $this->equipService->deleteById($equipId);
-                return $this->redirect()->toUrl("/equip/". $vars['typeString'] ."/$userId");
+                return $this->redirect()->toUrl("/equip/". $vars['typeString'] ."/$userId#dt-buttons");
             }
         }
         return array_merge($vars, array(
