@@ -343,6 +343,7 @@ $this->headScript()->appendFile('/libs/map.js');
             radius: 40,
             startAngle: 0,
             endAngle: Math.PI * 2,
+            objectCaching: false,
 
             /**
              * Constructor
@@ -691,11 +692,45 @@ $this->headScript()->appendFile('/libs/map.js');
                         }
                         break;
                 }
-//                ctx.fillStyle = "#ffffff";
-//                ctx.strokeStyle = "#000000";
-//                ctx.lineWidth = 2;
-//                ctx.fill();
-//                ctx.stroke();
+
+                if (true) { //render text
+                    var offX = 0,
+                        offY = 100,
+                        x = -this.width / 2 + offX,
+                        y = -this.height / 2 + offY,
+                        w = 20,
+                        h = 30,
+                        cs = 5;//corner size
+
+                    ctx.font = "22px Arial";
+                    w += ctx.measureText(this.item.userName).width;
+                    ctx.save();
+                    ctx.rotate(-this.angle * Math.PI / 180);
+
+                    ctx.beginPath();
+                    ctx.moveTo(x + cs, y);
+                    ctx.lineTo(x + w - cs, y);
+                    ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+
+                    ctx.lineTo(x + w, y + h - cs);
+                    ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
+                    ctx.lineTo(x + cs, y + h);
+                    ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
+                    ctx.lineTo(x, y + cs);
+                    ctx.quadraticCurveTo(x, y, x + cs, y);
+
+                    ctx.lineWidth = 1;
+                    ctx.strokesStyle = "#000";
+                    ctx.fillStyle = "#fff";
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#000";
+                    ctx.font = "22px Arial";
+                    ctx.fillText(this.item.userName, x + 5, y + 20);
+
+                    ctx.restore();
+                }
             },
             /**
              * Returns an object representation of an instance
@@ -952,6 +987,9 @@ $this->headScript()->appendFile('/libs/map.js');
 //                    backgroundImageStretch: false,
 //                });
 
+                this.canvas.on('object:rotating', function(e) {
+//                    self.canvas.renderAll();
+                });
 
             }
             initControls() {
