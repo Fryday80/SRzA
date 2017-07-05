@@ -118,6 +118,7 @@ class EquipmentController extends AbstractActionController
     }
 
     public function deleteAction(){
+        //bugfix @todo da steht noch tent!!!!!!!!!!!!!!!!!!!!!
         $action = 'delete';
         $type = $this->params()->fromRoute('type');
         $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
@@ -152,6 +153,8 @@ class EquipmentController extends AbstractActionController
     }
 
     public function editAction(){
+
+        //bugfix @todo da steht noch tent!!!!!!!!!!!!!!!!!!!!!
         $action = 'edit';
         $type = $this->params()->fromRoute('type');
         $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
