@@ -112,7 +112,10 @@ $this->headScript()->appendFile('/libs/map.js');
             <?php
             foreach($items as $item): ?>
                 <li data-id="<?php echo $item['id']; ?>">
-                    <span class="type"> <?php echo $item['type'] ?> </span>
+                    <span class="type" data-type="<?php echo $item['itemType'] ?>"> <?php
+                        $color = ($item['itemType'] == 0) ? 'darkgreen' : '#430c0c';
+                        echo '<span style="color:'. $color .'">' .$item['name']. '</span>'
+                        ?> </span>
                     <span class="user"><?php echo $item['userName'] ?></span>
                 </li>
             <?php endforeach; ?>
@@ -387,14 +390,17 @@ $this->headScript()->appendFile('/libs/map.js');
             _render: function(ctx) {
                 var w = this.width,
                     h = this.height,
+                    i = 0,
                     mastCenterX = 0,
                     mastCenterY = 0,
                     landscape = ( w >= h ),
                     designColor = '#000000';
-                if (this.item.color1 == '#000000' || this.item.color2 == '#000000' ){
-                    designColor = '#708090 ';
+                if(this.item.color1) {
+                    if (this.item.color1 == '#000000' || this.item.color2 == '#000000') {
+                        designColor = '#708090 ';
+                    }
                 } else {
-                    designColor = '#000000';
+                    // item is equip not tent
                 }
 
 //                    0 => 'Rundzelt',
@@ -422,7 +428,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.stroke();
                         ctx.fill();
 
-                        for(var i = 0; i < count; i++) {
+                        for(i = 0; i < count; i++) {
                             if (this.item.biColor == 0 || i % 2 == 0) {
                                 ctx.fillStyle = this.item.color1;
                             } else {
@@ -462,7 +468,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.fillStyle = this.item.color1;
                         ctx.fillRect(-(w/2), -(h/2), w, h);
 
-                        for (var i = 0; i < 4; i++) {
+                        for (i = 0; i < 4; i++) {
                             if (i % 2 == 0) {
                                 w = this.width;
                                 h = this.height;
@@ -517,7 +523,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.fillStyle = this.item.color1;
                         ctx.fillRect(-(w/2), -(h/2), w, h);
 
-                        for (var i = 0; i < 4; i++) {
+                        for (i = 0; i < 4; i++) {
                             if (i % 2 == 0) {
                                 w = this.width;
                                 h = this.height;
@@ -573,95 +579,93 @@ $this->headScript()->appendFile('/libs/map.js');
                         } else {
                             ctx.lineTo( w/2, -(h/2));
                         }
-
-
-
                         ctx.strokeStyle = designColor;
                         ctx.stroke();
                         break;
                     // 3 => two mast tent with round corners
-                    case '3':
-                        
+                    case 3:
+                        console.log(this.item);
+                        if (!landscape) {
+                            h = this.item.width;
+                            w = this.item.height;
+                        }
+                        var rectWidth = w - h,
+                            startAngel = Math.PI/2;
+                        mastCenterX = (rectWidth/2);
 
-                        // entrance
+                        // tent
                         ctx.beginPath();
-                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                        ctx.moveTo(-mastCenterX, 0);
+                        ctx.arc(-mastCenterX, 0, h/2, startAngel, startAngel + Math.PI);
+                        ctx.moveTo( mastCenterX, 0);
+                        ctx.arc ( mastCenterX, 0, h/2, -startAngel, -startAngel + Math.PI);
+                        ctx.moveTo ( -mastCenterX, -(h/2));
+                        ctx.lineTo (  mastCenterX, -(h/2));
+                        ctx.lineTo (  mastCenterX,   h/2);
+                        ctx.lineTo ( -mastCenterX,   h/2);
+                        ctx.lineTo ( -mastCenterX, -(h/2));
                         ctx.fillStyle = this.item.color1;
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
                         ctx.fill();
 
-                        for (var i = 0; i < 4; i++) {
-                            if (i % 2 == 0) {
-                                w = this.width;
-                                h = this.height;
-                            } else {
-                                w = this.height;
-                                h = this.width;
+                        if (this.item.biColor == 1) {
+                            for (var side = 0; side < 2; side++) {
+                                var xx,
+                                    slices = 3,
+                                    angelDiff = Math.PI / slices;
+                                // making slices odd
+                                if (slices % 2 == 0) {
+                                    slices++;
+                                }
+                                if (side % 2 == 0) {
+                                    startAngel = Math.PI/2;
+                                    xx = -mastCenterX;
+                                } else {
+                                    startAngel = -(Math.PI/2);
+                                    xx = mastCenterX;
+                                }
+                                for (i = 0; i < slices; i++) {
+                                    if (!(i % 2 == 0)) continue;
+                                    ctx.beginPath();
+                                    ctx.moveTo(xx, 0);
+                                    ctx.arc(xx, 0, h/2, startAngel, startAngel + angelDiff);
+                                    ctx.fillStyle = this.item.color2;
+                                    ctx.fill();
+                                    startAngel = startAngel + (2 * angelDiff);
+                                }
                             }
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
-                            ctx.lineTo(0, -(h/2) );
-                            ctx.lineTo(w/2, -(h/2) );
-                            ctx.lineTo(0, 0);
-                            ctx.fillStyle = this.item.color2;
-                            ctx.fill();
-                            ctx.rotate(Math.PI / 2);
                         }
 
-                        w = this.width;
-                        h = this.height;
                         // mast 1
                         ctx.beginPath();
-                        if ( landscape ){
-                            mastCenter = w/3;
-                            ctx.moveTo(mastCenter,0);
-                            ctx.arc (mastCenter, 0, 2, 0, 2* Math.PI, false);
-                        } else {
-                            mastCenter = h/3;
-                            ctx.moveTo( 0, mastCenter);
-                            ctx.arc ( 0, mastCenter, 2, 0, 2* Math.PI, false);
-                        }
+                        ctx.moveTo(mastCenterX, mastCenterY);
+                        ctx.arc (mastCenterX, mastCenterY, 2, 0, 2* Math.PI, false);
                         ctx.fillStyle = designColor;
                         ctx.fill();
                         // mast 2
                         ctx.beginPath();
-                        if ( landscape ){
-                            ctx.moveTo(-mastCenter,0);
-                            ctx.arc (-mastCenter, 0, 2, 0, 2* Math.PI, false);
-                        } else {
-                            ctx.moveTo( 0, -mastCenter);
-                            ctx.arc ( 0, -mastCenter, 2, 0, 2* Math.PI, false);
-                        }
+                        ctx.moveTo(-mastCenterX, -mastCenterY);
+                        ctx.arc (-mastCenterX, -mastCenterY, 2, 0, 2* Math.PI, false);
                         ctx.fillStyle = designColor;
                         ctx.fill();
 
                         // folding lines
                         ctx.beginPath();
-                        ctx.moveTo( -(w/2), -(h/2));
-                        if (landscape){
-                            ctx.lineTo( -mastCenter, 0);
-                            ctx.lineTo(  mastCenter, 0);
-                            ctx.lineTo( w/2, -(h/2));
-                            ctx.moveTo( w/2, h/2);
-                            ctx.lineTo(  mastCenter, 0);
-                            ctx.lineTo(  -mastCenter, 0);
-                            ctx.lineTo( -(w/2), h/2);
-                        } else {
-                            ctx.lineTo( 0, -mastCenter);
-                            ctx.lineTo( 0, mastCenter);
-                            ctx.lineTo( -(w/2), h/2);
-                            ctx.moveTo( w/2, h/2);
-                            ctx.lineTo( 0, mastCenter);
-                            ctx.lineTo( 0, -mastCenter);
-                            ctx.lineTo( w/2, -(h/2));
-                        }
+                        ctx.moveTo( -mastCenterX, -mastCenterY);
+                        ctx.lineTo(  mastCenterX, mastCenterY);
                         ctx.strokeStyle = designColor;
                         ctx.stroke();
+
+                        // entrance
+                        ctx.beginPath();
+                        ctx.moveTo(-(mastCenterX-3), 0);
+                        ctx.lineTo( (mastCenterX-3), 0);
+                        ctx.lineTo( (mastCenterX-3), - ((h / 2) + 15));
+                        ctx.lineTo(-(mastCenterX-3), - ((h / 2) + 15));
+                        ctx.lineTo(-(mastCenterX-3), 0);
+                        ctx.fillStyle = this.item.color2;
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+                        ctx.fill();
                         break;
                     case '11':
 
