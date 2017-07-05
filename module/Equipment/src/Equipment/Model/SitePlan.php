@@ -27,9 +27,6 @@ class SitePlan extends AbstractModel
     public function setId($id) {
         $this->id = (int)$id;
     }
-    public function setData($data) {
-        $this->data = stripslashes($data);
-    }
     public function setLongitude($value) {
         $this->longitude = (float)$value;
     }
