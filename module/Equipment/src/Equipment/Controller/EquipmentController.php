@@ -118,7 +118,6 @@ class EquipmentController extends AbstractActionController
     }
 
     public function deleteAction(){
-        //bugfix @todo da steht noch tent!!!!!!!!!!!!!!!!!!!!!
         $action = 'delete';
         $type = $this->params()->fromRoute('type');
         $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
@@ -132,14 +131,14 @@ class EquipmentController extends AbstractActionController
         
         if ($userId !== $askingUserId && $askingRole !== 'Administrator') return $this->redirect()->toRoute('home');
         
-        $url = "/equip/$type/$userId/delete/$equipId";
+        $url = "/equip/" .$vars['typeString']. "/$userId/delete/$equipId";
         $equip = $this->equipService->getById($equipId);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             if ($post['del'] == 'Yes' && $equipId == $post['id']){
-                $checkTent = $this->equipService->getById($equipId);
-                if ($askingUserId !== $checkTent->userId)
+                $checkItem = $this->equipService->getById($equipId);
+                if ($askingUserId !== $checkItem->userId)
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
                 $this->equipService->deleteById($equipId);
@@ -171,8 +170,8 @@ class EquipmentController extends AbstractActionController
             $post = $request->getPost();
             $form->setData($post);
             if ($form->isValid()){
-                $tent = new $vars['model'][$type]($form->getData());
-                $this->equipService->save($tent);
+                $item = new $vars['model'][$type]($form->getData());
+                $this->equipService->save($item);
                 return $this->redirect()->toUrl("/equip/" . $vars['typeString'] . "/$userId");
             }
         }

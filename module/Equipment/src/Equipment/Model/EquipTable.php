@@ -83,6 +83,7 @@ class EquipTable extends DatabaseTable
      */
     protected function prepareDataForSave($data){
         return array(
+            'id'    => (int) $data->id,
             'data'  => serialize ($data),
             'type'  => (int)$data->itemType,
             'image' => $data->image,
