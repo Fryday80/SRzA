@@ -106,6 +106,8 @@ $this->headScript()->appendFile('/libs/map.js');
         <hr>
         <button class="zoomin">ZoomIn</button>
         <button class="zoomout">ZoomOut</button>
+        <br>
+        <button class="addText">Text Feld</button>
         <button class="createImage">Create Image</button>
         <hr>
         <ul class="itemList">
@@ -796,7 +798,6 @@ $this->headScript()->appendFile('/libs/map.js');
 
         var preloadedImages = [];
         var preloadUrls = [];
-
         var lang = {
             askSure: 'Are you sure?',
             warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
@@ -804,6 +805,7 @@ $this->headScript()->appendFile('/libs/map.js');
             ohno: 'Oh No!',
             needPlanName: '',
         };
+
         function loadImage(url, callback) {
             var img = new Image();
             img.onload = callback;
@@ -889,6 +891,12 @@ $this->headScript()->appendFile('/libs/map.js');
                 item.bringToFront();
                 this.update();
                 return item;
+            }
+            add(fabricObj) {
+                this.items.push(fabricObj);
+                this.sitePlanner.canvas.add(fabricObj);
+                fabricObj.bringToFront();
+                this.update();
             }
             removeSelected() {
                 var active = this.sitePlanner.canvas.getActiveObject();
@@ -1066,6 +1074,29 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.setMap();
                 });
 
+
+                $('button.addText', this.$element).click(function (e) {
+                    var obj = new fabric.Textbox('Text', {
+                        top: 0,
+                        left: 0,
+                        fontSize: 16,
+                        fontFamily: 'Arial',
+                        textAlign: 'left',
+                        width: 600,
+                        height: 60,
+                        backgroundColor: '#FFFFA5'
+                        , shadow: new fabric.Shadow( { color: 'rgba(0,0,0,0.3)', offsetX: 0.05, offsetY: 0.05 })
+                    });
+                    self.itemList.add(obj);
+                    var center = self.canvas.getCenter();
+                    center = new fabric.Point(
+                        Math.abs(self.canvas.viewportTransform[4])+ center.left,
+                        Math.abs(self.canvas.viewportTransform[5]) + center.top
+                    );
+                    self.canvas._centerObject(obj, center);
+                    obj.setCoords();
+                    self.canvas.setActiveObject(obj);
+                });
                 $('button.createImage', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     //@todo create image from canvas and open a new canvas to crop. than upload
