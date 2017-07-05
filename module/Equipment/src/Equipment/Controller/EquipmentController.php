@@ -26,7 +26,8 @@ class EquipmentController extends AbstractActionController
 
 
     public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
-        $this->config = $config['Equipment'];
+        $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
+        $this->config = $config[$controllerName];
         $this->userService = $userService;
         $this->accessService = $accessService;
         $this->equipService = $equipmentService;
