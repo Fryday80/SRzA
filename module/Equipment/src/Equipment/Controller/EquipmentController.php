@@ -11,6 +11,7 @@ use Equipment\Model\ETentType;
 use Equipment\Model\Tent;
 use Equipment\Service\EquipmentService;
 use Equipment\Form\TentForm;
+use Equipment\Utility\EquipmentDataTable;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -24,6 +25,8 @@ class EquipmentController extends AbstractActionController
     private $accessService;
     private $config;
 
+    private $dataTable;
+
 
     public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
         $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
@@ -31,11 +34,12 @@ class EquipmentController extends AbstractActionController
         $this->userService = $userService;
         $this->accessService = $accessService;
         $this->equipService = $equipmentService;
+        $this->dataTable = new EquipmentDataTable();
+        $this->dataTable->setServices($this->accessService, $this->equipService);
     }
 
     public function indexAction() {
         $vars = $this->config['functions']['getVars']('index', $this->config);
-//        bdump($this->equipService->getAll());
         return $vars;
     }
 
@@ -47,14 +51,14 @@ class EquipmentController extends AbstractActionController
         $vars = $this->getVars($action, $type);
 
         // create data table
-        $items = $this->getDataItems($action, $type);
-        $dataTable = $this->getDataTable($action, $type, $items);
+        $items = $this->equipService->getAllByType($type)->toArray();
+        $this->dataTable->configure($action, $type, $items);
         
         foreach ($items as $item)
             $vars['userList'][$item['userId']] = $item['userName'];
 
         return array_merge($vars, array(
-            'dataTable' => $dataTable,
+            'dataTable' => $this->dataTable,
         ));
     }
 
@@ -94,13 +98,13 @@ class EquipmentController extends AbstractActionController
         $vars = $this->getVars($action, $type, $userId);
 
         // create data table
-        $items = $this->getDataItems($action, $type, $userId);
-        $dataTable = $this->getDataTable($action, $type, $items);
+        $items = $this->equipService->getByUserIdAndType($userId, $type)->toArray();
+        $this->dataTable->configure($action, $type, $items);
         foreach ($items as $item)
             $vars['userList'][$item['userId']] = $item['userName'];
 
         return array_merge($vars, array(
-            'dataTable' => $dataTable,
+            'dataTable' => $this->dataTable,
         ));
     }
 
@@ -182,163 +186,16 @@ class EquipmentController extends AbstractActionController
 
     private function getVars($action, $type, $userId = false)
     {
-        $vars = $this->config['functions']['getVars']($action, $this->config);
-        $vars['page'] = $this->config['functions']['getPageConfig']($action, $this->config);
+        $page = $this->config['functions']['getPageConfig']($action, $this->config);
+        $vars = $page['vars'];
+        $vars['page'] = $page;
+
         $vars['type'] = $type;
         $vars['typeString'] = $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
-        $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
-        if ($userId)
+        if($action !== 'type')
+            $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
+        if ($action !== 'type' && $action !== 'userall')
             $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
         return $vars;
-    }
-
-    private function getDataItems($action, $type, $userId = null)
-    {
-        $items = false;
-        switch ($action){
-            case 'type';
-                $items = $this->equipService->getAllByType($type)->toArray();
-                break;
-            case 'userall':
-                $items = $this->equipService->getByUserIdAndType($userId, $type)->toArray();
-                break;
-        }
-        return $items;
-    }
-
-    private function getDataTable($action, $type, $items)
-    {
-        $dataTableVarColumns = array();
-        if($action == 'type'){
-            $dataTableVarColumns[] = array(
-                'name' => 'userName', 'label' => 'Von',
-            );
-        }
-
-        if($type == EEquipTypes::TENT)
-        $columns = array(
-            array(
-                'name' => 'name', 'label' => 'Name'
-            ),
-            array(
-                'name' => 'image', 'label' => 'Form', 'type' => 'custom',
-                'render' => function ($row) {
-                    return '<img alt="' . ETentShape::TRANSLATION[$row['shape']] . '" src="' . $row['image'] . '" style="width: 50px">';
-                }
-            ),
-            array(
-                'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
-                'render' => function ($row) {
-                    return ETentType::TRANSLATE_TO_STRING[$row['type']];
-                }
-            ),
-            array(
-                'name' => 'width', 'label' => 'Breite'
-            ),
-            array(
-                'name' => 'length', 'label' => 'Tiefe'
-            ),
-            array(
-                'name' => 'spareBeds', 'label' => 'freie<br/>Schlaf-<br/>plätze'
-            ),
-            array(
-                'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
-                'render' => function ($row) {
-                    $c1 = $row['color1'];
-                    $c2 = $row['color2'];
-                    return '<div style="
-                                    width: 0;
-                                    height: 0;
-                                    border-left:   20px solid ' . $c1 . ';
-                                    border-top:    20px solid ' . $c1 . ';
-                                    border-right:  20px solid ' . $c2 . ';
-                                    border-bottom: 20px solid ' . $c2 . ';
-                                    "></div>';
-                }
-            ),
-            array(
-                'name' => 'isShowTentValue', 'label' => 'Schauzelt?', 'type' => 'custom',
-                'render' => function ($row) {
-                    return ($row['isShowTent'] == 0) ? 'nein' : 'ja';
-                }
-            ),
-            array(
-                'name' => 'href',
-                'label' => 'Aktion',
-                'type' => 'custom',
-                'render' => function ($row) {
-                    $edit = '';
-                    $delete = '';
-                    $askingId = $this->accessService->getUserID();
-                    $askingRole = $this->accessService->getRole();
-                    $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
-                    if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
-                        $edit = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                        $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
-                    }
-                    return $link1 . '<br/>' . $edit . '<br/>' . $delete;
-                }
-            ),
-        );
-
-        if($type == EEquipTypes::EQUIPMENT)
-        $columns = array(
-            array(
-                'name' => 'name', 'label' => 'Name'
-            ),
-            array(
-                'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
-                'render' => function ($row) {
-                    return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
-                }
-            ),
-            array(
-                'name' => 'width', 'label' => 'Breite'
-            ),
-            array(
-                'name' => 'length', 'label' => 'Tiefe'
-            ),
-            array(
-                'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
-                'render' => function ($row) {
-                    $c1 = $row['color'];
-                    $c2 = $row['color'];
-                    return '<div style="
-                                    width: 0;
-                                    height: 0;
-                                    border-left:   20px solid ' . $c1 . ';
-                                    border-top:    20px solid ' . $c1 . ';
-                                    border-right:  20px solid ' . $c2 . ';
-                                    border-bottom: 20px solid ' . $c2 . ';
-                                    "></div>';
-                }
-            ),
-            array(
-                'name' => 'href',
-                'label' => 'Aktion',
-                'type' => 'custom',
-                'render' => function ($row) {
-                    $edit = '';
-                    $delete = '';
-                    $askingId = $this->accessService->getUserID();
-                    $askingRole = $this->accessService->getRole();
-                    $link1 = '<a href="/equip/equipment/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
-                    if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
-                        $edit = '<a href="/equip/equipment/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                        $delete = '<a href="/equip/equipment/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
-                    }
-                    return $link1 . '<br/>' . $edit . '<br/>' . $delete;
-                }
-            ),
-        );
-        $dtColumns = array_merge_recursive($dataTableVarColumns, $columns);
-        $dataTable = new DataTable(array(
-            'data' => $items,
-            'columns' => $dtColumns
-        ));
-
-        $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
-        $dataTable->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
-        return $dataTable;
     }
 }
