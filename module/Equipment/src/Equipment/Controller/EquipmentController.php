@@ -1,16 +1,10 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
-use Equipment\Form\TentTypeForm;
 use Equipment\Model\EEquipTypes;
-use Equipment\Model\ETentShape;
-use Equipment\Model\ETentType;
-use Equipment\Model\Tent;
 use Equipment\Service\EquipmentService;
-use Equipment\Form\TentForm;
 use Equipment\Utility\EquipmentDataTable;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -46,9 +40,9 @@ class EquipmentController extends AbstractActionController
     public function typeAction()
     {
         $action = 'type';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
-        $vars = $this->getVars($action, $type);
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString']));
 
         // create data table
         $items = $this->equipService->getAllByType($type)->toArray();
@@ -65,10 +59,10 @@ class EquipmentController extends AbstractActionController
     public function addAction()
     {
         $action = 'add';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
-        $vars = $this->getVars($action, $type);
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         /** @var Form $form */
         $form = new $vars['formType'][$type]($this->equipService, $this->userService);
@@ -92,10 +86,10 @@ class EquipmentController extends AbstractActionController
 
     public function userallAction(){
         $action = 'userall';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
-        $vars = $this->getVars($action, $type, $userId);
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         // create data table
         $items = $this->equipService->getByUserIdAndType($userId, $type)->toArray();
@@ -110,12 +104,11 @@ class EquipmentController extends AbstractActionController
 
     public function showAction(){
         $action = 'show';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
-
-        $vars = $this->getVars($action, $type, $userId);
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         return array_merge($vars, array(
             'equip' => $this->equipService->getById($equipId),
@@ -124,12 +117,11 @@ class EquipmentController extends AbstractActionController
 
     public function deleteAction(){
         $action = 'delete';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
-
-        $vars = $this->getVars($action, $type, $userId);
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
         
         $askingUserId = $this->accessService->getUserID();
         $askingRole = $this->accessService->getRole();
@@ -158,12 +150,11 @@ class EquipmentController extends AbstractActionController
 
     public function editAction(){
         $action = 'edit';
-        $type = $this->params()->fromRoute('type');
-        $type = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
-
-        $vars = $this->getVars($action, $type, $userId);
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
         
         $equip = $this->equipService->getById($equipId);
 
@@ -184,14 +175,12 @@ class EquipmentController extends AbstractActionController
         ));
     }
 
-    private function getVars($action, $type, $userId = false)
+    private function getVars($action, $typeString, $userId = false)
     {
         $page = $this->config['functions']['getPageConfig']($action, $this->config);
         $vars = $page['vars'];
         $vars['page'] = $page;
 
-        $vars['type'] = $type;
-        $vars['typeString'] = $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
         if($action !== 'type')
             $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
         if ($action !== 'type' && $action !== 'userall')
