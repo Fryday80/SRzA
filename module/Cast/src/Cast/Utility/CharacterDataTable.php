@@ -8,15 +8,15 @@ class CharacterDataTable extends DataTable
     function __construct() {
         parent::__construct();
         
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'name',
             'label' => 'Name',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'surename',
             'label' => 'Nachname',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {

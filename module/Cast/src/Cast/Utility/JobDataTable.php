@@ -8,11 +8,11 @@ class JobDataTable extends DataTable
     function __construct() {
         parent::__construct();
         
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'job',
             'label' => 'Job',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {

@@ -8,7 +8,7 @@ class BlazonDataTable extends DataTable
     function __construct() {
         parent::__construct();
 
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'Wappen',
             'type' => 'custom',
             'render' => function($row) {
@@ -16,7 +16,7 @@ class BlazonDataTable extends DataTable
                 return $links;
             }
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'BigWappen',
             'type' => 'custom',
             'render' => function($row) {
@@ -25,11 +25,11 @@ class BlazonDataTable extends DataTable
                 return $links;
             }
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'name',
             'label' => 'Name',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {

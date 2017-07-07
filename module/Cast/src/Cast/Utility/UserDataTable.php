@@ -9,15 +9,15 @@ class UserDataTable extends DataTable
     function __construct() {
         parent::__construct();
         
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'name',
             'label' => 'Name',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'email',
             'label' => 'eMail',
         ));
-        $this->add(array(
+        $this->addColumn(array(
             'name' => 'Aktionen',
             'type' => 'custom',
             'render' => function($row) {
