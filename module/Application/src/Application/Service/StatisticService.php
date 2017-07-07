@@ -231,7 +231,7 @@ class StatisticService
 
         // not used -- prepared for redirect logging
         if (isset ($serverData['HTTP_REFERER']) ) {
-            //@todo enhancement log if referred
+            //@enhancement log if referred
             // prepared if referring data is needed
 //        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
 //        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";
