@@ -7,7 +7,7 @@ namespace Application\Utility;
  * Doc: https://datatables.net/reference/index for preferences/documentation
  * @package Application\Utility
  */
-class DataTable extends AbstractDataTable
+class DataTable
 {
     public $data = null;
     public $columns = null;

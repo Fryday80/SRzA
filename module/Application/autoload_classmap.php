@@ -38,7 +38,6 @@ return array(
     'TemplateTypes'                                          => __DIR__ . '/src/Application/Service/MessageService.php',
     'Application\Service\StatisticService'                   => __DIR__ . '/src/Application/Service/StatisticService.php',
     'Application\Service\SystemService'                      => __DIR__ . '/src/Application/Service/SystemService.php',
-    'Application\Utility\AbstractDataTable'                  => __DIR__ . '/src/Application/Utility/AbstractDataTable.php',
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
     'Application\Utility\FormConfiguration'                  => __DIR__ . '/src/Application/Utility/FormConfiguration.php',
