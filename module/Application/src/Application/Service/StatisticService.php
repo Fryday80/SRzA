@@ -164,8 +164,6 @@ class StatisticService
      */
     public function getSystemLogWhere($where = null, $options = array("filterType" => FilterType::EQUAL, "sortKey" => "time", "sortOrder" => OrderType::DESCENDING))
     {
-//        $data = $this->stats->systemLog;
-        //@todo re-build to db
         $data = $this->sysLog->getSystemLogs();
         // just fetch all
         if (!is_array($where))
@@ -233,7 +231,7 @@ class StatisticService
 
         // not used -- prepared for redirect logging
         if (isset ($serverData['HTTP_REFERER']) ) {
-            //@todo log if referred
+            //@todo enhancement log if referred
             // prepared if referring data is needed
 //        $data['replace']= array( "http://", $data['serverPHPData']['HTTP_HOST'] );
 //        $data['referrer']= (isset ($data['serverPHPData']['HTTP_REFERER']) ) ? $data['serverPHPData']['HTTP_REFERER'] : "direct call";

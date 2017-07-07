@@ -65,42 +65,43 @@ class MediaService {
         }
     }
     //@todo need to be replaced by getItems -- only used in galleryService.
-    /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
-     * @param $path
-     * @return array
-     */
-    function getFolderNames($path) {
-        $rootPath = $this->realPath($path);
-        //check folder restrictions
-        $meta = $this->getFolderMeta($path);
-        if ($meta && isset($meta['Restrictions']) ) {
-            if (isset($meta['Restrictions']['folder'])) {
-                if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
-                    //@not allowed
-                    return [];
-                }
-            }
-        }
-        $dir = scandir($rootPath);
-        $result = array();
-        foreach ($dir as $key => $value) {
-            if ($value == '.' || $value == '..') continue;
-            if( is_dir ($rootPath.'/'.$value) ) {
-                //check folder restrictions in /folder/folder.conf
-                $meta = $this->getFolderMeta($path.'/'.$value);
-                if ($meta && isset($meta['Restrictions']) ) {
-                    if (isset($meta['Restrictions']['folder'])) {
-                        if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
-                            //@not allowed
-                            continue;
-                        }
-                    }
-                }
-                array_push($result, array('name' => $value, 'path' => $path.'/'.$value, 'fullPath' => $rootPath.'/'.$value) );
-            }
-        }
-        return $result;
-    }
+    //@todo Stage 2 Deprecated
+//    /**   DEPRECATED DEPRECATED DEPRECATED DEPRECATED DEPRECATED
+//     * @param $path
+//     * @return array
+//     */
+//    function getFolderNames($path) {
+//        $rootPath = $this->realPath($path);
+//        //check folder restrictions
+//        $meta = $this->getFolderMeta($path);
+//        if ($meta && isset($meta['Restrictions']) ) {
+//            if (isset($meta['Restrictions']['folder'])) {
+//                if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
+//                    //@not allowed
+//                    return [];
+//                }
+//            }
+//        }
+//        $dir = scandir($rootPath);
+//        $result = array();
+//        foreach ($dir as $key => $value) {
+//            if ($value == '.' || $value == '..') continue;
+//            if( is_dir ($rootPath.'/'.$value) ) {
+//                //check folder restrictions in /folder/folder.conf
+//                $meta = $this->getFolderMeta($path.'/'.$value);
+//                if ($meta && isset($meta['Restrictions']) ) {
+//                    if (isset($meta['Restrictions']['folder'])) {
+//                        if (in_array($this->accessService->getRole(), $meta['Restrictions']['folder']) ) {
+//                            //@not allowed
+//                            continue;
+//                        }
+//                    }
+//                }
+//                array_push($result, array('name' => $value, 'path' => $path.'/'.$value, 'fullPath' => $rootPath.'/'.$value) );
+//            }
+//        }
+//        return $result;
+//    }
 
     /**
      * @param $path
@@ -618,27 +619,7 @@ class MediaService {
         $zip->close();
         return $this->loadItem($destination);
     }
-
-//    /**
-//     * @todo deprecated systemPermission
-//     * Check if system permission is granted
-//     * @param string $filepath
-//     * @return array
-//     */
-//    private function getSystemPermission($filepath)
-//    {
-//        //extrem slow!! refactor or remove
-//        return ['w'=>1,'r'=>1];
-////        $readable = 0;
-////        $writable = 0;
-////        if(is_readable($filepath)) {
-////            $readable = 1;
-////        }
-////        if(is_writable($filepath)) {
-////            $writable = 1;
-////        }
-////        return ['r' => $readable, 'w' => $writable];
-//    }
+    
 
     /**
      * Check recursive folder permissions

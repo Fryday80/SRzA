@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 25.11.2016
- * Time: 13:06
- */
 
 namespace Application\Utility;
 
@@ -33,6 +27,8 @@ class FormConfiguration
     function __construct($configuration=false)
     {
         $this->configure($configuration);
+        bdump ('application\utility\Formconfiguration.php ...  Deprecated??');
+        //@todo deprecated??
     }
 
     public function getFormConfig (){

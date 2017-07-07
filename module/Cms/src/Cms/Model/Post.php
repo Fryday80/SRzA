@@ -58,7 +58,7 @@ class Post implements PostInterface
      */
     public function setExceptedRoles($roles)
     {
-        //@todo if type of $roles is array then implode it with , as delimiter
+        if (is_array($roles)) $roles = implode(',', $roles);
         $this->exceptedRoles = $roles;
     }
     /**
