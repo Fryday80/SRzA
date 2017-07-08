@@ -60,6 +60,13 @@ $this->headScript()->appendFile('/libs/map.js');
     }
 
 </style>
+<h3>control:</h3>
+<ul>
+    <li>move view port with left mouse + drag</li>
+    <li>select object with left mouse</li>
+    <li>remove selected objects with "entf" key</li>
+    <li>select multipy objects with "strg" key + left mouse + drag</li>
+</ul>
 <box id="sitePlanner">
     <div class="planner-controls">
         <label>
@@ -104,9 +111,6 @@ $this->headScript()->appendFile('/libs/map.js');
         <button class="setMap">Set Map</button>
 
         <hr>
-        <button class="zoomin">ZoomIn</button>
-        <button class="zoomout">ZoomOut</button>
-        <br>
         <button class="addText">Text Feld</button>
         <button class="createImage">Create Image</button>
         <hr>
@@ -139,6 +143,14 @@ $this->headScript()->appendFile('/libs/map.js');
         }
         fabric.MyCanvas = fabric.util.createClass(fabric.Canvas, fabric.StaticCanvas, /** @lends fabric.Canvas.prototype **/ {
             _isViewPortDragging: false,
+
+            centerObject: function(obj) {
+                var center = this.getCenter();
+                center = new fabric.Point(center.left, center.top);
+                var after = fabric.util.transformPoint(center, fabric.util.invertTransform(this.viewportTransform.slice(0)));
+                this._centerObject(obj, after);
+                obj.setCoords();
+            },
             setViewPort: function(deltax = 0, deltay = 0) {
                 this.absolutePan({
                     x: deltax,
@@ -339,7 +351,13 @@ $this->headScript()->appendFile('/libs/map.js');
              */
             __onMouseWheel: function(e) {
                 //@todo implement zooming
-                this._handleEvent(e, 'wheel');
+                //check key
+//                if (e.ctrlKey) {
+                var zoom = this.viewportTransform[0];
+                zoom += (e.wheelDelta < 0)? -0.1: +0.1;
+                zoom =  Math.max(0.3, Math.min(3, zoom));//(e.wheelDelta > 0)? zoom + 0.1: zoom - 0.1);
+                this.zoomToPoint(new fabric.Point(e.offsetX, e.offsetY), zoom);
+                e.preventDefault();
             },
         });
 
@@ -890,8 +908,29 @@ $this->headScript()->appendFile('/libs/map.js');
                 fabricObj.bringToFront();
                 this.update();
             }
+            remove(obj) {
+                var i = this.items.indexOf(obj);
+                if (i > -1) {
+                    this.items.splice(i, 1);
+                    obj.remove();
+                    this.sitePlanner.canvas.remove(obj);
+                    this.sitePlanner.canvas.renderAll();
+                }
+            }
             removeSelected() {
-                var active = this.sitePlanner.canvas.getActiveObject();
+                var selected = this.sitePlanner.canvas.getActiveObject();
+                var selectedGrp = this.sitePlanner.canvas.getActiveGroup();
+                if (selected && selected.type) {
+                    this.remove(selected);
+                } else if (selectedGrp) {
+                    var objs = selectedGrp._objects.slice(0);
+                    this.sitePlanner.canvas.discardActiveGroup();
+                    for (var i = 0; i < objs.length; i++) {
+//                        console.log(selectedGrp);
+                        this.remove(objs[i]);
+                    }
+                    this.sitePlanner.canvas.renderAll();
+                }
             }
             clear() {
                 this.sitePlanner.canvas.deactivateAll().renderAll();
@@ -981,20 +1020,15 @@ $this->headScript()->appendFile('/libs/map.js');
                 }, function(progress) {
                     self.updateProgressBar(progress);
                 });
+
                 //alternate image background ----------------------------------
-
-//                var src = '/img/html.bg.png';
-//                this.canvas.backgroundColor = new fabric.Pattern({
-//                    source: src,
-//                    repeat: 'repeat',
-//                    backgroundImageOpacity: 0.5,
-//                    backgroundImageStretch: false,
-//                });
-
-                this.canvas.on('object:rotating', function(e) {
-//                    self.canvas.renderAll();
+                var src = '/img/html.bg.png';
+                this.canvas.backgroundColor = new fabric.Pattern({
+                    source: src,
+                    repeat: 'repeat',
+                    backgroundImageOpacity: 0.5,
+                    backgroundImageStretch: false,
                 });
-
             }
             initControls() {
                 var self = this;
@@ -1066,41 +1100,25 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.setMap();
                 });
 
-
                 $('button.addText', this.$element).click(function (e) {
                     var obj = new fabric.Textbox('Text', {
                         top: 0,
                         left: 0,
-                        fontSize: 16,
+                        fontSize: 25,
                         fontFamily: 'Arial',
                         textAlign: 'left',
-                        width: 600,
-                        height: 60,
+                        width: 100,
                         backgroundColor: '#FFFFA5'
-                        , shadow: new fabric.Shadow( { color: 'rgba(0,0,0,0.3)', offsetX: 0.05, offsetY: 0.05 })
+                        , shadow: new fabric.Shadow( { color: 'rgba(0,0,0,0.8)', offsetX: 5, offsetY: 5 })
                     });
                     self.itemList.add(obj);
-                    var center = self.canvas.getCenter();
-                    center = new fabric.Point(
-                        Math.abs(self.canvas.viewportTransform[4])+ center.left,
-                        Math.abs(self.canvas.viewportTransform[5]) + center.top
-                    );
-                    self.canvas._centerObject(obj, center);
-                    obj.setCoords();
+                    self.canvas.centerObject(obj);
+
                     self.canvas.setActiveObject(obj);
                 });
                 $('button.createImage', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     //@todo create image from canvas and open a new canvas to crop. than upload
-                });
-
-                $('button.zoomin', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.zoomIn();
-                });
-                $('button.zoomout', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.zoomOut();
                 });
                 $('.itemList li', this.$element).click(function(e) {
                     var id = $(this).data('id');
@@ -1112,15 +1130,15 @@ $this->headScript()->appendFile('/libs/map.js');
                         }
                     }
                     /** @type fabric.Object */
-                    var ele = self.itemList.create(templateItem);
-                    var center = self.canvas.getCenter();
-                    center = new fabric.Point(
-                        Math.abs(self.canvas.viewportTransform[4])+ center.left,
-                        Math.abs(self.canvas.viewportTransform[5]) + center.top
-                    );
-                    self.canvas._centerObject(ele, center);
-                    ele.setCoords();
-                    self.canvas.setActiveObject(ele);
+                    var obj = self.itemList.create(templateItem);
+                    self.canvas.centerObject(obj);
+                    self.canvas.setActiveObject(obj);
+                });
+
+                $(document).keyup(function(e) {
+                    if(e.key === "Delete") {
+                        self.itemList.removeSelected();
+                    }
                 });
             }
             //progressbar
@@ -1218,8 +1236,8 @@ $this->headScript()->appendFile('/libs/map.js');
                 }
                 this.mapImages = [];
 
-                this.setViewPort(0, 0);
-                this.zoom(1);
+                this.canvas.setViewPort(0, 0);
+                this.canvas.setZoom(0.4);
                 this.canvas.renderAll();
 
                 this.itemList.hide();
@@ -1267,27 +1285,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     }
                 }, function(value) {
                     (progress)? progress(value): self.updateProgressBar(value);
-                });
-            }
-            //viewport (zoom and move)
-            zoom(value) {
-                this.zoomValue = Math.max(1, value);
-                this.canvas.setZoom(this.zoomValue);
-            }
-            zoomIn() {
-//                this.zoomValue *= 2;
-//                this.canvas.setZoom(this.zoomValue);
-            }
-            zoomOut() {
-//                this.zoomValue /= 2;
-//                this.canvas.setZoom(this.zoomValue);
-            }
-            setViewPort(deltax = 0, deltay = 0) {
-                this.viewPos.x = deltax;
-                this.viewPos.y = deltay;
-                this.canvas.absolutePan({
-                    x: this.viewPos.x,
-                    y: this.viewPos.y
                 });
             }
             //plan management (list/get/save) and html select field update
