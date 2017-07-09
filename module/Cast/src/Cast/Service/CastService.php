@@ -112,6 +112,7 @@ class CastService
     }
     
     public function getAllCharsFromFamily($id) {
+        $this->loadData();
         $result = [];
         foreach ($this->data as $char) {
             if ($char['family_id'] == $id) {
@@ -269,6 +270,11 @@ class CastService
 
     public function getFamilyById ($id){
         return $result = $this->familiesTable->getById($id);
+    }
+
+    public function getFamilyByName($familyName)
+    {
+        return $result = $this->familiesTable->getByName($familyName);
     }
 
     /////// std

@@ -29,6 +29,15 @@ class FamiliesTable extends AbstractTableGateway
         return $row->toArray()[0];
     }
 
+    public function getByName($familyName)
+    {
+        $row = $this->select(array('name' => $familyName));
+        if (!$row) return false;
+        $row = $row->toArray();
+        if (empty ($row)) return false;
+        return $row[0];
+    }
+
     public function add($data) {
         if (!$this->insert(array('name' => $data['name'])))
             return false;

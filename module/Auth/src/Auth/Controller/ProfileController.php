@@ -89,13 +89,14 @@ class ProfileController extends AbstractActionController
         $viewModel = new ViewModel();
         $username = $this->params()->fromRoute('username');
         $username = $url->fromURL($username);
-        /** @var User $user */
-        $user = $this->userService->getUserDataByName($username);
-        if (!$user) {
-//            throw Exception("todo");
-            //@todo redirect to user list
-            $this->redirect()->toRoute('home');
+        if ($family = $this->castService->getFamilyByName($username)) {
+            $viewModel->setVariables( $this->familyprofileAction($family));
+            $viewModel->setTemplate('auth/profile/family.phtml');
+
+            return $viewModel;
         }
+
+        $user = $this->userService->getUserDataByName($username);
 
         $characters = $this->castService->getCharsByUserId($user->id);
         $isActive = $this->statsService->isActive($user->name);
@@ -217,21 +218,14 @@ class ProfileController extends AbstractActionController
     }
     
     //@todo familyprofileAction
-//    public function familyprofileAction(){
-//        $username = $this->params()->fromRoute('username');
-//        $charname = $this->params()->fromRoute('charname');
-//        /** @var  CastService $castService */
-//        $castService = $this->getServiceLocator()->get("CastService");
-//        $char = $castService->getCharacterData($charname, $username);
-//        $charFamily = $castService->getAllCharsFromFamily($char['family_id']);
-//
-//
-//        return new ViewModel(array(
-//            'char'       => $char,
-//            'charFamily' => $charFamily,
-//            'username'   => $username,
-//            'charname'   => $charname,
-//        ));
-//
-//    }
+    public function familyprofileAction($family)
+    {
+        $members = $this->castService->getAllCharsFromFamily((int)$family['id']);
+
+        return array(
+            'members' => $members,
+            'family' => $family,
+        );
+
+    }
 }
