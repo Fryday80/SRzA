@@ -11,6 +11,7 @@ class CharacterControllerFactory implements FactoryInterface
         $pL = $sm->getServiceLocator();
         $accessService = $pL->get('AccessService');
         $castService = $pL->get('CastService');
-        return new CharacterController($accessService, $castService);
+        $blazonService = $pL->get('BlazonService');
+        return new CharacterController($accessService, $castService, $blazonService);
     }
 }

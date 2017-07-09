@@ -23,13 +23,21 @@ class BlazonService
     private $blazonTable;
     private $parentBlazons = false;
 
+    private $nameIdHash;
+    private $idNameHash;
+
     function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
         $this->castService = $castService;
+        $this->loadData();
+    }
+
+    public function getBlazonList()
+    {
+        return $this->idNameHash;
     }
 
     public function getAll() {
-        $this->loadData();
         return $this->data;
     }
 
@@ -38,7 +46,6 @@ class BlazonService
      * @return mixed bool|array
      */
     public function getById($id) {
-        $this->loadData();
         foreach ($this->data as $value) {
             if ($id == $value['id']) return $value;
         }
@@ -47,7 +54,6 @@ class BlazonService
     }
 
     public function getByName($name) {
-        $this->loadData();
         foreach ($this->data as $value) {
             if ($name == $value['name']) return $value;
         }
@@ -187,7 +193,7 @@ class BlazonService
         if ($bigFileData['fileName'] !== null) $data['bigFilename'] = $bigFileData['fileName'];
 
         $this->blazonTable->save($id, $data);
-        //@todo add also to this->data
+        $this->loadData();
         return $item;
     }
 
@@ -200,6 +206,7 @@ class BlazonService
             $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
             $path = $wappenPath.'/'.$item['filename'];
             @unlink($path);
+            $this->loadData();
             return true;
         }
     }
@@ -257,16 +264,6 @@ class BlazonService
         return null;
     }
 
-    private function loadData() {
-        if (!$this->loaded) {
-            $this->data = $this->blazonTable->getAll();
-            foreach ($this->data as $value) {
-                $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
-            }
-            $this->loaded = true;
-        }
-    }
-
     private function error($code) {
         return new Error($this::ERROR_MSG[$code], $code);
     }
@@ -316,6 +313,19 @@ class BlazonService
             }
             imagedestroy($blazon);
             imagedestroy($im);
+        }
+    }
+
+    private function loadData() {
+        if (!$this->loaded) {
+            $all = $this->blazonTable->getAll();
+            foreach ($all as $value) {
+                $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
+                $this->data[$value['id']] = $value;
+                $this->nameIdHash[$value['name']] = $value['id'];
+                $this->idNameHash[$value['id']] = $value['name'];
+            }
+            $this->loaded = true;
         }
     }
 }

@@ -3,6 +3,7 @@ namespace Cast\Controller;
 
 use Auth\Service\AccessService;
 use Cast\Form\CharacterForm;
+use Cast\Service\BlazonService;
 use Cast\Service\CastService;
 use Cast\Utility\CharacterDataTable;
 use Exception;
@@ -17,11 +18,14 @@ class CharacterController extends AbstractActionController
     
     /** @var CastService  */
     private $castService;
+    /** @var BlazonService  */
+    private $blazonService;
 
-    public function __construct( AccessService $accessService, CastService $castService )
+    public function __construct( AccessService $accessService, CastService $castService, BlazonService $blazonService )
     {
         $this->accessService = $accessService;
         $this->castService = $castService;
+        $this->blazonService = $blazonService;
     }
 
     public function indexAction() {
@@ -37,7 +41,7 @@ class CharacterController extends AbstractActionController
     }
 
     public function addAction() {
-        $form = new CharacterForm($this->castService);
+        $form = new CharacterForm($this->castService, $this->blazonService);
         $form->isBackend();
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/characters/add');
@@ -65,7 +69,7 @@ class CharacterController extends AbstractActionController
         if ( !$character = $this->castService->getCharById( $id ) ) {
             return $this->redirect()->toRoute('castmanager/characters');
         }
-        $form = new CharacterForm($this->castService);
+        $form = new CharacterForm($this->castService, $this->blazonService);
         $form->isBackend();
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
@@ -170,7 +174,7 @@ class CharacterController extends AbstractActionController
                             $data['id'] = 0;
 //                            $data['user_id'] =  $this->accessService->getUserID();
 
-                            $form = new CharacterForm($this->castService);
+                            $form = new CharacterForm($this->castService, $this->blazonService);
                             $form->isBackend();
                             $form->setValidationGroup(
                                 'id'
@@ -205,7 +209,7 @@ class CharacterController extends AbstractActionController
                                 $result['formErrors'] = $form->getMessages();
                             }
                         } else {
-                            $form = new CharacterForm($this->castService);
+                            $form = new CharacterForm($this->castService, $this->blazonService);
                             $form->isBackend();
                             $form->setValidationGroup(
                                 'id'

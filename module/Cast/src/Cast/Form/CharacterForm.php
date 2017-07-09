@@ -2,6 +2,7 @@
 namespace Cast\Form;
 
 use Cast\Form\Filter\CharacterFilter;
+use Cast\Service\BlazonService;
 use Cast\Service\CastService;
 use Zend\Form\Form;
 
@@ -14,11 +15,14 @@ class CharacterForm extends Form
     public $supervisors = array();
     /** @var CastService  */
     private $castService;
+    /** @var BlazonService  */
+    private $blazonService;
 
-    public function __construct( CastService $castService )
+    public function __construct( CastService $castService, BlazonService $blazonService = null )
     {
         parent::__construct("Character");
         $this->castService = $castService;
+        $this->blazonService = $blazonService;
         $this->userList    = $castService->getAllUsers()->toArray();
         $this->familyList  = $castService->getAllFamilies();
         $this->jobs = $castService->getAllJobs();
@@ -180,6 +184,17 @@ class CharacterForm extends Form
                 'value_options' => $this->getGuardianForSelect(),
             )
         ));  // guardian_id   - select
+        $this->add(array(
+            'name' => 'blazon_id',
+            'type' => 'Zend\Form\Element\Select',
+            'attributes' => array(
+            ),
+            'options' => array(
+                'disable_inarray_validator' => true,
+                'label' => 'Persönliches Wappen',
+                'value_options' => $this->blazonService->getBlazonList(),
+            )
+        ));  // blazon_id   - select
         $this->add(array(
             'name' => 'active',
             'type' => 'checkbox',
