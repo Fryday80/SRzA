@@ -131,6 +131,7 @@ $this->headScript()->appendFile('/libs/map.js');
         <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
 </box>
+<canvas id="cropCanvas" width="2000" height="2000"></canvas>
 <script>
     (function($) {
         "use strict";
@@ -816,6 +817,39 @@ $this->headScript()->appendFile('/libs/map.js');
             needPlanName: '',
         };
 
+        function loadImageAsDataURL(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var img = new Image();
+                    img.onload = function () {
+                        callback(img);
+                    }
+                    img.src = reader.result;
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        }
+        function preloadImagesAsDataURL(urls, callback, progress) {
+            var pointer = 0,
+                images = [];
+
+            function onload(image) {
+                images.push(image);
+                pointer++;
+                if (pointer < urls.length) {
+                    progress(pointer / urls.length);
+                    loadImageAsDataURL(urls[pointer], onload);
+                } else {
+                    callback(images);
+                }
+            }
+            loadImageAsDataURL(urls[pointer], onload);
+        }
         function loadImage(url, callback) {
             var img = new Image();
             img.onload = callback;
@@ -1118,6 +1152,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
                 $('button.createImage', this.$element).click(function (e) {
                     if (self.isBusy) return;
+                    self.startCropper();
                     //@todo create image from canvas and open a new canvas to crop. than upload
                 });
                 $('.itemList li', this.$element).click(function(e) {
@@ -1246,46 +1281,81 @@ $this->headScript()->appendFile('/libs/map.js');
                 var urls = createGoogleMapStaticImageUrls(this.plan);
                 var createUrlProcess = 0;
                 function finish() {
+                    self.canvas.deactivateAll().renderAll();
                     self.itemList.show();
                     (progress)? progress(1): self.updateProgressBar(1);
                     (!progress)? self.hideProgressBar():'';
                 }
-                function createFromUrl(url, line, pos, zIndex) {
-                    fabric.Image.fromURL(url, function(img) {
-//                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
-//                        console.log(
-//                            pos * 640,
-//                            line * 640);
-                        img.set('isMap', true);
-                        img.scale(1 / self.plan.scale).set({
-                            left: pos * 640,
-                            top: line * 610,
-                            scale: 2,
-                            selectable: false,
-                            originX: 'left',
-                            originY: 'top',
-                            transparentCorners: false
-                        });
-                        self.canvas.add(img);
-//                        self.canvas.bringToFront(img);
-                        self.canvas.moveTo(img, zIndex);
-                        self.mapImages.push(img);
-                        createUrlProcess++;
-                        if (createUrlProcess >= self.plan.diameter) {
-                            finish();
-                        }
+//                function createFromUrl(url, line, pos, zIndex) {
+//                    fabric.Image.fromURL(url, function(img) {
+////                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
+////                        console.log(
+////                            pos * 640,
+////                            line * 640);
+//                        img.set('isMap', true);
+//                        img.scale(1 / self.plan.scale).set({
+//                            left: pos * 640,
+//                            top: line * 610,
+//                            scale: 2,
+//                            selectable: false,
+//                            originX: 'left',
+//                            originY: 'top',
+//                            transparentCorners: false
+//                        });
+//                        self.canvas.add(img);
+////                        self.canvas.bringToFront(img);
+//                        self.canvas.moveTo(img, zIndex);
+//                        self.mapImages.push(img);
+//                        createUrlProcess++;
+//                        if (createUrlProcess >= self.plan.diameter) {
+//                            finish();
+//                        }
+//                    });
+//                }
+                function createFromImage(img, line, pos, zIndex) {
+                    var img = new fabric.Image(img, {
+                        scaleX: 0.2,
+                        scaleY: 0.2
                     });
+                    img.set('isMap', true);
+                    img.scale(1 / self.plan.scale).set({
+                        left: pos * 640,
+                        top: line * 610,
+                        scale: 2,
+                        selectable: false,
+                        originX: 'left',
+                        originY: 'top',
+                        transparentCorners: false
+                    });
+                    self.canvas.add(img);
+//                        self.canvas.bringToFront(img);
+                    self.canvas.moveTo(img, zIndex);
+                    self.mapImages.push(img);
+                    createUrlProcess++;
+                    if (createUrlProcess >= self.plan.diameter) {
+                        finish();
+                    }
                 }
-
-                preloadImages(urls, function(images) {
+                preloadImagesAsDataURL(urls, function(images) {
                     for (var line = 0; line < self.plan.diameter; line++) {
                         for (var pos = 0; pos < self.plan.diameter; pos++) {
-                            createFromUrl(images[line * self.plan.diameter + pos].src, line, pos, -line);
+                            createFromImage(images[line * self.plan.diameter + pos], line, pos, -line);
                         }
                     }
                 }, function(value) {
                     (progress)? progress(value): self.updateProgressBar(value);
                 });
+//                preloadImages(urls, function(images) {
+////                    images
+//
+//                    for (var line = 0; line < self.plan.diameter; line++) {
+//                        for (var pos = 0; pos < self.plan.diameter; pos++) {
+//                            createFromUrl(images[line * self.plan.diameter + pos].src, line, pos, -line);
+//                        }
+//                    }
+//                }, function(value) {
+//                    (progress)? progress(value): self.updateProgressBar(value);
+//                });
             }
             //plan management (list/get/save) and html select field update
             updatePlanList() {
@@ -1371,6 +1441,22 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.updateProgressBar(value);
                 });
                 return true;
+            }
+            startCropper() {
+                var ctx = $('#cropCanvas')[0].getContext("2d");
+                ctx.clearRect(0, 0, 2000, 2000);
+                var dataUrl = this.canvas.toDataURL({
+                    format: 'png',
+                    left: 0,
+                    top: 0,
+                    width: 2000,
+                    height: 2000
+                });
+                var img = new Image;
+                img.onload = function(){
+                    ctx.drawImage(img, 0, 0);
+                };
+                img.src = dataUrl;
             }
             //helper //@todo eventuel globale ajax helper bauen die auch global errors mit dem pnotify
             ajaxPostJson(url, data, success, progress){
