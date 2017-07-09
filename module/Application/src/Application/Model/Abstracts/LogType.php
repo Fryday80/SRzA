@@ -12,4 +12,5 @@ namespace Application\Model\Abstracts;
 abstract class LogType {
     const ERROR_GUEST = 0;
     const ERROR_MEMBER = 1;
+    const ERROR_LOG_IN = 2;
 }

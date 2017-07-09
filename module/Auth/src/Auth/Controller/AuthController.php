@@ -1,8 +1,11 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Model\Abstracts\LogType;
+use Application\Model\DataObjects\SystemLog;
 use Application\Model\DynamicHashTable;
 use Application\Service\MessageService;
+use Application\Service\StatisticService;
 use Auth\Form\EmailForm;
 use Auth\Form\PWForgetForm;
 use Auth\Model\AuthStorage;
@@ -31,14 +34,18 @@ class AuthController extends AbstractActionController
     protected $dynamicHashTable;
     /** @var  MessageService */
     protected $msgService;
+    /** @var StatisticService  */
+    protected $statisticService;
 
-    function __construct(AuthStorage $storage, AuthenticationService $authService, UserTable $userTable, DynamicHashTable $dynamicHashTable, MessageService $msgService )
+    function __construct(AuthStorage $storage, AuthenticationService $authService, UserTable $userTable,
+                         DynamicHashTable $dynamicHashTable, MessageService $msgService, StatisticService $statisticService )
     {
         $this->storage = $storage;
         $this->authService = $authService;
         $this->userTable = $userTable;
         $this->dynamicHashTable = $dynamicHashTable;
         $this->msgService = $msgService;
+        $this->statisticService = $statisticService;
     }
 
     private function getUserDetails($mail)
@@ -61,11 +68,31 @@ class AuthController extends AbstractActionController
         // email not found
         if (!$userDetails){
             $valid = false;
+            // log to sys -> email not found
+            $this->statisticService->logSystem(new SystemLog(
+                microtime(),           // $mTime,
+                LogType::ERROR_LOG_IN, // $type,
+                'email not found',     // $msg,
+                'Log in action',       // $url,
+                0,                     // $userId,
+                $email,                // $userName,
+                array($ip)             // $data = null
+            ));
         }
         // email found but inactive
         elseif ($userDetails->status != 1) {
             $valid = false;
             $result = new Result(401, null, ['Zugang Verweigert::Dieser Account ist nicht Aktiviert']);
+            // log to sys -> email/ user account not activated
+            $this->statisticService->logSystem(new SystemLog(
+                microtime(),                         // $mTime,
+                LogType::ERROR_LOG_IN,               // $type,
+                'email/ user account not activated', // $msg,
+                'Log in action',                     // $url,
+                0,                                   // $userId,
+                $email,                              // $userName,
+                array($ip)                           // $data = null
+            ));
         }
         if ($valid) {
             $userPassword = new UserPassword();
@@ -89,6 +116,17 @@ class AuthController extends AbstractActionController
 //            }
             // set storage again
             $this->authService->setStorage($this->storage);
+        } else {
+            // log to sys -> email valid, pw wrong
+            $this->statisticService->logSystem(new SystemLog(
+                microtime(),             // $mTime,
+                LogType::ERROR_LOG_IN,   // $type,
+                'email valid, pw wrong', // $msg,
+                'Log in action',         // $url,
+                0,                       // $userId,
+                $email,                  // $userName,
+                array($ip)               // $data = null
+            ));
         }
         return $result;
     }

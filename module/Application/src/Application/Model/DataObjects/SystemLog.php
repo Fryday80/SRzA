@@ -3,6 +3,8 @@
 namespace Application\Model\DataObjects;
 
 
+use Application\Model\Abstracts\LogType;
+
 class SystemLog extends DataItem
 {
     public $type;
@@ -13,13 +15,13 @@ class SystemLog extends DataItem
 
     /**
      * SystemLog constructor.
-     * @param $mTime
-     * @param null $type
-     * @param $msg
-     * @param $url
-     * @param $userId
-     * @param $userName
-     * @param null $data
+     * @param int $mTime
+     * @param LogType $type
+     * @param string $msg
+     * @param string $url
+     * @param int $userId
+     * @param string $userName
+     * @param array $data
      */
     function __construct($mTime, $type, $msg, $url, $userId, $userName, $data = null)
     {
