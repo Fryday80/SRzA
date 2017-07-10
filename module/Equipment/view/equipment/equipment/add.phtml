@@ -1,0 +1,52 @@
+<style>
+    .descriptionUnit
+    {
+        position: absolute;
+        top: 66vh;
+        left: 38vh;
+        height: 25px;
+    }
+    .descriptionUnit:hover,
+    .descriptionUnit *:hover
+    {
+        position: absolute;
+        top: 66vh;
+        left: 38vh;
+        height: auto;
+    }
+</style>
+
+<?php
+$title = $page['label'];
+$this->headTitle($title);
+if (isset($links)){
+foreach ($links as $key => $value): ?>
+<a href="<?php echo $value ?>">
+    <button><?php echo $key ?></button>
+</a>
+<br/>
+<?php endforeach;
+echo '<br/>';
+echo '<br/>';
+}
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php
+echo $this->form($form);
+
+if($form instanceof \Equipment\Form\EquipmentForm):
+    ?>
+<div class="descriptionUnit">
+    <box>
+        <boxtitle>
+            <p>Beschreibung</p>
+        </boxtitle>
+        <boxcontent>
+            <p>Hier einen Haken setzen, wenn die Ausrüstung "rumsteht" und auf dem Lagerplan geplant werden kann.</p>
+            <p>Dann auch Maße eingeben!</p>
+    </boxcontent>
+    </box>
+</div>
+<?php
+endif;

@@ -2,10 +2,9 @@
 
 namespace Application\Model\DataObjects;
 
-
 use Application\Model\Abstracts\LogType;
 
-class SystemLog extends DataItem
+class SystemLog extends StatsDataItem
 {
     public $type;
     public $msg;

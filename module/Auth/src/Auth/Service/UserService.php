@@ -54,6 +54,15 @@ class UserService
         return $return;
     }
 
+    public function getUserIdUserNameList()
+    {
+        $return = array();
+        $res = $this->userTable->getUsers();
+        foreach ($res as $user)
+            $return[$user->id] = $user->name;
+        return $return;
+    }
+
     public function getUserById($id)
     {
         $return = $this->userTable->getUser($id);

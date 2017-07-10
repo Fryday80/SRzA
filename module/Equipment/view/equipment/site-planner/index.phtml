@@ -1,0 +1,1634 @@
+<?php
+$title = $this->translate("Site Planner");
+$this->headTitle($title);
+
+$this->headLink()->prependStylesheet('/libs/pnotify/pnotify.custom.min.css');
+$this->headScript()->appendFile('/libs/pnotify/pnotify.custom.min.js');
+$this->headScript()->appendFile('/libs/fabric.js/fabric.js');
+$this->headScript()->appendFile('/libs/map.js');
+// $this->headScript()->appendFile('/libs/jstree/jstree.min.js');
+
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<style>
+    #sitePlanner {
+        display: flex;
+    }
+    #sitePlanner .canvas {
+        flex-grow: 1;
+    }
+    #sitePlanner .planner-controls {
+        flex: 0 0 200px;
+        width: 200px;
+        padding: 5px;
+    }
+    #sitePlanner .planner-controls .image-export {
+        display: none;
+    }
+    #sitePlanner .planner-controls ul {
+        list-style: none;
+    }
+    #sitePlanner .plan-select {
+        float: left;
+        width: 120px;
+        margin-left: 0px;
+    }
+    #sitePlanner button.load-plan {
+        float: right;
+        margin-top: 0px;
+    }
+    #sitePlanner hr {
+        clear:both;
+        margin: 10px 0 10px 0;
+        padding: 1px 0 1px 0;
+        background-color: black;
+    }
+    #sitePlanner .planner-controls label[for] {
+        float: left;
+        margin-top: 0px;
+    }
+    #lon,
+    #lat,
+    #zoom,
+    #scale-select,
+    #diameter,
+    #maptype-select {
+        width: 95px;
+        float: right;
+    }
+    #sitePlanner .setMap {
+        margin: 10px 0 10px 0;
+        float: right;
+        height: 33px;
+    }
+
+</style>
+<h3>control:</h3>
+<ul>
+    <li>move view port with left mouse + drag</li>
+    <li>select object with left mouse</li>
+    <li>remove selected objects with "entf" key</li>
+    <li>select multipy objects with "strg" key + left mouse + drag</li>
+</ul>
+<box id="sitePlanner">
+    <div class="planner-controls">
+        <div class="image-export">
+            <label>
+                <span>Bild Name</span>
+                <input id="image-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+            </label>
+            <br>
+            <button class="abort">Abbrechen</button>
+            <button class="save-image">Bild Speichern</button>
+        </div>
+        <div class="default">
+            <label>
+                <span>Plänne</span>
+                <select class="plan-select"></select>
+            </label>
+            <button class="load-plan"> Load </button>
+            <div style="clear:both"></div>
+            <label>
+                <span>Name</span>
+                <input id="plan-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+            </label>
+            <button class="save-plan">Save</button>
+            <button class="new-plan" style="float:right">New</button>
+            <hr>
+            <label for="lon">Longitude:</label>
+            <input id="lon" type="number">
+            <br>
+            <label for="lat">Latitude:</label>
+            <input id="lat" type="number">
+            <br>
+            <label for="zoom">Zoom:</label>
+            <input id="zoom" type="number" min="1" max="7" step="1">
+            <br>
+            <label for="scale-select">Quality:</label>
+            <select id="scale-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <br>
+            <label for="maptype-select">map type:</label>
+            <select id="maptype-select">
+                <option value="terrain">Terrain</option>
+                <option value="satellite">Satellite</option>
+                <option value="roadmap">Roadmap</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+            <label for="diameter">Map size:</label>
+            <input id="diameter" type="number" min="1" max="5" step="1">
+            <br>
+            <div style="clear:both"></div>
+            <button class="setMap">Set Map</button>
+
+            <hr>
+            <button class="addText">Text Feld</button>
+            <button class="createImage">Create Image</button>
+            <hr>
+            <ul class="itemList">
+            <?php
+            foreach($items as $item): ?>
+                <li data-id="<?php echo $item['id']; ?>">
+                    <span class="type" data-type="<?php echo $item['itemType'] ?>"> <?php
+                        $color = ($item['itemType'] == 0) ? 'darkgreen' : '#430c0c';
+                        echo '<span style="color:'. $color .'">' .$item['name']. '</span>'
+                        ?> </span>
+                    <span class="user"><?php echo $item['userName'] ?></span>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+        </div>
+    </div>
+    <div class="canvas">
+        <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
+    </div>
+</box>
+<canvas id="cropCanvas" width="2000" height="2000"></canvas>
+<script>
+    (function($) {
+        "use strict";
+        var RIGHT_CLICK = 3,
+            MIDDLE_CLICK = 2,
+            LEFT_CLICK = 1;
+
+        function checkClick(e, value) {
+            return 'which' in e ? e.which === value : e.button === value - 1;
+        }
+        fabric.MyCanvas = fabric.util.createClass(fabric.Canvas, fabric.StaticCanvas, /** @lends fabric.Canvas.prototype **/ {
+            _isViewPortDragging: false,
+
+            centerObject: function(obj) {
+                var center = this.getCenter();
+                center = new fabric.Point(center.left, center.top);
+                var after = fabric.util.transformPoint(center, fabric.util.invertTransform(this.viewportTransform.slice(0)));
+                this._centerObject(obj, after);
+                obj.setCoords();
+            },
+            setViewPort: function(deltax = 0, deltay = 0) {
+                this.absolutePan({
+                    x: deltax,
+                    y: deltay
+                });
+            },
+            moveViewPort: function(deltax = 0, deltay = 0) {
+                this.relativePan({
+                    x: deltax,
+                    y: deltay
+                });
+            },
+            __onMouseDown: function (e) {
+                var target = this.findTarget(e);
+
+                // if right click just fire events
+                if (checkClick(e, RIGHT_CLICK)) {
+                    if (this.fireRightClick) {
+                        this._handleEvent(e, 'down', target ? target : null, RIGHT_CLICK);
+                    }
+                    return;
+                }
+
+                if (checkClick(e, MIDDLE_CLICK)) {
+                    if (this.fireMiddleClick) {
+                        this._handleEvent(e, 'down', target ? target : null, MIDDLE_CLICK);
+                    }
+                    return;
+                }
+
+                if (this.isDrawingMode) {
+                    this._onMouseDownInDrawingMode(e);
+                    return;
+                }
+
+                // ignore if some object is being transformed at this moment
+                if (this._currentTransform) {
+                    return;
+                }
+
+                // save pointer for check in __onMouseUp event
+                var pointer = this.getPointer(e, true);
+                this._previousPointer = pointer;
+
+                var ctrlKey = e.ctrlKey,
+                    shouldRender = this._shouldRender(target, pointer),
+                    shouldGroup = this._shouldGroup(e, target);
+
+                if (this._shouldClearSelection(e, target)) {
+                    this.deactivateAllWithDispatch(e);
+                }
+                else if (shouldGroup) {
+                    this._handleGrouping(e, target);
+                    target = this.getActiveGroup();
+                }
+
+                if (ctrlKey && this.selection && (!target || (!target.selectable && !target.isEditing))) {
+                    this._groupSelector = {
+                        ex: pointer.x,
+                        ey: pointer.y,
+                        top: 0,
+                        left: 0
+                    };
+                }
+                if (target) {
+                    if (target.selectable && (target.__corner || !shouldGroup)) {
+                        this._beforeTransform(e, target);
+                        this._setupCurrentTransform(e, target);
+                    }
+                    var activeObject = this.getActiveObject();
+                    if (target !== this.getActiveGroup() && target !== activeObject) {
+                        this.deactivateAll();
+                        if (target.selectable) {
+                            activeObject && activeObject.fire('deselected', { e: e });
+                            this.setActiveObject(target, e);
+                        } else if (!ctrlKey) {
+                            this._isViewPortDragging = true;
+                        }
+                    }
+                }
+                else if (!ctrlKey) {
+                    this._isViewPortDragging = true;
+                }
+                this._handleEvent(e, 'down', target ? target : null);
+                // we must renderAll so that we update the visuals
+                shouldRender && this.renderAll();
+            },
+
+            /**
+             * Method that defines the actions when mouse is hovering the canvas.
+             * The currentTransform parameter will definde whether the user is rotating/scaling/translating
+             * an image or neither of them (only hovering). A group selection is also possible and would cancel
+             * all any other type of action.
+             * In case of an image transformation only the top canvas will be rendered.
+             * @private
+             * @param {Event} e Event object fired on mousemove
+             */
+            __onMouseMove: function (e) {
+                var target, pointer;
+
+                if (this.isDrawingMode) {
+                    this._onMouseMoveInDrawingMode(e);
+                    return;
+                }
+                if (typeof e.touches !== 'undefined' && e.touches.length > 1) {
+                    return;
+                }
+
+                if (this._isViewPortDragging) {
+                    this.moveViewPort(e.movementX, e.movementY);
+//                    this.renderAll();
+                }
+                var groupSelector = this._groupSelector;
+                // We initially clicked in an empty area, so we draw a box for multiple selection
+                if (groupSelector) {
+                    pointer = this.getPointer(e, true);
+
+                    groupSelector.left = pointer.x - groupSelector.ex;
+                    groupSelector.top = pointer.y - groupSelector.ey;
+
+                    this.renderTop();
+                } else if (!this._currentTransform) {
+                    target = this.findTarget(e);
+                    this._setCursorFromEvent(e, target);
+                }
+                else {
+                    this._transformObject(e);
+                }
+                this._handleEvent(e, 'move', target ? target : null);
+            },
+
+
+            /**
+             * Method that defines the actions when mouse is released on canvas.
+             * The method resets the currentTransform parameters, store the image corner
+             * position in the image object and render the canvas on top.
+             * @private
+             * @param {Event} e Event object fired on mouseup
+             */
+            __onMouseUp: function (e) {
+                var target;
+                // if right/middle click just fire events and return
+                // target undefined will make the _handleEvent search the target
+                if (checkClick(e, RIGHT_CLICK)) {
+                    if (this.fireRightClick) {
+                        this._handleEvent(e, 'up', target, RIGHT_CLICK);
+                    }
+                    return;
+                }
+
+                if (checkClick(e, MIDDLE_CLICK)) {
+                    if (this.fireMiddleClick) {
+                        this._handleEvent(e, 'up', target, MIDDLE_CLICK);
+                    }
+                    return;
+                }
+
+                this._isViewPortDragging = false;
+                if (this.isDrawingMode && this._isCurrentlyDrawing) {
+                    this._onMouseUpInDrawingMode(e);
+                    return;
+                }
+
+                var searchTarget = true, transform = this._currentTransform,
+                    groupSelector = this._groupSelector,
+                    isClick = (!groupSelector || (groupSelector.left === 0 && groupSelector.top === 0));
+
+                if (transform) {
+                    this._finalizeCurrentTransform();
+                    searchTarget = !transform.actionPerformed;
+                }
+
+                target = searchTarget ? this.findTarget(e, true) : transform.target;
+
+                var shouldRender = this._shouldRender(target, this.getPointer(e));
+
+                if (target || !isClick) {
+                    this._maybeGroupObjects(e);
+                }
+                else {
+                    // those are done by default on mouse up
+                    // by _maybeGroupObjects, we are skipping it in case of no target find
+                    this._groupSelector = null;
+                    this._currentTransform = null;
+                }
+
+                if (target) {
+                    target.isMoving = false;
+                }
+                this._setCursorFromEvent(e, target);
+                this._handleEvent(e, 'up', target ? target : null, LEFT_CLICK, isClick);
+                target && (target.__corner = 0);
+                shouldRender && this.renderAll();
+            },
+            /**
+             * Method that defines actions when an Event Mouse Wheel
+             * @param {Event} e Event object fired on mouseup
+             */
+            __onMouseWheel: function(e) {
+                //@todo implement zooming
+                //check key
+//                if (e.ctrlKey) {
+                var zoom = this.viewportTransform[0];
+                zoom += (e.wheelDelta < 0)? -0.1: +0.1;
+                zoom =  Math.max(0.3, Math.min(3, zoom));//(e.wheelDelta > 0)? zoom + 0.1: zoom - 0.1);
+                this.zoomToPoint(new fabric.Point(e.offsetX, e.offsetY), zoom);
+                e.preventDefault();
+            },
+        });
+
+        fabric.CropBox = fabric.util.createClass(fabric.Rect, {
+            type: 'CropBox',
+            objectCaching: false,
+
+            /**
+             * Constructor
+             * @param {Object} [options] Options object
+             * @return {fabric.Circle} thisArg
+             */
+            initialize: function(options) {
+                this.callSuper('initialize', options);
+                this.setControlsVisibility({
+//                    bl: false,
+//                    br: false,
+//                    mb: false,
+//                    ml: false,
+//                    mr: false,
+//                    mt: false,
+//                    tl: false,
+//                    tr: false,
+                    mtr: false,
+                });
+                this.on('deselected', function(e) {
+                    this.moveTo(100);
+                }.bind(this));
+                this.on('mouse:down', function(e) {
+                    console.log('########### mouse down');
+                }.bind(this));
+//                this.on('deselected', function(e) {
+//                    this.moveTo(100);
+//                }.bind(this));
+            },
+            _render: function(ctx) {
+//                fabric.Rect.prototype._render.call(this, ctx);
+                if (!this.canvas) return;
+                this.renderOverlay(ctx);
+            },
+            renderOverlay: function(ctx) {
+                var top = 100,
+                    bottom = this.canvas.height - 100,
+                    left = 200,
+                    right = this.canvas.width - 200,
+                    wHalf = this.width / 2;
+
+                ctx.save();
+                //draw dark outer area
+                ctx.fillStyle = "rgba(0,0,0,0.8)";
+                for(var i = 0; i < 4; i++) {
+                    ctx.rotate( (Math.PI / 2) * i );
+                    ctx.fillRect(wHalf, -wHalf - 0.1, 5000, 5000);
+                }
+                ctx.restore();
+            },
+        });
+        fabric.Equipitem = fabric.util.createClass(fabric.Object, {
+            type: 'Equipitem',
+            radius: 40,
+            startAngle: 0,
+            endAngle: Math.PI * 2,
+            objectCaching: false,
+
+            /**
+             * Constructor
+             * @param {Object} [options] Options object
+             * @return {fabric.Circle} thisArg
+             */
+            initialize: function(options) {
+                this.callSuper('initialize', options);
+
+                this.setControlsVisibility({
+                    bl: false,
+                    br: false,
+                    mb: false,
+                    ml: false,
+                    mr: false,
+                    mt: false,
+                    tl: false,
+                    tr: false,
+                    mtr: true,
+                });
+                this.on('deselected', function(e) {
+                    this.moveTo(100);
+                }.bind(this));
+                this.on('mouse:down', function(e) {
+                    console.log('########### mouse down');
+                }.bind(this));
+//                this.on('deselected', function(e) {
+//                    this.moveTo(100);
+//                }.bind(this));
+            },
+            setItem: function (item) {
+                this.width = parseInt(item.width) / 5;
+                this.height = parseInt(item.length) / 5;
+                this.item = item;
+                this.selectable = true;
+                var imageIndex = preloadUrls.indexOf(item.image);
+                if (imageIndex >= 0) {
+                    this.itemImg = preloadedImages[imageIndex];
+                }
+            },
+            _render: function(ctx) {
+                var w = this.width,
+                    h = this.height,
+                    i = 0,
+                    mastCenterX = 0,
+                    mastCenterY = 0,
+                    landscape = ( w >= h ),
+                    designColor = '#000000';
+                if(this.item.color1) {
+                    if (this.item.color1 == '#000000' || this.item.color2 == '#000000') {
+                        designColor = '#708090 ';
+                    }
+                } else {
+                    // item is equip not tent
+                }
+
+//                    0 => 'Rundzelt',
+//                    1 => 'rechteckiges Zelt, Einmast',
+//                    2 => 'rechteckiges Zelt, Zweimast',
+//                    3 => 'verbreitertes Rundzelt, Zweimast(z.B. Sachs 4m x 6m)'
+
+                switch (parseInt(this.item.shape)) {
+                    // 0 = round tent
+                    case 0:
+                        var count = 8,
+                            startAngle = 0,
+                            angleSize = (2 * Math.PI) / count;
+
+                        // entrance, adjusted 25 to 15 for shape reasons
+                        ctx.beginPath();
+                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) + 15));
+                        ctx.lineTo(-(w/6), - ((h / 2) + 15));
+                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                        ctx.fillStyle = this.item.color1;
+                        ctx.strokeStyle = designColor;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        ctx.fill();
+
+                        for(i = 0; i < count; i++) {
+                            if (this.item.biColor == 0 || i % 2 == 0) {
+                                ctx.fillStyle = this.item.color1;
+                            } else {
+                                ctx.fillStyle = this.item.color2;
+                            }
+
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.arc(0, 0, this.width/2, startAngle, startAngle + angleSize);
+                            ctx.closePath();
+                            ctx.fill();
+                            startAngle += angleSize;
+                        }
+                        // mast
+                        ctx.beginPath();
+                        ctx.moveTo(0,0);
+                        ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
+                        ctx.fillStyle = designColor;
+                        ctx.fill();
+
+                        break;
+                    // 1 = rectangle, one mast tent
+                    case 1:
+                        // entrance
+                        ctx.beginPath();
+                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) + 25));
+                        ctx.lineTo(-(w/6), - ((h / 2) + 25));
+                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                        ctx.fillStyle = this.item.color1;
+                        ctx.strokeStyle = designColor;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        ctx.fill();
+
+                        ctx.fillStyle = this.item.color1;
+                        ctx.fillRect(-(w/2), -(h/2), w, h);
+
+                        for (i = 0; i < 4; i++) {
+                            if (i % 2 == 0) {
+                                w = this.width;
+                                h = this.height;
+                            } else {
+                                w = this.height;
+                                h = this.width;
+                            }
+                            ctx.beginPath();
+                            ctx.moveTo(0, 0);
+                            ctx.lineTo(0, -(h/2) );
+                            ctx.lineTo(w/2, -(h/2) );
+                            ctx.lineTo(0, 0);
+                            ctx.fillStyle = this.item.color2;
+                            ctx.fill();
+                            ctx.rotate(Math.PI / 2);
+                        }
+
+                        w = this.width;
+                        h = this.height;
+                        // mast
+                        ctx.beginPath();
+                        ctx.moveTo(0,0);
+                        ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
+                        ctx.fillStyle = designColor;
+                        ctx.fill();
+
+                        // folding lines
+                        ctx.beginPath();
+                        ctx.moveTo( -(w/2), -(h/2));
+                        ctx.lineTo( 0, 0 );
+                        ctx.lineTo( -(w/2), (h/2));
+                        ctx.moveTo(  (w/2), (h/2));
+                        ctx.lineTo( 0, 0);
+                        ctx.lineTo(  (w/2), -(h/2) );
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+                        break;
+                    // 2 = rectangle, two mast tent
+                    case 2:
+                        if (!landscape) {
+                            h = this.width;
+                            w = this.height;
+                        }
+                        var sC = 1;
+                        mastCenterX = w/6;
+                        // entrance
+                        ctx.beginPath();
+                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) - 10));
+                        ctx.lineTo( (w/6), - ((h / 2) + 25));
+                        ctx.lineTo(-(w/6), - ((h / 2) + 25));
+                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                        ctx.fillStyle = this.item.color1;
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+                        ctx.fill();
+
+                        // tent
+                        ctx.beginPath();
+                        ctx.fillStyle = this.item.color1;
+                        ctx.fillRect(-(w/2), -(h/2), w, h);
+
+                        if (this.item.biColor == 1) {
+                            for (i = 0; i < 2; i++) {
+                                sC = -sC;
+                                ctx.beginPath();
+                                ctx.moveTo(sC*mastCenterX, 0);
+                                ctx.lineTo(sC*(w / 2), sC*(h / 2));
+                                ctx.lineTo(sC*(w / 2), sC*(h / 6));
+                                ctx.lineTo(sC*mastCenterX, 0);
+                                ctx.lineTo(sC*(w / 2), -sC*(h / 2));
+                                ctx.lineTo(sC*(w / 2), -sC*(h / 6));
+                                ctx.lineTo(sC*mastCenterX, 0);
+                                ctx.moveTo(sC*mastCenterX, sC*(h/2));
+                                ctx.lineTo(sC*(w/18), sC*(h/2));
+                                ctx.lineTo(sC*(w/18), -sC*(h/2));
+                                ctx.lineTo(sC*mastCenterX, -sC*(h/2));
+                                ctx.lineTo(sC*mastCenterX, sC*(h/2));
+                                ctx.fillStyle = this.item.color2;
+                                ctx.fill();
+                            }
+                        }
+
+                        // mast 1
+                        ctx.beginPath();
+                        ctx.moveTo(mastCenterX, 0);
+                        ctx.arc (mastCenterX, 0, 2, 0, 2* Math.PI, false);
+                        // mast 2
+                        ctx.moveTo(-mastCenterX, 0);
+                        ctx.arc (-mastCenterX, 0, 2, 0, 2* Math.PI, false);
+                        ctx.fillStyle = designColor;
+                        ctx.fill();
+
+                        // folding lines
+                        ctx.beginPath();
+                        ctx.moveTo( -(w/2), -(h/2));
+                        ctx.lineTo( -mastCenterX, -mastCenterY);
+                        ctx.lineTo(  mastCenterX, mastCenterY);
+                        ctx.lineTo( w/2, -(h/2));
+                        ctx.moveTo( w/2, h/2);
+                        ctx.lineTo(  mastCenterX, mastCenterY);
+                        ctx.lineTo(  -mastCenterX, -mastCenterY);
+                        ctx.lineTo( -(w/2), h/2);
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+                        break;
+                    // 3 => two mast tent with round corners
+                    case 3:
+                        if (!landscape) {
+                            h = this.item.width;
+                            w = this.item.height;
+                        }
+                        var rectWidth = w - h,
+                            startAngel = Math.PI/2;
+                        mastCenterX = (rectWidth/2);
+
+                        // tent
+                        ctx.beginPath();
+                        ctx.moveTo(-mastCenterX, 0);
+                        ctx.arc(-mastCenterX, 0, h/2, startAngel, startAngel + Math.PI);
+                        ctx.moveTo( mastCenterX, 0);
+                        ctx.arc ( mastCenterX, 0, h/2, -startAngel, -startAngel + Math.PI);
+                        ctx.moveTo ( -mastCenterX, -(h/2));
+                        ctx.lineTo (  mastCenterX, -(h/2));
+                        ctx.lineTo (  mastCenterX,   h/2);
+                        ctx.lineTo ( -mastCenterX,   h/2);
+                        ctx.lineTo ( -mastCenterX, -(h/2));
+                        ctx.fillStyle = this.item.color1;
+                        ctx.fill();
+
+                        if (this.item.biColor == 1) {
+                            for (var side = 0; side < 2; side++) {
+                                var xx,
+                                    slices = 3,
+                                    angelDiff = Math.PI / slices;
+                                // making slices odd
+                                if (slices % 2 == 0) {
+                                    slices++;
+                                }
+                                if (side % 2 == 0) {
+                                    startAngel = Math.PI/2;
+                                    xx = -mastCenterX;
+                                } else {
+                                    startAngel = -(Math.PI/2);
+                                    xx = mastCenterX;
+                                }
+                                for (i = 0; i < slices; i++) {
+                                    if (!(i % 2 == 0)) continue;
+                                    ctx.beginPath();
+                                    ctx.moveTo(xx, 0);
+                                    ctx.arc(xx, 0, h/2, startAngel, startAngel + angelDiff);
+                                    ctx.fillStyle = this.item.color2;
+                                    ctx.fill();
+                                    startAngel = startAngel + (2 * angelDiff);
+                                }
+                            }
+                        }
+
+                        // mast 1
+                        ctx.beginPath();
+                        ctx.moveTo(mastCenterX, mastCenterY);
+                        ctx.arc (mastCenterX, mastCenterY, 2, 0, 2* Math.PI, false);
+                        ctx.fillStyle = designColor;
+                        ctx.fill();
+                        // mast 2
+                        ctx.beginPath();
+                        ctx.moveTo(-mastCenterX, -mastCenterY);
+                        ctx.arc (-mastCenterX, -mastCenterY, 2, 0, 2* Math.PI, false);
+                        ctx.fillStyle = designColor;
+                        ctx.fill();
+
+                        // folding lines
+                        ctx.beginPath();
+                        ctx.moveTo( -mastCenterX, -mastCenterY);
+                        ctx.lineTo(  mastCenterX, mastCenterY);
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+
+                        // entrance
+                        ctx.beginPath();
+                        ctx.moveTo(-(mastCenterX-3), 0);
+                        ctx.lineTo( (mastCenterX-3), 0);
+                        ctx.lineTo( (mastCenterX-3), - ((h / 2) + 15));
+                        ctx.lineTo(-(mastCenterX-3), - ((h / 2) + 15));
+                        ctx.lineTo(-(mastCenterX-3), 0);
+                        ctx.fillStyle = this.item.color2;
+                        ctx.strokeStyle = designColor;
+                        ctx.stroke();
+                        ctx.fill();
+                        break;
+                    case '11':
+
+//                        ctx.lineTo(x + w, y + h);
+//                        ctx.lineTo(x, y + h);
+//                        ctx.lineTo(x, y);
+//                        ctx.fillStyle = "#ffffff";
+//                        ctx.strokeStyle = "#00ff00";
+//                        ctx.lineWidth = 2;
+//                        ctx.fill();//damit zeichnet man dann eigentlich
+//                        ctx.stroke();
+                        //des stroke macht ne linie ausenrum ... bzw wenn du nur ne linie ziehst giebts kein fill
+//                        ctx.beginPath();
+//                        ctx.moveTo(x + cs, y);
+//                        ctx.lineTo(x + w - cs, y);
+//                        ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+//
+//                        ctx.lineTo(x + w, y + h - cs);
+//                        ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
+//                        ctx.lineTo(x + cs, y + h);
+//                        ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
+//                        ctx.lineTo(x, y + cs);
+//                        ctx.quadraticCurveTo(x, y, x + cs, y);
+                        break;
+                    default:
+                        if (this.itemImg) {
+                            ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
+                        }
+                        break;
+                }
+
+                if (true) { //render text
+                    var offX = 0,
+                        offY = 100,
+                        x = -this.width / 2 + offX,
+                        y = -this.height / 2 + offY,
+                        w = 20,
+                        h = 30,
+                        cs = 5;//corner size
+
+                    ctx.font = "22px Arial";
+                    w += ctx.measureText(this.item.userName).width;
+                    ctx.save();
+                    ctx.rotate(-this.angle * Math.PI / 180);
+
+                    ctx.beginPath();
+                    ctx.moveTo(x + cs, y);
+                    ctx.lineTo(x + w - cs, y);
+                    ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+
+                    ctx.lineTo(x + w, y + h - cs);
+                    ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
+                    ctx.lineTo(x + cs, y + h);
+                    ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
+                    ctx.lineTo(x, y + cs);
+                    ctx.quadraticCurveTo(x, y, x + cs, y);
+
+                    ctx.lineWidth = 1;
+                    ctx.strokesStyle = "#000";
+                    ctx.fillStyle = "#fff";
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "#000";
+                    ctx.font = "22px Arial";
+                    ctx.fillText(this.item.userName, x + 5, y + 20);
+
+                    ctx.restore();
+                }
+            },
+            /**
+             * Returns an object representation of an instance
+             * @param {Array} [propertiesToInclude] Any properties that you might want to additionally include in the output
+             * @return {Object} Object representation of an instance
+             */
+            toObject: function(propertiesToInclude) {
+                var NUM_FRACTION_DIGITS = fabric.Object.NUM_FRACTION_DIGITS,
+                    toFixed = fabric.util.toFixed,
+
+                    object = {
+                        type:                     this.type,
+                        item:                     this.item,
+                        originX:                  this.originX,
+                        originY:                  this.originY,
+                        left:                     toFixed(this.left, NUM_FRACTION_DIGITS),
+                        top:                      toFixed(this.top, NUM_FRACTION_DIGITS),
+                        width:                    toFixed(this.width, NUM_FRACTION_DIGITS),
+                        height:                   toFixed(this.height, NUM_FRACTION_DIGITS),
+                        fill:                     (this.fill && this.fill.toObject) ? this.fill.toObject() : this.fill,
+                        stroke:                   (this.stroke && this.stroke.toObject) ? this.stroke.toObject() : this.stroke,
+                        strokeWidth:              toFixed(this.strokeWidth, NUM_FRACTION_DIGITS),
+                        strokeDashArray:          this.strokeDashArray ? this.strokeDashArray.concat() : this.strokeDashArray,
+                        strokeLineCap:            this.strokeLineCap,
+                        strokeLineJoin:           this.strokeLineJoin,
+                        strokeMiterLimit:         toFixed(this.strokeMiterLimit, NUM_FRACTION_DIGITS),
+                        scaleX:                   toFixed(this.scaleX, NUM_FRACTION_DIGITS),
+                        scaleY:                   toFixed(this.scaleY, NUM_FRACTION_DIGITS),
+                        angle:                    toFixed(this.getAngle(), NUM_FRACTION_DIGITS),
+                        flipX:                    this.flipX,
+                        flipY:                    this.flipY,
+                        opacity:                  toFixed(this.opacity, NUM_FRACTION_DIGITS),
+                        shadow:                   (this.shadow && this.shadow.toObject) ? this.shadow.toObject() : this.shadow,
+                        visible:                  this.visible,
+                        clipTo:                   this.clipTo && String(this.clipTo),
+                        backgroundColor:          this.backgroundColor,
+                        fillRule:                 this.fillRule,
+                        globalCompositeOperation: this.globalCompositeOperation,
+                        transformMatrix:          this.transformMatrix ? this.transformMatrix.concat() : null,
+                        skewX:                    toFixed(this.skewX, NUM_FRACTION_DIGITS),
+                        skewY:                    toFixed(this.skewY, NUM_FRACTION_DIGITS)
+                    };
+
+                fabric.util.populateWithProperties(this, object, propertiesToInclude);
+
+                if (!this.includeDefaultValues) {
+                    object = this._removeDefaultValues(object);
+                }
+
+                return object;
+            },
+
+        });
+        fabric.Equipitem.fromObject = function(object, callback) {
+            return fabric.Object._fromObject('Equipitem', object, callback);
+        };
+
+        //site planner
+
+        var preloadedImages = [];
+        var preloadUrls = [];
+        var lang = {
+            askSure: 'Are you sure?',
+            warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
+            successSave: 'Plann wurde gespeichert!',
+            ohno: 'Oh No!',
+            needPlanName: '',
+        };
+
+        //cross origin workaround
+        function loadImageAsDataURL(url, callback) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    var img = new Image();
+                    img.onload = function () {
+                        callback(img);
+                    }
+                    img.src = reader.result;
+                }
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        }
+        function preloadImagesAsDataURL(urls, callback, progress) {
+            var pointer = 0,
+                images = [];
+
+            function onload(image) {
+                images.push(image);
+                pointer++;
+                if (pointer < urls.length) {
+                    progress(pointer / urls.length);
+                    loadImageAsDataURL(urls[pointer], onload);
+                } else {
+                    callback(images);
+                }
+            }
+            loadImageAsDataURL(urls[pointer], onload);
+        }
+        //cross origin workaround end
+        function loadImage(url, callback) {
+            var img = new Image();
+            img.onload = callback;
+            img.src = url;
+            return img;
+        }
+        function preloadImages(urls, callback, progress){
+            var pointer = 0;
+            var images = [];
+
+            function onload() {
+                images.push(this);
+                pointer++;
+                if (pointer < urls.length) {
+                    progress(pointer / urls.length);
+                    loadImage(urls[pointer], onload);
+                } else {
+                    callback(images);
+                }
+            }
+            loadImage(urls[pointer], onload);
+        }
+        function createGoogleMapStaticImageUrls(options) {
+            var result = [];
+            var zoom = Math.abs(options.zoom - 7);
+            zoom = Math.pow(2, zoom);
+            var offlong = zoom * 0.000277;
+            var offlat = zoom * 0.000429;
+            for (var line = 0; line < options.diameter; line++) {
+                for (var pos = 0; pos < options.diameter; pos++) {
+                    var center = [
+                        Math.floor( (options.longitude - line * offlong) * 1000000  ) / 1000000,
+                        Math.floor( (options.latitude + pos * offlat) * 1000000  ) / 1000000,
+                    ];
+//                    console.log('line: %i  |  pos: %i', line, pos);
+//                    console.log(center);
+                    var url = $.liveMapLink('AIzaSyDIx0TGGgH1atq7sGFxb3KpnhEnVAFJwxc', {
+                        size: '640x640',
+                        center: center[0] + ',' + center[1],
+                        zoom: 14 + options.zoom,
+                        maptype: options.mapType,
+                        scale: options.scale,
+                    });
+                    result.push(url);
+                }
+            }
+            return result;
+        }
+
+        class ItemList {
+            /**
+             * @param {SitePlanner} sitePlanner
+             */
+            constructor(sitePlanner) {
+                /** @type SitePlanner */
+                this.sitePlanner = sitePlanner;
+                /** @type fabric.Object[] */
+                this.items = [];
+            }
+            hide() {
+
+            }
+            show() {
+
+            }
+            set(key, value) {
+                for(var i = 0; i < this.items.length; i++) {
+                    this.items[i].set(key, value);
+                }
+                this.sitePlanner.canvas.renderAll();
+            }
+            update() {
+                //resize items depending on plan.zoom
+                for(var i = 0; i < this.items.length; i++) {
+                    var z = Math.abs(this.sitePlanner.plan.zoom - 7);
+                    z = Math.pow(2, z);
+                    var item = this.items[i];
+                    item.scale(1 / z);
+                }
+                this.sitePlanner.canvas.renderAll();
+            }
+            create(data, options = {}) {
+                options.originX = 'center';
+                options.originY = 'center';
+                var item = new fabric.Equipitem(options);
+                item.setItem(data);
+                this.items.push(item);
+                this.sitePlanner.canvas.add(item);
+                item.bringToFront();
+                this.update();
+                return item;
+            }
+            add(fabricObj) {
+                this.items.push(fabricObj);
+                this.sitePlanner.canvas.add(fabricObj);
+                fabricObj.bringToFront();
+                this.update();
+            }
+            remove(obj) {
+                var i = this.items.indexOf(obj);
+                if (i > -1) {
+                    this.items.splice(i, 1);
+                    obj.remove();
+                    this.sitePlanner.canvas.remove(obj);
+                    this.sitePlanner.canvas.renderAll();
+                }
+            }
+            removeSelected() {
+                var selected = this.sitePlanner.canvas.getActiveObject();
+                var selectedGrp = this.sitePlanner.canvas.getActiveGroup();
+                if (selected && selected.type) {
+                    this.remove(selected);
+                } else if (selectedGrp) {
+                    var objs = selectedGrp._objects.slice(0);
+                    this.sitePlanner.canvas.discardActiveGroup();
+                    for (var i = 0; i < objs.length; i++) {
+//                        console.log(selectedGrp);
+                        this.remove(objs[i]);
+                    }
+                    this.sitePlanner.canvas.renderAll();
+                }
+            }
+            clear() {
+                this.sitePlanner.canvas.deactivateAll().renderAll();
+                for(var i = 0; i < this.items.length; i++) {
+                    this.items[i].remove();
+                }
+                this.items = [];
+                this.sitePlanner.canvas.renderAll();
+            }
+            fromString(str) {
+                var self = this;
+                var canvas = this.sitePlanner.canvas;
+                fabric.util.enlivenObjects(JSON.parse(str), function(objects) {
+                    var origRenderOnAddRemove = canvas.renderOnAddRemove;
+                    canvas.renderOnAddRemove = false;
+
+                    for(var i = 0; i < objects.length; i++) {
+                        canvas.add(objects[i]);
+                        self.items.push(objects[i]);
+                    }
+                    canvas.renderOnAddRemove = origRenderOnAddRemove;
+                    self.update();
+                    canvas.renderAll();
+                }
+                , 'fabric', function(o, obj, error) {}
+                );
+            }
+            toJSON() {
+                return JSON.stringify(this.items);
+            }
+        }
+        /**
+         * Main class, holds everything together
+         */
+        class SitePlanner {
+            constructor(element) {
+                var self = this,
+                    $canvas = $('.site-planner-canvas', element);
+                this.$element = $(element);
+                this.progressBarWidth = 250;
+                this.viewPos = {x:0, y:0};
+                this.zoomValue = 1;
+                this.isDragging = false;
+                this.itemPool = JSON.parse($canvas.html());
+                this.isBusy = false;
+                this.itemList = new ItemList(this);
+                this.mapImages = [];
+                this.cropperOverlay = null;
+                this.planList = [];
+                this.plan = {
+                    id: 0,
+                    name: 'Unbennant',
+                    longitude: 48.249238,
+                    latitude: 11.562762,
+                    zoom: 7,
+                    scale: 1,
+                    mapType: 'satellite',
+                    diameter: 1,
+                    data: {}
+                };
+                //init
+                $canvas.html('');
+                this.canvas = new fabric.MyCanvas($canvas[0], {
+                    width: 900,
+                    height: 600,
+                    backgroundColor : "#c2c2c2",
+                });
+                fabric.Object.prototype.set({
+                    transparentCorners: false,
+                    borderColor: '#ff00ff',
+                    cornerColor: '#ff0000',
+                });
+                this.canvas.dirty = true;
+                this.initProgressBar();
+                this.initControls();
+                this.updateProgressBar(0);
+                //preload all necessary images
+                for(var i = 0; i < this.itemPool.length; i++) {
+                    if (this.itemPool[i].image != null) {
+                        preloadUrls.push(this.itemPool[i].image);
+                    }
+                }
+                preloadImages(preloadUrls, function(images) {
+                    self.updateProgressBar(1);
+                    self.hideProgressBar();
+                    preloadedImages = images;
+                }, function(progress) {
+                    self.updateProgressBar(progress);
+                });
+
+                //alternate image background ----------------------------------
+                var src = '/img/html.bg.png';
+                this.canvas.backgroundColor = new fabric.Pattern({
+                    source: src,
+                    repeat: 'repeat',
+                    backgroundImageOpacity: 0.5,
+                    backgroundImageStretch: false,
+                });
+            }
+            initControls() {
+                var self = this;
+                this.loadSitePlanList();
+                this.updateMapConfig();
+
+                $('button.load-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    var planID = $('.plan-select', this.$element).val();
+                    (new PNotify({
+                        title: lang.askSure,
+                        text: lang.warnSaveData,
+                        icon: 'glyphicon glyphicon-question-sign',
+                        hide: false,
+                        confirm: {
+                            confirm: true
+                        },
+                        buttons: {
+                            closer: false,
+                            sticker: false
+                        },
+                        history: {
+                            history: false
+                        },
+                        addclass: 'stack-modal',
+                        stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
+                    })).get().on('pnotify.confirm', function(){
+                        self.loadSitePlan(planID);
+                    }).on('pnotify.cancel', function(){
+                        self.isBusy = false;
+                    });
+                });
+                $('button.save-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.savePlan();
+                });
+                $('button.new-plan', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.isBusy = true;
+                    (new PNotify({
+                        title: lang.askSure,
+                        text: lang.warnSaveData,
+                        icon: 'glyphicon glyphicon-question-sign',
+                        hide: false,
+                        confirm: {
+                            confirm: true
+                        },
+                        buttons: {
+                            closer: false,
+                            sticker: false
+                        },
+                        history: {
+                            history: false
+                        },
+                        addclass: 'stack-modal',
+                        stack: {'dir1': 'down', 'dir2': 'right', 'modal': true}
+                    })).get().on('pnotify.confirm', function(){
+                        self.plan.id = 0;
+                        self.itemList.clear();
+                        self.readMapConfig();
+                        self.isBusy = false;
+                        self.setMap();
+                    }).on('pnotify.cancel', function(){
+                        self.isBusy = false;
+                    });
+                });
+                $('button.setMap', this.$element).click(function () {
+                    self.readMapConfig();
+                    self.setMap();
+                });
+
+                $('button.addText', this.$element).click(function (e) {
+                    var obj = new fabric.Textbox('Text', {
+                        top: 0,
+                        left: 0,
+                        fontSize: 25,
+                        fontFamily: 'Arial',
+                        textAlign: 'left',
+                        width: 100,
+                        backgroundColor: '#FFFFA5'
+                        , shadow: new fabric.Shadow( { color: 'rgba(0,0,0,0.8)', offsetX: 5, offsetY: 5 })
+                    });
+                    self.itemList.add(obj);
+                    self.canvas.centerObject(obj);
+
+                    self.canvas.setActiveObject(obj);
+                });
+                $('button.createImage', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.startCropper();
+                    //@todo create image from canvas and open a new canvas to crop. than upload
+                });
+                $('.itemList li', this.$element).click(function(e) {
+                    var id = $(this).data('id');
+                    var templateItem;
+                    for(var i = 0; i < self.itemPool.length; i++) {
+                        if (self.itemPool[i].id == id) {
+                            templateItem = self.itemPool[i];
+                            break;
+                        }
+                    }
+                    /** @type fabric.Object */
+                    var obj = self.itemList.create(templateItem);
+                    self.canvas.centerObject(obj);
+                    self.canvas.setActiveObject(obj);
+                });
+                //key events
+                $(document).keyup(function(e) {
+                    if(e.key === "Delete") {
+                        self.itemList.removeSelected();
+                    }
+                });
+
+                //croper
+                $('.image-export button.abort', this.$element).click(function (e) {
+                    e.stopPropagation();
+                    self.stopCropper();
+                });
+                $('.image-export button.save-image', this.$element).click(function (e) {
+                    e.stopPropagation();
+                    self.doCrop();
+                });
+            }
+            //progressbar
+            initProgressBar() {
+                var progressBarText = new fabric.Text('Loding...', {
+                    left: this.progressBarWidth / 2,
+                    top: 0,
+                    fill: '#ffffff',
+                    fontSize: 12,
+                    originX: 'center',
+                    originY: 'center'
+                });
+                this.progressBar = new fabric.Rect({
+                    left: 0,
+                    top: 20,
+                    fill: 'red',
+                    width: 50,
+                    height: 20,
+                });
+                var progressBarBorder = new fabric.Rect({
+                    left: 0,
+                    top: 20,
+                    stroke: 'red',
+                    width: this.progressBarWidth,
+                    height: 20,
+                });
+
+                this.progressGroup = new fabric.Group([progressBarText, progressBarBorder, this.progressBar], {
+                    left: 300,
+                    top: 100,
+                    angle: 0
+                });
+            }
+            hideProgressBar() {
+                var self = this;
+                setTimeout(function() {
+                    self.canvas.remove(self.progressGroup);
+                    self.isBusy = false;
+                }, 500);
+            }
+            updateProgressBar(value) {
+                var self = this;
+                if (typeof value === 'number') {
+                    if (value === 0) {
+                        //show progress group and set value to 0
+                        this.progressBar.set('width', 0);
+                        this.canvas.remove(this.progressGroup);
+                        this.canvas.add(this.progressGroup);
+                    }
+                    this.progressBar.animate('width', value * 250, {
+                        onChange: this.canvas.renderAll.bind(this.canvas),
+                        duration: 200,
+                        easing: fabric.util.ease.easeInCirc(),
+                        onComplete: function() {
+                        },
+                        abort: function(){
+//                            return true;
+                        }
+                    });
+
+                    //set progress bar length
+                } else if (value === false) {
+                    //hide progress element
+                }
+            }
+            //read/write config from/to html inputs
+            readMapConfig() {
+                this.plan.name          = $('#plan-name').val();
+                this.plan.longitude     = parseFloat($('#lon').val());
+                this.plan.latitude      = parseFloat($('#lat').val());
+                this.plan.zoom          = parseInt($('#zoom').val());
+                this.plan.scale         = parseInt($('#scale-select').val());
+                this.plan.mapType       = $('#maptype-select').val();
+                this.plan.diameter      = parseInt($('#diameter').val());
+            }
+            updateMapConfig() {
+                $('#plan-name')     .val(this.plan.name);
+                $('#lon')           .val(this.plan.longitude);
+                $('#lat')           .val(this.plan.latitude);
+                $('#zoom')          .val(this.plan.zoom);
+                $('#scale-select')  .val(this.plan.scale);
+                $('#maptype-select').val(this.plan.mapType);
+                $('#diameter')      .val(this.plan.diameter);
+            }
+            //load and set the map images
+            setMap(progress) {
+                if (this.isBusy && !progress) return;
+                var self = this;
+                this.isBusy = true;
+                (progress)? progress(0): this.updateProgressBar(0);
+
+                //remove old map images
+                for (var i = 0; i < this.mapImages.length; i++) {
+                    this.canvas.remove(this.mapImages[i]);
+                }
+                this.mapImages = [];
+
+                this.canvas.setViewPort(0, 0);
+                this.canvas.setZoom(0.4);
+                this.canvas.renderAll();
+
+                this.itemList.hide();
+                this.itemList.update();
+
+                var urls = createGoogleMapStaticImageUrls(this.plan);
+                var createUrlProcess = 0;
+                function finish() {
+                    self.canvas.deactivateAll().renderAll();
+                    self.itemList.show();
+                    (progress)? progress(1): self.updateProgressBar(1);
+                    (!progress)? self.hideProgressBar():'';
+                }
+//                function createFromUrl(url, line, pos, zIndex) {
+//                    fabric.Image.fromURL(url, function(img) {
+////                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
+////                        console.log(
+////                            pos * 640,
+////                            line * 640);
+//                        img.set('isMap', true);
+//                        img.scale(1 / self.plan.scale).set({
+//                            left: pos * 640,
+//                            top: line * 610,
+//                            scale: 2,
+//                            selectable: false,
+//                            originX: 'left',
+//                            originY: 'top',
+//                            transparentCorners: false
+//                        });
+//                        self.canvas.add(img);
+////                        self.canvas.bringToFront(img);
+//                        self.canvas.moveTo(img, zIndex);
+//                        self.mapImages.push(img);
+//                        createUrlProcess++;
+//                        if (createUrlProcess >= self.plan.diameter) {
+//                            finish();
+//                        }
+//                    });
+//                }
+                function createFromImage(img, line, pos, zIndex) {
+                    var img = new fabric.Image(img, {
+                        scaleX: 0.2,
+                        scaleY: 0.2
+                    });
+                    img.set('isMap', true);
+                    img.scale(1 / self.plan.scale).set({
+                        left: pos * 640,
+                        top: line * 610,
+                        scale: 2,
+                        selectable: false,
+                        originX: 'left',
+                        originY: 'top',
+                        transparentCorners: false
+                    });
+                    self.canvas.add(img);
+//                        self.canvas.bringToFront(img);
+                    self.canvas.moveTo(img, zIndex);
+                    self.mapImages.push(img);
+                    createUrlProcess++;
+                    if (createUrlProcess >= self.plan.diameter) {
+                        finish();
+                    }
+                }
+                preloadImagesAsDataURL(urls, function(images) {
+                    for (var line = 0; line < self.plan.diameter; line++) {
+                        for (var pos = 0; pos < self.plan.diameter; pos++) {
+                            createFromImage(images[line * self.plan.diameter + pos], line, pos, -line);
+                        }
+                    }
+                }, function(value) {
+                    (progress)? progress(value): self.updateProgressBar(value);
+                });
+//                preloadImages(urls, function(images) {
+////                    images
+//
+//                    for (var line = 0; line < self.plan.diameter; line++) {
+//                        for (var pos = 0; pos < self.plan.diameter; pos++) {
+//                            createFromUrl(images[line * self.plan.diameter + pos].src, line, pos, -line);
+//                        }
+//                    }
+//                }, function(value) {
+//                    (progress)? progress(value): self.updateProgressBar(value);
+//                });
+            }
+            //plan management (list/get/save) and html select field update
+            updatePlanList() {
+                $('.plan-select', this.$element).empty();
+                for(var i = 0; i < this.planList.length; i++) {
+                    $('.plan-select', this.$element).append('<option value="' + this.planList[i].id + '">' + this.planList[i].name + '</option>');
+                }
+            }
+            loadSitePlanList(callback) {
+                $.getJSON("/siteplanner/list", function(result){
+                    //save and update plan list
+                    this.planList = result.data;
+                    this.updatePlanList();
+                    callback && callback();
+                }.bind(this));
+            }
+            loadSitePlan(planID) {
+                if (this.isBusy) return;
+                this.isBusy = true;
+                var self = this;
+                this.updateProgressBar(0);
+                this.itemList.clear();
+                $.getJSON("/siteplanner/get/" + planID , function(result){
+                    self.updateProgressBar(0.2);
+                    var data = result.data;
+                    console.log(result);
+                    //search in planList for id and replace -> if not found, push it
+                    var found = false;
+                    for(var i = 0; i < self.planList; i++) {
+                        if (self.planList[i].id == planID) {
+                            found = true;
+                            //replace data
+                            self.planList[i] = data;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        self.planList.push(data);
+                    }
+                    self.plan = data;
+
+                    self.updateMapConfig();
+                    self.readMapConfig();
+                    self.itemList.fromString(self.plan.data);
+
+                    self.setMap(function(value) {
+                        self.updateProgressBar(0.2 + (value * 0.8));
+                        if (value == 1) {
+                            self.hideProgressBar();
+                        }
+                    });
+                });
+            }
+            savePlan() {
+                if (this.isBusy) return false;
+                var name = $('#plan-name', this.$element).val();
+                if (!name || name === "") {
+                    //@todo add error class to input --- red boarder or so
+                    new PNotify({
+                        title: lang.ohno,
+                        text: lang.needPlanName,
+                        type: 'error',
+                        addclass: "stack-topleft",
+                    });
+                    return;
+                }
+                this.isBusy = true;
+                this.updateProgressBar(0);
+                var self = this;
+                this.plan.name = name;
+                this.plan.data = this.itemList.toJSON();
+                this.ajaxPostJson('/siteplanner/save', this.plan, function (data) {
+                    self.loadSitePlanList(function() {
+                        self.hideProgressBar();
+                        new PNotify({
+                            title: lang.success,
+                            text: '',
+                            type: 'success',
+                            addclass: "stack-topleft",
+                        });
+                    });
+                }, function (value) {
+                    self.updateProgressBar(value);
+                });
+                return true;
+            }
+            stopCropper() {
+                $(".planner-controls .image-export", this.$element).hide();
+                $(".planner-controls .default", this.$element).show();
+                if (!this.cropperOverlay) return;
+                this.cropperOverlay.remove();
+                this.canvas.remove(this.cropperOverlay);
+            }
+            doCrop() {
+                if (!this.cropperOverlay) return;
+                var ctx = $('#cropCanvas')[0].getContext("2d"),
+                    self = this;
+
+                ctx.clearRect(0, 0, 2000, 2000);
+                var mat = this.cropperOverlay.calcTransformMatrix();
+                var finalValues = fabric.util.qrDecompose(mat);
+                console.log(finalValues.translateX);
+                var w = this.cropperOverlay.width * finalValues.scaleX,
+                    h = this.cropperOverlay.height * finalValues.scaleY;
+
+                var dataUrl = this.canvas.toDataURL({
+                    format: 'png',
+                    left: finalValues.translateX - w/2,
+                    top: finalValues.translateY - h/2,
+                    width: this.cropperOverlay.width,
+                    height: this.cropperOverlay.height
+                });
+                var img = new Image;
+                img.onload = function(){
+                    ctx.drawImage(img, 0, 0);
+//                    self.stopCropper();
+                };
+                img.src = dataUrl;
+            }
+            startCropper() {
+                if (this.isBusy) return;
+                $(".planner-controls .default", this.$element).hide();
+                $(".planner-controls .image-export", this.$element).show();
+
+                if (this.cropperOverlay != null) {
+                    this.stopCropper();
+                }
+                this.cropperOverlay = new fabric.CropBox({
+                    width: 100,
+                    height: 100,
+                    fill: 'rgba(0,0,0,0)'
+                });
+                this.itemList.set('selectable', false);
+                this.canvas.deactivateAll();
+                this.canvas.add(this.cropperOverlay);
+                this.canvas.setActiveObject(this.cropperOverlay);
+            }
+            //helper //@todo eventuel globale ajax helper bauen die auch global errors mit dem pnotify
+            ajaxPostJson(url, data, success, progress){
+                var progressValue = 0.1,
+                    progressState = 'Start Loading';
+
+                if (!url) {
+                    console.error('url must be set!');
+                }
+
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function(msg) {
+                        if (success && typeof success === 'function')
+                            success(msg);
+                    },
+                    xhr: function() {
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                progressState = 'Send request';
+                                progressValue = (evt.loaded / evt.total) / 2;
+                                if (progress)
+                                    progress(progressValue, progressState);
+                            }
+                        }, false);
+
+                        xhr.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                progressState = 'Receiving data';
+                                progressValue = (evt.loaded / evt.total) / 2 + 0.5;
+                                if (progress)
+                                    progress(progressValue, progressState);
+                            }
+                        }, false);
+
+                        return xhr;
+                    }
+                });
+                if (progress)
+                    progress(progressValue, progressState);
+            }
+        }
+
+        $.fn.SitePlanner = function(options) {
+            new SitePlanner(this);
+        };
+    }(jQuery));
+    $('#sitePlanner').SitePlanner();
+</script>

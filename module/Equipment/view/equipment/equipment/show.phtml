@@ -1,0 +1,65 @@
+<?php
+$width = 50*$equip->length/$equip->width;
+$borderRad = 0;
+if (isset($equip->color)) $cssColor1 = $cssColor2 = $equip->color;
+else {
+    $cssColor1 = $equip->color1;
+    $cssColor2 = $equip->color2;
+}
+if (isset($equip->shape) && $equip->shape == 0){
+    $borderRad = '50';
+}
+if (isset($equip->shape) && $equip->shape == 2){
+//    $width = '25';
+}
+if (isset($equip->shape) && $equip->shape == 3){
+//    $width = '25';
+    $borderRad = '50';
+}
+?>
+<style>
+    .colorizer
+    {
+        height: 0;
+        width: <?php echo $width?>px;
+        border-radius: <?php echo $borderRad?>px;
+        border-top:    50px solid <?php echo $cssColor1?>;
+        border-right:  50px solid <?php echo $cssColor2?>;
+        border-bottom: 50px solid <?php echo $cssColor1?>;
+        border-left:   50px solid <?php echo $cssColor2?>;
+        float: left;
+        margin-left: 10px;
+    }
+</style>
+<?php
+$title = $page['label'];
+$this->headTitle($title);
+if (isset($links)){
+    foreach ($links as $key => $value): ?>
+        <a href="<?php echo $value ?>">
+            <button><?php echo $key ?></button>
+        </a>
+    <?php endforeach;
+    echo '<br/>';
+    echo '<br/>';
+}
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<h1><?php echo $equip->name; ?></h1>
+<img alt="kein Bild hinterlegt" src="<?php echo $equip->image?>" style="float: left;" >
+<div class="colorizer"></div>
+<br class="clear"/>
+<h1>Maße:</h1>
+<p><?php echo $equip->width/100?> m</p>
+<p><?php echo $equip->length/100?> m</p>
+<?php if ((int)$equip->itemType == \Equipment\Model\EEquipTypes::TENT): ?>
+<h1>Bauart:</h1>
+<p><?php echo \Equipment\Model\ETentShape::TRANSLATION[$equip->shape]?></p>
+<p><?php echo \Equipment\Model\ETentType::TRANSLATE_TO_STRING[$equip->type]?></p>
+<?php
+if ((int)$equip->isShowTent == 1)
+    echo '<h1>Schauzelt</h1>';
+if (isset ($equip->spareBeds) && (int)$equip->spareBeds > 0 )
+    echo "<p>Freie Schlafplätze: $equip->spareBeds</p>";
+
+endif; ?>
