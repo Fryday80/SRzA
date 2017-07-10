@@ -37,6 +37,12 @@ return array(
             'Application\Model\MailTemplatesTable' => DefaultTableGatewayFactory::class,
         )
     ),
+    'form_elements' => array(
+        'invokables' => array(
+            'FormTextSearch' => 'Application\Form\Element\TextSearch',
+            'textsearch' => 'Application\Form\Element\TextSearch',
+        ),
+    ),
     'view_helpers' => array(
         'invokables' => array(
             'form' => 'Application\View\Helper\sraForm',
@@ -44,6 +50,8 @@ return array(
             'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
             'InlineFromFile' => 'Application\View\Helper\InlineFromFile',
             'convert' => 'Application\View\Helper\ConverterHelper',
+            'formtextsearch' => 'Application\View\Helper\FormTextSearch',
+            'formelement' => 'Application\View\Helper\FormElement',
         ),
         'factories' => array(
             'asurl' => 'Application\Factory\Helper\MyUrlFactory',

@@ -15,6 +15,7 @@ class AuthControllerFactory implements FactoryInterface
         $userTable = $pL->get('Auth\Model\UserTable');
         $dynamicHashTable = $pL->get('Application\Model\DynamicHashTable');
         $msgService = $pL->get('MessageService');
-        return new AuthController($storage, $authService, $userTable, $dynamicHashTable, $msgService);
+        $statisticService = $pL->get('StatisticService');
+        return new AuthController($storage, $authService, $userTable, $dynamicHashTable, $msgService, $statisticService);
     }
 }

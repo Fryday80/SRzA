@@ -16,10 +16,12 @@ class UserInfo extends AbstractHelper
         $this->storage = $storage;
         return $this;
     }
-    public function __invoke()
+    public function __invoke($info = null)
     {
         $role = $this->storage->getRoleName();
         $name = $this->storage->getUserName();
+        if ($info == 'role') return $role;
+        if ($info == 'name') return $name;
 
         if ($role == 'Guest') {
             return 'Hallo Gast';
@@ -32,6 +34,5 @@ class UserInfo extends AbstractHelper
             $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showrole. '</span>';
             return $expression;
         }
-        return $role;
     }
 }

@@ -20,6 +20,15 @@
     <div><?php echo $this->form($calendar); ?></div>
     <?php endforeach; ?>
 </accordion>
+<br/>
+<?php
+if ($apiAuth || $authCodeError):
+    ?>
+<a href="<?php echo $apiAuth; ?>" >hol die neuen AuthCodes von GOOGLE</a>
+<?php
+endif;
+echo $this->form($secretForm);
+?>
 <script>
     $('.color input').change(function() {
         var newColor = $(this).val();

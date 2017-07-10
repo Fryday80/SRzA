@@ -91,8 +91,6 @@ class RoleController extends AbstractActionController
                 $this->roleTable->deleteByID($id);
                 $this->clearCache();
             }
-            //cleanfix @todo remove
-//            $this->navService->removeRole($id);
            return $this->redirect()->toRoute('role');
         }
         return array(

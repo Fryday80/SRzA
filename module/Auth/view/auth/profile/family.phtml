@@ -1,0 +1,18 @@
+<?php
+$this->headTitle($family['name']);
+?>
+<h1><?php echo $this->escapeHtml($family['name']); ?></h1>
+<?php
+$head = array();
+foreach ($members as $member) {
+    $head = $member;
+    break;
+}
+/** @var \Cast\View\Helper\BlazonHelper $bh */
+$bh = $this->blazon();
+$bh->
+echo $this->blazon()->blazon($this->blazon()->getBlazonHelperArgumentsByCharacter($head));
+foreach ($members as $member) {
+    echo $member['name'];
+    echo '<br/>';
+}

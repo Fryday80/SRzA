@@ -1,6 +1,7 @@
 //live ticks
 (function () {
     "use strict";
+    var bugFix = 0;
     //script for live ticks
     function loadLive(e) {
         e.fail(function(jqXHR, textStatus, errorThrown) {
@@ -10,7 +11,10 @@
         e.done(function(e, textStatus, jqXHR) {
             let actions = e.actions;
             if (actions !== null) {
-    //                actions.reverse();
+                if (bugFix == 0) {
+                    actions.reverse();
+                    bugFix = 1;
+                }
                 for (let i = 0; i < actions.length; i++) {
     //                    var dateRaw = new Date (actions[i].time*1000);
     //                    var hours = '0' + dateRaw.getHours();

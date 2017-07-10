@@ -37,19 +37,17 @@ class MessageService
         try {
             //load template from db
             $template = $this->mailTemplatesTable->getBy(array( 'name' => $templateName));
+            $noReplyMsg = $this->mailTemplatesTable->getBy(array( 'name' => 'noReply'))['msg'];
 
             if (!$template) {
-                //@todo error: "no template with this id"
                 throw new Exception('no template with this templateID');
                 return;
             }
             //parse template vars -> check if all exists in data
             $template['subject'] = $this->buildTemplateString($template['subject'], $templateVars);
             $template['msg'] = $this->buildTemplateString($template['msg'], $templateVars);
-
-            //@todo move to db?
-            $standardFooter = '<br/><p>Diese Nachricht wurde automatisch erstellt. Antworten auf diese eMailadresse werden nicht empfangen.</p>';
-            $template['msg'] .= $standardFooter;
+            
+            $template['msg'] .= $noReplyMsg;
 
             //send
             $this->SendMail($target, $template['subject'], $template['msg'], $template['sender'], $template['sender_address']);

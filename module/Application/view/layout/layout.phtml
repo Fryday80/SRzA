@@ -148,5 +148,8 @@
     </div>
 
     <link href="/css/jsOverrides.css" media="screen" rel="stylesheet" type="text/css">
+    <?php if ($this->userinfo('role') == 'Administrator'): ?>
+        <img src="img/wa.gif" style="position: absolute; top:400px; right:150px; z-index: 100">
+    <?php endif; ?>
 </body>
 </html>

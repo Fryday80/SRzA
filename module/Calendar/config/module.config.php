@@ -52,7 +52,7 @@ return array(
              'config' => array(
                  'type'    => 'segment',
                  'options' => array(
-                     'route'    => '/calendar/config',
+                     'route'    => '/calendar/config[:token]',
                      'defaults' => array(
                          'controller' => 'Calendar\Controller\Calendar',
                          'action'     => 'config',

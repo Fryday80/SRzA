@@ -220,12 +220,12 @@ class CalendarService {
                     'durationEditable' => true,
 //                'source' => null,
 //                'color' => (isset($overwrites['color']))? $overwrites['color'] : $calendar['backgroundColor'],
-                'textColor' => (isset($overwrites['textColor']))? $overwrites['textColor'] : $calendar['textColor'],
-                'backgroundColor' => (isset($overwrites['backgroundColor']))? $overwrites['backgroundColor'] : $calendar['backgroundColor'],
-                'borderColor' => (isset($overwrites['borderColor']) && $overwrites['borderColor'] != '')? $overwrites['borderColor'] : 'rgba(0,0,0,0)',
+                    'textColor' => (isset($overwrites['textColor']))? $overwrites['textColor'] : $calendar['textColor'],
+                    'backgroundColor' => (isset($overwrites['backgroundColor']))? $overwrites['backgroundColor'] : $calendar['backgroundColor'],
+                    'borderColor' => (isset($overwrites['borderColor']) && $overwrites['borderColor'] != '')? $overwrites['borderColor'] : 'rgba(0,0,0,0)',
 
 
-                //recurringEventId  // id of the original event
+                    //recurringEventId  // id of the original event
 
                 ]);
             }
@@ -272,6 +272,39 @@ class CalendarService {
         $client = $this->gGetClient();
         $this->gCalendarService = new Google_Service_Calendar($client);
     }
+
+    private $gApiAuthUrl = null;
+    private $gApiAuthCode = null;
+
+    /**
+     * @return string|null
+     */
+    public function getApiAuthUrl() {
+        $this->gGetCalendarService();
+        return $this->gApiAuthUrl;
+    }
+
+    /**
+     * @param $authCode
+     * @return bool
+     */
+    public function setApiAuthCode($authCode) {
+        try {
+            $this->gApiAuthCode = $authCode;
+            $this->gInitCalendarService();
+            return true;
+        } catch(Exception $e) {
+            // @todo log to stats
+            return false;
+        }
+    }
+
+    /**
+     * @param $token string
+     */
+    public function setApiSecret($token) {
+        //@todo save secret to file
+    }
     /**
      * Returns an authorized API client.
      * @return Google_Client the authorized client object
@@ -284,7 +317,7 @@ class CalendarService {
         $client->setAuthConfig($this->CLIENT_SECRET_PATH);
         $client->setAccessType('offline');
 
-        $client->setRedirectUri('http://localhost');
+        $client->setRedirectUri('http://localhost/calendar/config');
 //        $client->setAccessType('offline');
         $client->setApprovalPrompt('force');
 
@@ -293,21 +326,48 @@ class CalendarService {
 
         if (file_exists($credentialsPath)) {
             $accessToken = json_decode(file_get_contents($credentialsPath), true);
+            $client->setAccessToken($accessToken);
+
+            if ($client->isAccessTokenExpired()) {
+                // save refresh token to some variable
+                $refreshTokenSaved = $client->getRefreshToken();
+                // update access token
+                $client->fetchAccessTokenWithRefreshToken($refreshTokenSaved);
+                // pass access token to some variable
+                $accessTokenUpdated = $client->getAccessToken();
+                // append refresh token
+                $accessTokenUpdated['refresh_token'] = $refreshTokenSaved;
+                // save to file
+                file_put_contents($credentialsPath, json_encode($accessTokenUpdated));
+            }
+
+            $this->gApiAuthUrl = null;
+            $this->gApiAuthCode = null;
         } else {
             // Request authorization from the user.
-            $authUrl = $client->createAuthUrl();
-            $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
+            $this->gApiAuthUrl = $client->createAuthUrl();
 
-            // Exchange authorization code for an access token.
-            $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
-            // Store the credentials to disk.
-            if(!file_exists(dirname($credentialsPath))) {
-                mkdir(dirname($credentialsPath), 0700, true);
-            }
-            file_put_contents($credentialsPath, json_encode($accessToken));
+            if ($this->gApiAuthCode) {
+//                $authCode = trim('4/QnsgLTvzQ_WI2xIysHOF_ElkrINLhaX89YUckBtY5Cs');
+                $authCode = trim($this->gApiAuthCode);
+bdump($authCode);
+                // Exchange authorization code for an access token.
+                $accessToken = $client->fetchAccessTokenWithAuthCode($authCode);
+                // Store the credentials to disk.
+                if(!file_exists(dirname($credentialsPath))) {
+                    mkdir(dirname($credentialsPath), 0700, true);
+                }
+                bdump($accessToken);
+                file_put_contents($credentialsPath, json_encode($accessToken));
+                $client->setAccessToken($accessToken);
+                //des brauchts eventuel hier acuh nochmal
+                $this->gApiAuthUrl = null;
+                $this->gApiAuthCode = null;
+
 //            printf("Credentials saved to %s\n", $credentialsPath);
+            }
         }
-        $client->setAccessToken($accessToken);
+
 
         // Refresh the token if it's expired.
 //        if ($client->isAccessTokenExpired()) {
@@ -316,18 +376,6 @@ class CalendarService {
 //        }// Refresh the token if it's expired.
 
 
-        if ($client->isAccessTokenExpired()) {
-            // save refresh token to some variable
-            $refreshTokenSaved = $client->getRefreshToken();
-            // update access token
-            $client->fetchAccessTokenWithRefreshToken($refreshTokenSaved);
-            // pass access token to some variable
-            $accessTokenUpdated = $client->getAccessToken();
-            // append refresh token
-            $accessTokenUpdated['refresh_token'] = $refreshTokenSaved;
-            // save to file
-            file_put_contents($credentialsPath, json_encode($accessTokenUpdated));
-        }
         return $client;
     }
 
