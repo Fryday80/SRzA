@@ -1072,6 +1072,24 @@ $this->headScript()->appendFile('/libs/map.js');
                 return JSON.stringify(this.items);
             }
         }
+        class DetailsPanel {
+            constructor(sitePlanner) {
+                var self = this;
+                this.panel = $('.details-panel', sitePlanner.$element);
+                sitePlanner.canvas.on('object:selected', function (e) {
+                    self.onSelect(e.target);
+                });
+                sitePlanner.canvas.on('selection:cleared', function (e) {
+                    self.onDeselect();
+                });
+            }
+            onSelect(obj) {
+                console.log(obj.type);
+            }
+            onDeselect() {
+
+            }
+        }
         /**
          * Main class, holds everything together
          */
@@ -1139,6 +1157,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     backgroundImageOpacity: 0.5,
                     backgroundImageStretch: false,
                 });
+                this.details = new DetailsPanel(this);
             }
             initControls() {
                 var self = this;
