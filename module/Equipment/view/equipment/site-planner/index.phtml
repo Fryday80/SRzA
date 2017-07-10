@@ -22,6 +22,9 @@ $this->headScript()->appendFile('/libs/map.js');
         width: 200px;
         padding: 5px;
     }
+    #sitePlanner .planner-controls .image-export {
+        display: none;
+    }
     #sitePlanner .planner-controls ul {
         list-style: none;
     }
@@ -69,52 +72,62 @@ $this->headScript()->appendFile('/libs/map.js');
 </ul>
 <box id="sitePlanner">
     <div class="planner-controls">
-        <label>
-            <span>Plänne</span>
-            <select class="plan-select"></select>
-        </label>
-        <button class="load-plan"> Load </button>
-        <div style="clear:both"></div>
-        <label>
-            <span>Name</span>
-            <input id="plan-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
-        </label>
-        <button class="save-plan">Save</button>
-        <button class="new-plan" style="float:right">New</button>
-        <hr>
-        <label for="lon">Longitude:</label>
-        <input id="lon" type="number">
-        <br>
-        <label for="lat">Latitude:</label>
-        <input id="lat" type="number">
-        <br>
-        <label for="zoom">Zoom:</label>
-        <input id="zoom" type="number" min="1" max="7" step="1">
-        <br>
-        <label for="scale-select">Quality:</label>
-        <select id="scale-select"> 
-            <option value="1">1</option>
-            <option value="2">2</option>
-        </select>
-        <br>
-        <label for="maptype-select">map type:</label>
-        <select id="maptype-select">
-            <option value="terrain">Terrain</option>
-            <option value="satellite">Satellite</option>
-            <option value="roadmap">Roadmap</option>
-            <option value="hybrid">Hybrid</option>
-        </select>
-        <label for="diameter">Map size:</label>
-        <input id="diameter" type="number" min="1" max="5" step="1">
-        <br>
-        <div style="clear:both"></div>
-        <button class="setMap">Set Map</button>
+        <div class="image-export">
+            <label>
+                <span>Bild Name</span>
+                <input id="image-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+            </label>
+            <br>
+            <button class="abort">Abbrechen</button>
+            <button class="save-image">Bild Speichern</button>
+        </div>
+        <div class="default">
+            <label>
+                <span>Plänne</span>
+                <select class="plan-select"></select>
+            </label>
+            <button class="load-plan"> Load </button>
+            <div style="clear:both"></div>
+            <label>
+                <span>Name</span>
+                <input id="plan-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+            </label>
+            <button class="save-plan">Save</button>
+            <button class="new-plan" style="float:right">New</button>
+            <hr>
+            <label for="lon">Longitude:</label>
+            <input id="lon" type="number">
+            <br>
+            <label for="lat">Latitude:</label>
+            <input id="lat" type="number">
+            <br>
+            <label for="zoom">Zoom:</label>
+            <input id="zoom" type="number" min="1" max="7" step="1">
+            <br>
+            <label for="scale-select">Quality:</label>
+            <select id="scale-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+            </select>
+            <br>
+            <label for="maptype-select">map type:</label>
+            <select id="maptype-select">
+                <option value="terrain">Terrain</option>
+                <option value="satellite">Satellite</option>
+                <option value="roadmap">Roadmap</option>
+                <option value="hybrid">Hybrid</option>
+            </select>
+            <label for="diameter">Map size:</label>
+            <input id="diameter" type="number" min="1" max="5" step="1">
+            <br>
+            <div style="clear:both"></div>
+            <button class="setMap">Set Map</button>
 
-        <hr>
-        <button class="addText">Text Feld</button>
-        <button class="createImage">Create Image</button>
-        <hr>
-        <ul class="itemList">
+            <hr>
+            <button class="addText">Text Feld</button>
+            <button class="createImage">Create Image</button>
+            <hr>
+            <ul class="itemList">
             <?php
             foreach($items as $item): ?>
                 <li data-id="<?php echo $item['id']; ?>">
@@ -126,6 +139,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 </li>
             <?php endforeach; ?>
         </ul>
+        </div>
     </div>
     <div class="canvas">
         <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
@@ -362,6 +376,60 @@ $this->headScript()->appendFile('/libs/map.js');
             },
         });
 
+        fabric.CropBox = fabric.util.createClass(fabric.Rect, {
+            type: 'CropBox',
+            objectCaching: false,
+
+            /**
+             * Constructor
+             * @param {Object} [options] Options object
+             * @return {fabric.Circle} thisArg
+             */
+            initialize: function(options) {
+                this.callSuper('initialize', options);
+                this.setControlsVisibility({
+//                    bl: false,
+//                    br: false,
+//                    mb: false,
+//                    ml: false,
+//                    mr: false,
+//                    mt: false,
+//                    tl: false,
+//                    tr: false,
+                    mtr: false,
+                });
+                this.on('deselected', function(e) {
+                    this.moveTo(100);
+                }.bind(this));
+                this.on('mouse:down', function(e) {
+                    console.log('########### mouse down');
+                }.bind(this));
+//                this.on('deselected', function(e) {
+//                    this.moveTo(100);
+//                }.bind(this));
+            },
+            _render: function(ctx) {
+//                fabric.Rect.prototype._render.call(this, ctx);
+                if (!this.canvas) return;
+                this.renderOverlay(ctx);
+            },
+            renderOverlay: function(ctx) {
+                var top = 100,
+                    bottom = this.canvas.height - 100,
+                    left = 200,
+                    right = this.canvas.width - 200,
+                    wHalf = this.width / 2;
+
+                ctx.save();
+                //draw dark outer area
+                ctx.fillStyle = "rgba(0,0,0,0.8)";
+                for(var i = 0; i < 4; i++) {
+                    ctx.rotate( (Math.PI / 2) * i );
+                    ctx.fillRect(wHalf, -wHalf - 0.1, 5000, 5000);
+                }
+                ctx.restore();
+            },
+        });
         fabric.Equipitem = fabric.util.createClass(fabric.Object, {
             type: 'Equipitem',
             radius: 40,
@@ -817,6 +885,7 @@ $this->headScript()->appendFile('/libs/map.js');
             needPlanName: '',
         };
 
+        //cross origin workaround
         function loadImageAsDataURL(url, callback) {
             var xhr = new XMLHttpRequest();
             xhr.onload = function() {
@@ -850,6 +919,7 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             loadImageAsDataURL(urls[pointer], onload);
         }
+        //cross origin workaround end
         function loadImage(url, callback) {
             var img = new Image();
             img.onload = callback;
@@ -914,6 +984,12 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             show() {
 
+            }
+            set(key, value) {
+                for(var i = 0; i < this.items.length; i++) {
+                    this.items[i].set(key, value);
+                }
+                this.sitePlanner.canvas.renderAll();
             }
             update() {
                 //resize items depending on plan.zoom
@@ -1012,7 +1088,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.isBusy = false;
                 this.itemList = new ItemList(this);
                 this.mapImages = [];
-//                this.items = [];
+                this.cropperOverlay = null;
                 this.planList = [];
                 this.plan = {
                     id: 0,
@@ -1169,11 +1245,21 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.canvas.centerObject(obj);
                     self.canvas.setActiveObject(obj);
                 });
-
+                //key events
                 $(document).keyup(function(e) {
                     if(e.key === "Delete") {
                         self.itemList.removeSelected();
                     }
+                });
+
+                //croper
+                $('.image-export button.abort', this.$element).click(function (e) {
+                    e.stopPropagation();
+                    self.stopCropper();
+                });
+                $('.image-export button.save-image', this.$element).click(function (e) {
+                    e.stopPropagation();
+                    self.doCrop();
                 });
             }
             //progressbar
@@ -1442,21 +1528,56 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
                 return true;
             }
-            startCropper() {
-                var ctx = $('#cropCanvas')[0].getContext("2d");
+            stopCropper() {
+                $(".planner-controls .image-export", this.$element).hide();
+                $(".planner-controls .default", this.$element).show();
+                if (!this.cropperOverlay) return;
+                this.cropperOverlay.remove();
+                this.canvas.remove(this.cropperOverlay);
+            }
+            doCrop() {
+                if (!this.cropperOverlay) return;
+                var ctx = $('#cropCanvas')[0].getContext("2d"),
+                    self = this;
+
                 ctx.clearRect(0, 0, 2000, 2000);
+                var mat = this.cropperOverlay.calcTransformMatrix();
+                var finalValues = fabric.util.qrDecompose(mat);
+                console.log(finalValues.translateX);
+                var w = this.cropperOverlay.width * finalValues.scaleX,
+                    h = this.cropperOverlay.height * finalValues.scaleY;
+
                 var dataUrl = this.canvas.toDataURL({
                     format: 'png',
-                    left: 0,
-                    top: 0,
-                    width: 2000,
-                    height: 2000
+                    left: finalValues.translateX - w/2,
+                    top: finalValues.translateY - h/2,
+                    width: this.cropperOverlay.width,
+                    height: this.cropperOverlay.height
                 });
                 var img = new Image;
                 img.onload = function(){
                     ctx.drawImage(img, 0, 0);
+//                    self.stopCropper();
                 };
                 img.src = dataUrl;
+            }
+            startCropper() {
+                if (this.isBusy) return;
+                $(".planner-controls .default", this.$element).hide();
+                $(".planner-controls .image-export", this.$element).show();
+
+                if (this.cropperOverlay != null) {
+                    this.stopCropper();
+                }
+                this.cropperOverlay = new fabric.CropBox({
+                    width: 100,
+                    height: 100,
+                    fill: 'rgba(0,0,0,0)'
+                });
+                this.itemList.set('selectable', false);
+                this.canvas.deactivateAll();
+                this.canvas.add(this.cropperOverlay);
+                this.canvas.setActiveObject(this.cropperOverlay);
             }
             //helper //@todo eventuel globale ajax helper bauen die auch global errors mit dem pnotify
             ajaxPostJson(url, data, success, progress){
