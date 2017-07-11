@@ -39,7 +39,6 @@ function createList($parent, $level) {
     /** @var \Cast\View\Helper\BlazonHelper $bh */
     $bh = $GLOBALS['bhelper'];
     $skip = ($level == 0)? true : false;
-    $blazonArguments = $bh->getBlazonHelperArgumentsByCharacter($parent);
     echo '<li class="character">';
     echo '<character name="'. $parent['name'] .'" data-id="'. $parent['id'] .'" class="box">';
     echo '<p>';
@@ -47,7 +46,7 @@ function createList($parent, $level) {
     echo '<span>'.$parent['surename'].'</span>';
     echo '</p>';
     echo '<br>';
-    echo $bh->blazon($blazonArguments);
+    echo $bh->blazon($parent);
     echo '<br>';
     echo '<p>'. $parent['job_name'] .'</p>';
     echo '<p>';
@@ -71,14 +70,13 @@ function createList($parent, $level) {
     echo '</character>';
 
     if (isset($parent['family']) || count($parent['employ']) > 0) {
-        $blazonArguments = $bh->getBlazonHelperArgumentsByCharacter($parent);//hä
         echo '<ul>';
         if (isset($parent['family'])) {
             echo '<li class="family">';
             echo '<family name="' . $parent['name'] . '" data-id="' . $parent['id'] . '">';
             echo '<br>';
             //Todo family blazon
-            echo $bh->getSingleBlazonByName($blazonArguments, 'big');
+            echo $bh->blazon($parent, true);
             echo '<br>';
             echo '<div class="details">';
             echo $parent['family']['name'];

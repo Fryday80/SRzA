@@ -88,19 +88,21 @@ class CharacterTable extends AbstractTableGateway
                     'tross_id',
                     'vita',
                     'active',
+                    'blazon_id',
                 ))
                 ->join(array(
                     'family' => 'families'
                 ), 'family.id = char.family_id', array(
                     'family_id' => 'id',
                     'family_name' => 'name',
-                    'blazon_id' => 'blazon_id',
+                    'family_blazon_id' => 'blazon_id',
                 ), 'left')
                 ->join(array(
                     'job' => 'job'
                 ), 'job.id = char.job_id', array(
                     'job_id' => 'id',
-                    'job_name' => 'job'
+                    'job_name' => 'job',
+                    'job_blazon_id' => 'blazon_id',
                 ), 'left')
                 ->where($where);
 

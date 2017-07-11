@@ -129,7 +129,7 @@ $this->headTitle($title);
     <boxcontent>
         <?php foreach ($characters as $character):
             echo $character['name'] . ' ' . $character['surename'];
-            echo $bh->blazon($bh->getBlazonHelperArgumentsByCharacter($character)) ;?>
+            echo $bh->blazonNew($character) ;?>
             <a href="<?php echo $character['charProfileURL'] ?>">
                 <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
             </a>

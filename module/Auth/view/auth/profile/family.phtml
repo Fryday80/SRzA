@@ -8,10 +8,10 @@ foreach ($members as $member) {
     $head = $member;
     break;
 }
-echo $this->blazon()->getSingleBlazonByName($this->blazon()->getBlazonHelperArgumentsByCharacter($head), 'big');
+echo $this->blazon()->blazon($head, true);
 foreach ($members as $member) {
     echo '<a href="' .$member['charProfileURL']. '"><button>';
     echo $member['name'];
-    echo $this->blazon()->getSingleBlazonByName($this->blazon()->getBlazonHelperArgumentsByCharacter($member));
+    echo $this->blazon()->blazon($member);
     echo '</button></a><br/>';
 }
