@@ -84,57 +84,55 @@ $this->headTitle($title);
     <button>Tree view</button>
 </a>
 <br class="clear"/>
-<div>
-    <box class="public-profile summary">
-        <span>
-            <b>Funktion:</b> <?php echo $user->role_name;?>
-        </span> |
-        <span>
-            <b>Angemeldet seit:</b> <?php echo date('d.m.Y', $user->created_on);?>
-        </span> |
-        <span data-balloon='Email schreiben' data-balloon-pos='up' >
-            <b>eMail:</b> <a href="mailto:<?php echo $user->email;?>?Subject=Schwarze%20Ritter%20von%20<?php echo $askingUser;?>" target="_top"><?php echo $user->email;?></a>
-        </span> |
-        <span data-balloon=<?php echo $state;?> data-balloon-pos='up' >
-            <b>OnlineStatus:</b> <span class="<?php echo $state;?>"><?php echo $state;?></span>
-        </span>
-    </box>
-    <box class="public-profile address">
-        <boxtitle>
-            <span class="own_text_small"><?php echo ($isGuest) ? 'Name:' : 'Anschrift:'; ?></span>
-        </boxtitle>
-        <boxcontent>
-            <img class="userimage" alt="ProfilePic" src="<?php echo $user->user_image ?>">
-        <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
-        if (!$isGuest):
-        echo $user->street . '<br/>';
-        echo $user->zip . ' ' . $user->city . '<br/>';?>
-        </boxcontent>
-    </box>
-    <box class="public-profile birthday">
-        <boxtitle>
-            <span class="own_text_small">Geburtstag:</span>
-        </boxtitle>
-        <boxcontent>
-        <?php echo date('d.m.Y', $user->birthday);
-            endif ?>
-        </boxcontent>
-    </box>
-    <box class="public-profile">
-        <boxtitle>
-            <span class="own_text_small">Darstellungen</span>
-            <?php echo $editOwnChars;?>
-            <br/><br/>
-        </boxtitle>
-        <boxcontent>
-            <?php foreach ($characters as $character):
-                echo $character['name'] . ' ' . $character['surename'];
-                echo $bh->blazonNew($character) ;?>
-                <a href="<?php echo $character['charProfileURL'] ?>">
-                    <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
-                </a>
-                <br/><br/><br/><br/>
-            <?php endforeach; ?>
-        </boxcontent>
+<box class="public-profile summary">
+    <span>
+        <b>Funktion:</b> <?php echo $user->role_name;?>
+    </span> |
+    <span>
+        <b>Angemeldet seit:</b> <?php echo date('d.m.Y', $user->created_on);?>
+    </span> |
+    <span data-balloon='Email schreiben' data-balloon-pos='up' >
+        <b>eMail:</b> <a href="mailto:<?php echo $user->email;?>?Subject=Schwarze%20Ritter%20von%20<?php echo $askingUser;?>" target="_top"><?php echo $user->email;?></a>
+    </span> |
+    <span data-balloon=<?php echo $state;?> data-balloon-pos='up' >
+        <b>OnlineStatus:</b> <span class="<?php echo $state;?>"><?php echo $state;?></span>
+    </span>
 </box>
-</div>
+<box class="public-profile address">
+    <boxtitle>
+        <span class="own_text_small"><?php echo ($isGuest) ? 'Name:' : 'Anschrift:'; ?></span>
+    </boxtitle>
+    <boxcontent>
+        <img class="userimage" alt="ProfilePic" src="<?php echo $user->user_image ?>">
+    <?php echo $user->real_name . ' '  . $user-> real_surename . '<br/>';
+    if (!$isGuest):
+    echo $user->street . '<br/>';
+    echo $user->zip . ' ' . $user->city . '<br/>';?>
+    </boxcontent>
+</box>
+<box class="public-profile birthday">
+    <boxtitle>
+        <span class="own_text_small">Geburtstag:</span>
+    </boxtitle>
+    <boxcontent>
+    <?php echo date('d.m.Y', $user->birthday);
+        endif ?>
+    </boxcontent>
+</box>
+<box class="public-profile">
+    <boxtitle>
+        <span class="own_text_small">Darstellungen</span>
+        <?php echo $editOwnChars;?>
+        <br/><br/>
+    </boxtitle>
+    <boxcontent>
+        <?php foreach ($characters as $character):
+            echo $character['name'] . ' ' . $character['surename'];
+            echo $bh->blazon($character) ;?>
+            <a href="<?php echo $character['charProfileURL'] ?>">
+                <button data-char="<?php echo $character['name'] . ' ' . $character['surename'];?>" class="charbutton">zur Character Seite</button>
+            </a>
+            <br/><br/><br/><br/>
+        <?php endforeach; ?>
+    </boxcontent>
+</box>

@@ -18,7 +18,7 @@ class BlazonHelper extends AbstractHelper
     public function blazon($arguments = null, $familyBlazon = false) {
         if ($arguments == null) $arguments = array(1,0,0);
         if (isset($arguments['name'])) $arguments = $this->service->getArgumentsByChar($arguments, $familyBlazon);
-        $arguments = $this->service->getHTMLArguments($arguments, $familyBlazon);
+        $arguments = $this->service->getFilenames($arguments, $familyBlazon);
 
         return $this->createBlazonHTML($arguments);
     }

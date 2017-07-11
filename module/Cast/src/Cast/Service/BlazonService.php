@@ -11,37 +11,60 @@ class BlazonService
     /** @var  BlazonTable */
     private $blazonTable;
 
-    private $data;
-    private $dataNoOverlays;
-    private $dataJustOverlays;
+    private $data = false;
+    private $dataNoOverlays = false;
+    private $dataOverlays = false;
 
     function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
         $this->castService = $castService;
-        $this->loadData();
     }
 
+    /**
+     * Get all blazons
+     * @return array 'id' => data
+     */
     public function getAll() {
+        $this->getData(EBlazonDataType::ALL);
         return $this->data;
     }
 
+    /**
+     * Get all blazons that are overlays
+     * @return array 'id' => data
+     */
     public function getAllOverlays() {
-        return $this->dataJustOverlays;
+        $this->getData(EBlazonDataType::OVERLAY);
+        return $this->dataOverlays;
     }
 
+    /**
+     * Get all blazons that are no overlays
+     * @return array 'id' => data
+     */
     public function getAllNoOverlays() {
+        $this->getData(EBlazonDataType::NO_OVERLAY);
         return $this->dataNoOverlays;
     }
 
     /**
+     * Get blazon by id
      * @param int $id
      * @return array|false
      */
     public function getById($id) {
+        $this->getData(EBlazonDataType::ALL);
         return (isset($this->data[$id])) ? $this->data[$id] : false;
     }
 
+    /**
+     * Get argument array by char
+     * @param $char
+     * @param bool $familyBlazon
+     * @return array array of blazon ids
+     */
     public function getArgumentsByChar($char, $familyBlazon = false) {
+        $this->getData(EBlazonDataType::ALL);
         if ($familyBlazon)
             $base = ($char['family_blazon_id'] !== 0) ? $char['family_blazon_id'] : 1;
         else
@@ -56,11 +79,18 @@ class BlazonService
         return array($base, $over1, $over2);
     }
 
-    public function getHTMLArguments($arg, $familyBlazon = false) {
+    /**
+     * Get filenames for BlazonHelper
+     * @param array $arg array of blazon ids
+     * @param bool $familyBlazon true if family blazon
+     * @return array array of file names
+     */
+    public function getFilenames(array $arg, $familyBlazon = false) {
+        $this->getData(EBlazonDataType::ALL);
         if ($familyBlazon)
             $base  = (isset($this->data[$arg[0]]['bigFilename'])) ? $this->data[$arg[0]]['bigFilename'] : $this->data[$arg[0]]['filename'];
         else
-            $base  = $this->data[$arg[0]]['filename'];
+            $base  = (isset($this->data[$arg[0]]['filename'])) ? $this->data[$arg[0]]['filename'] : $this->data[1]['filename'];
         if ($arg[1] == 0) $over1 = '';
         else
             $over1 = (isset($this->data[$arg[1]]['filename'])) ? $this->data[$arg[1]]['filename'] : '';
@@ -71,7 +101,12 @@ class BlazonService
         return array($base, $over1, $over2);
     }
 
-    private function getSupervisorBlazon($supervisor_id) {
+    /**
+     * Get character data of next supervisor with own blazon
+     * @param int $supervisor_id
+     * @return array of next supervisor with own blazon
+     */
+    private function getSupervisorBlazon(int $supervisor_id) {
         $supervisor = $this->castService->getCharacterDataById($supervisor_id);
         if ($supervisor['blazon_id'] == 0 || $supervisor['blazon_id'] == null || !isset($supervisor['blazon_id']))
             if($supervisor['supervisor_id'] !== null)
@@ -99,19 +134,26 @@ class BlazonService
             $this->adjustUploadPic($bigFileData['filePath']);
         }
 
+        $this->resetInMemoryCache();
         $newItem = array(
             'isOverlay' => $isOverlay,
             'name' => $name,
             'filename' => $fileData['fileName'],
             'bigFilename' => $bigFileData['fileName']
         );
-        $newItem['id'] = $this->blazonTable->add($newItem);
-        $this->data[$newItem['id']] = $newItem;
-        return $newItem['id'];
+        return $this->blazonTable->add($newItem);
     }
 
+    /**
+     * @param $id
+     * @param $isOverlay
+     * @param null $name
+     * @param null $blazonData
+     * @param null $blazonBigData
+     * @return bool
+     */
     public function save($id, $isOverlay, $name = null, $blazonData = null, $blazonBigData = null) {
-        $data['isOverlay'] = $isOverlay;
+        $data['isOverlay'] = (int) $isOverlay;
         $item = $this->getById($id);
         if(!$item) return false;
 
@@ -139,10 +181,14 @@ class BlazonService
         }
 
         $this->blazonTable->save($id, $data);
-        $this->loadData();
-        return $this->data[$id];
+        $this->resetInMemoryCache();
+        return true;
     }
 
+    /**
+     * @param $id
+     * @return bool
+     */
     public function remove($id) {
         $item = $this->getById($id);
         if(!$item) return false;
@@ -152,7 +198,7 @@ class BlazonService
             $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
             $path = $wappenPath.'/'.$item['filename'];
             @unlink($path);
-            $this->loadData();
+            $this->resetInMemoryCache();
             return true;
         }
     }
@@ -164,13 +210,12 @@ class BlazonService
      * @return string file name with extension
      */
     private function moveFile($path, $name, $originalFileName) {
-        $this->loadData();
         $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
         $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
         if (!$blazonPath) {
             //@todo create "wappen" folder in ./Data
             // not tested
-//            mkdir ($wappenPath);
+//            mkdir ($blazonPath);
         }
         $newPath = $blazonPath.'/'.$name.'.'.$ext;
         rename($path, $newPath);
@@ -186,10 +231,10 @@ class BlazonService
      * @return string file name with extension
      */
     private function renameItem(&$item, $newName) {
-        $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
-        $path = $wappenPath.'/'.$item['filename'];
+        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
+        $path = $blazonPath.'/'.$item['filename'];
         if (file_exists($path)) {
-            $newPath = $wappenPath . '/' . $newName . '.' . pathinfo($path, PATHINFO_EXTENSION);
+            $newPath = $blazonPath . '/' . $newName . '.' . pathinfo($path, PATHINFO_EXTENSION);
             rename($path, $newPath);
             $item['name'] = $newName;
             $item['filename'] = pathinfo($newPath, PATHINFO_BASENAME);
@@ -247,16 +292,38 @@ class BlazonService
         }
     }
 
-    private function loadData() {
-        $all = $this->blazonTable->getAll();
-        foreach ($all as $value) {
-            $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
-            $this->data[$value['id']] = $value;
-            if ($value['isOverlay'] == 1) {
-                $this->dataJustOverlays[$value['id']] = $value;
-            } else {
-                $this->dataNoOverlays[$value['id']] = $value;
-            }
+    private function getData($type)
+    {
+        switch ($type){
+            case EBlazonDataType::ALL:
+                if($this->data) break;
+                $data = $this->blazonTable->getAll();
+                foreach ($data as $blazonData)
+                    $this->data[$blazonData['id']] = $blazonData;
+                break;
+            case EBlazonDataType::OVERLAY:
+                if($this->dataOverlays) break;
+                $data = $this->blazonTable->getAllOverlays();
+                foreach ($data as $blazonData)
+                    $this->dataOverlays[$blazonData['id']] = $blazonData;
+                break;
+            case EBlazonDataType::NO_OVERLAY:
+                if($this->dataNoOverlays) break;
+                $data = $this->blazonTable->getAllNotOverlay();
+                foreach ($data as $blazonData)
+                    $this->dataNoOverlays[$blazonData['id']] = $blazonData;
+                break;
         }
     }
+
+    private function resetInMemoryCache()
+    {
+        $this->data = $this->dataOverlays = $this->dataNoOverlays = false;
+    }
+}
+
+abstract class EBlazonDataType{
+    const ALL = 0;
+    const OVERLAY = 1;
+    const NO_OVERLAY = 2;
 }

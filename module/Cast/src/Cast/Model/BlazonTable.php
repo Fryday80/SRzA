@@ -21,6 +21,20 @@ class BlazonTable extends AbstractTableGateway
 
         return $row->toArray();
     }
+    public function getAllOverlays () {
+        $row = $this->select(array('isOverlay' => 1));
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
+    public function getAllNotOverlay () {
+        $row = $this->select(array('isOverlay' => 0));
+        if (!$row)
+            return false;
+
+        return $row->toArray();
+    }
     
     public function getById($id) {
         $row = $this->select(array('id' => (int) $id));
