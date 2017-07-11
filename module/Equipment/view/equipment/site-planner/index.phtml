@@ -166,9 +166,29 @@ $this->headScript()->appendFile('/libs/map.js');
         <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
     <div class="details-panel">
-        <box>
+        <box class="global">
             <boxtitle>
-                TextField
+                <span>Global</span>
+            </boxtitle>
+            <boxcontent>
+                <p>ich weiß noch nich was hier rein kommt</p>
+                <br>
+            </boxcontent>
+            <br>
+        </box>
+        <box class="crop-box">
+            <boxtitle>
+                <span>Crop</span>
+            </boxtitle>
+            <boxcontent>
+                <p>width und hight von dem bild ausschnitt</p>
+                <br>
+            </boxcontent>
+            <br>
+        </box>
+        <box class="text-box">
+            <boxtitle>
+                <span>Text Box</span>
             </boxtitle>
             <boxcontent>
                 <label class="text-field-panel tent-panel equip-panel">
@@ -181,6 +201,24 @@ $this->headScript()->appendFile('/libs/map.js');
                     <input  type="color">
                 </label>
                 <br>
+                <label class="tent-panel equip-panel">
+                    <span>position:</span>
+                    <select>
+                        <option value="1">top</option>
+                        <option value="2">right</option>
+                        <option value="3">bottom</option>
+                        <option value="4">left</option>
+                    </select>
+                </label>
+                <br>
+            </boxcontent>
+            <br>
+        </box>
+        <box class="equip-item">
+            <boxtitle>
+                <span>Aussrüstungs teil</span>
+            </boxtitle>
+            <boxcontent>
                 <label class="tent-panel equip-panel">
                     <span>position:</span>
                     <select>
@@ -1128,7 +1166,10 @@ $this->headScript()->appendFile('/libs/map.js');
         class DetailsPanel {
             constructor(sitePlanner) {
                 var self = this;
-                this.panel = $('.details-panel', sitePlanner.$element);
+                this.$panel = $('.details-panel', sitePlanner.$element);
+                this.$global = $('boxcontent[data-type="global"]', this.$panel);
+                this.$equipitem = $('boxcontent[data-type="equipitem"]', this.$panel);
+
                 sitePlanner.canvas.on('object:selected', function (e) {
                     self.onSelect(e.target);
                 });
@@ -1138,9 +1179,24 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             onSelect(obj) {
                 console.log(obj.type);
+                //@todo hide global details
+
+                switch (obj.type) {
+                    //@todo show details for object type
+                    case 'Equipitem':
+                        //@todo update data on details
+                        //@todo add event handler (eventuel nur "onChange" benutzen)
+                        break;
+                    case 'textbox':
+                        //@todo update data on details
+                        //@todo add event handler (eventuel nur "onChange" benutzen)
+                        break;
+                }
             }
             onDeselect() {
-
+                //@todo hide details
+                //@todo show global details
+                //@todo remove event handler
             }
         }
         /**
