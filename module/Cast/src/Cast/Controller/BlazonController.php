@@ -40,21 +40,16 @@ class BlazonController extends AbstractActionController
                 $request->getFiles()->toArray()
             );
 
-            if (!$this->blaService->exists($post['name'])) {
-                $form->setData($post);
-                if ($form->isValid()) {
-                    $data = $form->getData();
-                    if ($data['blazon']['error'] == 0) {
-                        $this->blaService->addNew($data['name'], $data['isOverlay'], $data['blazon'], $data['blazonBig']);
-                        return $this->redirect()->toRoute('castmanager/wappen');
-                    } else {
-                        //todo error handling
-                        bdump('file error');
-                    }
+            $form->setData($post);
+            if ($form->isValid()) {
+                $data = $form->getData();
+                if ($data['blazon']['error'] == 0) {
+                    $this->blaService->addNew($data['name'], $data['isOverlay'], $data['blazon'], $data['blazonBig']);
+                    return $this->redirect()->toRoute('castmanager/wappen');
+                } else {
+                    //todo error handling
+                    bdump('file error');
                 }
-            } else {
-                //@todo add error msg to form/name  "name already taken"
-                bdump('wappen error "name already taken"');
             }
 
         }
@@ -93,7 +88,7 @@ class BlazonController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()) {
                 $data = $form->getData();
-                if (!$item = $this->blaService->save($id, $data['name'], $data['blazon'], $data['blazonBig']))
+                if (!$item = $this->blaService->save($id, $data['isOverlay'], $data['name'], $data['blazon'], $data['blazonBig']))
                 {
                     //@todo errors to form
                 } else {
