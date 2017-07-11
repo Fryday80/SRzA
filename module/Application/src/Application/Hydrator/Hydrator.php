@@ -152,9 +152,9 @@ class Hydrator extends ClassMethods
         $objectClass = get_class($object);
 
         $object->preExtract();
-        if ($object->extract() !== false) {
+        if ($values = $object->extract() !== false) {
             $object->postExtract();
-            return $object;
+            return $values;
         }
 
         // reset the hydrator's hydrator's cache for this object, as the filter may be per-instance
