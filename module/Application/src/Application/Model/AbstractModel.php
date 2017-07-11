@@ -8,6 +8,30 @@ class AbstractModel implements ArrayAccess
     private $propertiesCache;
 
     /**
+     * called after hydrating data into this model
+     */
+    public function preHydrate() { }
+    public function postHydrate() { }
+    public function preExtract() { }
+    public function postExtract() { }
+
+    /**
+     * must return anything than false to disable default hydrating
+     * @param $data
+     * @return bool
+     */
+    public function hydrate($data) {
+        return false;
+    }
+
+    /**
+     * must return array to disable default extracting
+     * @return false|array
+     */
+    public function extract() {
+        return false;
+    }
+    /**
      * Whether a offset exists
      * @link http://php.net/manual/en/arrayaccess.offsetexists.php
      * @param mixed $offset <p>

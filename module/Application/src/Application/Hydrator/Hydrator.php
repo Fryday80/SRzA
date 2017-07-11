@@ -48,9 +48,7 @@ class Hydrator extends ClassMethods
     }
 
     /**
-     * Hydrate an object by populating getter/setter methods
-     *
-     * Hydrates an object by getter/setter methods of the object.
+     * Hydrate an object by using getter/setter methods or populating in public properties
      *
      * @param  array                            $data
      * @param  object                           $object
@@ -65,8 +63,20 @@ class Hydrator extends ClassMethods
                 __METHOD__
             ));
         }
+        if (!is_subclass_of($object, 'Application\Model\AbstractModel')) {
+            throw new BadMethodCallException(sprintf(
+                '%s expects the provided $object to be a child of "Application\Model\AbstractModel")',
+                __METHOD__
+            ));
+        }
         $final = [];
         $objectClass = get_class($object);
+
+        $object->preHydrate();
+        if ($object->hydrate($data) !== false) {
+            $object->postHydrate();
+            return $object;
+        }
 
         foreach ($data as $property => $value) {
             $propertyFqn = $objectClass . '::$' . $property;
@@ -111,6 +121,7 @@ class Hydrator extends ClassMethods
 
             $object->$property = $this->hydrateValue($property, $value, $data);
         }
+        $object->postHydrate();
         return $object;
     }
 
@@ -131,9 +142,20 @@ class Hydrator extends ClassMethods
                 __METHOD__
             ));
         }
-
+        if (!is_subclass_of($object, 'Application\Model\AbstractModel')) {
+            throw new BadMethodCallException(sprintf(
+                '%s expects the provided $object to be a child of "Application\Model\AbstractModel")',
+                __METHOD__
+            ));
+        }
         $locked = [];
         $objectClass = get_class($object);
+
+        $object->preExtract();
+        if ($object->extract() !== false) {
+            $object->postExtract();
+            return $object;
+        }
 
         // reset the hydrator's hydrator's cache for this object, as the filter may be per-instance
         if ($object instanceof FilterProviderInterface) {
@@ -199,7 +221,7 @@ class Hydrator extends ClassMethods
             }
             $values[$name] = $this->extractValue($name, $value, $object);
         }
-//        var_dump($values);
+        $object->postExtract();
         return $values;
     }
 }
