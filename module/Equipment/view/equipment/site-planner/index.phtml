@@ -22,9 +22,9 @@ $this->headScript()->appendFile('/libs/map.js');
         width: 200px;
         padding: 5px;
     }
-    #sitePlanner .planner-controls .image-export {
-        display: none;
-    }
+    /*#sitePlanner .planner-controls .image-export {*/
+        /*display: none;*/
+    /*}*/
     #sitePlanner .planner-controls ul {
         list-style: none;
     }
@@ -61,6 +61,27 @@ $this->headScript()->appendFile('/libs/map.js');
         float: right;
         height: 33px;
     }
+    .details-panel {
+        width: 200px;
+    }
+    .details-panel>box>boxcontent{
+        margin: 0;
+        padding: 0;
+        padding-left: 5px;
+    }
+    .details-panel>box>boxcontent * {
+        width: 150px;
+    }
+    .details-panel>box>boxcontent span {
+        width: 90px;
+    }
+    .details-panel>box>boxcontent input,
+    .details-panel>box>boxcontent select {
+        height: 35px;
+    }
+    .details-panel>box>boxcontent label>span:first-child{
+        left: 30px;
+    }
 
 </style>
 <h3>control:</h3>
@@ -72,7 +93,7 @@ $this->headScript()->appendFile('/libs/map.js');
 </ul>
 <box id="sitePlanner">
     <div class="planner-controls">
-        <div class="image-export">
+        <div id="image-export-ui" class="image-export hidden">
             <label>
                 <span>Bild Name</span>
                 <input id="image-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
@@ -81,7 +102,7 @@ $this->headScript()->appendFile('/libs/map.js');
             <button class="abort">Abbrechen</button>
             <button class="save-image">Bild Speichern</button>
         </div>
-        <div class="default">
+        <div id="default-ui" class="default">
             <label>
                 <span>Plänne</span>
                 <select class="plan-select"></select>
@@ -144,8 +165,40 @@ $this->headScript()->appendFile('/libs/map.js');
     <div class="canvas">
         <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
+    <div class="details-panel">
+        <box>
+            <boxtitle>
+                TextField
+            </boxtitle>
+            <boxcontent>
+                <label class="text-field-panel tent-panel equip-panel">
+                    <span>Font size:<br></span>
+                    <input id="font-size" type="number" min="5" max="40" step="1">
+                </label>
+                <br>
+                <label class="text-field-panel tent-panel equip-panel">
+                    <span>background color:</span>
+                    <input  type="color">
+                </label>
+                <br>
+                <label class="tent-panel equip-panel">
+                    <span>position:</span>
+                    <select>
+                        <option value="1">top</option>
+                        <option value="2">right</option>
+                        <option value="3">bottom</option>
+                        <option value="4">left</option>
+                    </select>
+                </label>
+                <br>
+            </boxcontent>
+            <br>
+        </box>
+    </div>
 </box>
 <canvas id="cropCanvas" width="2000" height="2000"></canvas>
+
+
 <script>
     (function($) {
         "use strict";
@@ -1098,6 +1151,8 @@ $this->headScript()->appendFile('/libs/map.js');
                 var self = this,
                     $canvas = $('.site-planner-canvas', element);
                 this.$element = $(element);
+                this.$uiDefault = $("#default-ui");
+                this.$uiImageExport = $("#image-export-ui");
                 this.progressBarWidth = 250;
                 this.viewPos = {x:0, y:0};
                 this.zoomValue = 1;
@@ -1248,7 +1303,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 $('button.createImage', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     self.startCropper();
-                    //@todo create image from canvas and open a new canvas to crop. than upload
                 });
                 $('.itemList li', this.$element).click(function(e) {
                     var id = $(this).data('id');
@@ -1272,11 +1326,11 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
 
                 //croper
-                $('.image-export button.abort', this.$element).click(function (e) {
+                $('.image-export button.abort', this.$element).on('click', function (e) {
                     e.stopPropagation();
                     self.stopCropper();
                 });
-                $('.image-export button.save-image', this.$element).click(function (e) {
+                $('.image-export button.save-image', this.$element).on('click', function (e) {
                     e.stopPropagation();
                     self.doCrop();
                 });
@@ -1548,11 +1602,13 @@ $this->headScript()->appendFile('/libs/map.js');
                 return true;
             }
             stopCropper() {
-                $(".planner-controls .image-export", this.$element).hide();
-                $(".planner-controls .default", this.$element).show();
+                console.log('stop cropper');
+                this.$uiImageExport.addClass('hidden');
+                this.$uiDefault.removeClass('hidden');
                 if (!this.cropperOverlay) return;
                 this.cropperOverlay.remove();
                 this.canvas.remove(this.cropperOverlay);
+                this.cropperOverlay = null;
             }
             doCrop() {
                 if (!this.cropperOverlay) return;
@@ -1582,8 +1638,12 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             startCropper() {
                 if (this.isBusy) return;
-                $(".planner-controls .default", this.$element).hide();
-                $(".planner-controls .image-export", this.$element).show();
+                console.log('start cropper');
+                this.$uiImageExport.removeClass('hidden');
+                this.$uiDefault.addClass('hidden');
+
+//                $(".planner-controls .default", this.$element).hide();
+//                $(".planner-controls .image-export", this.$element).show();
 
                 if (this.cropperOverlay != null) {
                     this.stopCropper();
