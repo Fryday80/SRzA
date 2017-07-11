@@ -32,7 +32,7 @@ class FamilyController extends AbstractActionController
         ) );
     }
     public function addAction() {
-        $form = new FamilyForm($this->blazonService->getAll());
+        $form = new FamilyForm($this->blazonService);
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/families/add');
 
@@ -64,7 +64,7 @@ class FamilyController extends AbstractActionController
         if (!$family = $this->castService->getFamilyById($id)) {
             return $this->redirect()->toRoute('castmanager/families');
         }
-        $form = new FamilyForm($this->blazonService->getAll());
+        $form = new FamilyForm($this->blazonService);
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
         $form->populateValues($family);

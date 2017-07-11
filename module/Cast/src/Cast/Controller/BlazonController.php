@@ -45,7 +45,7 @@ class BlazonController extends AbstractActionController
                 if ($form->isValid()) {
                     $data = $form->getData();
                     if ($data['blazon']['error'] == 0) {
-                        $this->blaService->addNew($data['name'], $data['blazon'], $data['blazonBig']);
+                        $this->blaService->addNew($data['name'], $data['isOverlay'], $data['blazon'], $data['blazonBig']);
                         return $this->redirect()->toRoute('castmanager/wappen');
                     } else {
                         //todo error handling

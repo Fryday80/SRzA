@@ -192,7 +192,7 @@ class CharacterForm extends Form
             'options' => array(
                 'disable_inarray_validator' => true,
                 'label' => 'Persönliches Wappen',
-                'value_options' => $this->blazonService->getBlazonList(),
+                'value_options' => $this->blazonService->getBlazonListNoOverlays(),
             )
         ));  // blazon_id   - select
         $this->add(array(

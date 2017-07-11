@@ -37,8 +37,44 @@ class BlazonService
         return $this->idNameHash;
     }
 
+    public function getBlazonListNoOverlays()
+    {
+        $return = $this->idNameHash;
+        foreach ($this->data as $item) {
+            if ($item['isOverlay'] == 1) unset($return[$item['id']]);
+        }
+        return $return;
+    }
+
+    public function getBlazonListOverlays()
+    {
+        $return = $this->idNameHash;
+        foreach ($this->data as $item) {
+            if ($item['isOverlay'] == 0) unset($return[$item['id']]);
+        }
+        return $return;
+    }
+
     public function getAll() {
         return $this->data;
+    }
+
+    public function getAllOverlays() {
+        $return = $this->data;
+        foreach ($this->getBlazonListNoOverlays() as $key => $blazonListOverlay) {
+            unset($return[$key]);
+        }
+
+        return $return;
+    }
+
+    public function getAllNoOverlays() {
+        $return = $this->data;
+        foreach ($this->getBlazonListOverlays() as $key => $blazonListOverlay) {
+            unset($return[$key]);
+        }
+
+        return $return;
     }
 
     /**
@@ -138,11 +174,12 @@ class BlazonService
 
     /**
      * @param $name string
+     * @param $isOverlay
      * @param null $blazonData
      * @param null $blazonBigData
      * @return bool
      */
-    public function addNew($name, $blazonData = null, $blazonBigData = null) {
+    public function addNew($name, $isOverlay, $blazonData = null, $blazonBigData = null) {
         if ($this->exists($name)) return false;
         $fileData['fileName'] = null;
         $bigFileData['fileName'] = null;
@@ -158,6 +195,7 @@ class BlazonService
         }
 
         $newID = $this->blazonTable->add(array(
+            'isOverlay' => $isOverlay,
             'name' => $name,
             'filename' => $fileData['fileName'],
             'bigFilename' => $bigFileData['fileName']

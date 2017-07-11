@@ -44,6 +44,13 @@ class BlazonForm extends Form
             )
         ));
         $this->add(array(
+            'name' => 'isOverlay',
+            'type' => 'Checkbox',
+            'options' => array(
+                'label' => 'Overlay',
+            ),
+        ));
+        $this->add(array(
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
