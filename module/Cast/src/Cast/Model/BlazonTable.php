@@ -35,15 +35,16 @@ class BlazonTable extends AbstractTableGateway
         return $this->getLastInsertValue();
     }
     
-    public function save($id, $data) {
+    public function save($id, $data)
+    {
         unset($data['id']);
         if (!$this->update($data, array('id' => (int)$id)))
             return false;
         return $id;
     }
     
-    public function remove($id) {
-        //@todo remove image
+    public function remove($id)
+    {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
 

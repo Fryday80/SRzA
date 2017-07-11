@@ -10,6 +10,7 @@ class JobControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $sm = $sm->getServiceLocator();
         $castService = $sm->get('CastService');
-        return new JobController($castService);
+        $blazonService = $sm->get('BlazonService');
+        return new JobController($castService, $blazonService);
     }
 }

@@ -1,11 +1,13 @@
 <?php
 namespace Cast\Form;
 
+use Cast\Service\BlazonService;
 use Zend\Form\Form;
 
 class FamilyForm extends Form
 {
-    public function __construct($blazons = null)
+
+    public function __construct(BlazonService $blazonService = null)
     {
         parent::__construct("Family");
         $this->setAttribute('method', 'post');
@@ -43,10 +45,13 @@ class FamilyForm extends Form
                 'value' => 'Submit',
             )
         ));
-        if ($blazons) $this->setBlazonsForSelect($blazons);
+        if ($blazonService) $this->setBlazonsForSelect($blazonService);
     }
 
-    private function setBlazonsForSelect($blazons) {
+    /**
+     * @param BlazonService $blazonService
+     */
+    private function setBlazonsForSelect($blazonService) {
         $liCssTemplate = <<<EOD
     background-image:url('%s');
     height: 55px;
@@ -67,7 +72,7 @@ EOD;
                 'label' => 'Keins'
             )
         );
-        foreach ($blazons as $value) {
+        foreach ($blazonService->getAllNoOverlays() as $value) {
             $blazonUrl = '/media/file/wappen/'.$value['filename'];
             $liCss = sprintf($liCssTemplate, $blazonUrl);
             array_push($data, array(

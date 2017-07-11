@@ -2,6 +2,7 @@
 namespace Cast\Controller;
 
 use Cast\Form\JobForm;
+use Cast\Service\BlazonService;
 use Cast\Service\CastService;
 use Cast\Utility\JobDataTable;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -11,9 +12,12 @@ class JobController extends AbstractActionController
 {
     /** @var CastService  */
     private $castService;
+    /** @var BlazonService  */
+    private $blazonService;
 
-    public function __construct(CastService $castService) {
+    public function __construct(CastService $castService, BlazonService $blazonService) {
         $this->castService = $castService;
+        $this->blazonService = $blazonService;
     }
 
     public function indexAction() {
@@ -29,7 +33,7 @@ class JobController extends AbstractActionController
         ));
     }
     public function addAction() {
-        $form = new JobForm();
+        $form = new JobForm($this->blazonService);
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/jobs/add');
 
@@ -55,7 +59,7 @@ class JobController extends AbstractActionController
         if (!$family = $this->castService->getJobById($id)) {
             return $this->redirect()->toRoute('castmanager/jobs');
         }
-        $form = new JobForm();
+        $form = new JobForm($this->blazonService);
         $operator = 'Edit';
         $form->get('submit')->setAttribute('value', $operator);
         $form->populateValues($family);

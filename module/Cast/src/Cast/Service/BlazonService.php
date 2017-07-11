@@ -1,30 +1,19 @@
 <?php
 namespace Cast\Service;
 
-
 use Cast\Model\BlazonTable;
-use Error;
-
 
 class BlazonService
 {
     const BLAZON_IMAGE_PATH = './Data/wappen/';
     const BLAZON_IMAGE_URL = '/wappen/';
-    const ERROR_ID_NOT_FOUND = 0;
-    const ERROR_NAME_NOT_FOUND = 1;
-    const ERROR_MSG = [
-        'ERROR_ID_NOT_FOUND',
-        'ERROR_NAME_NOT_FOUND'
-    ];
-    public $lastError;
-    private $loaded = false;
-    private $data;
+
     /** @var  BlazonTable */
     private $blazonTable;
-    private $parentBlazons = false;
 
-    private $nameIdHash;
-    private $idNameHash;
+    private $data;
+    private $dataNoOverlays;
+    private $dataJustOverlays;
 
     function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
@@ -32,120 +21,73 @@ class BlazonService
         $this->loadData();
     }
 
-    public function getBlazonList()
-    {
-        return $this->idNameHash;
-    }
-
     public function getAll() {
         return $this->data;
     }
 
+    public function getAllOverlays() {
+        return $this->dataJustOverlays;
+    }
+
+    public function getAllNoOverlays() {
+        return $this->dataNoOverlays;
+    }
+
     /**
-     * @param $id
-     * @return mixed bool|array
+     * @param int $id
+     * @return array|false
      */
     public function getById($id) {
-        foreach ($this->data as $value) {
-            if ($id == $value['id']) return $value;
-        }
-        $lastError = $this::ERROR_ID_NOT_FOUND;
-        return false;
+        return (isset($this->data[$id])) ? $this->data[$id] : false;
     }
 
-    public function getByName($name) {
-        foreach ($this->data as $value) {
-            if ($name == $value['name']) return $value;
+    public function getArgumentsByChar($char, $familyBlazon = false) {
+        if ($familyBlazon)
+            $base = ($char['family_blazon_id'] !== 0) ? $char['family_blazon_id'] : 1;
+        else
+            $base  = ($char['blazon_id'] !== 0) ? $char['blazon_id'] : 1;
+        $over1 = ($base == 1 && isset($char['job_blazon_id'])) ? $char['job_blazon_id'] : 0;
+        if (isset($char['supervisor_id']))
+        {
+            $supervisorBlazonId = $this->getSupervisorBlazon($char['supervisor_id'])['blazon_id'];
         }
-        $lastError = $this::ERROR_NAME_NOT_FOUND;
-        return false;
+        $over2 = (isset($this->data[$supervisorBlazonId])) ? $supervisorBlazonId : 0;
+
+        return array($base, $over1, $over2);
     }
 
-    public function createReference($char){
-        $this->parentBlazons[$char['id']] = $char['blazon_id'];
-        if (isset($char['employ'])){
-            foreach ($char['employ'] as $employee){
-                $this->createReference($employee);
-            }
-        }
-        $this->getParentBlazons();
+    public function getHTMLArguments($arg, $familyBlazon = false) {
+        if ($familyBlazon)
+            $base  = (isset($this->data[$arg[0]]['bigFilename'])) ? $this->data[$arg[0]]['bigFilename'] : $this->data[$arg[0]]['filename'];
+        else
+            $base  = $this->data[$arg[0]]['filename'];
+        if ($arg[1] == 0) $over1 = '';
+        else
+            $over1 = (isset($this->data[$arg[1]]['filename'])) ? $this->data[$arg[1]]['filename'] : '';
+        if ($arg[2] == 0 || $arg[2] == 1) $over2 = '';
+        else
+            $over2 = (isset($this->data[$arg[2]]['bigFilename'])) ? $this->data[$arg[2]]['bigFilename'] : $this->data[$arg[2]]['filename'];
+
+        return array($base, $over1, $over2);
     }
 
-    public function getParentBlazons()
-    {
-        if(!$this->parentBlazons) $this->createReference($this->castService->getStanding());
-        return $this->parentBlazons;
-    }
-
-    public function resetParentBlazons()
-    {
-        $this->parentBlazons = false;
-    }
-
-    public function getBlazonHelperArgumentsByCharacter($character){
-        if(!$this->parentBlazons)$this->parentBlazons = $this->getParentBlazons();
-        $overlay1 = $overlay2 = '';
-        $select = (isset($character['job_name'])) ? 'job_name' : 'job_id';
-        if ($character[$select] !== null){
-            $overlay1 = $character[$select];
-        }
-        if ( $character['supervisor_id'] !== "0" ) { //not set should be unused when in use
-            if ( $character['supervisor_id'] !== "1" ) {    //first level Chars under fictive supervisor
-                $overlay2 = (int)$this->parentBlazons[$character['supervisor_id']];
-            }
-        }
-        if (isset($character['blazon_id'])) {
-            $base = ($character['blazon_id'] == "0") ? 'standard' : (int)$character['blazon_id'];
-        } else {
-            $base = 'standard';
-        }
-
-        if ($character['id'] == "1") $overlay1 = 'king'; //special rule for the king
-        if ($base == $overlay2) $overlay2 = null;
-
-        return array($base, $overlay1, $overlay2);
-    }
-
-    public function getBigBlazonUrl($selector){
-        if (is_string( $selector )) {//ja da giebt es sicher ne einfache lösung man muss sich nur überlegen mit welche funktion es am geschicktesten geht
-            $blazonData = $this->getByName($selector);
-        }
-        elseif (is_int( $selector )) {
-            $blazonData = $this->getById($selector);
-        }
-        else {
-            $blazonData = $this->getByName('standard');
-        }
-        $fileName = (isset($blazonData['bigFilename'])) ? $blazonData['bigFilename'] : $blazonData['filename'];
-
-        return '/media/file'.$this::BLAZON_IMAGE_URL.$fileName;
-    }
-
-    public function getBlazonUrl($selector){
-        if (is_string( $selector )) {
-            $blazonData = $this->getByName($selector);
-        }
-        elseif (is_int( $selector )) {
-            $blazonData = $this->getById($selector);
-        }
-        else {
-            $blazonData = $this->getByName('standard');
-        }
-        $fileName = $blazonData['filename'];
-
-        return '/media/file'.$this::BLAZON_IMAGE_URL.$fileName;
+    private function getSupervisorBlazon($supervisor_id) {
+        $supervisor = $this->castService->getCharacterDataById($supervisor_id);
+        if ($supervisor['blazon_id'] == 0 || $supervisor['blazon_id'] == null || !isset($supervisor['blazon_id']))
+            if($supervisor['supervisor_id'] !== null)
+            $supervisor = $this->getSupervisorBlazon($supervisor['supervisor_id']);
+        return $supervisor;
     }
 
     /**
      * @param $name string
+     * @param $isOverlay
      * @param null $blazonData
      * @param null $blazonBigData
      * @return bool
      */
-    public function addNew($name, $blazonData = null, $blazonBigData = null) {
-        if ($this->exists($name)) return false;
-        $fileData['fileName'] = null;
-        $bigFileData['fileName'] = null;
+    public function addNew($name, $isOverlay, $blazonData = null, $blazonBigData = null) {
+        $fileData['fileName'] = $bigFileData['fileName'] = null;
         // small blazon uploaded ?
         if (!($blazonData['error'] > 0)) {
             $fileData = $this->moveFile($blazonData['tmp_name'], $name, $blazonData['name']);
@@ -157,44 +99,48 @@ class BlazonService
             $this->adjustUploadPic($bigFileData['filePath']);
         }
 
-        $newID = $this->blazonTable->add(array(
+        $newItem = array(
+            'isOverlay' => $isOverlay,
             'name' => $name,
             'filename' => $fileData['fileName'],
             'bigFilename' => $bigFileData['fileName']
-        ));
-        //@todo add also to this->data
-        return true;
+        );
+        $newItem['id'] = $this->blazonTable->add($newItem);
+        $this->data[$newItem['id']] = $newItem;
+        return $newItem['id'];
     }
 
-    public function save($id, $name = null, $blazonData = null, $blazonBigData = null) {
+    public function save($id, $isOverlay, $name = null, $blazonData = null, $blazonBigData = null) {
+        $data['isOverlay'] = $isOverlay;
         $item = $this->getById($id);
         if(!$item) return false;
-        $fileData['fileName'] = null;
-        $bigFileData['fileName'] = null;
+
+        $fileData['fileName'] = $bigFileData['fileName'] = null;
+
         // name changed ?
         if ($name !== null && $item['name'] != $name) {
-            $fileData['fileName'] = $this->renameItem($item, $name);
-            $bigFileData['fileName'] = $this->renameItem($item, $name . '_big');
-            $item['name'] = $name;
+            if ($item['filename'] !== null)
+                $data['fileName'] = $this->renameItem($item, $name);
+            if ($item['bigFilename'] !== null)
+                $data['bigFilename'] = $this->renameItem($item, $name . '_big');
+            $data['name'] = $name;
         }
         // small blazon uploaded ?
         if (!($blazonData['error'] > 0)) {
             $fileData = $this->moveFile($blazonData['tmp_name'], $item['name'], $blazonData['name']);
             $this->adjustUploadPic($fileData['filePath']);
+            $data['filename'] = $fileData['fileName'];
         }
         // big blazon uploaded ?
         if (!($blazonBigData['error'] > 0)) {
             $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $item['name'].'_big', $blazonBigData['name']);
             $this->adjustUploadPic($bigFileData['filePath']);
+            $data['bigFilename'] = $bigFileData['fileName'];
         }
-        $data = [];
-        if ($name !== null) $data['name'] = $name;
-        if ($fileData['fileName'] !== null) $data['filename'] = $fileData['fileName'];
-        if ($bigFileData['fileName'] !== null) $data['bigFilename'] = $bigFileData['fileName'];
 
         $this->blazonTable->save($id, $data);
         $this->loadData();
-        return $item;
+        return $this->data[$id];
     }
 
     public function remove($id) {
@@ -211,18 +157,6 @@ class BlazonService
         }
     }
 
-    /**
-     * @param $name string
-     * @return bool
-     */
-    public function exists($name) {
-        $this->loadData();
-        foreach ($this->data as $value) {
-            if ($name == $value['name']) return true;
-        }
-        return false;
-    }
-
     /** moves file to
      * @param $path string
      * @param $name string filename with extension
@@ -232,13 +166,13 @@ class BlazonService
     private function moveFile($path, $name, $originalFileName) {
         $this->loadData();
         $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
-        $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
-        if (!$wappenPath) {
+        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
+        if (!$blazonPath) {
             //@todo create "wappen" folder in ./Data
             // not tested
 //            mkdir ($wappenPath);
         }
-        $newPath = $wappenPath.'/'.$name.'.'.$ext;
+        $newPath = $blazonPath.'/'.$name.'.'.$ext;
         rename($path, $newPath);
         return array(
             'fileName' => pathinfo($newPath, PATHINFO_BASENAME),
@@ -264,10 +198,7 @@ class BlazonService
         return null;
     }
 
-    private function error($code) {
-        return new Error($this::ERROR_MSG[$code], $code);
-    }
-    private function adjustUploadPic($imagePath){
+    private function adjustUploadPic($imagePath) {
 
         $img = file_get_contents($imagePath);
         $im  = imagecreatefromstring($img);
@@ -317,15 +248,15 @@ class BlazonService
     }
 
     private function loadData() {
-        if (!$this->loaded) {
-            $all = $this->blazonTable->getAll();
-            foreach ($all as $value) {
-                $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
-                $this->data[$value['id']] = $value;
-                $this->nameIdHash[$value['name']] = $value['id'];
-                $this->idNameHash[$value['id']] = $value['name'];
+        $all = $this->blazonTable->getAll();
+        foreach ($all as $value) {
+            $value['url'] = $this::BLAZON_IMAGE_URL.$value['filename'];
+            $this->data[$value['id']] = $value;
+            if ($value['isOverlay'] == 1) {
+                $this->dataJustOverlays[$value['id']] = $value;
+            } else {
+                $this->dataNoOverlays[$value['id']] = $value;
             }
-            $this->loaded = true;
         }
     }
 }

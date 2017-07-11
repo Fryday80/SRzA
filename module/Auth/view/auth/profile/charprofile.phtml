@@ -35,9 +35,6 @@
 </style>
 
 <?php
-/** @var \Cast\View\Helper\BlazonHelper $bh */
-$bh = $this->blazon();
-$char['bhArg'] = $bh->getBlazonHelperArgumentsByCharacter($char);
 $title = $char['name'] . ' ' . $char['surename'];
 $this->headTitle($title);
 $img = (isset($char['userData']->user_image)) ? $char['userData']->user_image : false;
@@ -57,40 +54,42 @@ echo $ownerLinks . $userProfileLink; ?>
 </h1>
 <?php
 echo $this->convert()->myDate($char['birthday']);
-echo '<div class="charprofile headimages headblazon">' . $bh->blazon($char['bhArg']) . '</div>' ?>
+echo '<div class="charprofile headimages headblazon">' . $this->blazon()->blazon($char) . '</div>' ?>
     <div class="charprofile headimages">
         <?php echo ($char['userData']->user_image) ? '<img style="float: right;height: 250px;" src="'. $img .'">' : 'Bild nicht gefunden' ?>
     </div>
 <div class="clear"></div>
 <br/>
-<box class="public-char-profile">
-    <boxtitle>
-    </boxtitle>
-    <boxcontent>
-        <h1><span class="own_text_small">Vita</span></h1><br/>
-        <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita nicht gefunden'?></p>
-        <?php if ($hasFamily):
-            echo '<br/><h1><span class="own_text_small">Familie</span></h1><br/>';
-            foreach ($charFamily as $member): ?>
-                <a href="/profile/<?php echo $member['userName'] . '/' . $member['charURL'] ?>">
-                    <box class = "familyMember">
-                        <boxtitle>
-                            <span><?php
-                                echo $member['name'] . ' ';
-                                echo ( isset( $member['surename'] ) )? $member['surename'] : ''
-                            ?></span>
-                            <?php echo '<div class="charprofile familyimages">' . $bh->blazon() . '</div>' ?>
-                        </boxtitle>
-                        <boxcontent>
-                            <div>
-                            </div>
-                        </boxcontent>
-                    </box>
-                </a>
-            <?php endforeach;
-        endif; ?>
-    </boxcontent>
-</box>
+<div>
+    <box class="public-char-profile">
+        <boxtitle>
+        </boxtitle>
+        <boxcontent>
+            <h1><span class="own_text_small">Vita</span></h1><br/>
+            <p><?php echo (isset($char['vita'])) ? $char['vita'] :  'vita nicht gefunden'?></p>
+            <?php if ($hasFamily):
+                echo '<br/><h1><span class="own_text_small">Familie</span></h1><br/>';
+                foreach ($charFamily as $member): ?>
+                    <a href="/profile/<?php echo $member['userName'] . '/' . $member['charURL'] ?>">
+                        <box class = "familyMember">
+                            <boxtitle>
+                                <span><?php
+                                    echo $member['name'] . ' ';
+                                    echo ( isset( $member['surename'] ) )? $member['surename'] : ''
+                                ?></span>
+                                <?php echo '<div class="charprofile familyimages">' . $this->blazon()->blazon($member, true) . '</div>' ?>
+                            </boxtitle>
+                            <boxcontent>
+                                <div>
+                                </div>
+                            </boxcontent>
+                        </box>
+                    </a>
+                <?php endforeach;
+            endif; ?>
+        </boxcontent>
+    </box>
+</div>
 <div class="clear"></div>
 <a href="/profile/<?php echo $username ?>">
     <button><?php echo $username ?></button>
