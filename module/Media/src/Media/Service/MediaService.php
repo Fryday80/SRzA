@@ -562,7 +562,6 @@ class MediaService {
      * @internal param string $source Source path for zip
      * @link    http://stackoverflow.com/questions/17584869/zip-main-folder-with-sub-folder-inside
      */
-
     public function zipFile($path)
     {
         $includeFolder = true;
@@ -619,7 +618,27 @@ class MediaService {
         $zip->close();
         return $this->loadItem($destination);
     }
-    
+
+    /**
+     * @param $filePostArray
+     * @param $targetFolder
+     * @return bool|MediaException
+     */
+    public function upload($filePostArray, $targetFolder) {
+        //check file type
+        if ($filePostArray['error'] > 0) {
+            //@todo return error
+            return false;
+        }
+        $realTargetFolder = $this->realPath($targetFolder);
+        //@todo check permissions
+//        return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
+        $newPath = $realTargetFolder . '/' . $filePostArray['name'];
+        if ($this->fileExists($newPath) ) {
+            return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $targetFolder.'/'.$filePostArray['name']);
+        }
+        rename($filePostArray['tmp_name'], $newPath);
+    }
 
     /**
      * Check recursive folder permissions
