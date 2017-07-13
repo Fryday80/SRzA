@@ -5,6 +5,8 @@ use Application\Utility\DataTable;
 use Equipment\Model\SitePlannerTable;
 use Equipment\Service\EquipmentService;
 use Exception;
+use Media\Service\MediaException;
+use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
@@ -14,10 +16,13 @@ class SitePlannerController extends AbstractActionController
     private $equipmentService;
     /** @var $sitePlanTable SitePlannerTable  */
     private $sitePlanTable;
+    /** @var MediaService  */
+    private $mediaService;
 
-    public function __construct(EquipmentService $equipmentService, SitePlannerTable $sitePlannerTable) {
+    public function __construct(EquipmentService $equipmentService, SitePlannerTable $sitePlannerTable, MediaService $mediaService) {
         $this->equipmentService = $equipmentService;
         $this->sitePlanTable = $sitePlannerTable;
+        $this->mediaService = $mediaService;
     }
 
     public function indexAction() {
@@ -117,9 +122,32 @@ class SitePlannerController extends AbstractActionController
 
         return new JsonModel($result);
     }
-
     public function imageUploadAction() {
-        //save image to /data/
+        $result = ['error' => false];
+        $file = $this->params()->fromFiles('image');
+        //@todo save path from config
+        $savePath = 'Lageplaene';
+        if (!$this->mediaService->isDir($savePath)) {
+            $result['error'] = true;
+            $result['msg'] = "save path doesn't exist";
+            $result['code'] = 2;
+        }
+        if (!$file) {
+            $result['error'] = true;
+            $result['msg'] = "image must be set in the request";
+            $result['code'] = 4;
+        }
+        if (!$result['error']) {
+            $err = $this->mediaService->upload($file, $savePath);
+            if ($err instanceof MediaException) {
+                $result['error'] = true;
+                $result['msg'] = $err->getMsg();
+                $result['code'] = 5;
+            } else {
+                $result['msg'] = sprintf("image saved to '%s/%s'", $savePath, $file["name"]);
+            }
+        }
+        return new JsonModel($result);
     }
     public function deleteAction() {
         $id = $this->params('id');

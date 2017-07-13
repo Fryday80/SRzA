@@ -11,6 +11,7 @@ class SitePlannerControllerFactory implements FactoryInterface
         $pL = $sm->getServiceLocator();
         $equipService = $pL->get('EquipmentService');
         $sitePlanTable = $pL->get('Equipment\Model\SitePlannerTable');
-        return new SitePlannerController($equipService, $sitePlanTable);
+        $mediaService = $pL->get('MediaService');
+        return new SitePlannerController($equipService, $sitePlanTable, $mediaService);
     }
 }

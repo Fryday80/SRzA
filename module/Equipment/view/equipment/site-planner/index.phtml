@@ -98,7 +98,7 @@ $this->headScript()->appendFile('/libs/map.js');
 <box id="sitePlanner">
     <div class="planner-controls">
         <div id="image-export-ui" class="image-export hidden">
-            <button class="abort">Abbrechen</button>
+            <button class="abort">Zurück</button>
             <button class="crop">Crop</button>
             <div class="preview"></div>
             <div class="save-box" style="display: none">
@@ -969,8 +969,9 @@ $this->headScript()->appendFile('/libs/map.js');
             askSure: 'Are you sure?',
             warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
             successSave: 'Plann wurde gespeichert!',
+            imageNameTaken: 'Bild mit diesem namen existiert bereits!',
             ohno: 'Oh No!',
-            needPlanName: '',
+            needPlanName: 'Bitte gieb einen namen ein!',
         };
 
         //cross origin workaround
@@ -1384,12 +1385,22 @@ $this->headScript()->appendFile('/libs/map.js');
                     $('.save-box', self.$uiImageExport).show();
                 });
                 $('.image-export button.save-image', this.$element).on('click', function (e) {
-                    //@todo save croped image
                     var img = $('.preview img', self.$uiImageExport);
-                    console.log(img);
+                    var name = $('#image-name', self.$uiImageExport).val();
+                    if (!name || name == '') {
+                        self.showError(lang.needPlanName);
+                        return;
+                    }
                     if (img.length < 1) return;
-                    //check if image exists
-                    self.ajaxPostImage(img.attr('src'));
+                    self.uploadImage(img.attr('src'), name, function(e) {
+                        if(e.error)
+                            if (e.code == 5)
+                                self.showError(lang.imageNameTaken, lang.ohno);
+                            else
+                                self.showError(e.msg, lang.ohno);
+                        else
+                            self.showInfo(e.msg, lang.successSave);
+                    });
                 });
 
                 //global key events
@@ -1461,6 +1472,23 @@ $this->headScript()->appendFile('/libs/map.js');
                 } else if (value === false) {
                     //hide progress element
                 }
+            }
+            //error handling
+            showError(msg, title) {
+                var opt = {};
+                opt.text = msg;
+                opt.type = 'error';
+                opt.addclass = "stack-topleft";
+                if (title) opt.title = title;
+                new PNotify(opt);
+            }
+            showInfo(msg, title) {
+                var opt = {};
+                opt.text = msg;
+                opt.type = 'info';
+                opt.addclass = "stack-topleft";
+                if (title) opt.title = title;
+                new PNotify(opt);
             }
             //read/write config from/to html inputs
             readMapConfig() {
@@ -1688,8 +1716,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 var viewMat = this.canvas.viewportTransform.slice();
                 var finalValues = fabric.util.qrDecompose(viewMat);
                 var bounds = this.cropperOverlay.getBoundingRect(true, true);
-                console.log(viewMat);
-                console.log(bounds);
                 var dataUrl = this.canvas.toDataURL({
                     format: 'png',
                     left: bounds.left + finalValues.translateX,
@@ -1698,7 +1724,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     height: bounds.height * viewMat[3]
                 });
                 this.canvas.setZoom(storedZoom);
-                var img = new Image;
+                var img= new Image;
                 img.onload = function(){
                     ctx.drawImage(img, 0, 0);
 //                    self.stopCropper();
@@ -1790,22 +1816,24 @@ $this->headScript()->appendFile('/libs/map.js');
                 }
                 return new Blob(byteArrays, {type: mime});
             }
-            ajaxPostImage(imageSrc) {
+            uploadImage(imageSrc, name, success) {
                 var url = "/siteplanner/imageUpload";
                 var base64ImageContent = imageSrc.replace(/^data:image\/(png|jpg);base64,/, "");
                 var blob = this.base64ToBlob(base64ImageContent, 'image/png');
                 var formData = new FormData();
-                formData.append('picture', blob);
+                formData.append('image', blob, name + '.png');
 
                 $.ajax({
                     url: url,
-                    type: "POST",
+                    type: "post",
+                    dataType: 'json',
                     cache: false,
-//                    contentType: false,
+                    contentType: false,
                     processData: false,
-                    data: formData})
-                    .done(function(e){
-                    });
+                    data: formData
+                }).done(function(e){
+                    if (success) success(e);
+                });
             }
         }
         $.fn.SitePlanner = function(options) {
