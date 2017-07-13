@@ -22,7 +22,6 @@ class SitePlannerController extends AbstractActionController
 
     public function indexAction() {
         $data = $this->equipmentService->getAll();
-        bdump($data);
         $this->layout()->setVariable('showSidebar', false);
         return array(
             'items' => $data,
@@ -119,6 +118,9 @@ class SitePlannerController extends AbstractActionController
         return new JsonModel($result);
     }
 
+    public function imageUploadAction() {
+        //save image to /data/
+    }
     public function deleteAction() {
         $id = $this->params('id');
         $result = ['error' => false];

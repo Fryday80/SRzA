@@ -82,6 +82,10 @@ $this->headScript()->appendFile('/libs/map.js');
     .details-panel>box>boxcontent label>span:first-child{
         left: 30px;
     }
+    #image-export-ui .preview img {
+        max-width: 200px;
+        max-height: 350px;
+    }
 
 </style>
 <h3>control:</h3>
@@ -94,13 +98,16 @@ $this->headScript()->appendFile('/libs/map.js');
 <box id="sitePlanner">
     <div class="planner-controls">
         <div id="image-export-ui" class="image-export hidden">
-            <label>
-                <span>Bild Name</span>
-                <input id="image-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
-            </label>
-            <br>
             <button class="abort">Abbrechen</button>
-            <button class="save-image">Bild Speichern</button>
+            <button class="crop">Crop</button>
+            <div class="preview"></div>
+            <div class="save-box" style="display: none">
+                <label>
+                    <span>Bild Name</span>
+                    <input id="image-name" type="text" placeholder="NAME" style="height: 16px; width: 95px;">
+                </label>
+                <button class="save-image">Bild Speichern</button>
+            </div>
         </div>
         <div id="default-ui" class="default">
             <label>
@@ -176,16 +183,6 @@ $this->headScript()->appendFile('/libs/map.js');
             </boxcontent>
             <br>
         </box>
-        <box class="crop-box">
-            <boxtitle>
-                <span>Crop</span>
-            </boxtitle>
-            <boxcontent>
-                <p>width und hight von dem bild ausschnitt</p>
-                <br>
-            </boxcontent>
-            <br>
-        </box>
         <box class="text-box">
             <boxtitle>
                 <span>Text Box</span>
@@ -249,7 +246,11 @@ $this->headScript()->appendFile('/libs/map.js');
         }
         fabric.MyCanvas = fabric.util.createClass(fabric.Canvas, fabric.StaticCanvas, /** @lends fabric.Canvas.prototype **/ {
             _isViewPortDragging: false,
-
+            maxZoomLevel: 3,
+            minZoomLevel: 0.3,
+            zoomToPoint: function (point, value) {
+                return fabric.StaticCanvas.prototype.zoomToPoint.call(this, point, this.__capZoomLevel(value));
+            },
             centerObject: function(obj) {
                 var center = this.getCenter();
                 center = new fabric.Point(center.left, center.top);
@@ -461,10 +462,13 @@ $this->headScript()->appendFile('/libs/map.js');
 //                if (e.ctrlKey) {
                 var zoom = this.viewportTransform[0];
                 zoom += (e.wheelDelta < 0)? -0.1: +0.1;
-                zoom =  Math.max(0.3, Math.min(3, zoom));//(e.wheelDelta > 0)? zoom + 0.1: zoom - 0.1);
+                zoom =  this.__capZoomLevel(zoom);
                 this.zoomToPoint(new fabric.Point(e.offsetX, e.offsetY), zoom);
                 e.preventDefault();
             },
+            __capZoomLevel(value) {
+                return Math.max(this.minZoomLevel, Math.min(this.maxZoomLevel, value));
+            }
         });
 
         fabric.CropBox = fabric.util.createClass(fabric.Rect, {
@@ -479,16 +483,9 @@ $this->headScript()->appendFile('/libs/map.js');
             initialize: function(options) {
                 this.callSuper('initialize', options);
                 this.setControlsVisibility({
-//                    bl: false,
-//                    br: false,
-//                    mb: false,
-//                    ml: false,
-//                    mr: false,
-//                    mt: false,
-//                    tl: false,
-//                    tr: false,
                     mtr: false,
                 });
+
                 this.on('deselected', function(e) {
                     this.moveTo(100);
                 }.bind(this));
@@ -1275,6 +1272,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.loadSitePlanList();
                 this.updateMapConfig();
 
+                //belongs to #default-ui
                 $('button.load-plan', this.$element).click(function (e) {
                     if (self.isBusy) return;
                     var planID = $('.plan-select', this.$element).val();
@@ -1356,10 +1354,6 @@ $this->headScript()->appendFile('/libs/map.js');
 
                     self.canvas.setActiveObject(obj);
                 });
-                $('button.createImage', this.$element).click(function (e) {
-                    if (self.isBusy) return;
-                    self.startCropper();
-                });
                 $('.itemList li', this.$element).click(function(e) {
                     var id = $(this).data('id');
                     var templateItem;
@@ -1374,21 +1368,35 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.canvas.centerObject(obj);
                     self.canvas.setActiveObject(obj);
                 });
-                //key events
-                $(document).keyup(function(e) {
-                    if(e.key === "Delete") {
-                        self.itemList.removeSelected();
-                    }
+                $('button.createImage', this.$element).click(function (e) {
+                    if (self.isBusy) return;
+                    self.startCropper();
                 });
 
-                //croper
+                //belongs to #image-export-ui
                 $('.image-export button.abort', this.$element).on('click', function (e) {
                     e.stopPropagation();
                     self.stopCropper();
                 });
-                $('.image-export button.save-image', this.$element).on('click', function (e) {
-                    e.stopPropagation();
+                $('.image-export button.crop', this.$element).on('click', function (e) {
                     self.doCrop();
+                    //show save box
+                    $('.save-box', self.$uiImageExport).show();
+                });
+                $('.image-export button.save-image', this.$element).on('click', function (e) {
+                    //@todo save croped image
+                    var img = $('.preview img', self.$uiImageExport);
+                    console.log(img);
+                    if (img.length < 1) return;
+                    //check if image exists
+                    self.ajaxPostImage(img.attr('src'));
+                });
+
+                //global key events
+                $(document).keyup(function(e) {
+                    if(e.key === "Delete") {
+                        self.itemList.removeSelected();
+                    }
                 });
             }
             //progressbar
@@ -1658,9 +1666,9 @@ $this->headScript()->appendFile('/libs/map.js');
                 return true;
             }
             stopCropper() {
-                console.log('stop cropper');
                 this.$uiImageExport.addClass('hidden');
                 this.$uiDefault.removeClass('hidden');
+                $('.save-box', this.$uiImageExport).hide();
                 if (!this.cropperOverlay) return;
                 this.cropperOverlay.remove();
                 this.canvas.remove(this.cropperOverlay);
@@ -1671,35 +1679,38 @@ $this->headScript()->appendFile('/libs/map.js');
                 var ctx = $('#cropCanvas')[0].getContext("2d"),
                     self = this;
 
-                ctx.clearRect(0, 0, 2000, 2000);
-                var mat = this.cropperOverlay.calcTransformMatrix();
-                var finalValues = fabric.util.qrDecompose(mat);
-                console.log(finalValues.translateX);
-                var w = this.cropperOverlay.width * finalValues.scaleX,
-                    h = this.cropperOverlay.height * finalValues.scaleY;
+                //@todo show load bar
+                //set zoom to max
+                var storedZoom = this.canvas.getZoom();
+                this.canvas.setZoom(1);
 
+                ctx.clearRect(0, 0, 2000, 2000);
+                var viewMat = this.canvas.viewportTransform.slice();
+                var finalValues = fabric.util.qrDecompose(viewMat);
+                var bounds = this.cropperOverlay.getBoundingRect(true, true);
+                console.log(viewMat);
+                console.log(bounds);
                 var dataUrl = this.canvas.toDataURL({
                     format: 'png',
-                    left: finalValues.translateX - w/2,
-                    top: finalValues.translateY - h/2,
-                    width: this.cropperOverlay.width,
-                    height: this.cropperOverlay.height
+                    left: bounds.left + finalValues.translateX,
+                    top: bounds.top + finalValues.translateY,
+                    width: bounds.width * viewMat[0],
+                    height: bounds.height * viewMat[3]
                 });
+                this.canvas.setZoom(storedZoom);
                 var img = new Image;
                 img.onload = function(){
                     ctx.drawImage(img, 0, 0);
 //                    self.stopCropper();
                 };
                 img.src = dataUrl;
+                $('.preview', this.$uiImageExport).empty();
+                $('.preview', this.$uiImageExport).append(img);
             }
             startCropper() {
                 if (this.isBusy) return;
-                console.log('start cropper');
                 this.$uiImageExport.removeClass('hidden');
                 this.$uiDefault.addClass('hidden');
-
-//                $(".planner-controls .default", this.$element).hide();
-//                $(".planner-controls .image-export", this.$element).show();
 
                 if (this.cropperOverlay != null) {
                     this.stopCropper();
@@ -1707,14 +1718,14 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.cropperOverlay = new fabric.CropBox({
                     width: 100,
                     height: 100,
-                    fill: 'rgba(0,0,0,0)'
+                    fill: 'rgba(0,0,0,0)',
                 });
                 this.itemList.set('selectable', false);
                 this.canvas.deactivateAll();
                 this.canvas.add(this.cropperOverlay);
                 this.canvas.setActiveObject(this.cropperOverlay);
             }
-            //helper //@todo eventuel globale ajax helper bauen die auch global errors mit dem pnotify
+            //@todo eventuel globalen ajax helper bauen der auch global errors mit pnotify wirft (des gehört hier nich rein aber weil die funktion ich drauf gebracht hat)
             ajaxPostJson(url, data, success, progress){
                 var progressValue = 0.1,
                     progressState = 'Start Loading';
@@ -1759,8 +1770,44 @@ $this->headScript()->appendFile('/libs/map.js');
                 if (progress)
                     progress(progressValue, progressState);
             }
-        }
+            base64ToBlob(base64, mime) {
+                mime = mime || '';
+                var sliceSize = 1024;
+                var byteChars = window.atob(base64);
+                var byteArrays = [];
 
+                for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+                    var slice = byteChars.slice(offset, offset + sliceSize);
+
+                    var byteNumbers = new Array(slice.length);
+                    for (var i = 0; i < slice.length; i++) {
+                        byteNumbers[i] = slice.charCodeAt(i);
+                    }
+
+                    var byteArray = new Uint8Array(byteNumbers);
+
+                    byteArrays.push(byteArray);
+                }
+                return new Blob(byteArrays, {type: mime});
+            }
+            ajaxPostImage(imageSrc) {
+                var url = "/siteplanner/imageUpload";
+                var base64ImageContent = imageSrc.replace(/^data:image\/(png|jpg);base64,/, "");
+                var blob = this.base64ToBlob(base64ImageContent, 'image/png');
+                var formData = new FormData();
+                formData.append('picture', blob);
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    cache: false,
+//                    contentType: false,
+                    processData: false,
+                    data: formData})
+                    .done(function(e){
+                    });
+            }
+        }
         $.fn.SitePlanner = function(options) {
             new SitePlanner(this);
         };

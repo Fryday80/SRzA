@@ -288,6 +288,17 @@ return array(
                              )
                          )
                      ),
+                     'imageUpload' => array(
+                         'type'    => 'segment',
+                         'may_terminate' => true,
+                         'options' => array(
+                             'route'    => '/imageUpload',
+                             'defaults' => array(
+                                 'controller' => 'Equipment\Controller\SitePlanner',
+                                 'action'     => 'imageUpload',
+                             )
+                         )
+                     ),
                      'delete' => array(
                          'type'    => 'segment',
                          'may_terminate' => true,
