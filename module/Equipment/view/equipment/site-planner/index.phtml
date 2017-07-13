@@ -100,6 +100,19 @@ $this->headScript()->appendFile('/libs/map.js');
         <div id="image-export-ui" class="image-export hidden">
             <button class="abort">Zurück</button>
             <button class="crop">Crop</button>
+            <br><br>
+            <label>
+                <span>Zoom</span>
+                <input class="crop" data-key="zoom" type="number" min="0.3" max="3" step="0.1" style="height: 16px; width: 95px;">
+            </label>
+            <label>
+                <span>Breite</span>
+                <input class="crop" data-key="height" type="number" style="height: 16px; width: 95px;">
+            </label>
+            <label>
+                <span>Höhe</span>
+                <input class="crop" data-key="width" type="number" style="height: 16px; width: 95px;">
+            </label>
             <div class="preview"></div>
             <div class="save-box" style="display: none">
                 <label>
@@ -1402,7 +1415,10 @@ $this->headScript()->appendFile('/libs/map.js');
                             self.showInfo(e.msg, lang.successSave);
                     });
                 });
-
+                $('input.crop', this.$element).on('change', function (e) {
+                    var key = $(this).data('key');
+                    console.log(key)
+                });
                 //global key events
                 $(document).keyup(function(e) {
                     if(e.key === "Delete") {
@@ -1727,7 +1743,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 var img= new Image;
                 img.onload = function(){
                     ctx.drawImage(img, 0, 0);
-//                    self.stopCropper();
                 };
                 img.src = dataUrl;
                 $('.preview', this.$uiImageExport).empty();
