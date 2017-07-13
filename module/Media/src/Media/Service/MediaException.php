@@ -10,4 +10,7 @@ class MediaException {
         $this->code = $code;
         $this->path = $path;
     }
+    public function getMsg() {
+        return sprintf('%s. In: "%s" ', $this->msg, $this->path);
+    }
 }
