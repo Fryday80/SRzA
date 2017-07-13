@@ -1749,6 +1749,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.itemList.set('selectable', false);
                 this.canvas.deactivateAll();
                 this.canvas.add(this.cropperOverlay);
+                this.canvas.centerObject(this.cropperOverlay);
                 this.canvas.setActiveObject(this.cropperOverlay);
             }
             //@todo eventuel globalen ajax helper bauen der auch global errors mit pnotify wirft (des gehört hier nich rein aber weil die funktion ich drauf gebracht hat)
