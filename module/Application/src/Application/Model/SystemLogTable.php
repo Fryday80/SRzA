@@ -55,7 +55,6 @@ class SystemLogTable extends AbstractTableGateway
     {
         $queryItems ='';
         $queryValues = '';
-//@todo debug writing to db
         //create SQL items and values line up
         foreach ($data as $key => $value){
                 $queryItems .= $key . ", ";
