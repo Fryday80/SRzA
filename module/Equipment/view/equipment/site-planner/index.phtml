@@ -107,11 +107,11 @@ $this->headScript()->appendFile('/libs/map.js');
             </label>
             <label>
                 <span>Breite</span>
-                <input class="crop" data-key="height" type="number" style="height: 16px; width: 95px;">
+                <input class="crop" data-key="width" type="number" style="height: 16px; width: 95px;">
             </label>
             <label>
                 <span>Höhe</span>
-                <input class="crop" data-key="width" type="number" style="height: 16px; width: 95px;">
+                <input class="crop" data-key="height" type="number" style="height: 16px; width: 95px;">
             </label>
             <div class="preview"></div>
             <div class="save-box" style="display: none">
@@ -244,8 +244,6 @@ $this->headScript()->appendFile('/libs/map.js');
         </box>
     </div>
 </box>
-<canvas id="cropCanvas" width="2000" height="2000"></canvas>
-
 
 <script>
     (function($) {
@@ -261,8 +259,11 @@ $this->headScript()->appendFile('/libs/map.js');
             _isViewPortDragging: false,
             maxZoomLevel: 3,
             minZoomLevel: 0.3,
+
             zoomToPoint: function (point, value) {
-                return fabric.StaticCanvas.prototype.zoomToPoint.call(this, point, this.__capZoomLevel(value));
+                var result = fabric.StaticCanvas.prototype.zoomToPoint.call(this, point, this.__capZoomLevel(value));
+                this.trigger('zoom', this.viewportTransform[0]);
+                return result;
             },
             centerObject: function(obj) {
                 var center = this.getCenter();
@@ -358,7 +359,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 // we must renderAll so that we update the visuals
                 shouldRender && this.renderAll();
             },
-
             /**
              * Method that defines the actions when mouse is hovering the canvas.
              * The currentTransform parameter will definde whether the user is rotating/scaling/translating
@@ -401,8 +401,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 }
                 this._handleEvent(e, 'move', target ? target : null);
             },
-
-
             /**
              * Method that defines the actions when mouse is released on canvas.
              * The method resets the currentTransform parameters, store the image corner
@@ -1226,9 +1224,10 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.$element = $(element);
                 this.$uiDefault = $("#default-ui");
                 this.$uiImageExport = $("#image-export-ui");
+                this.$zoom = $('.crop[data-key="zoom"]', this.$uiImageExport);
+                this.$width = $('.crop[data-key="width"]', this.$uiImageExport);
+                this.$height = $('.crop[data-key="height"]', this.$uiImageExport);
                 this.progressBarWidth = 250;
-                this.viewPos = {x:0, y:0};
-                this.zoomValue = 1;
                 this.isDragging = false;
                 this.itemPool = JSON.parse($canvas.html());
                 this.isBusy = false;
@@ -1291,7 +1290,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 var self = this;
                 this.loadSitePlanList();
                 this.updateMapConfig();
-
+                this.canvas.on('zoom', this.updateCropConfig.bind(this));
                 //belongs to #default-ui
                 $('button.load-plan', this.$element).click(function (e) {
                     if (self.isBusy) return;
@@ -1531,6 +1530,15 @@ $this->headScript()->appendFile('/libs/map.js');
                 $('#maptype-select').val(this.plan.mapType);
                 $('#diameter')      .val(this.plan.diameter);
             }
+            updateCropConfig() {
+                this.$zoom.val(this.canvas.getZoom());
+                if (this.cropperOverlay) {
+                    this.cropperOverlay.setCoords();
+                    var rect = this.cropperOverlay.getBoundingRect();
+                    this.$width.val(rect.width);
+                    this.$height.val(rect.height);
+                }
+            }
             //load and set the map images
             setMap(progress) {
                 if (this.isBusy && !progress) return;
@@ -1719,6 +1727,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.$uiImageExport.addClass('hidden');
                 this.$uiDefault.removeClass('hidden');
                 $('.save-box', this.$uiImageExport).hide();
+                $('.preview', this.$uiImageExport).empty();
                 if (!this.cropperOverlay) return;
                 this.cropperOverlay.remove();
                 this.canvas.remove(this.cropperOverlay);
@@ -1726,30 +1735,25 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             doCrop() {
                 if (!this.cropperOverlay) return;
-                var ctx = $('#cropCanvas')[0].getContext("2d"),
-                    self = this;
 
                 //@todo show load bar
-                //set zoom to max
                 var storedZoom = this.canvas.getZoom();
-                this.canvas.setZoom(1);
+                this.canvas.setZoom(this.$zoom.val());
 
-                ctx.clearRect(0, 0, 2000, 2000);
+                this.cropperOverlay.setCoords();
                 var viewMat = this.canvas.viewportTransform.slice();
                 var finalValues = fabric.util.qrDecompose(viewMat);
                 var bounds = this.cropperOverlay.getBoundingRect(true, true);
                 var dataUrl = this.canvas.toDataURL({
                     format: 'png',
-                    left: bounds.left + finalValues.translateX,
-                    top: bounds.top + finalValues.translateY,
+                    left: bounds.left * viewMat[0] + finalValues.translateX,
+                    top: bounds.top * viewMat[3] + finalValues.translateY,
                     width: bounds.width * viewMat[0],
                     height: bounds.height * viewMat[3]
                 });
                 this.canvas.setZoom(storedZoom);
-                var img= new Image;
-                img.onload = function(){
-                    ctx.drawImage(img, 0, 0);
-                };
+                var img = new Image;
+                img.onload = function(){};
                 img.src = dataUrl;
                 $('.preview', this.$uiImageExport).empty();
                 $('.preview', this.$uiImageExport).append(img);
@@ -1758,7 +1762,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 if (this.isBusy) return;
                 this.$uiImageExport.removeClass('hidden');
                 this.$uiDefault.addClass('hidden');
-
                 if (this.cropperOverlay != null) {
                     this.stopCropper();
                 }
@@ -1772,6 +1775,8 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.canvas.add(this.cropperOverlay);
                 this.canvas.centerObject(this.cropperOverlay);
                 this.canvas.setActiveObject(this.cropperOverlay);
+                this.cropperOverlay.on('scaling', this.updateCropConfig.bind(this));
+                this.updateCropConfig();
             }
             //@todo eventuel globalen ajax helper bauen der auch global errors mit pnotify wirft (des gehört hier nich rein aber weil die funktion ich drauf gebracht hat)
             ajaxPostJson(url, data, success, progress){
