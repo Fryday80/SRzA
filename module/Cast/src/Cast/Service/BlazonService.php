@@ -124,7 +124,6 @@ class BlazonService
     public function addNew($name, $isOverlay, $blazonData = null, $blazonBigData = null) {
         $fileData['fileName'] = $bigFileData['fileName'] = null;
         // small blazon uploaded ?
-        //@todo des solte required sein oder? -> dann solte es einen fehler setzten oder false returnen. (der return typ im kommentar stimmt so im mom auch nicht)
         if (!($blazonData['error'] > 0)) {
             $fileData = $this->moveFile($blazonData['tmp_name'], $name, $blazonData['name']);
             $this->adjustUploadPic($fileData['filePath']);

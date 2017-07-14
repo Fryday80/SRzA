@@ -2,8 +2,8 @@
 $title = $this->translate("Site Planner");
 $this->headTitle($title);
 
-$this->headLink()->prependStylesheet('/libs/pnotify/pnotify.custom.min.css');
-$this->headScript()->appendFile('/libs/pnotify/pnotify.custom.min.js');
+//$this->headLink()->prependStylesheet('/libs/pnotify/pnotify.custom.min.css');
+//$this->headScript()->appendFile('/libs/pnotify/pnotify.custom.min.js');
 $this->headScript()->appendFile('/libs/fabric.js/fabric.js');
 $this->headScript()->appendFile('/libs/map.js');
 // $this->headScript()->appendFile('/libs/jstree/jstree.min.js');
@@ -124,7 +124,7 @@ $this->headScript()->appendFile('/libs/map.js');
         </div>
         <div id="default-ui" class="default">
             <label>
-                <span>Plänne</span>
+                <span>Pläne</span>
                 <select class="plan-select"></select>
             </label>
             <button class="load-plan"> Load </button>
@@ -196,14 +196,14 @@ $this->headScript()->appendFile('/libs/map.js');
             </boxcontent>
             <br>
         </box>
-        <box class="text-box">
+        <box class="text-box" data-type="textbox">
             <boxtitle>
                 <span>Text Box</span>
             </boxtitle>
             <boxcontent>
                 <label class="text-field-panel tent-panel equip-panel">
                     <span>Font size:<br></span>
-                    <input id="font-size" type="number" min="5" max="40" step="1">
+                    <input id="font-size" data-key="fontSize" type="number" min="5" max="40" step="1">
                 </label>
                 <br>
                 <label class="text-field-panel tent-panel equip-panel">
@@ -981,7 +981,7 @@ $this->headScript()->appendFile('/libs/map.js');
         var lang = {
             askSure: 'Are you sure?',
             warnSaveData: 'Alle ungespeicherten Daten gehen verloren!',
-            successSave: 'Plann wurde gespeichert!',
+            successSave: 'Plan wurde gespeichert!',
             imageNameTaken: 'Bild mit diesem namen existiert bereits!',
             ohno: 'Oh No!',
             needPlanName: 'Bitte gieb einen namen ein!',
@@ -1178,9 +1178,11 @@ $this->headScript()->appendFile('/libs/map.js');
             constructor(sitePlanner) {
                 var self = this;
                 this.$panel = $('.details-panel', sitePlanner.$element);
-                this.$global = $('boxcontent[data-type="global"]', this.$panel);
-                this.$equipitem = $('boxcontent[data-type="equipitem"]', this.$panel);
-
+                $('input, select', this.$panel).on('change', function(e) {
+                    console.log(e);
+                    self.selected.set($(this).data('key'), $(this).val());
+                    sitePlanner.canvas.renderAll();
+                });
                 sitePlanner.canvas.on('object:selected', function (e) {
                     self.onSelect(e.target);
                 });
@@ -1189,9 +1191,13 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
             }
             onSelect(obj) {
-                console.log(obj.type);
-                //@todo hide global details
+//                obj.on('change', function() {});
 
+                console.log(obj.type);
+                this.selected = obj;
+                //@todo hide global details
+                $('.typeBox').hide();
+                $('.typeBox[data-type="'+obj.type+'"]').show();
                 switch (obj.type) {
                     //@todo show details for object type
                     case 'Equipitem':

@@ -28,7 +28,7 @@ class SystemLogTable extends AbstractTableGateway
         $queryValues = $prepare[1];
         $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
 
-//        $this->adapter->query($query, array());
+        $this->adapter->query($query, array());
     }
 
     /**
@@ -55,10 +55,10 @@ class SystemLogTable extends AbstractTableGateway
     {
         $queryItems ='';
         $queryValues = '';
-
+//@todo debug writing to db
         //create SQL items and values line up
         foreach ($data as $key => $value){
-            $queryItems .= $key . ", ";
+                $queryItems .= $key . ", ";
             if ($key == 'data'){
                 $value = json_encode($value);
             }

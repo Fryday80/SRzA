@@ -40,7 +40,8 @@ class SystemController extends AbstractActionController
         $sysLog = $this->statsService->getSystemLog();
         $sysLogMod = $sysLog;
         foreach ($sysLogMod as $key => $value){
-            if ($value->data === null) $replace = '';
+            bdump($value->data);
+            if ($value->data == null) $replace = '';
             else {
                 $replace = implode('---', $value->data);
             }
