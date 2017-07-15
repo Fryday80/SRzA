@@ -15,7 +15,7 @@
                         ->prependStylesheet($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.css'))
                         ->prependStylesheet($this->basePath('css/style.css'))
                         ->prependStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
-        ; ?>
+        ?>
     <!----  jquery scripts   ---->
     <?php echo $this->headScript()
                         ->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
@@ -27,6 +27,7 @@
                         ->prependFile($this->basePath(  'js/globalUsage/jquery/jquery-3.2.0.min.js'))
                         ->appendFile($this->basePath('/libs/pnotify/pnotify.custom.min.js'))
                         ->appendFile($this->basePath('/libs/map.js'))
+                        ->appendFile($this->basePath('/js/global.js'))
     ; ?>
 </head>
 <?php
@@ -150,6 +151,7 @@
 
     <link href="/css/jsOverrides.css" media="screen" rel="stylesheet" type="text/css">
     <?php if ($this->userinfo('role') == 'Administrator'): ?>
+        <img src="img/wa.gif" style="position: absolute; top:400px; right:150px; z-index: 100">
     <?php endif; ?>
 </body>
 </html>
