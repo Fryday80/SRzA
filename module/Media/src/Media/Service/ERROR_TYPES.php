@@ -32,5 +32,6 @@ abstract class ERROR_TYPES {
     const NO_READ_PERMISSION_IN_CHILDS = 27;
     const NO_WRITE_PERMISSION_IN_CHILDS = 28;
     const ERROR_FOLDER_NOT_IN_DATA_PATH = 29;
+    const UPLOAD_FILE_NOT_FOUND = 30;
 
 }

@@ -47,6 +47,7 @@ const ERROR_STRINGS = [
     'No read permission in sub folders',
     'No write permission in sub folders',
     'Folder is not in data path',
+    'Folder is not in data path',//i = 30
 
 ];
 class MediaService {
@@ -627,8 +628,7 @@ class MediaService {
     public function upload($filePostArray, $targetFolder) {
         //check file type
         if ($filePostArray['error'] > 0) {
-            //@todo return error
-            return false;
+            return new MediaException(ERROR_TYPES::UPLOAD_FILE_NOT_FOUND, '');
         }
         $realTargetFolder = $this->realPath($targetFolder);
         //@todo check permissions
