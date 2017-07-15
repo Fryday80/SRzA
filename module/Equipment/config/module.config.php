@@ -9,18 +9,18 @@ return array(
                 'label'=> 'label',
                 'vars' => array( ),
             ),
-            'index' => array(
+            'index'   => array(
                 'name'    => 'index',
                 'label'   => 'Lager',
                 'vars'    => array(
                     'links' => array(
                         'Zeltverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::TENT],
                         'Zeugverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::EQUIPMENT],
-                        'Lagerplanung'   => '/siteplan',
+                        'Lagerplanung'   => '/siteplanner',
                     )
                 ),
             ),
-            'type' => array(
+            'type'    => array(
                 'name'  => 'type',
                 'label' => 'Lager',
                 'vars'  => array(
@@ -29,7 +29,7 @@ return array(
                     ),
                 ),
             ),
-            'add'  => array(
+            'add'     => array(
                 'name'  => 'add',
                 'label' => 'Neu',
                 'vars' => array(
@@ -47,7 +47,7 @@ return array(
                     ),
                 ),
             ),
-            'userall'  => array(
+            'userall' => array(
                 'name'  => 'userall',
                 'label' => 'Alle Zelte',
                 'vars' => array(
@@ -56,7 +56,7 @@ return array(
                     ),
                 ),
             ),
-            'show' => array(
+            'show'    => array(
                 'name' => 'show',
                 'label' => 'Details',
                 'vars' => array(
@@ -65,7 +65,7 @@ return array(
                     ),
                 ),
             ),
-            'delete'   => array(
+            'delete'  => array(
                 'name' => 'delete',
                 'label' => 'Details',
                 'vars' => array(
@@ -74,7 +74,7 @@ return array(
                     ),
                 ),
             ),
-            'edit' => array(
+            'edit'    => array(
                 'name' => 'edit',
                 'label' => 'Details',
                 'vars' => array(
