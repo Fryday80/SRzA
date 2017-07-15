@@ -33,7 +33,7 @@ class EquipmentController extends AbstractActionController
     }
 
     public function indexAction() {
-        $vars = $this->config['functions']['getVars']('index', $this->config);
+        $vars = $this->getVars('index');
         return $vars;
     }
 
@@ -104,8 +104,8 @@ class EquipmentController extends AbstractActionController
 
     public function showAction(){
         $action = 'show';
-        $type = $vars['typeString'] = $this->params()->fromRoute('type');
-        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $vars['typeString'] = $this->params()->fromRoute('type');
+        $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
@@ -117,8 +117,8 @@ class EquipmentController extends AbstractActionController
 
     public function deleteAction(){
         $action = 'delete';
-        $type = $vars['typeString'] = $this->params()->fromRoute('type');
-        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $vars['typeString'] = $this->params()->fromRoute('type');
+        $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
@@ -150,21 +150,21 @@ class EquipmentController extends AbstractActionController
 
     public function editAction(){
         $action = 'edit';
-        $type = $vars['typeString'] = $this->params()->fromRoute('type');
-        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $vars['typeString'] = $this->params()->fromRoute('type');
+        $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
         
         $equip = $this->equipService->getById($equipId);
 
-        $form = new $vars['formType'][$type]($this->equipService, $this->userService);
+        $form = new $vars['formType'][$vars['type']]($this->equipService, $this->userService);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             $form->setData($post);
             if ($form->isValid()){
-                $item = new $vars['model'][$type]($form->getData());
+                $item = new $vars['model'][$vars['type']]($form->getData());
                 $this->equipService->save($item);
                 return $this->redirect()->toUrl("/equip/" . $vars['typeString'] . "/$userId");
             }
@@ -175,16 +175,22 @@ class EquipmentController extends AbstractActionController
         ));
     }
 
-    private function getVars($action, $typeString, $userId = false)
+    private function getVars($action, $typeString = null, $userId = false)
     {
-        $page = $this->config['functions']['getPageConfig']($action, $this->config);
+        if (isset($this->config['config'][$action]))
+            $page = $this->config['config'][$action] + $this->config['config']['default_actionName'];
+        else
+            $page = $this->config['config']['default_actionName'];
+
         $vars = $page['vars'];
         $vars['page'] = $page;
 
-        if($action !== 'type')
-            $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
-        if ($action !== 'type' && $action !== 'userall')
-            $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
+        if ($action !=='index') {
+            if ($action !== 'type')
+                $vars['links']['zurück zur Übersicht'] = "/equip/$typeString";
+            if ($action !== 'type' && $action !== 'userall')
+                $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
+        }
         return $vars;
     }
 }

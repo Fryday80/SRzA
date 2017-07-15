@@ -29,7 +29,6 @@ return array(
     'Application\Model\Abstracts\Microtime'                  => __DIR__ . '/src/Application/Model/Abstracts/Microtime.php',
     'Application\Model\Abstracts\OrderType'                  => __DIR__ . '/src/Application/Model/Abstracts/OrderType.php',
     'Application\Model\DatabaseTable'                        => __DIR__ . '/src/Application/Model/DatabaseTable.php',
-    'Application\Model\DataObjects\DataItem'                 => __DIR__ . '/src/Application/Model/DataItem.php',
     'Application\Model\DataObjects\Action'                   => __DIR__ . '/src/Application/Model/DataObjects/Action.php',
     'Application\Model\DataObjects\ActiveUser'               => __DIR__ . '/src/Application/Model/DataObjects/ActiveUser.php',
     'Application\Model\DataObjects\PageHit'                  => __DIR__ . '/src/Application/Model/DataObjects/PageHit.php',

@@ -2,6 +2,7 @@
 namespace Cast\Service;
 
 use Cast\Model\BlazonTable;
+use Cast\Model\EBlazonDataType;
 
 class BlazonService
 {
@@ -320,10 +321,4 @@ class BlazonService
     {
         $this->data = $this->dataOverlays = $this->dataNoOverlays = false;
     }
-}
-
-abstract class EBlazonDataType{
-    const ALL = 0;
-    const OVERLAY = 1;
-    const NO_OVERLAY = 2;
 }

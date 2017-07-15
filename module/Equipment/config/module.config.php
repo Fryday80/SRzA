@@ -92,18 +92,6 @@ return array(
                 ),
             ),
         ),
-        'functions' => array(
-            'getVars' => function($action, $config){
-                if (isset($config['config'][$action]['vars']))
-                    return $config['config'][$action]['vars'] + $config['config']['default_actionName']['vars'];
-                return $config['config']['default_actionName']['vars'];
-            },
-            'getPageConfig' => function($action, $config){
-                if (isset($config['config'][$action]))
-                    return $config['config'][$action] + $config['config']['default_actionName'];
-                return $config['config']['default_actionName'];
-            },
-        ),
     ),
     'controllers' => array(
         'invokables' => array( ),

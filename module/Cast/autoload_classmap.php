@@ -29,6 +29,7 @@ return array(
     'Cast\Model\BlazonTable'                             => __DIR__ . '/src/Cast/Model/BlazonTable.php',
     'Cast\Model\CastTable'                               => __DIR__ . '/src/Cast/Model/CastTable.php',
     'Cast\Model\CharacterTable'                          => __DIR__ . '/src/Cast/Model/CharacterTable.php',
+    'Cast\Model\EBlazonDataType'                         => __DIR__ . '/src/Cast/Model/EBlazonDataType.php',
     'Cast\Model\FamiliesTable'                           => __DIR__ . '/src/Cast/Model/FamiliesTable.php',
     'Cast\Model\JobTable'                                => __DIR__ . '/src/Cast/Model/JobTable.php',
     'Cast\Service\BlazonService'                         => __DIR__ . '/src/Cast/Service/BlazonService.php',
