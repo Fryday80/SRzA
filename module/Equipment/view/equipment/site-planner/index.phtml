@@ -246,6 +246,105 @@ $this->headScript()->appendFile('/libs/map.js');
 </box>
 
 <script>
+    (function () {
+        var supportQuality = fabric.StaticCanvas.supports('toBlobWithQuality');
+        fabric.util.object.extend(fabric.StaticCanvas.prototype, /** @lends fabric.StaticCanvas.prototype */ {
+
+            /**
+             * Exports canvas element to a blob image. Note that when multiplier is used, cropping is scaled appropriately
+             * @param {Object} [options] Options object
+             * @param {String} [options.format=png] The format of the output image. Either "jpeg" or "png"
+             * @param {Number} [options.quality=1] Quality level (0..1). Only used for jpeg.
+             * @param {Number} [options.multiplier=1] Multiplier to scale by
+             * @param {Number} [options.left] Cropping left offset. Introduced in v1.2.14
+             * @param {Number} [options.top] Cropping top offset. Introduced in v1.2.14
+             * @param {Number} [options.width] Cropping width. Introduced in v1.2.14
+             * @param {Number} [options.height] Cropping height. Introduced in v1.2.14
+             * @param {Function} [callback] function callback
+             */
+            toBlob: function (options, callback) {
+                options || (options = { });
+
+                var format = options.format || 'png',
+                    quality = options.quality || 1,
+                    multiplier = options.multiplier || 1,
+                    cropping = {
+                        left: options.left || 0,
+                        top: options.top || 0,
+                        width: options.width || 0,
+                        height: options.height || 0,
+                    };
+                this.__toBlobWithMultiplier(format, quality, cropping, multiplier, callback);
+            },
+
+            /**
+             * @private
+             */
+            __toBlobWithMultiplier: function(format, quality, cropping, multiplier, callback) {
+
+                var origWidth = this.getWidth(),
+                    origHeight = this.getHeight(),
+                    scaledWidth = (cropping.width || this.getWidth()) * multiplier,
+                    scaledHeight = (cropping.height || this.getHeight()) * multiplier,
+                    zoom = this.getZoom(),
+                    newZoom = zoom * multiplier,
+                    vp = this.viewportTransform,
+                    translateX = (vp[4] - cropping.left) * multiplier,
+                    translateY = (vp[5] - cropping.top) * multiplier,
+                    newVp = [newZoom, 0, 0, newZoom, translateX, translateY],
+                    originalInteractive = this.interactive;
+
+                this.viewportTransform = newVp;
+                // setting interactive to false avoid exporting controls
+                this.interactive && (this.interactive = false);
+                if (origWidth !== scaledWidth || origHeight !== scaledHeight) {
+                    // this.setDimensions is going to renderAll also;
+                    this.setDimensions({ width: scaledWidth, height: scaledHeight });
+                }
+                else {
+                    this.renderAll();
+                }
+                var data = this.__toBlob(format, quality, cropping, callback);
+                originalInteractive && (this.interactive = originalInteractive);
+                this.viewportTransform = vp;
+                //setDimensions with no option object is taking care of:
+                //this.width, this.height, this.renderAll()
+                this.setDimensions({ width: origWidth, height: origHeight });
+            },
+
+            /**
+             * @private
+             */
+            __toBlob: function(format, quality, cropping, callback) {
+
+                var canvasEl = this.contextContainer.canvas;
+                // to avoid common confusion https://github.com/kangax/fabric.js/issues/806
+                if (format === 'jpg') {
+                    format = 'jpeg';
+                }
+
+                var data = supportQuality
+                    ? canvasEl.toBlob(callback, 'image/' + format, quality)
+                    : canvasEl.toBlob(callback, 'image/' + format);
+            },
+
+            /**
+             * Exports canvas element to a Blob image (allowing to change image size via multiplier).
+             * @deprecated since 1.0.13
+             * @param {String} format (png|jpeg)
+             * @param {Number} multiplier
+             * @param {Number} quality (0..1)
+             * @return {String}
+             */
+            toBlobWithMultiplier: function (format, multiplier, quality, callback) {
+                return this.toBlob({
+                    format: format,
+                    multiplier: multiplier,
+                    quality: quality
+                }, callback);
+            },
+        });
+    })();
     (function($) {
         "use strict";
         var RIGHT_CLICK = 3,
@@ -479,7 +578,7 @@ $this->headScript()->appendFile('/libs/map.js');
             },
             __capZoomLevel(value) {
                 return Math.max(this.minZoomLevel, Math.min(this.maxZoomLevel, value));
-            }
+            },
         });
 
         fabric.CropBox = fabric.util.createClass(fabric.Rect, {
@@ -1246,6 +1345,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     diameter: 1,
                     data: {}
                 };
+                this.cropedImageBlob = null;
                 //init
                 $canvas.html('');
                 this.canvas = new fabric.MyCanvas($canvas[0], {
@@ -1285,6 +1385,10 @@ $this->headScript()->appendFile('/libs/map.js');
                     backgroundImageStretch: false,
                 });
                 this.details = new DetailsPanel(this);
+
+
+
+
             }
             initControls() {
                 var self = this;
@@ -1403,22 +1507,27 @@ $this->headScript()->appendFile('/libs/map.js');
                     $('.save-box', self.$uiImageExport).show();
                 });
                 $('.image-export button.save-image', this.$element).on('click', function (e) {
-                    var img = $('.preview img', self.$uiImageExport);
                     var name = $('#image-name', self.$uiImageExport).val();
                     if (!name || name == '') {
                         self.showError(lang.needPlanName);
                         return;
                     }
-                    if (img.length < 1) return;
-                    self.uploadImage(img.attr('src'), name, function(e) {
-                        if(e.error)
-                            if (e.code == 5)
-                                self.showError(lang.imageNameTaken, lang.ohno);
+                    if (!self.cropedImageBlob) {
+                        self.showError('no croped image to save!', lang.ohno);
+                    }
+                    self.uploadImageBlob("/siteplanner/imageUpload", self.cropedImageBlob, name + '.png')
+                        .progress(function(value) {
+                            console.log(value);
+                        })
+                        .done(function(e) {
+                            if(e.error)
+                                if (e.code == 5)
+                                    self.showError(lang.imageNameTaken, lang.ohno);
+                                else
+                                    self.showError(e.msg, lang.ohno);
                             else
-                                self.showError(e.msg, lang.ohno);
-                        else
-                            self.showInfo(e.msg, lang.successSave);
-                    });
+                                self.showInfo(e.msg, lang.successSave);
+                        });
                 });
                 $('input.crop', this.$element).on('change', function (e) {
                     var key = $(this).data('key');
@@ -1433,6 +1542,10 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             //progressbar
             initProgressBar() {
+
+
+
+
                 var progressBarText = new fabric.Text('Loding...', {
                     left: this.progressBarWidth / 2,
                     top: 0,
@@ -1724,6 +1837,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 return true;
             }
             stopCropper() {
+                self.cropedImageBlob = null;
                 this.$uiImageExport.addClass('hidden');
                 this.$uiDefault.removeClass('hidden');
                 $('.save-box', this.$uiImageExport).hide();
@@ -1737,26 +1851,33 @@ $this->headScript()->appendFile('/libs/map.js');
                 if (!this.cropperOverlay) return;
 
                 //@todo show load bar
-                var storedZoom = this.canvas.getZoom();
+                var self = this,
+                    storedZoom = this.canvas.getZoom();
                 this.canvas.setZoom(this.$zoom.val());
 
                 this.cropperOverlay.setCoords();
                 var viewMat = this.canvas.viewportTransform.slice();
                 var finalValues = fabric.util.qrDecompose(viewMat);
                 var bounds = this.cropperOverlay.getBoundingRect(true, true);
-                var dataUrl = this.canvas.toDataURL({
+
+                this.canvas.toBlob({
                     format: 'png',
                     left: bounds.left * viewMat[0] + finalValues.translateX,
                     top: bounds.top * viewMat[3] + finalValues.translateY,
                     width: bounds.width * viewMat[0],
                     height: bounds.height * viewMat[3]
+                }, function(blob) {
+                    self.cropedImageBlob = blob;
+                    self.canvas.setZoom(storedZoom);
+                    var urlCreator = window.URL || window.webkitURL;
+                    var imageUrl = urlCreator.createObjectURL(blob);
+
+                    var img = new Image;
+                    img.onload = function(){};
+                    img.src = imageUrl;
+                    $('.preview', self.$uiImageExport).empty();
+                    $('.preview', self.$uiImageExport).append(img);
                 });
-                this.canvas.setZoom(storedZoom);
-                var img = new Image;
-                img.onload = function(){};
-                img.src = dataUrl;
-                $('.preview', this.$uiImageExport).empty();
-                $('.preview', this.$uiImageExport).append(img);
             }
             startCropper() {
                 if (this.isBusy) return;
@@ -1779,7 +1900,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.updateCropConfig();
             }
             //@todo eventuel globalen ajax helper bauen der auch global errors mit pnotify wirft (des gehört hier nich rein aber weil die funktion ich drauf gebracht hat)
-            ajaxPostJson(url, data, success, progress){
+            ajaxPostJson(url, data){
                 var progressValue = 0.1,
                     progressState = 'Start Loading';
 
@@ -1843,14 +1964,10 @@ $this->headScript()->appendFile('/libs/map.js');
                 }
                 return new Blob(byteArrays, {type: mime});
             }
-            uploadImage(imageSrc, name, success) {
-                var url = "/siteplanner/imageUpload";
-                var base64ImageContent = imageSrc.replace(/^data:image\/(png|jpg);base64,/, "");
-                var blob = this.base64ToBlob(base64ImageContent, 'image/png');
+            uploadImageBlob(url, blob, name) {
                 var formData = new FormData();
-                formData.append('image', blob, name + '.png');
-
-                $.ajax({
+                formData.append('image', blob, name);
+                return $.ajax({
                     url: url,
                     type: "post",
                     dataType: 'json',
@@ -1858,8 +1975,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     contentType: false,
                     processData: false,
                     data: formData
-                }).done(function(e){
-                    if (success) success(e);
                 });
             }
         }
@@ -1867,5 +1982,6 @@ $this->headScript()->appendFile('/libs/map.js');
             new SitePlanner(this);
         };
     }(jQuery));
+
     $('#sitePlanner').SitePlanner();
 </script>
