@@ -217,7 +217,7 @@ class ProfileController extends AbstractActionController
             'charnameURL'   => $charnameURL,
         ));
     }
-    
+
     //@todo familyprofileAction
     public function familyprofileAction($family)
     {
@@ -238,6 +238,26 @@ class ProfileController extends AbstractActionController
                 array (
                     'name'  => 'name',
                     'label' => 'Name'
+                ),
+                array(
+                    'name'  => 'aktive',
+                    'label' => ' ',
+                    'type'  => 'custom',
+                    'render' => function($row){
+                        $isActive = $this->statsService->isActive($row['name']);
+                        $stateUrl = ($isActive) ? '/img/uikit/led-green.png' : '/img/uikit/led-red.png';
+                        $state    = ($isActive) ? 'online' : 'offline';
+                        $activityState = " <div class='onlineStatus' data-balloon=$state data-balloon-pos='down' ><img src=$stateUrl class='onlineStatus' alt=$state style='height: 25px;'></div>";
+                        return $activityState;
+                    }
+                ),
+                array(
+                    'name'  => 'chars',
+                    'label' => 'Chars',
+                    'type'  => 'custom',
+                    'render' => function($row){
+                        return  count($this->castService->getCharsByUserId($row['id']));
+                    }
                 ),
                 array(
                     'name'  => 'href',
