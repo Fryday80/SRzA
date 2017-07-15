@@ -66,7 +66,7 @@ class DataTable
     {
         if (is_object($data)){
             if (method_exists($data, 'toArray'))
-                $data = $data->toArray;
+                $data = $data->toArray();
             else
                 $data = get_object_vars($data);
         }

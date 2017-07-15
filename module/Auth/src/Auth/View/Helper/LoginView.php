@@ -49,7 +49,17 @@ class LoginView extends AbstractHelper
                         ),
                     ),
                 ),
-                1 => $this->createActiveUsers($this->statsService->getActiveUsers()),
+                1 => array(
+                    'name'  => 'Sonstiges',
+                    'class' => 'myMenu',
+                    'list'  => array(
+                        0 => array(
+                            'name' => 'Alle Benutzer',
+                            'url'  => '/prifiles'
+                        ),
+                    ),
+                ),
+                2 => $this->createActiveUsers($this->statsService->getActiveUsers()),
             );
             
             $viewModel->setTemplate("auth/auth/logout.phtml");

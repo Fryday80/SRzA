@@ -318,6 +318,17 @@ return array(
                     )
                 )
             ),
+            'profiles' => array(
+                'type' => 'Segment',
+                'options' => array(
+                    'route' => '/profiles',
+                    'defaults' => array(
+                        'controller' => 'Auth\Controller\Profile',
+                        'action' => 'list',
+                    )
+                ),
+                'may_terminate' => true,
+            ),
             'profile' => array(
                 'type' => 'Segment',
                 'options' => array(

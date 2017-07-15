@@ -66,6 +66,7 @@ class RoleTable extends AbstractTableGateway
             throw new \Exception($e->getPrevious()->getMessage());
         }
     }
+    
     public function getRoleByID($id) {
         $res = $this->getWhere("role.rid = '$id'")->toArray();
         if (count($res) > 0) {
@@ -73,6 +74,7 @@ class RoleTable extends AbstractTableGateway
         }
         return null;
     }
+    
     public function getRoleIDByName($name) {
         $res = $this->getWhere("role.role_name = '$name'")->toArray();
         if (count($res) > 0) {
@@ -86,6 +88,7 @@ class RoleTable extends AbstractTableGateway
         if (!$oldRole) {
             throw new Exception("can't edit role because Role not found");
         }
+        
         $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $oldRole['role_name'] );
         $this->permissionTable->remove($this->navRolesResourceID, $oldRole['role_name'] );
         $this->rolePermissionTable->deletePermission($id, $permID);

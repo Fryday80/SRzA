@@ -2,6 +2,7 @@
 namespace Auth\Controller;
 
 use Application\Service\StatisticService;
+use Application\Utility\DataTable;
 use Application\Utility\URLModifier;
 use Cast\Form\CharacterForm;
 use Auth\Service\AccessService;
@@ -227,5 +228,29 @@ class ProfileController extends AbstractActionController
             'family' => $family,
         );
 
+    }
+
+    public function listAction()
+    {
+        $userTable = new DataTable( array(
+            'data' => $this->userService->getAllUsers(),
+            'columns' => array(
+                array (
+                    'name'  => 'name',
+                    'label' => 'Name'
+                ),
+                array(
+                    'name'  => 'href',
+                    'label' => 'Profil',
+                    'type'  => 'custom',
+                    'render' => function($row){
+                        return  "<a href='/profile/" . $row['name'] . "'>zum Profil</a>";
+                    }
+                ),
+            ),
+        ));
+        return array(
+            'userTable' => $userTable,
+        );
     }
 }
