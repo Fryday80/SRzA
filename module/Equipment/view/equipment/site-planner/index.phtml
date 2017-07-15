@@ -60,27 +60,28 @@ $this->headScript()->appendFile('/libs/map.js');
     .details-panel {
         width: 200px;
     }
-    .details-panel>box>boxcontent{
+    .details-panel-box boxcontent{
         margin: 0;
         padding: 0;
         padding-left: 5px;
     }
-    .details-panel>box>boxcontent * {
+    .details-panel-box boxcontent * {
         width: 150px;
     }
-    .details-panel>box>boxcontent span {
+    .details-panel-box boxcontent span {
         width: 90px;
-    }
-    .details-panel>box>boxcontent input,
-    .details-panel>box>boxcontent select {
-        height: 35px;
-    }
-    .details-panel>box>boxcontent label>span:first-child{
-        left: 30px;
     }
     #image-export-ui .preview img {
         max-width: 200px;
         max-height: 350px;
+    }
+    label>span:first-child
+    {
+        top: auto;
+    }
+    div[data-usage="subDetail"]
+    {
+        display: none;
     }
 
 </style>
@@ -182,61 +183,55 @@ $this->headScript()->appendFile('/libs/map.js');
         <canvas class="site-planner-canvas"><?php echo json_encode($items); ?></canvas>
     </div>
     <div class="details-panel">
-        <box class="global">
-            <boxtitle>
-                <span>Global</span>
-            </boxtitle>
-            <boxcontent>
-                <p>ich weiß noch nich was hier rein kommt</p>
+        <box class="details-panel-box">
+            <div data-type="global" >
+                <boxtitle>
+                    <span>Global</span>
+                </boxtitle>
+                <boxcontent>
+                    <p>ich weiß noch nich was hier rein kommt</p>
+                    <br>
+                </boxcontent>
                 <br>
-            </boxcontent>
-            <br>
-        </box>
-        <box class="text-box" data-type="textbox">
-            <boxtitle>
-                <span>Text Box</span>
-            </boxtitle>
-            <boxcontent>
-                <label class="text-field-panel tent-panel equip-panel">
-                    <span>Font size:<br></span>
-                    <input id="font-size" data-key="fontSize" type="number" min="5" max="40" step="1">
-                </label>
+            </div>
+            <div data-type="textbox" data-usage="subDetail">
+                <boxtitle>
+                    <span>Text Box</span>
+                </boxtitle>
+                <boxcontent>
+                    <label>
+                        <span>Font size:<br></span>
+                        <input id="font-size" data-key="fontSize" type="number" min="5" max="40" step="1">
+                    </label>
+                    <br/>
+                    <br/>
+                    <label>
+                        <span>background color:</span>
+                        <input  type="color" data-key="backgroundColor">
+                    </label>
+                    <br/>
+                    <br/>
+                </boxcontent>
                 <br>
-                <label class="text-field-panel tent-panel equip-panel">
-                    <span>background color:</span>
-                    <input  type="color">
-                </label>
+            </div>
+            <div data-type="Equipitem" data-usage="subDetail">
+                <boxtitle>
+                    <span>Aussrüstungs teil</span>
+                </boxtitle>
+                <boxcontent>
+                    <label>
+                        <span>position:</span>
+                        <select data-key="position">
+                            <option value="1">top</option>
+                            <option value="2">right</option>
+                            <option value="3">bottom</option>
+                            <option value="4">left</option>
+                        </select>
+                    </label>
+                    <br>
+                </boxcontent>
                 <br>
-                <label class="tent-panel equip-panel">
-                    <span>position:</span>
-                    <select>
-                        <option value="1">top</option>
-                        <option value="2">right</option>
-                        <option value="3">bottom</option>
-                        <option value="4">left</option>
-                    </select>
-                </label>
-                <br>
-            </boxcontent>
-            <br>
-        </box>
-        <box class="equip-item">
-            <boxtitle>
-                <span>Aussrüstungs teil</span>
-            </boxtitle>
-            <boxcontent>
-                <label class="tent-panel equip-panel">
-                    <span>position:</span>
-                    <select>
-                        <option value="1">top</option>
-                        <option value="2">right</option>
-                        <option value="3">bottom</option>
-                        <option value="4">left</option>
-                    </select>
-                </label>
-                <br>
-            </boxcontent>
-            <br>
+            </div>
         </box>
     </div>
 </box>
@@ -1187,28 +1182,28 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
             }
             onSelect(obj) {
-//                obj.on('change', function() {});
-
-                console.log(obj.type);
                 this.selected = obj;
-                //@todo hide global details
-                $('.typeBox').hide();
-                $('.typeBox[data-type="'+obj.type+'"]').show();
+
+                $('div[data-type="global"]').hide();
+                $('div[data-usage="subDetail"]').hide();
+                $('div[data-type="'+obj.type+'"]').show();
+
                 switch (obj.type) {
-                    //@todo show details for object type
                     case 'Equipitem':
+                        console.log(obj);
                         //@todo update data on details
                         //@todo add event handler (eventuel nur "onChange" benutzen)
                         break;
                     case 'textbox':
-                        //@todo update data on details
+                        $('input[data-key="fontSize"]')[0].value = obj.fontSize;
+                        $('input[data-key="backgroundColor"]')[0].value = obj.backgroundColor;
                         //@todo add event handler (eventuel nur "onChange" benutzen)
                         break;
                 }
             }
             onDeselect() {
-                //@todo hide details
-                //@todo show global details
+                $('div[data-type="global"]').show();
+                $('div[data-usage="subDetail"]').hide();
                 //@todo remove event handler
             }
         }
