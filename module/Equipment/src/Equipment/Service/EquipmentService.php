@@ -28,7 +28,6 @@ class EquipmentService
         $this->cache = $cacheService;
     }
 
-
     public function getAll()
     {
         return $this->equipTable->getAll();
@@ -85,88 +84,102 @@ class EquipmentService
             return $this->equipTable->add($data);
         return $this->equipTable->save($data);
     }
+
+
+
     // DEPRECATED!!!!!!!!
+    //@todo cleanfix
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by getAllByType
-     * @return DataSet|bool
-     */
-    public function getAllTents()
-    {
-        $this->depMsg();
-        return $this->getAllByType(EEquipTypes::TENT);
-    }
+////  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by getAllByType
+//     * @return DataSet|bool
+//     */
+//    public function getAllTents()
+//    {
+//        $this->depMsg();
+//        return $this->getAllByType(EEquipTypes::TENT);
+//    }
+//
+////  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by getByUserIdAndType
+//     * @param $id
+//     * @return DataSet|bool
+//     */
+//    public function getTentsByUserId($id)
+//    {
+//        $this->$this->depMsg();
+//        return $this->getByUserIdAndType($id, EEquipTypes::TENT);
+//    }
+//
+////  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by getById
+//     * @param $id
+//     * @return \Application\Model\DataObjects\DataItem|bool
+//     */
+//    public function getTentById($id)
+//    {
+//        $this->$this->depMsg();
+//        return $this->equipTable->getById($id);
+//    }
+//
+//  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
+//     * @return array
+//     */
+//    public function getCanvasData()
+//    {
+//        $this->$this->depMsg();
+//        return $this->equipTable->fetchAllCastData();
+//    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by getByUserIdAndType
-     * @param $id
-     * @return DataSet|bool
-     */
-    public function getTentsByUserId($id)
-    {
-        $this->$this->depMsg();
-        return $this->getByUserIdAndType($id, EEquipTypes::TENT);
-    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by getById
-     * @param $id
-     * @return \Application\Model\DataObjects\DataItem|bool
-     */
-    public function getTentById($id)
-    {
-        $this->$this->depMsg();
-        return $this->equipTable->getById($id);
-    }
+//  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by save
+//     * @param Tent $tentData
+//     * @return bool|int
+//     */
+//    public function saveTent(Tent $tentData)
+//    {
+//        $this->$this->depMsg();
+//        $tentData->image = ETentShape::IMAGES[$tentData->shape];
+//        if($tentData->id == "")
+//            return $this->equipTable->add($tentData);
+//        return $this->equipTable->save($tentData);
+//    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
-     * @return array
-     */
-    public function getCanvasData()
-    {
-        $this->$this->depMsg();
-        return $this->equipTable->fetchAllCastData();
-    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by save
-     * @param Tent $tentData
-     * @return bool|int
-     */
-    public function saveTent(Tent $tentData)
-    {
-        $this->$this->depMsg();
-        $tentData->image = ETentShape::IMAGES[$tentData->shape];
-        if($tentData->id == "")
-            return $this->equipTable->add($tentData);
-        return $this->equipTable->save($tentData);
-    }
+//  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by delteById
+//     * @param $id
+//     * @return bool
+//     */
+//    public function deleteTentById($id)
+//    {
+//        $this->$this->depMsg();
+//        return $this->deleteById($id);
+//    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by delteById
-     * @param $id
-     * @return bool
-     */
-    public function deleteTentById($id)
-    {
-        $this->$this->depMsg();
-        return $this->deleteById($id);
-    }
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by deleteByTypeAndUSerId
-     * @param $userId
-     * @return bool
-     */
-    public function deleteTentByUserId($userId)
-    {
-        $this->$this->depMsg();
-        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
-    }
-
-    private function depMsg()
-    {
-        bdump('DEPRECATED METHOD USED!!!');
-    }
+//  0 usages found 16.7.
+//    /**
+//     * DEPRECATED +++ DEPRECATED +++ replaced by deleteByTypeAndUSerId
+//     * @param $userId
+//     * @return bool
+//     */
+//    public function deleteTentByUserId($userId)
+//    {
+//        $this->$this->depMsg();
+//        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
+//    }
+//
+//    private function depMsg()
+//    {
+//        bdump('DEPRECATED METHOD USED!!!');
+//    }
 }
