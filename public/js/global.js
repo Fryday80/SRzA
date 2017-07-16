@@ -1,9 +1,143 @@
 //global js for pnotify shorthandlers and ajax functions with build in error handling
 (function(){
+    "use strict";
+    function prepareData(type, data) {
+        switch(type) {
+            case http.JSON_DATA:
+                return {
+                    contentType : 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(data)
+                };
+                return ;
+            case http.FORM_DATA:
+                data = $(data).serializeArray();
+                let beautyData = {};
+                for(let i = 0; i < data.length; i++) {
+                    beautyData[data[i].name] = data[i].value;
+                }
+                return {
+                    contentType : 'application/json',
+                    dataType: 'json',
+                    data: JSON.stringify(beautyData)
+                };
+            case http.BLOB_DATA:
+                if (typeof data !== 'object' || !data.blob || !data.name) {
+                    throw new Error('data must be a object in form: { blob: BLOB_OBJECT, name: BLOB_NAME}');
+                }
+                if (data.blob instanceof Blob) {
+                    var formData = new FormData();
+                    formData.append('image', data.blob, data.name);
+                    return {
+                        contentType: false,
+                        dataType: 'json',
+                        data: formData
+                    };
+                } else
+                    throw new Error('data is not a blob!');
+        }
+    }
+    function base64ToBlob(base64, mime) {
+        mime = mime || '';
+        var sliceSize = 1024;
+        var byteChars = window.atob(base64);
+        var byteArrays = [];
+
+        for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
+            var slice = byteChars.slice(offset, offset + sliceSize);
+
+            var byteNumbers = new Array(slice.length);
+            for (var i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            var byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+        return new Blob(byteArrays, {type: mime});
+    }
     window.http = {
+        JSON_DATA: 0,
+        FORM_DATA: 1,
+        BLOB_DATA: 2,
         get: function() {},
-        post: function() {},
-        postBlob: function() {},
+        postJson: function(url, data, success = false, progress = false, error = true) {
+            return this.post(url, this.JSON_DATA, data, success, progress, error);
+        },
+        postForm: function(url, formElement, success = false, progress = false, error = true) {
+            return this.post(url, this.FORM_DATA, data, success, progress, error);
+        },
+        postBlob: function(url, blob, name, success = false, progress = false, error = true) {
+            let data =  {
+                blob: blob,
+                name: name
+            };
+            return this.post(url, this.BLOB_DATA, data, success, progress, error);
+        },
+        /**
+         * @param url {string}
+         * @param dataType {number} http.JSON_DATA, http.FORM_DATA or http.BLOB_DATA
+         * @param data
+         * @param progress {bool|function}
+         * @param success {bool|function}
+         * @param error {bool|function}
+         */
+        post(url, dataType, data, success = false, progress = false, error = true) {
+            var progressValue = 0.0,
+                progressState = 'Start Loading';
+
+            if (!url || typeof url !== 'string') console.error('url must be set!');
+
+            data = prepareData(dataType, data);
+
+            let opt = {
+                type: 'POST',
+                url: url,
+                data: data.data,
+                dataType: data.dataType,
+                processData: false,
+                cache: false,
+            };
+            if (dataType != this.JSON_DATA) {
+                opt.contentType = data.contentType;
+            }
+            opt.success = function(data, textStatus, jqXHR) {
+                if (success && typeof success === 'function')
+                    success(data);
+            };
+            opt.error = function(jqXHR, textStatus, errorThrown) {
+                if (error && error === true) {
+                    window.notify.error(errorThrown, 'Ajax Error');
+                }
+                if (error && typeof error === 'function')
+                    error(data);
+            };
+            opt.complete = function(data) {
+                console.log(data);
+            };
+            opt.xhr = function() {
+                var xhr = new window.XMLHttpRequest();
+                xhr.upload.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        progressState = 'Send request';
+                        progressValue = (evt.loaded / evt.total) / 2;
+                        if (progress)
+                            progress(progressValue, progressState);
+                    }
+                }, false);
+                xhr.addEventListener("progress", function(evt) {
+                    if (evt.lengthComputable) {
+                        progressState = 'Receiving data';
+                        progressValue = (evt.loaded / evt.total) / 2 + 0.5;
+                        if (progress)
+                            progress(progressValue, progressState);
+                    }
+                }, false);
+                return xhr;
+            };
+            return $.ajax(opt);
+        },
     };
     /** @type {Progress[]} */
     var tasks = [],
@@ -13,7 +147,7 @@
         constructor(name, title = name) {
             this.name = name;
             this.value = 0;
-            this.postTimeout = 200;
+            this.postTimeout = 400;
             var self = this;
             this.loader = new PNotify({
                 title: title,
@@ -46,7 +180,18 @@
          */
         do(amount, text) {
             this.value += amount;
-
+            if (!text) text = this.loader.title;
+            this.loader.update({
+                title: text,
+                icon: "fa fa-circle-o-notch fa-spin"
+            });
+            this.$progress.val(this.value);
+            this.$valueEle.html(Math.round(this.value * 100) + "%");
+            if (this.value >= 1) return this.end();
+            return false;
+        }
+        set(value, text) {
+            this.value = value;
             if (!text) text = this.loader.title;
             this.loader.update({
                 title: text,
@@ -73,8 +218,31 @@
         }
     }
 
-
     window.notify = {
+        error(msg, title) {
+            var opt = {};
+            opt.text = msg;
+            opt.type = 'error';
+            opt.addclass = "stack-topleft";
+            if (title) opt.title = title;
+            new PNotify(opt);
+        },
+        info(msg, title) {
+            var opt = {};
+            opt.text = msg;
+            opt.type = 'info';
+            opt.addclass = "stack-topleft";
+            if (title) opt.title = title;
+            new PNotify(opt);
+        },
+        success(msg, title) {
+            var opt = {};
+            opt.text = msg;
+            opt.type = 'success';
+            opt.addclass = "stack-topleft";
+            if (title) opt.title = title;
+            new PNotify(opt);
+        },
         /**
          * @param name
          * @returns {Progress}
@@ -89,13 +257,21 @@
             this.getProgress(name).stop();
             //remove from tasks and hash
         },
-        doProgress: function(name, amount) {
+        doProgress: function(name, amount, text) {
             var progress = this.getProgress(name);
             if (!progress) {
                 console.warn('progress with name "'+name+'" not found');
                 return;
             }
-            progress.do(amount);
+            progress.do(amount, text);
+        },
+        setProgress: function(name, value, text) {
+            var progress = this.getProgress(name);
+            if (!progress) {
+                console.warn('progress with name "'+name+'" not found');
+                return;
+            }
+            progress.set(value, text);
         },
         /**
          * @param name
@@ -107,15 +283,4 @@
             return tasks[i];
         },
     };
-
-    $(document).ready(function() {
-        var progress = window.notify.startProgress('test');
-            // notify.doProgress('test', 0.2);
-        var inter = setInterval(function() {
-            notify.doProgress('test', 0.2);
-            if (progress.value >= 1) {
-                clearInterval(inter);
-            }
-        }, 100);
-    });
 })();

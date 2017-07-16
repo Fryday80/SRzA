@@ -201,13 +201,19 @@ $this->headScript()->appendFile('/libs/map.js');
                 <boxcontent>
                     <label>
                         <span>Font size:<br></span>
-                        <input id="font-size" data-key="fontSize" type="number" min="5" max="40" step="1">
+                        <input data-key="fontSize" type="number" min="5" max="40" step="1">
+                    </label>
+                    <br>
+                    <br>
+                    <label>
+                        <span>Text color:</span>
+                        <input type="color" data-key="fill">
                     </label>
                     <br/>
                     <br/>
                     <label>
                         <span>background color:</span>
-                        <input  type="color" data-key="backgroundColor">
+                        <input type="color" data-key="backgroundColor">
                     </label>
                     <br/>
                     <br/>
@@ -219,23 +225,81 @@ $this->headScript()->appendFile('/libs/map.js');
                     <span>Aussrüstungs teil</span>
                 </boxtitle>
                 <boxcontent>
-                    <label>
+                    <label alt="labelRender">
+                        <span>Show Labels</span>
+<!--                        <input data-key="labelRender" type="hidden" name="label-checkbox" value="0">-->
+                        <input data-key="labelRender" type="checkbox" name="label-checkbox" class="input-error" value="1">
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelPosition">
                         <span>position:</span>
-                        <select data-key="position">
-                            <option value="1">top</option>
-                            <option value="2">right</option>
-                            <option value="3">bottom</option>
-                            <option value="4">left</option>
+                        <select data-key="labelPosition">
+                            <option value="0">top</option>
+                            <option value="1">right</option>
+                            <option value="2">bottom</option>
+                            <option value="3">left</option>
                         </select>
                     </label>
                     <br>
+                    <br>
+                    <label alt="labelOffsetX">
+                        <span>Offset X:<br></span>
+                        <input data-key="labelOffsetX" type="number" min="5" max="40" step="1">
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelOffsetY">
+                        <span>Offset Y:<br></span>
+                        <input data-key="labelOffsetY" type="number" min="5" max="40" step="1">
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelFontType">
+                        <span>Schriftart:</span>
+                        <select data-key="labelFontType">
+                            <option value="Arial">Arial</option>
+                            <option value="Comic Sans MS">Comic Sans MS</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Webdings">Webdings</option>
+                        </select>
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelFontSize">
+                        <span>Font size:<br></span>
+                        <input data-key="labelFontSize" type="number" min="5" max="40" step="1">
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelTextColor">
+                        <span>background color:</span>
+                        <input type="color" data-key="labelTextColor">
+                    </label>
+                    <br>
+                    <br>
+                    <label alt="labelBgColor">
+                        <span>background color:</span>
+                        <input type="color" data-key="labelBgColor">
+                    </label>
+                </boxcontent>
+                <br>
+            </div>
+            <div data-type="image" data-usage="subDetail">
+                <boxtitle>
+                    <span>Image</span>
+                </boxtitle>
+                <boxcontent>
+                    <button data-func="sendBackwards">send Backwards</button>
+                    <button data-func="sendToBack">send To Back</button>
+                    <button data-func="bringForward">bring Forward</button>
+                    <button data-func="bringToFront">bring To Front</button>
                 </boxcontent>
                 <br>
             </div>
         </box>
     </div>
 </box>
-
 <script>
     (function () {
         var supportQuality = fabric.StaticCanvas.supports('toBlobWithQuality');
@@ -591,7 +655,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     this.moveTo(100);
                 }.bind(this));
                 this.on('mouse:down', function(e) {
-                    console.log('########### mouse down');
+//                    console.log('########### mouse down');
                 }.bind(this));
 //                this.on('deselected', function(e) {
 //                    this.moveTo(100);
@@ -621,6 +685,14 @@ $this->headScript()->appendFile('/libs/map.js');
         });
         fabric.Equipitem = fabric.util.createClass(fabric.Object, {
             type: 'Equipitem',
+            labelRender: true,
+            labelPosition: 0,//0=top, 1=right, 2=bottom, 3=left
+            labelFontSize: 20,
+            labelOffsetX: 0,
+            labelOffsetY: 0,
+            labelFontType: 'Arial',
+            labelBgColor: '#fafafa',
+            labelTextColor: '#000000',
             radius: 40,
             startAngle: 0,
             endAngle: Math.PI * 2,
@@ -649,7 +721,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     this.moveTo(100);
                 }.bind(this));
                 this.on('mouse:down', function(e) {
-                    console.log('########### mouse down');
+//                    console.log('########### mouse down');
                 }.bind(this));
 //                this.on('deselected', function(e) {
 //                    this.moveTo(100);
@@ -681,14 +753,8 @@ $this->headScript()->appendFile('/libs/map.js');
                     // item is equip not tent
                 }
 
-//                    0 => 'Rundzelt',
-//                    1 => 'rechteckiges Zelt, Einmast',
-//                    2 => 'rechteckiges Zelt, Zweimast',
-//                    3 => 'verbreitertes Rundzelt, Zweimast(z.B. Sachs 4m x 6m)'
-
                 switch (parseInt(this.item.shape)) {
-                    // 0 = round tent
-                    case 0:
+                    case 0: // 0 = round tent
                         var count = 8,
                             startAngle = 0,
                             angleSize = (2 * Math.PI) / count;
@@ -728,8 +794,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.fill();
 
                         break;
-                    // 1 = rectangle, one mast tent
-                    case 1:
+                    case 1: // 1 = rectangle, one mast tent
                         // entrance
                         ctx.beginPath();
                         ctx.moveTo(-(w/6), - ((h / 2) - 10));
@@ -784,8 +849,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.strokeStyle = designColor;
                         ctx.stroke();
                         break;
-                    // 2 = rectangle, two mast tent
-                    case 2:
+                    case 2: // 2 = rectangle, two mast tent
                         if (!landscape) {
                             h = this.width;
                             w = this.height;
@@ -853,8 +917,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.strokeStyle = designColor;
                         ctx.stroke();
                         break;
-                    // 3 => two mast tent with round corners
-                    case 3:
+                    case 3: // 3 => two mast tent with round corners
                         if (!landscape) {
                             h = this.item.width;
                             w = this.item.height;
@@ -937,29 +1000,6 @@ $this->headScript()->appendFile('/libs/map.js');
                         ctx.stroke();
                         ctx.fill();
                         break;
-                    case '11':
-
-//                        ctx.lineTo(x + w, y + h);
-//                        ctx.lineTo(x, y + h);
-//                        ctx.lineTo(x, y);
-//                        ctx.fillStyle = "#ffffff";
-//                        ctx.strokeStyle = "#00ff00";
-//                        ctx.lineWidth = 2;
-//                        ctx.fill();//damit zeichnet man dann eigentlich
-//                        ctx.stroke();
-                        //des stroke macht ne linie ausenrum ... bzw wenn du nur ne linie ziehst giebts kein fill
-//                        ctx.beginPath();
-//                        ctx.moveTo(x + cs, y);
-//                        ctx.lineTo(x + w - cs, y);
-//                        ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
-//
-//                        ctx.lineTo(x + w, y + h - cs);
-//                        ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
-//                        ctx.lineTo(x + cs, y + h);
-//                        ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
-//                        ctx.lineTo(x, y + cs);
-//                        ctx.quadraticCurveTo(x, y, x + cs, y);
-                        break;
                     default:
                         if (this.itemImg) {
                             ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
@@ -967,41 +1007,54 @@ $this->headScript()->appendFile('/libs/map.js');
                         break;
                 }
 
-                if (true) { //render text
+                if (this.labelRender) {
                     var offX = 0,
-                        offY = 100,
-                        x = -this.width / 2 + offX,
-                        y = -this.height / 2 + offY,
-                        w = 20,
-                        h = 30,
+                        offY = 0,
+                        paddingX = 10,
+                        paddingY = 6,
+                        w = paddingX * 2,
+                        h = paddingY * 2 + parseInt(this.labelFontSize),
+                        hWidth = this.width / 2,
+                        hHeight = this.height / 2,
+                        distance = 20,
                         cs = 5;//corner size
 
-                    ctx.font = "22px Arial";
-                    w += ctx.measureText(this.item.userName).width;
                     ctx.save();
+                    ctx.font = this.labelFontSize + "px " + this.labelFontType;
+                    var textWidth = ctx.measureText(this.item.userName).width;
+                    w += textWidth;
+
+                    //calculate label offsets
+                    if (this.labelPosition % 2) {
+                        offX = (this.labelPosition == 1)? offX + hWidth + distance + textWidth/2: offX - hWidth - distance - textWidth / 2;
+                    } else {
+                        offY = (this.labelPosition == 2)? offY + hHeight + distance: offY - hHeight - distance;
+                    }
+                    offX += parseInt(this.labelOffsetX);
+                    offY += parseInt(this.labelOffsetY);
+                    //transform
                     ctx.rotate(-this.angle * Math.PI / 180);
-
+                    ctx.translate(-w/2 + offX, -h/2 + offY);
                     ctx.beginPath();
-                    ctx.moveTo(x + cs, y);
-                    ctx.lineTo(x + w - cs, y);
-                    ctx.quadraticCurveTo(x + w, y, x + w, y + cs);
+                    ctx.moveTo(cs, 0);
+                    ctx.lineTo(w - cs, 0);
+                    ctx.quadraticCurveTo(w, 0, w, cs);
 
-                    ctx.lineTo(x + w, y + h - cs);
-                    ctx.quadraticCurveTo(x + w, y + h, x + w - cs, y + h);
-                    ctx.lineTo(x + cs, y + h);
-                    ctx.quadraticCurveTo(x, y + h , x, y + h - cs);
-                    ctx.lineTo(x, y + cs);
-                    ctx.quadraticCurveTo(x, y, x + cs, y);
+                    ctx.lineTo(w, h - cs);
+                    ctx.quadraticCurveTo(w, h, w - cs, h);
+                    ctx.lineTo(cs, h);
+                    ctx.quadraticCurveTo(0, h , 0, h - cs);
+                    ctx.lineTo(0, cs);
+                    ctx.quadraticCurveTo(0, 0, cs, 0);
 
                     ctx.lineWidth = 1;
-                    ctx.strokesStyle = "#000";
-                    ctx.fillStyle = "#fff";
+                    ctx.strokesStyle = this.labelTextColor;
+                    ctx.fillStyle = this.labelBgColor;
                     ctx.fill();
                     ctx.stroke();
-
-                    ctx.fillStyle = "#000";
-                    ctx.font = "22px Arial";
-                    ctx.fillText(this.item.userName, x + 5, y + 20);
+                    ctx.fillStyle = this.labelTextColor;
+                    ctx.textBaseline = "top";
+                    ctx.fillText(this.item.userName, paddingX, paddingY);
 
                     ctx.restore();
                 }
@@ -1014,10 +1067,17 @@ $this->headScript()->appendFile('/libs/map.js');
             toObject: function(propertiesToInclude) {
                 var NUM_FRACTION_DIGITS = fabric.Object.NUM_FRACTION_DIGITS,
                     toFixed = fabric.util.toFixed,
-
                     object = {
                         type:                     this.type,
                         item:                     this.item,
+                        labelRender:              this.labelRender,
+                        labelPosition:            this.labelPosition,
+                        labelFontSize:            this.labelFontSize,
+                        labelFontType:            this.labelFontType,
+                        labelBgColor:             this.labelBgColor,
+                        labelOffsetX:             this.labelOffsetX,
+                        labelOffsetY:             this.labelOffsetY,
+                        labelTextColor:           this.labelTextColor,
                         originX:                  this.originX,
                         originY:                  this.originY,
                         left:                     toFixed(this.left, NUM_FRACTION_DIGITS),
@@ -1063,7 +1123,6 @@ $this->headScript()->appendFile('/libs/map.js');
         };
 
         //site planner
-
         var preloadedImages = [];
         var preloadUrls = [];
         var lang = {
@@ -1136,7 +1195,7 @@ $this->headScript()->appendFile('/libs/map.js');
             var result = [];
             var zoom = Math.abs(options.zoom - 7);
             zoom = Math.pow(2, zoom);
-            var offlong = zoom * 0.000277;
+            var offlong = zoom * 0.000272;
             var offlat = zoom * 0.000429;
             for (var line = 0; line < options.diameter; line++) {
                 for (var pos = 0; pos < options.diameter; pos++) {
@@ -1265,10 +1324,16 @@ $this->headScript()->appendFile('/libs/map.js');
         class DetailsPanel {
             constructor(sitePlanner) {
                 var self = this;
+                this.selected = null;
                 this.$panel = $('.details-panel', sitePlanner.$element);
                 $('input, select', this.$panel).on('change', function(e) {
-                    console.log(e);
-                    self.selected.set($(this).data('key'), $(this).val());
+                    if (!self.selected) return;
+
+                    if ($(this).attr('type') == 'checkbox') {
+                        self.selected.set($(this).data('key'), $(this).prop('checked'));
+                    } else {
+                        self.selected.set($(this).data('key'), $(this).val());
+                    }
                     sitePlanner.canvas.renderAll();
                 });
                 sitePlanner.canvas.on('object:selected', function (e) {
@@ -1277,31 +1342,33 @@ $this->headScript()->appendFile('/libs/map.js');
                 sitePlanner.canvas.on('selection:cleared', function (e) {
                     self.onDeselect();
                 });
+                $('button', this.$panel).on('click', function() {
+                    if (!self.selected) return;
+                    var funcName = $(this).data('func');
+                    self.selected[funcName].call(self.selected)
+                });
             }
             onSelect(obj) {
                 this.selected = obj;
-
                 $('div[data-type="global"]').hide();
                 $('div[data-usage="subDetail"]').hide();
-                $('div[data-type="'+obj.type+'"]').show();
-
-                switch (obj.type) {
-                    case 'Equipitem':
-                        console.log(obj);
-                        //@todo update data on details
-                        //@todo add event handler (eventuel nur "onChange" benutzen)
-                        break;
-                    case 'textbox':
-                        $('input[data-key="fontSize"]')[0].value = obj.fontSize;
-                        $('input[data-key="backgroundColor"]')[0].value = obj.backgroundColor;
-                        //@todo add event handler (eventuel nur "onChange" benutzen)
-                        break;
-                }
+                var $typeBox = $('div[data-type="'+obj.type+'"]', this.$panel);
+                $typeBox.show();
+                $typeBox.find('input, select').each(function() {
+                    var key = $(this).data('key');
+                    if (!key) return;
+                    var value = obj.get(key);
+                    if ($(this).attr('type') == 'checkbox')
+                        $(this).prop("checked", value);
+                    else
+                        $(this).val(value);
+                });
             }
             onDeselect() {
                 $('div[data-type="global"]').show();
                 $('div[data-usage="subDetail"]').hide();
-                //@todo remove event handler
+
+                this.selected = null;
             }
         }
         /**
@@ -1317,23 +1384,25 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.$zoom = $('.crop[data-key="zoom"]', this.$uiImageExport);
                 this.$width = $('.crop[data-key="width"]', this.$uiImageExport);
                 this.$height = $('.crop[data-key="height"]', this.$uiImageExport);
-                this.progressBarWidth = 250;
                 this.isDragging = false;
                 this.itemPool = JSON.parse($canvas.html());
                 this.isBusy = false;
+                /** @type ItemList **/
                 this.itemList = new ItemList(this);
+                /** @type Progress **/
+                this.progressBar = null;
                 this.mapImages = [];
                 this.cropperOverlay = null;
                 this.planList = [];
                 this.plan = {
                     id: 0,
                     name: 'Unbennant',
-                    longitude: 48.249238,
-                    latitude: 11.562762,
+                    longitude: 48.249338,
+                    latitude: 11.562462,
                     zoom: 7,
                     scale: 1,
                     mapType: 'satellite',
-                    diameter: 1,
+                    diameter: 2,
                     data: {}
                 };
                 this.cropedImageBlob = null;
@@ -1350,9 +1419,9 @@ $this->headScript()->appendFile('/libs/map.js');
                     cornerColor: '#ff0000',
                 });
                 this.canvas.dirty = true;
-                this.initProgressBar();
                 this.initControls();
                 this.updateProgressBar(0);
+                this.details = new DetailsPanel(this);
                 //preload all necessary images
                 for(var i = 0; i < this.itemPool.length; i++) {
                     if (this.itemPool[i].image != null) {
@@ -1361,25 +1430,19 @@ $this->headScript()->appendFile('/libs/map.js');
                 }
                 preloadImages(preloadUrls, function(images) {
                     self.updateProgressBar(1);
-                    self.hideProgressBar();
                     preloadedImages = images;
                 }, function(progress) {
                     self.updateProgressBar(progress);
                 });
 
                 //alternate image background ----------------------------------
-                var src = '/img/html.bg.png';
-                this.canvas.backgroundColor = new fabric.Pattern({
-                    source: src,
-                    repeat: 'repeat',
-                    backgroundImageOpacity: 0.5,
-                    backgroundImageStretch: false,
-                });
-                this.details = new DetailsPanel(this);
-
-
-
-
+//                var src = '/img/html.bg.png';
+//                this.canvas.backgroundColor = new fabric.Pattern({
+//                    source: src,
+//                    repeat: 'repeat',
+//                    backgroundImageOpacity: 0.5,
+//                    backgroundImageStretch: false,
+//                });
             }
             initControls() {
                 var self = this;
@@ -1506,7 +1569,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     if (!self.cropedImageBlob) {
                         self.showError('no croped image to save!', lang.ohno);
                     }
-                    self.uploadImageBlob("/siteplanner/imageUpload", self.cropedImageBlob, name + '.png')
+                    http.postBlob("/siteplanner/imageUpload", self.cropedImageBlob, name + '.png')
                         .progress(function(value) {
                             console.log(value);
                         })
@@ -1531,71 +1594,18 @@ $this->headScript()->appendFile('/libs/map.js');
                     }
                 });
             }
-            //progressbar
-            initProgressBar() {
-
-
-
-
-                var progressBarText = new fabric.Text('Loding...', {
-                    left: this.progressBarWidth / 2,
-                    top: 0,
-                    fill: '#ffffff',
-                    fontSize: 12,
-                    originX: 'center',
-                    originY: 'center'
-                });
-                this.progressBar = new fabric.Rect({
-                    left: 0,
-                    top: 20,
-                    fill: 'red',
-                    width: 50,
-                    height: 20,
-                });
-                var progressBarBorder = new fabric.Rect({
-                    left: 0,
-                    top: 20,
-                    stroke: 'red',
-                    width: this.progressBarWidth,
-                    height: 20,
-                });
-
-                this.progressGroup = new fabric.Group([progressBarText, progressBarBorder, this.progressBar], {
-                    left: 300,
-                    top: 100,
-                    angle: 0
-                });
-            }
             hideProgressBar() {
-                var self = this;
-                setTimeout(function() {
-                    self.canvas.remove(self.progressGroup);
-                    self.isBusy = false;
-                }, 500);
+                console.warn('DEPRECATED');
             }
             updateProgressBar(value) {
-                var self = this;
                 if (typeof value === 'number') {
                     if (value === 0) {
-                        //show progress group and set value to 0
-                        this.progressBar.set('width', 0);
-                        this.canvas.remove(this.progressGroup);
-                        this.canvas.add(this.progressGroup);
+                        this.progressBar = notify.startProgress('siteplanner');
                     }
-                    this.progressBar.animate('width', value * 250, {
-                        onChange: this.canvas.renderAll.bind(this.canvas),
-                        duration: 200,
-                        easing: fabric.util.ease.easeInCirc(),
-                        onComplete: function() {
-                        },
-                        abort: function(){
-//                            return true;
-                        }
-                    });
-
-                    //set progress bar length
+                    this.progressBar.set(value);
                 } else if (value === false) {
                     //hide progress element
+                    this.progressBar.stop();
                 }
             }
             //error handling
@@ -1669,34 +1679,9 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.canvas.deactivateAll().renderAll();
                     self.itemList.show();
                     (progress)? progress(1): self.updateProgressBar(1);
-                    (!progress)? self.hideProgressBar():'';
+                    self.canvas.renderAll();
+                    self.isBusy = false;
                 }
-//                function createFromUrl(url, line, pos, zIndex) {
-//                    fabric.Image.fromURL(url, function(img) {
-////                        console.log('line: %i  |  pos: %i  |  zIndex: %i', line, pos, zIndex);
-////                        console.log(
-////                            pos * 640,
-////                            line * 640);
-//                        img.set('isMap', true);
-//                        img.scale(1 / self.plan.scale).set({
-//                            left: pos * 640,
-//                            top: line * 610,
-//                            scale: 2,
-//                            selectable: false,
-//                            originX: 'left',
-//                            originY: 'top',
-//                            transparentCorners: false
-//                        });
-//                        self.canvas.add(img);
-////                        self.canvas.bringToFront(img);
-//                        self.canvas.moveTo(img, zIndex);
-//                        self.mapImages.push(img);
-//                        createUrlProcess++;
-//                        if (createUrlProcess >= self.plan.diameter) {
-//                            finish();
-//                        }
-//                    });
-//                }
                 function createFromImage(img, line, pos, zIndex) {
                     var img = new fabric.Image(img, {
                         scaleX: 0.2,
@@ -1713,8 +1698,7 @@ $this->headScript()->appendFile('/libs/map.js');
                         transparentCorners: false
                     });
                     self.canvas.add(img);
-//                        self.canvas.bringToFront(img);
-                    self.canvas.moveTo(img, zIndex);
+                    img.moveTo(zIndex);
                     self.mapImages.push(img);
                     createUrlProcess++;
                     if (createUrlProcess >= self.plan.diameter) {
@@ -1724,23 +1708,12 @@ $this->headScript()->appendFile('/libs/map.js');
                 preloadImagesAsDataURL(urls, function(images) {
                     for (var line = 0; line < self.plan.diameter; line++) {
                         for (var pos = 0; pos < self.plan.diameter; pos++) {
-                            createFromImage(images[line * self.plan.diameter + pos], line, pos, -line);
+                            createFromImage(images[line * self.plan.diameter + pos], line, pos, line + 1);
                         }
                     }
                 }, function(value) {
                     (progress)? progress(value): self.updateProgressBar(value);
                 });
-//                preloadImages(urls, function(images) {
-////                    images
-//
-//                    for (var line = 0; line < self.plan.diameter; line++) {
-//                        for (var pos = 0; pos < self.plan.diameter; pos++) {
-//                            createFromUrl(images[line * self.plan.diameter + pos].src, line, pos, -line);
-//                        }
-//                    }
-//                }, function(value) {
-//                    (progress)? progress(value): self.updateProgressBar(value);
-//                });
             }
             //plan management (list/get/save) and html select field update
             updatePlanList() {
@@ -1766,7 +1739,6 @@ $this->headScript()->appendFile('/libs/map.js');
                 $.getJSON("/siteplanner/get/" + planID , function(result){
                     self.updateProgressBar(0.2);
                     var data = result.data;
-                    console.log(result);
                     //search in planList for id and replace -> if not found, push it
                     var found = false;
                     for(var i = 0; i < self.planList; i++) {
@@ -1812,15 +1784,11 @@ $this->headScript()->appendFile('/libs/map.js');
                 var self = this;
                 this.plan.name = name;
                 this.plan.data = this.itemList.toJSON();
-                this.ajaxPostJson('/siteplanner/save', this.plan, function (data) {
+
+                http.postJson('/siteplanner/save', this.plan, function () {
                     self.loadSitePlanList(function() {
                         self.hideProgressBar();
-                        new PNotify({
-                            title: lang.success,
-                            text: '',
-                            type: 'success',
-                            addclass: "stack-topleft",
-                        });
+                        notify.success(lang.successSave);
                     });
                 }, function (value) {
                     self.updateProgressBar(value);
@@ -1837,11 +1805,12 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.cropperOverlay.remove();
                 this.canvas.remove(this.cropperOverlay);
                 this.cropperOverlay = null;
+                this.itemList.set('selectable', true);
             }
             doCrop() {
                 if (!this.cropperOverlay) return;
 
-                //@todo show load bar
+
                 var self = this,
                     storedZoom = this.canvas.getZoom();
                 this.canvas.setZoom(this.$zoom.val());
@@ -1890,89 +1859,14 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.cropperOverlay.on('scaling', this.updateCropConfig.bind(this));
                 this.updateCropConfig();
             }
-            //@todo eventuel globalen ajax helper bauen der auch global errors mit pnotify wirft (des gehört hier nich rein aber weil die funktion ich drauf gebracht hat)
-            ajaxPostJson(url, data){
-                var progressValue = 0.1,
-                    progressState = 'Start Loading';
-
-                if (!url) {
-                    console.error('url must be set!');
-                }
-
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: JSON.stringify(data),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function(msg) {
-                        if (success && typeof success === 'function')
-                            success(msg);
-                    },
-                    xhr: function() {
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function(evt) {
-                            if (evt.lengthComputable) {
-                                progressState = 'Send request';
-                                progressValue = (evt.loaded / evt.total) / 2;
-                                if (progress)
-                                    progress(progressValue, progressState);
-                            }
-                        }, false);
-
-                        xhr.addEventListener("progress", function(evt) {
-                            if (evt.lengthComputable) {
-                                progressState = 'Receiving data';
-                                progressValue = (evt.loaded / evt.total) / 2 + 0.5;
-                                if (progress)
-                                    progress(progressValue, progressState);
-                            }
-                        }, false);
-
-                        return xhr;
-                    }
-                });
-                if (progress)
-                    progress(progressValue, progressState);
-            }
-            base64ToBlob(base64, mime) {
-                mime = mime || '';
-                var sliceSize = 1024;
-                var byteChars = window.atob(base64);
-                var byteArrays = [];
-
-                for (var offset = 0, len = byteChars.length; offset < len; offset += sliceSize) {
-                    var slice = byteChars.slice(offset, offset + sliceSize);
-
-                    var byteNumbers = new Array(slice.length);
-                    for (var i = 0; i < slice.length; i++) {
-                        byteNumbers[i] = slice.charCodeAt(i);
-                    }
-
-                    var byteArray = new Uint8Array(byteNumbers);
-
-                    byteArrays.push(byteArray);
-                }
-                return new Blob(byteArrays, {type: mime});
-            }
-            uploadImageBlob(url, blob, name) {
-                var formData = new FormData();
-                formData.append('image', blob, name);
-                return $.ajax({
-                    url: url,
-                    type: "post",
-                    dataType: 'json',
-                    cache: false,
-                    contentType: false,
-                    processData: false,
-                    data: formData
-                });
-            }
         }
         $.fn.SitePlanner = function(options) {
             new SitePlanner(this);
         };
     }(jQuery));
 
-    $('#sitePlanner').SitePlanner();
+
+    $(document).ready(function() {
+        $('#sitePlanner').SitePlanner();
+    });
 </script>
