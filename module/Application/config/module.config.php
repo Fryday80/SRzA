@@ -45,7 +45,6 @@ return array(
     ),
     'view_helpers' => array(
         'invokables' => array(
-            'form' => 'Application\View\Helper\sraForm',
             'FormRow' => 'Application\View\Helper\FormRow',
             'FormElementErrors' => 'Application\View\Helper\FormElementErrors',
             'InlineFromFile' => 'Application\View\Helper\InlineFromFile',

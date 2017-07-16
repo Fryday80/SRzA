@@ -2,7 +2,6 @@
 namespace Equipment\Model;
 
 use Application\Model\DatabaseTable;
-use Application\Model\DataObjects\DataItem;
 use Equipment\Hydrator\EquipmentResultSet;
 use Zend\Db\Adapter\Adapter;
 
@@ -93,14 +92,17 @@ class EquipTable extends DatabaseTable
     }
 
 
-    /**
-     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
-     * returns all characters and there equipment
-     * @return array results
-     * @internal param array $where
-     */
-    public function fetchAllCastData() {
-        bdump('DEPRECATED METHOD USED!!!');
-        return $this->getSome();
-    }
+    // DEPRECATED!!!!!!!!
+    //@todo cleanfix
+    // 0 usages found 16.07.17
+//    /**
+//     * @deprecated replaced by ->getAll() <br>
+//     *
+//     * returns all characters and there equipment
+//     * @return array results
+//     */
+//    public function fetchAllCastData() {
+//        bdump('DEPRECATED METHOD USED!!!');
+//        return $this->getSome();
+//    }
 }
