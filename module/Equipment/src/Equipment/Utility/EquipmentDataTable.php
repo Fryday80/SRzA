@@ -45,14 +45,16 @@ class EquipmentDataTable extends DataTable
         $this->setEquipmentService($equipService);
     }
 
-    public function configure($action, $type, $items = null)
+    public function configure($action, $type = null, $items = null)
     {
         parent::__construct(array(
             'data' => ($items !== null)? $items : $this->items,
             'columns' => $this->$action($type)
         ));
-        $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
-        $this->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
+        if ($type !== null) {
+            $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
+            $this->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
+        }
     }
 
     public function isPrepared()
@@ -67,6 +69,43 @@ class EquipmentDataTable extends DataTable
         }
     }
 
+    private function index(){
+        return array(
+            array (
+                'name'  => 'name',
+                'label' => 'Name'
+            ),
+            array (
+                'name'  => 'typ',
+                'label' => 'Typ',
+                'type'  => 'custom',
+                'render' => function($row) {
+                    return EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']];
+                }
+            ),
+            array (
+                'name'  => 'userName',
+                'label' => 'Besitzer'
+            ),
+            array (
+                'name'  => 'image',
+                'label' => 'Bild',
+                'type'  => 'custom',
+                'render' => function($row) {
+                    $edit = '<img src="'.$row['image'].'" alt="Item" style="height: 25px;">';
+                    return $edit;
+                }
+            ),
+            array (
+                'name'  => 'href',
+                'label' => 'Details',
+                'type'  => 'custom',
+                'render' => function($row) {
+                    return $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                }
+            ),
+        );
+    }
     private function type($type){
         if (!$this->isPrepared()) return false;
         $dataTableVarColumns = array();
@@ -151,7 +190,7 @@ class EquipmentDataTable extends DataTable
                 array(
                     'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
                     'render' => function ($row) {
-                        return ($row['type'] == 0) ? 'Sonstige' : $this->equipService->getTypeNameById($row['type']);
+                        return ($row['type'] == 0) ? 'Sonstige' : EEquipTypes::TRANSLATE_TO_STRING[$row['type']];
                     }
                 ),
                 array(

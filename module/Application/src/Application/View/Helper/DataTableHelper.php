@@ -52,7 +52,8 @@ Class DataTableHelper extends AbstractHelper {
                     switch ($value['type']) {
                         case 'text':
                             if ( is_object($row) ) {
-                                $datarow .= (isset($row->$value['name'])) ? $row->$value['name'] : '' ;
+                                $key = $value['name'];
+                                $datarow .= (isset($row->$key)) ? $row->$key : '' ;
                             } else {
                                 $datarow .= (isset($row[$value['name']])) ? $row[$value['name']] : '' ;
                             }

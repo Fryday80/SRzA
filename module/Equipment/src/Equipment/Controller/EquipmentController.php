@@ -1,6 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
+use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\EEquipTypes;
@@ -34,7 +35,8 @@ class EquipmentController extends AbstractActionController
 
     public function indexAction() {
         $vars = $this->getVars('index');
-        return $vars;
+        $this->dataTable->configure('index', null, $this->equipService->getAll());
+        return $vars + array ('dataTable' => $this->dataTable);
     }
 
     public function typeAction()

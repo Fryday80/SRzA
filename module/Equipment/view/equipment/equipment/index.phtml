@@ -10,3 +10,5 @@ foreach ($links as $key => $value): ?>
         <button><?php echo $key ?></button>
     </a>
 <?php endforeach;
+
+echo $this->dataTable()->render($dataTable);
