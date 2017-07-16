@@ -1594,9 +1594,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     }
                 });
             }
-            hideProgressBar() {
-                console.warn('DEPRECATED');
-            }
             updateProgressBar(value) {
                 if (typeof value === 'number') {
                     if (value === 0) {
@@ -1760,9 +1757,6 @@ $this->headScript()->appendFile('/libs/map.js');
 
                     self.setMap(function(value) {
                         self.updateProgressBar(0.2 + (value * 0.8));
-                        if (value == 1) {
-                            self.hideProgressBar();
-                        }
                     });
                 });
             }
@@ -1787,7 +1781,6 @@ $this->headScript()->appendFile('/libs/map.js');
 
                 http.postJson('/siteplanner/save', this.plan, function () {
                     self.loadSitePlanList(function() {
-                        self.hideProgressBar();
                         notify.success(lang.successSave);
                     });
                 }, function (value) {
@@ -1809,12 +1802,11 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             doCrop() {
                 if (!this.cropperOverlay) return;
-
-
                 var self = this,
                     storedZoom = this.canvas.getZoom();
-                this.canvas.setZoom(this.$zoom.val());
 
+//                window.notify.startProgress('Crop');
+                this.canvas.setZoom(this.$zoom.val());
                 this.cropperOverlay.setCoords();
                 var viewMat = this.canvas.viewportTransform.slice();
                 var finalValues = fabric.util.qrDecompose(viewMat);
@@ -1838,6 +1830,8 @@ $this->headScript()->appendFile('/libs/map.js');
                     $('.preview', self.$uiImageExport).empty();
                     $('.preview', self.$uiImageExport).append(img);
                 });
+
+//                window.notify.startProgress('Crop');
             }
             startCropper() {
                 if (this.isBusy) return;
