@@ -46,6 +46,7 @@ return array(
     'Application\Service\SystemService'                      => __DIR__ . '/src/Application/Service/SystemService.php',
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
+    'Application\Utility\DataTable2'                         => __DIR__ . '/src/Application/Utility/DataTableNew.php',
     'Application\Utility\FormConfiguration'                  => __DIR__ . '/src/Application/Utility/FormConfiguration.php',
     'Application\Utility\URLModifier'                        => __DIR__ . '/src/Application/Utility/URLModifier.php',
     'Application\View\Helper\ConverterHelper'                => __DIR__ . '/src/Application/View/Helper/ConverterHelper.php',

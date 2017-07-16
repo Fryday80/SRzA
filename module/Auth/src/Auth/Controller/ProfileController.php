@@ -18,7 +18,6 @@ use Auth\Model\User;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
-
 class ProfileController extends AbstractActionController
 {
     /** @var FamiliesTable  */
