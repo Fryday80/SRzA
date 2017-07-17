@@ -31,7 +31,10 @@ return array(
             ),
             'add'     => array(
                 'name'  => 'add',
-                'label' => 'Neu',
+                'label' => array(
+                    \Equipment\Model\EEquipTypes::TENT => 'Neues Zelt anlegen',
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => 'Neuen Ausrüstungsgegenstand anlegen',
+                    ),
                 'vars' => array(
                     'links' => array(
                         'zurück zur Managerübersicht' => '/equip',
@@ -49,7 +52,10 @@ return array(
             ),
             'userall' => array(
                 'name'  => 'userall',
-                'label' => 'Alle Zelte',
+                'label' => array(
+                    \Equipment\Model\EEquipTypes::TENT => 'Alle Zelte',
+                    \Equipment\Model\EEquipTypes::EQUIPMENT => 'Equipment'
+                ),
                 'vars' => array(
                     'links' => array(
                         'zurück zur Managerübersicht' => '/equip',

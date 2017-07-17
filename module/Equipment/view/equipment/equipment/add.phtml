@@ -1,18 +1,11 @@
 <style>
     .descriptionUnit
     {
+        width: 100px;
         position: absolute;
         top: 66vh;
         left: 38vh;
         height: 25px;
-    }
-    .descriptionUnit:hover,
-    .descriptionUnit *:hover
-    {
-        position: absolute;
-        top: 66vh;
-        left: 38vh;
-        height: auto;
     }
 </style>
 
@@ -34,19 +27,3 @@ echo '<br/>';
 
 <?php
 echo $this->form($form);
-
-if($form instanceof \Equipment\Form\EquipmentForm):
-    ?>
-<div class="descriptionUnit">
-    <box>
-        <boxtitle>
-            <p>Beschreibung</p>
-        </boxtitle>
-        <boxcontent>
-            <p>Hier einen Haken setzen, wenn die Ausrüstung "rumsteht" und auf dem Lagerplan geplant werden kann.</p>
-            <p>Dann auch Maße eingeben!</p>
-    </boxcontent>
-    </box>
-</div>
-<?php
-endif;

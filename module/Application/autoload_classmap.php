@@ -15,6 +15,7 @@ return array(
     'Application\Form\Element\TextSearch'                    => __DIR__ . '/src/Application/Form/Element/TextSearch.php',
     'Application\Form\Filter\MailTemplatesFilter'            => __DIR__ . '/src/Application/Form/Filter/MailTemplatesFilter.php',
     'Application\Form\MailTemplatesForm'                     => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
+    'Application\Form\MyForm'                                => __DIR__ . '/src/Application/Form/MyForm.php',
     'Application\Form\TestForm'                              => __DIR__ . '/src/Application/Form/TestForm.php',
     'Application\Form\TestFormFilter'                        => __DIR__ . '/src/Application/Form/TestFormFilter.php',
     'Application\Hydrator\HydratingResultSet'                => __DIR__ . '/src/Application/Hydrator/HydratingResultSet.php',
@@ -46,8 +47,7 @@ return array(
     'Application\Service\SystemService'                      => __DIR__ . '/src/Application/Service/SystemService.php',
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
-    'Application\Utility\DataTable2'                         => __DIR__ . '/src/Application/Utility/DataTableNew.php',
-    'Application\Utility\FormConfiguration'                  => __DIR__ . '/src/Application/Utility/FormConfiguration.php',
+    'Application\Utility\DataTableAbstract'                  => __DIR__ . '/src/Application/Utility/DataTableAbstract.php',
     'Application\Utility\URLModifier'                        => __DIR__ . '/src/Application/Utility/URLModifier.php',
     'Application\View\Helper\ConverterHelper'                => __DIR__ . '/src/Application/View/Helper/ConverterHelper.php',
     'Application\View\Helper\DataTableHelper'                => __DIR__ . '/src/Application/View/Helper/DataTableHelper.php',
@@ -57,5 +57,4 @@ return array(
     'Application\View\Helper\FormTextSearch'                 => __DIR__ . '/src/Application/View/Helper/FormTextSearch.php',
     'Application\View\Helper\InlineFromFile'                 => __DIR__ . '/src/Application/View/Helper/InlineFromFile.php',
     'Application\View\Helper\MyUrl'                          => __DIR__ . '/src/Application/View/Helper/MyUrl.php',
-    'Application\View\Helper\sraForm'                        => __DIR__ . '/src/Application/View/Helper/sraForm.php',
 );

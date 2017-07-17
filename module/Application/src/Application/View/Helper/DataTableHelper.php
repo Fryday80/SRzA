@@ -7,8 +7,9 @@
  */
 namespace Application\View\Helper;
 
+use Application\Utility\DataTableAbstract;
+use Application\Utility\IDataTable;
 use Zend\View\Helper\AbstractHelper;
-use Application\Utility\DataTable;
 
 
 Class DataTableHelper extends AbstractHelper {
@@ -22,9 +23,9 @@ Class DataTableHelper extends AbstractHelper {
     }
     //so
     /**
-     * @param DataTable $table
+     * @param DataTableAbstract $table
      */
-    public function render(DataTable $table) {
+    public function render(DataTableAbstract $table) {
         $table->prepare();
 
         echo $this->renderHTML($table);
@@ -33,7 +34,7 @@ Class DataTableHelper extends AbstractHelper {
 
     /**
      *
-     * @param DataTable $table
+     * @param DataTableAbstract $table
      * @return string
      */
     protected function renderHTML($table) {

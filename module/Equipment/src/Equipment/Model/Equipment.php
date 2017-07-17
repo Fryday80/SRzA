@@ -7,11 +7,14 @@ class Equipment extends EquipmentStdDataItemModel
 
     public $itemType = EEquipTypes::EQUIPMENT;
 
-    public $type;
+    public $type = 'Equipment';
     public $description;
     public $sitePlannerObject;
-    public $color;
+    public $sitePlannerImage;
     public $length;
     public $width;
+    public $image1;
+    public $image2;
+    public $color;
 
 }

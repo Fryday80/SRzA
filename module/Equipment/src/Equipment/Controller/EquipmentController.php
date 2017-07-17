@@ -26,10 +26,10 @@ class EquipmentController extends AbstractActionController
     public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
         $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
         $this->config = $config[$controllerName];
-        $this->userService = $userService;
+        $this->userService   = $userService;
         $this->accessService = $accessService;
-        $this->equipService = $equipmentService;
-        $this->dataTable = new EquipmentDataTable();
+        $this->equipService  = $equipmentService;
+        $this->dataTable     = new EquipmentDataTable();
         $this->dataTable->setServices($this->accessService, $this->equipService);
     }
 
@@ -56,34 +56,6 @@ class EquipmentController extends AbstractActionController
         return array_merge($vars, array(
             'dataTable' => $this->dataTable,
         ));
-    }
-
-    public function addAction()
-    {
-        $action = 'add';
-        $type = $vars['typeString'] = $this->params()->fromRoute('type');
-        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
-        $userId = (int) $this->params()->fromRoute('userId');
-        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
-
-        /** @var Form $form */
-        $form = new $vars['formType'][$type]($this->equipService, $this->userService);
-        $form->get('userId')->setValue($userId);
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-            $post = $request->getPost();
-            $form->setData($post);
-            if ($form->isValid()){
-                $data = new $vars['model'][$type]($form->getData());
-                
-                $this->equipService->save($data);
-                $this->redirect()->toUrl('/equip/'. $vars['typeString']);
-            }
-        }
-        return array_merge($vars, array(
-            'form' => $form,
-        ));
-
     }
 
     public function userallAction(){
@@ -141,13 +113,52 @@ class EquipmentController extends AbstractActionController
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
                 $this->equipService->deleteById($equipId);
-                return $this->redirect()->toUrl("/equip/". $vars['typeString'] ."/$userId#dt-buttons");
+                return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
+
+        $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
+        $this->flashMessenger()->addMessage($ref, 'ref');
         return array_merge($vars, array(
             'equip' => $equip,
             'url' => $url,
         ));
+    }
+
+    public function addAction()
+    {
+        $action = 'add';
+        $type = $vars['typeString'] = $this->params()->fromRoute('type');
+        $type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($type)];
+        $userId = (int) $this->params()->fromRoute('userId');
+        $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
+
+        /** @var Form $form */
+        $form = new $vars['formType'][$type]($this->equipService, $this->userService);
+        $form->get('userId')->setValue($userId);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            //merge post data and files
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
+            $form->setData($post);
+            if ($form->isValid()){
+                // push into model for selection in service
+                $data = new $vars['model'][$type]($form->getData());
+
+                $this->equipService->save($data);
+                return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
+            }
+        }
+
+        $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
+        $this->flashMessenger()->addMessage($ref, 'ref');
+        return array_merge($vars, array(
+            'form' => $form,
+        ));
+
     }
 
     public function editAction(){
@@ -157,20 +168,28 @@ class EquipmentController extends AbstractActionController
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
-        
-        $equip = $this->equipService->getById($equipId);
 
         $form = new $vars['formType'][$vars['type']]($this->equipService, $this->userService);
         $request = $this->getRequest();
+
         if ($request->isPost()) {
-            $post = $request->getPost();
+            //merge post data and files
+            $post = array_merge_recursive(
+                $request->getPost()->toArray(),
+                $request->getFiles()->toArray()
+            );
             $form->setData($post);
             if ($form->isValid()){
                 $item = new $vars['model'][$vars['type']]($form->getData());
                 $this->equipService->save($item);
-                return $this->redirect()->toUrl("/equip/" . $vars['typeString'] . "/$userId");
+                return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
+
+        $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
+        $this->flashMessenger()->addMessage($ref, 'ref');
+
+        $equip = $this->equipService->getById($equipId);
         $form->setData($equip->toArray());
         return array_merge($vars, array(
             'form' => $form,
@@ -183,6 +202,8 @@ class EquipmentController extends AbstractActionController
             $page = $this->config['config'][$action] + $this->config['config']['default_actionName'];
         else
             $page = $this->config['config']['default_actionName'];
+        if(is_array($page['label']))
+            $page['label'] = $page['label'][EEquipTypes::TRANSLATE_TO_ID[$typeString]];
 
         $vars = $page['vars'];
         $vars['page'] = $page;

@@ -1,12 +1,14 @@
 <?php
 namespace Equipment\Form;
 
+use Application\Form\MyForm;
 use Auth\Service\UserService;
+use Equipment\Model\EEquipSitePlannerImage;
 use Equipment\Service\EquipmentService;
-use Zend\Form\Form;
 
-class EquipmentForm extends Form
+class EquipmentForm extends MyForm
 {
+    const EQUIPMENT_IMAGES_PATH = 'media/file/_equipment/';
     /** @var  UserService */
     private $userService;
     /** @var EquipmentService  */
@@ -108,15 +110,15 @@ class EquipmentForm extends Form
             'options' => array(
                 'label' => 'Site Planner Bild',
                 'value_options' => array(
-                    0 => 'Bild 1',
-                    1 => 'Bild 2',
-                    array(
-                        'value' => 2,
+                    EEquipSitePlannerImage::DRAW => array(
+                        'value' => EEquipSitePlannerImage::DRAW,
                         'label' => '(Zeichnung)',
                         'attributes' => array(
                             'data-toggle' => 'details',
                         ),
-                    )
+                    ),
+                    EEquipSitePlannerImage::IMAGE_1 => 'Bild 1',
+                    EEquipSitePlannerImage::IMAGE_2 => 'Bild 2',
                 ),
             ),
         ));
@@ -141,8 +143,8 @@ class EquipmentForm extends Form
             'options' => array(
                'label' => 'Form bei Zeichnung',
                 'value_options' => array(
-                    0 => 'Rund',
-                    1 => 'Eckig'
+                    EEquipSitePlannerImage::ROUND_SHAPE     => 'Rund',
+                    EEquipSitePlannerImage::RECTANGLE_SHAPE => 'Eckig'
                 ),
             ),
         ));
@@ -157,11 +159,33 @@ class EquipmentForm extends Form
         ));
     }
 
+    protected function prepareDataForSetData ($data)
+    {
+        // no pic uploaded
+        if ($data['image1']['error'] > 0) unset($data['image1']);
+        if ($data['image2']['error'] > 0) unset($data['image2']);
+
+        if ($data['sitePlannerObject'] == '1') {
+            if ($data['sitePlannerImage'] == NULL)
+                $data['sitePlannerImage'] = 0;
+            if (!isset($data['image']))
+//                bdump('sdf');
+            $data['image'] = ($data['sitePlannerImage'] == "0")
+                ? EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage]
+                : self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']];
+        }
+
+        if ($data['sitePlannerImage'] == "0"){
+            $data['length'] = ($data['length'] == "0" || $data['length'] == NULL) ? 100 : $data['length'];
+            $data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
+        }
+        return $data;
+    }
+
     private function getUsersForSelect()
     {
         $list = $this->userService->getUserIdUserNameList();
         $list[0] = 'Verein';
         return $list;
     }
-
 }

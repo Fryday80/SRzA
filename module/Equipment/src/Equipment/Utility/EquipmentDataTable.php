@@ -3,15 +3,16 @@ namespace Equipment\Utility;
 
 
 use Application\Utility\DataTable;
+use Application\Utility\DataTableAbstract;
 use Auth\Service\AccessService;
+use Equipment\Model\EEquipSitePlannerImage;
 use Equipment\Model\EEquipTypes;
 use Equipment\Model\ETentShape;
 use Equipment\Model\ETentType;
 use Equipment\Service\EquipmentService;
 
-class EquipmentDataTable extends DataTable
+class EquipmentDataTable extends DataTableAbstract
 {
-    public $items;
     // check vars
     private $aService = false;
     private $eService = false;
@@ -23,9 +24,10 @@ class EquipmentDataTable extends DataTable
     /** @var  EquipmentService */
     private $equipService;
 
-    public function __construct($items = null)
+    public function setServices (AccessService $accessService, EquipmentService $equipService)
     {
-        $this->items = $items;
+        $this->setAccessService($accessService);
+        $this->setEquipmentService($equipService);
     }
 
     public function setAccessService(AccessService $accessService)
@@ -40,33 +42,29 @@ class EquipmentDataTable extends DataTable
         $this->eService = true;
     }
 
-    public function setServices (AccessService $accessService, EquipmentService $equipService){
-        $this->setAccessService($accessService);
-        $this->setEquipmentService($equipService);
-    }
-
     public function configure($action, $type = null, $items = null)
     {
-        parent::__construct(array(
-            'data' => ($items !== null)? $items : $this->items,
-            'columns' => $this->$action($type)
-        ));
+        if ($items !== null) parent::setData($items);
+        parent::setColumns($this->$action($type));
+
         if ($type !== null) {
             $typeString = EEquipTypes::TRANSLATE_TO_STRING[$type];
             $this->insertLinkButton("/equip/$typeString/add", 'Neuer Eintrag');
+        }
+        else {
+            foreach (EEquipTypes::TRANSLATE_TO_STRING as $item) {
+                $this->insertLinkButton("/equip/$item/add", "Neuer '$item item' Eintrag");
+            }
         }
     }
 
     public function isPrepared()
     {
-        if ($this->aService == true && $this->eService == true){
-            $this->tablePrepared = true;
-            return $this->tablePrepared;
-        }
-        else {
+        if ($this->aService == true && $this->eService == true)
+            return $this->tablePrepared = true;
+        else
             bdump ('You need to inject AccessService and EquipmentService!! Use: setAccessService && setEquipmentService');
-            return false;
-        }
+        return false;
     }
 
     private function index(){
@@ -92,8 +90,29 @@ class EquipmentDataTable extends DataTable
                 'label' => 'Bild',
                 'type'  => 'custom',
                 'render' => function($row) {
-                    $edit = '<img src="'.$row['image'].'" alt="Item" style="height: 25px;">';
-                    return $edit;
+                    if ((int)$row['sitePlannerObject'] == 1) {
+                        if (isset($row['image']) && $row['image'] !== EEquipSitePlannerImage::IMAGE_TYPE[EEquipSitePlannerImage::DRAW])
+                            return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
+                        if (isset($row['sitePlannerImage']) && (int)$row['sitePlannerImage'] == EEquipSitePlannerImage::DRAW) {
+                            if (isset($row['color1'])) {
+                                $c1 = $row['color1'];
+                                $c2 = $row['color2'];
+                            } else {
+                                $c1 = $c2 = $row['color'];
+                            }
+                            return '<div style="
+                                    width: 0;
+                                    height: 0;
+                                    border-left:   20px solid ' . $c1 . ';
+                                    border-top:    20px solid ' . $c1 . ';
+                                    border-right:  20px solid ' . $c2 . ';
+                                    border-bottom: 20px solid ' . $c2 . ';
+                                    "></div>';
+                        } else {
+                            return '<img src="' . $row['image'] . '.png" alt="Item" style="height:35px;">';
+                        }
+                    }
+                    return '';
                 }
             ),
             array (
@@ -101,7 +120,16 @@ class EquipmentDataTable extends DataTable
                 'label' => 'Details',
                 'type'  => 'custom',
                 'render' => function($row) {
-                    return $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                    $edit = '';
+                    $delete = '';
+                    $askingId = $this->accessService->getUserID();
+                    $askingRole = $this->accessService->getRole();
+                    $link1 = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                    if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
+                        $edit = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
+                        $delete = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
+                    }
+                    return $link1 . '<br/>' . $edit . '<br/>' . $delete;
                 }
             ),
         );
@@ -172,10 +200,10 @@ class EquipmentDataTable extends DataTable
                     $delete = '';
                     $askingId = $this->accessService->getUserID();
                     $askingRole = $this->accessService->getRole();
-                    $link1 = '<a href="/equip/tent/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                    $link1 = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
                     if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
-                        $edit = '<a href="/equip/tent/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                        $delete = '<a href="/equip/tent/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
+                        $edit = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
+                        $delete = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
                     }
                     return $link1 . '<br/>' . $edit . '<br/>' . $delete;
                 }
@@ -202,9 +230,11 @@ class EquipmentDataTable extends DataTable
                 array(
                     'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
                     'render' => function ($row) {
-                        $c1 = $row['color'];
-                        $c2 = $row['color'];
-                        return '<div style="
+                        bdump($row);
+                        if ((int)$row['sitePlannerImage'] == EEquipSitePlannerImage::DRAW) {
+                            $c1 = $row['color'];
+                            $c2 = $row['color'];
+                            return '<div style="
                                     width: 0;
                                     height: 0;
                                     border-left:   20px solid ' . $c1 . ';
@@ -212,6 +242,9 @@ class EquipmentDataTable extends DataTable
                                     border-right:  20px solid ' . $c2 . ';
                                     border-bottom: 20px solid ' . $c2 . ';
                                     "></div>';
+                        } else {
+                            return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
+                        }
                     }
                 ),
                 array(
@@ -223,10 +256,10 @@ class EquipmentDataTable extends DataTable
                         $delete = '';
                         $askingId = $this->accessService->getUserID();
                         $askingRole = $this->accessService->getRole();
-                        $link1 = '<a href="/equip/equipment/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
+                        $link1 = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/show/' . $row['id'] . '">Details</a>';
                         if ($row['userId'] == $askingId || $askingRole == 'Administrator') {
-                            $edit = '<a href="/equip/equipment/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
-                            $delete = '<a href="/equip/equipment/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
+                            $edit = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/edit/' . $row['id'] . '">Edit</a>';
+                            $delete = '<a href="/equip/' . EEquipTypes::TRANSLATE_TO_STRING[$row['itemType']] . '/' . $row['userId'] . '/delete/' . $row['id'] . '">Delete</a>';
                         }
                         return $link1 . '<br/>' . $edit . '<br/>' . $delete;
                     }

@@ -5,7 +5,9 @@ namespace Equipment\Service;
 
 use Application\Model\DataSet;
 use Application\Service\CacheService;
+use Equipment\Model\EEquipSitePlannerImage;
 use Equipment\Model\EEquipTypes;
+use Equipment\Model\Equipment;
 use Equipment\Model\ETentShape;
 use Equipment\Model\EquipTable;
 use Equipment\Model\Tent;
@@ -78,10 +80,24 @@ class EquipmentService
 
     public function save($data)
     {
-        if ($data instanceof Tent)
-            $data->image = ETentShape::IMAGES[$data->shape];
         if($data->id == "")
             return $this->equipTable->add($data);
+
+        $item = $this->getById($data->id);
+        if ($data instanceof Tent)
+            $data->image = ETentShape::IMAGES[$data->shape];
+        if ($data instanceof Equipment){
+//            if ($data->sitePlannerObject == '1') {
+//                if ($data->sitePlannerImage !== NULL) {
+//                    $data->image = ($data->sitePlannerImage == 0)
+//                        ? EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage]
+//                        : self::EQUIPMENT_IMAGES_PATH . "$data->userId/" . EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage];
+//                } else {
+//                    $data->sitePlannerImage = 0;
+//                    $data->image = EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage];
+//                }
+//            }
+        }
         return $this->equipTable->save($data);
     }
 
