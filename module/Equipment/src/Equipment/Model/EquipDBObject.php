@@ -20,10 +20,9 @@ class EquipDBObject extends AbstractModel
     /** @var  string */
     public $userName;
 
-    public function __construct()
-    {
-        bdump('DEPRECATED model EquipDBObject');
-    }
+//    public function __construct()
+//    {
+//    }
 
 //    public function setId($value){
 //        $this->id = (int) $value;

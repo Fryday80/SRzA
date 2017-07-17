@@ -189,8 +189,10 @@ $this->headScript()->appendFile('/libs/map.js');
                     <span>Global</span>
                 </boxtitle>
                 <boxcontent>
-                    <p>ich weiß noch nich was hier rein kommt</p>
-                    <br>
+                    <button data-func="sendBackwards">send Backwards</button>
+                    <button data-func="sendToBack">send To Back</button>
+                    <button data-func="bringForward">bring Forward</button>
+                    <button data-func="bringToFront">bring To Front</button>
                 </boxcontent>
                 <br>
             </div>
@@ -273,7 +275,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     <br>
                     <br>
                     <label alt="labelTextColor">
-                        <span>background color:</span>
+                        <span>Text color:</span>
                         <input type="color" data-key="labelTextColor">
                     </label>
                     <br>
@@ -1350,7 +1352,7 @@ $this->headScript()->appendFile('/libs/map.js');
             }
             onSelect(obj) {
                 this.selected = obj;
-                $('div[data-type="global"]').hide();
+//                $('div[data-type="global"]').hide();
                 $('div[data-usage="subDetail"]').hide();
                 var $typeBox = $('div[data-type="'+obj.type+'"]', this.$panel);
                 $typeBox.show();
@@ -1365,7 +1367,7 @@ $this->headScript()->appendFile('/libs/map.js');
                 });
             }
             onDeselect() {
-                $('div[data-type="global"]').show();
+//                $('div[data-type="global"]').show();
                 $('div[data-usage="subDetail"]').hide();
 
                 this.selected = null;
@@ -1599,6 +1601,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     if (value === 0) {
                         this.progressBar = notify.startProgress('siteplanner');
                     }
+                    console.log(value, this.progressBar);
                     this.progressBar.set(value);
                 } else if (value === false) {
                     //hide progress element

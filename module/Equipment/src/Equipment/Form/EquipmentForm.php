@@ -49,25 +49,25 @@ class EquipmentForm extends Form
                 'label' => 'Bechreibung',
             ),
         ));
-/// Color
         $this->add(array(
-            'name' => 'sitePlannerObject',
-            'type' => 'Zend\Form\Element\Checkbox',
-            'required' => false,
+            'name' => 'image1',
+            'type' => 'file',
             'options' => array(
-                'label' => 'Site Planner Object',
-            ),
-        ));
-        $this->add(array(
-            'name' => 'color',
-            'type' => 'Zend\Form\Element\Color',
-            'required' => true,
-            'options' => array(
-                'label' => 'Farbe1',
+                'label' => 'Bild 1',
             ),
             'attributes' => array(
-                'value' => '#FAEBd7',
+                'accept' => 'image/*'
+            )
+        ));
+        $this->add(array(
+            'name' => 'image2',
+            'type' => 'file',
+            'options' => array(
+                'label' => 'Bild 2',
             ),
+            'attributes' => array(
+                'accept' => 'image/*'
+            )
         ));
         // length int
         $this->add(array(
@@ -83,6 +83,67 @@ class EquipmentForm extends Form
             'type' => 'Number',
             'options' => array (
                 'label' => 'Tiefe in Zentimeter',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'sitePlannerObject',
+            'type' => 'Zend\Form\Element\Checkbox',
+            'required' => false,
+            'attributes' => array(
+                'data-toggle' => 'sitePlannerImage',
+            ),
+            'options' => array(
+                'label' => 'Site Planner Object',
+            ),
+        ));
+        //was wird zu html attributen?
+        $this->add(array(
+            'name' => 'sitePlannerImage',
+            'type' => 'Zend\Form\Element\Radio',
+            'required' => false,
+            'attributes' => array(
+                'data-toggleGrp' => 'sitePlannerImage',
+                'value' => 0,
+            ),
+            'options' => array(
+                'label' => 'Site Planner Bild',
+                'value_options' => array(
+                    0 => 'Bild 1',
+                    1 => 'Bild 2',
+                    array(
+                        'value' => 2,
+                        'label' => '(Zeichnung)',
+                        'attributes' => array(
+                            'data-toggle' => 'details',
+                        ),
+                    )
+                ),
+            ),
+        ));
+        $this->add(array(
+            'name' => 'color',
+            'type' => 'Zend\Form\Element\Color',
+            'required' => true,
+            'attributes' => array(
+                'data-toggleGrp' => 'details',
+                'value' => '#FAEBd7',
+            ),
+            'options' => array(
+                'label' => 'Farbe1',
+            ),
+        ));
+        $this->add(array(
+            'name' => 'shape',
+            'type' => 'select',
+            'attributes' => array(
+                'data-toggleGrp' => 'details',
+            ),
+            'options' => array(
+               'label' => 'Form bei Zeichnung',
+                'value_options' => array(
+                    0 => 'Rund',
+                    1 => 'Eckig'
+                ),
             ),
         ));
         $this->add(array(
