@@ -3,7 +3,7 @@ namespace Application\Controller;
 
 use Application\Form\MailTemplatesForm;
 use Application\Form\TestForm;
-use Application\Model\Abstracts\Microtime;
+use Application\Model\Enums\Microtime;
 use Application\Service\CacheService;
 use Application\Service\MessageService;
 use Application\Service\StatisticService;
@@ -40,7 +40,6 @@ class SystemController extends AbstractActionController
         $sysLog = $this->statsService->getSystemLog();
         $sysLogMod = $sysLog;
         foreach ($sysLogMod as $key => $value){
-            bdump($value->data);
             if ($value->data == null) $replace = '';
             else {
                 $replace = implode('---', $value->data);

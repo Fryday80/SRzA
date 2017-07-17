@@ -1,10 +1,10 @@
 <?php
 namespace Application\Model\DataObjects;
 
-use Application\Model\Abstracts\CounterType;
-use Application\Model\Abstracts\FilterType;
-use Application\Model\Abstracts\HitType;
-use Application\Model\Abstracts\OrderType;
+use Application\Model\Enums\CounterType;
+use Application\Model\Enums\FilterType;
+use Application\Model\Enums\HitType;
+use Application\Model\Enums\OrderType;
 use Application\Utility\CircularBuffer;
 
 class Stats {

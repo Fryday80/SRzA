@@ -2,6 +2,8 @@
 
 namespace Equipment\Model;
 
+use Equipment\Model\Enums\EEquipTypes;
+
 class Tent extends EquipmentStdDataItemModel
 {
     public $itemType = EEquipTypes::TENT;
@@ -20,11 +22,4 @@ class Tent extends EquipmentStdDataItemModel
     public $biColor;
     public $color2;
     public $sitePlannerObject = 1;
-
-
-    public function setData($data)
-    {
-        if ($data['biColor']== "0") $data['color2'] = $data['color1'];
-        parent::setData($data);
-    }
 }

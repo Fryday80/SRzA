@@ -4,7 +4,7 @@ namespace Equipment\Controller;
 use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
-use Equipment\Model\EEquipTypes;
+use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
 use Zend\Form\Form;

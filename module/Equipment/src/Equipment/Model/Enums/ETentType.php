@@ -6,7 +6,7 @@
  * Time: 15:23
  */
 
-namespace Equipment\Model;
+namespace Equipment\Model\Enums;
 
 
 abstract class ETentType

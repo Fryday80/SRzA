@@ -15,12 +15,12 @@ use Application\Model\DataObjects\Action;
 use Application\Model\DataObjects\ActiveUser;
 use Application\Model\DataObjects\SystemLog;
 // abstracts
-use Application\Model\Abstracts\HitType;
-use Application\Model\Abstracts\LogType;
-use Application\Model\Abstracts\OrderType;
-use Application\Model\Abstracts\FilterType;
-use Application\Model\Abstracts\ActionType;
-use Application\Model\Abstracts\CounterType;
+use Application\Model\Enums\HitType;
+use Application\Model\Enums\LogType;
+use Application\Model\Enums\OrderType;
+use Application\Model\Enums\FilterType;
+use Application\Model\Enums\ActionType;
+use Application\Model\Enums\CounterType;
 
 const STORAGE_PATH = '/storage/stats.log'; //relative to root, start with /
 const AJAX_BLACK_LIST = array(

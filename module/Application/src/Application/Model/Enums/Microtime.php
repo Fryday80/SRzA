@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model\Abstracts;
+namespace Application\Model\Enums;
 
 abstract class Microtime
 {

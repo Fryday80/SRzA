@@ -2,6 +2,8 @@
 namespace Equipment\Model;
 
 
+use Equipment\Model\Enums\EEquipTypes;
+
 class Equipment extends EquipmentStdDataItemModel
 {
 

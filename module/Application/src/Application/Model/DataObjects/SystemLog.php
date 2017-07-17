@@ -2,7 +2,7 @@
 
 namespace Application\Model\DataObjects;
 
-use Application\Model\Abstracts\LogType;
+use Application\Model\Enums\LogType;
 
 class SystemLog extends StatsDataItem
 {

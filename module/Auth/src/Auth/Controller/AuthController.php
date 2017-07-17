@@ -1,7 +1,7 @@
 <?php
 namespace Auth\Controller;
 
-use Application\Model\Abstracts\LogType;
+use Application\Model\Enums\LogType;
 use Application\Model\DataObjects\SystemLog;
 use Application\Model\DynamicHashTable;
 use Application\Service\MessageService;

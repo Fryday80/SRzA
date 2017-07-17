@@ -3,7 +3,7 @@ namespace Equipment\Form;
 
 use Application\Form\MyForm;
 use Auth\Service\UserService;
-use Equipment\Model\EEquipSitePlannerImage;
+use Equipment\Model\Enums\EEquipSitePlannerImage;
 use Equipment\Service\EquipmentService;
 
 class EquipmentForm extends MyForm

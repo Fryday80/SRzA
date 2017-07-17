@@ -2,8 +2,8 @@
 namespace Equipment\Form;
 
 use Auth\Service\UserService;
-use Equipment\Model\ETentShape;
-use Equipment\Model\ETentType;
+use Equipment\Model\Enums\ETentShape;
+use Equipment\Model\Enums\ETentType;
 use Equipment\Service\EquipmentService;
 use Zend\Form\Form;
 

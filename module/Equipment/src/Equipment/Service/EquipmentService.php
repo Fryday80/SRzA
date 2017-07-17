@@ -3,14 +3,13 @@
 namespace Equipment\Service;
 
 
-use Application\Model\DataSet;
 use Application\Service\CacheService;
-use Equipment\Model\EEquipSitePlannerImage;
-use Equipment\Model\EEquipTypes;
-use Equipment\Model\Equipment;
-use Equipment\Model\ETentShape;
+use Equipment\Model\Enums\EEquipTypes;
+use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\EquipTable;
+use Application\Model\DataSet;
 use Equipment\Model\Tent;
+use Equipment\Model\Equipment;
 
 class EquipmentService
 {

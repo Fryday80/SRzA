@@ -14,8 +14,8 @@ return array(
                 'label'   => 'Lager',
                 'vars'    => array(
                     'links' => array(
-                        'Zeltverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::TENT],
-                        'Zeugverwaltung' => '/equip/' .\Equipment\Model\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\EEquipTypes::EQUIPMENT],
+                        'Zeltverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::TENT],
+                        'Zeugverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::EQUIPMENT],
                         'Lagerplanung'   => '/siteplanner',
                     )
                 ),
@@ -32,8 +32,8 @@ return array(
             'add'     => array(
                 'name'  => 'add',
                 'label' => array(
-                    \Equipment\Model\EEquipTypes::TENT => 'Neues Zelt anlegen',
-                    \Equipment\Model\EEquipTypes::EQUIPMENT => 'Neuen Ausrüstungsgegenstand anlegen',
+                    \Equipment\Model\Enums\EEquipTypes::TENT => 'Neues Zelt anlegen',
+                    \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => 'Neuen Ausrüstungsgegenstand anlegen',
                     ),
                 'vars' => array(
                     'links' => array(
@@ -41,20 +41,20 @@ return array(
                     ),
                     'site' => 'add',
                     'formType' => array(
-                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
-                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                     ),
                     'model' => array(
-                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
-                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                     ),
                 ),
             ),
             'userall' => array(
                 'name'  => 'userall',
                 'label' => array(
-                    \Equipment\Model\EEquipTypes::TENT => 'Alle Zelte',
-                    \Equipment\Model\EEquipTypes::EQUIPMENT => 'Equipment'
+                    \Equipment\Model\Enums\EEquipTypes::TENT => 'Alle Zelte',
+                    \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => 'Equipment'
                 ),
                 'vars' => array(
                     'links' => array(
@@ -88,12 +88,12 @@ return array(
                         'zurück zur Managerübersicht' => '/equip',
                     ),
                     'formType' => array(
-                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
-                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Form\TentForm::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                     ),
                     'model' => array(
-                        \Equipment\Model\EEquipTypes::TENT => \Equipment\Model\Tent::class,
-                        \Equipment\Model\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\Tent::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
                     ),
                 ),
             ),

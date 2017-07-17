@@ -6,7 +6,7 @@
  * Time: 19:56
  */
 
-namespace Application\Model\Abstracts;
+namespace Application\Model\Enums;
 
 
 abstract class LogType {

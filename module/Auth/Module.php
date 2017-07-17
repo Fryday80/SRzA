@@ -1,9 +1,9 @@
 <?php
 namespace Auth;
 
-use Application\Model\Abstracts\ActionType;
-use Application\Model\Abstracts\HitType;
-use Application\Model\Abstracts\LogType;
+use Application\Model\Enums\ActionType;
+use Application\Model\Enums\HitType;
+use Application\Model\Enums\LogType;
 use Application\Model\DataObjects\Action;
 use Application\Model\DataObjects\SystemLog;
 use Application\Service\StatisticService;

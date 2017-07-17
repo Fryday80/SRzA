@@ -1,5 +1,5 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\Enums;
 
 class EEquipSitePlannerImage
 {

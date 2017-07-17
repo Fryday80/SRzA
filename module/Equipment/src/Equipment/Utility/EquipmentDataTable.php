@@ -1,14 +1,12 @@
 <?php
 namespace Equipment\Utility;
 
-
-use Application\Utility\DataTable;
 use Application\Utility\DataTableAbstract;
 use Auth\Service\AccessService;
-use Equipment\Model\EEquipSitePlannerImage;
-use Equipment\Model\EEquipTypes;
-use Equipment\Model\ETentShape;
-use Equipment\Model\ETentType;
+use Equipment\Model\Enums\EEquipSitePlannerImage;
+use Equipment\Model\Enums\EEquipTypes;
+use Equipment\Model\Enums\ETentShape;
+use Equipment\Model\Enums\ETentType;
 use Equipment\Service\EquipmentService;
 
 class EquipmentDataTable extends DataTableAbstract
