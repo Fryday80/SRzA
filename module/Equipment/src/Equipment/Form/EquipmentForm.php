@@ -98,13 +98,11 @@ class EquipmentForm extends MyForm
                 'label' => 'Site Planner Object',
             ),
         ));
-        //was wird zu html attributen?
         $this->add(array(
             'name' => 'sitePlannerImage',
             'type' => 'Zend\Form\Element\Radio',
             'required' => false,
             'attributes' => array(
-                'data-toggleGrp' => 'sitePlannerImage',
                 'value' => 0,
             ),
             'options' => array(
@@ -115,6 +113,7 @@ class EquipmentForm extends MyForm
                         'label' => '(Zeichnung)',
                         'attributes' => array(
                             'data-toggle' => 'details',
+                            'data-toggleGrp' => 'sitePlannerImage',
                         ),
                     ),
                     EEquipSitePlannerImage::IMAGE_1 => 'Bild 1',
@@ -127,7 +126,7 @@ class EquipmentForm extends MyForm
             'type' => 'Zend\Form\Element\Color',
             'required' => true,
             'attributes' => array(
-                'data-toggleGrp' => 'details',
+                'data-toggleGrp' => 'details,sitePlannerImage',
                 'value' => '#FAEBd7',
             ),
             'options' => array(
@@ -138,7 +137,7 @@ class EquipmentForm extends MyForm
             'name' => 'shape',
             'type' => 'select',
             'attributes' => array(
-                'data-toggleGrp' => 'details',
+                'data-toggleGrp' => 'details,sitePlannerImage',
             ),
             'options' => array(
                'label' => 'Form bei Zeichnung',
