@@ -1144,8 +1144,11 @@ $this->headScript()->appendFile('/libs/map.js');
                 reader.onloadend = function() {
                     var img = new Image();
                     img.onload = function () {
-                        callback(img);
-                    }
+                        callback(false, img);
+                    };
+                    img.onerror = function() {
+                        callback(true);
+                    };
                     img.src = reader.result;
                 }
                 reader.readAsDataURL(xhr.response);
@@ -1154,11 +1157,15 @@ $this->headScript()->appendFile('/libs/map.js');
             xhr.responseType = 'blob';
             xhr.send();
         }
-        function preloadImagesAsDataURL(urls, callback, progress) {
+        function preloadImagesAsDataURL(urls, callback, progress, error) {
             var pointer = 0,
                 images = [];
 
-            function onload(image) {
+            function onload(err, image) {
+                if (err) {
+                    error();
+                    return;
+                }
                 images.push(image);
                 pointer++;
                 if (pointer < urls.length) {
@@ -1174,6 +1181,9 @@ $this->headScript()->appendFile('/libs/map.js');
         function loadImage(url, callback) {
             var img = new Image();
             img.onload = callback;
+            img.onerror = function() {
+                callback(true);
+            };
             img.src = url;
             return img;
         }
@@ -1181,17 +1191,17 @@ $this->headScript()->appendFile('/libs/map.js');
             var pointer = 0;
             var images = [];
 
-            function onload() {
-                images.push(this);
+            function onLoad(err) {
+                if (!err) images.push(this);
                 pointer++;
                 if (pointer < urls.length) {
                     progress(pointer / urls.length);
-                    loadImage(urls[pointer], onload);
+                    loadImage(urls[pointer], onLoad);
                 } else {
                     callback(images);
                 }
             }
-            loadImage(urls[pointer], onload);
+            loadImage(urls[pointer], onLoad);
         }
         function createGoogleMapStaticImageUrls(options) {
             var result = [];
@@ -1601,7 +1611,6 @@ $this->headScript()->appendFile('/libs/map.js');
                     if (value === 0) {
                         this.progressBar = notify.startProgress('siteplanner');
                     }
-                    console.log(value, this.progressBar);
                     this.progressBar.set(value);
                 } else if (value === false) {
                     //hide progress element
@@ -1679,6 +1688,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     self.canvas.deactivateAll().renderAll();
                     self.itemList.show();
                     (progress)? progress(1): self.updateProgressBar(1);
+                    //@todo set viewport position to center of map
                     self.canvas.renderAll();
                     self.isBusy = false;
                 }
@@ -1713,6 +1723,13 @@ $this->headScript()->appendFile('/libs/map.js');
                     }
                 }, function(value) {
                     (progress)? progress(value): self.updateProgressBar(value);
+                }, function() {
+                    //show error bla pls try again
+                    window.notify.error("Please try again.", "Error while loading map");
+                    self.itemList.show();
+                    self.canvas.renderAll();
+                    self.progressBar.stop();
+                    self.isBusy = false;
                 });
             }
             //plan management (list/get/save) and html select field update
@@ -1861,7 +1878,6 @@ $this->headScript()->appendFile('/libs/map.js');
             new SitePlanner(this);
         };
     }(jQuery));
-
 
     $(document).ready(function() {
         $('#sitePlanner').SitePlanner();
