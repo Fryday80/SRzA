@@ -3,7 +3,7 @@ namespace Equipment\Model\Tables;
 
 use Application\Model\AbstractModels\DatabaseTable;
 use Equipment\Hydrator\EquipmentResultSet;
-use Equipment\Model\AbstractModels\EquipDBObject;
+use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 use Zend\Db\Adapter\Adapter;
 
 class EquipTable extends DatabaseTable
@@ -12,7 +12,7 @@ class EquipTable extends DatabaseTable
 
     public function __construct(Adapter $adapter)
     {
-        parent::__construct($adapter, EquipDBObject::class);
+        parent::__construct($adapter, AbstractEquipmentDataItemModel::class);
         //create hydrator
         // set naming strategy            https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.namingstrategy.underscorenamingstrategy.html
 //        $this->hydrator->setNamingStrategy(new UnderscoreNamingStrategy());

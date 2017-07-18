@@ -3,7 +3,7 @@ namespace Equipment\Hydrator;
 
 
 use Application\Hydrator\HydratingResultSet;
-use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
+use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 
 class EquipmentResultSet extends HydratingResultSet
 {
@@ -21,7 +21,7 @@ class EquipmentResultSet extends HydratingResultSet
         }
         $data = $this->dataSource->current();
         // $data = array of one db row
-        /** @var EquipmentStdDataItemModel $object */
+        /** @var AbstractEquipmentDataItemModel $object */
         $object = unserialize($data['data']);
         $object->updateFromDB($data);
 

@@ -2,7 +2,7 @@
 namespace Equipment\Model\AbstractModels;
 
 use Application\Model\AbstractModels\AbstractModel;
-use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
+use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 
 class EquipDBObject extends AbstractModel
 {
@@ -18,28 +18,4 @@ class EquipDBObject extends AbstractModel
     public $userId;
     /** @var  string */
     public $userName;
-
-//    public function __construct()
-//    {
-//    }
-
-//    public function setId($value){
-//        $this->id = (int) $value;
-//    }
-//    public function setData($value){
-//        $this->data = $value;
-//    }
-//    public function setType($value){
-//        $this->type = (int) $value;
-//    }
-//    public function setImage($value){
-//        $this->image = $value;
-//    }
-//    public function setUser_id($value){
-//        $this->user_id = (int) $value;
-//    }
-//    public function setUser_name($value){
-//        $this->user_id = $value;
-//    }
-
 }

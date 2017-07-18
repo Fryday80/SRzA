@@ -9,7 +9,7 @@ use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\Tables\EquipTable;
 use Application\Model\AbstractModels\DataSet;
 use Equipment\Model\Tent;
-use Equipment\Model\DataModels\Equipment;
+use Equipment\Model\DataModels\Equip;
 
 class EquipmentService
 {

@@ -3,13 +3,21 @@ namespace Equipment\Model\AbstractModels;
 
 use Application\Model\AbstractModels\AbstractModel;
 
-class EquipmentStdDataItemModel extends AbstractModel
+class AbstractEquipmentDataItemModel extends AbstractModel
 {
+    /** @var  int */
     public $id;
-    public $itemType;
+    /** @var  EquipmentStdDataItemModel */
+    public $data;
+    /** @var  int */
+    public $type;
+    /** @var  string path to img */
     public $image;
+    /** @var  int */
     public $userId;
+    /** @var  string */
     public $userName;
+    /** @var  int used as bool */
     public $sitePlannerObject;
     
 

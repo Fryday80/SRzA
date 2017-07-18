@@ -2,10 +2,10 @@
 namespace Equipment\Model\DataModels;
 
 
-use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
+use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 use Equipment\Model\Enums\EEquipTypes;
 
-class Equipment extends EquipmentStdDataItemModel
+class Equip extends EquipmentStdDataItemModel
 {
 
     public $itemType = EEquipTypes::EQUIPMENT;

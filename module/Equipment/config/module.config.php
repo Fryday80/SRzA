@@ -46,7 +46,7 @@ return array(
                     ),
                     'model' => array(
                         \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\DataModels\Tent::class,
-                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equip::class
                     ),
                 ),
             ),
@@ -93,7 +93,7 @@ return array(
                     ),
                     'model' => array(
                         \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\DataModels\Tent::class,
-                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equip::class
                     ),
                 ),
             ),
