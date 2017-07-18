@@ -283,4 +283,60 @@
             return tasks[i];
         },
     };
+
+    //form helper. controlled bei attributes
+    $(document).ready(function() {
+        //deselect event for radio boxes
+        $('input[type="radio"]').bind('mousedown', function(){
+            let grp = $('input[name="' + $(this).attr('name') + '"]').not($(this));
+            grp.each(function() {
+                if ($(this).prop('checked')) {
+                    $(this).trigger('change', [{checked: false}]);
+                }
+            });
+        });
+        function getAllGroupMembers(groupName) {
+            var members = [];
+            $('[data-togglegrp]').each(function() {
+                var groups = $(this).data('togglegrp').split(',');
+                if (groups.indexOf(groupName) > -1) {
+                    members.push($(this));
+                }
+            });
+            return members;
+        }
+        $('[data-toggle]').on('change', function(e, overwrite) {
+            var grpName = $(this).data('toggle');
+            var grp = getAllGroupMembers(grpName);
+            var flag = (overwrite && typeof overwrite.checked === 'boolean')? overwrite.checked : $(this).prop('checked');
+
+            $.each(grp, function(index, $value) {
+                let $target = $value.parent(),
+                    type = $value.attr('type');
+
+                if (type === 'radio') {
+                    $target = $target.parent();
+                } else if (type === 'checkbox') {
+                    $target = $target.parent();
+                }
+                (flag)? $target.show() : $target.hide();
+            });
+            if (!flag) return;
+            $.each(grp, function(index, $value) {
+                if ($value.data('toggle')) $value.trigger('change');
+            });
+        });
+        var roots = [];
+        $('[data-toggle]').each(function() {
+            let toggleGrp = $(this).data('togglegrp');
+            if (toggleGrp) {
+                $(this).trigger('change');
+            } else {
+                roots.push($(this));
+            }
+        });
+        $.each(roots, function(index, $value) {
+            $value.trigger('change');
+        });
+    });
 })();
