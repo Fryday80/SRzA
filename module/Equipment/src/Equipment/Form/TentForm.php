@@ -63,15 +63,15 @@ class TentForm extends MyForm
         ));
         // length int
         $this->add(array(
-            'name' => 'length',
+            'name' => 'width',
             'type' => 'Number',
             'options' => array (
-                'label' => 'Breite in Zentimeter',
+                'label' => 'Breite in Zentimeter, Durchmesser wenn Rund',
             ),
         ));
         // width int
         $this->add(array(
-            'name' => 'width',
+            'name' => 'depth',
             'type' => 'Number',
             'options' => array (
                 'label' => 'Tiefe in Zentimeter',
@@ -151,4 +151,11 @@ class TentForm extends MyForm
         return $list;
     }
 
+    public function prepareDataForSetData($data)
+    {
+
+        if ($data['shape'] == ETentShape::ROUND)
+            $data['width'] = $data['depth'];
+        return $data;
+    }
 }

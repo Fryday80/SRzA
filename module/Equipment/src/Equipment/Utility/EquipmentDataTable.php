@@ -91,33 +91,25 @@ class EquipmentDataTable extends DataTableAbstract
                 'type'  => 'custom',
                 'render' => function($row) {
                     if ((int)$row['sitePlannerObject'] == 1) {
-        // no image set
-                        if (!isset($row['image']) || $row['image'] == null)
-                            return '';
-        // image set
-                        else {
-        // if set on "draw" keyword
-                            if ($row['image'] == EEquipSitePlannerImage::IMAGE_TYPE[EEquipSitePlannerImage::DRAW]) {
-                                if ($row['biColor'] == 1) {
-                                    $c1 = $row['color1'];
-                                    $c2 = $row['color2'];
-                                } else {
-                                    $c1 = $c2 = $row['color1'];
-                                }
-                                $roundCorners = ($row['shape'] == 0) ? 'border-radius: 50%;' : '';
-                                return "<div style='
-                                    width: 0;
-                                    height: 0;
-                                    border-left:   20px solid $c1;
-                                    border-top:    20px solid $c1;
-                                    border-right:  20px solid $c2;
-                                    border-bottom: 20px solid $c2;
-                                    $roundCorners
-                                    '></div>";
-        // else
+                        if ($row['image']) {
+                            return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
+                        } else {
+                            if ($row['biColor'] == 1) {
+                                $c1 = $row['color1'];
+                                $c2 = $row['color2'];
                             } else {
-                                return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
+                                $c1 = $c2 = $row['color1'];
                             }
+                            $roundCorners = ((int)$row['shape'] == EEquipSitePlannerImage::ROUND_SHAPE || (int)$row['shape'] == EEquipSitePlannerImage::OVAL_SHAPE) ? 'border-radius: 50%;' : '';
+                            return "<div style='
+                                width: 0;
+                                height: 0;
+                                border-left:   20px solid $c1;
+                                border-top:    20px solid $c1;
+                                border-right:  20px solid $c2;
+                                border-bottom: 20px solid $c2;
+                                $roundCorners
+                                '></div>";
                         }
                     }
                     return '';

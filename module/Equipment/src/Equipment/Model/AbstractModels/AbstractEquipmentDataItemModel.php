@@ -17,8 +17,8 @@ class AbstractEquipmentDataItemModel extends AbstractModel
     public $userName;
     /** @var  int used as bool */
     public $sitePlannerObject;
-    /** @var  int length in cm used to render in SitePlanner */
-    public $length;
+    /** @var  int depth in cm used to render in SitePlanner */
+    public $depth;
     /** @var  int width in cm used to render in SitePlanner */
     public $width;
     public $shape;

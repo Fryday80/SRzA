@@ -7,15 +7,17 @@ class EEquipSitePlannerImage
     const IMAGE_1 = 1;
     const IMAGE_2 = 2;
     const IMAGE_TYPE = array(
-        0 => 'draw',
+        0 => NULL,
         1 => 'image1',
         2 => 'image2',
     );
 
     const ROUND_SHAPE = 0;
     const RECTANGLE_SHAPE = 1;
+    const OVAL_SHAPE = 2;
     const DRAW_SHAPE = array(
         0 => 'round',
-        1 => 'rectangle'
+        1 => 'rectangle',
+        2 => 'oval'
     );
 }

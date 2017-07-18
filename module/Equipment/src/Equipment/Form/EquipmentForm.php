@@ -77,15 +77,15 @@ class EquipmentForm extends MyForm
         ));
         // length int
         $this->add(array(
-            'name' => 'length',
+            'name' => 'width',
             'type' => 'Number',
             'options' => array (
-                'label' => 'Breite in Zentimeter',
+                'label' => 'Breite in Zentimeter, Durchmesser wenn Rund',
             ),
         ));
         // width int
         $this->add(array(
-            'name' => 'width',
+            'name' => 'depth',
             'type' => 'Number',
             'options' => array (
                 'label' => 'Tiefe in Zentimeter',
@@ -138,7 +138,7 @@ class EquipmentForm extends MyForm
                 'value' => '#FAEBd7',
             ),
             'options' => array(
-                'label' => 'Farbe1',
+                'label' => 'Farbe',
             ),
         ));
         $this->add(array(
@@ -151,6 +151,7 @@ class EquipmentForm extends MyForm
                'label' => 'Form bei Zeichnung',
                 'value_options' => array(
                     EEquipSitePlannerImage::ROUND_SHAPE     => 'Rund',
+                    EEquipSitePlannerImage::OVAL_SHAPE      => 'Oval',
                     EEquipSitePlannerImage::RECTANGLE_SHAPE => 'Eckig'
                 ),
             ),
@@ -172,19 +173,22 @@ class EquipmentForm extends MyForm
         if ($data['image1']['error'] > 0) unset($data['image1']);
         if ($data['image2']['error'] > 0) unset($data['image2']);
 
+        // set or unset "image", add default data for rendering if forgotten
         if ($data['sitePlannerObject'] == '1') {
             if ($data['sitePlannerImage'] == NULL)
                 $data['sitePlannerImage'] = 0;
-            if (!isset($data['image']))
-                $data['image'] = ($data['sitePlannerImage'] == "0")
-                    ? EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']]
-                    : self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
+            if ($data['sitePlannerImage'] == "0"){
+                unset ($data['image']);
+                $data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
+                $data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
+            } else {
+                //@todo remove ".png" when upload is implemented
+                $data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
+            }
+            if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
+                $data['width'] = $data['depth'];
         }
 
-        if ($data['sitePlannerImage'] == "0"){
-            $data['length'] = ($data['length'] == "0" || $data['length'] == NULL) ? 100 : $data['length'];
-            $data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
-        }
         // add userName from select userId
         $data['userName'] = ($data['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($data['userId']);
         return $data;

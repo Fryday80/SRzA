@@ -406,7 +406,16 @@ $this->headScript()->appendFile('/libs/map.js');
         "use strict";
         var RIGHT_CLICK = 3,
             MIDDLE_CLICK = 2,
-            LEFT_CLICK = 1;
+            LEFT_CLICK = 1,
+            ENUM_ItemType_Tent = 0,
+            ENUM_ItemType_Equip = 1,
+            ENUM_ItemShape_Round = 0,
+            ENUM_ItemShape_Rectangel = 1,
+            ENUM_ItemShape_Oval = 2,
+            ENUM_TentShape_Round = 0,
+            ENUM_TentShape_Rectangle = 1,
+            ENUM_TentShape_Rectangle_Two_Mast = 2,
+            ENUM_TentShape_Round_Rectangle = 3;
 
         function checkClick(e, value) {
             return 'which' in e ? e.which === value : e.button === value - 1;
@@ -731,11 +740,11 @@ $this->headScript()->appendFile('/libs/map.js');
             },
             setItem: function (item) {
                 this.width = parseInt(item.width) / 5;
-                this.height = parseInt(item.length) / 5;
+                this.height = parseInt(item.depth) / 5;
                 this.item = item;
                 this.selectable = true;
                 var imageIndex = preloadUrls.indexOf(item.image);
-                if (imageIndex >= 0) {
+                if (imageIndex >= 0 && item.itemType !== 0) {
                     this.itemImg = preloadedImages[imageIndex];
                 }
             },
@@ -747,267 +756,295 @@ $this->headScript()->appendFile('/libs/map.js');
                     mastCenterY = 0,
                     landscape = ( w >= h ),
                     designColor = '#000000';
-                if(this.item.color1) {
                     if (this.item.color1 == '#000000' || this.item.color2 == '#000000') {
                         designColor = '#708090 ';
                     }
-                } else {
-                    // item is equip not tent
-                }
 
-                switch (parseInt(this.item.shape)) {
-                    case 0: // 0 = round tent
-                        var count = 8,
-                            startAngle = 0,
-                            angleSize = (2 * Math.PI) / count;
+                switch (parseInt(this.item.itemType))
+                {
+                    case ENUM_ItemType_Tent:
+                        switch (parseInt(this.item.shape)) {
+                            case ENUM_TentShape_Round:
+                                var count = 8,
+                                    startAngle = 0,
+                                    angleSize = (2 * Math.PI) / count;
 
-                        // entrance, adjusted 25 to 15 for shape reasons
-                        ctx.beginPath();
-                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) + 15));
-                        ctx.lineTo(-(w/6), - ((h / 2) + 15));
-                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
-                        ctx.fillStyle = this.item.color1;
-                        ctx.strokeStyle = designColor;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                        ctx.fill();
-
-                        for(i = 0; i < count; i++) {
-                            if (this.item.biColor == 0 || i % 2 == 0) {
-                                ctx.fillStyle = this.item.color1;
-                            } else {
-                                ctx.fillStyle = this.item.color2;
-                            }
-
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
-                            ctx.arc(0, 0, this.width/2, startAngle, startAngle + angleSize);
-                            ctx.closePath();
-                            ctx.fill();
-                            startAngle += angleSize;
-                        }
-                        // mast
-                        ctx.beginPath();
-                        ctx.moveTo(0,0);
-                        ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
-
-                        break;
-                    case 1: // 1 = rectangle, one mast tent
-                        // entrance
-                        ctx.beginPath();
-                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
-                        ctx.fillStyle = this.item.color1;
-                        ctx.strokeStyle = designColor;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                        ctx.fill();
-
-                        ctx.fillStyle = this.item.color1;
-                        ctx.fillRect(-(w/2), -(h/2), w, h);
-
-                        for (i = 0; i < 4; i++) {
-                            if (i % 2 == 0) {
-                                w = this.width;
-                                h = this.height;
-                            } else {
-                                w = this.height;
-                                h = this.width;
-                            }
-                            ctx.beginPath();
-                            ctx.moveTo(0, 0);
-                            ctx.lineTo(0, -(h/2) );
-                            ctx.lineTo(w/2, -(h/2) );
-                            ctx.lineTo(0, 0);
-                            ctx.fillStyle = this.item.color2;
-                            ctx.fill();
-                            ctx.rotate(Math.PI / 2);
-                        }
-
-                        w = this.width;
-                        h = this.height;
-                        // mast
-                        ctx.beginPath();
-                        ctx.moveTo(0,0);
-                        ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
-
-                        // folding lines
-                        ctx.beginPath();
-                        ctx.moveTo( -(w/2), -(h/2));
-                        ctx.lineTo( 0, 0 );
-                        ctx.lineTo( -(w/2), (h/2));
-                        ctx.moveTo(  (w/2), (h/2));
-                        ctx.lineTo( 0, 0);
-                        ctx.lineTo(  (w/2), -(h/2) );
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
-                        break;
-                    case 2: // 2 = rectangle, two mast tent
-                        if (!landscape) {
-                            h = this.width;
-                            w = this.height;
-                        }
-                        var sC = 1;
-                        mastCenterX = w/6;
-                        // entrance
-                        ctx.beginPath();
-                        ctx.moveTo(-(w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) - 10));
-                        ctx.lineTo( (w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) + 25));
-                        ctx.lineTo(-(w/6), - ((h / 2) - 10));
-                        ctx.fillStyle = this.item.color1;
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
-                        ctx.fill();
-
-                        // tent
-                        ctx.beginPath();
-                        ctx.fillStyle = this.item.color1;
-                        ctx.fillRect(-(w/2), -(h/2), w, h);
-
-                        if (this.item.biColor == 1) {
-                            for (i = 0; i < 2; i++) {
-                                sC = -sC;
+                                // entrance, adjusted 25 to 15 for shape reasons
                                 ctx.beginPath();
-                                ctx.moveTo(sC*mastCenterX, 0);
-                                ctx.lineTo(sC*(w / 2), sC*(h / 2));
-                                ctx.lineTo(sC*(w / 2), sC*(h / 6));
-                                ctx.lineTo(sC*mastCenterX, 0);
-                                ctx.lineTo(sC*(w / 2), -sC*(h / 2));
-                                ctx.lineTo(sC*(w / 2), -sC*(h / 6));
-                                ctx.lineTo(sC*mastCenterX, 0);
-                                ctx.moveTo(sC*mastCenterX, sC*(h/2));
-                                ctx.lineTo(sC*(w/18), sC*(h/2));
-                                ctx.lineTo(sC*(w/18), -sC*(h/2));
-                                ctx.lineTo(sC*mastCenterX, -sC*(h/2));
-                                ctx.lineTo(sC*mastCenterX, sC*(h/2));
-                                ctx.fillStyle = this.item.color2;
+                                ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) + 15));
+                                ctx.lineTo(-(w/6), - ((h / 2) + 15));
+                                ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                                ctx.fillStyle = this.item.color1;
+                                ctx.strokeStyle = designColor;
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
                                 ctx.fill();
-                            }
-                        }
 
-                        // mast 1
-                        ctx.beginPath();
-                        ctx.moveTo(mastCenterX, 0);
-                        ctx.arc (mastCenterX, 0, 2, 0, 2* Math.PI, false);
-                        // mast 2
-                        ctx.moveTo(-mastCenterX, 0);
-                        ctx.arc (-mastCenterX, 0, 2, 0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
+                                for(i = 0; i < count; i++) {
+                                    if (this.item.biColor == 0 || i % 2 == 0) {
+                                        ctx.fillStyle = this.item.color1;
+                                    } else {
+                                        ctx.fillStyle = this.item.color2;
+                                    }
 
-                        // folding lines
-                        ctx.beginPath();
-                        ctx.moveTo( -(w/2), -(h/2));
-                        ctx.lineTo( -mastCenterX, -mastCenterY);
-                        ctx.lineTo(  mastCenterX, mastCenterY);
-                        ctx.lineTo( w/2, -(h/2));
-                        ctx.moveTo( w/2, h/2);
-                        ctx.lineTo(  mastCenterX, mastCenterY);
-                        ctx.lineTo(  -mastCenterX, -mastCenterY);
-                        ctx.lineTo( -(w/2), h/2);
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
-                        break;
-                    case 3: // 3 => two mast tent with round corners
-                        if (!landscape) {
-                            h = this.item.width;
-                            w = this.item.height;
-                        }
-                        var rectWidth = w - h,
-                            startAngel = Math.PI/2;
-                        mastCenterX = (rectWidth/2);
-
-                        // tent
-                        ctx.beginPath();
-                        ctx.moveTo(-mastCenterX, 0);
-                        ctx.arc(-mastCenterX, 0, h/2, startAngel, startAngel + Math.PI);
-                        ctx.moveTo( mastCenterX, 0);
-                        ctx.arc ( mastCenterX, 0, h/2, -startAngel, -startAngel + Math.PI);
-                        ctx.moveTo ( -mastCenterX, -(h/2));
-                        ctx.lineTo (  mastCenterX, -(h/2));
-                        ctx.lineTo (  mastCenterX,   h/2);
-                        ctx.lineTo ( -mastCenterX,   h/2);
-                        ctx.lineTo ( -mastCenterX, -(h/2));
-                        ctx.fillStyle = this.item.color1;
-                        ctx.fill();
-
-                        if (this.item.biColor == 1) {
-                            for (var side = 0; side < 2; side++) {
-                                var xx,
-                                    slices = 3,
-                                    angelDiff = Math.PI / slices;
-                                // making slices odd
-                                if (slices % 2 == 0) {
-                                    slices++;
-                                }
-                                if (side % 2 == 0) {
-                                    startAngel = Math.PI/2;
-                                    xx = -mastCenterX;
-                                } else {
-                                    startAngel = -(Math.PI/2);
-                                    xx = mastCenterX;
-                                }
-                                for (i = 0; i < slices; i++) {
-                                    if (!(i % 2 == 0)) continue;
                                     ctx.beginPath();
-                                    ctx.moveTo(xx, 0);
-                                    ctx.arc(xx, 0, h/2, startAngel, startAngel + angelDiff);
+                                    ctx.moveTo(0, 0);
+                                    ctx.arc(0, 0, this.width/2, startAngle, startAngle + angleSize);
+                                    ctx.closePath();
+                                    ctx.fill();
+                                    startAngle += angleSize;
+                                }
+                                // mast
+                                ctx.beginPath();
+                                ctx.moveTo(0,0);
+                                ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
+                                ctx.fillStyle = designColor;
+                                ctx.fill();
+
+                                break;
+                            case ENUM_TentShape_Rectangle: // 1 = rectangle, one mast tent
+                                // entrance
+                                ctx.beginPath();
+                                ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) + 25));
+                                ctx.lineTo(-(w/6), - ((h / 2) + 25));
+                                ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                                ctx.fillStyle = this.item.color1;
+                                ctx.strokeStyle = designColor;
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
+                                ctx.fill();
+
+                                ctx.fillStyle = this.item.color1;
+                                ctx.fillRect(-(w/2), -(h/2), w, h);
+
+                                for (i = 0; i < 4; i++) {
+                                    if (i % 2 == 0) {
+                                        w = this.width;
+                                        h = this.height;
+                                    } else {
+                                        w = this.height;
+                                        h = this.width;
+                                    }
+                                    ctx.beginPath();
+                                    ctx.moveTo(0, 0);
+                                    ctx.lineTo(0, -(h/2) );
+                                    ctx.lineTo(w/2, -(h/2) );
+                                    ctx.lineTo(0, 0);
                                     ctx.fillStyle = this.item.color2;
                                     ctx.fill();
-                                    startAngel = startAngel + (2 * angelDiff);
+                                    ctx.rotate(Math.PI / 2);
                                 }
+
+                                w = this.width;
+                                h = this.height;
+                                // mast
+                                ctx.beginPath();
+                                ctx.moveTo(0,0);
+                                ctx.arc (mastCenterX,mastCenterY,2,0, 2* Math.PI, false);
+                                ctx.fillStyle = designColor;
+                                ctx.fill();
+
+                                // folding lines
+                                ctx.beginPath();
+                                ctx.moveTo( -(w/2), -(h/2));
+                                ctx.lineTo( 0, 0 );
+                                ctx.lineTo( -(w/2), (h/2));
+                                ctx.moveTo(  (w/2), (h/2));
+                                ctx.lineTo( 0, 0);
+                                ctx.lineTo(  (w/2), -(h/2) );
+                                ctx.strokeStyle = designColor;
+                                ctx.stroke();
+                                break;
+                            case ENUM_TentShape_Rectangle_Two_Mast: // 2 = rectangle, two mast tent
+                                if (!landscape) {
+                                    h = this.width;
+                                    w = this.height;
+                                }
+                                var sC = 1;
+                                mastCenterX = w/6;
+                                // entrance
+                                ctx.beginPath();
+                                ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) + 25));
+                                ctx.lineTo(-(w/6), - ((h / 2) + 25));
+                                ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                                ctx.fillStyle = this.item.color1;
+                                ctx.strokeStyle = designColor;
+                                ctx.stroke();
+                                ctx.fill();
+
+                                // tent
+                                ctx.beginPath();
+                                ctx.fillStyle = this.item.color1;
+                                ctx.fillRect(-(w/2), -(h/2), w, h);
+
+                                if (this.item.biColor == 1) {
+                                    for (i = 0; i < 2; i++) {
+                                        sC = -sC;
+                                        ctx.beginPath();
+                                        ctx.moveTo(sC*mastCenterX, 0);
+                                        ctx.lineTo(sC*(w / 2), sC*(h / 2));
+                                        ctx.lineTo(sC*(w / 2), sC*(h / 6));
+                                        ctx.lineTo(sC*mastCenterX, 0);
+                                        ctx.lineTo(sC*(w / 2), -sC*(h / 2));
+                                        ctx.lineTo(sC*(w / 2), -sC*(h / 6));
+                                        ctx.lineTo(sC*mastCenterX, 0);
+                                        ctx.moveTo(sC*mastCenterX, sC*(h/2));
+                                        ctx.lineTo(sC*(w/18), sC*(h/2));
+                                        ctx.lineTo(sC*(w/18), -sC*(h/2));
+                                        ctx.lineTo(sC*mastCenterX, -sC*(h/2));
+                                        ctx.lineTo(sC*mastCenterX, sC*(h/2));
+                                        ctx.fillStyle = this.item.color2;
+                                        ctx.fill();
+                                    }
+                                }
+
+                                // mast 1
+                                ctx.beginPath();
+                                ctx.moveTo(mastCenterX, 0);
+                                ctx.arc (mastCenterX, 0, 2, 0, 2* Math.PI, false);
+                                // mast 2
+                                ctx.moveTo(-mastCenterX, 0);
+                                ctx.arc (-mastCenterX, 0, 2, 0, 2* Math.PI, false);
+                                ctx.fillStyle = designColor;
+                                ctx.fill();
+
+                                // folding lines
+                                ctx.beginPath();
+                                ctx.moveTo( -(w/2), -(h/2));
+                                ctx.lineTo( -mastCenterX, -mastCenterY);
+                                ctx.lineTo(  mastCenterX, mastCenterY);
+                                ctx.lineTo( w/2, -(h/2));
+                                ctx.moveTo( w/2, h/2);
+                                ctx.lineTo(  mastCenterX, mastCenterY);
+                                ctx.lineTo(  -mastCenterX, -mastCenterY);
+                                ctx.lineTo( -(w/2), h/2);
+                                ctx.strokeStyle = designColor;
+                                ctx.stroke();
+                                break;
+                            case ENUM_TentShape_Round_Rectangle: // 3 => two mast tent with round corners
+                                if (!landscape) {
+                                    h = this.item.width;
+                                    w = this.item.height;
+                                }
+                                var rectWidth = w - h,
+                                    startAngel = Math.PI/2;
+                                mastCenterX = (rectWidth/2);
+
+                                // tent
+                                ctx.beginPath();
+                                ctx.moveTo(-mastCenterX, 0);
+                                ctx.arc(-mastCenterX, 0, h/2, startAngel, startAngel + Math.PI);
+                                ctx.moveTo( mastCenterX, 0);
+                                ctx.arc ( mastCenterX, 0, h/2, -startAngel, -startAngel + Math.PI);
+                                ctx.moveTo ( -mastCenterX, -(h/2));
+                                ctx.lineTo (  mastCenterX, -(h/2));
+                                ctx.lineTo (  mastCenterX,   h/2);
+                                ctx.lineTo ( -mastCenterX,   h/2);
+                                ctx.lineTo ( -mastCenterX, -(h/2));
+                                ctx.fillStyle = this.item.color1;
+                                ctx.fill();
+
+                                if (this.item.biColor == 1) {
+                                    for (var side = 0; side < 2; side++) {
+                                        var xx,
+                                            slices = 3,
+                                            angelDiff = Math.PI / slices;
+                                        // making slices odd
+                                        if (slices % 2 == 0) {
+                                            slices++;
+                                        }
+                                        if (side % 2 == 0) {
+                                            startAngel = Math.PI/2;
+                                            xx = -mastCenterX;
+                                        } else {
+                                            startAngel = -(Math.PI/2);
+                                            xx = mastCenterX;
+                                        }
+                                        for (i = 0; i < slices; i++) {
+                                            if (!(i % 2 == 0)) continue;
+                                            ctx.beginPath();
+                                            ctx.moveTo(xx, 0);
+                                            ctx.arc(xx, 0, h/2, startAngel, startAngel + angelDiff);
+                                            ctx.fillStyle = this.item.color2;
+                                            ctx.fill();
+                                            startAngel = startAngel + (2 * angelDiff);
+                                        }
+                                    }
+                                }
+
+                                // mast 1
+                                ctx.beginPath();
+                                ctx.moveTo(mastCenterX, mastCenterY);
+                                ctx.arc (mastCenterX, mastCenterY, 2, 0, 2* Math.PI, false);
+                                ctx.fillStyle = designColor;
+                                ctx.fill();
+                                // mast 2
+                                ctx.beginPath();
+                                ctx.moveTo(-mastCenterX, -mastCenterY);
+                                ctx.arc (-mastCenterX, -mastCenterY, 2, 0, 2* Math.PI, false);
+                                ctx.fillStyle = designColor;
+                                ctx.fill();
+
+                                // folding lines
+                                ctx.beginPath();
+                                ctx.moveTo( -mastCenterX, -mastCenterY);
+                                ctx.lineTo(  mastCenterX, mastCenterY);
+                                ctx.strokeStyle = designColor;
+                                ctx.stroke();
+
+                                // entrance
+                                ctx.beginPath();
+                                ctx.moveTo(-(mastCenterX-3), 0);
+                                ctx.lineTo( (mastCenterX-3), 0);
+                                ctx.lineTo( (mastCenterX-3), - ((h / 2) + 15));
+                                ctx.lineTo(-(mastCenterX-3), - ((h / 2) + 15));
+                                ctx.lineTo(-(mastCenterX-3), 0);
+                                ctx.fillStyle = this.item.color2;
+                                ctx.strokeStyle = designColor;
+                                ctx.stroke();
+                                ctx.fill();
+                                break;
+                            default:
+                                if (this.itemImg) {
+                                    ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
+                                }
+                                break;
                             }
-                        }
-
-                        // mast 1
-                        ctx.beginPath();
-                        ctx.moveTo(mastCenterX, mastCenterY);
-                        ctx.arc (mastCenterX, mastCenterY, 2, 0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
-                        // mast 2
-                        ctx.beginPath();
-                        ctx.moveTo(-mastCenterX, -mastCenterY);
-                        ctx.arc (-mastCenterX, -mastCenterY, 2, 0, 2* Math.PI, false);
-                        ctx.fillStyle = designColor;
-                        ctx.fill();
-
-                        // folding lines
-                        ctx.beginPath();
-                        ctx.moveTo( -mastCenterX, -mastCenterY);
-                        ctx.lineTo(  mastCenterX, mastCenterY);
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
-
-                        // entrance
-                        ctx.beginPath();
-                        ctx.moveTo(-(mastCenterX-3), 0);
-                        ctx.lineTo( (mastCenterX-3), 0);
-                        ctx.lineTo( (mastCenterX-3), - ((h / 2) + 15));
-                        ctx.lineTo(-(mastCenterX-3), - ((h / 2) + 15));
-                        ctx.lineTo(-(mastCenterX-3), 0);
-                        ctx.fillStyle = this.item.color2;
-                        ctx.strokeStyle = designColor;
-                        ctx.stroke();
-                        ctx.fill();
                         break;
+                    case ENUM_ItemType_Equip:
                     default:
-                        if (this.itemImg) {
+                        if (this.item.image !== null) {
                             ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
+                        } else {
+                            switch (parseInt(this.item.shape)) {
+                                case ENUM_ItemShape_Round:
+                                    ctx.beginPath();
+                                    ctx.moveTo(0,0);
+                                    ctx.arc (0,0,w/2,0, 2* Math.PI, false);
+                                    break;
+                                case ENUM_ItemShape_Rectangel:
+                                    ctx.beginPath();
+                                    ctx.moveTo(-w/2, -h/2);
+                                    ctx.lineTo( w/2, -h/2);
+                                    ctx.lineTo( w/2,  h/2);
+                                    ctx.lineTo(-w/2,  h/2);
+                                    ctx.lineTo(-w/2, -h/2);
+                                    break;
+                                case ENUM_ItemShape_Oval:
+                                    ctx.beginPath();
+                                    ctx.ellipse(0, 0, w/2, h/2, 0, 0, 2*Math.PI, false);
+                            }
+                            ctx.fillStyle = this.item.color1;
+                            ctx.fill();
                         }
-                        break;
                 }
+
 
                 if (this.labelRender) {
                     var offX = 0,
@@ -1192,7 +1229,7 @@ $this->headScript()->appendFile('/libs/map.js');
             var images = [];
 
             function onLoad(err) {
-                if (!err) images.push(this);
+                images.push(this);
                 pointer++;
                 if (pointer < urls.length) {
                     progress(pointer / urls.length);
@@ -1436,17 +1473,18 @@ $this->headScript()->appendFile('/libs/map.js');
                 this.details = new DetailsPanel(this);
                 //preload all necessary images
                 for(var i = 0; i < this.itemPool.length; i++) {
-                    if (this.itemPool[i].image != null) {
+                    if (this.itemPool[i].image != null) {//dess muss man hier machen aber
                         preloadUrls.push(this.itemPool[i].image);
                     }
                 }
                 preloadImages(preloadUrls, function(images) {
                     self.updateProgressBar(1);
                     preloadedImages = images;
+                    console.log('images loaded', preloadedImages);
+                    console.log('images loaded', preloadUrls);
                 }, function(progress) {
                     self.updateProgressBar(progress);
                 });
-
                 //alternate image background ----------------------------------
 //                var src = '/img/html.bg.png';
 //                this.canvas.backgroundColor = new fabric.Pattern({
