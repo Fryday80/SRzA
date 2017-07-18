@@ -10,7 +10,7 @@ class SystemServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $accessService = $sm->get('AccessService');
-//        $sysLogTable = $sm->get('Application\Model\SystemLogTable');
+//        $sysLogTable = $sm->get('Application\Model\Tables\SystemLogTable');
             return new SystemService($accessService);
     }
 }

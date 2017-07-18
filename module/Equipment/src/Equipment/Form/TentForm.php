@@ -1,13 +1,13 @@
 <?php
 namespace Equipment\Form;
 
+use Application\Form\MyForm;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\Enums\ETentType;
 use Equipment\Service\EquipmentService;
-use Zend\Form\Form;
 
-class TentForm extends Form
+class TentForm extends MyForm
 {
     /** @var  UserService */
     private $userService;

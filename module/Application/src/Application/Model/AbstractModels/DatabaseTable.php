@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model;
+namespace Application\Model\AbstractModels;
 
 use Application\Hydrator\HydratingResultSet;
 use Application\Hydrator\Hydrator;

@@ -1,7 +1,6 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Utility\DataTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;

@@ -1,5 +1,12 @@
 <?php
-namespace Application\Model;
+/**
+ * Created by PhpStorm.
+ * User: Fry
+ * Date: 18.07.2017
+ * Time: 14:04
+ */
+
+namespace Application\Model\AbstractModels;
 
 use ArrayAccess;
 
@@ -112,13 +119,5 @@ class AbstractModel implements ArrayAccess
             return true;
         }
         return false;
-    }
-}
-
-class Extras
-{
-    public static function get_vars($obj)
-    {
-        return get_object_vars($obj);
     }
 }

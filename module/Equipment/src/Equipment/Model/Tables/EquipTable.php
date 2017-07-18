@@ -1,8 +1,9 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\Tables;
 
-use Application\Model\DatabaseTable;
+use Application\Model\AbstractModels\DatabaseTable;
 use Equipment\Hydrator\EquipmentResultSet;
+use Equipment\Model\AbstractModels\EquipDBObject;
 use Zend\Db\Adapter\Adapter;
 
 class EquipTable extends DatabaseTable

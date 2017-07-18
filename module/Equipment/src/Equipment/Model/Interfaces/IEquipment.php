@@ -1,6 +1,5 @@
 <?php
-namespace Equipment\Model;
-
+namespace Equipment\Model\Interfaces;
 
 interface IEquipment
 {

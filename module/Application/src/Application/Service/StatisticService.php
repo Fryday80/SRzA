@@ -8,13 +8,13 @@ use Zend\Mvc\Application;
 use Auth\Service\AccessService;
 use Zend\Http\Header\SetCookie;
 use Zarganwar\PerformancePanel\Register;
-use Application\Model\SystemLogTable;
+use Application\Model\Tables\SystemLogTable;
 // data items
-use Application\Model\DataObjects\Stats;
-use Application\Model\DataObjects\Action;
-use Application\Model\DataObjects\ActiveUser;
-use Application\Model\DataObjects\SystemLog;
-// abstracts
+use Application\Model\DataModels\Stats;
+use Application\Model\DataModels\Action;
+use Application\Model\DataModels\ActiveUser;
+use Application\Model\DataModels\SystemLog;
+// enums
 use Application\Model\Enums\HitType;
 use Application\Model\Enums\LogType;
 use Application\Model\Enums\OrderType;

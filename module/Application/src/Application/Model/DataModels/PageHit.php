@@ -1,6 +1,7 @@
 <?php
-namespace Application\Model\DataObjects;
+namespace Application\Model\DataModels;
 
+use Application\Model\AbstractModels\StatsDataItem;
 use Application\Model\Enums\HitType;
 
 class PageHit extends StatsDataItem

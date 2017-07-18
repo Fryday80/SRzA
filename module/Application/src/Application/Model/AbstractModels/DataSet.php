@@ -1,8 +1,6 @@
 <?php
-namespace Application\Model;
+namespace Application\Model\AbstractModels;
 
-
-use Application\Model\DataObjects\DataItem;
 use Zend\Paginator\Adapter\Iterator;
 
 class DataSet

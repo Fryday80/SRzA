@@ -1,7 +1,8 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\DataModels;
 
 
+use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
 use Equipment\Model\Enums\EEquipTypes;
 
 class Equipment extends EquipmentStdDataItemModel

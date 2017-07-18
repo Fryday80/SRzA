@@ -6,10 +6,10 @@ namespace Equipment\Service;
 use Application\Service\CacheService;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
-use Equipment\Model\EquipTable;
-use Application\Model\DataSet;
+use Equipment\Model\Tables\EquipTable;
+use Application\Model\AbstractModels\DataSet;
 use Equipment\Model\Tent;
-use Equipment\Model\Equipment;
+use Equipment\Model\DataModels\Equipment;
 
 class EquipmentService
 {
@@ -132,7 +132,7 @@ class EquipmentService
 //    /**
 //     * DEPRECATED +++ DEPRECATED +++ replaced by getById
 //     * @param $id
-//     * @return \Application\Model\DataObjects\DataItem|bool
+//     * @return \Application\Model\DataModels\DataItem|bool
 //     */
 //    public function getTentById($id)
 //    {

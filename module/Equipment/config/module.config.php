@@ -45,8 +45,8 @@ return array(
                         \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                     ),
                     'model' => array(
-                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\Tent::class,
-                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\DataModels\Tent::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equipment::class
                     ),
                 ),
             ),
@@ -92,8 +92,8 @@ return array(
                         \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Form\EquipmentForm::class
                     ),
                     'model' => array(
-                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\Tent::class,
-                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\Equipment::class
+                        \Equipment\Model\Enums\EEquipTypes::TENT => \Equipment\Model\DataModels\Tent::class,
+                        \Equipment\Model\Enums\EEquipTypes::EQUIPMENT => \Equipment\Model\DataModels\Equipment::class
                     ),
                 ),
             ),
@@ -116,8 +116,8 @@ return array(
         ),
         'abstract_factories' => array(
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\SitePlannerTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\EquipTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(

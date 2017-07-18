@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model\DataObjects;
+namespace Application\Model\DataModels;
 
 use Application\Model\Enums\CounterType;
 use Application\Model\Enums\FilterType;

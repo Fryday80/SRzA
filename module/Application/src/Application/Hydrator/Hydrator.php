@@ -63,9 +63,9 @@ class Hydrator extends ClassMethods
                 __METHOD__
             ));
         }
-        if (!is_subclass_of($object, 'Application\Model\AbstractModel')) {
+        if (!is_subclass_of($object, 'Application\Model\AbstractModels\AbstractModel')) {
             throw new BadMethodCallException(sprintf(
-                '%s expects the provided $object to be a child of "Application\Model\AbstractModel")',
+                '%s expects the provided $object to be a child of "Application\Model\AbstractModels\AbstractModel")',
                 __METHOD__
             ));
         }
@@ -142,9 +142,9 @@ class Hydrator extends ClassMethods
                 __METHOD__
             ));
         }
-        if (!is_subclass_of($object, 'Application\Model\AbstractModel')) {
+        if (!is_subclass_of($object, 'Application\Model\AbstractModels\AbstractModel')) {
             throw new BadMethodCallException(sprintf(
-                '%s expects the provided $object to be a child of "Application\Model\AbstractModel")',
+                '%s expects the provided $object to be a child of "Application\Model\AbstractModels\AbstractModel")',
                 __METHOD__
             ));
         }

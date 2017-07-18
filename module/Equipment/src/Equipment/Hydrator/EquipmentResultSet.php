@@ -3,7 +3,7 @@ namespace Equipment\Hydrator;
 
 
 use Application\Hydrator\HydratingResultSet;
-use Equipment\Model\EquipmentStdDataItemModel;
+use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
 
 class EquipmentResultSet extends HydratingResultSet
 {

@@ -1,9 +1,8 @@
 <?php
+namespace Equipment\Model\AbstractModels;
 
-namespace Equipment\Model;
-
-
-use Application\Model\AbstractModel;
+use Application\Model\AbstractModels\AbstractModel;
+use Equipment\Model\AbstractModels\EquipmentStdDataItemModel;
 
 class EquipDBObject extends AbstractModel
 {

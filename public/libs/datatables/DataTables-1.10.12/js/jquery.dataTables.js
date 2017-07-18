@@ -6717,7 +6717,7 @@
 	
 	
 	/**
-	 * Abstraction for `context` parameter of the `Api` constructor to allow it to
+	 * AbstractModels for `context` parameter of the `Api` constructor to allow it to
 	 * take several different forms for ease of use.
 	 *
 	 * Each of the input parameter types will be converted to a DataTables settings

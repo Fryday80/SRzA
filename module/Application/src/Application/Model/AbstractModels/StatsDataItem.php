@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Model\DataObjects;
+namespace Application\Model\AbstractModels;
 
 
 class StatsDataItem

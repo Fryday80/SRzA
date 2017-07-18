@@ -1,7 +1,8 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\Tables;
 
-use Application\Model\DatabaseTable;
+use Application\Model\AbstractModels\DatabaseTable;
+use Equipment\Model\DataModels\SitePlan;
 use Zend\Db\Adapter\Adapter;
 use Zend\Hydrator\Strategy\SerializableStrategy;
 

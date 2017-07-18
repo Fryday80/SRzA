@@ -2,7 +2,7 @@
 namespace Equipment\Controller;
 
 use Application\Utility\DataTable;
-use Equipment\Model\SitePlannerTable;
+use Equipment\Model\Tables\SitePlannerTable;
 use Equipment\Service\EquipmentService;
 use Exception;
 use Media\Service\MediaException;

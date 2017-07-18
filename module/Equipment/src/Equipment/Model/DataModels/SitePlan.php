@@ -1,7 +1,7 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\DataModels;
 
-use Application\Model\AbstractModel;
+use Application\Model\AbstractModels\AbstractModel;
 
 class SitePlan extends AbstractModel
 {
