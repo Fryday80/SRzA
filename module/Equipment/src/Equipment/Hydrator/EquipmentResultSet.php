@@ -23,7 +23,7 @@ class EquipmentResultSet extends HydratingResultSet
         // $data = array of one db row
         /** @var AbstractEquipmentDataItemModel $object */
         $object = unserialize($data['data']);
-        $object->updateFromDB($data);
+        $object->metaDataUpdate($data);
 
         if (is_array($this->buffer)) {
             $this->buffer[$this->position] = $object;

@@ -7,11 +7,9 @@ class AbstractEquipmentDataItemModel extends AbstractModel
 {
     /** @var  int */
     public $id;
-    /** @var  EquipmentStdDataItemModel */
-    public $data;
     /** @var  int */
-    public $type;
-    /** @var  string path to img */
+    public $itemType;
+    /** @var  string path to img, used in SitePlanner*/
     public $image;
     /** @var  int */
     public $userId;
@@ -19,24 +17,28 @@ class AbstractEquipmentDataItemModel extends AbstractModel
     public $userName;
     /** @var  int used as bool */
     public $sitePlannerObject;
+    /** @var  int length in cm used to render in SitePlanner */
+    public $length;
+    /** @var  int width in cm used to render in SitePlanner */
+    public $width;
+    public $shape;
+    public $name;
+    public $description;
+    public $image1;
+    public $image2;
+    public $color1;
+    public $biColor;
+    public $color2;
     
 
     public function __construct($data = null)
     {
-        if ($data !== null)
-        foreach ($data as $key=>$value)
-            $this->$key = $value;
-
+        if ($data !== null){
+            foreach ($data as $key=>$value)
+                $this->$key = $value;
+        }
     }
-
-    public function updateFromDB($data)
-    {
-        $data['user_name'] = ((int)$data['user_id'] == 0) ? 'Verein' : $data['user_name'];
-        $this->id = $data['id'];
-        $this->userId = $data['user_id'];
-        $this->userName = $data['user_name'];
-        $this->sitePlannerObject = $data['site_planner_object'];
-    }
+    
     /**
      * is this group equip
      * @return bool
@@ -47,6 +49,19 @@ class AbstractEquipmentDataItemModel extends AbstractModel
         return false;
     }
 
+    // move to EquipmentResultSet ??
+    public function metaDataUpdate($data)
+    {
+        $this->id = $data['id'];
+        $this->itemType = ($data['item_type'] !== null) ? $data['item_type'] : $this->itemType;
+        $this->image = ($data['image'] !== null) ? $data['image'] : $this->image;
+        $this->userId = ($data['user_id'] !== null) ? $data['user_id'] : $this->userId;
+        $this->sitePlannerObject = ($data['site_planner_object'] !== null) ? $data['site_planner_object'] : $this->sitePlannerObject;
+        $this->userName = ($data['user_name'] !== null) ? $data['user_name'] : $this->userName;
+    }
+
+
+    // move to AbstractModel ??
     public function getArrayCopy()
     {
         return get_object_vars($this);

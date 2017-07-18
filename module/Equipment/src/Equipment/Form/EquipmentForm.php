@@ -35,6 +35,10 @@ class EquipmentForm extends MyForm
                 'value_options' => $this->getUsersForSelect(),
             ),
         ));
+        $this->add(array(
+            'name' => 'userName',
+            'type' => 'hidden'
+        ));
 
         $this->add(array(
             'name' => 'name',
@@ -122,7 +126,11 @@ class EquipmentForm extends MyForm
             ),
         ));
         $this->add(array(
-            'name' => 'color',
+            'name' => 'image',
+            'type' => 'hidden',
+        ));
+        $this->add(array(
+            'name' => 'color1',
             'type' => 'Zend\Form\Element\Color',
             'required' => true,
             'attributes' => array(
@@ -168,16 +176,17 @@ class EquipmentForm extends MyForm
             if ($data['sitePlannerImage'] == NULL)
                 $data['sitePlannerImage'] = 0;
             if (!isset($data['image']))
-//                bdump('sdf');
-            $data['image'] = ($data['sitePlannerImage'] == "0")
-                ? EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage]
-                : self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']];
+                $data['image'] = ($data['sitePlannerImage'] == "0")
+                    ? EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']]
+                    : self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
         }
 
         if ($data['sitePlannerImage'] == "0"){
             $data['length'] = ($data['length'] == "0" || $data['length'] == NULL) ? 100 : $data['length'];
             $data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
         }
+        // add userName from select userId
+        $data['userName'] = ($data['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($data['userId']);
         return $data;
     }
 

@@ -58,6 +58,8 @@ class EquipmentDataTable extends DataTableAbstract
 
     public function isPrepared()
     {
+        if($this->tablePrepared == true)
+            return true;
         if ($this->aService == true && $this->eService == true)
             return $this->tablePrepared = true;
         else
@@ -89,25 +91,33 @@ class EquipmentDataTable extends DataTableAbstract
                 'type'  => 'custom',
                 'render' => function($row) {
                     if ((int)$row['sitePlannerObject'] == 1) {
-                        if (isset($row['image']) && $row['image'] !== EEquipSitePlannerImage::IMAGE_TYPE[EEquipSitePlannerImage::DRAW])
-                            return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
-                        if (isset($row['sitePlannerImage']) && (int)$row['sitePlannerImage'] == EEquipSitePlannerImage::DRAW) {
-                            if (isset($row['color1'])) {
-                                $c1 = $row['color1'];
-                                $c2 = $row['color2'];
-                            } else {
-                                $c1 = $c2 = $row['color'];
-                            }
-                            return '<div style="
+        // no image set
+                        if (!isset($row['image']) || $row['image'] == null)
+                            return '';
+        // image set
+                        else {
+        // if set on "draw" keyword
+                            if ($row['image'] == EEquipSitePlannerImage::IMAGE_TYPE[EEquipSitePlannerImage::DRAW]) {
+                                if ($row['biColor'] == 1) {
+                                    $c1 = $row['color1'];
+                                    $c2 = $row['color2'];
+                                } else {
+                                    $c1 = $c2 = $row['color1'];
+                                }
+                                $roundCorners = ($row['shape'] == 0) ? 'border-radius: 50%;' : '';
+                                return "<div style='
                                     width: 0;
                                     height: 0;
-                                    border-left:   20px solid ' . $c1 . ';
-                                    border-top:    20px solid ' . $c1 . ';
-                                    border-right:  20px solid ' . $c2 . ';
-                                    border-bottom: 20px solid ' . $c2 . ';
-                                    "></div>';
-                        } else {
-                            return '<img src="' . $row['image'] . '.png" alt="Item" style="height:35px;">';
+                                    border-left:   20px solid $c1;
+                                    border-top:    20px solid $c1;
+                                    border-right:  20px solid $c2;
+                                    border-bottom: 20px solid $c2;
+                                    $roundCorners
+                                    '></div>";
+        // else
+                            } else {
+                                return '<img src="' . $row['image'] . '" alt="Item" style="height:35px;">';
+                            }
                         }
                     }
                     return '';
@@ -156,7 +166,7 @@ class EquipmentDataTable extends DataTableAbstract
             array(
                 'name' => 'readableType', 'label' => 'Typ', 'type' => 'custom',
                 'render' => function ($row) {
-                    return ETentType::TRANSLATE_TO_STRING[$row['type']];
+                    return ETentType::TRANSLATE_TO_STRING[$row['itemType']];
                 }
             ),
             array(
@@ -230,8 +240,8 @@ class EquipmentDataTable extends DataTableAbstract
                     'render' => function ($row) {
                         bdump($row);
                         if ((int)$row['sitePlannerImage'] == EEquipSitePlannerImage::DRAW) {
-                            $c1 = $row['color'];
-                            $c2 = $row['color'];
+                            $c1 = $row['color1'];
+                            $c2 = $row['color1'];
                             return '<div style="
                                     width: 0;
                                     height: 0;

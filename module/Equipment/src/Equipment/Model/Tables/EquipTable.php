@@ -3,7 +3,7 @@ namespace Equipment\Model\Tables;
 
 use Application\Model\AbstractModels\DatabaseTable;
 use Equipment\Hydrator\EquipmentResultSet;
-use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
+use Equipment\Model\DataModels\Equip;
 use Zend\Db\Adapter\Adapter;
 
 class EquipTable extends DatabaseTable
@@ -12,7 +12,7 @@ class EquipTable extends DatabaseTable
 
     public function __construct(Adapter $adapter)
     {
-        parent::__construct($adapter, AbstractEquipmentDataItemModel::class);
+        parent::__construct($adapter, Equip::class);
         //create hydrator
         // set naming strategy            https://framework.zend.com/manual/2.4/en/modules/zend.stdlib.hydrator.namingstrategy.underscorenamingstrategy.html
 //        $this->hydrator->setNamingStrategy(new UnderscoreNamingStrategy());
@@ -26,7 +26,7 @@ class EquipTable extends DatabaseTable
     }
 
     public function getAllByType($type){
-        return $this->select(array('equip.type' => $type));
+        return $this->select(array('item_type' => $type));
     }
 
     public function getByUserId($id)
@@ -36,7 +36,7 @@ class EquipTable extends DatabaseTable
 
     public function getByUserIdAndType($id, $type)
     {
-        return $this->select(array('equip.user_id' => (int) $id, 'equip.type' => (int)$type));
+        return $this->select(array('equip.user_id' => (int) $id, 'item_type' => (int)$type));
     }
 
     public function removeById($id) {
@@ -45,7 +45,7 @@ class EquipTable extends DatabaseTable
 
     public function removeByUserIdAndType($userId, $type)
     {
-        return ($this->delete(array('user_id' => (int)$userId, 'type' => $type)))? true : false;
+        return ($this->delete(array('user_id' => (int)$userId, 'item_type' => $type)))? true : false;
     }
 
     public function removeByUserId($userId)
@@ -60,7 +60,7 @@ class EquipTable extends DatabaseTable
         $select->columns(array(
                 'id' => 'id',
                 'data' => 'data',
-                'type' => 'type',
+                'item_type' => 'item_type',
                 'image' => 'image',
                 'user_id' => 'user_id',
                 'site_planner_object' => 'site_planner_object',
@@ -78,14 +78,14 @@ class EquipTable extends DatabaseTable
 
     /**
      * extracts the db column values from given object Tent|Equipment
-     * @param EquipmentStdDataItemModel $data
+     * @param Equip $data
      * @return array for db save|add
      */
     protected function prepareDataForSave($data){
         return array(
             'id'    => (int) $data->id,
             'data'  => serialize ($data),
-            'type'  => (int)$data->itemType,
+            'item_type'  => (int)$data->itemType,
             'image' => $data->image,
             'user_id' => $data->userId,
             'site_planner_object' => $data->sitePlannerObject
