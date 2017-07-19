@@ -1,7 +1,5 @@
 <?php
-
 namespace Equipment\Service;
-
 
 use Application\Service\CacheService;
 use Equipment\Hydrator\EquipmentResultSet;

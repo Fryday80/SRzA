@@ -7,18 +7,17 @@ return array(
             'default_actionName' => array(
                 'name' => 'actionName',
                 'label'=> 'label',
-                'vars' => array( ),
+                'vars' => array(
+					'links' => array(
+						'Zeltverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::TENT],
+						'Zeugverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::EQUIPMENT],
+						'Lagerplanung'   => '/siteplanner',
+					)
+				),
             ),
             'index'   => array(
                 'name'    => 'index',
                 'label'   => 'Lager',
-                'vars'    => array(
-                    'links' => array(
-                        'Zeltverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::TENT],
-                        'Zeugverwaltung' => '/equip/' .\Equipment\Model\Enums\EEquipTypes::TRANSLATE_TO_STRING[\Equipment\Model\Enums\EEquipTypes::EQUIPMENT],
-                        'Lagerplanung'   => '/siteplanner',
-                    )
-                ),
             ),
             'type'    => array(
                 'name'  => 'type',

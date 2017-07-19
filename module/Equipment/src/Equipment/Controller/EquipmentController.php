@@ -198,7 +198,7 @@ class EquipmentController extends AbstractActionController
     private function getVars($action, $typeString = null, $userId = false)
     {
         if (isset($this->config['config'][$action]))
-            $page = $this->config['config'][$action] + $this->config['config']['default_actionName'];
+            $page = array_merge_recursive($this->config['config']['default_actionName'], $this->config['config'][$action]);
         else
             $page = $this->config['config']['default_actionName'];
         if(is_array($page['label']))
@@ -213,6 +213,7 @@ class EquipmentController extends AbstractActionController
             if ($action !== 'type' && $action !== 'userall')
                 $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
         }
+        bdump($vars);
         return $vars;
     }
 }
