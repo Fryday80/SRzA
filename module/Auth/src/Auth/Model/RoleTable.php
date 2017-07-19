@@ -114,6 +114,7 @@ class RoleTable extends AbstractTableGateway
             throw new Exception("Permission '$name' doesn't exists");
         }
         $this->rolePermissionTable->addPermission($roleID, $permID);
+        return $roleID;
 
     }
 
@@ -181,4 +182,120 @@ class RoleTable extends AbstractTableGateway
             throw new \Exception($e->getMessage());
         }
     }
+
+
+	// =============================00000 refactoring
+	public function onAdd($name, $parent, $status = null)
+	{
+		// ADD
+		$newId = $this->add($name, $parent, $status);
+		// manage parents and childes
+		$this->swapParents($parent, $newId);
+		// permissions
+		$this->addPermissionToRoleResource($name);
+    }
+	public function onDelete($id)
+	{
+		$oldRole = $this->getRoleByID($id);
+		// manage parents and childes
+		$this->swapParents($id, $oldRole['role_parent']);
+		// permissions
+		$this->deletePermissionFromRoleResource($oldRole['role_name']);
+		// DELETE
+		$this->deleteByID($id);
+    }
+	public function onEdit($data, $id)
+	{
+		$oldRole = $this->getRoleByID($id);
+		$nameChange   = ($oldRole['role_name']   == $data['role_name'])   ? false : true;
+		$parentChange = ($oldRole['role_parent'] == $data['role_parent']) ? false : true;
+		// manage parents and childes
+		if ($parentChange){
+			// old child
+			$this->swapParents($id, $oldRole['role_parent']);
+			// new child
+			$this->swapParents($data['role_parent'], $id);
+		}
+		// permissions
+		if ($nameChange){
+			$this->deletePermissionFromRoleResource($oldRole['role_name']);
+			$this->addPermissionToRoleResource($data['role_name']);
+		}
+		// EDIT
+		$this->edit($data, $id);
+    }
+
+	private function getChild($id)
+	{
+		$res = $this->getWhere("role.role_parent = '$id'")->toArray();
+		if (count($res) > 0) {
+			return $res[0]['rid'];
+		}
+		return null;
+	}
+	private function swapParents($oldParent, $newParent)
+	{
+		$child = $this->getChild($oldParent);
+		if ($child) {
+			$child['role_parent'] = $newParent;
+			$this->edit($child, $child['rid']);
+		}
+    }
+
+	private function addPermissionToRoleResource($roleName)
+	{
+		$this->permissionTable->add($this->navRolesResourceID, $roleName );
+		
+    }
+	private function deletePermissionFromRoleResource($roleName)
+	{
+		$this->permissionTable->remove($this->navRolesResourceID, $roleName );
+
+    }
+
+
+
+
+//	public function onAdd($name, $parent, $status = null)
+//	{
+//		$newId = $this->add($name, $parent, $status);
+//		$this->swapParents($parent, $newId);
+////		$replaceChildRole = $this->getChild($parent);
+////		if($replaceChildRole) {
+////			$replaceChildRole['parent_role'] = $newId;
+////			$this->edit($replaceChildRole, $replaceChildRole['rid']);
+////		}
+//	}
+//	public function onDelete($id)
+//	{
+//		$oldRole = $this->getRoleByID($id);
+//		$this->swapParents($id, $oldRole['role_parent']);
+//
+//	}
+//	public function onEdit($data, $id)
+//	{
+//		$oldRole = $this->getRoleByID($id);
+//		$nameChange   = ($oldRole['role_name']   == $data['role_name'])   ? false : true;
+//		$parentChange = ($oldRole['role_parent'] == $data['role_parent']) ? false : true;
+//		if ($parentChange){
+//			// old child
+//			$this->swapParents($id, $oldRole['role_parent']);
+////			$oldChildRole = $this->getChild($id);
+////			$oldChildRole['role_parent'] = $oldRole['role_parent'];
+//
+//			// new child
+//			$this->swapParents($data['role_parent'], $id);
+////			$newChild = $this->getChild($data['role_parent']);
+////			if ($newChild)
+////				$newChild['role_parent'] = $id;
+//		}
+//		if ($nameChange){
+//
+//		}
+//
+////		if ($newChild)
+////			$this->edit($newChild, $newChild['rid']);
+////		$this->edit($oldChildRole, $oldChildRole['rid']);
+//		$this->edit($data, $id);
+//	}
 }
