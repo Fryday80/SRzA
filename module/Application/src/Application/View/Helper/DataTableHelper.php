@@ -12,17 +12,19 @@ Class DataTableHelper extends AbstractHelper {
     {
         $this->view = $view;
         $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
-        $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.min.js'));
+        $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.js'));
     }
-    //so
-    /**
-     * @param DataTableAbstract $table
-     */
+
+	/**
+	 * @param DataTableAbstract $table
+	 *
+	 * @return string HTML string
+	 */
     public function render(DataTableAbstract $table) {
         $table->prepare();
-
-        echo $this->renderHTML($table);
-        echo $this->renderJS($table->getSetupString());
+        $return  = $this->renderHTML($table);
+		$return .= $this->renderJS($table->getSetupString());
+		return $return;
     }
 
     /**
@@ -86,6 +88,7 @@ Class DataTableHelper extends AbstractHelper {
                 "<tfoot><tr>$datahead</tr></tfoot>" .
                 "<tbody>$datarow</tbody></table>";
     }
+
     public function renderJS($jsOptionString) {
         return '<script>' .
                     "$('.display').DataTable( $jsOptionString )" .

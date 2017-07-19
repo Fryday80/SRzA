@@ -97,11 +97,11 @@
 })();
 //
 (function(){
-    var html = $('.dashboard.systemLog boxcontent').html(),
-        $pop = $('<div id="pop" title="System Log"></div>');
-
+    var $pop = $('<div id="pop" title="System Log"></div>'),
+        $table = $('#sysTable');
     $('.systemLog').on('click', function(){
-        $pop.html(html);
+        $pop.append($table);
+        $table.removeClass('hidden');
         $pop.dialog({
             width: "100%",
             onLoad: function (html) {

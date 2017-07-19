@@ -113,7 +113,7 @@ class StatisticService
 
 //======================================================================================================= LOGGING
     public function logSystem(SystemLog $log){
-//        $this->sysLog->updateSystemLog($log);
+        $this->sysLog->updateSystemLog($log);
     }
 
     public function logAction(Action $action)

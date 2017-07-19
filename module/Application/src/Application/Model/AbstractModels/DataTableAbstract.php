@@ -335,6 +335,11 @@ abstract class DataTableAbstract
                 break;
             }
         }
+        if (empty($this->columns)) {
+			$this->addColumn(array(
+				'name' => 'noData Given'
+			));
+		}
     // ==== prepare DOM array
         //fixing DOM settings
         $this->fixDOMArray();
