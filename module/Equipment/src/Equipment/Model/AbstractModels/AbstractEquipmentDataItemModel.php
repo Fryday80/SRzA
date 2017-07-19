@@ -2,8 +2,9 @@
 namespace Equipment\Model\AbstractModels;
 
 use Application\Model\AbstractModels\AbstractModel;
+use Equipment\Model\Interfaces\IEquipment;
 
-class AbstractEquipmentDataItemModel extends AbstractModel
+class AbstractEquipmentDataItemModel extends AbstractModel implements IEquipment
 {
     /** @var  int */
     public $id;
@@ -38,16 +39,6 @@ class AbstractEquipmentDataItemModel extends AbstractModel
                 $this->$key = $value;
         }
     }
-    
-    /**
-     * is this group equip
-     * @return bool
-     */
-    public function isGroupEquip()
-    {
-        if ($this->userId == 0) return true;
-        return false;
-    }
 
     // move to EquipmentResultSet ??
     public function metaDataUpdate($data)
@@ -60,15 +51,13 @@ class AbstractEquipmentDataItemModel extends AbstractModel
         $this->userName = ($data['user_name'] !== null) ? $data['user_name'] : $this->userName;
     }
 
-
-    // move to AbstractModel ??
-    public function getArrayCopy()
-    {
-        return get_object_vars($this);
-    }
-
-    public function toArray()
-    {
-        return $this->getArrayCopy();
-    }
+	/**
+	 * is this group equip
+	 * @return bool
+	 */
+	public function isGroupEquip()
+	{
+		if ($this->userId == 0) return true;
+		return false;
+	}
 }

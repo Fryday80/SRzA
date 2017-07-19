@@ -1,8 +1,14 @@
 <?php
 namespace Application\Model\AbstractModels;
 
+// cleanfix whole file
 use Zend\Paginator\Adapter\Iterator;
 
+/**
+ * @deprecated
+ * Class DataSet
+ * @package Application\Model\AbstractModels
+ */
 class DataSet
 //    extends Iterator
 {
@@ -11,6 +17,7 @@ class DataSet
 
     public function __construct($data = null, $subClass = null)
     {
+    	bdump('deprecated: Application\Model\AbstractModels\DataSet');
         $this->class = $subClass;
         if ($this->class == null) $this->class = AbstractModel::class;
 

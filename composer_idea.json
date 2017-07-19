@@ -1,0 +1,17 @@
+{
+    "name": "Schwartze Ritter zu Augsburg",
+    "description": "Die webseite des vereins Schwartze Ritter zu Augsburg",
+    "homepage": "http://xxx",
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.5.3",
+        "doctrine/doctrine-orm-module": "0.8.*",
+        "google/apiclient": "2.0",
+        "tracy/tracy": "^2.4",
+        "zarganwar/performance-panel": "^1.2",
+        "verot/class.upload.php": "dev-master"
+    },
+    "require-dev": {
+        "zendframework/zend-developer-tools": "^1.1"
+    }
+}

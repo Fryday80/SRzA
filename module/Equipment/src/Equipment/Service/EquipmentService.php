@@ -4,12 +4,10 @@ namespace Equipment\Service;
 
 
 use Application\Service\CacheService;
+use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\Tables\EquipTable;
-use Application\Model\AbstractModels\DataSet;
-use Equipment\Model\Tent;
-use Equipment\Model\DataModels\Equip;
 
 class EquipmentService
 {
@@ -36,7 +34,7 @@ class EquipmentService
 
     /**
      * @param int $type use EnumEquipTypes::
-     * @return DataSet|bool
+     * @return EquipmentResultSet|bool
      */
     public function getAllByType($type)
     {
@@ -46,7 +44,7 @@ class EquipmentService
     /**
      * @param int $userId
      * @param int $type use EEquipTypes::
-     * @return DataSet|bool
+     * @return EquipmentResultSet|bool
      */
     public function getByUserIdAndType($userId, $type)
     {
@@ -85,18 +83,6 @@ class EquipmentService
         $item = $this->getById($data->id);
         if ($data instanceof Tent)
             $data->image = ETentShape::IMAGES[$data->shape];
-        if ($data instanceof Equipment){
-//            if ($data->sitePlannerObject == '1') {
-//                if ($data->sitePlannerImage !== NULL) {
-//                    $data->image = ($data->sitePlannerImage == 0)
-//                        ? EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage]
-//                        : self::EQUIPMENT_IMAGES_PATH . "$data->userId/" . EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage];
-//                } else {
-//                    $data->sitePlannerImage = 0;
-//                    $data->image = EEquipSitePlannerImage::IMAGE_TYPE[$data->sitePlannerImage];
-//                }
-//            }
-        }
         return $this->equipTable->save($data);
     }
 

@@ -1,9 +1,10 @@
 <?php
 namespace Application\Hydrator;
 
+use Application\Model\Interfaces\IToObjectArray;
 use Zend\Db\ResultSet\HydratingResultSet as ZendHydratingResultSet;
 
-class HydratingResultSet extends ZendHydratingResultSet
+class HydratingResultSet extends ZendHydratingResultSet implements IToObjectArray
 {
     /**
      * Cast result set to array of objects

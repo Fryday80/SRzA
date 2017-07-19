@@ -4,12 +4,13 @@
  * security save until tested!
  */
 
-
+// cleanfix whole file
 
 
 namespace Application\Utility;
 
 /**
+ * @deprecated Safety copy
  * Class DataTable <br/>
  * @link https://datatables.net/reference/index Documentation of DataTable for preferences/documentation
  * @package Application\Utility

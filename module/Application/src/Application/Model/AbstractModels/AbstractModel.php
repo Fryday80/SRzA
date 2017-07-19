@@ -8,9 +8,10 @@
 
 namespace Application\Model\AbstractModels;
 
+use Application\Model\Interfaces\IToArray;
 use ArrayAccess;
 
-class AbstractModel implements ArrayAccess
+class AbstractModel implements ArrayAccess, IToArray
 {
     private $propertiesCache;
 
@@ -120,4 +121,14 @@ class AbstractModel implements ArrayAccess
         }
         return false;
     }
+
+	public function getArrayCopy()
+	{
+		return get_object_vars($this);
+	}
+
+	public function toArray()
+	{
+		return $this->getArrayCopy();
+	}
 }

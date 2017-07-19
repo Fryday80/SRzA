@@ -1,12 +1,11 @@
 <?php
 namespace Equipment\Model\Interfaces;
 
-interface IEquipment
+use Application\Model\Interfaces\IToArray;
+
+interface IEquipment extends IToArray
 {
-    public function getImage();
+	public function isGroupEquip();
 
-    public function getType();
-
-    public function toArray();
-
+	public function getArrayCopy();
 }

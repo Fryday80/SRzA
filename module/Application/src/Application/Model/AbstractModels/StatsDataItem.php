@@ -3,7 +3,7 @@
 namespace Application\Model\AbstractModels;
 
 
-class StatsDataItem
+abstract class StatsDataItem
 {
     public $microtime;
     public $time;
