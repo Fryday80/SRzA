@@ -104,8 +104,6 @@
         $table.removeClass('hidden');
         $pop.dialog({
             width: "100%",
-            onLoad: function (html) {
-            }
         });
         $pop.css('max-height', '60vh');
     });

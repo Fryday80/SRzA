@@ -239,4 +239,9 @@ class SystemController extends AbstractActionController
             'message' => $msg[1]
         );
     }
+
+	public function phpAction()
+	{
+		return array();
+    }
 }
