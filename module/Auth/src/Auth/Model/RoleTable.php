@@ -192,7 +192,8 @@ class RoleTable extends AbstractTableGateway
 		// manage parents and childes
 		$this->swapParents($parent, $newId);
 		// permissions
-		$this->addPermissionToRoleResource($name);
+		$permID = $this->addPermissionToRoleResource($name);
+		$this->rolePermissionTable->addPermission($newId, $permID);
     }
 	public function onDelete($id)
 	{
@@ -200,7 +201,8 @@ class RoleTable extends AbstractTableGateway
 		// manage parents and childes
 		$this->swapParents($id, $oldRole['role_parent']);
 		// permissions
-		$this->deletePermissionFromRoleResource($oldRole['role_name']);
+		$permID = $this->deletePermissionFromRoleResource($oldRole['role_name']);
+		$this->rolePermissionTable->deletePermission($id, $permID);
 		// DELETE
 		$this->deleteByID($id);
     }
@@ -218,8 +220,10 @@ class RoleTable extends AbstractTableGateway
 		}
 		// permissions
 		if ($nameChange){
-			$this->deletePermissionFromRoleResource($oldRole['role_name']);
-			$this->addPermissionToRoleResource($data['role_name']);
+			$permID = $this->deletePermissionFromRoleResource($oldRole['role_name']);
+			$this->rolePermissionTable->deletePermission($id, $permID);
+			$permID = $this->addPermissionToRoleResource($data['role_name']);
+			$this->rolePermissionTable->addPermission($id, $permID);
 		}
 		// EDIT
 		$this->edit($data, $id);
@@ -245,11 +249,14 @@ class RoleTable extends AbstractTableGateway
 	private function addPermissionToRoleResource($roleName)
 	{
 		$this->permissionTable->add($this->navRolesResourceID, $roleName );
+		return $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $roleName );
 		
     }
 	private function deletePermissionFromRoleResource($roleName)
 	{
+		$oldId = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $roleName );
 		$this->permissionTable->remove($this->navRolesResourceID, $roleName );
+		return $oldId;
 
     }
 
