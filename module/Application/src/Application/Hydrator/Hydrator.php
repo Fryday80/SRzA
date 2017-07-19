@@ -72,9 +72,9 @@ class Hydrator extends ClassMethods
         $final = [];
         $objectClass = get_class($object);
 
-        $object->preHydrate();
+        $object->preHydrate($data);
         if ($object->hydrate($data) !== false) {
-            $object->postHydrate();
+            $object->postHydrate($data);
             return $object;
         }
 
@@ -121,7 +121,7 @@ class Hydrator extends ClassMethods
 
             $object->$property = $this->hydrateValue($property, $value, $data);
         }
-        $object->postHydrate();
+        $object->postHydrate($data);
         return $object;
     }
 
@@ -149,11 +149,12 @@ class Hydrator extends ClassMethods
             ));
         }
         $locked = [];
+        $values = [];
         $objectClass = get_class($object);
 
-        $object->preExtract();
+        $object->preExtract($values);
         if ($values = $object->extract() !== false) {
-            $object->postExtract();
+            $object->postExtract($values);
             return $values;
         }
 
@@ -195,7 +196,6 @@ class Hydrator extends ClassMethods
             }
         }
 
-        $values = [];
         // pass 2 - actually extract data
         foreach ($this->extractionMethodsCache[$objectClass] as $methodName => $attributeName) {
             $realAttributeName          = $this->extractName($attributeName, $object);
@@ -221,7 +221,7 @@ class Hydrator extends ClassMethods
             }
             $values[$name] = $this->extractValue($name, $value, $object);
         }
-        $object->postExtract();
+        $object->postExtract($values);
         return $values;
     }
 }

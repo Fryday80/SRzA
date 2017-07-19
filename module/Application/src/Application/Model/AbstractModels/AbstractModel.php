@@ -18,10 +18,10 @@ class AbstractModel implements ArrayAccess, IToArray
     /**
      * called after hydrating data into this model
      */
-    public function preHydrate() { }
-    public function postHydrate() { }
-    public function preExtract() { }
-    public function postExtract() { }
+    public function preHydrate($data) { }
+    public function postHydrate($data) { }
+    public function preExtract(&$arrayData) { }
+    public function postExtract(&$arrayData) { }
 
     /**
      * must return anything than false to disable default hydrating
