@@ -151,7 +151,7 @@ class TentForm extends MyForm
         return $list;
     }
 
-    public function prepareDataForSetData($data)
+    protected function prepareDataForSetData($data)
     {
 
         if ($data['shape'] == ETentShape::ROUND)

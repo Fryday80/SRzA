@@ -167,37 +167,37 @@ class EquipmentForm extends MyForm
         ));
     }
 
-    protected function prepareDataForSetData ($data)
-    {
-        // no pic uploaded
-        if ($data['image1']['error'] > 0) unset($data['image1']);
-        if ($data['image2']['error'] > 0) unset($data['image2']);
-
-        // set or unset "image", add default data for rendering if forgotten
-        if ($data['sitePlannerObject'] == '1') {
-            if ($data['sitePlannerImage'] == NULL)
-                $data['sitePlannerImage'] = 0;
-            if ($data['sitePlannerImage'] == "0"){
-                unset ($data['image']);
-                $data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
-                $data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
-            } else {
-                //@todo remove ".png" when upload is implemented
-                $data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
-            }
-            if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
-                $data['width'] = $data['depth'];
-        }
-
-        // add userName from select userId
-        $data['userName'] = ($data['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($data['userId']);
-        return $data;
-    }
-
     private function getUsersForSelect()
     {
         $list = $this->userService->getUserIdUserNameList();
         $list[0] = 'Verein';
         return $list;
     }
+
+	protected function prepareDataForSetData ($data)
+	{
+		// no pic uploaded
+		if ($data['image1']['error'] > 0) unset($data['image1']);
+		if ($data['image2']['error'] > 0) unset($data['image2']);
+
+		// set or unset "image", add default data for rendering if forgotten
+		if ($data['sitePlannerObject'] == '1') {
+			if ($data['sitePlannerImage'] == NULL)
+				$data['sitePlannerImage'] = 0;
+			if ($data['sitePlannerImage'] == "0"){
+				unset ($data['image']);
+				$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
+				$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
+			} else {
+				//@todo remove ".png" when upload is implemented
+				$data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
+			}
+			if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
+				$data['width'] = $data['depth'];
+		}
+
+		// add userName from select userId
+		$data['userName'] = ($data['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($data['userId']);
+		return $data;
+	}
 }
