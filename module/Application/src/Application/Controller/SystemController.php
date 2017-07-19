@@ -37,17 +37,18 @@ class SystemController extends AbstractActionController
         // turn off (slider) sidebar
         $this->layout()->setVariable('showSidebar', false);
         $top10 = $this->statsService->getMostVisitedPages(10);
-        $sysLog = $this->statsService->getSystemLog();
-        $sysLogMod = $sysLog;
-        foreach ($sysLogMod as $key => $value){
-            if ($value->data == null) $replace = '';
-            else {
-                $replace = implode('---', $value->data);
-            }
-            $sysLogMod[$key]->data = $replace;
-        }
-        $sysLogTable = new DataTable(array( 'data' => $sysLogMod ));
-        $sysLogTable->prepare();
+        $sysLog = $sysLogMod = $this->statsService->getSystemLog();
+
+//        if ($sysLogMod !== null) {
+//			foreach ($sysLogMod as $key => $value) {
+//				if ($value->data == null) $replace = '';
+//				else {
+//					$replace = implode('---', $value->data);
+//				}
+//				$sysLogMod[ $key ]->data = $replace;
+//			}
+//		}
+//		$sysLogTable = ($sysLogMod !== null) ? new DataTable(array( 'data' => $sysLogMod )) : new DataTable();
         $sysConf = $this->systemService->getConfig();
         $cacheList = $this->cacheService->getCacheList();
         return new ViewModel(array(
@@ -60,7 +61,7 @@ class SystemController extends AbstractActionController
                                 array( "Aktive User"         => count( $this->statsService->getActiveUsers() ) ),
                                 array( "meistbesuchter Link" => ( isset($top10[0]) ) ? $top10[0]->url . ' with ' . $top10[0]->hitsSum : null ),
             ),
-            'sysLogTable' => $sysLogTable,
+//            'sysLogTable' => $sysLogTable,
         ));
     }
 

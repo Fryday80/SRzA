@@ -97,18 +97,17 @@
 })();
 //
 (function(){
-    var html = $('.dashboard.systemLog boxcontent').html();
+    var html = $('.dashboard.systemLog boxcontent').html(),
+        $pop = $('<div id="pop" title="System Log"></div>');
 
     $('.systemLog').on('click', function(){
-        // html = $('.dashboard.systemLog boxcontent').html();
-        // html = $('#sysTable').html();
-        $('<div id="pop" title="System Log"></div>').dialog({
+        $pop.html(html);
+        $pop.dialog({
             width: "100%",
             onLoad: function (html) {
             }
         });
-        $('#pop').append(html);
-        $('#pop ul').css('max-height', '60vh');
+        $pop.css('max-height', '60vh');
     });
 })();
 //system config control
