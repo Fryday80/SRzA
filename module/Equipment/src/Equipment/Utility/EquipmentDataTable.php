@@ -1,7 +1,7 @@
 <?php
 namespace Equipment\Utility;
 
-use Application\Utility\DataTableAbstract;
+use Application\Model\AbstractModels\DataTableAbstract;
 use Auth\Service\AccessService;
 use Equipment\Model\Enums\EEquipSitePlannerImage;
 use Equipment\Model\Enums\EEquipTypes;

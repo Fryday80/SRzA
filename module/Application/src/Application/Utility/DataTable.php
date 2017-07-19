@@ -1,6 +1,7 @@
 <?php
-
 namespace Application\Utility;
+
+use Application\Model\AbstractModels\DataTableAbstract;
 
 /**
  * Class DataTable <br/>

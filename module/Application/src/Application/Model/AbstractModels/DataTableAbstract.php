@@ -1,6 +1,5 @@
 <?php
-namespace Application\Utility;
-use Application\Model\Interfaces\IToArray;
+namespace Application\Model\AbstractModels;
 
 /**
  * Class DataTableAbstract <br/>

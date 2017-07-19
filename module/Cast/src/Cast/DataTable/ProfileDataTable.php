@@ -8,9 +8,15 @@
 
 namespace Usermanager\DataTable;
 
+//cleanfix whole file
 
 use Application\DataTable\DataTableHelper;
 
+/**
+ * @deprecated ever in use??
+ * Class ProfileDataTable
+ * @package Usermanager\DataTable
+ */
 class ProfileDataTable extends DataTable
 {
     function __constructor() {
@@ -18,5 +24,6 @@ class ProfileDataTable extends DataTable
             'name' => 'Name',
             'key' => 'name'
         ));
+        bdump ('deprecated: Usermanager\DataTable\ProfileDataTable');
     }
 }

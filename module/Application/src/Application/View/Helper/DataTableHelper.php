@@ -1,14 +1,7 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fry
- * Date: 15.11.2016
- * Time: 09:12
- */
 namespace Application\View\Helper;
 
-use Application\Utility\DataTableAbstract;
-use Application\Utility\IDataTable;
+use Application\Model\AbstractModels\DataTableAbstract;
 use Zend\View\Helper\AbstractHelper;
 
 
