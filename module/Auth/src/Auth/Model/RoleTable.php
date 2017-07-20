@@ -187,8 +187,10 @@ class RoleTable extends AbstractTableGateway
 	// =============================00000 refactoring
 	public function onAdd($name, $parent, $status = null)
 	{
+		$status = ($status === null)? 'Inactive' : 'Active';
 		// ADD
-		$newId = $this->add($name, $parent, $status);
+		$this->insert(array('role_name' => $name, 'role_parent' => $parent, 'status' => $status));
+		$newId = $this->getRoleByID($this->getRoleIDByName($name))['rid'];
 		// manage parents and childes
 		$this->swapParents($parent, $newId);
 		// permissions
@@ -233,13 +235,14 @@ class RoleTable extends AbstractTableGateway
 	{
 		$res = $this->getWhere("role.role_parent = '$id'")->toArray();
 		if (count($res) > 0) {
-			return $res[0]['rid'];
+			return $res[0];
 		}
 		return null;
 	}
 	private function swapParents($oldParent, $newParent)
 	{
 		$child = $this->getChild($oldParent);
+		bdump($child);
 		if ($child) {
 			$child['role_parent'] = $newParent;
 			$this->edit($child, $child['rid']);

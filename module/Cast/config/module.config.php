@@ -2,6 +2,12 @@
 use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
+	'Cast_ImageProcessor' => array(
+		'blazon' => array (
+			'x' => 400,
+			'y' => 400,
+		),
+	),
     'controllers' => array(
         'invokables' => array(
         ),

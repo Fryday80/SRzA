@@ -3,6 +3,14 @@ use Application\Factory\Basic\DefaultTableGatewayFactory;
 use Media\Factory\GeneralMediaFactory;
 
 return array(
+	'Media_ImageProcessor' => array(
+		'thumbs' => array (
+			'x1' => 100,
+			'y1' => 100,
+			'x2' => 50,
+			'y2' => 50,
+		),
+	),
     'controllers' => array(
         'abstract_factories' => array(
             'Media\Controller\FileBrowser' => GeneralMediaFactory::class,
@@ -13,6 +21,7 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'MediaService' => 'Media\Factory\MediaServiceFactory',
+			'ImageProcessor' => 'Media\Factory\ImageProcessorFactory',
         ),
         'abstract_factories' => array(
             'Media\Model\FileTable' => DefaultTableGatewayFactory::class
