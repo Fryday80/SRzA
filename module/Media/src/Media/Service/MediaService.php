@@ -3,6 +3,7 @@ namespace Media\Service;
 use Auth\Service\AccessService;
 use Exception;
 use Media\Utility\FmHelper;
+use Media\Utility\UploadHandler;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Zend\Http\Response;
@@ -626,18 +627,41 @@ class MediaService {
      * @return bool|MediaException
      */
     public function upload($filePostArray, $targetFolder) {
+
+        $target = $this->realPath($targetFolder);
+
+        $perm = $this->getPermission($target);
+        if (!$perm['writable']) {
+            return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
+        }
+        $path = '';
+        try {
+            $uploadHandler = new UploadHandler();
+//            $uploadHandler->autoOverwrite = true;
+            $uploadHandler->autoRename = true;
+            $uploadHandler->setSource($filePostArray);
+            $uploadHandler->setDestinationPath($target);
+            $path = $uploadHandler->upload();
+        } catch (Exception $e) {
+            bdump($e->getMessage());
+            bdump($e->getFile());
+            bdump($e->getLine());
+            return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $targetFolder);
+        }
+
+
         //check file type
-        if ($filePostArray['error'] > 0) {
-            return new MediaException(ERROR_TYPES::UPLOAD_FILE_NOT_FOUND, '');
-        }
-        $realTargetFolder = $this->realPath($targetFolder);
-        //@todo check permissions
-//        return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
-        $newPath = $realTargetFolder . '/' . $filePostArray['name'];
-        if ($this->fileExists($newPath) ) {
-            return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $targetFolder.'/'.$filePostArray['name']);
-        }
-        rename($filePostArray['tmp_name'], $newPath);
+//        if ($filePostArray['error'] > 0) {
+//            return new MediaException(ERROR_TYPES::UPLOAD_FILE_NOT_FOUND, '');
+//        }
+//        $realTargetFolder = $this->realPath($targetFolder);
+//        //@todo check permissions
+////        return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
+//        $newPath = $realTargetFolder . '/' . $filePostArray['name'];
+//        if ($this->fileExists($newPath) ) {
+//            return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $targetFolder.'/'.$filePostArray['name']);
+//        }
+//        rename($filePostArray['tmp_name'], $newPath);
     }
 
     /**

@@ -1,16 +1,23 @@
 <?php
 namespace Media\Service;
 
-class MediaException {
-    public $code;
-    public $msg;
-    public $path;
-    function __construct($code, $path) {
-        $this->msg = ERROR_STRINGS[$code];
-        $this->code = $code;
-        $this->path = $path;
+use Exception;
+use Throwable;
+
+class MediaException extends Exception {
+    public $associatedPath;
+
+    /**
+     * Construct the exception. Note: The message is NOT binary safe.
+     * @link http://php.net/manual/en/exception.construct.php
+     * @param int $code [optional] The Exception code.
+     * @param string $associatedPath [optional]
+     * @param Throwable $previous [optional] The previous throwable used for the exception chaining.
+     * @since 5.1.0
+     */
+    public function __construct($code = 0, $associatedPath = '', Throwable $previous = null) {
+        parent::__construct(ERROR_STRINGS[$code], $code, $previous);
+        $this->associatedPath = $associatedPath;
     }
-    public function getMsg() {
-        return sprintf('%s. In: "%s" ', $this->msg, $this->path);
-    }
+
 }
