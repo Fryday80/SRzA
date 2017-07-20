@@ -1,4 +1,7 @@
 #JavaScript
+###Module
+#### .js Files
+Alle js files werden automatisch uglified
 ###Global [/public/js/global.js]
 ####notify
 
