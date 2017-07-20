@@ -10,6 +10,7 @@ use Application\Service\StatisticService;
 use Application\Service\SystemService;
 use Application\Utility\DataTable;
 use Exception;
+use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -101,7 +102,12 @@ class SystemController extends AbstractActionController
             'Color' => null,
         ));
         if ($this->getRequest()->isPost()) {
-            $form->setData($this->getRequest()->getPost());
+            /** @var MediaService $mediaService */
+            $mediaService = $this->systemService->serviceManager->get('MediaService');
+
+            $fileData = $this->getRequest()->getFiles()->toArray()['File'];
+            $mediaService->upload($fileData, 'gallery');
+
         }
         $form->isValid();
         return array(

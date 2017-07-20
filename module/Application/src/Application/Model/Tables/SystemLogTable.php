@@ -28,7 +28,7 @@ class SystemLogTable extends AbstractTableGateway
         $queryValues = $prepare[1];
         $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
 
-        $this->adapter->query($query, array());
+//        $this->adapter->query($query, array());
     }
 
     /**

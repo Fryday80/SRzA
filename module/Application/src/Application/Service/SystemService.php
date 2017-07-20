@@ -4,12 +4,15 @@ namespace Application\Service;
 use Auth\Service\AccessService;
 use Exception;
 use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
 
 class SystemService
 {
     public $configPath = '/storage/system.json';
     /** @var  AccessService */
     private $accessService;
+    /** @var ServiceManager  */
+    public $serviceManager;
 
     private $config = array(
         'maintenance' => array(
@@ -22,7 +25,8 @@ class SystemService
         ),
     );
 
-    public function __construct(AccessService $accessService) {
+    public function __construct(AccessService $accessService, ServiceManager $serviceManager) {
+        $this->serviceManager = $serviceManager;
         $this->accessService = $accessService;
         $this->configPath = getcwd().$this->configPath;
         $this->loadConfig();
