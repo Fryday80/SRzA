@@ -103,6 +103,18 @@ return array(
     ),
     'router' => array(
         'routes' => array(
+			'test' => array(
+				'type'    => 'segment',
+				'options' => array(
+					'route'    => '/test',
+					'constraints' => array(),
+					'defaults' => array(
+						'controller'    => 'Application\Controller\System',
+						'action'        => 'test',
+					),
+				),
+				'may_terminate' => true,
+			),
 			'phpinfo' => array(
 				'type'    => 'segment',
 				'options' => array(

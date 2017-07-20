@@ -12,6 +12,7 @@ class SystemControllerFactory implements FactoryInterface
         $statService = $sm->getServiceLocator()->get('StatisticService');
         $mailTemplateService = $sm->getServiceLocator()->get('MessageService');
         $cacheService = $sm->getServiceLocator()->get('CacheService');
-        return new SystemController($systemService, $statService, $mailTemplateService, $cacheService);
+        $test = $sm->getServiceLocator()->get('ImageProcessor');
+        return new SystemController($systemService, $statService, $mailTemplateService, $cacheService, $test);
     }
 }

@@ -7,6 +7,7 @@ return array(
     'Media\Controller\ListController'        => __DIR__ . '/src/Media/Controller/ListController.php',
     'Nav\Factory\FileControllerFactory'      => __DIR__ . '/src/Media/Factory/FileControllerFactory.php',
     'Media\Factory\GeneralMediaFactory'      => __DIR__ . '/src/Media/Factory/GeneralMediaFactory.php',
+    'Media\Factory\ImageProcessorFactory'    => __DIR__ . '/src/Media/Factory/ImageProcessorFactory.php',
     'Media\Factory\MediaServiceFactory'      => __DIR__ . '/src/Media/Factory/MediaServiceFactory.php',
     'Media\Model\FileTable'                  => __DIR__ . '/src/Media/Model/FileTable.php',
     'Media\Service\FRM'                      => __DIR__ . '/src/Media/Model/GIF_eXG.php',

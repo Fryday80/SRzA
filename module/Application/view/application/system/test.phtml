@@ -1,0 +1,16 @@
+<?php
+	$testItems = array(
+		'Imageprocessor',
+	);
+	?>
+
+	<h1> This is the test page.... adjust it but don't delete it </h1>
+<br>
+<?php
+	foreach ($testItems as $testItem) {
+		echo "$testItem <br>";
+	}
+	if (isset($msg)) echo '<br/>'.$msg;
+
+	$path = 'test.png';
+	echo ' <img src="'.$path.'">';

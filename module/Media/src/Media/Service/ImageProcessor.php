@@ -3,6 +3,8 @@
 namespace Media\Service;
 
 
+use vakata\database\Exception;
+
 class ImageProcessor
 {
 	private $config;
@@ -12,8 +14,10 @@ class ImageProcessor
 	private $srcInfo;
 	private $srcWidth;
 	private $srcHeight;
+	private $srcOrientation;
 
-	private $newImage;
+	private $newImage = null;
+	private $newOrientation;
 
 	public function __construct($config)
 	{
@@ -54,10 +58,17 @@ class ImageProcessor
 	}
 
 
-
+public function test (){
+		$return = $this->newImage;
+		bdump('return');
+		bdump($return);
+		return $return;
+}
 
 	public function loadPath($imagePath)
 	{
+		$this->temp = bdump(getcwd()) . '/public/test.png';
+		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
 		$this->srcPath = $imagePath;
 		$this->intern_load();
 	}
@@ -89,11 +100,17 @@ class ImageProcessor
 		$this->srcHeight = imagesy($this->srcImage);
 
 		$this->srcInfo = pathinfo($this->srcPath);
+
+		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? 'landscape' : 'portrait';
 	}
 
 	private function intern_save ($targetPath = null)
 	{
 		if ($targetPath == null) $targetPath = $this->srcPath;
+		if ($this->newImage == null) $this->newImage = $this->srcImage;
+
+		//cleanfix
+		$targetPath = $this->temp;
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
@@ -110,25 +127,51 @@ class ImageProcessor
 
 	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true) {
 		if ($newHeight == null)
-			$this->newImage = imagescale($this->srcPath, $newWidth);
+			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else {
+			$this->newOrientation = ($newWidth > $newHeight) ? 'landscape' : 'portrait';
 			if ($keepRatio !== true)
-				$this->newImage = imagescale($this->srcPath, $newWidth, $newHeight);
+				$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
 			else
 			{
-				ImageAlphaBlending($this->srcImage, true);
-
-				$startWidth = $startHeight = 0;
-				if ($this->srcWidth > $this->srcHeight) {
-					$startHeight = ($newHeight - $this->srcHeight) / 2;
-				} else {
-					$startWidth = ($newWidth - $this->srcWidth) / 2;
-				}
 				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
 				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 255, 255, 127));
 				imagefill($this->newImage, 0, 0, $transparent);
 
-				imagecopyresized($this->newImage, $this->srcImage, $startWidth, $startHeight, 0, 0, $newWidth, $newHeight, $this->srcWidth, $this->srcHeight);
+				$startWidth = $startHeight = 0;
+
+				// @salt einfach ignorieren, da müssen noch fallunterscheidungen rein
+				//
+
+//				$srcScale = $this->srcWidth/$src
+//				if ($this->srcOrientation == $this->newOrientation) {
+//					if ()
+//				}
+//				else {
+//
+//				}
+
+
+
+
+				if ($this->srcOrientation == $this->newOrientation) {
+					$this->srcImage = imagescale($this->srcImage, $newWidth);
+					ImageAlphaBlending($this->srcImage, true);
+
+					if ($this->srcWidth > $this->srcHeight) {
+						$differenceH = ($newHeight - $this->srcHeight);
+						$startHeight = $differenceH / 2;
+					} else {
+						$differenceW = ($newWidth - $this->srcWidth);
+						$startWidth = $differenceW / 2;
+					}
+
+					imagecopyresized(
+						$this->newImage, $this->srcImage,
+						$startWidth, $startHeight, 0, 0,
+						$newWidth, $newHeight, $this->srcWidth + $differenceH, $this->srcHeight + $differenceH
+					);
+				}
 			}
 		}
 	}
@@ -136,12 +179,12 @@ class ImageProcessor
 	private function intern_resize_crop($newWidth, $newHeight) {
 		$startWidth = $startHeight = 0;
 		if ($newWidth < $newHeight) {
-			$resized = imagescale($this->srcPath, $newWidth);
+			$resized = imagescale($this->srcImage, $newWidth);
 			$y = imagesy($resized);
 			$startHeight = ($y - $newHeight)/2;
 		} else {
 			$scale = $this->srcWidth/$this->srcHeight;
-			$resized = imagescale($this->srcPath, ($newHeight*$scale));
+			$resized = imagescale($this->srcImage, ($newHeight*$scale));
 			$x = imagesx($resized);
 			$startWidth = ($x - $newWidth)/2;
 		}

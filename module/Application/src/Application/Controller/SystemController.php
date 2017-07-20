@@ -10,6 +10,7 @@ use Application\Service\StatisticService;
 use Application\Service\SystemService;
 use Application\Utility\DataTable;
 use Exception;
+use Media\Service\ImageProcessor;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -26,13 +27,34 @@ class SystemController extends AbstractActionController
     /** @var CacheService  */
     private $cacheService;
 
-    public function __construct(SystemService $systemService, StatisticService $statisticService,  MessageService $messageService, CacheService $cacheService)
+
+    /** @var null | ImageProcessor */
+    private $test;
+
+    public function __construct(SystemService $systemService, StatisticService $statisticService,
+								MessageService $messageService, CacheService $cacheService,
+								$test = null)
     {
         $this->systemService = $systemService;
         $this->statsService = $statisticService;
         $this->messageService = $messageService;
         $this->cacheService = $cacheService;
+        $this->test = $test;
     }
+
+	public function testAction()
+	{
+		$this->test->loadPath(getcwd() . '/public/img/nopreview.png');
+		$this->test->resize(600, 500);
+		$this->test->saveImage();
+		$msg = 'resize';
+		$test = $this->test->test();
+		return array (
+			'msg' => $msg,
+			'test' => $test,
+		);
+    }
+
     public function dashboardAction()
     {
         // turn off (slider) sidebar
