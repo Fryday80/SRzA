@@ -15,7 +15,7 @@ class Action extends StatsDataItem
 
     /**
      * Action constructor.
-     * @param $mTime microtime()
+     * @param $mTime
      * @param $url
      * @param $userId
      * @param $userName

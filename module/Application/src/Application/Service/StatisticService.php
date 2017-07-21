@@ -39,6 +39,8 @@ class StatisticService
     /** @var  SystemLogTable */
     private $sysLog;
 
+    private $timeLogger = true;
+
     public function __construct(AccessService $accessService, SystemLogTable $sysLogTable) {
         $this->accessService = $accessService;
         $this->sysLog = $sysLogTable;
@@ -61,6 +63,7 @@ class StatisticService
     }
 
     public function onError(MvcEvent $e) {
+		if ($this->timeLogger) Register::add('Error Handling onError - start');
         $error = $e->getError();
         if (empty($error)) {
             return;
@@ -105,6 +108,7 @@ class StatisticService
         $this->stats->logAction(new Action($data['mTime'], $data['url'], $data['userId'], $data['userName'], ActionType::ERROR , 'Call', $data['url']) );
         $this->stats->logPageHit($data['hitType'], $data['url'], $data['mTime']);
         $this->logSystem( new SystemLog($data['mTime'], $data['logType'], $data['errors'][0]['msg'], $data['url'], $data['userId'], $data['userName'], $data['data'] ));
+		if ($this->timeLogger) Register::add('Error Handling onError - end');
     }
 
     public function onFinish(MvcEvent $e) {
@@ -113,7 +117,10 @@ class StatisticService
 
 //======================================================================================================= LOGGING
     public function logSystem(SystemLog $log){
+    	bdump($log);
+		if ($this->timeLogger) Register::add('Syslog start');
         $this->sysLog->updateSystemLog($log);
+		bdump($log);
     }
 
     public function logAction(Action $action)

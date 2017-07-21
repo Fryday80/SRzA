@@ -20,7 +20,6 @@ return array(
     'Media\Service\MediaItem'                => __DIR__ . '/src/Media/Service/MediaItem.php',
     'Media\Service\MediaService'             => __DIR__ . '/src/Media/Service/MediaService.php',
     'Media\Utility\BaseUploadHandler'        => __DIR__ . '/src/Media/Utility/BaseUploadHandler.php',
-    'Media\Utility\FileHelper'               => __DIR__ . '/src/Media/Utility/FileHelper.php',
     'Media\Utility\FmHelper'                 => __DIR__ . '/src/Media/Utility/FmHelper.php',
     'Media\Utility\LocalUploadHandler'       => __DIR__ . '/src/Media/Utility/LocalUploadHandler.php',
     'Media\Utility\UploadHandler'            => __DIR__ . '/src/Media/Utility/UploadHandler.php',

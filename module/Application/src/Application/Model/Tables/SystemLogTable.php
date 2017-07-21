@@ -2,6 +2,7 @@
 
 namespace Application\Model\Tables;
 
+use Application\Model\AbstractModels\TimeLog;
 use Application\Model\DataModels\SystemLog;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\TableGateway\AbstractTableGateway;
@@ -27,8 +28,11 @@ class SystemLogTable extends AbstractTableGateway
         $queryItems = $prepare[0];
         $queryValues = $prepare[1];
         $query = "INSERT INTO $this->table ($queryItems) VALUES ($queryValues);";
+		TimeLog::timeLog('Syslog trigger db');
 
-        $this->adapter->query($query, array());
+        $res = $this->adapter->query($query, array());
+
+		TimeLog::timeLog('Syslog end');
     }
 
     /**
@@ -36,12 +40,14 @@ class SystemLogTable extends AbstractTableGateway
      */
     public function getSystemLogs ()
     {
+		TimeLog::timeLog('Syslog read out - Table - start');
         $query = "SELECT * FROM $this->table ORDER BY `time` DESC;";
         $data = $this->adapter->query($query, array());
         $result = array();
         foreach ($data as $row){
             array_push($result, new SystemLog($row->microtime, $row->type, $row->msg, $row->url, $row->userId, $row->userName, json_decode($row->data) ) );
         }
+		TimeLog::timeLog('Syslog read out - Table - end');
 
         return $result;
     }
@@ -53,6 +59,7 @@ class SystemLogTable extends AbstractTableGateway
      */
     private function prepareDataForInsertQuery(SystemLog $data)
     {
+		TimeLog::timeLog('Syslog prepareDataForInsertQuery - start');
         $queryItems ='';
         $queryValues = '';
         //create SQL items and values line up
@@ -65,7 +72,7 @@ class SystemLogTable extends AbstractTableGateway
         }
         $queryItems = substr($queryItems, 0, -2);
         $queryValues = substr($queryValues, 0, -2);
-
+		TimeLog::timeLog('Syslog prepareDataForInsertQuery - end');
         return array($queryItems, $queryValues);
     }
 }

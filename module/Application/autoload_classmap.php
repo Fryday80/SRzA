@@ -26,6 +26,7 @@ return array(
     'Application\Model\AbstractModels\DataTableAbstract'     => __DIR__ . '/src/Application/Model/AbstractModels/DataTableAbstract.php',
     'Application\Model\AbstractModels\Extras'                => __DIR__ . '/src/Application/Model/AbstractModels/Extras.php',
     'Application\Model\AbstractModels\StatsDataItem'         => __DIR__ . '/src/Application/Model/AbstractModels/StatsDataItem.php',
+    'Application\Model\AbstractModels\TimeLog'               => __DIR__ . '/src/Application/Model/AbstractModels/TimeLog.php',
     'Application\Model\DataModels\Action'                    => __DIR__ . '/src/Application/Model/DataModels/Action.php',
     'Application\Model\DataModels\ActiveUser'                => __DIR__ . '/src/Application/Model/DataModels/ActiveUser.php',
     'Application\Model\DataModels\PageHit'                   => __DIR__ . '/src/Application/Model/DataModels/PageHit.php',

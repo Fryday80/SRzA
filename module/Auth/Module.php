@@ -1,6 +1,7 @@
 <?php
 namespace Auth;
 
+use Application\Model\AbstractModels\TimeLog;
 use Application\Model\Enums\ActionType;
 use Application\Model\Enums\HitType;
 use Application\Model\Enums\LogType;
@@ -19,6 +20,7 @@ use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Auth\View\Helper\LoginView;
 use Auth\View\Helper\UserInfo;
+use Zarganwar\PerformancePanel\Register;
 use Zend\Http\Request;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
@@ -70,8 +72,8 @@ class Module
         $action             = $match->getParam('action');
         $title              = $match->getParam('title');
         $requestedResourse  = $controller . '-' . $action;
-        /** @var FlashMessenger $flashmessanger */
-        $flashmessanger     = $e->getApplication()-> getServiceManager()->get('controllerpluginmanager')->get('flashmessenger');
+        /** @var FlashMessenger $flashMessenger */
+        $flashMessenger     = $e->getApplication()-> getServiceManager()->get('controllerpluginmanager')->get('flashmessenger');
 
         if ($action != 'logout' && $accessService->hasIdentity() && $clientIP != $accessService->getUserIP()) {
             //SID hijacked log as website event and logout
@@ -79,34 +81,38 @@ class Module
         }
         if( !in_array($requestedResourse, $this->whitelist)){
             if( !$accessService->allowed($controller, $action) ){
-                $action = new Action(
-                    microtime(),
-                    $requestedResourse,
-                    $accessService->getUserID(),
-                    $accessService->getUserName(),
-                    ActionType::NOT_ALLOWED,
-                    $title,
-                    'access not allowed',
-                    $data = null
-                );
-                $statsService->logAction($action);
+            	$userId   = $accessService->getUserID();
+            	$userName = $accessService->getUserName();
+            	$mTime = microtime(true);
+                $statsService->logAction(new Action(
+					"$mTime",
+					"$requestedResourse",
+					"$userId",
+					"$userName",
+					ActionType::NOT_ALLOWED,
+					"$title",
+					'Access not allowed',
+					null
+				));
                 //log to stats
                 $hitType = ( $accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST;
+				TimeLog::timeLog('Syslog Module not allowed - start');
                 $statsService->logSystem(new SystemLog(
-                    time(), //mTime
+                    "$mTime",
                     ( $hitType == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST, //type
-                    $title,       //msg
-                    $request,   //url
-                    $accessService->getUserID(),    //UserID
-                    $accessService->getUserName(),  //userName
-                    $data = null    //data
+                    'Acess not allowed',
+					$request->getUriString(),
+					"$userId",
+					"$userName",
+					$request
                 ));
+				TimeLog::timeLog('Syslog Module not allowed - end');
                 if ($request->isXmlHttpRequest()) {
                     $e->getResponse()->setStatusCode(403);
                     echo json_encode(['error' => true, 'message' => 'Not Allowed', 'code' => 403]);
                     die;
                 } else {
-                    $flashmessanger->addMessage($request->getUriString(), 'referer', 1);
+                    $flashMessenger->addMessage($request->getUriString(), 'referer', 1);
                     return $target->redirect()->toUrl('/login');
                 }
             }

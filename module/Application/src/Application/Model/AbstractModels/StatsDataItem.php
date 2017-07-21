@@ -11,8 +11,8 @@ abstract class StatsDataItem
     
     function __construct($microtime, $data = null)
     {
-        $this->microtime = $microtime;
-        $this->time = (int)$microtime;
+        $this->microtime = (float) $microtime;
+        $this->time = (int) $microtime;
         $this->data = $data;
     }
     public function updateTime($mTime){
