@@ -52,6 +52,7 @@ return array(
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
     'Application\Utility\DataTable1'                         => __DIR__ . '/src/Application/Utility/DataTable1.php',
+    'Application\Utility\SysLogBuffer'                       => __DIR__ . '/src/Application/Utility/SysLogBuffer.php',
     'Application\Utility\URLModifier'                        => __DIR__ . '/src/Application/Utility/URLModifier.php',
     'Application\View\Helper\ConverterHelper'                => __DIR__ . '/src/Application/View/Helper/ConverterHelper.php',
     'Application\View\Helper\DataTableHelper'                => __DIR__ . '/src/Application/View/Helper/DataTableHelper.php',

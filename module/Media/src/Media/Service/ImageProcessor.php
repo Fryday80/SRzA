@@ -18,6 +18,8 @@ class ImageProcessor
 
 	private $newImage = null;
 	private $newOrientation;
+	private $srcAspectRatio;
+	private $tempImage;
 
 	public function __construct($config)
 	{
@@ -94,14 +96,24 @@ public function test (){
 
 	private function intern_load()
 	{
-		$srcImg = file_get_contents($this->srcPath);
-		$this->srcImage  = imagecreatefromstring($srcImg);
-		$this->srcWidth  = imagesx($this->srcImage);
-		$this->srcHeight = imagesy($this->srcImage);
-
 		$this->srcInfo = pathinfo($this->srcPath);
+		switch ($this->srcInfo['extension']){
+			case 'png':
+		$this->srcImage  = imagecreatefrompng($this->srcPath);
+				break;
+			case 'jpg':
+			case 'jpeg':
+		$this->srcImage  = imagecreatefromjpeg($this->srcPath);
+				break;
+			case 'gif':
+		$this->srcImage  = imagecreatefromgif($this->srcPath);
+				break;
+		}
+
+		list($this->srcWidth, $this->srcHeight) = getimagesize($this->srcPath);
 
 		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? 'landscape' : 'portrait';
+		$this->srcAspectRatio = $this->srcWidth / $this->srcHeight;
 	}
 
 	private function intern_save ($targetPath = null)
@@ -132,162 +144,128 @@ public function test (){
 			$this->newOrientation = ($newWidth > $newHeight) ? 'landscape' : 'portrait';
 			if ($keepRatio !== true)
 				$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
-			else
-			{
-				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
-				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 255, 255, 127));
-				imagefill($this->newImage, 0, 0, $transparent);
+			else {
+				/*
+			 * Crop-to-fit PHP-GD
+			 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
+			 *
+			 * Resize and center crop an arbitrary size image to fixed width and height
+			 * e.g. convert a large portrait/landscape image to a small square thumbnail
+			 *
+			 * Modified by Fry
+				 */
+				$desired_aspect_ratio = $newWidth / $newHeight;
 
-				$startWidth = $startHeight = 0;
-
-				// @salt einfach ignorieren, da müssen noch fallunterscheidungen rein
-				//
-
-//				$srcScale = $this->srcWidth/$src
-//				if ($this->srcOrientation == $this->newOrientation) {
-//					if ()
-//				}
-//				else {
-//
-//				}
-
-
-
-
-				if ($this->srcOrientation == $this->newOrientation) {
-					$this->srcImage = imagescale($this->srcImage, $newWidth);
-					ImageAlphaBlending($this->srcImage, true);
-
-					if ($this->srcWidth > $this->srcHeight) {
-						$differenceH = ($newHeight - $this->srcHeight);
-						$startHeight = $differenceH / 2;
-					} else {
-						$differenceW = ($newWidth - $this->srcWidth);
-						$startWidth = $differenceW / 2;
-					}
-
-					imagecopyresized(
-						$this->newImage, $this->srcImage,
-						$startWidth, $startHeight, 0, 0,
-						$newWidth, $newHeight, $this->srcWidth + $differenceH, $this->srcHeight + $differenceH
-					);
+				if ($this->srcAspectRatio < $desired_aspect_ratio) {
+					/*
+					 * Triggered when source image is taller
+					 */
+					$temp_height = $newHeight;
+					$temp_width = ( int )($newHeight * $this->srcAspectRatio);
+				} else {
+					/*
+					 * Triggered otherwise (i.e. source image is similar or wider)
+					 */
+					$temp_width = $newWidth;
+					$temp_height = ( int )($newWidth / $this->srcAspectRatio);
 				}
+
+				/*
+				 * Resize the image into a temporary GD image
+				 */
+
+				$this->tempImage = imagecreatetruecolor($temp_width, $temp_height);
+				$transparent = imagecolortransparent($this->tempImage, imagecolortransparent ($this->srcImage));
+				imagefill($this->tempImage, 0, 0, $transparent);
+				imagecopyresampled(
+					$this->tempImage,
+					$this->srcImage,
+					0, 0,
+					0, 0,
+					$temp_width, $temp_height,
+					$this->srcWidth, $this->srcHeight
+				);
+
+				$x0 = ($newWidth  - $temp_width ) / 2;
+				$y0 = ($newHeight - $temp_height) / 2;
+				bdump(imagecolortransparent ($this->srcImage));
+
+				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
+//				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
+				$transparent = imagecolortransparent($this->newImage, imagecolortransparent ($this->tempImage));
+				imagefill($this->newImage, 0, 0, $transparent);
+				imagecopyresampled(
+					$this->newImage, 									$this->tempImage,
+					$x0, $y0,											0, 0,
+					$temp_width, $temp_height, 	$temp_width, $temp_height
+				);
 			}
 		}
 	}
 
 	private function intern_resize_crop($newWidth, $newHeight) {
-/*
- * Crop-to-fit PHP-GD
- * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
- *
- * Resize and center crop an arbitrary size image to fixed width and height
- * e.g. convert a large portrait/landscape image to a small square thumbnail
- */
+		/*
+	 * Crop-to-fit PHP-GD
+	 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
+	 *
+	 * Resize and center crop an arbitrary size image to fixed width and height
+	 * e.g. convert a large portrait/landscape image to a small square thumbnail
+	 *
+	 * Modified by Fry
+		 */
+		$desired_aspect_ratio = $newWidth / $newHeight;
 
-define('DESIRED_IMAGE_WIDTH', $newWidth);
-define('DESIRED_IMAGE_HEIGHT', $newHeight);
-
-$source_path = $_FILES['Image1']['tmp_name'];
-
-/*
- * Add file validation code here
- */
-
-list($source_width, $source_height, $source_type) = getimagesize($source_path);
-
-switch ($source_type) {
-	case IMAGETYPE_GIF:
-		$source_gdim = imagecreatefromgif($source_path);
-		break;
-	case IMAGETYPE_JPEG:
-		$source_gdim = imagecreatefromjpeg($source_path);
-		break;
-	case IMAGETYPE_PNG:
-		$source_gdim = imagecreatefrompng($source_path);
-		break;
-}
-
-$source_aspect_ratio = $source_width / $source_height;
-$desired_aspect_ratio = DESIRED_IMAGE_WIDTH / DESIRED_IMAGE_HEIGHT;
-
-if ($source_aspect_ratio > $desired_aspect_ratio) {
-	/*
-	 * Triggered when source image is wider
-	 */
-	$temp_height = DESIRED_IMAGE_HEIGHT;
-	$temp_width = ( int ) (DESIRED_IMAGE_HEIGHT * $source_aspect_ratio);
-} else {
-	/*
-	 * Triggered otherwise (i.e. source image is similar or taller)
-	 */
-	$temp_width = DESIRED_IMAGE_WIDTH;
-	$temp_height = ( int ) (DESIRED_IMAGE_WIDTH / $source_aspect_ratio);
-}
-
-/*
- * Resize the image into a temporary GD image
- */
-
-$temp_gdim = imagecreatetruecolor($temp_width, $temp_height);
-imagecopyresampled(
-	$temp_gdim,
-	$source_gdim,
-	0, 0,
-	0, 0,
-	$temp_width, $temp_height,
-	$source_width, $source_height
-);
-
-/*
- * Copy cropped region from temporary image into the desired GD image
- */
-
-$x0 = ($temp_width - DESIRED_IMAGE_WIDTH) / 2;
-$y0 = ($temp_height - DESIRED_IMAGE_HEIGHT) / 2;
-$desired_gdim = imagecreatetruecolor(DESIRED_IMAGE_WIDTH, DESIRED_IMAGE_HEIGHT);
-imagecopy(
-	$desired_gdim,
-	$temp_gdim,
-	0, 0,
-	$x0, $y0,
-	DESIRED_IMAGE_WIDTH, DESIRED_IMAGE_HEIGHT
-);
-
-/*
- * Render the image
- * Alternatively, you can save the image in file-system or database
- */
-
-header('Content-type: image/jpeg');
-imagejpeg($desired_gdim);
-
-/*
- * Add clean-up code here
- */
-
-
-		$startWidth = $startHeight = 0;
-		if ($newWidth < $newHeight) {
-			$resized = imagescale($this->srcImage, $newWidth);
-			$y = imagesy($resized);
-			$startHeight = ($y - $newHeight)/2;
+		if ($this->srcAspectRatio > $desired_aspect_ratio) {
+			/*
+			 * Triggered when source image is wider
+			 */
+			$temp_height = $newHeight;
+			$temp_width = ( int ) ($newHeight * $this->srcAspectRatio);
 		} else {
-			$scale = $this->srcWidth/$this->srcHeight;
-			$resized = imagescale($this->srcImage, ($newHeight*$scale));
-			$x = imagesx($resized);
-			$startWidth = ($x - $newWidth)/2;
+			/*
+			 * Triggered otherwise (i.e. source image is similar or taller)
+			 */
+			$temp_width = $newWidth;
+			$temp_height = ( int ) ($newWidth / $this->srcAspectRatio);
 		}
-		$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
 
-		imagecopyresized($this->newImage, $resized, 0,0, $startWidth, $startHeight, $newWidth, $newHeight, $this->srcWidth, $this->srcHeight);
+		/*
+		 * Resize the image into a temporary GD image
+		 */
+
+		$this->tempImage = imagecreatetruecolor($temp_width, $temp_height);
+		imagecopyresampled(
+			$this->tempImage,
+			$this->srcImage,
+			0, 0,
+			0, 0,
+			$temp_width, $temp_height,
+			$this->srcWidth, $this->srcHeight
+		);
+
+		/*
+		 * Copy cropped region from temporary image into the desired GD image
+		 */
+
+		$x0 = ($temp_width - $newWidth) / 2;
+		$y0 = ($temp_height - $newHeight) / 2;
+		$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
+		imagecopy(
+			$this->newImage,
+			$this->tempImage,
+			0, 0,
+			$x0, $y0,
+			$newWidth, $newHeight
+		);
 	}
 
 	private function intern_end()
 	{
 		imagedestroy($this->newImage);
 		imagedestroy($this->srcImage);
+		imagedestroy($this->tempImage);
 		$this->newImage = null;
 		$this->srcImage = null;
+		$this->tempImage = null;
 	}
 }

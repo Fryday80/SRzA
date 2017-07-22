@@ -44,7 +44,7 @@ class SystemController extends AbstractActionController
 
 	public function testAction()
 	{
-		$this->test->loadPath(getcwd() . '/public/img/nopreview.png');
+		$this->test->loadPath(getcwd() . '/public/img/blazons/chrisschild.png');
 		$this->test->resize(600, 500);
 		$this->test->saveImage();
 		$msg = 'resize';

@@ -45,7 +45,7 @@ class StatisticService
         $this->accessService = $accessService;
         $this->sysLog = $sysLogTable;
         $this->storagePath = getcwd().STORAGE_PATH;
-        $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats();
+        $this->stats = (file_exists($this->storagePath)) ? $this->loadFile() : new Stats($sysLogTable);
     }
     
 //======================================================================================================= EVENTS

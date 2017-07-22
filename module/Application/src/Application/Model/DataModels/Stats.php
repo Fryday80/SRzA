@@ -6,6 +6,7 @@ use Application\Model\Enums\FilterType;
 use Application\Model\Enums\HitType;
 use Application\Model\Enums\OrderType;
 use Application\Utility\CircularBuffer;
+use Application\Utility\SysLogBuffer;
 
 class Stats {
     /** @var CircularBuffer $actionLog */
@@ -25,13 +26,15 @@ class Stats {
     public $guestId;
     public $guestNumbersMax = 100000;
     public $guestNumbersMin =  90000;
+	private $sysLog;
 
-    function __construct() {
+	function __construct($sysLogTable) {
         $this->actionLog = new CircularBuffer(100);
         $this->pageHits = array();
         $this->activeUsers = array();
         $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
         $this->guestId = $this-> guestNumbersMax;
+        $this->sysLog = new SysLogBuffer($sysLogTable, 20);
     }
 
     /**
