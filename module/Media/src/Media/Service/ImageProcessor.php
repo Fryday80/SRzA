@@ -2,9 +2,6 @@
 
 namespace Media\Service;
 
-
-use vakata\database\Exception;
-
 class ImageProcessor
 {
 	private $config;
@@ -25,14 +22,10 @@ class ImageProcessor
 	 * Test mode
 	 */
 	private $testMode = false;
-	private $testPath = 'set in constructor due getcwd()';
 
 	public function __construct($config)
 	{
 		$this->config = $config;
-
-		if ($this->testMode)
-			$this->testPath = getcwd() . '/public/test.png';
 	}
 
 	// ======================================================== short cuts
@@ -156,7 +149,7 @@ class ImageProcessor
 	{
 		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
-		if ($this->testMode) 		 $targetPath 	 = $this->testPath;
+		if ($this->testMode) 		 $targetPath 	 = getcwd() . '/public/test.png';
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':

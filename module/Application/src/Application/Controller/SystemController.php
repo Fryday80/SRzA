@@ -27,10 +27,6 @@ class SystemController extends AbstractActionController
     /** @var CacheService  */
     private $cacheService;
 
-
-    /** @var null | ImageProcessor */
-    private $test;
-
     public function __construct(SystemService $systemService, StatisticService $statisticService, MessageService $messageService, CacheService $cacheService)
     {
         $this->systemService = $systemService;
@@ -44,7 +40,7 @@ class SystemController extends AbstractActionController
 		/** @var ImageProcessor $ip */
 		$ip = $this->systemService->serviceManager->get('ImageProcessor');
 		$ip->testMode();
-		$ip->loadPath(getcwd() . '/public/img/blazons/swords.png');
+		$ip->loadPath(getcwd() . '/public/img/blazons/fryschild.png');
 		$ip->resize(600, 500);
 		$ip->saveImage();
 		$msg = 'resize';
