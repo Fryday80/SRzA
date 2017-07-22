@@ -11,12 +11,11 @@
 
 	use Application\Model\Tables\SystemLogTable;
 
-	class SysLogBuffer extends CircularBuffer
+	class DBLinkedCircularBuffer extends CircularBuffer
 	{
 		private $dbCluster;
 		private $entries = 0;
 
-		private $firstInit = true;
 		/** @var  SystemLogTable */
 		private $table;
 
@@ -42,7 +41,10 @@
 			$this->afterPush($value);
 		}
 
-		public function afterPush($value)
+		/**
+		 * @param mixed $value last storage item if db call on each run
+		 */
+		protected function afterPush($value)
 		{
 			if ($this->dbCluster < 0){
 				/*
@@ -50,22 +52,18 @@
 				 */
 				$this->table->updateSystemLog($value);
 			} else {
-				if ($this->entries == $this->DataSize){
-					$data = $this->toArray(); //@todo check if array reverse
-					if ($this->firstInit){
-						/*
-						 * save whole buffer data
-						 */
-						$this->table->saveMultiple($data);
-						$this->firstInit = false;
-					} else {
-						/*
-						 * if limit is reached
-						 * save newer half of the buffer
-						 */
-						$data = array_slice($data,$this->dbCluster);
-						$this->table->saveMultiple($data);
-					}
+				if ($this->entries == $this->dbCluster){
+					$data = $this->toArray();
+					//@todo check if array reverse
+					//@todo check if rearrange of array is needed for slice
+					/*
+					 * if limit is reached
+					 * save newer half of the buffer
+					 */
+					$data = array_slice($data,$this->dbCluster);
+					$this->table->saveMultiple($data);
+					$this->entries = 0;
+//					}
 				}
 			}
 		}

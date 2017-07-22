@@ -6,7 +6,7 @@ use Application\Model\Enums\FilterType;
 use Application\Model\Enums\HitType;
 use Application\Model\Enums\OrderType;
 use Application\Utility\CircularBuffer;
-use Application\Utility\SysLogBuffer;
+use Application\Utility\DBLinkedCircularBuffer;
 
 class Stats {
     /** @var CircularBuffer $actionLog */
@@ -34,7 +34,7 @@ class Stats {
         $this->activeUsers = array();
         $this->globalCounters = array_pad([], HitType::TYPES_COUNT, 0);
         $this->guestId = $this-> guestNumbersMax;
-        $this->sysLog = new SysLogBuffer($sysLogTable, 20);
+        $this->sysLog = new DBLinkedCircularBuffer($sysLogTable, 20);
     }
 
     /**
