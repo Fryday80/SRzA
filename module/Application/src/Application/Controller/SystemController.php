@@ -31,8 +31,7 @@ class SystemController extends AbstractActionController
     /** @var null | ImageProcessor */
     private $test;
 
-    public function __construct(SystemService $systemService, StatisticService $statisticService,
-								MessageService $messageService, CacheService $cacheService)
+    public function __construct(SystemService $systemService, StatisticService $statisticService, MessageService $messageService, CacheService $cacheService)
     {
         $this->systemService = $systemService;
         $this->statsService = $statisticService;

@@ -21,12 +21,21 @@ class ImageProcessor
 	private $srcAspectRatio;
 	private $tempImage;
 
+	/*
+	 * Test mode
+	 */
+	private $testMode = true;
+	private $testPath = 'set in constructor due getcwd()';
+
 	public function __construct($config)
 	{
 		$this->config = $config;
+
+		if ($this->testMode)
+			$this->testPath = bdump(getcwd()) . '/public/test.png';
 	}
 
-
+	// ======================================================== short cuts
 
 	public function createThumb($item, $targetPath = null)
 	{
@@ -34,6 +43,7 @@ class ImageProcessor
 			$this->loadMediaItem($item);
 		else
 			$this->loadPath($item);
+
 		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
 		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
 		$this->intern_resize_crop($width, $height);
@@ -42,7 +52,6 @@ class ImageProcessor
 		$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
 		$this->intern_resize_crop($width, $height);
 		$this->intern_save($targetPath);
-		$this->intern_end();
 	}
 
 	public function createBlazon($item, $targetPath = null)
@@ -50,26 +59,24 @@ class ImageProcessor
 		// enhancement when/if BlazonModel was created
 //		if($item instanceof BlazonModel)
 //			$this->loadMediaItem($item);
-//		else
-			$this->loadPath($item);
-		$width  = $this->config['Cast_ImageProcessor']['blazon']['x'];
-		$height = $this->config['Cast_ImageProcessor']['blazon']['y'];
-		$this->intern_resize_crop($width, $height);
+//		else{}
+		$this->loadPath($item);
+
+		if ($this->srcWidth == 100 && $this->srcHeight == 100){
+			$this->newImage = $this->srcImage;
+		} else {
+			$width  = $this->config['Cast_ImageProcessor']['blazon']['x'];
+			$height = $this->config['Cast_ImageProcessor']['blazon']['y'];
+			$this->intern_resize($width, $height);
+		}
+
 		$this->intern_save($targetPath);
-		$this->intern_end();
 	}
 
-
-public function test (){
-		$return = $this->newImage;
-		bdump('return');
-		bdump($return);
-		return $return;
-}
+	// ======================================================== api
 
 	public function loadPath($imagePath)
 	{
-		$this->temp = bdump(getcwd()) . '/public/test.png';
 		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
 		$this->srcPath = $imagePath;
 		$this->intern_load();
@@ -80,7 +87,8 @@ public function test (){
 		$this->loadPath($item->fullPath);
 	}
 
-	public function resize($newWidth, $newHeight = null, $keepRatio = true) {
+	public function resize($newWidth, $newHeight = null, $keepRatio = true)
+	{
 		$this->intern_resize($newWidth, $newHeight, $keepRatio);
 	}
 
@@ -90,9 +98,9 @@ public function test (){
 
 	public function saveImage($targetPath = null) {
 		$this->intern_save($targetPath);
-		$this->intern_end();
 	}
 
+	// ======================================================== basic methods
 
 	private function intern_load()
 	{
@@ -131,11 +139,9 @@ public function test (){
 
 	private function intern_save ($targetPath = null)
 	{
-		if ($targetPath == null) $targetPath = $this->srcPath;
+		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
-
-		// cleanfix
-		$targetPath = $this->temp;
+		if ($this->testMode) 		 $targetPath 	 = $this->testPath;
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
@@ -148,7 +154,20 @@ public function test (){
 			case 'gif':
 				imagegif  ( $this->newImage, $targetPath);
 		}
+		$this->intern_end();
 	}
+
+	private function intern_end()
+	{
+		if (is_resource($this->newImage)) imagedestroy($this->newImage );
+		if (is_resource($this->newImage)) imagedestroy($this->srcImage );
+		if (is_resource($this->newImage)) imagedestroy($this->tempImage);
+		$this->newImage = null;
+		$this->srcImage = null;
+		$this->tempImage = null;
+	}
+
+	// ======================================================== processing methods
 
 	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true) {
 		if ($newHeight == null)
@@ -269,15 +288,5 @@ public function test (){
 			$x0, $y0,
 			$newWidth, $newHeight
 		);
-	}
-
-	private function intern_end()
-	{
-//		imagedestroy($this->newImage );
-//		imagedestroy($this->srcImage );
-//		imagedestroy($this->tempImage);
-		$this->newImage = null;
-		$this->srcImage = null;
-		$this->tempImage = null;
 	}
 }

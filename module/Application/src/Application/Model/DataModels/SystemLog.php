@@ -35,7 +35,6 @@ class SystemLog extends StatsDataItem
         $this->msg = $msg;
         $this->url = $url;
         $this->userId = (int) $userId;
-        bdump($userName);
         $this->userName = ($userName == "") ? "unknown / guest" : $userName;
     }
 }

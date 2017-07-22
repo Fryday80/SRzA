@@ -85,7 +85,7 @@ class Module
             	$userName = $accessService->getUserName();
             	$mTime = microtime(true);
                 $statsService->logAction(new Action(
-					"$mTime",
+					$mTime,
 					"$requestedResourse",
 					"$userId",
 					"$userName",
@@ -96,9 +96,8 @@ class Module
 				));
                 //log to stats
                 $hitType = ( $accessService->hasIdentity() )? HitType::MEMBER : HitType::GUEST;
-				TimeLog::timeLog('Syslog Module not allowed - start');
-                $statsService->logSystem(new SystemLog(
-                    "$mTime",
+                $statsService->logSystem($test = new SystemLog(
+                    $mTime,
                     ( $hitType == HitType::MEMBER ) ? LogType::ERROR_MEMBER : LogType::ERROR_GUEST, //type
                     'Acess not allowed',
 					$request->getUriString(),
@@ -106,7 +105,7 @@ class Module
 					"$userName",
 					$request
                 ));
-				TimeLog::timeLog('Syslog Module not allowed - end');
+                bdump($test);
                 if ($request->isXmlHttpRequest()) {
                     $e->getResponse()->setStatusCode(403);
                     echo json_encode(['error' => true, 'message' => 'Not Allowed', 'code' => 403]);
