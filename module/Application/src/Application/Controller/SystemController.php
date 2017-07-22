@@ -41,13 +41,14 @@ class SystemController extends AbstractActionController
 
 	public function testAction()
 	{
-		/** @var ImageProcessor $mediaService */
+		/** @var ImageProcessor $ip */
 		$ip = $this->systemService->serviceManager->get('ImageProcessor');
+		$ip->testMode();
 		$ip->loadPath(getcwd() . '/public/img/blazons/swords.png');
 		$ip->resize(600, 500);
 		$ip->saveImage();
 		$msg = 'resize';
-		$test = $ip->test();
+		$test = 'nösing';
 		return array (
 			'msg' => $msg,
 			'test' => $test,

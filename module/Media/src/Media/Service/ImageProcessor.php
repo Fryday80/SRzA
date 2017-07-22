@@ -24,7 +24,7 @@ class ImageProcessor
 	/*
 	 * Test mode
 	 */
-	private $testMode = true;
+	private $testMode = false;
 	private $testPath = 'set in constructor due getcwd()';
 
 	public function __construct($config)
@@ -32,7 +32,7 @@ class ImageProcessor
 		$this->config = $config;
 
 		if ($this->testMode)
-			$this->testPath = bdump(getcwd()) . '/public/test.png';
+			$this->testPath = getcwd() . '/public/test.png';
 	}
 
 	// ======================================================== short cuts
@@ -98,6 +98,21 @@ class ImageProcessor
 
 	public function saveImage($targetPath = null) {
 		$this->intern_save($targetPath);
+	}
+
+	/**
+	 * Toggle or set test mode
+	 *
+	 * @param bool   $flag     [optional] true turns mode on, false turns mode off, nothing toggles on <->off
+	 * @param string $testPath [optional]
+	 */
+	public function testMode($flag = null, $testPath = null)
+	{
+		if ($testPath !== null)
+			$this->testPath = $testPath;
+		if ($flag == null) $this->testMode = ($this->testMode) ? false : true;
+		else $this->testMode = $flag;
+		var_dump('Image Processor test mode set on ' . $this->testMode);
 	}
 
 	// ======================================================== basic methods
@@ -220,7 +235,6 @@ class ImageProcessor
 
 				$x0 = ($newWidth  - $temp_width ) / 2;
 				$y0 = ($newHeight - $temp_height) / 2;
-				bdump(imagecolortransparent ($this->srcImage));
 
 				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
 				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
