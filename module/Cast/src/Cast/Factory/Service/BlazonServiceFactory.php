@@ -8,7 +8,13 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class BlazonServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
+    	/** @var \Cast\Model\BlazonTable $blazonTable */
         $blazonTable = $sm->get('Cast\Model\BlazonTable');
-        return new BlazonService($blazonTable, $sm->get('CastService'));
+        /** @var \Cast\Service\CastService $castService */
+        $castService = $sm->get('CastService');
+        /** @var \Media\Service\ImageProcessor $imageProcessor */
+		$imageProcessor = $sm->get('ImageProcessor');
+
+        return new BlazonService($blazonTable, $castService, $imageProcessor);
     }
 }

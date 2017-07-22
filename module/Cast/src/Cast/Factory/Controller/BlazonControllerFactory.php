@@ -7,7 +7,8 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class BlazonControllerFactory implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $sm) {
-        return new BlazonController($sm->getServiceLocator()->get('BlazonService'));
+    public function createService(ServiceLocatorInterface $sm)
+	{
+        return new BlazonController($sm->getServiceLocator()->get('BlazonService' ));
     }
 }

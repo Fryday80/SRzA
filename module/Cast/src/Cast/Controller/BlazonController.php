@@ -5,6 +5,7 @@ use Cast\Form\BlazonForm;
 use Cast\Form\FamilyForm;
 use Cast\Service\BlazonService;
 use Cast\Utility\BlazonDataTable;
+use Media\Service\ImageProcessor;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -13,7 +14,7 @@ class BlazonController extends AbstractActionController
     /** @var BlazonService $blaService */
     private $blaService;
 
-    public function __construct(BlazonService $blazonService) {
+	public function __construct(BlazonService $blazonService) {
         $this->blaService = $blazonService;
     }
 
@@ -27,6 +28,7 @@ class BlazonController extends AbstractActionController
             'blazons' => $blaTable,
         ));
     }
+
     public function addAction() {
         $form = new BlazonForm();
         $form->get('submit')->setValue('add');

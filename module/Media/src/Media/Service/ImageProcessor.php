@@ -30,6 +30,12 @@ class ImageProcessor
 
 	// ======================================================== short cuts
 
+	/**
+	 * Create thumb image
+	 *
+	 * @param string $item		 path/to/image
+	 * @param string $targetPath path/to/save | null for overwrite
+	 */
 	public function createThumb($item, $targetPath = null)
 	{
 		if($item instanceof MediaItem)
@@ -47,7 +53,12 @@ class ImageProcessor
 		$this->intern_save($targetPath);
 	}
 
-	public function createBlazon($item, $targetPath = null)
+	/**
+	 * Create blazon image
+	 *
+	 * @param string $item		 path/to/image
+	 */
+	public function createBlazon($item)
 	{
 		// enhancement when/if BlazonModel was created
 //		if($item instanceof BlazonModel)
@@ -63,7 +74,7 @@ class ImageProcessor
 			$this->intern_resize($width, $height);
 		}
 
-		$this->intern_save($targetPath);
+		$this->intern_save();
 	}
 
 	// ======================================================== api

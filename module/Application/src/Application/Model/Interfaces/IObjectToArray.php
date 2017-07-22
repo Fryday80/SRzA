@@ -9,7 +9,7 @@
 	namespace Application\Model\Interfaces;
 
 
-	interface IToArray
+	interface IObjectToArray
 	{
 		public function toArray();
 	}

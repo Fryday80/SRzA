@@ -8,10 +8,10 @@
 
 namespace Application\Model\AbstractModels;
 
-use Application\Model\Interfaces\IToArray;
+use Application\Model\Interfaces\IObjectToArray;
 use ArrayAccess;
 
-class AbstractModel implements ArrayAccess, IToArray
+class AbstractModel implements ArrayAccess, IObjectToArray
 {
     private $propertiesCache;
 

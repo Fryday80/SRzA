@@ -3,6 +3,7 @@ namespace Cast\Service;
 
 use Cast\Model\BlazonTable;
 use Cast\Model\EBlazonDataType;
+use Media\Service\ImageProcessor;
 
 class BlazonService
 {
@@ -11,14 +12,19 @@ class BlazonService
 
     /** @var  BlazonTable */
     private $blazonTable;
+    /** @var CastService  */
+	private $castService;
+	/** @var ImageProcessor  */
+	private $imageProcessor;
 
-    private $data = false;
-    private $dataNoOverlays = false;
-    private $dataOverlays = false;
+    private $data = null;
+    private $dataNoOverlays = null;
+    private $dataOverlays = null;
 
-    function __construct(BlazonTable $blazonTable, CastService $castService) {
+	function __construct(BlazonTable $blazonTable, CastService $castService, ImageProcessor $imageProcessor) {
         $this->blazonTable = $blazonTable;
         $this->castService = $castService;
+        $this->imageProcessor = $imageProcessor;
     }
 
     /**
@@ -127,12 +133,12 @@ class BlazonService
         // small blazon uploaded ?
         if (!($blazonData['error'] > 0)) {
             $fileData = $this->moveFile($blazonData['tmp_name'], $name, $blazonData['name']);
-            $this->adjustUploadPic($fileData['filePath']);
+            $this->imageProcessor->createBlazon($fileData['filePath']);
         }
         // big blazon uploaded ?
         if (!($blazonBigData['error'] > 0)) {
             $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $name.'_big', $blazonBigData['name']);
-            $this->adjustUploadPic($bigFileData['filePath']);
+            $this->imageProcessor->createBlazon($bigFileData['filePath']);
         }
 
         $this->resetInMemoryCache();
@@ -171,13 +177,13 @@ class BlazonService
         // small blazon uploaded ?
         if (!($blazonData['error'] > 0)) {
             $fileData = $this->moveFile($blazonData['tmp_name'], $item['name'], $blazonData['name']);
-            $this->adjustUploadPic($fileData['filePath']);
+            $this->imageProcessor->createBlazon($fileData['filePath']);
             $data['filename'] = $fileData['fileName'];
         }
         // big blazon uploaded ?
         if (!($blazonBigData['error'] > 0)) {
             $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $item['name'].'_big', $blazonBigData['name']);
-            $this->adjustUploadPic($bigFileData['filePath']);
+            $this->imageProcessor->createBlazon($bigFileData['filePath']);
             $data['bigFilename'] = $bigFileData['fileName'];
         }
 
@@ -242,55 +248,6 @@ class BlazonService
         return $item['filename'];
         }
         return null;
-    }
-
-    private function adjustUploadPic($imagePath) {
-
-        $img = file_get_contents($imagePath);
-        $im  = imagecreatefromstring($img);
-
-        ImageAlphaBlending($im, true);
-
-        $width  = imagesx($im);
-        $height = imagesy($im);
-
-        if ($width == $height) //save pic
-        {
-            //@todo
-        }
-        else // refactor pic
-        {
-            $newsize = 0;
-            if ($width > $height) {
-                $newheight   = $newwidth = $width;
-                $startWidth  = 0;
-                $startHeight = ($newheight - $height) /2;
-            }
-        else {
-            $newheight   = $newwidth = $height;
-            $startWidth  = ($newwidth-$width) /2;
-            $startHeight = 0;
-        }
-            $srcInfo = pathinfo($imagePath);
-            $blazon = imagecreatetruecolor($newwidth, $newheight);
-            $transparent = imagecolortransparent($blazon, imagecolorallocatealpha($blazon, 255, 255, 255, 127));
-            imagefill($blazon, 0, 0, $transparent);
-
-            imagecopyresized($blazon, $im, $startWidth, $startHeight, 0, 0, $newwidth, $newheight, $width, $height);
-            switch($srcInfo['extension']) {
-                case 'jpg':
-                case 'jpeg':
-                    imagejpeg($blazon, $imagePath);
-                    break;
-                case 'png':
-                    imagepng($blazon, $imagePath);
-                    break;
-                case 'gif':
-                    imagegif($blazon, $imagePath);
-            }
-            imagedestroy($blazon);
-            imagedestroy($im);
-        }
     }
 
     private function getData($type)
