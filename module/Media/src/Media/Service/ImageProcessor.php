@@ -114,6 +114,19 @@ public function test (){
 
 		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? 'landscape' : 'portrait';
 		$this->srcAspectRatio = $this->srcWidth / $this->srcHeight;
+
+		switch ($this->srcInfo['extension']){
+			case 'png':
+			case 'gif':
+				imagealphablending($this->srcImage, false);
+				imagesavealpha($this->srcImage, true);
+				$transparent = imagecolortransparent($this->srcImage);// get transparent Color
+				imagecolorset($this->srcImage,$transparent,255, 235, 215); // SET NEW COLOR = bg color
+				imagecolorallocatealpha($this->srcImage, 255, 235, 215, 127);
+				break;
+			default:
+				break;
+		}
 	}
 
 	private function intern_save ($targetPath = null)
@@ -121,7 +134,7 @@ public function test (){
 		if ($targetPath == null) $targetPath = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
 
-		//cleanfix
+		// cleanfix
 		$targetPath = $this->temp;
 
 		switch($this->srcInfo['extension']) {
@@ -191,8 +204,7 @@ public function test (){
 				bdump(imagecolortransparent ($this->srcImage));
 
 				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
-//				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
-				$transparent = imagecolortransparent($this->newImage, imagecolortransparent ($this->tempImage));
+				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
 				imagefill($this->newImage, 0, 0, $transparent);
 				imagecopyresampled(
 					$this->newImage, 									$this->tempImage,
@@ -261,9 +273,9 @@ public function test (){
 
 	private function intern_end()
 	{
-		imagedestroy($this->newImage);
-		imagedestroy($this->srcImage);
-		imagedestroy($this->tempImage);
+//		imagedestroy($this->newImage );
+//		imagedestroy($this->srcImage );
+//		imagedestroy($this->tempImage);
 		$this->newImage = null;
 		$this->srcImage = null;
 		$this->tempImage = null;

@@ -32,23 +32,23 @@ class SystemController extends AbstractActionController
     private $test;
 
     public function __construct(SystemService $systemService, StatisticService $statisticService,
-								MessageService $messageService, CacheService $cacheService,
-								$test = null)
+								MessageService $messageService, CacheService $cacheService)
     {
         $this->systemService = $systemService;
         $this->statsService = $statisticService;
         $this->messageService = $messageService;
         $this->cacheService = $cacheService;
-        $this->test = $test;
     }
 
 	public function testAction()
 	{
-		$this->test->loadPath(getcwd() . '/public/img/blazons/chrisschild.png');
-		$this->test->resize(600, 500);
-		$this->test->saveImage();
+		/** @var ImageProcessor $mediaService */
+		$ip = $this->systemService->serviceManager->get('ImageProcessor');
+		$ip->loadPath(getcwd() . '/public/img/blazons/swords.png');
+		$ip->resize(600, 500);
+		$ip->saveImage();
 		$msg = 'resize';
-		$test = $this->test->test();
+		$test = $ip->test();
 		return array (
 			'msg' => $msg,
 			'test' => $test,
