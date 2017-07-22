@@ -6,29 +6,33 @@ class ImageProcessor
 {
 	private $config;
 
+	private $testMode = false;
+
+	/*
+	 * source data
+	 */
 	private $srcImage = null;
 	private $srcPath;
 	private $srcInfo;
 	private $srcWidth;
 	private $srcHeight;
 	private $srcOrientation;
-
-	private $newImage = null;
-	private $newOrientation;
 	private $srcAspectRatio;
-	private $tempImage;
 
 	/*
-	 * Test mode
+	 * target data
 	 */
-	private $testMode = false;
+	private $newImage = null;
+	private $newOrientation;
 
 	public function __construct($config)
 	{
 		$this->config = $config;
 	}
 
-	// ======================================================== short cuts
+	/* =========================================================
+	 * Short cuts
+	 * ========================================================= */
 
 	/**
 	 * Create thumb image
@@ -77,8 +81,17 @@ class ImageProcessor
 		$this->intern_save();
 	}
 
-	// ======================================================== api
+	/* =========================================================
+	 * API
+	 * ========================================================= */
 
+	/**
+	 * Load image by path
+	 *
+	 * @param string $imagePath
+	 *
+	 * @throws \Exception
+	 */
 	public function loadPath($imagePath)
 	{
 		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
@@ -86,20 +99,46 @@ class ImageProcessor
 		$this->intern_load();
 	}
 
+	/**
+	 * Load image by MediaItem
+	 *
+	 * @param MediaItem $item
+	 */
 	public function loadMediaItem(MediaItem $item)
 	{
 		$this->loadPath($item->fullPath);
 	}
 
+	/**
+	 * Resize src image fitted into output image
+	 *
+	 * @param int  $newWidth 			 width  in px of output image
+	 * @param int  $newHeight [optional] height in px of output image
+	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
+	 */
 	public function resize($newWidth, $newHeight = null, $keepRatio = true)
 	{
 		$this->intern_resize($newWidth, $newHeight, $keepRatio);
 	}
 
+	/**
+	 * Resize src image fitted to output size,
+	 * src aspect ratio is kept,
+	 * src img is centered,
+	 * parts cropped to fit
+	 *
+	 * @param int  $newWidth  width  in px of output image
+	 * @param int  $newHeight height in px of output image
+	 */
 	public function resize_crop($newWidth, $newHeight) {
 		$this->intern_resize_crop($newWidth, $newHeight);
 	}
 
+	/**
+	 * Save image to $targetPath or overwrite source image
+	 *
+	 * @param string $targetPath string/to/save or null to overwrite source image
+	 */
 	public function saveImage($targetPath = null) {
 		$this->intern_save($targetPath);
 	}
@@ -119,8 +158,13 @@ class ImageProcessor
 		var_dump('Image Processor test mode set on ' . $this->testMode);
 	}
 
-	// ======================================================== basic methods
+	/* =========================================================
+	 * Basic / common methods
+	 * ========================================================= */
 
+	/**
+	 * Load image data
+	 */
 	private function intern_load()
 	{
 		$this->srcInfo = pathinfo($this->srcPath);
@@ -156,6 +200,11 @@ class ImageProcessor
 		}
 	}
 
+	/**
+	 * Save image to $targetPath or overwrite source image
+	 *
+	 * @param string $targetPath string/to/save or null to overwrite source image
+	 */
 	private function intern_save ($targetPath = null)
 	{
 		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
@@ -176,6 +225,9 @@ class ImageProcessor
 		$this->intern_end();
 	}
 
+	/**
+	 * Free memory and reset objects vars
+	 */
 	private function intern_end()
 	{
 		if (is_resource($this->newImage)) imagedestroy($this->newImage );
@@ -186,8 +238,17 @@ class ImageProcessor
 		$this->tempImage = null;
 	}
 
-	// ======================================================== processing methods
+	/* =========================================================
+	 * Processing methods
+	 * ========================================================= */
 
+	/**
+	 * Resize src image fitted into output image
+	 *
+	 * @param int  $newWidth 			 width  in px of output image
+	 * @param int  $newHeight [optional] height in px of output image
+	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
+	 */
 	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true) {
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
@@ -225,11 +286,11 @@ class ImageProcessor
 				 * Resize the image into a temporary GD image
 				 */
 
-				$this->tempImage = imagecreatetruecolor($temp_width, $temp_height);
-				$transparent = imagecolortransparent($this->tempImage, imagecolortransparent ($this->srcImage));
-				imagefill($this->tempImage, 0, 0, $transparent);
+				$tempImage = imagecreatetruecolor($temp_width, $temp_height);
+				$transparent = imagecolortransparent($tempImage, imagecolortransparent ($this->srcImage));
+				imagefill($tempImage, 0, 0, $transparent);
 				imagecopyresampled(
-					$this->tempImage,
+					$tempImage,
 					$this->srcImage,
 					0, 0,
 					0, 0,
@@ -244,14 +305,24 @@ class ImageProcessor
 				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
 				imagefill($this->newImage, 0, 0, $transparent);
 				imagecopyresampled(
-					$this->newImage, 									$this->tempImage,
-					$x0, $y0,											0, 0,
+					$this->newImage,			$tempImage,
+					$x0, $y0,					0, 0,
 					$temp_width, $temp_height, 	$temp_width, $temp_height
 				);
+				imagedestroy($tempImage);
 			}
 		}
 	}
 
+	/**
+	 * Resize src image fitted to output size,
+	 * src aspect ratio is kept,
+	 * src img is centered,
+	 * parts cropped to fit
+	 *
+	 * @param int  $newWidth  width  in px of output image
+	 * @param int  $newHeight height in px of output image
+	 */
 	private function intern_resize_crop($newWidth, $newHeight) {
 		/*
 	 * Crop-to-fit PHP-GD
@@ -282,14 +353,11 @@ class ImageProcessor
 		 * Resize the image into a temporary GD image
 		 */
 
-		$this->tempImage = imagecreatetruecolor($temp_width, $temp_height);
+		$tempImage = imagecreatetruecolor($temp_width, $temp_height);
 		imagecopyresampled(
-			$this->tempImage,
-			$this->srcImage,
-			0, 0,
-			0, 0,
-			$temp_width, $temp_height,
-			$this->srcWidth, $this->srcHeight
+			$tempImage,					$this->srcImage,
+			0, 0,			0, 0,
+			$temp_width, $temp_height,	$this->srcWidth, $this->srcHeight
 		);
 
 		/*
@@ -300,11 +368,10 @@ class ImageProcessor
 		$y0 = ($temp_height - $newHeight) / 2;
 		$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
 		imagecopy(
-			$this->newImage,
-			$this->tempImage,
-			0, 0,
-			$x0, $y0,
+			$this->newImage,	$tempImage,
+			0, 0,	$x0, $y0,
 			$newWidth, $newHeight
 		);
+		imagedestroy($tempImage);
 	}
 }

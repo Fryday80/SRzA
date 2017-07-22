@@ -27,6 +27,9 @@ class BlazonService
         $this->imageProcessor = $imageProcessor;
     }
 
+	/* =========================================================
+	 * Data read out
+	 * ========================================================= */
     /**
      * Get all blazons
      * @return array 'id' => data
@@ -64,6 +67,33 @@ class BlazonService
         return (isset($this->data[$id])) ? $this->data[$id] : false;
     }
 
+	private function getData($type)
+	{
+		switch ($type){
+			case EBlazonDataType::ALL:
+				if($this->data) break;
+				$data = $this->blazonTable->getAll();
+				foreach ($data as $blazonData)
+					$this->data[$blazonData['id']] = $blazonData;
+				break;
+			case EBlazonDataType::OVERLAY:
+				if($this->dataOverlays) break;
+				$data = $this->blazonTable->getAllOverlays();
+				foreach ($data as $blazonData)
+					$this->dataOverlays[$blazonData['id']] = $blazonData;
+				break;
+			case EBlazonDataType::NO_OVERLAY:
+				if($this->dataNoOverlays) break;
+				$data = $this->blazonTable->getAllNotOverlay();
+				foreach ($data as $blazonData)
+					$this->dataNoOverlays[$blazonData['id']] = $blazonData;
+				break;
+		}
+	}
+
+    /* =========================================================
+     * BlazonHelper methods
+     * ========================================================= */
     /**
      * Get argument array by char
      * @param $char
@@ -121,7 +151,12 @@ class BlazonService
         return $supervisor;
     }
 
+	/* =========================================================
+	 * Add, edit, delete
+	 * ========================================================= */
     /**
+	 * Add new blazon
+	 *
      * @param $name string
      * @param $isOverlay
      * @param null $blazonData
@@ -152,6 +187,8 @@ class BlazonService
     }
 
     /**
+	 * Save edited blazon
+	 *
      * @param $id
      * @param $isOverlay
      * @param null $name
@@ -193,6 +230,8 @@ class BlazonService
     }
 
     /**
+	 * Remove blazon
+	 *
      * @param $id
      * @return bool
      */
@@ -210,7 +249,9 @@ class BlazonService
         }
     }
 
-    /** moves file to
+	/**
+	 * Moves file to $path
+	 *
      * @param $path string
      * @param $name string filename with extension
      * @param $originalFileName
@@ -233,6 +274,8 @@ class BlazonService
     }
 
     /**
+	 * Rename after edit
+	 *
      * @param $item array
      * @param $newName string
      * @return string file name with extension
@@ -248,30 +291,6 @@ class BlazonService
         return $item['filename'];
         }
         return null;
-    }
-
-    private function getData($type)
-    {
-        switch ($type){
-            case EBlazonDataType::ALL:
-                if($this->data) break;
-                $data = $this->blazonTable->getAll();
-                foreach ($data as $blazonData)
-                    $this->data[$blazonData['id']] = $blazonData;
-                break;
-            case EBlazonDataType::OVERLAY:
-                if($this->dataOverlays) break;
-                $data = $this->blazonTable->getAllOverlays();
-                foreach ($data as $blazonData)
-                    $this->dataOverlays[$blazonData['id']] = $blazonData;
-                break;
-            case EBlazonDataType::NO_OVERLAY:
-                if($this->dataNoOverlays) break;
-                $data = $this->blazonTable->getAllNotOverlay();
-                foreach ($data as $blazonData)
-                    $this->dataNoOverlays[$blazonData['id']] = $blazonData;
-                break;
-        }
     }
 
     private function resetInMemoryCache()
