@@ -2,6 +2,10 @@
 
 namespace Media\Service;
 
+/**
+ * Class ImageProcessor
+ * @package Media\Service
+ */
 class ImageProcessor
 {
 	private $config;
@@ -34,13 +38,24 @@ class ImageProcessor
 	 * Short cuts
 	 * ========================================================= */
 
+	public function createUserImages($srcPath, $targetPathSmall, $targetPathMedium)
+	{
+		$this->loadPath($srcPath);
+		$this->intern_resize(500);
+		$this->intern_save();
+		$this->createThumbs($srcPath, $targetPathSmall, $targetPathMedium);
+	}
+
 	/**
 	 * Create thumb image
 	 *
-	 * @param string $item		 path/to/image
-	 * @param string $targetPath path/to/save | null for overwrite
+	 * @param string $item 			path/to/image
+	 * @param string $targetPath1	small thumb path, null to overwrite source
+	 * @param string $targetPath2	big thumb path, null to skip
+	 *
+	 * @internal param string $targetPath path/to/save | null for overwrite
 	 */
-	public function createThumb($item, $targetPath = null)
+	public function createThumbs($item, $targetPath1 = null, $targetPath2 = null)
 	{
 		if($item instanceof MediaItem)
 			$this->loadMediaItem($item);
@@ -50,11 +65,18 @@ class ImageProcessor
 		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
 		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
 		$this->intern_resize_crop($width, $height);
-		$this->intern_save($targetPath);
-		$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
-		$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
-		$this->intern_resize_crop($width, $height);
-		$this->intern_save($targetPath);
+		$this->intern_save($targetPath1);
+		if ($targetPath2 !== null) {
+			if ($item instanceof MediaItem)
+				$this->loadMediaItem($item);
+			else
+				$this->loadPath($item);
+
+			$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
+			$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
+			$this->intern_resize_crop($width, $height);
+			$this->intern_save($targetPath2);
+		}
 	}
 
 	/**
@@ -130,7 +152,8 @@ class ImageProcessor
 	 * @param int  $newWidth  width  in px of output image
 	 * @param int  $newHeight height in px of output image
 	 */
-	public function resize_crop($newWidth, $newHeight) {
+	public function resize_crop($newWidth, $newHeight)
+	{
 		$this->intern_resize_crop($newWidth, $newHeight);
 	}
 
@@ -139,7 +162,8 @@ class ImageProcessor
 	 *
 	 * @param string $targetPath string/to/save or null to overwrite source image
 	 */
-	public function saveImage($targetPath = null) {
+	public function saveImage($targetPath = null)
+	{
 		$this->intern_save($targetPath);
 	}
 
@@ -249,7 +273,8 @@ class ImageProcessor
 	 * @param int  $newHeight [optional] height in px of output image
 	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
 	 */
-	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true) {
+	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true)
+	{
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else {
@@ -323,15 +348,16 @@ class ImageProcessor
 	 * @param int  $newWidth  width  in px of output image
 	 * @param int  $newHeight height in px of output image
 	 */
-	private function intern_resize_crop($newWidth, $newHeight) {
+	private function intern_resize_crop($newWidth, $newHeight)
+	{
 		/*
-	 * Crop-to-fit PHP-GD
-	 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
-	 *
-	 * Resize and center crop an arbitrary size image to fixed width and height
-	 * e.g. convert a large portrait/landscape image to a small square thumbnail
-	 *
-	 * Modified by Fry
+		 * Crop-to-fit PHP-GD
+		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
+		 *
+		 * Resize and center crop an arbitrary size image to fixed width and height
+		 * e.g. convert a large portrait/landscape image to a small square thumbnail
+		 *
+		 * Modified by Fry
 		 */
 		$desired_aspect_ratio = $newWidth / $newHeight;
 

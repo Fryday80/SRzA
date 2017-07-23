@@ -9,24 +9,30 @@ use Auth\Model\User;
 use Auth\Model\UserSet;
 use Auth\Model\UserTable;
 use Cast\Service\CastService;
+use Media\Service\ImageProcessor;
 
 class UserService
 {
-    private $loaded = false;
     /** @var UserTable  */
     private $userTable;
     /** @var CacheService  */
     private $cacheService;
     /** @var CastService  */
     private $castService;
+    /** @var ImageProcessor  */
+	private $imageProcessor;
+
+	private $loaded = false;
+
     /** @var  array ['id'] */
     private $idNameHash;
 
-    function __construct(UserTable $userTable, CacheService $cacheService, CastService $castService)
+	function __construct(UserTable $userTable, CacheService $cacheService, CastService $castService, ImageProcessor $imageProcessor)
     {
         $this->userTable = $userTable;
         $this->cacheService = $cacheService;
         $this->castService = $castService;
+        $this->imageProcessor = $imageProcessor;
         $this->load();
     }
 
@@ -107,6 +113,7 @@ class UserService
     }
 
     public function updateUserImage($userID, $tempImageInfo) {
+		//@todo linux might bug here because of / instead of \
         $dataPath = realpath('./Data');
         @mkdir($dataPath . '/_users', 0755);
         @mkdir($dataPath . '/_users/' . $userID, 0755);
@@ -120,57 +127,19 @@ class UserService
                 @unlink($dataPath . '/_users/' . $userID . '/pub/' . $item);
 
         $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
+        $thumbName = '/profileImage_small.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
+        $bigThumbName = '/profileImage_medium.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
         $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
 
-        $newPath = realpath('./Data/_users/' . $userID . '/pub');
-        $newPath = $newPath . $imageName;
-        //@todo serach old image and unlink (files can have different extensions)
-        @unlink($newPath);
+        $newBasePath = realpath('./Data/_users/' . $userID . '/pub');
+		$newPath = $newBasePath . $imageName;
+        $thumbPath = $newBasePath . $thumbName;
+        $bigThumbPath = $newBasePath . $bigThumbName;
         rename($tempImageInfo['tmp_name'], $newPath);
-        $this->createUserThumbnail($newPath);
-        return $url;
-    }
 
-    /**
-     * @param $imagePath
-     */
-    private function createUserThumbnail($imagePath)
-    {
-        $img = file_get_contents($imagePath);
-        $im = imagecreatefromstring($img);
+		$this->imageProcessor->createUserImages($newPath, $thumbPath, $bigThumbPath);
 
-        ImageAlphaBlending($im, true);
-        
-        $width = imagesx($im);
-        $height = imagesy($im);
-
-        $thumbSizeLimit = 600;
-        if ($width < $thumbSizeLimit && $height < $thumbSizeLimit) {}
-        else {
-            $newheight = $thumbSizeLimit;
-            $newwidth = $newheight*$width/$height;
-
-            $srcInfo = pathinfo($imagePath);
-            $thumb = imagecreatetruecolor($newwidth, $newheight);
-            $transparent = imagecolortransparent($thumb, imagecolorallocatealpha($thumb, 255, 255, 255, 127));
-            imagefill($thumb, 0, 0, $transparent);
-
-            imagecopyresized($thumb, $im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
-            switch($srcInfo['extension']) {
-                case 'jpg':
-                case 'jpeg':
-                    imagejpeg($thumb, $imagePath);
-                    break;
-                case 'png':
-                    imagepng($thumb, $imagePath);
-                    break;
-                case 'gif':
-                    imagegif($thumb, $imagePath);
-
-            }
-            imagedestroy($thumb);
-            imagedestroy($im);
-        }
+		return $url;
     }
 
     private function appendUsersURLs($data)

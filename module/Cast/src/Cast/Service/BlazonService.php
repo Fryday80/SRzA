@@ -252,18 +252,17 @@ class BlazonService
 	/**
 	 * Moves file to $path
 	 *
-     * @param $path string
-     * @param $name string filename with extension
-     * @param $originalFileName
-     * @return string file name with extension
+     * @param string $path source path
+     * @param string $name filename with extension
+     * @param string $originalFileName original file name
+	 *
+     * @return array array( 0 => file name with extension, 1 => file path)
      */
     private function moveFile($path, $name, $originalFileName) {
         $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
         $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
         if (!$blazonPath) {
-            //@todo create "wappen" folder in ./Data
-            // not tested
-//            mkdir ($blazonPath);
+			@mkdir($blazonPath, 0755);
         }
         $newPath = $blazonPath.'/'.$name.'.'.$ext;
         rename($path, $newPath);

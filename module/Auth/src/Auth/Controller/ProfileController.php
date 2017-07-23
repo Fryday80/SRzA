@@ -167,7 +167,6 @@ class ProfileController extends AbstractActionController
                     //handle user image
                     if ($data['user_image'] === null || $data['user_image']['error'] > 0) {
                         $user->user_image = null;
-                        //@todo no image or image upload error
                     } else {
                         $user->user_image = $this->userService->updateUserImage($user->id, $data['user_image']);
                     }
