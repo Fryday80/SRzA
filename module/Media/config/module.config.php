@@ -10,6 +10,14 @@ return array(
 			'x2' => 50,
 			'y2' => 50,
 		),
+		'default_page_size' => array(
+			'x' => 500,
+			'y' => 500
+		),
+		'profile_images' => array (
+			'x' => 1000,
+			'y'	=> 1000,
+		),
 	),
     'controllers' => array(
         'abstract_factories' => array(

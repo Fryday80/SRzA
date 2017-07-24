@@ -40,9 +40,10 @@ class SystemController extends AbstractActionController
 		/** @var ImageProcessor $ip */
 		$ip = $this->systemService->serviceManager->get('ImageProcessor');
 		$ip->testMode();
-		$ip->loadPath(getcwd() . '/public/img/blazons/fryschild.png');
-		$ip->resize(600, 500);
-		$ip->saveImage();
+//		$ip->loadPath(getcwd() . '/public/img/blazons/shield-tross.big.png');
+//		$ip->resize(600, 500);
+//		$ip->saveImage();
+		$ip->createBlazon(getcwd() . '/public/img/blazons/shield-tross.big.png');
 		$msg = 'resize';
 		$test = 'nösing';
 		return array (

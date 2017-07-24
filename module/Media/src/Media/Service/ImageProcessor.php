@@ -1,6 +1,7 @@
 <?php
 
 namespace Media\Service;
+use Media\Model\Enums\EImageProcessor;
 
 /**
  * Class ImageProcessor
@@ -38,11 +39,44 @@ class ImageProcessor
 	 * Short cuts
 	 * ========================================================= */
 
+	/**
+	 * Create user image smaller than limits and 2 thumbnail images <br>
+	 * overwrites srcImage and saves thumbs to target paths
+	 *
+	 * @param $srcPath
+	 * @param $targetPathSmall
+	 * @param $targetPathMedium
+	 */
 	public function createUserImages($srcPath, $targetPathSmall, $targetPathMedium)
 	{
-		$this->loadPath($srcPath);
-		$this->intern_resize(500);
-		$this->intern_save();
+		// get limits for profile image
+		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
+		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
+
+		if(is_object($srcPath))
+			$this->loadObject($srcPath);
+		else
+			$this->loadPath($srcPath);
+
+		// if src image is smaller than limits
+		if ($this->srcWidth < $width && $this->srcHeight < $height) {
+			$this->intern_save();
+		}
+		else
+			//resize to limits
+		{
+			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+			{
+				$this->intern_resize_width($width);
+				$this->intern_save();
+			}
+			else
+			{
+				$this->intern_resize_height($height);
+				$this->intern_save();
+			}
+		}
+		//create the thumbs
 		$this->createThumbs($srcPath, $targetPathSmall, $targetPathMedium);
 	}
 
@@ -52,28 +86,30 @@ class ImageProcessor
 	 * @param string $item 			path/to/image
 	 * @param string $targetPath1	small thumb path, null to overwrite source
 	 * @param string $targetPath2	big thumb path, null to skip
-	 *
-	 * @internal param string $targetPath path/to/save | null for overwrite
 	 */
 	public function createThumbs($item, $targetPath1 = null, $targetPath2 = null)
 	{
-		if($item instanceof MediaItem)
-			$this->loadMediaItem($item);
+		if(is_object($item))
+			$this->loadObject($item);
 		else
 			$this->loadPath($item);
 
+		// === thumb 1
+		// get size for thumb 1
 		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
 		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
+
 		$this->intern_resize_crop($width, $height);
 		$this->intern_save($targetPath1);
+		// === thumb 2
 		if ($targetPath2 !== null) {
-			if ($item instanceof MediaItem)
-				$this->loadMediaItem($item);
-			else
-				$this->loadPath($item);
+			//reload src file
+			$this->intern_load();
 
+			// get size for thumb 2
 			$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
 			$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
+
 			$this->intern_resize_crop($width, $height);
 			$this->intern_save($targetPath2);
 		}
@@ -86,26 +122,52 @@ class ImageProcessor
 	 */
 	public function createBlazon($item)
 	{
+		$width  = $this->config['Cast_ImageProcessor']['blazon']['x'];
+		$height = $this->config['Cast_ImageProcessor']['blazon']['y'];
+
 		// enhancement when/if BlazonModel was created
 //		if($item instanceof BlazonModel)
 //			$this->loadMediaItem($item);
 //		else{}
 		$this->loadPath($item);
 
-		if ($this->srcWidth == 100 && $this->srcHeight == 100){
-			$this->newImage = $this->srcImage;
+		if ($this->srcWidth == $width && $this->srcHeight == $height){
+			$this->intern_save($this->srcPath);
 		} else {
-			$width  = $this->config['Cast_ImageProcessor']['blazon']['x'];
-			$height = $this->config['Cast_ImageProcessor']['blazon']['y'];
 			$this->intern_resize($width, $height);
+			$this->intern_save();
 		}
-
-		$this->intern_save();
 	}
 
 	/* =========================================================
 	 * API
 	 * ========================================================= */
+
+	/**
+	 * Load image data from an object
+	 *
+	 * @param $imageObject
+	 */
+	public function loadObject($imageObject)
+	{
+		if (is_object($imageObject)) {
+			if ($imageObject instanceof MediaItem) $this->loadMediaItem($imageObject);
+		}
+		// fall back
+		else {
+			$this->loadPath($imageObject);
+		}
+	}
+
+	/**
+	 * Load image by MediaItem
+	 *
+	 * @param MediaItem $item
+	 */
+	public function loadMediaItem(MediaItem $item)
+	{
+		$this->loadPath($item->fullPath);
+	}
 
 	/**
 	 * Load image by path
@@ -122,13 +184,15 @@ class ImageProcessor
 	}
 
 	/**
-	 * Load image by MediaItem
+	 * Resize src image fitted into output image
 	 *
-	 * @param MediaItem $item
+	 * @param int  $newWidth 			 width  in px of output image
+	 * @param int  $newHeight [optional] height in px of output image
+	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
 	 */
-	public function loadMediaItem(MediaItem $item)
+	public function resize($newWidth, $newHeight = null, $keepRatio = true)
 	{
-		$this->loadPath($item->fullPath);
+		$this->intern_resize_width($newWidth, $newHeight, $keepRatio);
 	}
 
 	/**
@@ -138,9 +202,9 @@ class ImageProcessor
 	 * @param int  $newHeight [optional] height in px of output image
 	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
 	 */
-	public function resize($newWidth, $newHeight = null, $keepRatio = true)
+	public function resize_height ($newHeight, $newWidth = null, $keepRatio = true)
 	{
-		$this->intern_resize($newWidth, $newHeight, $keepRatio);
+		$this->intern_resize_height($newWidth, $newHeight, $keepRatio);
 	}
 
 	/**
@@ -207,7 +271,7 @@ class ImageProcessor
 
 		list($this->srcWidth, $this->srcHeight) = getimagesize($this->srcPath);
 
-		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? 'landscape' : 'portrait';
+		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		$this->srcAspectRatio = $this->srcWidth / $this->srcHeight;
 
 		switch ($this->srcInfo['extension']){
@@ -256,15 +320,46 @@ class ImageProcessor
 	{
 		if (is_resource($this->newImage)) imagedestroy($this->newImage );
 		if (is_resource($this->newImage)) imagedestroy($this->srcImage );
-		if (is_resource($this->newImage)) imagedestroy($this->tempImage);
 		$this->newImage = null;
 		$this->srcImage = null;
-		$this->tempImage = null;
 	}
 
 	/* =========================================================
 	 * Processing methods
 	 * ========================================================= */
+
+	// ======== resize into output size ===========
+	/**
+	 * Resize src image fitted into output image
+	 *
+	 * @param int  $newWidth 			 width  in px of output image
+	 * @param int  $newHeight [optional] height in px of output image
+	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
+	 */
+	private function intern_resize_width($newWidth, $newHeight = null, $keepRatio = true)
+	{
+		if ($newHeight == null)
+			$this->newImage = imagescale($this->srcImage, $newWidth);
+		else
+			$this->Intern_resize($newWidth, $newHeight, $keepRatio);
+	}
+
+	/**
+	 * Resize src image fitted into output image
+	 *
+	 * @param int  $newHeight  			 height in px of output image
+	 * @param int  $newWidth  [optional] width  in px of output image
+	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
+	 */
+	private function intern_resize_height($newHeight, $newWidth = null, $keepRatio = true)
+	{
+		if ($newWidth == null){
+			$newWidth = $newHeight * $this->srcAspectRatio;
+			$this->newImage = imagescale($this->srcImage, $newWidth);
+		}
+		else
+			$this->Intern_resize($newWidth, $newHeight, $keepRatio);
+	}
 
 	/**
 	 * Resize src image fitted into output image
@@ -273,72 +368,69 @@ class ImageProcessor
 	 * @param int  $newHeight [optional] height in px of output image
 	 * @param bool $keepRatio [optional] scale image with (true) or without (false) keeping original aspect ratio
 	 */
-	private function intern_resize($newWidth, $newHeight = null, $keepRatio = true)
+	private function intern_resize($newWidth, $newHeight, $keepRatio = true)
 	{
-		if ($newHeight == null)
-			$this->newImage = imagescale($this->srcImage, $newWidth);
+		$this->newOrientation = ($newWidth > $newHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
+		if ($keepRatio !== true)
+			$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
 		else {
-			$this->newOrientation = ($newWidth > $newHeight) ? 'landscape' : 'portrait';
-			if ($keepRatio !== true)
-				$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
-			else {
+			/*
+		 * Crop-to-fit PHP-GD
+		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
+		 *
+		 * Resize and center crop an arbitrary size image to fixed width and height
+		 * e.g. convert a large portrait/landscape image to a small square thumbnail
+		 *
+		 * Modified by Fry
+			 */
+			$desired_aspect_ratio = $newWidth / $newHeight;
+
+			if ($this->srcAspectRatio < $desired_aspect_ratio) {
 				/*
-			 * Crop-to-fit PHP-GD
-			 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
-			 *
-			 * Resize and center crop an arbitrary size image to fixed width and height
-			 * e.g. convert a large portrait/landscape image to a small square thumbnail
-			 *
-			 * Modified by Fry
+				 * Triggered when source image is taller
 				 */
-				$desired_aspect_ratio = $newWidth / $newHeight;
-
-				if ($this->srcAspectRatio < $desired_aspect_ratio) {
-					/*
-					 * Triggered when source image is taller
-					 */
-					$temp_height = $newHeight;
-					$temp_width = ( int )($newHeight * $this->srcAspectRatio);
-				} else {
-					/*
-					 * Triggered otherwise (i.e. source image is similar or wider)
-					 */
-					$temp_width = $newWidth;
-					$temp_height = ( int )($newWidth / $this->srcAspectRatio);
-				}
-
+				$temp_height = $newHeight;
+				$temp_width = ( int )($newHeight * $this->srcAspectRatio);
+			} else {
 				/*
-				 * Resize the image into a temporary GD image
+				 * Triggered otherwise (i.e. source image is similar or wider)
 				 */
-
-				$tempImage = imagecreatetruecolor($temp_width, $temp_height);
-				$transparent = imagecolortransparent($tempImage, imagecolortransparent ($this->srcImage));
-				imagefill($tempImage, 0, 0, $transparent);
-				imagecopyresampled(
-					$tempImage,
-					$this->srcImage,
-					0, 0,
-					0, 0,
-					$temp_width, $temp_height,
-					$this->srcWidth, $this->srcHeight
-				);
-
-				$x0 = ($newWidth  - $temp_width ) / 2;
-				$y0 = ($newHeight - $temp_height) / 2;
-
-				$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
-				$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
-				imagefill($this->newImage, 0, 0, $transparent);
-				imagecopyresampled(
-					$this->newImage,			$tempImage,
-					$x0, $y0,					0, 0,
-					$temp_width, $temp_height, 	$temp_width, $temp_height
-				);
-				imagedestroy($tempImage);
+				$temp_width = $newWidth;
+				$temp_height = ( int )($newWidth / $this->srcAspectRatio);
 			}
+
+			/*
+			 * Resize the image into a temporary GD image
+			 */
+
+			$tempImage = imagecreatetruecolor($temp_width, $temp_height);
+			$transparent = imagecolortransparent($tempImage, imagecolortransparent ($this->srcImage));
+			imagefill($tempImage, 0, 0, $transparent);
+			imagecopyresampled(
+				$tempImage,
+				$this->srcImage,
+				0, 0,
+				0, 0,
+				$temp_width, $temp_height,
+				$this->srcWidth, $this->srcHeight
+			);
+
+			$x0 = ($newWidth  - $temp_width ) / 2;
+			$y0 = ($newHeight - $temp_height) / 2;
+
+			$this->newImage = imagecreatetruecolor($newWidth, $newHeight);
+			$transparent = imagecolortransparent($this->newImage, imagecolorallocatealpha($this->newImage, 255, 235, 215, 127));
+			imagefill($this->newImage, 0, 0, $transparent);
+			imagecopyresampled(
+				$this->newImage,			$tempImage,
+				$x0, $y0,					0, 0,
+				$temp_width, $temp_height, 	$temp_width, $temp_height
+			);
+			imagedestroy($tempImage);
 		}
 	}
 
+	// ======== resize to output size and crop overleaping parts ===========
 	/**
 	 * Resize src image fitted to output size,
 	 * src aspect ratio is kept,
