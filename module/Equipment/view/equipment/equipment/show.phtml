@@ -28,7 +28,7 @@ if ($equip->image !== null): ?>
 <?php // =================================== Details ?>
 <h1>Maße:</h1>
 <p><?php echo $equip->width/100?> m</p>
-<p><?php echo $equip->length/100?> m</p>
+<p><?php echo $equip->depth/100?> m</p>
 <?php if ((int)$equip->itemType == \Equipment\Model\Enums\EEquipTypes::TENT): ?>
 <h1>Bauart:</h1>
 <p><?php echo \Equipment\Model\Enums\ETentShape::TRANSLATION[$equip->shape]?></p>

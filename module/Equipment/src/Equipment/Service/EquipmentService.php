@@ -73,6 +73,12 @@ class EquipmentService
         return $this->equipTable->removeById($id);
     }
 
+
+	public function getNextId()
+	{
+		return $this->equipTable->getNextId();
+	}
+
     public function save($data)
     {
         if($data->id == "")

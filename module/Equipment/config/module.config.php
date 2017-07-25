@@ -2,6 +2,23 @@
 use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
+	'Equipment_ImageProcessor' => array(
+		'images' => array(
+			'x' => 500,
+			'y' => 500
+		),
+		'storage_path' => array(
+			'base' => '', //use imageProcessors base path
+			'folder_structure' => array(
+				'_equipment',
+				'{{id}}'
+			),
+			'override_names' => array(
+				'image1' => 'image1',
+				'image2' => 'image2'
+			),
+		),
+	),
     'Equipment' => array(
         'config' => array(
             'default_actionName' => array(

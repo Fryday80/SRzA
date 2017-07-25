@@ -6,6 +6,7 @@ use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
+use Media\Service\ImageProcessor;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -18,11 +19,13 @@ class EquipmentController extends AbstractActionController
     /** @var AccessService  */
     private $accessService;
     private $config;
+    /** @var ImageProcessor  */
+	private $imageProcessor;
 
     private $dataTable;
 
 
-    public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService) {
+	public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService, ImageProcessor $imageProcessor) {
         $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
         $this->config = $config[$controllerName];
         $this->userService   = $userService;
@@ -30,6 +33,7 @@ class EquipmentController extends AbstractActionController
         $this->equipService  = $equipmentService;
         $this->dataTable     = new EquipmentDataTable();
         $this->dataTable->setServices($this->accessService, $this->equipService);
+        $this->imageProcessor = $imageProcessor;
     }
 
     public function indexAction() {
@@ -146,8 +150,13 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
                 // push into model for selection in service
                 $data = new $vars['model'][$type]($form->getData());
+                $newId = $this->equipService->getNextId();
 
-                $this->equipService->save($data);
+                if ($data['image1'] !== null || $data['image2'] !== null){
+                	$this->imageProcessor->uploadEquipImages($data, $newId);
+                	die;
+				}
+				$this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -199,8 +208,11 @@ class EquipmentController extends AbstractActionController
     {
         if (isset($this->config['config'][$action]))
             $page = array_merge_recursive($this->config['config']['default_actionName'], $this->config['config'][$action]);
+        if (isset($this->config['config'][$action]['name']))  $page['name']  = $this->config['config'][$action]['name'];
+        if (isset($this->config['config'][$action]['label'])) $page['label'] = $this->config['config'][$action]['label'];
         else
             $page = $this->config['config']['default_actionName'];
+
         if(is_array($page['label']))
             $page['label'] = $page['label'][EEquipTypes::TRANSLATE_TO_ID[$typeString]];
 
@@ -213,7 +225,6 @@ class EquipmentController extends AbstractActionController
             if ($action !== 'type' && $action !== 'userall')
                 $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
         }
-        bdump($vars);
         return $vars;
     }
 }

@@ -10,6 +10,7 @@ use Media\Model\Enums\EImageProcessor;
 class ImageProcessor
 {
 	private $config;
+	private $dataRootPath;
 
 	private $testMode = false;
 
@@ -33,6 +34,7 @@ class ImageProcessor
 	public function __construct($config)
 	{
 		$this->config = $config;
+		$this->dataRootPath = getcwd() . '/Data';
 	}
 
 	/* =========================================================
@@ -53,10 +55,7 @@ class ImageProcessor
 		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
 		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
 
-		if(is_object($srcPath))
-			$this->loadObject($srcPath);
-		else
-			$this->loadPath($srcPath);
+		$this->load($srcPath);
 
 		// if src image is smaller than limits
 		if ($this->srcWidth < $width && $this->srcHeight < $height) {
@@ -129,7 +128,7 @@ class ImageProcessor
 //		if($item instanceof BlazonModel)
 //			$this->loadMediaItem($item);
 //		else{}
-		$this->loadPath($item);
+		$this->load($item);
 
 		if ($this->srcWidth == $width && $this->srcHeight == $height){
 			$this->intern_save($this->srcPath);
@@ -139,48 +138,45 @@ class ImageProcessor
 		}
 	}
 
+	public function uploadEquipImages($uploadFormData, $itemId = null)
+	{
+		if ($itemId !== null) $uploadFormData['id'] = $itemId;
+		$width  = $this->config['Equipment_ImageProcessor']['images']['x'];
+		$height = $this->config['Equipment_ImageProcessor']['images']['y'];
+		$folderInfo = $this->config['Equipment_ImageProcessor']['storage_path'];
+
+		$uploadedImages = array();
+		if ($uploadFormData['image1'] !== null) $uploadedImages['image1'] = $uploadFormData['image1'];
+		if ($uploadFormData['image2'] !== null) $uploadedImages['image2'] = $uploadFormData['image2'];
+
+		if (!empty ($uploadedImages))
+		{
+			$targetPath = $this->createFolderStructure($folderInfo, $uploadFormData);
+			foreach ($uploadedImages as $key =>$uploadedImage) {
+				$this->load($uploadedImage);
+				$target = $targetPath . $key . '.' .$this->srcInfo['extension'];
+				// if src image is smaller than limits
+				if (!($this->srcWidth < $width && $this->srcHeight < $height)) {
+					if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+						$this->resize($width);
+					else
+						$this->resize_height($height);
+				}
+				$this->intern_save($target);
+			}
+		}
+		return $targetPath;
+	}
+
 	/* =========================================================
 	 * API
 	 * ========================================================= */
 
-	/**
-	 * Load image data from an object
-	 *
-	 * @param $imageObject
-	 */
-	public function loadObject($imageObject)
+	public function load($item)
 	{
-		if (is_object($imageObject)) {
-			if ($imageObject instanceof MediaItem) $this->loadMediaItem($imageObject);
-		}
-		// fall back
-		else {
-			$this->loadPath($imageObject);
-		}
-	}
-
-	/**
-	 * Load image by MediaItem
-	 *
-	 * @param MediaItem $item
-	 */
-	public function loadMediaItem(MediaItem $item)
-	{
-		$this->loadPath($item->fullPath);
-	}
-
-	/**
-	 * Load image by path
-	 *
-	 * @param string $imagePath
-	 *
-	 * @throws \Exception
-	 */
-	public function loadPath($imagePath)
-	{
-		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
-		$this->srcPath = $imagePath;
-		$this->intern_load();
+		if (is_object($item)) 	$this->loadFromObject($item);
+		if (is_array($item))	$this->loadFromUpload($item);
+		if (is_string($item))	$this->loadFromPath($item);
 	}
 
 	/**
@@ -231,6 +227,11 @@ class ImageProcessor
 		$this->intern_save($targetPath);
 	}
 
+	public function getDataRoot()
+	{
+		return $this->dataRootPath;
+	}
+
 	/**
 	 * Toggle or set test mode
 	 *
@@ -250,12 +251,81 @@ class ImageProcessor
 	 * Basic / common methods
 	 * ========================================================= */
 
+	private function loadFromUpload($uploadArray)
+	{
+		$this->srcPath = $uploadArray['tmp_name'];
+		$this->intern_load($uploadArray['type']);
+	}
+
+	/**
+	 * Load image data from an object
+	 *
+	 * @param $imageObject
+	 */
+	private function loadFromObject($imageObject)
+	{
+		if ($imageObject instanceof MediaItem) $this->loadFromMediaItem($imageObject);
+		else throw new \Exception("This object is not known");
+	}
+
+	/**
+	 * Load image by MediaItem
+	 *
+	 * @param MediaItem $item
+	 */
+	private function loadFromMediaItem(MediaItem $item)
+	{
+		$this->loadFromPath($item->fullPath);
+	}
+
+	/**
+	 * Load image by path
+	 *
+	 * @param string $imagePath
+	 *
+	 * @throws \Exception
+	 */
+	private function loadFromPath($imagePath)
+	{
+		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
+		else {
+			$this->srcPath = $imagePath;
+			$this->intern_load();
+		}
+	}
+
+	private function createFolderStructure($folderInfo, $dataArray)
+	{
+		$path = (isset($folderInfo['base']) && $folderInfo['base'] !== '') ? $folderInfo['base'] : $this->dataRootPath;
+
+		if (isset($folderInfo['folder_structure'])){
+			foreach ($folderInfo['folder_structure'] as $folderName) {
+				if (strpos($folderName, "{{") !== false){
+					$key = $folderName;
+					$key = str_replace('{{', '', $key);
+					$key = str_replace('}}', '', $key);
+					if (isset($dataArray[$key]))
+						$path .= $dataArray[$key];
+				}
+				else{
+					$path .= $folderName;
+				}
+				@mkdir($path,0755);
+			}
+		}
+		return $path;
+	}
+
 	/**
 	 * Load image data
 	 */
-	private function intern_load()
+	private function intern_load($fileType = null)
 	{
 		$this->srcInfo = pathinfo($this->srcPath);
+		if ($fileType !== null){
+			$ext = explode ('/', $fileType)[1];
+			$this->srcInfo['extension'] = $ext;
+		}
 		switch ($this->srcInfo['extension']){
 			case 'png':
 		$this->srcImage  = imagecreatefrompng($this->srcPath);
