@@ -53,12 +53,24 @@ class DatabaseTable extends AbstractTableGateway
 
         return $result->current();
     }
+
+	public function getNextId()
+	{
+		$query = "SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '$this->table'";
+		$query = "SHOW TABLE STATUS LIKE '$this->table'";
+		$res = $this->adapter->query($query, array());
+		$res = $res->toArray()[0]['Auto_increment'] + 1;
+
+		return $res;
+	}
+
     public function add($data) {
         $data = $this->prepareDataForSave($data);
         if (!$this->insert($data))
             return false;
         return $this->getLastInsertValue();
     }
+
     public function save($data) {
         $data = $this->prepareDataForSave($data);
         if (!isset($data['id']) || !is_integer($data['id']) || $data['id'] == 0) {
@@ -71,9 +83,11 @@ class DatabaseTable extends AbstractTableGateway
         }
         return true;
     }
+
     public function remove($id) {
         return ($this->delete(array('id' => (int)$id)))? $id : false;
     }
+
     public function hydrate(Array $data) {
         return $this->hydrator->hydrate($data, new $this->objectPrototype());
 
