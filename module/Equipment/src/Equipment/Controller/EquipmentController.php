@@ -152,9 +152,12 @@ class EquipmentController extends AbstractActionController
                 $data = new $vars['model'][$type]($form->getData());
                 $newId = $this->equipService->getNextId();
 
-                if ($data['image1'] !== null || $data['image2'] !== null){
-                	$this->imageProcessor->uploadEquipImages($data, $newId);
-                	die;
+				// upload and save images
+				if ($data['image1'] !== null || $data['image2'] !== null){
+					$targetPaths = $this->imageProcessor->uploadEquipImages($data, $newId);
+					foreach ($targetPaths as $key => $targetPath) {
+						$data->$key = $targetPath;
+					}
 				}
 				$this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
@@ -189,6 +192,17 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 $item = new $vars['model'][$vars['type']]($form->getData());
+
+				bdump($form->getData());
+				// upload and save images
+				if ($item['image1'] !== null || $item['image2'] !== null){
+					$targetPaths = $this->imageProcessor->uploadEquipImages($item);
+					// set data in DataModel
+					foreach ($targetPaths as $key => $targetPath) {
+						$item->$key = $targetPath;
+					}
+				}
+
                 $this->equipService->save($item);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }

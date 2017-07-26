@@ -1,6 +1,7 @@
 <?php
 
 namespace Media\Service;
+use Equipment\Model\DataModels\Equip;
 use Media\Model\Enums\EImageProcessor;
 
 /**
@@ -9,8 +10,10 @@ use Media\Model\Enums\EImageProcessor;
  */
 class ImageProcessor
 {
-	private $config;
+	const READ_OUT = "/media/file/";
 	private $dataRootPath;
+
+	private $config;
 
 	private $testMode = false;
 
@@ -30,6 +33,8 @@ class ImageProcessor
 	 */
 	private $newImage = null;
 	private $newOrientation;
+
+	private $folderInfo = null;
 
 	public function __construct($config)
 	{
@@ -138,12 +143,19 @@ class ImageProcessor
 		}
 	}
 
+	/**
+	 * @param Equip $uploadFormData
+	 * @param int   $itemId
+	 *
+	 * @return array
+	 */
 	public function uploadEquipImages($uploadFormData, $itemId = null)
 	{
-		if ($itemId !== null) $uploadFormData['id'] = $itemId;
+		$targetPaths = array();
+		$uploadFormData->id = ($itemId !== null) ? $itemId : $uploadFormData->id;
 		$width  = $this->config['Equipment_ImageProcessor']['images']['x'];
 		$height = $this->config['Equipment_ImageProcessor']['images']['y'];
-		$folderInfo = $this->config['Equipment_ImageProcessor']['storage_path'];
+		$this->folderInfo = (isset($this->config['Equipment_ImageProcessor']['storage_path'])) ? $this->config['Equipment_ImageProcessor']['storage_path'] : null;
 
 		$uploadedImages = array();
 		if ($uploadFormData['image1'] !== null) $uploadedImages['image1'] = $uploadFormData['image1'];
@@ -151,10 +163,16 @@ class ImageProcessor
 
 		if (!empty ($uploadedImages))
 		{
-			$targetPath = $this->createFolderStructure($folderInfo, $uploadFormData);
-			foreach ($uploadedImages as $key =>$uploadedImage) {
+			list($saveRoot, $readOutRoot, $folderStructure) = $this->createFolderStructure($uploadFormData);
+
+			$targetPath = $saveRoot . $folderStructure;
+			$readOutPath = $readOutRoot . $folderStructure;
+
+			foreach ($uploadedImages as $fieldName => $uploadedImage) {
 				$this->load($uploadedImage);
-				$target = $targetPath . $key . '.' .$this->srcInfo['extension'];
+				$targetFilename = $this->overrideFileName($fieldName, $uploadedImage);
+				$target = $targetPath . $targetFilename ;
+				$readOutTarget = $readOutPath . $targetFilename;
 				// if src image is smaller than limits
 				if (!($this->srcWidth < $width && $this->srcHeight < $height)) {
 					if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
@@ -163,9 +181,10 @@ class ImageProcessor
 						$this->resize_height($height);
 				}
 				$this->intern_save($target);
+				$targetPaths[$fieldName] = $readOutTarget;
 			}
 		}
-		return $targetPath;
+		return $targetPaths;
 	}
 
 	/* =========================================================
@@ -200,7 +219,7 @@ class ImageProcessor
 	 */
 	public function resize_height ($newHeight, $newWidth = null, $keepRatio = true)
 	{
-		$this->intern_resize_height($newWidth, $newHeight, $keepRatio);
+		$this->intern_resize_height($newHeight, $newWidth, $keepRatio);
 	}
 
 	/**
@@ -294,26 +313,55 @@ class ImageProcessor
 		}
 	}
 
-	private function createFolderStructure($folderInfo, $dataArray)
+	private function createFolderStructure($dataArray = null)
 	{
-		$path = (isset($folderInfo['base']) && $folderInfo['base'] !== '') ? $folderInfo['base'] : $this->dataRootPath;
+		$saveRoot = $this->dataRootPath . '/';
+		$readOutPath = self::READ_OUT;
+		$folderStructure = null;
 
-		if (isset($folderInfo['folder_structure'])){
-			foreach ($folderInfo['folder_structure'] as $folderName) {
-				if (strpos($folderName, "{{") !== false){
-					$key = $folderName;
-					$key = str_replace('{{', '', $key);
-					$key = str_replace('}}', '', $key);
-					if (isset($dataArray[$key]))
-						$path .= $dataArray[$key];
+		// create base path for saving if no folder info is given
+		if ($this->folderInfo == null) @mkdir($saveRoot, 0755);
+
+		if ($this->folderInfo !== null) {
+			// get base path for saving
+			if (isset($this->folderInfo['saveRoot']) && $this->folderInfo['saveRoot'] !== '')
+				$saveRoot =  $this->folderInfo['saveRoot'] . '/';
+			// create base path for saving
+			@mkdir($saveRoot, 0755);
+
+			if (isset($this->folderInfo['folder_structure'])) {
+				foreach ($this->folderInfo['folder_structure'] as $folderName) {
+					if (strpos($folderName, "{{") !== false) {
+						$key = $folderName;
+						$key = str_replace('{{', '', $key);
+						$key = str_replace('}}', '', $key);
+						if (isset($dataArray[ $key ]))
+							$folderStructure .= $dataArray[ $key ];
+					} else {
+						$folderStructure .= $folderName;
+					}
+					$folderStructure .= '/';
+					@mkdir($saveRoot . $folderStructure, 0755);
 				}
-				else{
-					$path .= $folderName;
-				}
-				@mkdir($path,0755);
 			}
+			if (isset($this->folderInfo['read_out']) && $this->folderInfo['read_out'] !== '')
+				$readOutPath = $this->folderInfo['read_out'];
+
 		}
-		return $path;
+		return array(
+			$saveRoot,
+			$readOutPath,
+			$folderStructure
+		);
+	}
+
+	private function overrideFileName($fieldName, $uploadedImage)
+	{
+		$targetFilename = (isset ($this->folderInfo['override_names'][$fieldName]))
+			? $this->folderInfo['override_names'][$fieldName]. '.' .$this->srcInfo['extension']
+			: $uploadedImage['name'];
+
+		return $targetFilename;
 	}
 
 	/**

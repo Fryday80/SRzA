@@ -8,15 +8,16 @@ return array(
 			'y' => 500
 		),
 		'storage_path' => array(
-			'base' => '', //use imageProcessors base path
+			'saveRoot' => '', 	// '' or not set to use imageProcessors base path
 			'folder_structure' => array(
 				'_equipment',
-				'{{id}}'
+				'{{id}}'		// {{varname}} to use variables
 			),
 			'override_names' => array(
 				'image1' => 'image1',
 				'image2' => 'image2'
 			),
+			'read_out' => '' // '' or not set to use imageProcessors base path
 		),
 	),
     'Equipment' => array(

@@ -8,7 +8,7 @@ use Equipment\Service\EquipmentService;
 
 class EquipmentForm extends MyForm
 {
-    const EQUIPMENT_IMAGES_PATH = 'media/file/_equipment/';
+    const EQUIPMENT_IMAGES_PATH = '/media/file/_equipment/';
     /** @var  UserService */
     private $userService;
     /** @var EquipmentService  */
@@ -177,9 +177,8 @@ class EquipmentForm extends MyForm
 	protected function prepareDataForSetData ($data)
 	{
 		// no pic uploaded
-		if ($data['image1']['error'] > 0) unset($data['image1']);
-		if ($data['image2']['error'] > 0) unset($data['image2']);
-
+		if (isset($data['image1']) && isset($data['image1']['error']) && $data['image1']['error'] > 0) unset($data['image1']);
+		if (isset($data['image2']) && isset($data['image2']['error']) && $data['image2']['error'] > 0) unset($data['image2']);
 		// set or unset "image", add default data for rendering if forgotten
 		if ($data['sitePlannerObject'] == '1') {
 			if ($data['sitePlannerImage'] == NULL)
@@ -189,8 +188,11 @@ class EquipmentForm extends MyForm
 				$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
 				$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
 			} else {
-				//@todo remove ".png" when upload is implemented
-				$data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . ".png";
+				$imageData = $data[EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']]];
+				$parts = explode('.', $imageData['name']);
+				$ext = $parts[(count($parts)-1)];
+				$imageName = EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . '.' . $ext;
+				$data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . $imageName;
 			}
 			if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
 				$data['width'] = $data['depth'];
