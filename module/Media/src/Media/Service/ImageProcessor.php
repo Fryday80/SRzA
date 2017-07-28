@@ -98,10 +98,7 @@ class ImageProcessor
 	 */
 	public function createThumbs($item, $targetPath1 = null, $targetPath2 = null)
 	{
-		if(is_object($item))
-			$this->loadObject($item);
-		else
-			$this->loadPath($item);
+		$this->load($item);
 
 		// === thumb 1
 		// get size for thumb 1
@@ -175,7 +172,7 @@ class ImageProcessor
 
 			foreach ($uploadedImages as $fieldName => $uploadedImage) {
 				$this->load($uploadedImage);
-				$targetFilename = $this->overrideFileName($fieldName, $uploadedImage);
+				$targetFilename = $this->overrideFileName($fieldName, $uploadedImage['name']);
 				$target = $targetPath . $targetFilename ;
 				$readOutTarget = $readOutPath . $targetFilename;
 				// if src image is smaller than limits
@@ -285,6 +282,8 @@ class ImageProcessor
 	 * Load image data from an object
 	 *
 	 * @param $imageObject
+	 *
+	 * @throws \Exception
 	 */
 	private function loadFromObject($imageObject)
 	{
@@ -360,11 +359,11 @@ class ImageProcessor
 		);
 	}
 
-	private function overrideFileName($fieldName, $uploadedImage)
+	private function overrideFileName($fieldName, $originalName)
 	{
 		$targetFilename = (isset ($this->folderInfo['override_names'][$fieldName]))
 			? $this->folderInfo['override_names'][$fieldName] . '.' .$this->srcInfo['extension']
-			: $uploadedImage['name'];
+			: $originalName;
 
 		return $targetFilename;
 	}
