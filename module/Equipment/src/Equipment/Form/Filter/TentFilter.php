@@ -13,6 +13,10 @@ class TentFilter extends InputFilter
 
     private function commonFilter(){
 
+		$this->add(array(
+			'name' => 'spareBeds',
+			'required' => false,
+		));
     }
 
     private function backendFilter()

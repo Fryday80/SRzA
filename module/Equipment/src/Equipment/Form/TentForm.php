@@ -84,6 +84,9 @@ class TentForm extends MyForm
             'options' => array (
                 'label' => 'Freie Schlafplätze',
             ),
+			'attributes' => array (
+				'value' => 0,
+			),
         ));
         // showtent int
         $this->add(array(

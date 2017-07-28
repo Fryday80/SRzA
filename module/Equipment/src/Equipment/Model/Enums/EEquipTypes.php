@@ -7,7 +7,7 @@ abstract class EEquipTypes
     const EQUIPMENT = 1;
 
     const EQUIP_ITEM_CLASS = array(
-        0 => \Equipment\Model\Tent::class,
+        0 => \Equipment\Model\DataModels\Tent::class,
         1 => \Equipment\Model\DataModels\Equip::class,
     );
     

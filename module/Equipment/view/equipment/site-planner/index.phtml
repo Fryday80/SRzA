@@ -407,15 +407,18 @@ $this->headScript()->appendFile('/libs/map.js');
         var RIGHT_CLICK = 3,
             MIDDLE_CLICK = 2,
             LEFT_CLICK = 1,
+
             ENUM_ItemType_Tent = 0,
             ENUM_ItemType_Equip = 1,
             ENUM_ItemShape_Round = 0,
-            ENUM_ItemShape_Rectangel = 1,
+            ENUM_ItemShape_Rectangle = 1,
             ENUM_ItemShape_Oval = 2,
+
             ENUM_TentShape_Round = 0,
             ENUM_TentShape_Rectangle = 1,
             ENUM_TentShape_Rectangle_Two_Mast = 2,
-            ENUM_TentShape_Round_Rectangle = 3;
+            ENUM_TentShape_Round_Rectangle = 3,
+            ENUM_TentShape_A_Tent = 4;
 
         function checkClick(e, value) {
             return 'which' in e ? e.which === value : e.button === value - 1;
@@ -762,6 +765,7 @@ $this->headScript()->appendFile('/libs/map.js');
 
                 switch (parseInt(this.item.itemType))
                 {
+                    // draw tents:
                     case ENUM_ItemType_Tent:
                         switch (parseInt(this.item.shape)) {
                             case ENUM_TentShape_Round:
@@ -1010,6 +1014,31 @@ $this->headScript()->appendFile('/libs/map.js');
                                 ctx.stroke();
                                 ctx.fill();
                                 break;
+                            case ENUM_TentShape_A_Tent:
+
+                                ctx.beginPath();
+                                ctx.moveTo(-(w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) - 10));
+                                ctx.lineTo( (w/6), - ((h / 2) + 8));
+                                ctx.lineTo(-(w/6), - ((h / 2) + 8));
+                                ctx.lineTo(-(w/6), - ((h / 2) - 10));
+                                ctx.fillStyle = this.item.color1;
+                                ctx.strokeStyle = designColor;
+                                ctx.lineWidth = 1;
+//                                ctx.stroke();
+                                ctx.fill();
+
+                                ctx.fillStyle = this.item.color1;
+                                ctx.fillRect(-(w/2), -(h/2), w, h);
+
+                                ctx.beginPath();
+                                ctx.moveTo(0, -(h/2));
+                                ctx.lineTo(0,  (h/2));
+                                ctx.strokeStyle = designColor;
+                                ctx.lineWidth = 1;
+                                ctx.stroke();
+
+                                break;
                             default:
                                 if (this.itemImg) {
                                     ctx.drawImage(this.itemImg, -this.width/2, -this.height/2, this.width, this.height);
@@ -1017,6 +1046,7 @@ $this->headScript()->appendFile('/libs/map.js');
                                 break;
                             }
                         break;
+                    // draw equip:
                     case ENUM_ItemType_Equip:
                     default:
                         if (this.item.image !== null) {
@@ -1028,7 +1058,7 @@ $this->headScript()->appendFile('/libs/map.js');
                                     ctx.moveTo(0,0);
                                     ctx.arc (0,0,w/2,0, 2* Math.PI, false);
                                     break;
-                                case ENUM_ItemShape_Rectangel:
+                                case ENUM_ItemShape_Rectangle:
                                     ctx.beginPath();
                                     ctx.moveTo(-w/2, -h/2);
                                     ctx.lineTo( w/2, -h/2);
