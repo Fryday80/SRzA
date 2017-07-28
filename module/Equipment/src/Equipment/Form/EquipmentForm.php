@@ -188,11 +188,13 @@ class EquipmentForm extends MyForm
 				$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
 				$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
 			} else {
-				$imageData = $data[EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']]];
-				$parts = explode('.', $imageData['name']);
-				$ext = $parts[(count($parts)-1)];
-				$imageName = EEquipSitePlannerImage::IMAGE_TYPE[$data['sitePlannerImage']] . '.' . $ext;
-				$data['image'] =  self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . $imageName;
+				if (!(is_string($data['image']))) {
+					$imageData = $data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ];
+					$parts = explode('.', $imageData['name']);
+					$ext = $parts[ (count($parts) - 1) ];
+					$imageName = EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] . '.' . $ext;
+					$data['image'] = self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . $imageName;
+				}
 			}
 			if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
 				$data['width'] = $data['depth'];

@@ -14,6 +14,11 @@ class ImageProcessor
 	private $dataRootPath;
 
 	private $config;
+	private $possibleExtensions = array (
+		'jpg', 'jpeg',
+		'gif',
+		'png',
+	);
 
 	private $testMode = false;
 
@@ -428,7 +433,17 @@ class ImageProcessor
 			case 'gif':
 				imagegif  ( $this->newImage, $targetPath);
 		}
+		$this->intern_removePrevious($targetPath);
 		$this->intern_end();
+	}
+
+	private function intern_removePrevious($newImagePath)
+	{
+		$pI = pathinfo($newImagePath);
+		foreach ($this->possibleExtensions as $possibleExtension) {
+			if ($possibleExtension !== $pI['extension'] && file_exists($pI['dirname'] . '/' . $pI['filename'] . '.' . $possibleExtension))
+				@unlink($pI['dirname'] . '/' . $pI['filename'] . '.' . $possibleExtension);
+		}
 	}
 
 	/**
