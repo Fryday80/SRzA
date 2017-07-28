@@ -278,7 +278,7 @@ class ImageProcessor
 	private function loadFromUpload($uploadArray)
 	{
 		$this->srcPath = $uploadArray['tmp_name'];
-		$this->intern_load($uploadArray['type']);
+		$this->intern_load($uploadArray['name']);
 	}
 
 	/**
@@ -363,7 +363,7 @@ class ImageProcessor
 	private function overrideFileName($fieldName, $uploadedImage)
 	{
 		$targetFilename = (isset ($this->folderInfo['override_names'][$fieldName]))
-			? $this->folderInfo['override_names'][$fieldName]. '.' .$this->srcInfo['extension']
+			? $this->folderInfo['override_names'][$fieldName] . '.' .$this->srcInfo['extension']
 			: $uploadedImage['name'];
 
 		return $targetFilename;
@@ -371,13 +371,16 @@ class ImageProcessor
 
 	/**
 	 * Load image data
+	 *
+	 * @param null $fileType
 	 */
-	private function intern_load($fileType = null)
+	private function intern_load($fileName = null)
 	{
 		$this->srcInfo = pathinfo($this->srcPath);
-		if ($fileType !== null){
-			$ext = explode ('/', $fileType)[1];
-			$this->srcInfo['extension'] = $ext;
+		if ($fileName !== null){
+			$ext = explode ('.', $fileName);
+			$c = count($ext);
+			$this->srcInfo['extension'] = $ext[$c-1];
 		}
 		switch ($this->srcInfo['extension']){
 			case 'png':
