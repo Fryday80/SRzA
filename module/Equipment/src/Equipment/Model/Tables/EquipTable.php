@@ -29,6 +29,15 @@ class EquipTable extends DatabaseTable
         return $this->select(array('item_type' => $type));
     }
 
+	public function getAllPlannerObjects()
+	{
+		$result = $this->select(array('site_planner_object' => 1));
+		if (!$result)
+			return false;
+
+		return $result->toObjectArray();
+	}
+
     public function getByUserId($id)
     {
         return $this->select(array('equip.user_id' => (int) $id));

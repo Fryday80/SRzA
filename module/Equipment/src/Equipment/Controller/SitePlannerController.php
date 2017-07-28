@@ -34,6 +34,7 @@ class SitePlannerController extends AbstractActionController
     }
     public function listAction() {
         $request = $this->getRequest();
+//        $data = $this->sitePlanTable->getAllPlannerObjects();
         $data = $this->sitePlanTable->getAll();
         if ($request->isXmlHttpRequest()) {
             $result = ['error' => false];
