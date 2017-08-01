@@ -30,6 +30,10 @@ class EquipmentService
         return $this->equipTable->getAll();
     }
 
+    public function getAllPlannerObjects(){
+    	return $this->equipTable->getAllPlannerObjects();
+	}
+
     /**
      * @param int $type use EnumEquipTypes::
      * @return EquipmentResultSet|bool

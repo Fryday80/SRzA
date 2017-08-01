@@ -26,7 +26,8 @@ class SitePlannerController extends AbstractActionController
     }
 
     public function indexAction() {
-        $data = $this->equipmentService->getAll();
+//        $data = $this->equipmentService->getAll();
+        $data = $this->equipmentService->getAllPlannerObjects();
         $this->layout()->setVariable('showSidebar', false);
         return array(
             'items' => $data,
@@ -34,7 +35,6 @@ class SitePlannerController extends AbstractActionController
     }
     public function listAction() {
         $request = $this->getRequest();
-//        $data = $this->sitePlanTable->getAllPlannerObjects();
         $data = $this->sitePlanTable->getAll();
         if ($request->isXmlHttpRequest()) {
             $result = ['error' => false];

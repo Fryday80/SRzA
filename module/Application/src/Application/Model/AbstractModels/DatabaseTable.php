@@ -46,6 +46,7 @@ class DatabaseTable extends AbstractTableGateway
 
         return $result->toObjectArray();
     }
+
     public function getById($id) {
         $result = $this->select(array($this->table.'.id' => $id));
         if (!$result)
