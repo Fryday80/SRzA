@@ -37,6 +37,9 @@ class SystemController extends AbstractActionController
 
 	public function testAction()
 	{
+		$dumpLog = array ();
+		$log = '';
+
 		/** @var ImageProcessor $ip */
 		$ip = $this->systemService->serviceManager->get('ImageProcessor');
 		$ip->testMode();
@@ -46,7 +49,11 @@ class SystemController extends AbstractActionController
 		$ip->createBlazon(getcwd() . '/public/img/blazons/shield-tross.big.png');
 		$msg = 'resize';
 		$test = 'nösing';
+		$dumpLog = $ip->log;
+
 		return array (
+			'dumpLog' => $dumpLog,
+			'log' => $log,
 			'msg' => $msg,
 			'test' => $test,
 		);

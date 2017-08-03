@@ -10,9 +10,15 @@ use Media\Model\Enums\EImageProcessor;
  */
 class ImageProcessor
 {
-	const READ_OUT = "/media/file/";
-	private $dataRootPath;
+	// defaults
+	private $readOutPath = "/media/file";
+	private $dataRootPath; // default set in constructor
 
+	// debugging
+	public $log = array();
+	private $loggingMode = true;
+
+	// configuration
 	private $config;
 	private $possibleExtensions = array (
 		'jpg', 'jpeg',
@@ -20,6 +26,7 @@ class ImageProcessor
 		'png',
 	);
 
+	//test mode
 	private $testMode = false;
 
 	/*
@@ -38,8 +45,6 @@ class ImageProcessor
 	 */
 	private $newImage = null;
 	private $newOrientation;
-
-	private $folderInfo = null;
 
 	public function __construct($config)
 	{
@@ -96,7 +101,7 @@ class ImageProcessor
 	 * @param string $targetPath1	small thumb path, null to overwrite source
 	 * @param string $targetPath2	big thumb path, null to skip
 	 */
-	public function createThumbs($item, $targetPath1 = null, $targetPath2 = null)
+	public function createThumbs($item, $targetPath1, $targetPath2 = null)
 	{
 		$this->load($item);
 
@@ -153,11 +158,15 @@ class ImageProcessor
 	 */
 	public function uploadEquipImages($uploadFormData, $itemId = null)
 	{
+		$mainFolder = '_equipment';
+		$subFolder1 = ($itemId == null) ? $uploadFormData->id : $itemId;
+		$targetFolder = $this->createFolderStructure($this->dataRootPath, $mainFolder, $subFolder1) . '/';
+
+
 		$targetPaths = array();
 		$uploadFormData->id = ($itemId !== null) ? $itemId : $uploadFormData->id;
 		$width  = $this->config['Equipment_ImageProcessor']['images']['x'];
 		$height = $this->config['Equipment_ImageProcessor']['images']['y'];
-		$this->folderInfo = (isset($this->config['Equipment_ImageProcessor']['storage_path'])) ? $this->config['Equipment_ImageProcessor']['storage_path'] : null;
 
 		$uploadedImages = array();
 		if ($uploadFormData['image1'] !== null) $uploadedImages['image1'] = $uploadFormData['image1'];
@@ -165,14 +174,12 @@ class ImageProcessor
 
 		if (!empty ($uploadedImages))
 		{
-			list($saveRoot, $readOutRoot, $folderStructure) = $this->createFolderStructure($uploadFormData);
-
-			$targetPath = $saveRoot . $folderStructure;
-			$readOutPath = $readOutRoot . $folderStructure;
+			$targetPath = $targetFolder;
+			$readOutPath = $this->getReadOutPathImage($targetPath);
 
 			foreach ($uploadedImages as $fieldName => $uploadedImage) {
 				$this->load($uploadedImage);
-				$targetFilename = $this->overrideFileName($fieldName, $uploadedImage['name']);
+				$targetFilename = $fieldName . '.' . $this->srcInfo['extension'];
 				$target = $targetPath . $targetFilename ;
 				$readOutTarget = $readOutPath . $targetFilename;
 				// if src image is smaller than limits
@@ -193,11 +200,84 @@ class ImageProcessor
 	 * API
 	 * ========================================================= */
 
+	public function setDataRootPath($dataRootPath)
+	{
+		$this->dataRootPath = $dataRootPath;
+	}
+
+	public function setReadOutPath($readOutPath)
+	{
+		$this->readOutPath = $readOutPath;
+	}
+
+	public function getDataRootPath()
+	{
+		return $this->dataRootPath;
+	}
+
+	public function getReadOutPath()
+	{
+		return $this->readOutPath;
+	}
+
+	public function getReadOutPathImage($imagePath)
+	{
+			return str_replace($this->dataRootPath, $this->readOutPath , $imagePath);
+	}
+
+	public function createFolderStructure($dataRootPath, $mainFolder = null, $subFolder1 = null, $subFolder2 = null, $subFolder3 = null)
+	{
+		// full target path is given
+		if ($mainFolder == null)
+		{
+			$path = $this->dataRootPath;
+			if (!is_dir($path)) @mkdir($path,0755);
+			$sub = str_replace($this->dataRootPath, '', $dataRootPath);
+			if (strlen($sub) > 1){
+				$sub = str_replace('\\', '/', $sub);
+				$subParts = explode('/', $sub);
+				foreach ($subParts as $part){
+					$path .= '/' . $part;
+					if (!is_dir($path)) @mkdir($path,0755);
+				}
+			}
+			return $path;
+		}
+		// target path is given bitwise
+		else
+		{
+			$path = $dataRootPath;
+			if (!is_dir($path)) @mkdir($path,0755);
+			$path .= '/' . $mainFolder;
+			if (!is_dir($path)) @mkdir($path,0755);
+			if ($subFolder1 !== null)
+			{
+				$path .= '/' . $subFolder1;
+				if (!is_dir($path)) @mkdir($path, 0755);
+			}
+			if ($subFolder2 !== null)
+			{
+				$path .= '/' . $subFolder2;
+				if (!is_dir($path)) @mkdir($path, 0755);
+			}
+			if ($subFolder3 !== null)
+			{
+				$path .= '/' . $subFolder3;
+				if (!is_dir($path)) @mkdir($path, 0755);
+			}
+
+		}
+		return $path;
+	}
+
+
 	public function load($item)
 	{
+		$this->log(__FUNCTION__);
 		if (is_object($item)) 	$this->loadFromObject($item);
 		if (is_array($item))	$this->loadFromUpload($item);
 		if (is_string($item))	$this->loadFromPath($item);
+		$this->log(__FUNCTION__);
 	}
 
 	/**
@@ -246,11 +326,6 @@ class ImageProcessor
 	public function saveImage($targetPath = null)
 	{
 		$this->intern_save($targetPath);
-	}
-
-	public function getDataRoot()
-	{
-		return $this->dataRootPath;
 	}
 
 	/**
@@ -317,64 +392,14 @@ class ImageProcessor
 		}
 	}
 
-	private function createFolderStructure($dataArray = null)
-	{
-		$saveRoot = $this->dataRootPath . '/';
-		$readOutPath = self::READ_OUT;
-		$folderStructure = null;
-
-		// create base path for saving if no folder info is given
-		if ($this->folderInfo == null) @mkdir($saveRoot, 0755);
-
-		if ($this->folderInfo !== null) {
-			// get base path for saving
-			if (isset($this->folderInfo['saveRoot']) && $this->folderInfo['saveRoot'] !== '')
-				$saveRoot =  $this->folderInfo['saveRoot'] . '/';
-			// create base path for saving
-			@mkdir($saveRoot, 0755);
-
-			if (isset($this->folderInfo['folder_structure'])) {
-				foreach ($this->folderInfo['folder_structure'] as $folderName) {
-					if (strpos($folderName, "{{") !== false) {
-						$key = $folderName;
-						$key = str_replace('{{', '', $key);
-						$key = str_replace('}}', '', $key);
-						if (isset($dataArray[ $key ]))
-							$folderStructure .= $dataArray[ $key ];
-					} else {
-						$folderStructure .= $folderName;
-					}
-					$folderStructure .= '/';
-					@mkdir($saveRoot . $folderStructure, 0755);
-				}
-			}
-			if (isset($this->folderInfo['read_out']) && $this->folderInfo['read_out'] !== '')
-				$readOutPath = $this->folderInfo['read_out'];
-
-		}
-		return array(
-			$saveRoot,
-			$readOutPath,
-			$folderStructure
-		);
-	}
-
-	private function overrideFileName($fieldName, $originalName)
-	{
-		$targetFilename = (isset ($this->folderInfo['override_names'][$fieldName]))
-			? $this->folderInfo['override_names'][$fieldName] . '.' .$this->srcInfo['extension']
-			: $originalName;
-
-		return $targetFilename;
-	}
-
 	/**
 	 * Load image data
 	 *
-	 * @param null $fileType
+	 * @param null $fileName
 	 */
 	private function intern_load($fileName = null)
 	{
+		$this->log(__FUNCTION__);
 		$this->srcInfo = pathinfo($this->srcPath);
 		if ($fileName !== null){
 			$ext = explode ('.', $fileName);
@@ -383,14 +408,17 @@ class ImageProcessor
 		}
 		switch ($this->srcInfo['extension']){
 			case 'png':
-		$this->srcImage  = imagecreatefrompng($this->srcPath);
+				$this->srcImage  = imagecreatefrompng($this->srcPath);
+				$this->log(__FUNCTION__,'load from png');
 				break;
 			case 'jpg':
 			case 'jpeg':
-		$this->srcImage  = imagecreatefromjpeg($this->srcPath);
+				$this->srcImage  = imagecreatefromjpeg($this->srcPath);
+				$this->log(__FUNCTION__,'load from jpg/jpeg');
 				break;
 			case 'gif':
-		$this->srcImage  = imagecreatefromgif($this->srcPath);
+				$this->srcImage  = imagecreatefromgif($this->srcPath);
+				$this->log(__FUNCTION__,'load from gif');
 				break;
 		}
 
@@ -411,6 +439,7 @@ class ImageProcessor
 			default:
 				break;
 		}
+		$this->log(__FUNCTION__);
 	}
 
 	/**
@@ -420,23 +449,29 @@ class ImageProcessor
 	 */
 	private function intern_save ($targetPath = null)
 	{
+		$this->log(__FUNCTION__);
 		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
 		if ($this->testMode) 		 $targetPath 	 = getcwd() . '/public/test.png';
+		$this->log(__FUNCTION__, '$targetPath = ' .$targetPath);
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
 			case 'jpeg':
 				imagejpeg ( $this->newImage, $targetPath);
+			$this->log(__FUNCTION__,'save as jpg/jpeg');
 				break;
 			case 'png':
 				imagepng  ( $this->newImage, $targetPath);
+				$this->log(__FUNCTION__,'save as png');
 				break;
 			case 'gif':
 				imagegif  ( $this->newImage, $targetPath);
+				$this->log(__FUNCTION__,'save as gif');
 		}
 		$this->intern_removePrevious($targetPath);
 		$this->intern_end();
+		$this->log(__FUNCTION__);
 	}
 
 	private function intern_removePrevious($newImagePath)
@@ -473,6 +508,7 @@ class ImageProcessor
 	 */
 	private function intern_resize_width($newWidth, $newHeight = null, $keepRatio = true)
 	{
+		$this->log['intern_resize_width'][] = 'triggered';
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else
@@ -488,6 +524,7 @@ class ImageProcessor
 	 */
 	private function intern_resize_height($newHeight, $newWidth = null, $keepRatio = true)
 	{
+		$this->log['intern_resize_height'][] = 'triggered';
 		if ($newWidth == null){
 			$newWidth = $newHeight * $this->srcAspectRatio;
 			$this->newImage = imagescale($this->srcImage, $newWidth);
@@ -505,6 +542,7 @@ class ImageProcessor
 	 */
 	private function intern_resize($newWidth, $newHeight, $keepRatio = true)
 	{
+		$this->log['intern_resize'][] = 'triggered';
 		$this->newOrientation = ($newWidth > $newHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		if ($keepRatio !== true)
 			$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
@@ -577,6 +615,7 @@ class ImageProcessor
 	 */
 	private function intern_resize_crop($newWidth, $newHeight)
 	{
+		$this->log['intern_resize_crop'][] = 'triggered';
 		/*
 		 * Crop-to-fit PHP-GD
 		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
@@ -626,5 +665,20 @@ class ImageProcessor
 			$newWidth, $newHeight
 		);
 		imagedestroy($tempImage);
+	}
+
+	/* ==========================================================
+	 * internals
+	 * ========================================================== */
+	private function log($method, $msg = null, $key = null)
+	{
+		if ($this->loggingMode) {
+			if ($msg == null)
+				$msg = (key_exists($method, $this->log)) ? 'done' : 'start';
+			if ($key == null)
+				$this->log[ $method ][] = $msg;
+			else
+				$this->log[ $method ][ $key ] = $msg;
+		}
 	}
 }

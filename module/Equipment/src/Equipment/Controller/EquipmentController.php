@@ -22,6 +22,9 @@ class EquipmentController extends AbstractActionController
     /** @var ImageProcessor  */
 	private $imageProcessor;
 
+	const READ_OUT = "/media/file/";
+	private $dataRootPath;
+
     private $dataTable;
 
 
@@ -34,6 +37,7 @@ class EquipmentController extends AbstractActionController
         $this->dataTable     = new EquipmentDataTable();
         $this->dataTable->setServices($this->accessService, $this->equipService);
         $this->imageProcessor = $imageProcessor;
+		$this->dataRootPath = getcwd() . '/Data';
     }
 
     public function indexAction() {
@@ -192,8 +196,6 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 $item = new $vars['model'][$vars['type']]($form->getData());
-
-				bdump($form->getData());
 				// upload and save images
 				if ($item['image1'] !== null || $item['image2'] !== null){
 					$targetPaths = $this->imageProcessor->uploadEquipImages($item);

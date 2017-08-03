@@ -176,32 +176,58 @@ class EquipmentForm extends MyForm
 
 	protected function prepareDataForSetData ($data)
 	{
-		// no pic uploaded
-		if (isset($data['image1']) && isset($data['image1']['error']) && $data['image1']['error'] > 0) unset($data['image1']);
-		if (isset($data['image2']) && isset($data['image2']['error']) && $data['image2']['error'] > 0) unset($data['image2']);
-		// set or unset "image", add default data for rendering if forgotten
-		if ($data['sitePlannerObject'] == '1') {
-			if ($data['sitePlannerImage'] == NULL)
-				$data['sitePlannerImage'] = 0;
-			if ($data['sitePlannerImage'] == "0"){
-				unset ($data['image']);
-				$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
-				$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
-			} else {
-					$imageData = $data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ];
-					if (is_array($imageData)) {
+		$isEdit = false;
+		$newImage = false;
+		$images = array ('image1', 'image2');
+		foreach ($images as $key => $image) {
+			if (isset($data[$image])){
+				// source is sent form
+				if (is_array($data[$image]))
+				{
+					$isEdit = true;
+					// was a image uploaded?
+					if (isset($data[$image]['error']) && $data[$image]['error'] > 0) {
+						unset ($data[ $image ]);
+						unset ($images[$key]);
+					}
+					else $newImage = true;
+				}
+			}
+		}
+
+		if ($isEdit)
+		{
+			if ($data['sitePlannerObject'] == '0' || $data['sitePlannerObject'] == null) unset ($data['image']);
+			else {
+				if ($data['sitePlannerImage'] == NULL || $data['sitePlannerImage'] == "0")
+				{
+					unset ($data['image']);
+					$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
+					$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
+					if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
+						$data['width'] = $data['depth'];
+				}
+				else
+				{
+					// if selected image was uploaded
+					if ($newImage && isset($data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ]) && is_array($data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ])) {
+						$imageData = $data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ];
 						$parts = explode('.', $imageData['name']);
 						$ext = '.' . $parts[ (count($parts) - 1) ];
 						$imageName = EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] . $ext;
 						$data['image'] = self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . $imageName;
 					}
+					// if the selected image was not uploaded, handle selection change
+					else {
+						if (!isset($data['image' . $data['sitePlannerImage']])) {
+							$dbItem = $this->equipService->getById($data['id']);
+							$data['image'] = $dbItem['image' . $data['sitePlannerImage']];
+						}
+					}
+				}
 			}
-			if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
-				$data['width'] = $data['depth'];
 		}
 
-		// add userName from select userId
-		$data['userName'] = ($data['userId'] == 0) ? 'Verein' : $this->userService->getUserNameByID($data['userId']);
 		return $data;
 	}
 }
