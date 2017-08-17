@@ -57,18 +57,14 @@ abstract class DataTableAbstract
     public function setData($data)
     {
         if (is_object($data)){
-        	if ($data instanceof IToArray)
-				$data = $data->toArray();
-            elseif (method_exists($data, 'toArray'))
+        	if (method_exists($data, 'toArray'))
                 $data = $data->toArray();
             else
                 $data = get_object_vars($data);
         }
         foreach ($data as &$item) {
             if (is_object($item)){
-				if ($data instanceof IToArray)
-					$data = $data->toArray();
-				elseif (method_exists($item, 'toArray'))
+				if (method_exists($item, 'toArray'))
                     $item = $item->toArray();
                 else
                     $item = get_object_vars($item);
