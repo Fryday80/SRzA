@@ -57,6 +57,7 @@ class MediaService {
     protected $dataPath;
     protected $accessService;
     private $metaCache;
+    private $itemCache = array();
 
     function __construct(AccessService $accessService) {
         try {
@@ -653,7 +654,19 @@ class MediaService {
             return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
         }
     }
+    private function addItem2cache(MediaItem $item) {
+        $path = rtrim($item->path, "\x5C\x2F");
+        $this->itemCache[$path] = $item;
 
+    }
+    private function getCachedItem($path) {
+        //cut off last /
+        $path = rtrim($path, "\x5C\x2F");
+        if (array_key_exists($path, $this->itemCache) ){
+            return $this->itemCache[$path];
+        }
+        return false;
+    }
     /**
      * Check recursive folder permissions
      * @param $path
