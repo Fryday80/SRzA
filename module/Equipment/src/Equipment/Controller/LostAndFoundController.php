@@ -19,7 +19,6 @@ class LostAndFoundController extends AbstractActionController
     private $userService;
     /** @var AccessService  */
     private $accessService;
-    private $config;
     /** @var ImageProcessor  */
 	private $imageProcessor;
 
