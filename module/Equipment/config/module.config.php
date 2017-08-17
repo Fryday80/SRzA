@@ -119,8 +119,9 @@ return array(
     'controllers' => array(
         'invokables' => array( ),
         'factories' => array(
-            'Equipment\Controller\SitePlanner' => 'Equipment\Factory\Controller\SitePlannerControllerFactory',
-            'Equipment\Controller\Equipment'   => 'Equipment\Factory\Controller\EquipmentControllerFactory',
+            'Equipment\Controller\SitePlanner'  => 'Equipment\Factory\Controller\SitePlannerControllerFactory',
+            'Equipment\Controller\Equipment'    => 'Equipment\Factory\Controller\EquipmentControllerFactory',
+            'Equipment\Controller\LostAndFound' => 'Equipment\Factory\Controller\LostAndFoundControllerFactory',
         ),
     ),
     'view_helpers' => array(
@@ -130,11 +131,13 @@ return array(
     'service_manager' => array(
         'factories' => array(
             'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',
+            'LostAndFoundService' => 'Equipment\Factory\Service\LostAndFoundServiceFactory',
         ),
         'abstract_factories' => array(
             'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\Tables\SitePlannerTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\Tables\EquipTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\LostAndFoundTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(
@@ -144,6 +147,30 @@ return array(
     ),
      'router' => array(
          'routes' => array(
+			 'lostAndFound' => array (
+			 	'type' => 'segment',
+				 'may_terminate' => true,
+				 'options' => array(
+					 'route'    => '/laf',
+					 'defaults' => array(
+						 'controller' => 'Equipment\Controller\LostAndFound',
+						 'action'     => 'index',
+					 ),
+				 ),'child_routes' => array(
+				 	'claim' => array(
+						'type'    => 'segment',
+						'may_terminate' => true,
+						'options' => array(
+							'route'    => '/claim/:id',
+							'defaults' => array(
+								'controller' => 'Equipment\Controller\LostAndFound',
+								'action'     => 'claim',
+							),
+						),
+
+					),
+				 ),
+			 ),
              'equipmanager' => array(
                  'type'    => 'segment',
                  'may_terminate' => true,
