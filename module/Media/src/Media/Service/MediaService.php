@@ -27,8 +27,8 @@ const ERROR_STRINGS = [
     "Parent folder doesn't exists",
     'Forbidden name',
     'MediaItem not found',
-    "Can't rename folder",
-    "Can't rename file",//i = 10
+    "Can't rename folder",//i = 10
+    "Can't rename file",
     "The use of '/' is forbidden in the directory or file name",
     "Destination folder not found",
     'No write permission in destination folder',
@@ -37,8 +37,8 @@ const ERROR_STRINGS = [
     "Can't move file",
     "Can't delete folder",
     "Can't delete file",
-    "Can't copying folder",
-    "Can't copying file",//i = 20
+    "Can't copying folder",//i = 20
+    "Can't copying file",
     "Can't reading file",
     "Can't writing file",
     "Can't read folders",
@@ -48,7 +48,9 @@ const ERROR_STRINGS = [
     'No read permission in sub folders',
     'No write permission in sub folders',
     'Folder is not in data path',
-    'Folder is not in data path',//i = 30
+    'UPLOAD_ERROR',//i = 30
+    'UPLOAD_FILE_NOT_FOUND',
+    'FILE_UPLOAD_ERROR',
 
 ];
 class MediaService {
@@ -109,7 +111,7 @@ class MediaService {
      * @param $path
      * @return bool
      */
-    function fileExists($path) {
+    public function fileExists($path) {
         $filePath = $this->realPath($path);
         if (is_file($filePath)) {
             return true;
@@ -121,7 +123,7 @@ class MediaService {
      * @param $path
      * @return bool
      */
-    function isDir($path) {
+    public function isDir($path) {
         $filePath = $this->realPath($path);
         if (is_dir($filePath)) {
             return true;
@@ -145,7 +147,7 @@ class MediaService {
         return in_array($mime, $imagesMime);
     }
 
-    function createFolder($path) {
+    public function createFolder($path) {
         //check if the parent folder exists
         if (!$this->isDir(dirname($path))) {
             return new MediaException(ERROR_TYPES::PARENT_NOT_EXISTS, $path);
@@ -169,7 +171,7 @@ class MediaService {
 
     }
 
-    function renameItem($path, $newName) {
+    public function renameItem($path, $newName) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException) {
             return $item;
@@ -210,7 +212,7 @@ class MediaService {
      * @param $targetPath path of the target folder NOT the full path of the target item
      * @return MediaItem|MediaException|null
      */
-    function moveItem($path, $targetPath) {
+    public function moveItem($path, $targetPath) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException) {
             return $item;
@@ -253,7 +255,7 @@ class MediaService {
         //@todo move item in item cache, when cache is implemented :)
         return $this->getItem($fullTargetPath);
     }
-    function copyItem($path, $targetParentPath) {
+    public function copyItem($path, $targetParentPath) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException)
             return $item;
@@ -306,7 +308,7 @@ class MediaService {
         return $this->getItem($targetPath);
     }
 
-    function deleteItem($path) {
+    public function deleteItem($path) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException)
             return $item;
@@ -366,7 +368,7 @@ class MediaService {
         return $item;
     }
 
-    function getFileContent($path) {
+    public function getFileContent($path) {
         $item = $this->loadItem($path);
         if ($item instanceof MediaException) {
             return $item;
@@ -384,7 +386,7 @@ class MediaService {
         }
     }
 
-    function setFileContent($path, $content) {
+    public function setFileContent($path, $content) {
         $item = $this->loadItem($path);
         if ($item instanceof MediaException) {
             return $item;
@@ -401,7 +403,8 @@ class MediaService {
             return new MediaException(ERROR_TYPES::ERROR_WRITING_FILE, $path);
         }
     }
-    function getFolderMeta($path) {
+
+    public function getFolderMeta($path) {
         return $this->parseIniFile($this->realPath($path));
     }
 
@@ -552,8 +555,8 @@ class MediaService {
 //@todo deprecated systemPermission
 //            'readable' => ($sysPerms['r'] == 0)? 0: $readable,
 //            'writable' => ($sysPerms['w'] == 0)? 0: $writable
-            'readable' => 1,//$readable,
-            'writable' => 1//$writable
+            'readable' => $readable,
+            'writable' => $writable
         ];
     }
 
@@ -634,6 +637,7 @@ class MediaService {
         if (!$perm['writable']) {
             return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
         }
+
         $path = '';
         try {
             $uploadHandler = new UploadHandler();
@@ -643,25 +647,11 @@ class MediaService {
             $uploadHandler->setDestinationPath($target);
             $path = $uploadHandler->upload();
         } catch (Exception $e) {
-            bdump($e->getMessage());
-            bdump($e->getFile());
-            bdump($e->getLine());
-            return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $targetFolder);
+//            bdump($e->getMessage());
+//            bdump($e->getFile());
+//            bdump($e->getLine());
+            return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
         }
-
-
-        //check file type
-//        if ($filePostArray['error'] > 0) {
-//            return new MediaException(ERROR_TYPES::UPLOAD_FILE_NOT_FOUND, '');
-//        }
-//        $realTargetFolder = $this->realPath($targetFolder);
-//        //@todo check permissions
-////        return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
-//        $newPath = $realTargetFolder . '/' . $filePostArray['name'];
-//        if ($this->fileExists($newPath) ) {
-//            return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $targetFolder.'/'.$filePostArray['name']);
-//        }
-//        rename($filePostArray['tmp_name'], $newPath);
     }
 
     /**

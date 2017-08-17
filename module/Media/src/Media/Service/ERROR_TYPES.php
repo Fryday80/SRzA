@@ -34,5 +34,6 @@ abstract class ERROR_TYPES {
     const ERROR_FOLDER_NOT_IN_DATA_PATH = 29;
     const UPLOAD_ERROR = 30;
     const UPLOAD_FILE_NOT_FOUND = 31;
+    const FILE_UPLOAD_ERROR = 32;
 
 }
