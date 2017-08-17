@@ -88,16 +88,12 @@ class RoleTable extends AbstractTableGateway
         if (!$oldRole) {
             throw new Exception("can't edit role because Role not found");
         }
-        
-        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $oldRole['role_name'] );
-        $this->permissionTable->remove($this->navRolesResourceID, $oldRole['role_name'] );
-        $this->rolePermissionTable->deletePermission($id, $permID);
+        if ($data['role_name'] !== $oldRole['role_name']){
+			$permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $oldRole['role_name'] );
+			$this->permissionTable->editById($permID, $this->navRolesResourceID, $data['role_name']);
 
-        $this->permissionTable->add($this->navRolesResourceID, $data['role_name'] );
-        $permID = $this->permissionTable->getPermIDByResourceIDAndPermName($this->navRolesResourceID, $data['role_name'] );
-        $this->rolePermissionTable->addPermission($id, $permID);
-
-        $this->update($data, array('rid' => $id));
+			$this->update($data, array('rid' => $id));
+		}
     }
 
     public function add($name, $parent, $status = null) {

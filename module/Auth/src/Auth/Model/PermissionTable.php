@@ -46,10 +46,12 @@ class PermissionTable extends AbstractTableGateway
             throw $err;
         }
     }
+
     public function getByResourceID($resourceID) {
         $result = $this->select("resource_id = $resourceID");
         return $result->toArray();
     }
+
     public function getPermIDByResourceIDAndPermName($resourceID, $permissionName){
         $result = $this->select(array(
             'resource_id' => $resourceID,
@@ -61,6 +63,16 @@ class PermissionTable extends AbstractTableGateway
         }
         return $result->toArray()[0]['id'];
     }
+
+    public function editById($id, $resourceID, $permName){
+    	$this->update(
+    		array (
+    			'permission_name' => $permName,
+				'resource_id' => $resourceID,
+			),
+			array( 'id' => $id ));
+	}
+
     public function add($resourceID, $permissionName)
     {
         return $this->insert([
