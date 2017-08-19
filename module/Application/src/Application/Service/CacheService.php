@@ -188,6 +188,7 @@ class CacheService
 
         return true;
     }
+
     private function realPath($name) {
         if (!$name || $name == '')
             return false;
@@ -195,6 +196,7 @@ class CacheService
         $path = $this->cachePath.$name.$this->fileExtension;
         return $path;
     }
+
     /**
      * Converts bytes into human readable file size.
      *
