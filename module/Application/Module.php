@@ -15,9 +15,11 @@ class Module
         AbstractValidator::setDefaultTranslator($translator);
         $eventManager = $e->getApplication()->getEventManager();
         $statsService = $sm->get('StatisticService');
+        $cashService = $sm->get('CacheService');
         $eventManager->attach('dispatch', array($statsService, 'onDispatch'));
         $eventManager->attach('dispatch.error', array($statsService, 'onError'));
         $eventManager->attach('finish', array($statsService, 'onFinish'));
+        $eventManager->attach('finish', array($cashService, 'onFinish'));
         $systemService = $sm->get('SystemService');
         $eventManager->attach('finish', array($systemService, 'onFinish'));
         if ($systemService->getConfig('maintenance')) {

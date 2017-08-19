@@ -7,6 +7,9 @@ class CacheService
 {
     private $cachePath;
     private $fileExtension = '.cache';
+    // in memory cache
+    private $cachedCache = array ();
+    private $changedCache = array();
 
     public function __construct() {
         $this->cachePath = realpath(getcwd().CACHE_PATH).'/';
@@ -51,7 +54,9 @@ class CacheService
      * @param bool $serialize
      */
     public function setCache($name, $content, $serialize = true) {
-        $this->saveFile($name, $content, $serialize);
+		$this->changedCache[$name] = array ($name, $serialize);
+		$this->cachedCache[$name]  = $content;
+
     }
 
     /**
@@ -60,8 +65,12 @@ class CacheService
      * @return string|mixed(serializable)|false
      */
     public function getCache($name, $serialize = true) {
+    	if (isset ($this->cachedCache[$name])){
+    		return $this->cachedCache[$name];
+		}
         if ($this->exists($name)) {
-            return $this->loadFile($name, $serialize);
+			$this->cachedCache[$name] = $this->loadFile($name, $serialize);
+			return $this->cachedCache[$name];
         }
         return false;
     }
@@ -81,12 +90,26 @@ class CacheService
     public function clearCache($name) {
         if (!$name) {
             //clear hole cache
-            //@todo test if this goes right
+			//
+			// clear in memory cache
+			$this->changedCache = array();
+			$this->cachedCache  = array();
+
+			//@todo test if this goes right
+			// clear on disc
             $items = scandir($this->cachePath, 1);
             foreach ($items as $item) {
                 $this->deleteRecursive($this->cachePath.'/'.$item);
             }
         }
+        else
+		{
+			// clear in memory cache
+			unset ($this->changedCache[$name]);
+			unset ($this->cachedCache[$name]);
+		}
+
+		// clear on disc
         if (!$this->exists($name))
             return false;
 
@@ -97,6 +120,18 @@ class CacheService
             $this->unsetFile($name);
         }
     }
+
+	public function onFinish()
+	{
+		// in memory cache
+		// saves changes to disc
+		foreach ($this->changedCache as $name => $value) {
+			$this->saveFile($name, $this->cachedCache[$name], $value[1]);
+			// remove "changed" flag
+			unset($this->changedCache[$name]);
+		}
+    }
+
     private function unsetFile($name){
         unlink($this->realPath($name));
     }
