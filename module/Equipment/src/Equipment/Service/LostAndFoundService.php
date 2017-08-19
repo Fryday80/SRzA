@@ -3,6 +3,7 @@ namespace Equipment\Service;
 
 use Application\Service\CacheService;
 use Equipment\Hydrator\EquipmentResultSet;
+use Equipment\Model\DataModels\LostAndFoundItem;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\Tables\lostAndFoundTable;
@@ -35,25 +36,22 @@ class LostAndFoundService
         return $this->lostAndFoundTable->getById($id);
     }
 
+	public function save($data)
+	{
+		if($data['id'] == "" || $data['id'] == null)
+			return $this->lostAndFoundTable->add($data);
+		else {
+			return $this->lostAndFoundTable->save($data);
+		}
+	}
+
     public function deleteById($id)
     {
         return $this->lostAndFoundTable->removeById($id);
     }
 
-
 	public function getNextId()
 	{
 		return $this->lostAndFoundTable->getNextId();
 	}
-
-    public function save($data)
-    {
-        if($data->id == "")
-            return $this->lostAndFoundTable->add($data);
-
-        $item = $this->getById($data->id);
-        if ($data instanceof Tent)
-            $data->image = ETentShape::IMAGES[$data->shape];
-        return $this->lostAndFoundTable->save($data);
-    }
 }

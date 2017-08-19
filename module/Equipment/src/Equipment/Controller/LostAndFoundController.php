@@ -3,6 +3,7 @@ namespace Equipment\Controller;
 
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
+use Equipment\Model\DataModels\LostAndFoundItem;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\LostAndFoundService;
 use Equipment\Utility\LostAndFoundDataTable;
@@ -60,7 +61,10 @@ class LostAndFoundController extends AbstractActionController
 	public function claimAction()
 	{
 		$itemId = $this->params()->fromRoute('id');
-		//@todo add user id as claiming user to LAF-Item
+		/** @var LostAndFoundItem $item */
+		$item = $this->lostAndFoundService->getById($itemId);
+		array_push($item->claimed, $this->accessService->getUserID());
+		$this->lostAndFoundService->save($item);
 		return $this->redirect()->toRoute('lostAndFound');
     }
 
