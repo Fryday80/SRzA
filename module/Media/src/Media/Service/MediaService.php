@@ -273,9 +273,15 @@ class MediaService {
 
     public function deleteItem($path) {
         $item = $this->getItem($path);
+
+        // remove from cache
+        $this->clearCache($item);
+
+        // if item is MediaException
         if ($item instanceof MediaException)
             return $item;
 
+        // change on disc
         if ($item->type == 'folder') {
             if (!$this->checkFolderPermissions($path, false, true)) {
                 return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION_IN_CHILDS, $path);
@@ -616,6 +622,7 @@ class MediaService {
             return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
         }
     }
+
     private function addItem2cache(MediaItem $item) {
         $path = rtrim($item->path, "\x5C\x2F");
         $this->itemCache[$path] = $item;
@@ -628,6 +635,14 @@ class MediaService {
         }
         return false;
     }
+    private function clearCache(MediaItem $item = null){
+    	if ($item == null) $this->itemCache = array ();
+    	else {
+			$path = rtrim($item->path, "\x5C\x2F");
+    		unset ($this->itemCache[$path]);
+		}
+	}
+
     /**
      * Check recursive folder permissions
      * @param $path
