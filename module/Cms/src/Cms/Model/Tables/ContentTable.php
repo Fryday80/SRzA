@@ -6,10 +6,12 @@
 	 * Time: 15:00
 	 */
 
-	namespace Cms\Model\Tables;
+	namespace Cms\Model;
 
+	use Application\Model\AbstractModels\AbstractModel;
 	use Application\Model\AbstractModels\DatabaseTable;
 	use Cms\Model\DataModels\Content;
+	use Zend\Db\Adapter\Adapter;
 
 	class ContentTable extends DatabaseTable
 	{
@@ -21,6 +23,9 @@
 			parent::__construct($adapter, Content::class);
 		}
 
+		/**
+		 * @return AbstractModel[]|null
+		 */
 		public function findAll()
 		{
 			return $this->getAll();

@@ -1,5 +1,5 @@
 <?php
-namespace Equipment\Model\Tables;
+namespace Equipment\Model;
 
 use Application\Model\AbstractModels\DatabaseTable;
 use Equipment\Model\DataModels\SitePlan;

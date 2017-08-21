@@ -3,7 +3,7 @@ namespace Auth\Controller;
 
 use Application\Model\Enums\LogType;
 use Application\Model\DataModels\SystemLog;
-use Application\Model\Tables\DynamicHashTable;
+use Application\Model\DynamicHashTable;
 use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Auth\Form\EmailForm;

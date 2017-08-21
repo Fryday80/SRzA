@@ -3,11 +3,9 @@ namespace Cms\Controller;
 
 use Application\Utility\DataTable;
 use Cms\Form\ContentForm;
-use Cms\Form\contentForm;
 use Cms\Service\ContentService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Cms\Service\contentServiceInterface;
 
 class ContentController extends AbstractActionController
 {
@@ -24,7 +22,8 @@ class ContentController extends AbstractActionController
 
     public function indexAction()
     {
-        $posts = $this->contentService->findAllPosts()->toArray();
+
+        $posts = $this->contentService->findAllPosts();
         $contentTable = new DataTable();
         $contentTable->setData($posts);
         $contentTable->insertLinkButton('/cms/add', 'Neue Seite');
@@ -50,7 +49,7 @@ class ContentController extends AbstractActionController
         ));
         
         return new ViewModel(array(
-            'posts' => $this->contentService->findAllPosts()->toArray(),
+            'posts' => $posts,
             'contentTable' => $contentTable,
         ));
     }

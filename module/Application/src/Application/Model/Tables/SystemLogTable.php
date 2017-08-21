@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Model\Tables;
+namespace Application\Model;
 
 use Application\Model\DataModels\SystemLog;
 use Zend\Db\Adapter\Adapter;

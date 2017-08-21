@@ -1,5 +1,5 @@
 <?php
-use Application\Factory\Basic\DefaultTableGatewayFactory;
+use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
 	'Equipment_ImageProcessor' => array(
@@ -132,8 +132,8 @@ return array(
             'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',
         ),
         'abstract_factories' => array(
-            'Equipment\Model\Tables\SitePlannerTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\Tables\EquipTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(

@@ -1,5 +1,5 @@
 <?php
-use Application\Factory\Basic\DefaultTableGatewayFactory;
+use Application\Factory\DefaultTableGatewayFactory;
 use Media\Factory\GeneralMediaFactory;
 
 return array(

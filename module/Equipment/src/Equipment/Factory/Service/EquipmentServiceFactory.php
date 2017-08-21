@@ -9,7 +9,7 @@ class EquipmentServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
 //        $pL = $sm->getServiceLocator();
-        $equipTable = $sm->get('Equipment\Model\Tables\EquipTable');
+        $equipTable = $sm->get('Equipment\Model\EquipTable');
         $cacheService = $sm->get('CacheService');
 
         return new EquipmentService($equipTable, $cacheService);

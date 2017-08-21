@@ -1,7 +1,9 @@
 <?php
 namespace Cms\Model\DataModels;
 
-class Content
+use Application\Model\AbstractModels\AbstractModel;
+
+class Content extends AbstractModel
 {
     /**
      * @var int

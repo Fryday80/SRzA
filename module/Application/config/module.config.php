@@ -7,7 +7,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-use Application\Factory\Basic\DefaultTableGatewayFactory;
+use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
 
@@ -32,9 +32,9 @@ return array(
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
             'Zend\Log\LoggerAbstractServiceFactory',
-            'Application\Model\Tables\SystemLogTable' => DefaultTableGatewayFactory::class,
-            'Application\Model\Tables\DynamicHashTable' => DefaultTableGatewayFactory::class,
-            'Application\Model\Tables\MailTemplatesTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\SystemLogTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\DynamicHashTable' => DefaultTableGatewayFactory::class,
+            'Application\Model\MailTemplatesTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'form_elements' => array(

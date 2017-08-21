@@ -1,7 +1,7 @@
 <?php
 namespace Auth;
 
-use Application\Factory\Basic\DefaultTableGatewayFactory;
+use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
     'controllers' => array(

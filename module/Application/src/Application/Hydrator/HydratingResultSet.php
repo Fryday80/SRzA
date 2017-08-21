@@ -4,13 +4,14 @@ namespace Application\Hydrator;
 use Exception;
 use Zend\Db\ResultSet\HydratingResultSet as ZendHydratingResultSet;
 use Application\Model\Interfaces\IObjectToArray;
+use Application\Model\AbstractModels\AbstractModel;
 
 class HydratingResultSet extends ZendHydratingResultSet implements IObjectToArray
 {
     /**
      * Cast result set to array of objects
      *
-     * @return array
+     * @return AbstractModel[]
      */
     public function toObjectArray($keyProperty = null)
     {

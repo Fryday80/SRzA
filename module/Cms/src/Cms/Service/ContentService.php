@@ -2,7 +2,7 @@
 namespace Cms\Service;
 
 use Cms\Model\DataModels\Content;
-use Cms\Model\Tables\ContentTable;
+use Cms\Model\ContentTable;
 
 class ContentService
 {
@@ -19,6 +19,9 @@ class ContentService
         $this->contentTable = $contentTable;
     }
 
+	/**
+	 * @return Content[]|null
+	 */
     public function findAllPosts()
     {
         return $this->contentTable->findAll();

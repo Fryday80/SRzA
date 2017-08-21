@@ -1,5 +1,5 @@
 <?php
-use Application\Factory\Basic\DefaultTableGatewayFactory;
+use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
     'service_manager' => array(

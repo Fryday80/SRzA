@@ -10,7 +10,7 @@ class SitePlannerControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $pL = $sm->getServiceLocator();
         $equipService = $pL->get('EquipmentService');
-        $sitePlanTable = $pL->get('Equipment\Model\Tables\SitePlannerTable');
+        $sitePlanTable = $pL->get('Equipment\Model\SitePlannerTable');
         $mediaService = $pL->get('MediaService');
         return new SitePlannerController($equipService, $sitePlanTable, $mediaService);
     }

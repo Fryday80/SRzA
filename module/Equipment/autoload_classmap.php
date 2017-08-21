@@ -20,8 +20,8 @@ return array(
     'Equipment\Model\Enums\ETentShape'                              => __DIR__ . '/src/Equipment/Model/Enums/ETentShape.php',
     'Equipment\Model\Enums\ETentType'                               => __DIR__ . '/src/Equipment/Model/Enums/ETentType.php',
     'Equipment\Model\Interfaces\IEquipment'                         => __DIR__ . '/src/Equipment/Model/Interfaces/IEquipment.php',
-    'Equipment\Model\Tables\EquipTable'                             => __DIR__ . '/src/Equipment/Model/Tables/EquipTable.php',
-    'Equipment\Model\Tables\SitePlannerTable'                       => __DIR__ . '/src/Equipment/Model/Tables/SitePlannerTable.php',
+    'Equipment\Model\EquipTable'                                    => __DIR__ . '/src/Equipment/Model/Tables/EquipTable.php',
+    'Equipment\Model\SitePlannerTable'                              => __DIR__ . '/src/Equipment/Model/Tables/SitePlannerTable.php',
     'Equipment\Service\EquipmentService'                            => __DIR__ . '/src/Equipment/Service/EquipmentService.php',
     'Equipment\Utility\EquipmentDataTable'                          => __DIR__ . '/src/Equipment/Utility/EquipmentDataTable.php',
 );

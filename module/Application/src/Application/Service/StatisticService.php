@@ -8,7 +8,7 @@ use Zend\Mvc\Application;
 use Auth\Service\AccessService;
 use Zend\Http\Header\SetCookie;
 use Zarganwar\PerformancePanel\Register;
-use Application\Model\Tables\SystemLogTable;
+use Application\Model\SystemLogTable;
 // data items
 use Application\Model\DataModels\Stats;
 use Application\Model\DataModels\Action;

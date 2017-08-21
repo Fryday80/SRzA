@@ -5,7 +5,7 @@ use Application\Service\CacheService;
 use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
-use Equipment\Model\Tables\EquipTable;
+use Equipment\Model\EquipTable;
 
 class EquipmentService
 {

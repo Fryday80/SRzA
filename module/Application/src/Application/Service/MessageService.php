@@ -1,7 +1,7 @@
 <?php
 namespace Application\Service;
 
-use Application\Model\Tables\MailTemplatesTable;
+use Application\Model\MailTemplatesTable;
 use Exception;
 
 class MessageService

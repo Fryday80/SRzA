@@ -3,6 +3,7 @@ namespace Application\Model\AbstractModels;
 
 use Application\Hydrator\HydratingResultSet;
 use Application\Hydrator\Hydrator;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 use Zend\Hydrator\Exception\InvalidArgumentException;
@@ -39,10 +40,14 @@ class DatabaseTable extends AbstractTableGateway
         $this->initialize();
     }
 
+	/**
+	 * @return AbstractModel[]|null
+	 */
     public function getAll() {
+		/** @var HydratingResultSet $result */
         $result = $this->select();
         if (!$result)
-            return false;
+            return null;
 
         return $result->toObjectArray();
     }
