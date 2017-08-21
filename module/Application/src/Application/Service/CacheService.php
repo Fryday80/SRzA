@@ -13,8 +13,8 @@ class CacheService
 	);
 
     // in memory cache
-    private $cachedCache = array ();
-    private $changedCache = array();
+    private $memCache  = array ();
+    private $dirtyFlags = array();
 
     public function __construct() {
         $this->cachePath = realpath(getcwd().CACHE_PATH).'/';
@@ -57,21 +57,19 @@ class CacheService
     /**
      * @param $name string form 'nav/main'
      * @param $content string|mixed(serializable)
-     * @param bool $serialize
      */
-    public function setCache($name, $content, $serialize = true) {
-		$this->changedCache[$name] = array ($name, $serialize);
-		$this->cachedCache[$name]  = $content;
+    public function setCache($name, $content) {
+		$this->dirtyFlags[] = $name;
+		$this->memCache[$name]  = $content;
     }
 
     /**
      * @param $name string form 'nav/main'
-     * @param bool $serialize
      * @return string|mixed(serializable)|false
      */
-    public function getCache($name, $serialize = true) {
-    	if (isset ($this->cachedCache[$name])) return $this->cachedCache[$name];
-        return $this->loadFile($name, $serialize);
+    public function getCache($name) {
+    	if (isset ($this->memCache[$name])) return $this->memCache[$name];
+        return $this->loadFile($name);
     }
 
     /**
@@ -91,8 +89,8 @@ class CacheService
             //clear hole cache
 			//
 			// clear in memory cache
-			$this->changedCache = array();
-			$this->cachedCache  = array();
+			$this->dirtyFlags = array();
+			$this->memCache  = array();
 
 			//@todo test if this goes right
 			// clear on disc
@@ -107,8 +105,8 @@ class CacheService
 			if (in_array($name, $this->undeletable))
 				return;
 			// clear in memory cache
-			unset ($this->changedCache[$name]);
-			unset ($this->cachedCache[$name]);
+			unset ($this->dirtyFlags[$name]);
+			unset ($this->memCache[$name]);
 		}
 
 		// clear on disc
@@ -132,10 +130,10 @@ class CacheService
 	{
 		// in memory cache
 		// saves changes to disc
-		foreach ($this->changedCache as $name => $value) {
-			$this->saveFile($name, $this->cachedCache[$name], $value[1]);
+		foreach ($this->dirtyFlags as $name) {
+			$this->saveFile($name, $this->memCache[$name]);
 			// remove "changed" flag
-			unset($this->changedCache[$name]);
+			unset($this->dirtyFlags[$name]);
 		}
     }
 
@@ -163,21 +161,18 @@ class CacheService
     private function exists($name) {
         return file_exists($this->realPath($name));
     }
-    private function loadFile($name, $serialize = true) {
+    private function loadFile($name) {
         if (!$this->exists($name))
             return false;
 
         $content = file_get_contents($this->realPath($name));
-        if ($serialize)
-            $content = unserialize($content);
+        $content = unserialize($content);
 
-		$this->cachedCache[$name] = $content;
-        return $this->cachedCache[$name];
+		$this->memCache[$name] = $content;
+        return $this->memCache[$name];
     }
-    private function saveFile($name, $content, $serialize = true) {
-        if ($serialize)
-            $content = serialize($content);
-
+    private function saveFile($name, $content) {
+    	$content = serialize($content);
 
         $folders = explode('/', $name);
         $file = array_pop($folders);
