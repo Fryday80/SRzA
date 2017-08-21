@@ -1,7 +1,7 @@
 <?php
-namespace Cms\Model;
+namespace Cms\Model\DataModels;
 
-class Post implements PostInterface
+class Content
 {
     /**
      * @var int

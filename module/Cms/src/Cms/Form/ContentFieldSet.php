@@ -1,11 +1,11 @@
 <?php
 namespace Cms\Form;
 
+use Cms\Model\DataModels\Content;
 use Zend\Form\Fieldset;
 use Zend\Stdlib\Hydrator\ClassMethods;
-use Cms\Model\Post;
 
-class PostFieldset extends Fieldset
+class ContentFieldSet extends Fieldset
 {
 
     public function __construct($name = null, $options = array())
@@ -13,7 +13,7 @@ class PostFieldset extends Fieldset
         parent::__construct($name, $options);
         
         $this->setHydrator(new ClassMethods(false));
-        $this->setObject(new Post());
+        $this->setObject(new Content());
         
         $this->add(array(
             'type' => 'hidden',

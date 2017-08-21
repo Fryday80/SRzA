@@ -1,11 +1,12 @@
 <?php
- namespace Cms\Factory;
+ namespace Cms\Factory\Service;
 
- use Cms\Service\PostService;
+ use Cms\Model\Tables\ContentTable;
+ use Cms\Service\ContentService;
  use Zend\ServiceManager\FactoryInterface;
  use Zend\ServiceManager\ServiceLocatorInterface;
 
- class PostServiceFactory implements FactoryInterface
+ class ContentServiceFactory implements FactoryInterface
  {
      /**
       * Create service
@@ -15,8 +16,8 @@
       */
      public function createService(ServiceLocatorInterface $serviceLocator)
      {
-         return new PostService(
-             $serviceLocator->get('Cms\Mapper\PostMapperInterface')
-         );
+     	/** @var ContentTable $contentTable */
+     	$contentTable = $serviceLocator->get('Cms\ContentTable');
+         return new ContentService( $contentTable );
      }
  }

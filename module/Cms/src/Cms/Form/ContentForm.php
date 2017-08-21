@@ -4,7 +4,7 @@ namespace Cms\Form;
 
 use Zend\Form\Form;
 
-class PostForm extends Form
+class ContentForm extends Form
 {
      public function __construct($name = null, $options = array())
      {
@@ -12,7 +12,7 @@ class PostForm extends Form
 
          $this->add(array(
              'name' => 'post-fieldset',
-             'type' => 'Cms\Form\PostFieldset',
+             'type' => 'Cms\Form\ContentFieldSet',
              'options' => array(
                  'use_as_base_fieldset' => true
              )

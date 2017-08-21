@@ -132,7 +132,6 @@ return array(
             'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',
         ),
         'abstract_factories' => array(
-            'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\Tables\SitePlannerTable' => DefaultTableGatewayFactory::class,
             'Equipment\Model\Tables\EquipTable' => DefaultTableGatewayFactory::class,
         )

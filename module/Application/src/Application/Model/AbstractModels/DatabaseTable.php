@@ -55,6 +55,14 @@ class DatabaseTable extends AbstractTableGateway
         return $result->current();
     }
 
+    protected function getByKey($key, $value){
+		$result = $this->select(array($key => $value));
+		if (!$result)
+			return false;
+
+		return $result->toObjectArray();
+	}
+
 	public function getNextId()
 	{
 		$query = "SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '$this->table'";

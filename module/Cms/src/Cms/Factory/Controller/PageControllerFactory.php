@@ -1,5 +1,5 @@
 <?php
-namespace Cms\Factory;
+namespace Cms\Factory\Controller;
 
 use Cms\Controller\PageController;
 use Zend\ServiceManager\FactoryInterface;
@@ -17,8 +17,8 @@ class PageControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $realServiceLocator = $serviceLocator->getServiceLocator();
-        $postService        = $realServiceLocator->get('Cms\Service\PostServiceInterface');
         $accessService      = $realServiceLocator->get('AccessService');
-        return new PageController($postService, $accessService);
+        $contentService        = $realServiceLocator->get('ContentService');
+        return new PageController($contentService, $accessService);
     }
 }

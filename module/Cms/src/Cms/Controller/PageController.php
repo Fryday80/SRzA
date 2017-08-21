@@ -2,30 +2,26 @@
 namespace Cms\Controller;
 
 use Auth\Service\AccessService;
-use Cms\Model\Post;
+use Cms\Model\DataModels\Content;
+use Cms\Service\ContentService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Cms\Service\PostServiceInterface;
 
 class PageController extends AbstractActionController
 {
-     /**
-      * @var \Cms\Service\PostServiceInterface
-      */
-     protected $postService;
+     /** @var ContentService */
+     protected $contentService;
+     /** @var AccessService  */
      protected $accessService;
 
-     public function __construct(PostServiceInterface $postService, AccessService $accessService)
+     public function __construct(ContentService $contentService, AccessService $accessService)
      {
-         $this->postService = $postService;
-         $this->accessService = $accessService;
+         $this->contentService = $contentService;
+         $this->accessService  = $accessService;
      }
 
     /**
-     * die hier baut ja im endeffect des html zusammen ->dann kommt noch des layout drum rum und des wird zum client geschickt
-     *
-     *
      * @return \Zend\Http\Response|ViewModel
      */
      public function indexAction()
@@ -40,9 +36,9 @@ class PageController extends AbstractActionController
 
          //get page data
          /**
-          * @var $page Post
+          * @var $page Content
           */
-         $page = $this->postService->findByUrl($url);
+         $page = $this->contentService->findByUrl($url);
          if (!$page) {
              $this->getResponse()->setStatusCode(404);
              return;

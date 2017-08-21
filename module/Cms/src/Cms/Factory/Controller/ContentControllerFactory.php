@@ -1,5 +1,5 @@
 <?php
-namespace Cms\Factory;
+namespace Cms\Factory\Controller;
 
 use Cms\Controller\ContentController;
 use Zend\ServiceManager\FactoryInterface;
@@ -10,12 +10,12 @@ class ContentControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $realServiceLocator = $serviceLocator->getServiceLocator();
-        $postService        = $realServiceLocator->get('Cms\Service\PostServiceInterface');
-        $postInsertForm     = $realServiceLocator->get('FormElementManager')->get('Cms\Form\PostForm');
+        $contentService        = $realServiceLocator->get('ContentService');
+        $contentInsertForm     = $realServiceLocator->get('FormElementManager')->get('Cms\Form\ContentForm');
 
         return new ContentController(
-            $postService,
-            $postInsertForm
+            $contentService,
+            $contentInsertForm
             );
     }
 }
