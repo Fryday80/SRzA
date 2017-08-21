@@ -10,6 +10,6 @@ return array(
     'Cms\Form\ContentFieldSet'                        => __DIR__ . '/src/Cms/Form/ContentFieldSet.php',
     'Cms\Form\ContentForm'                            => __DIR__ . '/src/Cms/Form/ContentForm.php',
     'Cms\Model\DataModels\Content'                    => __DIR__ . '/src/Cms/Model/DataModels/Content.php',
-    'Cms\Model\Tables\ContentTable'                   => __DIR__ . '/src/Cms/Model/Tables/ContentTable.php',
+    'Cms\Model\ContentTable'                          => __DIR__ . '/src/Cms/Model/Tables/ContentTable.php',
     'Cms\Service\ContentService'                      => __DIR__ . '/src/Cms/Service/ContentService.php',
 );
