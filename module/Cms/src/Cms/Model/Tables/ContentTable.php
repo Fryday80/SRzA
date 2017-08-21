@@ -6,12 +6,10 @@
 	 * Time: 15:00
 	 */
 
-	namespace Cms\Model;
+	namespace Cms\Model\Tables;
 
-	use Application\Model\AbstractModels\AbstractModel;
 	use Application\Model\AbstractModels\DatabaseTable;
 	use Cms\Model\DataModels\Content;
-	use Zend\Db\Adapter\Adapter;
 
 	class ContentTable extends DatabaseTable
 	{
@@ -23,12 +21,14 @@
 			parent::__construct($adapter, Content::class);
 		}
 
-		/**
-		 * @return Content[]|null
-		 */
-		public function getAll()
+		public function findAll()
 		{
-			return parent::getAll();
+			return $this->getAll();
+		}
+
+		public function findById($id)
+		{
+			return $this->getById($id);
 		}
 
 		public function findByUrl($url)
@@ -38,7 +38,7 @@
 
 		public function save($post)
 		{
-			return parent::save($post);
+			return $this->save($post);
 		}
 
 		public function deleteContent (Content $post)

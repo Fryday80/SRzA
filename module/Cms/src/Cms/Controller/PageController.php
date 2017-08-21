@@ -38,8 +38,7 @@ class PageController extends AbstractActionController
          /**
           * @var $page Content
           */
-         $page = $this->contentService->getByUrl($url);
-         bdump($page);
+         $page = $this->contentService->findByUrl($url);
          if (!$page) {
              $this->getResponse()->setStatusCode(404);
              return;

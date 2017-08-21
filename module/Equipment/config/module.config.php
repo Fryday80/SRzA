@@ -1,5 +1,5 @@
 <?php
-use Application\Factory\DefaultTableGatewayFactory;
+use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 return array(
 	'Equipment_ImageProcessor' => array(
@@ -134,12 +134,9 @@ return array(
             'LostAndFoundService' => 'Equipment\Factory\Service\LostAndFoundServiceFactory',
         ),
         'abstract_factories' => array(
-            'Equipment\Model\TentTypesTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\LostAndFoundTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\SitePlannerTable' => DefaultTableGatewayFactory::class,
-            'Equipment\Model\EquipTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\SitePlannerTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\EquipTable' => DefaultTableGatewayFactory::class,
+            'Equipment\Model\Tables\LostAndFoundTable' => DefaultTableGatewayFactory::class,
         )
     ),
     'view_manager' => array(

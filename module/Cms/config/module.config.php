@@ -1,6 +1,6 @@
 <?php
 
-	use Application\Factory\DefaultTableGatewayFactory;
+	use Application\Factory\Basic\DefaultTableGatewayFactory;
 
 	return array(
 		'controllers' => array(
@@ -14,7 +14,7 @@
 				'ContentService' => 'Cms\Factory\Service\ContentServiceFactory',
 			),
 			'abstract_factories' => array(
-				'Cms\Model\ContentTable' => DefaultTableGatewayFactory::class,
+				'Cms\ContentTable' => DefaultTableGatewayFactory::class,
 			)
 		),
 		'view_manager' => array(
