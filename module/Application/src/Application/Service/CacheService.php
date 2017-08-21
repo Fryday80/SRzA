@@ -7,6 +7,11 @@ class CacheService
 {
     private $cachePath;
     private $fileExtension = '.cache';
+    // undeletable caches
+	private $undeletable = array (
+		'cacheName1', 'cacheName2'
+	);
+
     // in memory cache
     private $cachedCache = array ();
     private $changedCache = array();
@@ -48,6 +53,7 @@ class CacheService
         );
         return $item;
     }
+
     /**
      * @param $name string form 'nav/main'
      * @param $content string|mixed(serializable)
@@ -56,7 +62,6 @@ class CacheService
     public function setCache($name, $content, $serialize = true) {
 		$this->changedCache[$name] = array ($name, $serialize);
 		$this->cachedCache[$name]  = $content;
-
     }
 
     /**
@@ -65,14 +70,8 @@ class CacheService
      * @return string|mixed(serializable)|false
      */
     public function getCache($name, $serialize = true) {
-    	if (isset ($this->cachedCache[$name])){
-    		return $this->cachedCache[$name];
-		}
-        if ($this->exists($name)) {
-			$this->cachedCache[$name] = $this->loadFile($name, $serialize);
-			return $this->cachedCache[$name];
-        }
-        return false;
+    	if (isset ($this->cachedCache[$name])) return $this->cachedCache[$name];
+        return $this->loadFile($name, $serialize);
     }
 
     /**
@@ -99,11 +98,14 @@ class CacheService
 			// clear on disc
             $items = scandir($this->cachePath, 1);
             foreach ($items as $item) {
+            	if (in_array($item, $this->undeletable)) continue;
                 $this->deleteRecursive($this->cachePath.'/'.$item);
             }
         }
         else
 		{
+			if (in_array($name, $this->undeletable))
+				return;
 			// clear in memory cache
 			unset ($this->changedCache[$name]);
 			unset ($this->cachedCache[$name]);
@@ -121,6 +123,11 @@ class CacheService
         }
     }
 
+	/**
+	 * onFinish
+	 *
+	 * saves all changed cache data to disc
+	 */
 	public function onFinish()
 	{
 		// in memory cache
@@ -164,7 +171,8 @@ class CacheService
         if ($serialize)
             $content = unserialize($content);
 
-        return $content;
+		$this->cachedCache[$name] = $content;
+        return $this->cachedCache[$name];
     }
     private function saveFile($name, $content, $serialize = true) {
         if ($serialize)
@@ -204,7 +212,7 @@ class CacheService
      * @return string human readable file size (2,87 Мб)
      * @author Mogilev Arseny
      */
-    function FileSizeConvert($bytes)
+    private function FileSizeConvert($bytes)
     {
         $bytes = floatval($bytes);
         $arBytes = array(
