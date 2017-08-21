@@ -17,6 +17,10 @@ class BlazonService
 	/** @var ImageProcessor  */
 	private $imageProcessor;
 
+	// in memory cache
+	private $wholeDataLoaded = false;
+	private $noOverlaysLoaded = false;
+	private $overlaysLoaded = false;
     private $data = null;
     private $dataNoOverlays = null;
     private $dataOverlays = null;
@@ -35,7 +39,7 @@ class BlazonService
      * @return array 'id' => data
      */
     public function getAll() {
-        $this->getData(EBlazonDataType::ALL);
+        $this->loadData(EBlazonDataType::ALL);
         return $this->data;
     }
 
@@ -44,7 +48,7 @@ class BlazonService
      * @return array 'id' => data
      */
     public function getAllOverlays() {
-        $this->getData(EBlazonDataType::OVERLAY);
+        $this->loadData(EBlazonDataType::OVERLAY);
         return $this->dataOverlays;
     }
 
@@ -53,7 +57,7 @@ class BlazonService
      * @return array 'id' => data
      */
     public function getAllNoOverlays() {
-        $this->getData(EBlazonDataType::NO_OVERLAY);
+        $this->loadData(EBlazonDataType::NO_OVERLAY);
         return $this->dataNoOverlays;
     }
 
@@ -63,32 +67,79 @@ class BlazonService
      * @return array|false
      */
     public function getById($id) {
-        $this->getData(EBlazonDataType::ALL);
+    	$item = (isset($this->data[$id])) ? $this->data[$id] : false;
+    	if (!$item)
+        	$this->loadData(EBlazonDataType::SINGLE, $id);
+
         return (isset($this->data[$id])) ? $this->data[$id] : false;
     }
 
-	private function getData($type)
+    /* ==========================================================
+     * load and in memory caching
+     * ==========================================================*/
+
+	private function loadData($type, $id = null)
 	{
+		if ($this->wholeDataLoaded) return;
+		$data = null;
+
 		switch ($type){
 			case EBlazonDataType::ALL:
-				if($this->data) break;
-				$data = $this->blazonTable->getAll();
-				foreach ($data as $blazonData)
-					$this->data[$blazonData['id']] = $blazonData;
+					$data = $this->blazonTable->getAll();
+					$this->wholeDataLoaded = $this->noOverlaysLoaded = $this->overlaysLoaded = true;
 				break;
 			case EBlazonDataType::OVERLAY:
-				if($this->dataOverlays) break;
-				$data = $this->blazonTable->getAllOverlays();
-				foreach ($data as $blazonData)
-					$this->dataOverlays[$blazonData['id']] = $blazonData;
+				if (!$this->overlaysLoaded) {
+					$data = $this->blazonTable->getAllOverlays();
+					$this->overlaysLoaded = true;
+				}
 				break;
 			case EBlazonDataType::NO_OVERLAY:
-				if($this->dataNoOverlays) break;
-				$data = $this->blazonTable->getAllNotOverlay();
-				foreach ($data as $blazonData)
-					$this->dataNoOverlays[$blazonData['id']] = $blazonData;
+				if (!$this->noOverlaysLoaded) {
+					$data = $this->blazonTable->getAllNotOverlay();
+					$this->noOverlaysLoaded = true;
+				}
+				break;
+			case EBlazonDataType::SINGLE:
+				$data = $this->blazonTable->getById($id);
 				break;
 		}
+
+		if ($data !== null && $data !== false){
+			foreach ($data as $blazonData)
+				$this->addItem2Cache($blazonData);
+		}
+	}
+
+	private function addItem2Cache($blazonData)
+	{
+		$this->data[ $blazonData['id'] ] = $blazonData;
+		if ($blazonData['isOverlay'] == 0) $this->dataNoOverlays[$blazonData['id']] = $blazonData;
+		else $this->dataOverlays[$blazonData['id']] = $blazonData;
+	}
+
+	private function updateCache($blazonData, $id = null)
+	{
+		if ($id !== null) $blazonData['id'] = $id;
+		array_merge_recursive($this->data[$blazonData['id']], $blazonData);
+
+	}
+
+	private function removeFromCache($id)
+	{
+		unset ($this->data[$id]);
+		if (isset ($this->dataNoOverlays[$id])) unset ($this->dataNoOverlays[$id]);
+		if (isset ($this->dataOverlays[$id])) unset ($this->dataOverlays[$id]);
+	}
+
+	private function resetInMemoryCache()
+	{
+		$this->wholeDataLoaded  = false;
+		$this->overlaysLoaded   = false;
+		$this->noOverlaysLoaded = false;
+		$this->data 			= null;
+		$this->dataOverlays 	= null;
+		$this->dataNoOverlays 	= null;
 	}
 
     /* =========================================================
@@ -101,7 +152,7 @@ class BlazonService
      * @return array array of blazon ids
      */
     public function getArgumentsByChar($char, $familyBlazon = false) {
-        $this->getData(EBlazonDataType::ALL);
+        $this->loadData(EBlazonDataType::ALL);
         if ($familyBlazon)
             $base = ($char['family_blazon_id'] !== 0) ? $char['family_blazon_id'] : 1;
         else
@@ -123,7 +174,7 @@ class BlazonService
      * @return array array of file names
      */
     public function getFilenames(array $arg, $familyBlazon = false) {
-        $this->getData(EBlazonDataType::ALL);
+        $this->loadData(EBlazonDataType::ALL);
         if ($familyBlazon)
             $base  = (isset($this->data[$arg[0]]['bigFilename'])) ? $this->data[$arg[0]]['bigFilename'] : $this->data[$arg[0]]['filename'];
         else
@@ -176,14 +227,16 @@ class BlazonService
             $this->imageProcessor->createBlazon($bigFileData['filePath']);
         }
 
-        $this->resetInMemoryCache();
         $newItem = array(
             'isOverlay' => $isOverlay,
             'name' => $name,
             'filename' => $fileData['fileName'],
             'bigFilename' => $bigFileData['fileName']
         );
-        return $this->blazonTable->add($newItem);
+        $newId = $this->blazonTable->add($newItem);
+        $newItem['id'] = $newId;
+        $this->addItem2Cache($newItem);
+        return $newId;
     }
 
     /**
@@ -224,8 +277,8 @@ class BlazonService
             $data['bigFilename'] = $bigFileData['fileName'];
         }
 
+        $this->updateCache($data, $id);
         $this->blazonTable->save($id, $data);
-        $this->resetInMemoryCache();
         return true;
     }
 
@@ -244,11 +297,14 @@ class BlazonService
             $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
             $path = $wappenPath.'/'.$item['filename'];
             @unlink($path);
-            $this->resetInMemoryCache();
+            $this->removeFromCache($id);
             return true;
         }
     }
 
+    /* ============================================================
+	 * Image handling
+     * ============================================================ */
 	/**
 	 * Moves file to $path
 	 *
@@ -290,10 +346,5 @@ class BlazonService
         return $item['filename'];
         }
         return null;
-    }
-
-    private function resetInMemoryCache()
-    {
-        $this->data = $this->dataOverlays = $this->dataNoOverlays = false;
     }
 }
