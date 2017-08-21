@@ -619,7 +619,6 @@ class MediaService {
     private function addItem2cache(MediaItem $item) {
         $path = rtrim($item->path, "\x5C\x2F");
         $this->itemCache[$path] = $item;
-
     }
     private function getCachedItem($path) {
         //cut off last /
@@ -746,7 +745,9 @@ class MediaService {
      * @return MediaItem|MediaException|null
      */
     private function loadItem($path) {
-        //@todo add caching
+    	$cachePath = $path;
+		$return = $this->getCachedItem($cachePath);
+		if ($return) return $return;
         $path = $this->cleanPath($path);
 
         $permission = $this->getPermission($path);
@@ -770,6 +771,7 @@ class MediaService {
         } else {
             return new MediaException(ERROR_TYPES::MEDIA_ITEM_NOT_FOUND, $path);
         }
+		$this->addItem2cache($item);
         return $item;
     }
 
