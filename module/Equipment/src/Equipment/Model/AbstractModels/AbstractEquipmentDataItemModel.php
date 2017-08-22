@@ -30,7 +30,20 @@ class AbstractEquipmentDataItemModel extends AbstractModel implements IEquipment
     public $color1;
     public $biColor;
     public $color2;
-    
+    public $bill;
+    public $purchased;
+    public $amount;
+    public $stored;
+    public $lending;
+
+    private $metaData = array (
+    	'id' 		=> 'id',
+    	'image' 	=> 'image',
+    	'userId' 	=> 'user_id',
+    	'userName' 	=> 'user_name',
+		'itemType' 	=> 'item_type',
+		'sitePlannerObject' => 'site_planner_object',
+	);
 
     public function __construct($data = null)
     {
@@ -43,12 +56,11 @@ class AbstractEquipmentDataItemModel extends AbstractModel implements IEquipment
     // move to EquipmentResultSet ??
     public function metaDataUpdate($data)
     {
-        $this->id = $data['id'];
-        $this->itemType = ($data['item_type'] !== null) ? $data['item_type'] : $this->itemType;
-        $this->image = ($data['image'] !== null) ? $data['image'] : $this->image;
-        $this->userId = ($data['user_id'] !== null) ? $data['user_id'] : $this->userId;
-        $this->sitePlannerObject = ($data['site_planner_object'] !== null) ? $data['site_planner_object'] : $this->sitePlannerObject;
-        $this->userName = ($data['user_name'] !== null) ? $data['user_name'] : $this->userName;
+    	foreach ($this->metaData as $cCase => $sub_str)
+    	{
+    		if ($cCase == 'id') $this->$cCase = $data[$sub_str];
+    		else $this->$cCase = ($data[$sub_str] !== null) ? $data[$sub_str] : $this->$cCase;
+		}
     }
 
 	/**

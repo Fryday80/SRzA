@@ -122,11 +122,20 @@ class TentForm extends MyForm
             'required' => true,
             'options' => array(
                 'label' => 'Farbe2',
-            ),
+            ),s
             'attributes' => array(
                 'value' => '#FAEBd7',
             ),
         ));
+
+		$this->add(array(
+			'name' => 'storage-fieldset',
+			'type' => 'Equipment\Form\StorageFieldset',
+			'options' => array(
+				'use_as_base_fieldset' => true
+			)
+		));
+
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
