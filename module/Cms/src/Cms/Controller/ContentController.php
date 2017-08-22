@@ -23,7 +23,7 @@ class ContentController extends AbstractActionController
     public function indexAction()
     {
 
-        $posts = $this->contentService->findAllPosts();
+        $posts = $this->contentService->getAll();
         $contentTable = new DataTable();
         $contentTable->setData($posts);
         $contentTable->insertLinkButton('/cms/add', 'Neue Seite');
@@ -59,7 +59,7 @@ class ContentController extends AbstractActionController
         $id = $this->params()->fromRoute('id');
 
         try {
-            $post = $this->contentService->findPost($id);
+            $post = $this->contentService->getById($id);
         } catch (\InvalidArgumentException $ex) {
             //redirect if page not found
             return $this->redirect()->toRoute('cms');
@@ -79,7 +79,7 @@ class ContentController extends AbstractActionController
             $this->contentForm->setData($request->getPost());
             if ($this->contentForm->isValid()) {
                 try {
-                    $this->contentService->savePost($this->contentForm->getData());
+                    $this->contentService->save($this->contentForm->getData());
 
                     return $this->redirect()->toRoute('cms');
                 } catch (\Exception $e) {
@@ -96,7 +96,7 @@ class ContentController extends AbstractActionController
     public function editAction()
     {
         $request = $this->getRequest();
-        $post = $this->contentService->findPost($this->params('id'));
+        $post = $this->contentService->getById($this->params('id'));
 
         $this->contentForm->bind($post);
 
@@ -105,7 +105,7 @@ class ContentController extends AbstractActionController
 
             if ($this->contentForm->isValid()) {
                 try {
-                    $this->contentService->savePost($post);
+                    $this->contentService->save($this->contentForm->getData());
 
                     return $this->redirect()->toRoute('cms');
                 } catch (\Exception $e) {
@@ -121,7 +121,7 @@ class ContentController extends AbstractActionController
     public function deleteAction()
     {
         try {
-            $post = $this->contentService->findPost($this->params('id'));
+            $post = $this->contentService->getById($this->params('id'));
         } catch (\InvalidArgumentException $e) {
             return $this->redirect()->toRoute('cms');
         }
@@ -132,7 +132,7 @@ class ContentController extends AbstractActionController
             $del = $request->getPost('delete_confirmation', 'no');
 
             if ($del === 'yes') {
-                $this->contentService->deletePost($post);
+                $this->contentService->delete($post);
             }
 
             return $this->redirect()->toRoute('cms');

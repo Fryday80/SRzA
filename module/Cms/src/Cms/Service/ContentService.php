@@ -22,27 +22,28 @@ class ContentService
 	/**
 	 * @return Content[]|null
 	 */
-    public function findAllPosts()
+    public function getAll()
     {
-        return $this->contentTable->findAll();
+        return $this->contentTable->getAll();
     }
 
-    public function findPost($id)
+    public function getById($id)
     {
-        return $this->contentTable->findById($id);
+        return $this->contentTable->getById($id);
     }
 
-    public function findByUrl($url)
+    public function getByUrl($url)
     {
         return $this->contentTable->findByUrl($url);
     }
 
-    public function savePost(Content $post)
+    public function save($post)
     {
+		if (! ($post instanceof Content || is_array($post))) return null;
         return $this->contentTable->save($post);
     }
 
-    public function deletePost(Content $post)
+    public function delete(Content $post)
     {
         return $this->contentTable->deleteContent($post);
     }

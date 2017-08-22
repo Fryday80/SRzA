@@ -60,12 +60,24 @@ class DatabaseTable extends AbstractTableGateway
         return $result->current();
     }
 
-    protected function getByKey($key, $value){
+	/**
+	 * @param mixed $key
+	 * @param mixed $value
+	 *
+	 * @param bool $asArray set on true, even one result is in Array 0 => Model
+	 *
+	 * @return AbstractModel|AbstractModel[]|null model if result is one
+	 */
+    protected function getByKey($key, $value, $asArray = false){
+		/** @var HydratingResultSet $result */
 		$result = $this->select(array($key => $value));
 		if (!$result)
-			return false;
+			return null;
 
-		return $result->toObjectArray();
+		$resultObjectArray = $result->toObjectArray();
+
+		if ($asArray) return $resultObjectArray;
+		return (count($resultObjectArray) == 1) ? $resultObjectArray[0] : $resultObjectArray;
 	}
 
 	public function getNextId()

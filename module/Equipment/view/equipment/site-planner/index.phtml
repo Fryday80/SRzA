@@ -1326,6 +1326,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     z = Math.pow(2, z);
                     var item = this.items[i];
                     item.scale(1 / z);
+                    item.bringToFront();
                 }
                 this.sitePlanner.canvas.renderAll();
             }
@@ -1649,7 +1650,7 @@ $this->headScript()->appendFile('/libs/map.js');
                     if (!self.cropedImageBlob) {
                         self.showError('no croped image to save!', lang.ohno);
                     }
-                    http.postBlob("/siteplanner/imageUpload", self.cropedImageBlob, name + '.png')
+                    http.postBlob("/siteplanner/imageUpload", self.cropedImageBlob, name + '.png', true, true, false)
                         .progress(function(value) {
                             console.log(value);
                         })
@@ -1657,8 +1658,9 @@ $this->headScript()->appendFile('/libs/map.js');
                             if(e.error)
                                 if (e.code == 5)
                                     self.showError(lang.imageNameTaken, lang.ohno);
-                                else
+                                else {
                                     self.showError(e.msg, lang.ohno);
+                                }
                             else
                                 self.showInfo(e.msg, lang.successSave);
                         });
@@ -1759,6 +1761,8 @@ $this->headScript()->appendFile('/libs/map.js');
                     //@todo set viewport position to center of map
                     self.canvas.renderAll();
                     self.isBusy = false;
+                    self.itemList.update();
+
                 }
                 function createFromImage(img, line, pos, zIndex) {
                     var img = new fabric.Image(img, {

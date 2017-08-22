@@ -124,31 +124,44 @@ class SitePlannerController extends AbstractActionController
         return new JsonModel($result);
     }
     public function imageUploadAction() {
-        $result = ['error' => false];
-        $file = $this->params()->fromFiles('image');
-        //@todo save path from config
-        $savePath = 'Lageplaene';
-        if (!$this->mediaService->isDir($savePath)) {
-            $result['error'] = true;
-            $result['msg'] = "save path doesn't exist";
-            $result['code'] = 2;
-        }
-        if (!$file) {
-            $result['error'] = true;
-            $result['msg'] = "image must be set in the request";
-            $result['code'] = 4;
-        }
-        if (!$result['error']) {
-            $err = $this->mediaService->upload($file, $savePath);
-            if ($err instanceof MediaException) {
-                $result['error'] = true;
-                $result['msg'] = $err->getMsg();
-                $result['code'] = 5;
-            } else {
-                $result['msg'] = sprintf("image saved to '%s/%s'", $savePath, $file["name"]);
-            }
-        }
-        return new JsonModel($result);
+    	try {
+			$result = ['error' => false];
+			$file = $this->params()->fromFiles('image');
+			//@todo save path from config
+			$savePath = 'Lageplaene';
+			if (!$this->mediaService->isDir($savePath)) {
+				$result['error'] = true;
+				$result['msg'] = "save path doesn't exist";
+				$result['code'] = 2;
+			}
+			if (!$file) {
+				$result['error'] = true;
+				$result['msg'] = "image must be set in the request";
+				$result['code'] = 4;
+			}
+			if (!$result['error']) {
+				var_dump($result);
+				echo '### = upload response'; die;
+				$err = $this->mediaService->upload($file, $savePath);
+				var_dump($err);
+				echo '### = upload response'; die;
+				if ($err instanceof MediaException) {
+					$result['error'] = true;
+					$result['msg'] = $err->getMsg();
+					$result['code'] = 5;
+				} else {
+					$result['msg'] = sprintf("image saved to '%s/%s'", $savePath, $file["name"]);
+				}
+			}
+			else {
+				var_dump($result);
+				echo '### error = TRUE';die;
+			}
+
+			return new JsonModel($result);
+		} catch (Exception $e) {
+    		echo $e->getMessage(); die;
+		}
     }
     public function deleteAction() {
         $id = $this->params('id');

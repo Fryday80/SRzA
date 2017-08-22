@@ -79,15 +79,18 @@
          * @param url {string}
          * @param dataType {number} http.JSON_DATA, http.FORM_DATA or http.BLOB_DATA
          * @param data
-         * @param progress {bool|function}
-         * @param success {bool|function}
-         * @param error {bool|function}
+         * @param progress {bool}
+         * @param success {bool}
+         * @param error {bool}
          */
         post(url, dataType, data, success = false, progress = false, error = true) {
             var progressValue = 0.0,
                 progressState = 'Start Loading';
 
             if (!url || typeof url !== 'string') console.error('url must be set!');
+
+            if (progress)
+                notify.startProgress("Upload to " + url);
 
             data = prepareData(dataType, data);
 
@@ -103,18 +106,17 @@
                 opt.contentType = data.contentType;
             }
             opt.success = function(data, textStatus, jqXHR) {
-                if (success && typeof success === 'function')
-                    success(data);
+                if (progress)
+                    notify.stopProgress(url);
             };
             opt.error = function(jqXHR, textStatus, errorThrown) {
                 if (error && error === true) {
                     window.notify.error(errorThrown, 'Ajax Error');
+                    notify.stopProgress(url);
                 }
-                if (error && typeof error === 'function')
-                    error(data);
             };
             opt.complete = function(data) {
-                console.log(data);
+                // console.log(data);
             };
             opt.xhr = function() {
                 var xhr = new window.XMLHttpRequest();
@@ -123,7 +125,7 @@
                         progressState = 'Send request';
                         progressValue = (evt.loaded / evt.total) / 2;
                         if (progress)
-                            progress(progressValue, progressState);
+                            notify.setProgress(url, progressValue, progressState)
                     }
                 }, false);
                 xhr.addEventListener("progress", function(evt) {

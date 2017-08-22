@@ -48,9 +48,11 @@ class Content extends AbstractModel
         $this->id = $id;
     }
 
-    /**
-     * @return string
-     */
+	/**
+	 * @param bool $asArray
+	 *
+	 * @return string | array
+	 */
     public function getExceptedRoles($asArray = false)
     {
         return ($asArray)? explode(",", $this->exceptedRoles) : $this->exceptedRoles;

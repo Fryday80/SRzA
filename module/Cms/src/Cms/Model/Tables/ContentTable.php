@@ -24,16 +24,11 @@
 		}
 
 		/**
-		 * @return AbstractModel[]|null
+		 * @return Content[]|null
 		 */
-		public function findAll()
+		public function getAll()
 		{
-			return $this->getAll();
-		}
-
-		public function findById($id)
-		{
-			return $this->getById($id);
+			return parent::getAll();
 		}
 
 		public function findByUrl($url)
@@ -43,7 +38,7 @@
 
 		public function save($post)
 		{
-			return $this->save($post);
+			return parent::save($post);
 		}
 
 		public function deleteContent (Content $post)
