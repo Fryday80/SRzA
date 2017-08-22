@@ -34,7 +34,7 @@ class ContentService
 
     public function getByUrl($url)
     {
-        return $this->contentTable->findByUrl($url);
+        return $this->contentTable->getByUrl($url);
     }
 
     public function save($post)
@@ -43,7 +43,7 @@ class ContentService
         return $this->contentTable->save($post);
     }
 
-    public function delete(Content $post)
+    public function delete($post)
     {
         return $this->contentTable->deleteContent($post);
     }
