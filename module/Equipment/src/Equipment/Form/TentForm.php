@@ -122,7 +122,7 @@ class TentForm extends MyForm
             'required' => true,
             'options' => array(
                 'label' => 'Farbe2',
-            ),s
+            ),
             'attributes' => array(
                 'value' => '#FAEBd7',
             ),

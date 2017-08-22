@@ -42,6 +42,9 @@
 					'label' => 'Darf verliehen werden',
 					'value_options' => EEquipLending::LEND_LIST,
 				),
+				'attributes' => array(
+					'value' => 0,
+				),
 			));
 
 			$this->add(array(
