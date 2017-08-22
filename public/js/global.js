@@ -57,7 +57,7 @@
         }
         return new Blob(byteArrays, {type: mime});
     }
-    window.http = {
+    window.apps.http = window.http = {
         JSON_DATA: 0,
         FORM_DATA: 1,
         BLOB_DATA: 2,
@@ -220,7 +220,7 @@
         }
     }
 
-    window.notify = {
+    window.apps.notify = window.notify = {
         error(msg, title) {
             var opt = {};
             opt.text = msg;

@@ -17,6 +17,7 @@
                         ->prependStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
         ; ?>
     <!----  jquery scripts   ---->
+    <script> window.apps = {};</script>
     <?php echo $this->headScript()
                         ->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
                         ->prependFile($this->basePath(  'js/globalUsage/accordion/accordion.js'))
@@ -97,6 +98,7 @@
                 </div>
             </div>
         </div>
+        <script> apps.menuHandler.run();</script>
 <!----  CONTENT   ---->
     <!----  content   ---->
         <box id="content" <?php echo $fullWidth; ?> >
