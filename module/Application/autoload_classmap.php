@@ -59,4 +59,5 @@ return array(
     'Application\View\Helper\FormTextSearch'                 => __DIR__ . '/src/Application/View/Helper/FormTextSearch.php',
     'Application\View\Helper\InlineFromFile'                 => __DIR__ . '/src/Application/View/Helper/InlineFromFile.php',
     'Application\View\Helper\MyUrl'                          => __DIR__ . '/src/Application/View/Helper/MyUrl.php',
+    'Application\View\Helper\MyViewHelper'                   => __DIR__ . '/src/Application/View/Helper/MyViewHelper.php',
 );

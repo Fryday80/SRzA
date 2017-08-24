@@ -1,6 +1,9 @@
 //global js for pnotify shorthandlers and ajax functions with build in error handling
 (function(){
     "use strict";
+
+    window.apps = {};
+
     function prepareData(type, data) {
         switch(type) {
             case http.JSON_DATA:
@@ -57,7 +60,7 @@
         }
         return new Blob(byteArrays, {type: mime});
     }
-    window.apps.http = window.http = {
+    window.http = {
         JSON_DATA: 0,
         FORM_DATA: 1,
         BLOB_DATA: 2,
@@ -141,6 +144,7 @@
             return $.ajax(opt);
         },
     };
+
     /** @type {Progress[]} */
     var tasks = [],
         taskNameHash = [];
@@ -220,7 +224,7 @@
         }
     }
 
-    window.apps.notify = window.notify = {
+    window.notify = {
         error(msg, title) {
             var opt = {};
             opt.text = msg;

@@ -12,18 +12,36 @@ abstract class DataTableAbstract
     public $data = null;
     public $columns = array();
     public $jsConfig = array (
-                            'lengthMenu' => array(
-                                array(25, 10, 50, -1),      //values
-                                array(25, 10, 50, "All")),  //shown values
-                            'select' => "{ style: 'multi' }",
-                            'dom' => array(
-                                'l' => true,
-                                'f' => true,
-                                'r' => true,
-                                't' => true,
-                                'i' => true,
-                                'p' => true
-                            )
+//    		'initComplete' => 'function (){this.api().columns().every( function () {
+//                var column = this;
+//                var select = $(\'<select><option value=""></option></select>\')
+//                    .appendTo( $(column.footer()).empty() )
+//                    .on( \'change\', function () {
+//                        var val = $.fn.dataTable.util.escapeRegex(
+//                            $(this).val()
+//                        );
+//
+//                        column
+//                            .search( val ? \'^\'+val+\'$\' : \'\', true, false )
+//                            .draw();
+//                    } );
+//
+//                column.data().unique().sort().each( function ( d, j ) {
+//                    select.append( \'<option value="\'+d+\'">\'+d+\'</option>\' )
+//                } );
+//            } );}}',
+			'lengthMenu' => array(
+				array(25, 10, 50, -1),      //values
+				array(25, 10, 50, "All")),  //shown values
+			'select' => "{ style: 'multi' }",
+			'dom' => array(
+				'l' => true,
+				'f' => true,
+				'r' => true,
+				't' => true,
+				'i' => true,
+				'p' => true
+			)
     );
 
     protected $defaultColumn = array(
