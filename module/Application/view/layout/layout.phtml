@@ -10,11 +10,26 @@
                         ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ; ?>
 <!----  CSS styles & favicon  ---->
-    <?php echo $this->headLink( array( 'rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico' ) )
-		                ->appendStylesheet($this->basePath('css/style.css'))
-		                ->appendStylesheet($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.css'))
-                        ->appendStylesheet($this->basePath('libs/globalUsage/feedback/css/feedback.css'))
-                        ->appendStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
+    <?php
+		/* ==========================================================
+		 * HeadLink and HeadScript Declaration order
+		 *
+         * (HTML-Code)
+		 * ...
+		 * 1) PREpended in layout.phtml
+		 * 2) PRE-/APpended in ViewHelpers e.g.
+		 * 3) APpended in layout.phtml
+		 * ...
+		 * (HTML-Code)
+		 * ========================================================== */
+    echo $this->headLink( array( 'rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico' ) )
+                        // need to use PREpend because declarations e.g. in ViewHelpers take place first!
+                        ->prependStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
+                        ->prependStylesheet($this->basePath('libs/globalUsage/feedback/css/feedback.css'))
+                        ->prependStylesheet($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.css'))
+		                ->prependStylesheet($this->basePath('css/style.css'))
+                        // needs to be loaded as last CSS
+                        ->appendStylesheet ($this->basePath('/css/jsOverrides.css'))
         ; ?>
     <!----  jquery scripts   ---->
 	<?php echo $this->headScript()
@@ -151,6 +166,5 @@
         <?php echo $this->inlineScript() ?>
     </div>
 
-    <link href="/css/jsOverrides.css" media="screen" rel="stylesheet" type="text/css">
 </body>
 </html>
