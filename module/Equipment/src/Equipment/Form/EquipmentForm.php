@@ -157,13 +157,7 @@ class EquipmentForm extends MyForm
             ),
         ));
 
-		$this->add(array(
-			'name' => 'storage-fieldset',
-			'type' => 'Equipment\Form\StorageFieldset',
-			'options' => array(
-				'use_as_base_fieldset' => true
-			)
-		));
+        include ('StorageFieldset.php');
 
         $this->add(array(
             'name' => 'submit',

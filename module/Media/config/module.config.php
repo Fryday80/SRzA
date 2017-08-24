@@ -26,6 +26,11 @@ return array(
             'Media\Controller\File'         => GeneralMediaFactory::class,
         )
     ),
+	'controller_plugins' => array(
+		'factories' => array(
+			'imageUpload' => 'Media\Factory\ImageUploadPluginFactory',
+		),
+	),
     'service_manager' => array(
         'factories' => array(
             'MediaService' => 'Media\Factory\MediaServiceFactory',

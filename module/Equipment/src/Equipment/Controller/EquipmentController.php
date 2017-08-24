@@ -1,6 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
+use Application\Controller\Plugin\EquipmentImageUpload;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;
@@ -24,6 +25,9 @@ class EquipmentController extends AbstractActionController
 
 	const READ_OUT = "/media/file/";
 	private $dataRootPath;
+
+	/** @var  EquipmentImageUpload */
+	private $imageUpload;
 
     private $dataTable;
 
@@ -132,6 +136,11 @@ class EquipmentController extends AbstractActionController
         ));
     }
 
+	/**
+	 * @internal param $this->imageUpload EquipmentImageUpload
+	 *
+	 * @return array|\Zend\Http\Response
+	 */
     public function addAction()
     {
         $action = 'add';
@@ -153,16 +162,21 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 // push into model for selection in service
-                $data = new $vars['model'][$type]($form->getData());
-                $newId = $this->equipService->getNextId();
+//                $data = new $vars['model'][$type]($form->getData());
+                $data = $form->getData();
+                $newId = (int) $this->equipService->getNextId();
+
+				$this->fetchImageUpload();
 
 				// upload and save images
-				if ($data['image1'] !== null || $data['image2'] !== null){
-					$targetPaths = $this->imageProcessor->uploadEquipImages($data, $newId);
-					foreach ($targetPaths as $key => $targetPath) {
-						$data->$key = $targetPath;
-					}
-				}
+				bdump(__FUNCTION__ . '() @ ' . __CLASS__ . '; now follows $this->imageUpload->upload()' );
+				$data = $this->imageUpload->upload($data, $newId);
+				bdump(__FUNCTION__ . '() @ ' . __CLASS__ . '; works inkl upload' . __FUNCTION__ . '() @ ' . __CLASS__);
+				die;
+
+
+
+
 				$this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
@@ -242,5 +256,11 @@ class EquipmentController extends AbstractActionController
                 $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
         }
         return $vars;
+    }
+
+	private function fetchImageUpload()
+	{
+		if (!($this->imageUpload instanceof EquipmentImageUpload))
+			$this->imageUpload = $this->equipmentImageUpload();
     }
 }

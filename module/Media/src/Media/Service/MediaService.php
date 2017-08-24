@@ -596,17 +596,34 @@ class MediaService {
     /**
      * @param $filePostArray
      * @param $targetFolder
-     * @return bool|MediaException
+     * @return MediaException
      */
-    public function upload($filePostArray, $targetFolder) {
+    public function upload($filePostArray, $targetFolder, $force = false) {
 
-        $target = $this->realPath($targetFolder);
+		$target = $this->realPath($targetFolder);
+
+    	if (!$target && $force) {
+    		$path = str_replace(getcwd(), '', $targetFolder);
+    		$path = str_replace(DATA_PATH, '', $path);
+    		$parts = substr($path, 1);
+    		$parts = explode('/', $parts);
+    		$rootPath = $this->cleanPath( getcwd() . DATA_PATH );
+    		$c = count($parts);
+    		$i = 0;
+    		while ($i < $c-1){
+    			$rootPath .= '/' . $parts[$i];
+    			@mkdir( $rootPath, 0755);
+    			$i++;
+			}
+			$target = $rootPath . '/' .$parts[$c-1];
+		}
 
         $perm = $this->getPermission($target);
-        if (!$perm['writable']) {
+        if (!$force && !$perm['writable']) {
             return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
         }
 
+		bdump (__FUNCTION__ .' @ class  ' . __CLASS__);
         $path = '';
         try {
             $uploadHandler = new UploadHandler();
@@ -615,6 +632,8 @@ class MediaService {
             $uploadHandler->setSource($filePostArray);
             $uploadHandler->setDestinationPath($target);
             $path = $uploadHandler->upload();
+            bdump (__FUNCTION__ .' @ class  ' . __CLASS__);
+			die;
         } catch (Exception $e) {
 //            bdump($e->getMessage());
 //            bdump($e->getFile());
@@ -794,7 +813,7 @@ class MediaService {
     /**
      * Clean path string to remove multiple slashes, etc.
      * @param string $string
-     * @return $string
+     * @return string $string
      */
     private function cleanPath($string) {
         // replace backslashes (windows separators)

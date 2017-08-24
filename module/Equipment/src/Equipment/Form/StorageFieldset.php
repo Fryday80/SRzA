@@ -1,23 +1,6 @@
 <?php
-	/**
-	 * Created by IntelliJ IDEA.
-	 * User: Fry
-	 * Date: 22.08.2017
-	 * Time: 12:08
-	 */
-
-	namespace Equipment\Form;
-
-
 	use Equipment\Model\Enums\EEquipLending;
 	use Equipment\Model\Enums\EStoragePlaces;
-	use Zend\Form\Fieldset;
-
-	class StorageFieldset extends Fieldset
-	{
-		public function __construct($name = null, $options = array())
-		{
-			parent::__construct($name, $options);
 
 			$this->add(array(
 				'name' => 'purchased',
@@ -66,5 +49,5 @@
 					'label' => 'Rechnungskopie',
 				),
 			));
-		}
-	}
+//		}
+//	}

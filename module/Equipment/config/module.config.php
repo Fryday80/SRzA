@@ -124,10 +124,11 @@ return array(
             'Equipment\Controller\LostAndFound' => 'Equipment\Factory\Controller\LostAndFoundControllerFactory',
         ),
     ),
-    'view_helpers' => array(
-        'factories' => array( ),
-        'invokables' => array( )
-    ),
+	'controller_plugins' => array(
+		'factories' => array(
+			'equipmentImageUpload' => 'Equipment\Factory\Controller\Plugin\EquipmentImageUploadPluginFactory',
+		),
+	),
     'service_manager' => array(
         'factories' => array(
             'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',
@@ -139,6 +140,10 @@ return array(
             'Equipment\Model\LostAndFoundTable' => DefaultTableGatewayFactory::class,
         )
     ),
+	'view_helpers' => array(
+		'factories' => array( ),
+		'invokables' => array( )
+	),
     'view_manager' => array(
         'template_path_stack' => array(
             'Equipment' => __DIR__ . '/../view',

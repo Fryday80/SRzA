@@ -306,6 +306,9 @@ class UploadHandler
             }
         }
 
+        bdump ('works');
+        die;
+
         preg_match('/\.([^\.]*$)/', $this->srcFileName, $extension);
         if (is_array($extension) && sizeof($extension) > 0) {
             $this->srcExt      = strtolower($extension[1]);
@@ -316,7 +319,6 @@ class UploadHandler
         }
 
         $this->srcMimeType = $this->detectMime();
-
         // determine whether the file is an image
         if ($this->srcMimeType && is_string($this->srcMimeType) && !empty($this->srcMimeType) && array_key_exists($this->srcMimeType, $this->supportedImages)) {
             $this->isImage = true;
