@@ -11,27 +11,26 @@
         ; ?>
 <!----  CSS styles & favicon  ---->
     <?php echo $this->headLink( array( 'rel' => 'shortcut icon', 'type' => 'image/x-icon', 'href' => $this->basePath() . '/img/favicon.ico' ) )
-                        ->prependStylesheet($this->basePath('libs/globalUsage/feedback/css/feedback.css'))
-                        ->prependStylesheet($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.css'))
-                        ->prependStylesheet($this->basePath('css/style.css'))
-                        ->prependStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
+		                ->appendStylesheet($this->basePath('css/style.css'))
+		                ->appendStylesheet($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.css'))
+                        ->appendStylesheet($this->basePath('libs/globalUsage/feedback/css/feedback.css'))
+                        ->appendStylesheet($this->basePath('/libs/pnotify/pnotify.custom.min.css'))
         ; ?>
     <!----  jquery scripts   ---->
-    <script> window.apps = {};</script>
-    <?php echo $this->headScript()
-                        ->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
-                        ->prependFile($this->basePath(  'js/globalUsage/accordion/accordion.js'))
-                        ->prependFile($this->basePath(  'js/globalUsage/loggingDesigner/loggingDesigner.js'))
-                        ->prependFile($this->basePath(  'js/globalUsage/menu/menu.js'))
-                        ->prependFile($this->basePath(  'js/globalUsage/popUp/popUp.js'))
-//		->prependFile($this->basePath('/libs/datatables/datatables.min.js'))
-                        ->prependFile($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.min.js'))
-                        ->prependFile($this->basePath(  'js/globalUsage/jquery/jquery-3.2.0.min.js'))
-                        ->appendFile($this->basePath('/libs/pnotify/pnotify.custom.min.js'))
-                        ->appendFile($this->basePath('/libs/map.js'))
-                        ->appendFile($this->basePath('/js/global.js'))
-//		->appendFile($this->basePath('/libs/datatables/datatables.min.js'))
-        ; ?>
+	<?php echo $this->headScript()
+        // need to use PREpend because declarations e.g. in ViewHelpers take place first!
+		    ->prependFile($this->basePath('/libs/map.js'))
+			->prependFile($this->basePath('libs/globalUsage/feedback/js/feedback.js'))
+            ->prependFile($this->basePath(  'js/globalUsage/accordion/accordion.js'))
+            ->prependFile($this->basePath(  'js/globalUsage/loggingDesigner/loggingDesigner.js'))
+            ->prependFile($this->basePath(  'js/globalUsage/menu/menu.js'))
+            ->prependFile($this->basePath(  'js/globalUsage/popUp/popUp.js'))
+            ->prependFile($this->basePath('/libs/pnotify/pnotify.custom.min.js'))
+            ->prependFile($this->basePath('/js/global.js'))
+			->prependFile($this->basePath('libs/globalUsage/jquery-ui/jquery-ui.min.js'))
+            ->prependFile($this->basePath(  'js/globalUsage/jquery/jquery-3.2.0.min.js'))
+	; ?>
+		<script> window.apps = {};</script>
 </head>
 <?php
     $disclaimLink  = '<a href="/disclaimer" class="disclaim" > Haftungsausschluss </a>';

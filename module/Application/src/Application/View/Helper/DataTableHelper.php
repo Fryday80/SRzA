@@ -2,18 +2,12 @@
 namespace Application\View\Helper;
 
 use Application\Model\AbstractModels\DataTableAbstract;
-use Zend\View\Helper\AbstractHelper;
 
 
-Class DataTableHelper extends AbstractHelper {
+Class DataTableHelper extends MyViewHelper {
 
-    protected $view;
-    function __construct($view)
-    {
-        $this->view = $view;
-        $this->view->headLink()->appendStylesheet($this->view->basePath('/libs/datatables/datatables.min.css'));
-        $this->view->headScript()->prependFile($this->view->basePath('/libs/datatables/datatables.js'));
-    }
+	protected $jsFiles  = array ('/libs/datatables/datatables.min.css');
+	protected $cssFiles = array ('/libs/datatables/datatables.js');
 
 	/**
 	 * @param DataTableAbstract $table
