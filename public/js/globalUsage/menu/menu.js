@@ -57,24 +57,6 @@
              * and runs designing script
              */
             function setMode () {
-                /** resets the browser style, when resized **/
-                function runBrowserDesign() {
-                    /** style class changes **/
-                    $(".js-L-view").removeClass("hidden");
-                    $(".js-S-view").not("hidden").addClass("hidden");
-                    $('.navigation .linkPic').removeClass("hidden");
-                }
-
-                /** sets the mobile style or
-                 * resets the menu to closed state @resize
-                 */
-                function runMobileDesign() {
-                    /** style class changes **/
-                    $(".js-S-view").removeClass("hidden");
-                    $(".js-L-view").not("hidden").addClass("hidden"); //resets the menu to closed state
-                    $(".navigation .linkPic").not("hidden").addClass("hidden");
-                }
-
                 /**
                  * binds the menu show-hide action
                  */
@@ -91,11 +73,9 @@
 
                 if (window.matchMedia('(max-width: 700px)').matches) {
                     state.changeMode("mobile");
-                    runMobileDesign();
                     menuActionsMobile();
                 } else {
                     state.changeMode("browser");
-                    runBrowserDesign();
                 }
             }
 

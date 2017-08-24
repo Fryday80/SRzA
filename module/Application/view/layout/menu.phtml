@@ -6,7 +6,7 @@ if (!function_exists("createMenuHtmlRecursive") ){
     function linkImage ( $level ) {
         $linkImgSrc  = "/img/uikit/link.png";
 
-        return ( $level == 0 ) ? '<img src="' . $linkImgSrc . '" class="linkPic">' : '';
+        return ( $level == 0 ) ? '<img src="' . $linkImgSrc . '" class="linkPic js-L-view-inline">' : '';
     };
 
     function createMenuHtmlRecursive($page, $level) {
