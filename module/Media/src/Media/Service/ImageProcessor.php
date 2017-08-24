@@ -9,7 +9,7 @@ use Media\Model\Enums\EImageProcessor;
  * Class ImageProcessor
  * @package Media\Service
  */
-class ImageProcessor extends ClassLog
+class ImageProcessor
 {
 	const UPLOAD = 0;
 	const OBJECT = 1;

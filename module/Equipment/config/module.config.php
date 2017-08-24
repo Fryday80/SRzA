@@ -124,11 +124,6 @@ return array(
             'Equipment\Controller\LostAndFound' => 'Equipment\Factory\Controller\LostAndFoundControllerFactory',
         ),
     ),
-	'controller_plugins' => array(
-		'factories' => array(
-			'equipmentImageUpload' => 'Equipment\Factory\Controller\Plugin\EquipmentImageUploadPluginFactory',
-		),
-	),
     'service_manager' => array(
         'factories' => array(
             'EquipmentService' => 'Equipment\Factory\Service\EquipmentServiceFactory',

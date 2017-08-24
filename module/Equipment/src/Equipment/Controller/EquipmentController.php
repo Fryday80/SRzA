@@ -1,7 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Controller\Plugin\EquipmentImageUpload;
+use Application\Controller\Plugin\ImageUpload;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;
@@ -26,7 +26,7 @@ class EquipmentController extends AbstractActionController
 	const READ_OUT = "/media/file/";
 	private $dataRootPath;
 
-	/** @var  EquipmentImageUpload */
+	/** @var  ImageUpload */
 	private $imageUpload;
 
     private $dataTable;
@@ -42,6 +42,7 @@ class EquipmentController extends AbstractActionController
         $this->dataTable->setServices($this->accessService, $this->equipService);
         $this->imageProcessor = $imageProcessor;
 		$this->dataRootPath = getcwd() . '/Data';
+		$this->imageUpload = $this->imageUpload();
     }
 
     public function indexAction() {
@@ -166,16 +167,41 @@ class EquipmentController extends AbstractActionController
                 $data = $form->getData();
                 $newId = (int) $this->equipService->getNextId();
 
-				$this->fetchImageUpload();
-
 				// upload and save images
-				bdump(__FUNCTION__ . '() @ ' . __CLASS__ . '; now follows $this->imageUpload->upload()' );
-				$data = $this->imageUpload->upload($data, $newId);
-				bdump(__FUNCTION__ . '() @ ' . __CLASS__ . '; works inkl upload' . __FUNCTION__ . '() @ ' . __CLASS__);
-				die;
+				$uploadedImages = $dataTarget = array();
 
+				// check if sth is set
+				if ($data['image1'] !== null || $data['image2'] !== null || $data['bill'] !== null){
+					// check if set data is string (old upload) or uploadArray => then push to uploadedImages array
+					if ($data['image1'] !== null && $this->imageUpload()->isUploadArray($data['image1']))
+						$uploadedImages['image1'] = $data['image1'];
+					if ($data['image2'] !== null && $this->imageUpload()->isUploadArray($data['image2']))
+						$uploadedImages['image2'] = $data['image2'];
+					if ($data['bill']   !== null && $this->imageUpload()->isUploadArray($data['bill']  ))
+						$uploadedImages['bill']   = $data['bill'];
 
+					// if sth was uploaded
+					if ( !empty($uploadedImages) )
+					{
+						foreach ($uploadedImages as $key => $uploadedImage)
+						{
+							// process image
+							/** @var ImageProcessor $iP */
+							$this->imageProcessor->load($uploadedImage);
+							$this->imageProcessor->resizeToMaxDiskSize();
 
+							// === create path
+							list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+							$dataTarget[$key] = '/_equipment/' . $newId .'/'. $key .'.' . $extension;
+
+							// === upload images
+							$this->imageUpload->upload($data[$key], $dataTarget[$key]);
+						}
+					};
+
+					// write paths to item
+					$data = $dataTarget + $data;
+				}
 
 				$this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
@@ -256,11 +282,5 @@ class EquipmentController extends AbstractActionController
                 $vars['links']['zurück zur User-Übersicht'] = "/equip/$typeString/$userId";
         }
         return $vars;
-    }
-
-	private function fetchImageUpload()
-	{
-		if (!($this->imageUpload instanceof EquipmentImageUpload))
-			$this->imageUpload = $this->equipmentImageUpload();
     }
 }

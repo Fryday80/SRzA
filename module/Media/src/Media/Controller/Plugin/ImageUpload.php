@@ -14,7 +14,7 @@ class ImageUpload extends AbstractPlugin
 	/** @var MediaService  */
 	protected $mediaService;
 	/** @var ImageProcessor  */
-	protected $imageProcessor;
+	public $imageProcessor;
 
 	/** @var string path to /Data folder */
 	protected $storagePath;
@@ -111,14 +111,11 @@ class ImageUpload extends AbstractPlugin
 	 */
 	protected function uploadAction($uploadData, $destination)
  	{
- 		bdump ("works in " . __FUNCTION__ . ' @ Class ' . __CLASS__);
- 		die;
+ 		bdump('ajskh');die;
 		$err = $this->mediaService->upload($uploadData, $this->storagePath . $destination, true);
 		if ($err instanceof MediaException) {
 			throw $err;
 		}
-		bdump('fixed');
-		die;
   	}
 
 	/**

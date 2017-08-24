@@ -58,8 +58,16 @@
     // $this->layout()->setVariable('showSidebar', false);
 
     $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
+
+    $class = ($this->userinfo('logged'))? 'loogged-in' : 'logged-out';
+    $body = " class = '$class' '";
 ?>
-<body>
+<body <?php echo $body;?> >
+
+<!-- Login Window -->
+<div class="login-container">
+	<?php echo $this->loginview(); ?>
+</div>
     <div class="body box">
         <!----  NO SCRIPT   ---->
         <noscript>
@@ -71,6 +79,7 @@
                 </div>
             </div>
         </noscript>
+
 <!----  HEAD   ---->
         <div id="headcontainer">
              <div id="head">
@@ -87,7 +96,7 @@
             </div>
             <div id="headlinks">
                 <span class="own_text_big js-S-view " style="text-align: left">
-                    <?php $greet = $this->userinfo(); if ($greet != '') {echo $greet;} ?>
+                    <?php $greet = $this->userinfo() ; if ($greet != '') {echo $greet;} ?>
                 </span>
             </div>
         </div>
@@ -140,11 +149,6 @@
                         <?php $this->upcoming()->render(); ?>
                     </boxcontent>
                 </box>
-                <?php endif; ?>
-                <div class="rightbarDown">
-                    <?php echo $this->loginview(); ?>
-                </div>
-                <?php if ($this->showSidebar): ?>
              </div>
         <?php endif; ?>
         <div class="clear"></div>
