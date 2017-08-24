@@ -314,6 +314,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function resize($newWidth, $newHeight = null, $keepRatio = true)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_width($newWidth, $newHeight, $keepRatio);
 	}
 
@@ -326,6 +327,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function resize_height ($newHeight, $newWidth = null, $keepRatio = true)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_height($newHeight, $newWidth, $keepRatio);
 	}
 
@@ -340,13 +342,16 @@ class ImageProcessor extends ClassLog
 	 */
 	public function resize_crop($newWidth, $newHeight)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_crop($newWidth, $newHeight);
 	}
 
 	/**
 	 * @param int   $percentage value < 0 minifies value > 0 enlarges image
 	 */
-	public function resizeDiscSize($percentage = -10){
+	public function resizeDiscSize($percentage = -10)
+	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeDiscSize($percentage);
 	}
 
@@ -357,6 +362,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function resizeToDiscSize($discSize = null)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeToDiscSize($discSize);
 	}
 
@@ -367,6 +373,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function resizeToMaxDiskSize()
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeToDiscSize();
 	}
 
@@ -377,6 +384,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function saveImage($targetPath = null)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_save($targetPath);
 	}
 
@@ -388,6 +396,7 @@ class ImageProcessor extends ClassLog
 	 */
 	public function testMode($flag = null, $testPath = null)
 	{
+		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		if ($testPath !== null)
 			$this->testPath = $testPath;
 		if ($flag == null) $this->testMode = ($this->testMode) ? false : true;
@@ -580,6 +589,7 @@ class ImageProcessor extends ClassLog
 	 */
 	private function intern_resize_width($newWidth, $newHeight = null, $keepRatio = true)
 	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else
@@ -595,6 +605,7 @@ class ImageProcessor extends ClassLog
 	 */
 	private function intern_resize_height($newHeight, $newWidth = null, $keepRatio = true)
 	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		if ($newWidth == null){
 			$newWidth = $newHeight * $this->srcAspectRatio;
 			$this->newImage = imagescale($this->srcImage, $newWidth);
@@ -612,6 +623,7 @@ class ImageProcessor extends ClassLog
 	 */
 	private function intern_resize($newWidth, $newHeight, $keepRatio = true)
 	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		$this->newOrientation = ($newWidth > $newHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		if ($keepRatio !== true)
 			$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
@@ -672,41 +684,6 @@ class ImageProcessor extends ClassLog
 		}
 	}
 
-	/**
-	 * @param int   $percentage value < 0 minifies value > 0 expands image
-	 * @param bool  $save triggers intern_save() if true
-	 */
-	public function intern_resizeDiscSize($percentage = -10){
-		$factor = (100 + $percentage) /100;
-		if ($this->srcOrientation == EImageProcessor::LANDSCAPE) $this->resize($this->srcWidth * $factor);
-		else $this->resize_height($this->srcHeight * $factor);
-	}
-	/**
-	 * @param int   $discSize
-	 */
-	public function intern_resizeToDiscSize(int $discSize = null)
-	{
-		// get upload limit
-		$this->getMaxUploadSize();
-
-
-		$limit = ($discSize == null || $discSize > $this->maxFileSize) ? $this->maxFileSize : $discSize;
-
-		// enlarge until it is to big
-		while ($this->srcSize < $limit) {
-			$this->intern_resizeDiscSize(10);
-			$this->intern_save($this->srcPath);
-			$this->load($this->item);
-		}
-
-		while ($this->srcSize > $limit) {
-
-			$this->intern_resizeDiscSize(-10);
-			$this->intern_save($this->srcPath);
-			$this->load($this->item);
-		}
-	}
-
 	// ======== resize to output size and crop overleaping parts ===========
 	/**
 	 * Resize src image fitted to output size,
@@ -719,6 +696,7 @@ class ImageProcessor extends ClassLog
 	 */
 	private function intern_resize_crop($newWidth, $newHeight)
 	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		/*
 		 * Crop-to-fit PHP-GD
 		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
@@ -768,5 +746,44 @@ class ImageProcessor extends ClassLog
 			$newWidth, $newHeight
 		);
 		imagedestroy($tempImage);
+	}
+
+	// ======== resize to output disc size ===========
+	/**
+	 * @param int   $percentage value < 0 minifies value > 0 expands image
+	 * @param bool  $save triggers intern_save() if true
+	 */
+	public function intern_resizeDiscSize($percentage = -10)
+	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
+		$factor = (100 + $percentage) /100;
+		if ($this->srcOrientation == EImageProcessor::LANDSCAPE) $this->resize($this->srcWidth * $factor);
+		else $this->resize_height($this->srcHeight * $factor);
+	}
+	/**
+	 * @param int   $discSize
+	 */
+	public function intern_resizeToDiscSize(int $discSize = null)
+	{
+		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
+		// get upload limit
+		$this->getMaxUploadSize();
+
+
+		$limit = ($discSize == null || $discSize > $this->maxFileSize) ? $this->maxFileSize : $discSize;
+
+		// enlarge until it is to big
+		while ($this->srcSize < $limit) {
+			$this->intern_resizeDiscSize(10);
+			$this->intern_save($this->srcPath);
+			$this->load($this->item);
+		}
+
+		while ($this->srcSize > $limit) {
+
+			$this->intern_resizeDiscSize(-10);
+			$this->intern_save($this->srcPath);
+			$this->load($this->item);
+		}
 	}
 }

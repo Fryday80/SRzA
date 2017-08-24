@@ -3,6 +3,7 @@
 return array(
     'Application\Module'                                     => __DIR__ . '/Module.php',
     'Application\Controller\Plugin\MessageRedirect'          => __DIR__ . '/src/Application/Controller/Plugin/MessageRedirect.php',
+    'Application\Controller\Plugin\MyPlugin'                 => __DIR__ . '/src/Application/Controller/Plugin/MyPlugin.php',
     'Application\Controller\SystemController'                => __DIR__ . '/src/Application/Controller/SystemController.php',
     'Application\Factory\Controller\SystemControllerFactory' => __DIR__ . '/src/Application/Factory/Controller/SystemControllerFactory.php',
     'Auth\Factory\Controller\ControllerFactory'              => __DIR__ . '/src/Application/Factory/ControllerFactory.php',
@@ -49,7 +50,10 @@ return array(
     'Application\Service\StatisticService'                   => __DIR__ . '/src/Application/Service/StatisticService.php',
     'Application\Service\SystemService'                      => __DIR__ . '/src/Application/Service/SystemService.php',
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',
+    'Application\Utility\ClassLog'                           => __DIR__ . '/src/Application/Utility/ClassLog.php',
     'Application\Utility\DataTable'                          => __DIR__ . '/src/Application/Utility/DataTable.php',
+    'module\Application\src\Application\Utility\IClassLog'   => __DIR__ . '/src/Application/Utility/IClassLog.php',
+    'Application\Utility\MyUtility'                          => __DIR__ . '/src/Application/Utility/MyUtility.php',
     'Application\Utility\URLModifier'                        => __DIR__ . '/src/Application/Utility/URLModifier.php',
     'Application\View\Helper\ConverterHelper'                => __DIR__ . '/src/Application/View/Helper/ConverterHelper.php',
     'Application\View\Helper\DataTableHelper'                => __DIR__ . '/src/Application/View/Helper/DataTableHelper.php',

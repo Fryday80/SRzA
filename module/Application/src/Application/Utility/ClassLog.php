@@ -14,7 +14,9 @@
 	class ClassLog implements IClassLog
 	{
 		// IClassLog
-		protected $classLog;
+		protected $classLog = array(
+			'This is a chonological log file:'
+		);
 		protected $logHash;
 
 
