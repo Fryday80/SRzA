@@ -1,6 +1,7 @@
 <?php
 
 namespace Media\Service;
+use Application\Utility\ClassLog;
 use Equipment\Model\DataModels\Equip;
 use Media\Model\Enums\EImageProcessor;
 
@@ -8,18 +9,24 @@ use Media\Model\Enums\EImageProcessor;
  * Class ImageProcessor
  * @package Media\Service
  */
-class ImageProcessor
+class ImageProcessor extends ClassLog
 {
+	const UPLOAD = 0;
+	const OBJECT = 1;
+	const PATH   = 2;
+	const ITEM_TYPE = array(
+		0 => 'upload',
+		1 => 'object',
+		2 => 'path',
+	);
+
 	// defaults
 	private $readOutPath = "/media/file";
 	private $dataRootPath; // default set in constructor
 
-	// debugging
-	public $log = array();
-	private $loggingMode = true;
-
 	// configuration
 	private $config;
+	/** @var array string[] */
 	private $possibleExtensions = array (
 		'jpg', 'jpeg',
 		'gif',
@@ -28,33 +35,56 @@ class ImageProcessor
 
 	//test mode
 	private $testMode = false;
+	private $i = 0;
+	private $testPath;
 
-	/*
-	 * source data
-	 */
+	// given item
+	private $item;
+
+	// source data
+	private $srcMeta; // set in constructor
+
+	private $srcSource;
 	private $srcImage = null;
 	private $srcPath;
 	private $srcInfo;
 	private $srcWidth;
 	private $srcHeight;
+	private $srcSize;
 	private $srcOrientation;
 	private $srcAspectRatio;
 
-	/*
-	 * target data
-	 */
+	// target data
 	private $newImage = null;
 	private $newOrientation;
+
+	// php/global limits
+	private $maxFileSize;
+
 
 	public function __construct($config)
 	{
 		$this->config = $config;
 		$this->dataRootPath = getcwd() . '/Data';
+
+		$this->srcMeta = array (
+			&$this->srcSource,
+			&$this->srcImage,
+			&$this->srcPath,
+			&$this->srcInfo,
+			&$this->srcWidth,
+			&$this->srcHeight,
+			&$this->srcSize,
+			&$this->srcOrientation,
+			&$this->srcAspectRatio,
+		);
 	}
 
 	/* =========================================================
 	 * Short cuts
 	 * ========================================================= */
+
+
 
 	/**
 	 * Create user image smaller than limits and 2 thumbnail images <br>
@@ -210,11 +240,6 @@ class ImageProcessor
 		$this->readOutPath = $readOutPath;
 	}
 
-	public function getDataRootPath()
-	{
-		return $this->dataRootPath;
-	}
-
 	public function getReadOutPath()
 	{
 		return $this->readOutPath;
@@ -270,14 +295,14 @@ class ImageProcessor
 		return $path;
 	}
 
-
 	public function load($item)
 	{
-		$this->log(__FUNCTION__);
+		$this->log(__FUNCTION__, 'load');
+		$this->item = $item;
 		if (is_object($item)) 	$this->loadFromObject($item);
 		if (is_array($item))	$this->loadFromUpload($item);
 		if (is_string($item))	$this->loadFromPath($item);
-		$this->log(__FUNCTION__);
+		$this->log(__FUNCTION__, 'loaded from ' . self::ITEM_TYPE[$this->srcSource]);
 	}
 
 	/**
@@ -319,6 +344,33 @@ class ImageProcessor
 	}
 
 	/**
+	 * @param int   $percentage value < 0 minifies value > 0 enlarges image
+	 */
+	public function resizeDiscSize($percentage = -10){
+		$this->intern_resizeDiscSize($percentage);
+	}
+
+	/**
+	 * resizeToDiscSize() <br/>
+	 * This method will scale the image to given disc size or max size. <br/>
+	 * @param int|null $discSize null will lead to max size
+	 */
+	public function resizeToDiscSize($discSize = null)
+	{
+		$this->intern_resizeToDiscSize($discSize);
+	}
+
+	/**
+	 * resizeToMaxDiskSize() <br/>
+	 * This method will scale the image to max upload size. <br/>
+	 *
+	 */
+	public function resizeToMaxDiskSize()
+	{
+		$this->intern_resizeToDiscSize();
+	}
+
+	/**
 	 * Save image to $targetPath or overwrite source image
 	 *
 	 * @param string $targetPath string/to/save or null to overwrite source image
@@ -351,6 +403,7 @@ class ImageProcessor
 	{
 		$this->srcPath = $uploadArray['tmp_name'];
 		$this->intern_load($uploadArray['name']);
+		$this->srcSource = self::UPLOAD;
 	}
 
 	/**
@@ -362,7 +415,7 @@ class ImageProcessor
 	 */
 	private function loadFromObject($imageObject)
 	{
-		if ($imageObject instanceof MediaItem) $this->loadFromMediaItem($imageObject);
+		if ($imageObject instanceof MediaItem)  $this->loadFromMediaItem($imageObject);
 		else throw new \Exception("This object is not known");
 	}
 
@@ -374,6 +427,7 @@ class ImageProcessor
 	private function loadFromMediaItem(MediaItem $item)
 	{
 		$this->loadFromPath($item->fullPath);
+		$this->srcSource = self::OBJECT;
 	}
 
 	/**
@@ -389,6 +443,7 @@ class ImageProcessor
 		else {
 			$this->srcPath = $imagePath;
 			$this->intern_load();
+			$this->srcSource = self::PATH;
 		}
 	}
 
@@ -399,26 +454,25 @@ class ImageProcessor
 	 */
 	private function intern_load($fileName = null)
 	{
-		$this->log(__FUNCTION__);
 		$this->srcInfo = pathinfo($this->srcPath);
 		if ($fileName !== null){
 			$ext = explode ('.', $fileName);
 			$c = count($ext);
 			$this->srcInfo['extension'] = $ext[$c-1];
 		}
+
+		$this->srcSize = filesize($this->srcPath);
+
 		switch ($this->srcInfo['extension']){
 			case 'png':
 				$this->srcImage  = imagecreatefrompng($this->srcPath);
-				$this->log(__FUNCTION__,'load from png');
 				break;
 			case 'jpg':
 			case 'jpeg':
 				$this->srcImage  = imagecreatefromjpeg($this->srcPath);
-				$this->log(__FUNCTION__,'load from jpg/jpeg');
 				break;
 			case 'gif':
 				$this->srcImage  = imagecreatefromgif($this->srcPath);
-				$this->log(__FUNCTION__,'load from gif');
 				break;
 		}
 
@@ -439,39 +493,35 @@ class ImageProcessor
 			default:
 				break;
 		}
-		$this->log(__FUNCTION__);
 	}
 
 	/**
 	 * Save image to $targetPath or overwrite source image
 	 *
 	 * @param string $targetPath string/to/save or null to overwrite source image
+	 * @param bool   $keep flag if the new file should be kept in memory
 	 */
 	private function intern_save ($targetPath = null)
 	{
-		$this->log(__FUNCTION__);
+		$this->log(__FUNCTION__, 'save from: ' . $this->srcPath);
 		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
 		if ($this->testMode) 		 $targetPath 	 = getcwd() . '/public/test.png';
-		$this->log(__FUNCTION__, '$targetPath = ' .$targetPath);
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
 			case 'jpeg':
 				imagejpeg ( $this->newImage, $targetPath);
-			$this->log(__FUNCTION__,'save as jpg/jpeg');
 				break;
 			case 'png':
 				imagepng  ( $this->newImage, $targetPath);
-				$this->log(__FUNCTION__,'save as png');
 				break;
 			case 'gif':
 				imagegif  ( $this->newImage, $targetPath);
-				$this->log(__FUNCTION__,'save as gif');
 		}
 		$this->intern_removePrevious($targetPath);
+		$this->log(__FUNCTION__, 'saved to ' . $targetPath);
 		$this->intern_end();
-		$this->log(__FUNCTION__);
 	}
 
 	private function intern_removePrevious($newImagePath)
@@ -494,6 +544,28 @@ class ImageProcessor
 		$this->srcImage = null;
 	}
 
+	private function getMaxUploadSize()
+	{
+		if ($this->maxFileSize !== null) return $this->maxFileSize;
+		$size = trim(ini_get('upload_max_filesize'));
+
+		if ($size === null) return null;
+		$last = strtolower($size{strlen($size)-1});
+		$size = (int) $size;
+		switch($last) {
+			case 'g':
+				$size *= 1024;
+				break;
+			case 'm':
+				$size *= 1024;
+				break;
+			case 'k':
+				$size *= 1024;
+				break;
+		}
+		return $this->maxFileSize = $size;
+	}
+
 	/* =========================================================
 	 * Processing methods
 	 * ========================================================= */
@@ -508,11 +580,10 @@ class ImageProcessor
 	 */
 	private function intern_resize_width($newWidth, $newHeight = null, $keepRatio = true)
 	{
-		$this->log['intern_resize_width'][] = 'triggered';
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else
-			$this->Intern_resize($newWidth, $newHeight, $keepRatio);
+			$this->intern_resize($newWidth, $newHeight, $keepRatio);
 	}
 
 	/**
@@ -524,13 +595,12 @@ class ImageProcessor
 	 */
 	private function intern_resize_height($newHeight, $newWidth = null, $keepRatio = true)
 	{
-		$this->log['intern_resize_height'][] = 'triggered';
 		if ($newWidth == null){
 			$newWidth = $newHeight * $this->srcAspectRatio;
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		}
 		else
-			$this->Intern_resize($newWidth, $newHeight, $keepRatio);
+			$this->intern_resize($newWidth, $newHeight, $keepRatio);
 	}
 
 	/**
@@ -542,7 +612,6 @@ class ImageProcessor
 	 */
 	private function intern_resize($newWidth, $newHeight, $keepRatio = true)
 	{
-		$this->log['intern_resize'][] = 'triggered';
 		$this->newOrientation = ($newWidth > $newHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		if ($keepRatio !== true)
 			$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
@@ -603,6 +672,41 @@ class ImageProcessor
 		}
 	}
 
+	/**
+	 * @param int   $percentage value < 0 minifies value > 0 expands image
+	 * @param bool  $save triggers intern_save() if true
+	 */
+	public function intern_resizeDiscSize($percentage = -10){
+		$factor = (100 + $percentage) /100;
+		if ($this->srcOrientation == EImageProcessor::LANDSCAPE) $this->resize($this->srcWidth * $factor);
+		else $this->resize_height($this->srcHeight * $factor);
+	}
+	/**
+	 * @param int   $discSize
+	 */
+	public function intern_resizeToDiscSize(int $discSize = null)
+	{
+		// get upload limit
+		$this->getMaxUploadSize();
+
+
+		$limit = ($discSize == null || $discSize > $this->maxFileSize) ? $this->maxFileSize : $discSize;
+
+		// enlarge until it is to big
+		while ($this->srcSize < $limit) {
+			$this->intern_resizeDiscSize(10);
+			$this->intern_save($this->srcPath);
+			$this->load($this->item);
+		}
+
+		while ($this->srcSize > $limit) {
+
+			$this->intern_resizeDiscSize(-10);
+			$this->intern_save($this->srcPath);
+			$this->load($this->item);
+		}
+	}
+
 	// ======== resize to output size and crop overleaping parts ===========
 	/**
 	 * Resize src image fitted to output size,
@@ -615,7 +719,6 @@ class ImageProcessor
 	 */
 	private function intern_resize_crop($newWidth, $newHeight)
 	{
-		$this->log['intern_resize_crop'][] = 'triggered';
 		/*
 		 * Crop-to-fit PHP-GD
 		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
@@ -665,20 +768,5 @@ class ImageProcessor
 			$newWidth, $newHeight
 		);
 		imagedestroy($tempImage);
-	}
-
-	/* ==========================================================
-	 * internals
-	 * ========================================================== */
-	private function log($method, $msg = null, $key = null)
-	{
-		if ($this->loggingMode) {
-			if ($msg == null)
-				$msg = (key_exists($method, $this->log)) ? 'done' : 'start';
-			if ($key == null)
-				$this->log[ $method ][] = $msg;
-			else
-				$this->log[ $method ][ $key ] = $msg;
-		}
 	}
 }
