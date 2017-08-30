@@ -6,19 +6,21 @@ return array(
 	'ImageProcessor' => array (
 		'root' 	   => getcwd(),
 		'dataRoot' => getcwd() . '/Data',
-	),
-	'Media_ImageProcessor' => array(
-		'thumbs' => array (
-			'x1' => 100,
-			'y1' => 100,
-			'x2' => 50,
-			'y2' => 50,
-		),
 		'default_page_size' => array(
 			'x' => 500,
 			'y' => 500
 		),
+		'thumbs' => array (
+			'relPath' => '/_thumbs',
+			'sX' => 100,
+			'sY' => 100,
+			'mX' => 250,
+			'mY' => 250,
+		),
+	),
+	'Media_ImageProcessor' => array(
 		'profile_images' => array (
+			'relPath' => '/_users',
 			'x' => 1000,
 			'y'	=> 1000,
 		),

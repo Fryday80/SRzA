@@ -102,85 +102,74 @@ class ImageProcessor
 		$this->load($item);
 
 		if ($this->srcWidth == $width && $this->srcHeight == $height){
-			$this->intern_save($this->srcPath);
+			$this->intern_save();
 		} else {
 			$this->intern_resize($width, $height);
 			$this->intern_save();
 		}
 	}
-//
-//
-//	/**
-//	 * Create user image smaller than limits and 2 thumbnail images <br>
-//	 * overwrites srcImage and saves thumbs to target paths
-//	 *
-//	 * @param $srcPath
-//	 * @param $targetPathSmall
-//	 * @param $targetPathMedium
-//	 */
-//	public function createUserImages($srcPath, $targetPathSmall, $targetPathMedium)
-//	{
-//		// get limits for profile image
-//		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
-//		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
-//
-//		$this->load($srcPath);
-//
-//		// if src image is smaller than limits
-//		if ($this->srcWidth < $width && $this->srcHeight < $height) {
-//			$this->intern_save();
-//		}
-//		else
-//			//resize to limits
-//		{
-//			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
-//			{
-//				$this->intern_resize_width($width);
-//				$this->intern_save();
-//			}
-//			else
-//			{
-//				$this->intern_resize_height($height);
-//				$this->intern_save();
-//			}
-//		}
-//		//create the thumbs
-//		$this->createThumbs($srcPath, $targetPathSmall, $targetPathMedium);
-//	}
-//
-//	/**
-//	 * Create thumb image
-//	 *
-//	 * @param string $item 			path/to/image
-//	 * @param string $targetPath1	small thumb path, null to overwrite source
-//	 * @param string $targetPath2	big thumb path, null to skip
-//	 */
-//	public function createThumbs($item, $targetPath1, $targetPath2 = null)
-//	{
-//		$this->load($item);
-//
-//		// === thumb 1
-//		// get size for thumb 1
-//		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
-//		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
-//
-//		$this->intern_resize_crop($width, $height);
-//		$this->intern_save($targetPath1);
-//		// === thumb 2
-//		if ($targetPath2 !== null) {
-//			//reload src file
-//			$this->intern_load();
-//
-//			// get size for thumb 2
-//			$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
-//			$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
-//
-//			$this->intern_resize_crop($width, $height);
-//			$this->intern_save($targetPath2);
-//		}
-//	}
-//
-//
+
+
+	/**
+	 * Create user image smaller than limits and 2 thumbnail images <br>
+	 * overwrites srcImage and saves thumbs to target paths
+	 *
+	 * @param $item
+	 */
+	public function createUserImages($item, $userId)
+	{
+		// get limits for profile image
+		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
+		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
+
+		$this->load($item);
+
+		$userFolder = $this->config['Media_ImageProcessor']['profile_images']['relPath'];
+		$subStructure = $userFolder . '/' . $userId . '/pub/';
+		$fileName = 'profileImage.' . $this->srcInfo['extension'];
+
+
+		$target = array (
+			'small'  => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
+			'medium' => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
+			'big'    => $subStructure . $fileName,
+			);
+
+		// resize if image is bigger than limits
+		if ($this->srcWidth > $width || $this->srcHeight > $height)
+		{
+			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+				$this->intern_resize_width($width);
+			else
+				$this->intern_resize_height($height);
+		}
+		$this->intern_save($target['big']);
+
+		//create the thumbs
+		$this->createThumb($target['big'], $target['small']);
+		$this->createThumb($target['big'], $target['small'], 'm');
+	}
+
+	/**
+	 * Create thumb image
+	 *
+	 * @param        $item
+	 * @param        $targetPath
+	 * @param string $flag 's' for small | 'm' for medium
+	 */
+	public function createThumb($item, $targetPath, $flag = 's')
+	{
+		$this->load($item);
+
+		$flag = ($flag == 'm') ? 'm' : 's';
+		$width  = $this->config['ImageProcessor']['thumbs'][ $flag . 'X' ];
+		$height = $this->config['ImageProcessor']['thumbs'][ $flag . 'Y' ];
+
+		$this->intern_resize_crop($width, $height);
+		$this->intern_save($targetPath);
+	}
+
+
 //	/**
 //	 * @param Equip $uploadFormData
 //	 * @param int   $itemId
