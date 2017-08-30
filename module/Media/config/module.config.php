@@ -3,6 +3,10 @@ use Application\Factory\DefaultTableGatewayFactory;
 use Media\Factory\GeneralMediaFactory;
 
 return array(
+	'ImageProcessor' => array (
+		'root' 	   => getcwd(),
+		'dataRoot' => getcwd() . '/Data',
+	),
 	'Media_ImageProcessor' => array(
 		'thumbs' => array (
 			'x1' => 100,

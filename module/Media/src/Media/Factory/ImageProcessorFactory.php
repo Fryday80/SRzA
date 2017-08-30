@@ -7,8 +7,34 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 
 class ImageProcessorFactory implements FactoryInterface
 {
+	private $config = array();
+	private $classConfig = array();
+
     public function createService(ServiceLocatorInterface $sm) {
-        $config = $sm->get('Config');
-        return new ImageProcessor($config);
+        $this->config = $sm->get('Config');
+        $this->getConfigData();
+        return new ImageProcessor($this->classConfig);
     }
+
+	private function getConfigData()
+	{
+		// get keys that contain ImageProcessor (ModuleName_ImageProcessor)
+		array_filter(
+			$this->config,
+			function ($k) {
+				if ($this->isImageProcessorKey($k))
+					$this->classConfig[$k] = $this->config[$k];
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+    }
+
+    private function isImageProcessorKey($key)
+	{
+		$key = strtolower($key);
+		if (strpos($key, 'imageprocessor') !== false) {
+			return true;
+		}
+		return false;
+	}
 }

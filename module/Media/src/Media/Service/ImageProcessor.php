@@ -1,8 +1,7 @@
 <?php
 
 namespace Media\Service;
-use Application\Utility\ClassLog;
-use Equipment\Model\DataModels\Equip;
+
 use Media\Model\Enums\EImageProcessor;
 
 /**
@@ -21,8 +20,9 @@ class ImageProcessor
 	);
 
 	// defaults
-	private $readOutPath = "/media/file";
-	private $dataRootPath; // default set in constructor
+	// defaults set in constructor
+	private $root;
+	private $dataRootPath;
 
 	// configuration
 	private $config;
@@ -46,6 +46,7 @@ class ImageProcessor
 
 	private $srcSource;
 	private $srcImage = null;
+	/** @var  string absolute path */
 	private $srcPath;
 	private $srcInfo;
 	private $srcWidth;
@@ -65,8 +66,8 @@ class ImageProcessor
 	public function __construct($config)
 	{
 		$this->config = $config;
-		$this->dataRootPath = getcwd() . '/Data';
-
+		$this->root = $this->cleanPath( $this->config['ImageProcessor']['root'] );
+		$this->dataRootPath = $this->cleanPath( $this->config['ImageProcessor']['dataRoot'] );
 		$this->srcMeta = array (
 			&$this->srcSource,
 			&$this->srcImage,
@@ -83,78 +84,6 @@ class ImageProcessor
 	/* =========================================================
 	 * Short cuts
 	 * ========================================================= */
-
-
-
-	/**
-	 * Create user image smaller than limits and 2 thumbnail images <br>
-	 * overwrites srcImage and saves thumbs to target paths
-	 *
-	 * @param $srcPath
-	 * @param $targetPathSmall
-	 * @param $targetPathMedium
-	 */
-	public function createUserImages($srcPath, $targetPathSmall, $targetPathMedium)
-	{
-		// get limits for profile image
-		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
-		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
-
-		$this->load($srcPath);
-
-		// if src image is smaller than limits
-		if ($this->srcWidth < $width && $this->srcHeight < $height) {
-			$this->intern_save();
-		}
-		else
-			//resize to limits
-		{
-			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
-			{
-				$this->intern_resize_width($width);
-				$this->intern_save();
-			}
-			else
-			{
-				$this->intern_resize_height($height);
-				$this->intern_save();
-			}
-		}
-		//create the thumbs
-		$this->createThumbs($srcPath, $targetPathSmall, $targetPathMedium);
-	}
-
-	/**
-	 * Create thumb image
-	 *
-	 * @param string $item 			path/to/image
-	 * @param string $targetPath1	small thumb path, null to overwrite source
-	 * @param string $targetPath2	big thumb path, null to skip
-	 */
-	public function createThumbs($item, $targetPath1, $targetPath2 = null)
-	{
-		$this->load($item);
-
-		// === thumb 1
-		// get size for thumb 1
-		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
-		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
-
-		$this->intern_resize_crop($width, $height);
-		$this->intern_save($targetPath1);
-		// === thumb 2
-		if ($targetPath2 !== null) {
-			//reload src file
-			$this->intern_load();
-
-			// get size for thumb 2
-			$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
-			$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
-
-			$this->intern_resize_crop($width, $height);
-			$this->intern_save($targetPath2);
-		}
-	}
 
 	/**
 	 * Create blazon image
@@ -179,130 +108,152 @@ class ImageProcessor
 			$this->intern_save();
 		}
 	}
-
-	/**
-	 * @param Equip $uploadFormData
-	 * @param int   $itemId
-	 *
-	 * @return array
-	 */
-	public function uploadEquipImages($uploadFormData, $itemId = null)
-	{
-		$mainFolder = '_equipment';
-		$subFolder1 = ($itemId == null) ? $uploadFormData->id : $itemId;
-		$targetFolder = $this->createFolderStructure($this->dataRootPath, $mainFolder, $subFolder1) . '/';
-
-
-		$targetPaths = array();
-		$uploadFormData->id = ($itemId !== null) ? $itemId : $uploadFormData->id;
-		$width  = $this->config['Equipment_ImageProcessor']['images']['x'];
-		$height = $this->config['Equipment_ImageProcessor']['images']['y'];
-
-		$uploadedImages = array();
-		if ($uploadFormData['image1'] !== null) $uploadedImages['image1'] = $uploadFormData['image1'];
-		if ($uploadFormData['image2'] !== null) $uploadedImages['image2'] = $uploadFormData['image2'];
-
-		if (!empty ($uploadedImages))
-		{
-			$targetPath = $targetFolder;
-			$readOutPath = $this->getReadOutPathImage($targetPath);
-
-			foreach ($uploadedImages as $fieldName => $uploadedImage) {
-				$this->load($uploadedImage);
-				$targetFilename = $fieldName . '.' . $this->srcInfo['extension'];
-				$target = $targetPath . $targetFilename ;
-				$readOutTarget = $readOutPath . $targetFilename;
-				// if src image is smaller than limits
-				if (!($this->srcWidth < $width && $this->srcHeight < $height)) {
-					if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
-						$this->resize($width);
-					else
-						$this->resize_height($height);
-				}
-				$this->intern_save($target);
-				$targetPaths[$fieldName] = $readOutTarget;
-			}
-		}
-		return $targetPaths;
-	}
+//
+//
+//	/**
+//	 * Create user image smaller than limits and 2 thumbnail images <br>
+//	 * overwrites srcImage and saves thumbs to target paths
+//	 *
+//	 * @param $srcPath
+//	 * @param $targetPathSmall
+//	 * @param $targetPathMedium
+//	 */
+//	public function createUserImages($srcPath, $targetPathSmall, $targetPathMedium)
+//	{
+//		// get limits for profile image
+//		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
+//		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
+//
+//		$this->load($srcPath);
+//
+//		// if src image is smaller than limits
+//		if ($this->srcWidth < $width && $this->srcHeight < $height) {
+//			$this->intern_save();
+//		}
+//		else
+//			//resize to limits
+//		{
+//			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+//			{
+//				$this->intern_resize_width($width);
+//				$this->intern_save();
+//			}
+//			else
+//			{
+//				$this->intern_resize_height($height);
+//				$this->intern_save();
+//			}
+//		}
+//		//create the thumbs
+//		$this->createThumbs($srcPath, $targetPathSmall, $targetPathMedium);
+//	}
+//
+//	/**
+//	 * Create thumb image
+//	 *
+//	 * @param string $item 			path/to/image
+//	 * @param string $targetPath1	small thumb path, null to overwrite source
+//	 * @param string $targetPath2	big thumb path, null to skip
+//	 */
+//	public function createThumbs($item, $targetPath1, $targetPath2 = null)
+//	{
+//		$this->load($item);
+//
+//		// === thumb 1
+//		// get size for thumb 1
+//		$width = $this->config['Media_ImageProcessor']['thumbs']['x1'];
+//		$height = $this->config['Media_ImageProcessor']['thumbs']['y1'];
+//
+//		$this->intern_resize_crop($width, $height);
+//		$this->intern_save($targetPath1);
+//		// === thumb 2
+//		if ($targetPath2 !== null) {
+//			//reload src file
+//			$this->intern_load();
+//
+//			// get size for thumb 2
+//			$width = $this->config['Media_ImageProcessor']['thumbs']['x2'];
+//			$height = $this->config['Media_ImageProcessor']['thumbs']['y2'];
+//
+//			$this->intern_resize_crop($width, $height);
+//			$this->intern_save($targetPath2);
+//		}
+//	}
+//
+//
+//	/**
+//	 * @param Equip $uploadFormData
+//	 * @param int   $itemId
+//	 *
+//	 * @return array
+//	 */
+//	public function uploadEquipImages($uploadFormData, $itemId = null)
+//	{
+//		$mainFolder = '_equipment';
+//		$subFolder1 = ($itemId == null) ? $uploadFormData->id : $itemId;
+//		$targetFolder = $this->createFolderStructure($this->dataRootPath, $mainFolder, $subFolder1) . '/';
+//
+//
+//		$targetPaths = array();
+//		$uploadFormData->id = ($itemId !== null) ? $itemId : $uploadFormData->id;
+//		$width  = $this->config['Equipment_ImageProcessor']['images']['x'];
+//		$height = $this->config['Equipment_ImageProcessor']['images']['y'];
+//
+//		$uploadedImages = array();
+//		if ($uploadFormData['image1'] !== null) $uploadedImages['image1'] = $uploadFormData['image1'];
+//		if ($uploadFormData['image2'] !== null) $uploadedImages['image2'] = $uploadFormData['image2'];
+//
+//		if (!empty ($uploadedImages))
+//		{
+//			$targetPath = $targetFolder;
+//			$readOutPath = $this->getReadOutPathImage($targetPath);
+//
+//			foreach ($uploadedImages as $fieldName => $uploadedImage) {
+//				$this->load($uploadedImage);
+//				$targetFilename = $fieldName . '.' . $this->srcInfo['extension'];
+//				$target = $targetPath . $targetFilename ;
+//				$readOutTarget = $readOutPath . $targetFilename;
+//				// if src image is smaller than limits
+//				if (!($this->srcWidth < $width && $this->srcHeight < $height)) {
+//					if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+//						$this->resize($width);
+//					else
+//						$this->resize_height($height);
+//				}
+//				$this->intern_save($target);
+//				$targetPaths[$fieldName] = $readOutTarget;
+//			}
+//		}
+//		return $targetPaths;
+//	}
 
 	/* =========================================================
 	 * API
 	 * ========================================================= */
 
+	/**
+	 * Set Data Root Path, overrides config
+	 * @param $dataRootPath
+	 */
 	public function setDataRootPath($dataRootPath)
 	{
 		$this->dataRootPath = $dataRootPath;
 	}
 
-	public function setReadOutPath($readOutPath)
-	{
-		$this->readOutPath = $readOutPath;
-	}
-
-	public function getReadOutPath()
-	{
-		return $this->readOutPath;
-	}
-
-	public function getReadOutPathImage($imagePath)
-	{
-			return str_replace($this->dataRootPath, $this->readOutPath , $imagePath);
-	}
-
-	public function createFolderStructure($dataRootPath, $mainFolder = null, $subFolder1 = null, $subFolder2 = null, $subFolder3 = null)
-	{
-		// full target path is given
-		if ($mainFolder == null)
-		{
-			$path = $this->dataRootPath;
-			if (!is_dir($path)) @mkdir($path,0755);
-			$sub = str_replace($this->dataRootPath, '', $dataRootPath);
-			if (strlen($sub) > 1){
-				$sub = str_replace('\\', '/', $sub);
-				$subParts = explode('/', $sub);
-				foreach ($subParts as $part){
-					$path .= '/' . $part;
-					if (!is_dir($path)) @mkdir($path,0755);
-				}
-			}
-			return $path;
-		}
-		// target path is given bitwise
-		else
-		{
-			$path = $dataRootPath;
-			if (!is_dir($path)) @mkdir($path,0755);
-			$path .= '/' . $mainFolder;
-			if (!is_dir($path)) @mkdir($path,0755);
-			if ($subFolder1 !== null)
-			{
-				$path .= '/' . $subFolder1;
-				if (!is_dir($path)) @mkdir($path, 0755);
-			}
-			if ($subFolder2 !== null)
-			{
-				$path .= '/' . $subFolder2;
-				if (!is_dir($path)) @mkdir($path, 0755);
-			}
-			if ($subFolder3 !== null)
-			{
-				$path .= '/' . $subFolder3;
-				if (!is_dir($path)) @mkdir($path, 0755);
-			}
-
-		}
-		return $path;
-	}
-
+	/**
+	 * Load item to process
+	 *
+	 * @param object|array|string $item string = relative path, array from form upload, object must be known
+	 *
+	 */
 	public function load($item)
 	{
-		$this->log(__FUNCTION__, 'load');
+		// save original given data for multiple processing or post processing
 		$this->item = $item;
+		// load item
 		if (is_object($item)) 	$this->loadFromObject($item);
 		if (is_array($item))	$this->loadFromUpload($item);
-		if (is_string($item))	$this->loadFromPath($item);
-		$this->log(__FUNCTION__, 'loaded from ' . self::ITEM_TYPE[$this->srcSource]);
+		if (is_string($item))	$this->loadFromPath($this->cleanPath($item));
 	}
 
 	/**
@@ -314,7 +265,6 @@ class ImageProcessor
 	 */
 	public function resize($newWidth, $newHeight = null, $keepRatio = true)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_width($newWidth, $newHeight, $keepRatio);
 	}
 
@@ -327,7 +277,6 @@ class ImageProcessor
 	 */
 	public function resize_height ($newHeight, $newWidth = null, $keepRatio = true)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_height($newHeight, $newWidth, $keepRatio);
 	}
 
@@ -342,7 +291,6 @@ class ImageProcessor
 	 */
 	public function resize_crop($newWidth, $newHeight)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resize_crop($newWidth, $newHeight);
 	}
 
@@ -351,7 +299,6 @@ class ImageProcessor
 	 */
 	public function resizeDiscSize($percentage = -10)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeDiscSize($percentage);
 	}
 
@@ -362,7 +309,6 @@ class ImageProcessor
 	 */
 	public function resizeToDiscSize($discSize = null)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeToDiscSize($discSize);
 	}
 
@@ -373,7 +319,6 @@ class ImageProcessor
 	 */
 	public function resizeToMaxDiskSize()
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_resizeToDiscSize();
 	}
 
@@ -384,7 +329,6 @@ class ImageProcessor
 	 */
 	public function saveImage($targetPath = null)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		$this->intern_save($targetPath);
 	}
 
@@ -396,7 +340,6 @@ class ImageProcessor
 	 */
 	public function testMode($flag = null, $testPath = null)
 	{
-		$this->log(__FUNCTION__, 'triggered public method ' . __FUNCTION__);
 		if ($testPath !== null)
 			$this->testPath = $testPath;
 		if ($flag == null) $this->testMode = ($this->testMode) ? false : true;
@@ -408,10 +351,35 @@ class ImageProcessor
 	 * Basic / common methods
 	 * ========================================================= */
 
+	// load
+	/**
+	 * Load image by path
+	 *
+	 * @param string $imagePath
+	 *
+	 * @throws \Exception
+	 */
+	private function loadFromPath($imagePath)
+	{
+		// set srcPath dependent if absolute path was given or not
+		$this->srcPath = ($this->isAbsolutePath($imagePath)) ? $imagePath : $this->dataRootPath . $imagePath;
+		// is the file existing
+		if (!file_exists($this->srcPath))
+			throw new \Exception("This File does not exist or path '$imagePath' is wrong");
+
+		// load
+		$this->intern_load();
+		$this->srcSource = self::PATH;
+	}
+	/**
+	 * Load image data from form upload array
+	 *
+	 * @param $uploadArray
+	 */
 	private function loadFromUpload($uploadArray)
 	{
 		$this->srcPath = $uploadArray['tmp_name'];
-		$this->intern_load($uploadArray['name']);
+		$this->intern_load();
 		$this->srcSource = self::UPLOAD;
 	}
 
@@ -440,35 +408,14 @@ class ImageProcessor
 	}
 
 	/**
-	 * Load image by path
-	 *
-	 * @param string $imagePath
-	 *
-	 * @throws \Exception
-	 */
-	private function loadFromPath($imagePath)
-	{
-		if (!file_exists($imagePath)) throw new \Exception("This File does not exist or path '$imagePath' is wrong");
-		else {
-			$this->srcPath = $imagePath;
-			$this->intern_load();
-			$this->srcSource = self::PATH;
-		}
-	}
-
-	/**
 	 * Load image data
-	 *
-	 * @param null $fileName
 	 */
-	private function intern_load($fileName = null)
+	private function intern_load()
 	{
+		// gather meta data
 		$this->srcInfo = pathinfo($this->srcPath);
-		if ($fileName !== null){
-			$ext = explode ('.', $fileName);
-			$c = count($ext);
-			$this->srcInfo['extension'] = $ext[$c-1];
-		}
+		if (!in_array($this->srcInfo['extension'], $this->possibleExtensions))
+			$this->getRealExtension();
 
 		$this->srcSize = filesize($this->srcPath);
 
@@ -483,6 +430,8 @@ class ImageProcessor
 			case 'gif':
 				$this->srcImage  = imagecreatefromgif($this->srcPath);
 				break;
+			default:
+				throw new \Exception("Extension not known");
 		}
 
 		list($this->srcWidth, $this->srcHeight) = getimagesize($this->srcPath);
@@ -490,6 +439,7 @@ class ImageProcessor
 		$this->srcOrientation = ($this->srcWidth > $this->srcHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		$this->srcAspectRatio = $this->srcWidth / $this->srcHeight;
 
+		// manage transparency
 		switch ($this->srcInfo['extension']){
 			case 'png':
 			case 'gif':
@@ -504,6 +454,18 @@ class ImageProcessor
 		}
 	}
 
+	private function getRealExtension()
+	{
+		if ($this->srcSource == self::UPLOAD) {
+			// get real file extension if upload array was given
+			$ext = explode('.', $this->item['name']);
+			$c = count($ext);
+			$this->srcInfo['extension'] = $ext[ $c - 1 ];
+		}
+		else throw new \Exception("No upload array");
+	}
+
+	// save
 	/**
 	 * Save image to $targetPath or overwrite source image
 	 *
@@ -512,10 +474,15 @@ class ImageProcessor
 	 */
 	private function intern_save ($targetPath = null)
 	{
-		$this->log(__FUNCTION__, 'save from: ' . $this->srcPath);
-		if ($targetPath == null) 	 $targetPath 	 = $this->srcPath;
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
-		if ($this->testMode) 		 $targetPath 	 = getcwd() . '/public/test.png';
+
+		$targetPath = ($targetPath == null)
+			? $this->srcPath
+			: ($this->isAbsolutePath($targetPath))? $targetPath : $this->dataRootPath . $this->getRelativePath($targetPath);
+
+		if ($this->testMode) $targetPath = getcwd() . '/public/test.png';
+
+		$this->setUpFolder($targetPath);
 
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
@@ -529,7 +496,6 @@ class ImageProcessor
 				imagegif  ( $this->newImage, $targetPath);
 		}
 		$this->intern_removePrevious($targetPath);
-		$this->log(__FUNCTION__, 'saved to ' . $targetPath);
 		$this->intern_end();
 	}
 
@@ -551,6 +517,28 @@ class ImageProcessor
 		if (is_resource($this->newImage)) imagedestroy($this->srcImage );
 		$this->newImage = null;
 		$this->srcImage = null;
+	}
+
+	// helper
+	private function cleanPath($path)
+	{
+		return str_replace('\\', '/', $path);
+	}
+
+	private function isAbsolutePath($path)
+	{
+		return (!strpos($path, $this->root)) ? : false;
+	}
+
+	private function getRelativePath($path)
+	{
+		$path = $this->cleanPath($path);
+		$relPath = '';
+		if (strpos($path, $this->dataRootPath) !== false)
+			$relPath = str_replace($this->dataRootPath, '', $path);
+		else $relPath = $path;
+
+		return ($relPath[0] == '/') ? $relPath : '/' . $relPath;
 	}
 
 	private function getMaxUploadSize()
@@ -575,6 +563,32 @@ class ImageProcessor
 		return $this->maxFileSize = $size;
 	}
 
+	private function setUpFolder($targetPath)
+	{
+		$targetPath = $this->cleanPath($targetPath);
+		// create data root path if not existing
+		if (!is_dir($this->dataRootPath)) @mkdir($this->dataRootPath,0755);
+
+		// prepare path information
+		$relativePath = $this->getRelativePath($targetPath);
+		$folderPath = substr($relativePath, 1);
+
+		$pathParts = explode('/', $folderPath);
+		$c = count($pathParts);
+		// $fileName = $pathParts[$c-1];
+		unset($pathParts[$c-1]);
+
+		// create folder structure
+		$i = 0;
+		$partPath = '';
+		while (isset($pathParts[$i])){
+			$partPath .= '/' . $pathParts[$i];
+			if (!is_dir($this->dataRootPath . $partPath))
+				@mkdir($this->dataRootPath . $partPath,0755);
+			$i++;
+		}
+	}
+
 	/* =========================================================
 	 * Processing methods
 	 * ========================================================= */
@@ -589,7 +603,6 @@ class ImageProcessor
 	 */
 	private function intern_resize_width($newWidth, $newHeight = null, $keepRatio = true)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		if ($newHeight == null)
 			$this->newImage = imagescale($this->srcImage, $newWidth);
 		else
@@ -605,7 +618,6 @@ class ImageProcessor
 	 */
 	private function intern_resize_height($newHeight, $newWidth = null, $keepRatio = true)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		if ($newWidth == null){
 			$newWidth = $newHeight * $this->srcAspectRatio;
 			$this->newImage = imagescale($this->srcImage, $newWidth);
@@ -623,7 +635,6 @@ class ImageProcessor
 	 */
 	private function intern_resize($newWidth, $newHeight, $keepRatio = true)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		$this->newOrientation = ($newWidth > $newHeight) ? EImageProcessor::LANDSCAPE : EImageProcessor::PORTRAIT;
 		if ($keepRatio !== true)
 			$this->newImage = imagescale($this->srcImage, $newWidth, $newHeight);
@@ -696,7 +707,6 @@ class ImageProcessor
 	 */
 	private function intern_resize_crop($newWidth, $newHeight)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		/*
 		 * Crop-to-fit PHP-GD
 		 * http://salman-w.blogspot.com/2009/04/crop-to-fit-image-using-aspphp.html
@@ -755,7 +765,6 @@ class ImageProcessor
 	 */
 	public function intern_resizeDiscSize($percentage = -10)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		$factor = (100 + $percentage) /100;
 		if ($this->srcOrientation == EImageProcessor::LANDSCAPE) $this->resize($this->srcWidth * $factor);
 		else $this->resize_height($this->srcHeight * $factor);
@@ -765,7 +774,6 @@ class ImageProcessor
 	 */
 	public function intern_resizeToDiscSize(int $discSize = null)
 	{
-		$this->log(__FUNCTION__, 'triggered inter method ' . __FUNCTION__);
 		// get upload limit
 		$this->getMaxUploadSize();
 

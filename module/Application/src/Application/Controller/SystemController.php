@@ -49,10 +49,8 @@ class SystemController extends AbstractActionController
 		$ip->createBlazon(getcwd() . '/public/img/blazons/shield-tross.big.png');
 		$msg = 'resize';
 		$test = 'nösing';
-		$dumpLog = $ip->log;
 
 		return array (
-			'dumpLog' => $dumpLog,
 			'log' => $log,
 			'msg' => $msg,
 			'test' => $test,
