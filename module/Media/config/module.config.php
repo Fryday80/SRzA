@@ -110,17 +110,17 @@ return array(
                             'spec'  => '/path%path%'
                         ),
                     ),
-                    'image' => array(
-                        'type' => 'regex',
-                        'options' => array(
-                            'regex' => '/image(?<path>\/.*)',
-                            'defaults' => array(
-                                'controller' => 'file',
-                                'action' => 'image',
-                            ),
-                            'spec' => '/path%path%'
-                        ),
-                    ),
+//                    'image' => array(
+//                        'type' => 'regex',
+//                        'options' => array(
+//                            'regex' => '/image(?<path>\/.*)',
+//                            'defaults' => array(
+//                                'controller' => 'file',
+//                                'action' => 'image',
+//                            ),
+//                            'spec' => '/path%path%'
+//                        ),
+//                    ),
 
                 ),//child_routes
             ),

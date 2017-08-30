@@ -22,9 +22,4 @@ class FileController extends AbstractActionController  {
         $path = $this->params('path');
         return $this->mediaService->createFileResponse($path, $this->getResponse());
     }
-    public function imageAction()
-    {
-        $path = $this->params('path');
-        return $this->mediaService->createFileResponse($path, $this->getResponse());
-    }
 }
