@@ -2,6 +2,7 @@
 
 namespace Media\Service;
 
+use Equipment\Model\DataModels\Equip;
 use Media\Model\Enums\EImageProcessor;
 
 /**
@@ -109,12 +110,13 @@ class ImageProcessor
 		}
 	}
 
-
 	/**
-	 * Create user image smaller than limits and 2 thumbnail images <br>
+	 * Create user image <br/>
+	 * smaller than limits and 2 thumbnail images <br/>
 	 * overwrites srcImage and saves thumbs to target paths
 	 *
-	 * @param $item
+	 * @param mixed $item
+	 * @param int   $userId needed for path
 	 */
 	public function createUserImages($item, $userId)
 	{
@@ -132,7 +134,7 @@ class ImageProcessor
 		$target = array (
 			'small'  => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
 			'medium' => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
-			'big'    => $subStructure . $fileName,
+			'image'    => $subStructure . $fileName,
 			);
 
 		// resize if image is bigger than limits
@@ -143,24 +145,27 @@ class ImageProcessor
 			else
 				$this->intern_resize_height($height);
 		}
-		$this->intern_save($target['big']);
+		$this->intern_save($target['image']);
 
 		//create the thumbs
-		$this->createThumb($target['big'], $target['small']);
-		$this->createThumb($target['big'], $target['small'], 'm');
+		$this->load($target['image']);
+		$this->createThumb($target['small']);
+
+		$this->load($target['image']);
+		$this->createThumb($target['medium'], 'm');
 	}
 
 	/**
-	 * Create thumb image
+	 * Create thumb image <br/>
+	 * <strong>
+	 * CAUTION: saves to target path or overwrites!!!!
+	 * </strong>
 	 *
-	 * @param        $item
-	 * @param        $targetPath
-	 * @param string $flag 's' for small | 'm' for medium
+	 * @param string|null $targetPath null overwrites source
+	 * @param string      $flag 's' for small | 'm' for medium
 	 */
-	public function createThumb($item, $targetPath, $flag = 's')
+	public function createThumb($targetPath = null, $flag = 's')
 	{
-		$this->load($item);
-
 		$flag = ($flag == 'm') ? 'm' : 's';
 		$width  = $this->config['ImageProcessor']['thumbs'][ $flag . 'X' ];
 		$height = $this->config['ImageProcessor']['thumbs'][ $flag . 'Y' ];
@@ -171,6 +176,8 @@ class ImageProcessor
 
 
 //	/**
+//	 * Upload Equipment Images
+//     *
 //	 * @param Equip $uploadFormData
 //	 * @param int   $itemId
 //	 *

@@ -32,9 +32,6 @@ class ImageProcessorFactory implements FactoryInterface
     private function isImageProcessorKey($key)
 	{
 		$key = strtolower($key);
-		if (strpos($key, 'imageprocessor') !== false) {
-			return true;
-		}
-		return false;
+		return (strpos($key, 'imageprocessor') !== false) ? true : false;
 	}
 }
