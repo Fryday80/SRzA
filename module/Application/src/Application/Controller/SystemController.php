@@ -40,6 +40,12 @@ class SystemController extends AbstractActionController
 		$dumpLog = array ();
 		$log = '';
 
+		/** @var MediaService $mediaService */
+        $mediaService = $this->systemService->serviceManager->get('MediaService');
+        bdump($mediaService->getItem('gallery/images.png') );
+
+
+
 		/** @var ImageProcessor $ip */
 		$ip = $this->systemService->serviceManager->get('ImageProcessor');
 		$ip->testMode();
