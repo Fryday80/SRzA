@@ -42,18 +42,9 @@ class SystemController extends AbstractActionController
 
 		/** @var MediaService $mediaService */
         $mediaService = $this->systemService->serviceManager->get('MediaService');
-        bdump($mediaService->getItem('gallery/images.png') );
+        bdump($mediaService->getItem('_users/2/pub/profileImage.png') );
 
-
-
-		/** @var ImageProcessor $ip */
-		$ip = $this->systemService->serviceManager->get('ImageProcessor');
-		$ip->testMode();
-//		$ip->loadPath(getcwd() . '/public/img/blazons/shield-tross.big.png');
-//		$ip->resize(600, 500);
-//		$ip->saveImage();
-		$ip->createBlazon(getcwd() . '/public/img/blazons/shield-tross.big.png');
-		$msg = 'resize';
+		$msg = 'msg';
 		$test = 'nösing';
 
 		return array (

@@ -2,7 +2,6 @@
 
 namespace Media\Service;
 
-use Equipment\Model\DataModels\Equip;
 use Media\Model\Enums\EImageProcessor;
 
 /**
@@ -11,17 +10,7 @@ use Media\Model\Enums\EImageProcessor;
  */
 class ImageProcessor
 {
-	const UPLOAD = 0;
-	const OBJECT = 1;
-	const PATH   = 2;
-	const ITEM_TYPE = array(
-		0 => 'upload',
-		1 => 'object',
-		2 => 'path',
-	);
-
-	// defaults
-	// defaults set in constructor
+	// defaults    set in constructor
 	private $root;
 	private $dataRootPath;
 
@@ -33,11 +22,6 @@ class ImageProcessor
 		'gif',
 		'png',
 	);
-
-	//test mode
-	private $testMode = false;
-	private $i = 0;
-	private $testPath;
 
 	// given item
 	private $item;
@@ -91,90 +75,107 @@ class ImageProcessor
 	 *
 	 * @param string $item		 path/to/image
 	 */
-	public function createBlazon($item)
+	public function createBlazon(MediaItem $item)
 	{
 		$width  = $this->config['Cast_ImageProcessor']['blazon']['x'];
 		$height = $this->config['Cast_ImageProcessor']['blazon']['y'];
 
-		// enhancement when/if BlazonModel was created
-//		if($item instanceof BlazonModel)
-//			$this->loadMediaItem($item);
-//		else{}
 		$this->load($item);
 
-		if ($this->srcWidth == $width && $this->srcHeight == $height){
-			$this->intern_save();
-		} else {
+		if (!($this->srcWidth == $width && $this->srcHeight == $height))
 			$this->intern_resize($width, $height);
-			$this->intern_save();
-		}
+		$this->intern_save();
 	}
+//
+//	/**
+//	 * Create user image <br/>
+//	 * smaller than limits and 2 thumbnail images <br/>
+//	 * overwrites srcImage and saves thumbs to target paths
+//	 *
+//	 * @param mixed $item
+//	 * @param int   $userId needed for path
+//	 */
+//	public function createUserImages($item, $userId)
+//	{
+//		// get limits for profile image
+//		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
+//		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
+//
+//		$this->load($item);
+//
+//		$userFolder = $this->config['Media_ImageProcessor']['profile_images']['relPath'];
+//		$subStructure = $userFolder . '/' . $userId . '/pub/';
+//		$fileName = 'profileImage';
+//
+//
+//		$target = array (
+//			'small'  => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . '_small.' . $fileName,
+//			'medium' => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . '_big.' . $fileName,
+//			'image'    => $subStructure . $fileName . '.' . $this->srcInfo['extension'],
+//			);
+//
+//		// resize if image is bigger than limits
+//		if ($this->srcWidth > $width || $this->srcHeight > $height)
+//		{
+//			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
+//				$this->intern_resize_width($width);
+//			else
+//				$this->intern_resize_height($height);
+//		}
+//		$this->intern_save($target['image']);
+//
+//		//create the thumbs
+//		$this->load($target['image']);
+//		$this->createThumb($target['small']);
+//
+//		$this->load($target['image']);
+//		$this->createThumb($target['medium'], 'm');
+//	}
+//
+//	/**
+//	 * Create thumb image <br/>
+//	 * <strong>
+//	 * CAUTION: saves to target path or overwrites!!!!
+//	 * </strong>
+//	 *
+//	 * @param string|null $targetPath null overwrites source
+//	 * @param string      $flag 's' for small | 'm' for medium
+//	 */
+//	public function createThumb($targetPath = null, $flag = 's')
+//	{
+//		$flag = ($flag == 'm') ? 'm' : 's';
+//		$width  = $this->config['ImageProcessor']['thumbs'][ $flag . 'X' ];
+//		$height = $this->config['ImageProcessor']['thumbs'][ $flag . 'Y' ];
+//
+//		$this->intern_resize_crop($width, $height);
+//		$this->intern_save($targetPath);
+//	}
 
 	/**
-	 * Create user image <br/>
-	 * smaller than limits and 2 thumbnail images <br/>
-	 * overwrites srcImage and saves thumbs to target paths
+	 * Create & Save Default Thumb images <br/>
 	 *
-	 * @param mixed $item
-	 * @param int   $userId needed for path
+	 * @param MediaItem $item
 	 */
-	public function createUserImages($item, $userId)
+	public function createDefaultThumbs(MediaItem $item)
 	{
-		// get limits for profile image
-		$width  = $this->config['Media_ImageProcessor']['profile_images']['x'];
-		$height = $this->config['Media_ImageProcessor']['profile_images']['y'];
-
 		$this->load($item);
-
-		$userFolder = $this->config['Media_ImageProcessor']['profile_images']['relPath'];
-		$subStructure = $userFolder . '/' . $userId . '/pub/';
-		$fileName = 'profileImage.' . $this->srcInfo['extension'];
-
-
-		$target = array (
-			'small'  => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
-			'medium' => $this->config['ImageProcessor']['thumbs']['relPath'] . $subStructure . $fileName,
-			'image'    => $subStructure . $fileName,
-			);
-
-		// resize if image is bigger than limits
-		if ($this->srcWidth > $width || $this->srcHeight > $height)
+		$i = 0;
+		while ($i < 2)
 		{
-			if ($this->srcOrientation == EImageProcessor::LANDSCAPE)
-				$this->intern_resize_width($width);
-			else
-				$this->intern_resize_height($height);
+			$size = ($i == 0) ? 'm' : 's';
+			$width  = $this->config['ImageProcessor']['thumbs'][ $size . 'X' ];
+			$height = $this->config['ImageProcessor']['thumbs'][ $size . 'Y' ];
+
+			$newPath = str_replace($item->name, $item->name . '_thumbs_medium', $item->path);
+
+			if ($i !== 0 ) $this->load($item);
+			$this->intern_resize_crop($width, $height);
+			$this->intern_save($newPath);
+			$i++;
 		}
-		$this->intern_save($target['image']);
-
-		//create the thumbs
-		$this->load($target['image']);
-		$this->createThumb($target['small']);
-
-		$this->load($target['image']);
-		$this->createThumb($target['medium'], 'm');
 	}
 
-	/**
-	 * Create thumb image <br/>
-	 * <strong>
-	 * CAUTION: saves to target path or overwrites!!!!
-	 * </strong>
-	 *
-	 * @param string|null $targetPath null overwrites source
-	 * @param string      $flag 's' for small | 'm' for medium
-	 */
-	public function createThumb($targetPath = null, $flag = 's')
-	{
-		$flag = ($flag == 'm') ? 'm' : 's';
-		$width  = $this->config['ImageProcessor']['thumbs'][ $flag . 'X' ];
-		$height = $this->config['ImageProcessor']['thumbs'][ $flag . 'Y' ];
-
-		$this->intern_resize_crop($width, $height);
-		$this->intern_save($targetPath);
-	}
-
-
+// @todo equip short cut
 //	/**
 //	 * Upload Equipment Images
 //     *
@@ -237,19 +238,16 @@ class ImageProcessor
 	}
 
 	/**
-	 * Load item to process
+	 * Load media item to process
 	 *
-	 * @param object|array|string $item string = relative path, array from form upload, object must be known
-	 *
+	 * @param MediaItem $item
 	 */
-	public function load($item)
+	public function load( MediaItem $item )
 	{
 		// save original given data for multiple processing or post processing
 		$this->item = $item;
 		// load item
-		if (is_object($item)) 	$this->loadFromObject($item);
-		if (is_array($item))	$this->loadFromUpload($item);
-		if (is_string($item))	$this->loadFromPath($this->cleanPath($item));
+		$this->loadFromMediaItem($item);
 	}
 
 	/**
@@ -328,79 +326,28 @@ class ImageProcessor
 		$this->intern_save($targetPath);
 	}
 
-	/**
-	 * Toggle or set test mode
-	 *
-	 * @param bool   $flag     [optional] true turns mode on, false turns mode off, nothing toggles on <->off
-	 * @param string $testPath [optional]
-	 */
-	public function testMode($flag = null, $testPath = null)
-	{
-		if ($testPath !== null)
-			$this->testPath = $testPath;
-		if ($flag == null) $this->testMode = ($this->testMode) ? false : true;
-		else $this->testMode = $flag;
-		var_dump('Image Processor test mode set on ' . $this->testMode);
-	}
-
 	/* =========================================================
 	 * Basic / common methods
 	 * ========================================================= */
 
 	// load
 	/**
-	 * Load image by path
-	 *
-	 * @param string $imagePath
-	 *
-	 * @throws \Exception
-	 */
-	private function loadFromPath($imagePath)
-	{
-		// set srcPath dependent if absolute path was given or not
-		$this->srcPath = ($this->isAbsolutePath($imagePath)) ? $imagePath : $this->dataRootPath . $imagePath;
-		// is the file existing
-		if (!file_exists($this->srcPath))
-			throw new \Exception("This File does not exist or path '$imagePath' is wrong");
-
-		// load
-		$this->intern_load();
-		$this->srcSource = self::PATH;
-	}
-	/**
-	 * Load image data from form upload array
-	 *
-	 * @param $uploadArray
-	 */
-	private function loadFromUpload($uploadArray)
-	{
-		$this->srcPath = $uploadArray['tmp_name'];
-		$this->intern_load();
-		$this->srcSource = self::UPLOAD;
-	}
-
-	/**
-	 * Load image data from an object
-	 *
-	 * @param $imageObject
-	 *
-	 * @throws \Exception
-	 */
-	private function loadFromObject($imageObject)
-	{
-		if ($imageObject instanceof MediaItem)  $this->loadFromMediaItem($imageObject);
-		else throw new \Exception("This object is not known");
-	}
-
-	/**
 	 * Load image by MediaItem
 	 *
 	 * @param MediaItem $item
+	 *
+	 * @throws \Exception
 	 */
 	private function loadFromMediaItem(MediaItem $item)
 	{
-		$this->loadFromPath($item->fullPath);
-		$this->srcSource = self::OBJECT;
+		// set srcPath dependent if absolute path was given or not
+		$this->srcPath = ($this->isAbsolutePath($item->fullPath)) ? $item->fullPath : $this->dataRootPath . $item->fullPath;
+		// is the file existing
+		if (!file_exists($this->srcPath))
+			throw new \Exception("This File does not exist or path ROOT'$item->path' is wrong");
+
+		// load
+		$this->intern_load();
 	}
 
 	/**
@@ -410,9 +357,6 @@ class ImageProcessor
 	{
 		// gather meta data
 		$this->srcInfo = pathinfo($this->srcPath);
-		if (!in_array($this->srcInfo['extension'], $this->possibleExtensions))
-			$this->getRealExtension();
-
 		$this->srcSize = filesize($this->srcPath);
 
 		switch ($this->srcInfo['extension']){
@@ -450,17 +394,6 @@ class ImageProcessor
 		}
 	}
 
-	private function getRealExtension()
-	{
-		if ($this->srcSource == self::UPLOAD) {
-			// get real file extension if upload array was given
-			$ext = explode('.', $this->item['name']);
-			$c = count($ext);
-			$this->srcInfo['extension'] = $ext[ $c - 1 ];
-		}
-		else throw new \Exception("No upload array");
-	}
-
 	// save
 	/**
 	 * Save image to $targetPath or overwrite source image
@@ -475,8 +408,6 @@ class ImageProcessor
 		$targetPath = ($targetPath == null)
 			? $this->srcPath
 			: ($this->isAbsolutePath($targetPath))? $targetPath : $this->dataRootPath . $this->getRelativePath($targetPath);
-
-		if ($this->testMode) $targetPath = getcwd() . '/public/test.png';
 
 		$this->setUpFolder($targetPath);
 
