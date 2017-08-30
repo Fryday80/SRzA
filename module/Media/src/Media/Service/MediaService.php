@@ -55,13 +55,17 @@ const ERROR_STRINGS = [
 ];
 class MediaService {
     protected $dataPath;
+    /** @var AccessService  */
     protected $accessService;
+    /** @var ImageProcessor  */
+    protected $imageProcessor;
     private $metaCache;
     private $itemCache = array();
 
-    function __construct(AccessService $accessService) {
+    function __construct(AccessService $accessService, ImageProcessor $imageProcessor) {
         try {
             $this->accessService = $accessService;
+            $this->imageProcessor = $imageProcessor;
             $rootPath = getcwd();
             $this->dataPath = $this->cleanPath($rootPath.DATA_PATH);
             $this->metaCache = [];
@@ -71,7 +75,7 @@ class MediaService {
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function fileExists($path) {
@@ -83,7 +87,7 @@ class MediaService {
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function isDir($path) {
@@ -95,7 +99,7 @@ class MediaService {
     }
 
     /**
-     * @param $path
+     * @param string $path
      * @return bool
      */
     public function isImage($path) {
@@ -596,7 +600,7 @@ class MediaService {
     /**
      * @param $filePostArray
      * @param $targetFolder
-     * @return MediaException
+     * @return MediaItem|MediaException
      */
     public function upload($filePostArray, $targetFolder, $force = false) {
 
@@ -623,7 +627,6 @@ class MediaService {
             return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
         }
 
-		bdump (__FUNCTION__ .' @ class  ' . __CLASS__);
         $path = '';
         try {
             $uploadHandler = new UploadHandler();
@@ -631,13 +634,15 @@ class MediaService {
             $uploadHandler->autoRename = true;
             $uploadHandler->setSource($filePostArray);
             $uploadHandler->setDestinationPath($target);
-            $path = $uploadHandler->upload();
-            bdump (__FUNCTION__ .' @ class  ' . __CLASS__);
-			die;
+            $uploadHandler->upload();
+            $item = $this->getItem($target);
+            if ($this->isImage($item->fullPath)) {
+                $this->imageProcessor->load($item);
+                $this->imageProcessor->createThumb();
+                $this->imageProcessor->saveImage();
+            }
+            return $item;
         } catch (Exception $e) {
-//            bdump($e->getMessage());
-//            bdump($e->getFile());
-//            bdump($e->getLine());
             return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
         }
     }
@@ -789,7 +794,7 @@ class MediaService {
         $fullPath = $this->realpath($path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
-        $item->path = $path;
+        $item->path = '/' . $path;
         $item->readable = $permission['readable'];
         $item->writable = $permission['writable'];
         if (is_dir($fullPath)) {
@@ -799,9 +804,15 @@ class MediaService {
         } else if (file_exists($fullPath)){
             $pathInfo = pathinfo($path);
             $item->name = $pathInfo['filename'];
-            $item->type = $pathInfo['extension'];
-            $item->livePath = $this->cleanPath("/media/file/".$path);
-//            $item->parentPath = $pathInfo['dirname'];
+            $item->extension = $pathInfo['extension'];
+            $item->livePath = $this->cleanPath('/media/file/'.$path);
+            $item->modified = filectime($fullPath);
+            $item->size = filesize($fullPath);
+            if ($this->isImage($fullPath)) {
+                $item->type = "image";
+            } else {
+                $item->type = $pathInfo['extension'];
+            }
         } else {
             return new MediaException(ERROR_TYPES::MEDIA_ITEM_NOT_FOUND, $path);
         }

@@ -9,6 +9,7 @@ class MediaServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
         $accessService = $sm->get('AccessService');
-        return new MediaService($accessService);
+        $imageProcessor = $sm->get('ImageProcessor');
+        return new MediaService($accessService, $imageProcessor);
     }
 }
