@@ -3,26 +3,25 @@ use Application\Factory\DefaultTableGatewayFactory;
 use Media\Factory\GeneralMediaFactory;
 
 return array(
+	'MediaService' => array(
+		'thumbs' => array (
+			'relPath' => '/_thumbs',
+			'sX' => 100,
+			'sY' => 100,
+			'bX' => 250,
+			'bY' => 250,
+		),
+		'profile_images' => array (
+			'relPath' => '/_users',
+			'maxSide' => 1000,
+		),
+	),
 	'ImageProcessor' => array (
 		'root' 	   => getcwd(),
 		'dataRoot' => getcwd() . '/Data',
 		'default_page_size' => array(
 			'x' => 500,
 			'y' => 500
-		),
-		'thumbs' => array (
-			'relPath' => '/_thumbs',
-			'sX' => 100,
-			'sY' => 100,
-			'mX' => 250,
-			'mY' => 250,
-		),
-	),
-	'Media_ImageProcessor' => array(
-		'profile_images' => array (
-			'relPath' => '/_users',
-			'x' => 1000,
-			'y'	=> 1000,
 		),
 	),
     'controllers' => array(

@@ -2,10 +2,9 @@
 use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
-	'Cast_ImageProcessor' => array(
+	'Cast_MediaService' => array(
 		'blazon' => array (
-			'x' => 400,
-			'y' => 400,
+			'maxSide' => 400,
 		),
 	),
     'controllers' => array(

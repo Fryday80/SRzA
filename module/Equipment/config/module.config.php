@@ -2,22 +2,9 @@
 use Application\Factory\DefaultTableGatewayFactory;
 
 return array(
-	'Equipment_ImageProcessor' => array(
+	'Equipment_MediaService' => array(
 		'images' => array(
-			'x' => 500,
-			'y' => 500
-		),
-		'storage_path' => array(
-			'saveRoot' => '', 	// '' or not set to use imageProcessors base path
-			'folder_structure' => array(
-				'_equipment',
-				'{{id}}'		// {{varname}} to use variables
-			),
-			'override_names' => array(
-				'image1' => 'image1',
-				'image2' => 'image2'
-			),
-			'read_out' => '' // '' or not set to use imageProcessors base path
+			'maxSide' => 500,
 		),
 	),
     'Equipment' => array(

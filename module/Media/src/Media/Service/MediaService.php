@@ -2,6 +2,7 @@
 namespace Media\Service;
 use Auth\Service\AccessService;
 use Exception;
+use Media\Model\Enums\EImageProcessor;
 use Media\Utility\FmHelper;
 use Media\Utility\UploadHandler;
 use RecursiveDirectoryIterator;
@@ -61,11 +62,13 @@ class MediaService {
     protected $imageProcessor;
     private $metaCache;
     private $itemCache = array();
+    private $config;
 
-    function __construct(AccessService $accessService, ImageProcessor $imageProcessor) {
+    function __construct($config, AccessService $accessService, ImageProcessor $imageProcessor) {
         try {
             $this->accessService = $accessService;
             $this->imageProcessor = $imageProcessor;
+            $this->config = $config;
             $rootPath = getcwd();
             $this->dataPath = $this->cleanPath($rootPath.DATA_PATH);
             $this->metaCache = [];
@@ -907,4 +910,69 @@ class MediaService {
     {
         // TODO: Implement setServiceManager() method.
     }
+
+
+    /*
+     * IMAGE PROCESSING
+     */
+
+	public function createProfileImage(MediaItem $item)
+	{
+		$profileImageMaxSize = $this->config['MediaService']['profile_images']['maxSide'];
+		$this->imageProcessor->load($item);
+		$this->imageProcessor->resizeToMaxSide($profileImageMaxSize);
+		$this->imageProcessor->saveImage();
+
+		$this->createDefaultThumbs($item);
+	}
+
+	public function createBlazon(MediaItem $item)
+	{
+		$this->createSquare($item, $this->config['Cast_MediaService']['blazon']['maxSide']);
+    }
+
+	public function createEquipImages(MediaItem $item)
+	{
+		$this->createSquare($item, $this->config['Equipment_MediaService']['images']['maxSide']);
+    }
+
+	private function createSquare($item, $side)
+	{
+		$this->imageProcessor->load($item);
+		$this->imageProcessor->resize_square($side);
+		$this->imageProcessor->saveImage();
+    }
+
+	private function createDefaultThumbs($item)
+	{
+		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
+		$thumbPathBig   = $thumbFolder . str_replace($item->name, $item->name . '_thumb_big', $item->path);
+		$thumbPathSmall = $thumbFolder . str_replace($item->name, $item->name . '_thumb_small', $item->path);
+
+		$profileImageThumbBigSizeX = $this->config['MediaService']['thumbs']['bX'];
+		$profileImageThumbBigSizeY = $this->config['MediaService']['thumbs']['bY'];
+
+		$profileImageThumbSmallSizeX = $this->config['MediaService']['thumbs']['sX'];
+		$profileImageThumbSmallSizeY = $this->config['MediaService']['thumbs']['sY'];
+
+		$i = 0;
+		while ($i < 2)
+		{
+			switch ($i){
+				case 0:
+					// process
+					break;
+				case 1:
+					// process
+					$this->imageProcessor->resize_crop($profileImageThumbBigSizeX, $profileImageThumbBigSizeY);
+					$this->imageProcessor->saveImage($thumbPathBig);
+					break;
+				case 2:
+					// process
+					$this->imageProcessor->resize_crop($profileImageThumbSmallSizeX, $profileImageThumbSmallSizeY);
+					$this->imageProcessor->saveImage($thumbPathSmall);
+					break;
+			}
+		}
+	}
 }
