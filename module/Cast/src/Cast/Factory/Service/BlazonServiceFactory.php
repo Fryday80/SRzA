@@ -12,9 +12,7 @@ class BlazonServiceFactory implements FactoryInterface
         $blazonTable = $sm->get('Cast\Model\BlazonTable');
         /** @var \Cast\Service\CastService $castService */
         $castService = $sm->get('CastService');
-        /** @var \Media\Service\ImageProcessor $imageProcessor */
-		$imageProcessor = $sm->get('ImageProcessor');
 
-        return new BlazonService($blazonTable, $castService, $imageProcessor);
+        return new BlazonService($blazonTable, $castService);
     }
 }

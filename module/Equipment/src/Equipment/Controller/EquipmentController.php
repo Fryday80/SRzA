@@ -7,7 +7,6 @@ use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
-use Media\Service\ImageProcessor;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -20,8 +19,6 @@ class EquipmentController extends AbstractActionController
     /** @var AccessService  */
     private $accessService;
     private $config;
-    /** @var ImageProcessor  */
-	private $imageProcessor;
 
 	const READ_OUT = "/media/file/";
 	private $dataRootPath;
@@ -32,7 +29,12 @@ class EquipmentController extends AbstractActionController
     private $dataTable;
 
 
-	public function __construct($config, EquipmentService $equipmentService, UserService $userService, AccessService $accessService, ImageProcessor $imageProcessor) {
+	public function __construct(
+		$config,
+		EquipmentService $equipmentService,
+		UserService $userService,
+		AccessService $accessService
+	) {
         $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
         $this->config = $config[$controllerName];
         $this->userService   = $userService;
@@ -40,9 +42,7 @@ class EquipmentController extends AbstractActionController
         $this->equipService  = $equipmentService;
         $this->dataTable     = new EquipmentDataTable();
         $this->dataTable->setServices($this->accessService, $this->equipService);
-        $this->imageProcessor = $imageProcessor;
 		$this->dataRootPath = getcwd() . '/Data';
-		$this->imageUpload = $this->imageUpload();
     }
 
     public function indexAction() {
@@ -162,10 +162,10 @@ class EquipmentController extends AbstractActionController
             );
             $form->setData($post);
             if ($form->isValid()){
-                // push into model for selection in service
-//                $data = new $vars['model'][$type]($form->getData());
                 $data = $form->getData();
                 $newId = (int) $this->equipService->getNextId();
+
+                $data = $this->prepareAddAndSave($data, $newId);
 
 				// upload and save images
 				$uploadedImages = $dataTarget = array();
@@ -173,11 +173,11 @@ class EquipmentController extends AbstractActionController
 				// check if sth is set
 				if ($data['image1'] !== null || $data['image2'] !== null || $data['bill'] !== null){
 					// check if set data is string (old upload) or uploadArray => then push to uploadedImages array
-					if ($data['image1'] !== null && $this->imageUpload()->isUploadArray($data['image1']))
+					if ($data['image1'] !== null && $this->imageUpload->isUploadArray($data['image1']))
 						$uploadedImages['image1'] = $data['image1'];
-					if ($data['image2'] !== null && $this->imageUpload()->isUploadArray($data['image2']))
+					if ($data['image2'] !== null && $this->imageUpload->isUploadArray($data['image2']))
 						$uploadedImages['image2'] = $data['image2'];
-					if ($data['bill']   !== null && $this->imageUpload()->isUploadArray($data['bill']  ))
+					if ($data['bill']   !== null && $this->imageUpload->isUploadArray($data['bill']  ))
 						$uploadedImages['bill']   = $data['bill'];
 
 					// if sth was uploaded
@@ -185,17 +185,15 @@ class EquipmentController extends AbstractActionController
 					{
 						foreach ($uploadedImages as $key => $uploadedImage)
 						{
-							// process image
-							/** @var ImageProcessor $iP */
-							$this->imageProcessor->load($uploadedImage);
-							$this->imageProcessor->resizeToMaxDiskSize();
-
 							// === create path
 							list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
 							$dataTarget[$key] = '/_equipment/' . $newId .'/'. $key .'.' . $extension;
 
-							// === upload images
-							$this->imageUpload->upload($data[$key], $dataTarget[$key]);
+							// upload image
+							$mediaItem = $this->imageUpload->upload($uploadedImage, $dataTarget[$key]);
+
+							// process image
+							$this->imageUpload->mediaService->createEquipImage($mediaItem);
 						}
 					};
 
@@ -235,17 +233,11 @@ class EquipmentController extends AbstractActionController
             );
             $form->setData($post);
             if ($form->isValid()){
-                $item = new $vars['model'][$vars['type']]($form->getData());
-				// upload and save images
-				if ($item['image1'] !== null || $item['image2'] !== null){
-					$targetPaths = $this->imageProcessor->uploadEquipImages($item);
-					// set data in DataModel
-					foreach ($targetPaths as $key => $targetPath) {
-						$item->$key = $targetPath;
-					}
-				}
+				$data = $form->getData();
 
-                $this->equipService->save($item);
+				$data = $this->prepareAddAndSave($data, $data['id']);
+
+                $this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -283,4 +275,42 @@ class EquipmentController extends AbstractActionController
         }
         return $vars;
     }
+
+    private function prepareAddAndSave ($data, $id)
+	{
+		$uploadedImages = $dataTarget = array();
+
+		// upload and save images
+		// check if sth is set
+		if ($data['image1'] !== null || $data['image2'] !== null || $data['bill'] !== null){
+			// check if set data is string (old upload) or uploadArray => then push to uploadedImages array
+			if ($data['image1'] !== null && $this->imageUpload->isUploadArray($data['image1']))
+				$uploadedImages['image1'] = $data['image1'];
+			if ($data['image2'] !== null && $this->imageUpload->isUploadArray($data['image2']))
+				$uploadedImages['image2'] = $data['image2'];
+			if ($data['bill']   !== null && $this->imageUpload->isUploadArray($data['bill']  ))
+				$uploadedImages['bill']   = $data['bill'];
+
+			// if sth was uploaded
+			if ( !empty($uploadedImages) )
+			{
+				foreach ($uploadedImages as $key => $uploadedImage)
+				{
+					// === create path
+					list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+					$dataTarget[$key] = '/_equipment/' . $id .'/'. $key .'.' . $extension;
+
+					// upload image
+					$mediaItem = $this->imageUpload->upload($uploadedImage, $dataTarget[$key]);
+
+					// process image
+					$this->imageUpload->mediaService->createEquipImage($mediaItem);
+				}
+			};
+
+			// write paths to item
+			$data = $dataTarget + $data;
+		}
+		return $data;
+	}
 }

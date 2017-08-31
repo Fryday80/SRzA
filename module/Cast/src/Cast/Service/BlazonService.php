@@ -3,7 +3,7 @@ namespace Cast\Service;
 
 use Cast\Model\BlazonTable;
 use Cast\Model\EBlazonDataType;
-use Media\Service\ImageProcessor;
+use Media\Service\MediaService;
 
 class BlazonService
 {
@@ -14,8 +14,6 @@ class BlazonService
     private $blazonTable;
     /** @var CastService  */
 	private $castService;
-	/** @var ImageProcessor  */
-	private $imageProcessor;
 
 	// in memory cache
 	private $wholeDataLoaded = false;
@@ -25,10 +23,9 @@ class BlazonService
     private $dataNoOverlays = null;
     private $dataOverlays = null;
 
-	function __construct(BlazonTable $blazonTable, CastService $castService, ImageProcessor $imageProcessor) {
+	function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
         $this->castService = $castService;
-        $this->imageProcessor = $imageProcessor;
     }
 
 	/* =========================================================

@@ -3,6 +3,7 @@ namespace Equipment\Service;
 
 use Application\Service\CacheService;
 use Equipment\Hydrator\EquipmentResultSet;
+use Equipment\Model\DataModels\Tent;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\EquipTable;
@@ -91,6 +92,8 @@ class EquipmentService
         $item = $this->getById($data->id);
         if ($data instanceof Tent)
             $data->image = ETentShape::IMAGES[$data->shape];
+        else
+			$data['image']= ETentShape::IMAGES[$data['shape']];
         return $this->equipTable->save($data);
     }
 

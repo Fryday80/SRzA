@@ -17,9 +17,7 @@ class EquipmentControllerFactory implements FactoryInterface
         $equipService = $pL->get('EquipmentService');
         /** @var array $config */
         $config = $pL->get('config');
-        /** @var \Media\Service\ImageProcessor $imageProcessor */
-        $imageProcessor = $pL->get('ImageProcessor');
 
-        return new EquipmentController($config, $equipService, $userService, $accessService, $imageProcessor);
+        return new EquipmentController($config, $equipService, $userService, $accessService);
     }
 }

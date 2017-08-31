@@ -12,7 +12,7 @@ class ImageUpload extends AbstractPlugin
 
 	protected $config;
 	/** @var MediaService  */
-	protected $mediaService;
+	public $mediaService;
 	/** @var ImageProcessor  */
 	public $imageProcessor;
 
@@ -40,7 +40,7 @@ class ImageUpload extends AbstractPlugin
 	 */
 	public function upload($uploadData, $destination)
 	{
-		$this->uploadAction($uploadData, $destination);
+		return $this->uploadAction($uploadData, $destination);
 	}
 
 	/**
@@ -102,20 +102,21 @@ class ImageUpload extends AbstractPlugin
 	}
 
 	/**
-	 * @param array $uploadData
+	 * @param array  $uploadData
 	 * @param string $destination '/path/to/save.image' <br/>
 	 *                            !!leading '/' <br/>
 	 *                            relative to data folder
 	 *
+	 * @return MediaException|\Media\Service\MediaItem
 	 * @throws MediaException
 	 */
 	protected function uploadAction($uploadData, $destination)
  	{
- 		bdump('ajskh');die;
-		$err = $this->mediaService->upload($uploadData, $this->storagePath . $destination, true);
-		if ($err instanceof MediaException) {
-			throw $err;
+		$itemOrError = $this->mediaService->upload($uploadData, $this->storagePath . $destination, true);
+		if ($itemOrError instanceof MediaException) {
+			throw $itemOrError;
 		}
+		return $itemOrError;
   	}
 
 	/**

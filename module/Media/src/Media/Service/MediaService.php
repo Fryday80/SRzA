@@ -931,7 +931,7 @@ class MediaService {
 		$this->createSquare($item, $this->config['Cast_MediaService']['blazon']['maxSide']);
     }
 
-	public function createEquipImages(MediaItem $item)
+	public function createEquipImage(MediaItem $item)
 	{
 		$this->createSquare($item, $this->config['Equipment_MediaService']['images']['maxSide']);
     }
