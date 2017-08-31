@@ -10,7 +10,6 @@ class ImageUploadPluginFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $sm) {
         $config = $sm->getServiceLocator()->get('Config');
         $mediaService = $sm->getServiceLocator()->get('MediaService');
-		$imageProcessor = $sm->getServiceLocator()->get('ImageProcessor');
-        return new ImageUpload($config, $mediaService, $imageProcessor);
+        return new ImageUpload($config, $mediaService);
     }
 }

@@ -226,6 +226,8 @@ class ImageProcessor
 		$this->srcInfo = pathinfo($this->srcPath);
 		$this->srcSize = filesize($this->srcPath);
 
+		chmod($this->srcPath, 0777);
+
 		switch ($this->srcInfo['extension']){
 			case 'png':
 				$this->srcImage  = imagecreatefrompng($this->srcPath);
@@ -338,22 +340,19 @@ class ImageProcessor
 	private function getMaxUploadSize()
 	{
 		if ($this->maxFileSize !== null) return $this->maxFileSize;
-		$size = trim(ini_get('upload_max_filesize'));
-
-		if ($size === null) return null;
-		$last = strtolower($size{strlen($size)-1});
-		$size = (int) $size;
+		$rawSize = trim(ini_get('upload_max_filesize'));
+		$split = preg_split('#(?<=\d)(?=[a-z])#i', $rawSize);
+		$last = (isset($split[1])) ? strtolower($split[1]) : '';
+		$size = (int) $split[0];
 		switch($last) {
 			case 'g':
-				$size *= 1024;
-				break;
+				return $size * pow(1024, 3);
 			case 'm':
-				$size *= 1024;
-				break;
+				return $size * pow(1024, 2);
 			case 'k':
-				$size *= 1024;
-				break;
+				return $size * 1024;
 		}
+		return $size;
 		return $this->maxFileSize = $size;
 	}
 

@@ -55,11 +55,13 @@ const ERROR_STRINGS = [
 
 ];
 class MediaService {
+	/** @var ImageProcessor  */
+	public $imageProcessor;
+
     protected $dataPath;
     /** @var AccessService  */
     protected $accessService;
-    /** @var ImageProcessor  */
-    protected $imageProcessor;
+
     private $metaCache;
     private $itemCache = array();
     private $config;
@@ -606,7 +608,6 @@ class MediaService {
      * @return MediaItem|MediaException
      */
     public function upload($filePostArray, $targetFolder, $force = false) {
-
 		$target = $this->realPath($targetFolder);
 
     	if (!$target && $force) {
@@ -631,14 +632,19 @@ class MediaService {
         }
 
         $path = '';
+
+        $i = 1;
         try {
             $uploadHandler = new UploadHandler();
 //            $uploadHandler->autoOverwrite = true;
             $uploadHandler->autoRename = true;
             $uploadHandler->setSource($filePostArray);
             $uploadHandler->setDestinationPath($target);
+            bdump($i++); //1
             $uploadHandler->upload();
+            bdump($i++); //2
             $item = $this->getItem($target);
+            bdump($i++); //3
             if ($this->isImage($item->fullPath)) {
                 $this->imageProcessor->load($item);
                 $this->imageProcessor->createThumb();

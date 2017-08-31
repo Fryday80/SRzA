@@ -39,8 +39,9 @@ class UploadHandler
     private $newName;
     private $dstFolderPath;
     private $nameCount = 1;
+	private $imageProcessor;
 
-    /**
+	/**
      * UploadHandler constructor.
      * @param $file {string|array} path string | $_FILES['form_field'] array
      * @param $destPath {string} save path for upload
@@ -230,6 +231,11 @@ class UploadHandler
         }
     }
 
+	public function setImageProcessor($imageProcessor)
+	{
+		$this->imageProcessor = $imageProcessor;
+    }
+
     /**
      * @param $array $_FILES['form_field'] array
      * @return bool
@@ -306,9 +312,6 @@ class UploadHandler
             }
         }
 
-        bdump ('works');
-        die;
-
         preg_match('/\.([^\.]*$)/', $this->srcFileName, $extension);
         if (is_array($extension) && sizeof($extension) > 0) {
             $this->srcExt      = strtolower($extension[1]);
@@ -323,11 +326,6 @@ class UploadHandler
         if ($this->srcMimeType && is_string($this->srcMimeType) && !empty($this->srcMimeType) && array_key_exists($this->srcMimeType, $this->supportedImages)) {
             $this->isImage = true;
             $this->imageType = $this->supportedImages[$this->srcMimeType];
-        }
-        // checks file max size
-        $this->maxFileSize = $this->getSize($this->maxFileSize);
-        if ($this->srcSize > $this->maxFileSize) {
-            throw new Exception('file too big');
         }
 
         // if the file has no extension, we try to guess it from the MIME type
@@ -422,6 +420,7 @@ class UploadHandler
         } else {
             throw new Exception('source file missing');
         }
+
         return $this->dstPath;
     }
 
@@ -652,18 +651,16 @@ class UploadHandler
      */
     private function getSize($size) {
         if ($size === null) return null;
-        $last = strtolower($size{strlen($size)-1});
-        $size = (int) $size;
+        $split = preg_split('#(?<=\d)(?=[a-z])#i', $size);
+        $last = (isset($split[1])) ? strtolower($split[1]) : '';
+        $size = (int) $split[0];
         switch($last) {
             case 'g':
-                $size *= 1024;
-                break;
+                return $size * pow(1024, 3);
             case 'm':
-                $size *= 1024;
-                break;
+                return $size * pow(1024, 2);
             case 'k':
-                $size *= 1024;
-                break;
+                return $size * 1024;
         }
         return $size;
     }

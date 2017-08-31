@@ -26,7 +26,7 @@ return array(
 	),
     'controllers' => array(
         'abstract_factories' => array(
-            'Media\Controller\FileBrowser' => GeneralMediaFactory::class,
+            'Media\Controller\FileBrowser'  => GeneralMediaFactory::class,
             'Media\Controller\List'         => GeneralMediaFactory::class,
             'Media\Controller\File'         => GeneralMediaFactory::class,
         )

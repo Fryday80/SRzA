@@ -21,21 +21,22 @@ class ImageUpload extends AbstractPlugin
 	/** @var  int maximum upload file size */
 	protected $maxFileSize;
 
-	function __construct(Array $config, MediaService $mediaService, ImageProcessor $imageProcessor)
+	function __construct(Array $config, MediaService $mediaService)
 	{
 		$this->config = $config;
 		$this->mediaService = $mediaService;
-		$this->imageProcessor = $imageProcessor;
+		$this->imageProcessor = &$mediaService->imageProcessor;
 		$this->storagePath = getcwd() . self::DATA_FOLDER_FROM_ROOT;
 		$this->storagePath = str_replace('\\', '/', $this->storagePath);
 	}
 
 	/**
-	 * @param array $uploadData
+	 * @param array  $uploadData
 	 * @param string $destination '/path/to/save.image' <br/>
 	 *                            !!leading '/' <br/>
 	 *                            relative to data folder
 	 *
+	 * @return MediaException|\Media\Service\MediaItem
 	 * @throws MediaException
 	 */
 	public function upload($uploadData, $destination)
@@ -112,7 +113,7 @@ class ImageUpload extends AbstractPlugin
 	 */
 	protected function uploadAction($uploadData, $destination)
  	{
-		$itemOrError = $this->mediaService->upload($uploadData, $this->storagePath . $destination, true);
+		$itemOrError = $this->mediaService->upload($uploadData, $destination, true);
 		if ($itemOrError instanceof MediaException) {
 			throw $itemOrError;
 		}
