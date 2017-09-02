@@ -805,7 +805,6 @@ class MediaService {
         $fullPath = $this->realpath($path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
-        // @todo check if windows path => no leading '/'
         $item->path = ($path[0] == '/') ? $path : '/' . $path;
         $item->readable = $permission['readable'];
         $item->writable = $permission['writable'];
