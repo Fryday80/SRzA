@@ -1,10 +1,10 @@
 <?php
 namespace Media\Service;
-use Application\Utility\Pathfinder;
 use Auth\Service\AccessService;
 use Exception;
 use Media\Model\Enums\EImageProcessor;
 use Media\Utility\FmHelper;
+use Media\Utility\Pathfinder;
 use Media\Utility\UploadHandler;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
@@ -644,7 +644,7 @@ class MediaService {
             $uploadHandler->setSource($filePostArray, $fileName);
             $uploadHandler->setDestinationPath($target);
             $newFilePath = $uploadHandler->upload();
-            $item = $this->getItem($newFilePath);
+            $item = $this->getItem(Pathfinder::getRelativePath($newFilePath));
             if ($this->isImage($item->fullPath)) {
                 $this->imageProcessor->load($item);
                 $this->createDefaultThumbs($item);
@@ -733,7 +733,15 @@ class MediaService {
         }
         return true;
     }
+
+	/**
+	 * @param $path
+	 *
+	 * @return bool|string
+	 */
     private function realPath($path) {
+    	// todo false if comtains '../' or './'
+		if (Pathfinder::isAbsolute($path)) return false;
         $realPath = realpath($this->dataPath.'/'.$path);
         if (!$realPath)
             $realPath = realpath($path);
@@ -792,7 +800,6 @@ class MediaService {
      * @return MediaItem|MediaException|null
      */
     private function loadItem($path) {
-    	if (Pathfinder::isAbsolute($path)) Pathfinder::getRelativePath($path);
     	$cachePath = $path;
 		$return = $this->getCachedItem($cachePath);
 		if ($return) return $return;
@@ -945,7 +952,6 @@ class MediaService {
 
 	private function createSquare(MediaItem $item, $side)
 	{
-		bdump(__FUNCTION__);
 		$this->imageProcessor->load($item);
 		$this->imageProcessor->resize_square($side);
 		$this->imageProcessor->saveImage();
@@ -966,7 +972,6 @@ class MediaService {
 		$i = 0;
 		while ($i < 2)
 		{
-			bdump($i);
 			switch ($i){
 				case 0:
 					// process

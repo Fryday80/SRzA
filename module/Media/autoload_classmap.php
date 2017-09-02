@@ -21,5 +21,6 @@ return array(
     'Media\Utility\BaseUploadHandler'           => __DIR__ . '/src/Media/Utility/BaseUploadHandler.php',
     'Media\Utility\FmHelper'                    => __DIR__ . '/src/Media/Utility/FmHelper.php',
     'Media\Utility\LocalUploadHandler'          => __DIR__ . '/src/Media/Utility/LocalUploadHandler.php',
+    'Media\Utility\Pathfinder'                  => __DIR__ . '/src/Media/Utility/Pathfinder.php',
     'Media\Utility\UploadHandler'               => __DIR__ . '/src/Media/Utility/UploadHandler.php',
 );
