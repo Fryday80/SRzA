@@ -644,12 +644,10 @@ class MediaService {
             $uploadHandler->setSource($filePostArray, $fileName);
             $uploadHandler->setDestinationPath($target);
             $newFilePath = $uploadHandler->upload();
-            $item = $this->getItem($newFilePath);//eventuel reicht auch das
-			bdump($item);die;
+            $item = $this->getItem($newFilePath);
             if ($this->isImage($item->fullPath)) {
                 $this->imageProcessor->load($item);
                 $this->createDefaultThumbs($item);
-                $this->imageProcessor->saveImage();
             }
             return $item;
         } catch (Exception $e) {
@@ -947,6 +945,7 @@ class MediaService {
 
 	private function createSquare(MediaItem $item, $side)
 	{
+		bdump(__FUNCTION__);
 		$this->imageProcessor->load($item);
 		$this->imageProcessor->resize_square($side);
 		$this->imageProcessor->saveImage();
@@ -955,7 +954,6 @@ class MediaService {
 	private function createDefaultThumbs(MediaItem $item)
 	{
 		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
-		bdump(array($item->name, $item->name . '_thumb_big', $item->path));die;
 		$thumbPathBig   = $thumbFolder . str_replace($item->name, $item->name . '_thumb_big', $item->path);
 		$thumbPathSmall = $thumbFolder . str_replace($item->name, $item->name . '_thumb_small', $item->path);
 
@@ -968,6 +966,7 @@ class MediaService {
 		$i = 0;
 		while ($i < 2)
 		{
+			bdump($i);
 			switch ($i){
 				case 0:
 					// process

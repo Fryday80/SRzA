@@ -163,6 +163,8 @@ class EquipmentController extends AbstractActionController
                 $newId = (int) $this->equipService->getNextId();
 
                 $data = $this->prepareAddAndSave($data, $newId);
+                //		push into model for selection in service
+				$data = new $vars['model'][$type]($data);
 
 				$this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
@@ -180,7 +182,7 @@ class EquipmentController extends AbstractActionController
     public function editAction(){
         $action = 'edit';
         $vars['typeString'] = $this->params()->fromRoute('type');
-        $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
+		$type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
@@ -199,6 +201,8 @@ class EquipmentController extends AbstractActionController
 				$data = $form->getData();
 
 				$data = $this->prepareAddAndSave($data, $data['id']);
+//		push into model for selection in service
+				$data = new $vars['model'][$type]($data);
 
                 $this->equipService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);

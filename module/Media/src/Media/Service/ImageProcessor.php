@@ -276,9 +276,12 @@ class ImageProcessor
 	{
 		if ($this->newImage == null) $this->newImage = $this->srcImage;
 
-		$targetPath = ($targetPath == null)
-			? $this->srcPath
-			: (Pathfinder::isAbsolute($targetPath))? $targetPath : $this->dataRootPath . $this->getRelativePath($targetPath);
+		if ($targetPath == null) $targetPath = $this->srcPath;
+		else
+		{
+			if (Pathfinder::isAbsolute($targetPath)) $targetPath = $targetPath;
+			$targetPath = $this->dataRootPath . $this->getRelativePath($targetPath);
+		}
 
 		// create folders if necessary
 		$this->setUpFolder($targetPath);

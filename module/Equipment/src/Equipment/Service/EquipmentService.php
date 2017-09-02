@@ -86,112 +86,15 @@ class EquipmentService
 
     public function save($data)
     {
-        if($data->id == "")
+    	$id = (is_object($data)) ? $data->id : $data['id'];
+        if($id == "")
             return $this->equipTable->add($data);
 
-        $item = $this->getById($data->id);
+        $item = $this->getById($id);
         if ($data instanceof Tent)
             $data->image = ETentShape::IMAGES[$data->shape];
         else
 			$data['image']= ETentShape::IMAGES[$data['shape']];
         return $this->equipTable->save($data);
     }
-
-
-
-    // DEPRECATED!!!!!!!!
-    //@todo cleanfix
-
-////  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by getAllByType
-//     * @return DataSet|bool
-//     */
-//    public function getAllTents()
-//    {
-//        $this->depMsg();
-//        return $this->getAllByType(EEquipTypes::TENT);
-//    }
-//
-////  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by getByUserIdAndType
-//     * @param $id
-//     * @return DataSet|bool
-//     */
-//    public function getTentsByUserId($id)
-//    {
-//        $this->$this->depMsg();
-//        return $this->getByUserIdAndType($id, EEquipTypes::TENT);
-//    }
-//
-////  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by getById
-//     * @param $id
-//     * @return \Application\Model\DataModels\DataItem|bool
-//     */
-//    public function getTentById($id)
-//    {
-//        $this->$this->depMsg();
-//        return $this->equipTable->getById($id);
-//    }
-//
-//  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by getAll
-//     * @return array
-//     */
-//    public function getCanvasData()
-//    {
-//        $this->$this->depMsg();
-//        return $this->equipTable->fetchAllCastData();
-//    }
-
-
-//  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by save
-//     * @param Tent $tentData
-//     * @return bool|int
-//     */
-//    public function saveTent(Tent $tentData)
-//    {
-//        $this->$this->depMsg();
-//        $tentData->image = ETentShape::IMAGES[$tentData->shape];
-//        if($tentData->id == "")
-//            return $this->equipTable->add($tentData);
-//        return $this->equipTable->save($tentData);
-//    }
-
-
-//  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by delteById
-//     * @param $id
-//     * @return bool
-//     */
-//    public function deleteTentById($id)
-//    {
-//        $this->$this->depMsg();
-//        return $this->deleteById($id);
-//    }
-
-
-//  0 usages found 16.7.
-//    /**
-//     * DEPRECATED +++ DEPRECATED +++ replaced by deleteByTypeAndUSerId
-//     * @param $userId
-//     * @return bool
-//     */
-//    public function deleteTentByUserId($userId)
-//    {
-//        $this->$this->depMsg();
-//        return $this->equipTable->removeByUserIdAndType($userId, EEquipTypes::TENT);
-//    }
-//
-//    private function depMsg()
-//    {
-//        bdump('DEPRECATED METHOD USED!!!');
-//    }
 }
