@@ -85,7 +85,8 @@
 			$subFolder = '';
 
 			// erase wrong arguments
-			if ($type !== null && !isset(self::SUB_ROOTS[$type])) $type = null;
+			if ($type !== null)
+				if (!isset(self::SUB_ROOTS[$type])) $type = null;
 
 			if (self::isAbsolute($path)) return $path;
 
