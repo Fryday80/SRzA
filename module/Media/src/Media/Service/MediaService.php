@@ -810,7 +810,7 @@ class MediaService {
         $fullPath = $this->realpath($path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
-        $item->path = ($path[0] == '/') ? $path : '/' . $path;
+        $item->path = $path;
         $item->readable = $permission['readable'];
         $item->writable = $permission['writable'];
         if (is_dir($fullPath)) {
