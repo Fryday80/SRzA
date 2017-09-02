@@ -10,11 +10,11 @@
 
 	class Pathfinder
 	{
-		const SUB_ROOTS = array(
+		const MEDIA_SERVICE = 0;
+		private static $subRoots = array(
 			0 => '/Data',
 		);
 
-		const MEDIA_SERVICE = 0;
 
 		/** @var  string $root Root directory of the website */
 		private static $root;
@@ -23,7 +23,7 @@
 
 		/** @var int|null $subType key from ::SUB_ROOTS */
 		public static $subType = null;
-		/** @var  string $subRoot contains value matching self::SUB_ROOTS  */
+		/** @var  string $subRoot contains value matching self::$subRoots  */
 		private static $subRoot;
 
 		/**
@@ -52,7 +52,7 @@
 			self::initialize($path);
 			self::removeRoot($path);
 			if (self::isSubRoot($path))
-				$path = str_replace(self::SUB_ROOTS[self::$subType], '', $path);
+				$path = str_replace(self::$subRoots[self::$subType], '', $path);
 
 			return $path;
 		}
@@ -86,7 +86,7 @@
 
 			// erase wrong arguments
 			if ($type !== null)
-				if (!isset(self::SUB_ROOTS[$type])) $type = null;
+				if (!isset(self::$subRoots[$type])) $type = null;
 
 			if (self::isAbsolute($path)) return $path;
 
@@ -94,10 +94,10 @@
 
 			$isSubRoot = self::isSubRoot($path);
 			if (!$isSubRoot && $type !== null)
-				$subFolder = self::SUB_ROOTS[$type];
+				$subFolder = self::$subRoots[$type];
 			if ($isSubRoot && $type !== null) {
-				if (!(self::$subRoot == self::SUB_ROOTS[ $type ]))
-					$subFolder = self::SUB_ROOTS[ $type ];
+				if (!(self::$subRoot == self::$subRoots[ $type ]))
+					$subFolder = self::$subRoots[ $type ];
 			}
 
 			return self::$root . $subFolder . $path;
@@ -145,7 +145,7 @@
 			if (self::isAbsolute($path))
 				$path = str_replace(self::$root, '', $path);
 
-			foreach (self::SUB_ROOTS as $key => $subDir)
+			foreach (self::$subRoots as $key => $subDir)
 			{
 				$subDirLength = strlen($subDir);
 				if (substr($path, 0, $subDirLength) == $subDir)
