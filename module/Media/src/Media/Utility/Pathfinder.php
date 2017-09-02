@@ -6,27 +6,17 @@
 	class Pathfinder
 	{
 		/**
-		 * Initialize replaces __construct()
-		 *
-		 * @param string $path used as reference due &$path => no return value
-		 */
-		private static function initialize(&$path){
-			if (self::$initialized == true) return;
-			$root = getcwd() . '/Data/';
-			self::$root = self::cleanPath( $root ); // direct call of self::cleanPath( getcwd() ) throws error!
-			self::cleanPath($path);
-			self::$initialized = true;
-		}
-
-		/**
 		 * Returns Relative Path to given path
 		 *
 		 * @param string $path
 		 *
 		 * @return string
+		 * @throws Exception
 		 */
 		public static function getRelativePath($path)
 		{
+			if(strpos($path, './') || strpos($path, '../')) throw new Exception("Path forbidden");
+
 			$root = str_replace('\\', '/', getcwd() . '/Data/');
 			$path = str_replace('\\', '/', $path);
 			$path = str_replace($root, '', $path);
