@@ -10,7 +10,7 @@
 
 	class EStoragePlaces
 	{
-		const LIST = array (
+		const LISTING = array (
 			0 => 'privat',
 			1 => 'Allmering',
 			2 => 'Riedinger Park'

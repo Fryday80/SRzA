@@ -35,7 +35,7 @@
 				'type' => 'Radio',
 				'options' => array(
 					'label' => 'Lagerplatz',
-					'value_options' => EStoragePlaces::LIST,
+					'value_options' => EStoragePlaces::LISTING,
 				),
 				'attributes' => array(
 					'value' => 0,
