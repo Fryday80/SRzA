@@ -167,7 +167,9 @@ class EquipmentController extends AbstractActionController
 				$data = new $vars['model'][$type]($data);
 
 				$this->equipService->save($data);
-                return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
+				$url = $this->flashMessenger()->getMessages('ref')[0];
+				if ($url = "/equip/equipment/add") $url = "/equip/equipment";
+                return $this->redirect()->toUrl($url);
             }
         }
 
@@ -205,7 +207,7 @@ class EquipmentController extends AbstractActionController
 				$data = new $vars['model'][$type]($data);
 
                 $this->equipService->save($data);
-                return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
+                return $this->redirect()->toUrl("/equip/equipment");
             }
         }
 

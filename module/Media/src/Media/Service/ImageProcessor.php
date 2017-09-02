@@ -2,7 +2,7 @@
 
 namespace Media\Service;
 
-use Application\Utility\Pathfinder;
+use Media\Utility\Pathfinder;
 use Media\Model\Enums\EImageProcessor;
 
 /**
