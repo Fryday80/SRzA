@@ -1,5 +1,6 @@
 <?php
 namespace Media\Service;
+use Application\Utility\Pathfinder;
 use Auth\Service\AccessService;
 use Exception;
 use Media\Model\Enums\EImageProcessor;
@@ -602,12 +603,15 @@ class MediaService {
         return $this->loadItem($destination);
     }
 
-    /**
-     * @param $filePostArray
-     * @param $targetFolder
-     * @return MediaItem|MediaException
-     */
-    public function upload($filePostArray, $targetFolder, $force = false) {
+	/**
+	 * @param array  $filePostArray
+	 * @param string $targetFolder
+	 * @param string $fileName
+	 * @param bool   $force
+	 *
+	 * @return MediaException|MediaItem
+	 */
+    public function upload($filePostArray, $targetFolder, $fileName, $force = false) {
 		$target = $this->realPath($targetFolder);
 
     	if (!$target && $force) {
@@ -633,21 +637,18 @@ class MediaService {
 
         $path = '';
 
-        $i = 1;
         try {
             $uploadHandler = new UploadHandler();
 //            $uploadHandler->autoOverwrite = true;
             $uploadHandler->autoRename = true;
-            $uploadHandler->setSource($filePostArray);
+            $uploadHandler->setSource($filePostArray, $fileName);
             $uploadHandler->setDestinationPath($target);
-            bdump($i++); //1
-            $uploadHandler->upload();
-            bdump($i++); //2
-            $item = $this->getItem($target);
-            bdump($i++); //3
+            $newFilePath = $uploadHandler->upload();
+            $item = $this->getItem($newFilePath);//eventuel reicht auch das
+			bdump($item);die;
             if ($this->isImage($item->fullPath)) {
                 $this->imageProcessor->load($item);
-                $this->imageProcessor->createThumb();
+                $this->createDefaultThumbs($item);
                 $this->imageProcessor->saveImage();
             }
             return $item;
@@ -793,6 +794,7 @@ class MediaService {
      * @return MediaItem|MediaException|null
      */
     private function loadItem($path) {
+    	if (Pathfinder::isAbsolute($path)) Pathfinder::getRelativePath($path);
     	$cachePath = $path;
 		$return = $this->getCachedItem($cachePath);
 		if ($return) return $return;
@@ -803,7 +805,8 @@ class MediaService {
         $fullPath = $this->realpath($path);
         $item = new MediaItem();
         $item->fullPath = $fullPath;
-        $item->path = '/' . $path;
+        // @todo check if windows path => no leading '/'
+        $item->path = ($path[0] == '/') ? $path : '/' . $path;
         $item->readable = $permission['readable'];
         $item->writable = $permission['writable'];
         if (is_dir($fullPath)) {
@@ -921,6 +924,7 @@ class MediaService {
     /*
      * IMAGE PROCESSING
      */
+    //@todo move special cases
 
 	public function createProfileImage(MediaItem $item)
 	{
@@ -942,16 +946,17 @@ class MediaService {
 		$this->createSquare($item, $this->config['Equipment_MediaService']['images']['maxSide']);
     }
 
-	private function createSquare($item, $side)
+	private function createSquare(MediaItem $item, $side)
 	{
 		$this->imageProcessor->load($item);
 		$this->imageProcessor->resize_square($side);
 		$this->imageProcessor->saveImage();
     }
 
-	private function createDefaultThumbs($item)
+	private function createDefaultThumbs(MediaItem $item)
 	{
 		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
+		bdump(array($item->name, $item->name . '_thumb_big', $item->path));die;
 		$thumbPathBig   = $thumbFolder . str_replace($item->name, $item->name . '_thumb_big', $item->path);
 		$thumbPathSmall = $thumbFolder . str_replace($item->name, $item->name . '_thumb_small', $item->path);
 
@@ -967,18 +972,17 @@ class MediaService {
 			switch ($i){
 				case 0:
 					// process
-					break;
-				case 1:
-					// process
 					$this->imageProcessor->resize_crop($profileImageThumbBigSizeX, $profileImageThumbBigSizeY);
 					$this->imageProcessor->saveImage($thumbPathBig);
+					$this->imageProcessor->load($item);
 					break;
-				case 2:
+				case 1:
 					// process
 					$this->imageProcessor->resize_crop($profileImageThumbSmallSizeX, $profileImageThumbSmallSizeY);
 					$this->imageProcessor->saveImage($thumbPathSmall);
 					break;
 			}
+			$i++;
 		}
 	}
 }

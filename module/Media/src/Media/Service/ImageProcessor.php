@@ -2,6 +2,7 @@
 
 namespace Media\Service;
 
+use Application\Utility\Pathfinder;
 use Media\Model\Enums\EImageProcessor;
 
 /**
@@ -50,8 +51,8 @@ class ImageProcessor
 	public function __construct($config)
 	{
 		$this->config = $config;
-		$this->root = $this->cleanPath( $this->config['ImageProcessor']['root'] );
-		$this->dataRootPath = $this->cleanPath( $this->config['ImageProcessor']['dataRoot'] );
+		$this->root = Pathfinder::cleanPath( $this->config['ImageProcessor']['root'] );
+		$this->dataRootPath = Pathfinder::cleanPath( $this->config['ImageProcessor']['dataRoot'] );
 		$this->meta = array (
 			'resource' 	  => &$this->srcImage,
 			'path'     	  => &$this->srcPath,
@@ -88,6 +89,10 @@ class ImageProcessor
 		$this->item = $item;
 		// load item
 		$this->loadFromMediaItem($item);
+	}
+
+	public function reset(){
+		$this->intern_load();
 	}
 
 	/**
@@ -208,11 +213,10 @@ class ImageProcessor
 	private function loadFromMediaItem(MediaItem $item)
 	{
 		// set srcPath dependent if absolute path was given or not
-		$this->srcPath = ($this->isAbsolutePath($item->fullPath)) ? $item->fullPath : $this->dataRootPath . $item->fullPath;
+		$this->srcPath = $item->fullPath;
 		// is the file existing
 		if (!file_exists($this->srcPath))
 			throw new \Exception("This File does not exist or path ROOT'$item->path' is wrong");
-
 		// load
 		$this->intern_load();
 	}
@@ -225,8 +229,6 @@ class ImageProcessor
 		// gather meta data
 		$this->srcInfo = pathinfo($this->srcPath);
 		$this->srcSize = filesize($this->srcPath);
-
-		chmod($this->srcPath, 0777);
 
 		switch ($this->srcInfo['extension']){
 			case 'png':
@@ -276,10 +278,14 @@ class ImageProcessor
 
 		$targetPath = ($targetPath == null)
 			? $this->srcPath
-			: ($this->isAbsolutePath($targetPath))? $targetPath : $this->dataRootPath . $this->getRelativePath($targetPath);
+			: (Pathfinder::isAbsolute($targetPath))? $targetPath : $this->dataRootPath . $this->getRelativePath($targetPath);
 
+		// create folders if necessary
 		$this->setUpFolder($targetPath);
+		// remove file from folder with same name
+		$this->intern_removePrevious($targetPath);
 
+		// save
 		switch($this->srcInfo['extension']) {
 			case 'jpg':
 			case 'jpeg':
@@ -291,7 +297,6 @@ class ImageProcessor
 			case 'gif':
 				imagegif  ( $this->newImage, $targetPath);
 		}
-		$this->intern_removePrevious($targetPath);
 		$this->intern_end();
 	}
 
@@ -299,7 +304,6 @@ class ImageProcessor
 	{
 		$pI = pathinfo($newImagePath);
 		foreach ($this->possibleExtensions as $possibleExtension) {
-			if ($possibleExtension !== $pI['extension'] && file_exists($pI['dirname'] . '/' . $pI['filename'] . '.' . $possibleExtension))
 				@unlink($pI['dirname'] . '/' . $pI['filename'] . '.' . $possibleExtension);
 		}
 	}
@@ -316,20 +320,11 @@ class ImageProcessor
 	}
 
 	// helper
-	private function cleanPath($path)
-	{
-		return str_replace('\\', '/', $path);
-	}
-
-	private function isAbsolutePath($path)
-	{
-		return (!strpos($path, $this->root)) ? : false;
-	}
 
 	private function getRelativePath($path)
 	{
-		$path = $this->cleanPath($path);
-		$relPath = '';
+		$path = Pathfinder::cleanPath($path);
+		$relPath = '/';
 		if (strpos($path, $this->dataRootPath) !== false)
 			$relPath = str_replace($this->dataRootPath, '', $path);
 		else $relPath = $path;
@@ -358,7 +353,7 @@ class ImageProcessor
 
 	private function setUpFolder($targetPath)
 	{
-		$targetPath = $this->cleanPath($targetPath);
+		$targetPath = Pathfinder::cleanPath($targetPath);
 		// create data root path if not existing
 		if (!is_dir($this->dataRootPath)) @mkdir($this->dataRootPath,0755);
 

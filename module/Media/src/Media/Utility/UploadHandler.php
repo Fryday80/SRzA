@@ -240,13 +240,18 @@ class UploadHandler
      * @param $array $_FILES['form_field'] array
      * @return bool
      */
-    public function setSource($array) {
+    public function setSource($array, $overrideName = null) {
         $this->srcPath      = $array['tmp_name'];
-        $this->srcFileName  = $array['name'];
+        $this->srcFileName  = ($overrideName == null) ? $array['name'] : $overrideName;
         $this->srcSize      = $array['size'];
         $this->srcMimeType  = $array['type'];
         $this->srcError     = trim($array['error']);
         return true;
+    }
+
+	public function setName($filename)
+	{
+
     }
 
     public function validateSource() {

@@ -11,14 +11,10 @@
 	class Pathfinder
 	{
 		const SUB_ROOTS = array(
-			0 => '/Data'
+			0 => '/Data',
 		);
 
-		// all these types are linked to MediaService or MediaItems
 		const MEDIA_SERVICE = 0;
-		const MEDIA_ITEM = 0;
-		const DATA  = 0;
-		const IMAGE = 0;  // images are handled like data
 
 		/** @var  string $root Root directory of the website */
 		private static $root;
@@ -26,57 +22,124 @@
 		private static $initialized = false;
 
 		/** @var int|null $subType key from ::SUB_ROOTS */
-		private static $subType = null;
+		public static $subType = null;
+		/** @var  string $subRoot contains value matching self::SUB_ROOTS  */
+		private static $subRoot;
 
-		private static function initialize(){
+		/**
+		 * Initialize replaces __construct()
+		 *
+		 * @param string $path used as reference due &$path => no return value
+		 */
+		private static function initialize(&$path){
 			if (self::$initialized == true) return;
-			self::$root = self::cleanPath( getcwd() );
+			$root = getcwd();
+			self::$root = self::cleanPath( $root ); // direct call of self::cleanPath( getcwd() ) throws error!
+			self::cleanPath($path);
 			self::$initialized = true;
 		}
 
-		public static function getRelativePath($path)
+		/**
+		 * Returns Relative Path to given path <br/>
+		 * 		can be used with reference due &$path
+		 *
+		 * @param string $path
+		 *
+		 * @return string
+		 */
+		public static function getRelativePath(&$path)
 		{
-			self::initialize();
-			$path = self::cleanPath($path);
-			$path = str_replace(self::$root, '', $path);
+			self::initialize($path);
+			self::removeRoot($path);
 			if (self::isSubRoot($path))
 				$path = str_replace(self::SUB_ROOTS[self::$subType], '', $path);
 
 			return $path;
-
 		}
 
+		//@todo need to check for clients root?? c: e.g. on windows systems... this will fail with linux server depends on logic of upload way
+		/**
+		 * Is Absolute checks if given path is an AbsolutePath
+		 *
+		 * @param string $path
+		 *
+		 * @return bool
+		 */
+		public static function isAbsolute($path)
+		{
+			self::initialize($path);
+			return (strpos($path, self::$root) === false) ? false : true;
+		}
+
+		/**
+		 * Get Absolute Path
+		 *
+		 * @param          $path
+		 * @param int|null $type use this classes constants, Pathfinder::MEDIA_SERVICE eg.
+		 *
+		 * @return string        absolute path
+		 */
 		public static function getAbsolutePath($path, int $type = null)
 		{
-			self::initialize();
-			$path = self::cleanPath($path);
+			self::initialize($path);
 			$subFolder = '';
 
-			if ($type !== null)
-				$subFolder = self::SUB_ROOTS[$type];
+			// erase wrong arguments
+			if ($type !== null && !isset(self::SUB_ROOTS[$type])) $type = null;
 
-			if ($path[0] !== '/')
-				$path = '/' . $path;
+			if (self::isAbsolute($path)) return $path;
+
+			if ($path[0] !== '/') $path = '/' . $path;
+
+			$isSubRoot = self::isSubRoot($path);
+			if (!$isSubRoot && $type !== null)
+				$subFolder = self::SUB_ROOTS[$type];
+			if ($isSubRoot && $type !== null) {
+				if (!(self::$subRoot == self::SUB_ROOTS[ $type ]))
+					$subFolder = self::SUB_ROOTS[ $type ];
+			}
 
 			return self::$root . $subFolder . $path;
 		}
 
-		public static function isAbsolute($path)
+		/**
+		 * Clean Path <br/>
+		 * 		turns '\' in '/' <br/>
+		 * 		can be used with reference due &$path
+		 *
+		 * @param string $path
+		 *
+		 * @return string
+		 */
+		public static function cleanPath(&$path)
 		{
-			self::initialize();
-			$path = self::cleanPath($path);
-			return (strpos($path, self::$root) === false) ? false : true;
+			return $path = str_replace('\\', '/', $path);
 		}
 
-		public static function cleanPath($path)
+
+		/**
+		 * Removes Root Path  <br/>
+		 * 		can be used with reference due &$path
+		 *
+		 * @param string $path
+		 *
+		 * @return string
+		 */
+		private static function removeRoot (&$path)
 		{
-			return str_replace('\\', '/', $path);
+			$path = str_replace(self::$root, '', $path);
+			return $path = ($path[0] == '/') ? $path : '/' . $path;
 		}
 
+		/**
+		 * Checks if given Path is a modules root path (subRoot)
+		 *
+		 * @param string $path
+		 *
+		 * @return bool
+		 */
 		private static function isSubRoot($path)
 		{
-			self::initialize();
-			$path = self::cleanPath($path);
 			// remove root
 			if (self::isAbsolute($path))
 				$path = str_replace(self::$root, '', $path);
@@ -90,6 +153,7 @@
 					{
 						case self::MEDIA_SERVICE:
 							self::$subType = self::MEDIA_SERVICE;
+							self::$subRoot = $subDir;
 					}
 				}
 			}
