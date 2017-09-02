@@ -52,15 +52,6 @@ class ImageUpload extends AbstractPlugin
 		if($destination[strlen($destination)-1] !== '/') $destination .= '/';
 		return $this->uploadAction($uploadData, $destination, $fileName);
 	}
-//
-//	/**
-//	 * @param array $arrayOfUploadData
-//	 * @param array $arrayOfDestinations with same keys as $arrayOfUploadData
-//	 */
-//	public function multiUpload(Array $arrayOfUploadData, Array $arrayOfDestinations)
-//	{
-//		$this->multiUploadAction($arrayOfUploadData, $arrayOfDestinations);
-//	}
 
 	/**
 	 * @param array $uploadDataArray from <strong>Form</strong> upload
@@ -113,6 +104,36 @@ class ImageUpload extends AbstractPlugin
 	}
 
 	/**
+	 * Checks recursive if there is a Upload Array in given array <br/>
+	 * returns "false" if there was a uploadError detected
+	 *
+	 * @param $data
+	 *
+	 * @return bool
+	 */
+	public function containsUploadArray ($data)
+	{
+		if (!is_array($data)) return false;
+		elseif ($this->isUploadArray($data)) return true;
+		else
+			return $this->checkForUploadArrayRecursive($data);
+	}
+
+	protected function checkForUploadArrayRecursive($array)
+	{
+		$result = false;
+		foreach ($array as $key => $value) {
+			if (is_array($value)){
+				if($this->isUploadArray($value)) $result = true;
+				$subResult = $this->checkForUploadArrayRecursive($value);
+				if ($subResult == true) $result = true;
+			}
+		}
+		return $result;
+
+	}
+
+	/**
 	 * @param array  $uploadData
 	 * @param string $destination '/path/to/save/image' <br/>
 	 *                            !!leading '/' <br/>
@@ -131,17 +152,6 @@ class ImageUpload extends AbstractPlugin
 		}
 		return $itemOrError;
   	}
-
-//	/**
-//	 * @param array $arrayOfUploadData
-//	 * @param array $arrayOfDestinations with same keys as $arrayOfUploadData
-//	 */
-//	protected function multiUploadAction(Array $arrayOfUploadData, Array $arrayOfDestinations)
-//	{
-//		foreach ($arrayOfUploadData as $key => $uploadData) {
-//			$this->uploadAction($uploadData, $arrayOfDestinations[$key]);
-//		}
-//	}
 
 	protected function getMaxUploadSize()
 	{

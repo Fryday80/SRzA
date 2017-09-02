@@ -248,20 +248,22 @@ class EquipmentController extends AbstractActionController
 		$uploadedImages = $dataTarget = array();
 
 		// upload and save images
-		// check if sth is set
-		if ($data['image1'] !== null || $data['image2'] !== null || $data['bill'] !== null){
-			// check if set data is string (old upload) or uploadArray => then push to uploadedImages array
-			if ($data['image1'] !== null && $this->imageUpload()->isUploadArray($data['image1']))
-				if ($data['image1']['error'] < 1 )
-					$uploadedImages['image1'] = &$data['image1'];
-			if ($data['image2'] !== null && $this->imageUpload()->isUploadArray($data['image2']))
-				if ($data['image2']['error'] < 1 )
-					$uploadedImages['image2'] = &$data['image2'];
-			if ($data['bill']   !== null && $this->imageUpload()->isUploadArray($data['bill']  ))
-				if ($data['bill']['error'] < 1 )
-					$uploadedImages['bill']   = &$data['bill'];
-			// if sth was uploaded
+		// =======================
+		// check if there is a upload array
+		if ($this->imageUpload()->containsUploadArray($data))
+		{
+			$keysOfImages = array ('image1', 'image2', 'bill');
+			// check if set data is
+			// string (old upload) or uploadArray has an error => skip
+			// or
+			// uploadArray => then push to uploadedImages array
+			foreach ($keysOfImages as $imageKey) {
+				if (isset($data[$imageKey]) && $data[$imageKey] !== null && $this->imageUpload()->isUploadArray($data[$imageKey]))
+					if ($data[$imageKey]['error'] < 1 )
+						$uploadedImages[$imageKey] = &$data[$imageKey];
+			}
 
+			// if sth was uploaded
 			if ( !empty($uploadedImages) )
 			{
 				foreach ($uploadedImages as $key => &$uploadedImage)
