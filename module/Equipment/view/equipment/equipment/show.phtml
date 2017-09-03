@@ -1,4 +1,7 @@
 <?php
+    /** @var \Media\View\Helper\MediaHelper*/
+    $this->media = $this->media();
+    bdump($this->media->getImageUrl($equip->image2));
 $title = $page['label'];
 $this->headTitle($title);
 if (isset($links)){
@@ -16,13 +19,13 @@ if (isset($links)){
 
 <?php // ================================== Images:
 if ($equip->image !== null): ?>
-<img alt="kein Bild hinterlegt" src="<?php echo $equip->image?>" style="float: left; height: 50px;" >
+<img alt="kein Bild hinterlegt" src="<?php echo $this->media->getImageUrl($equip->image)?>" style="float: left; height: 50px;" >
 <?php endif; ?>
 <?php if ($equip->image1 !== null): ?>
-    <img alt="kein Bild hinterlegt" src="<?php echo $equip->image1?>" style="float: left; height: 50px;" >
+    <img alt="kein Bild hinterlegt" src="<?php echo $this->media->getImageUrl($equip->image1)?>" style="float: left; height: 50px;" >
 <?php endif; ?>
 <?php if ($equip->image2 !== null): ?>
-    <img alt="kein Bild hinterlegt" src="<?php echo $equip->image1?>" style="float: left; height: 50px;" >
+    <img alt="kein Bild hinterlegt" src="<?php echo $this->media->getImageUrl($equip->image2)?>" style="float: left; height: 50px;" >
 <?php endif; ?>
 <br class="clear"/>
 <?php // =================================== Details ?>

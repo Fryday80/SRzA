@@ -12,8 +12,9 @@
 	use const Media\Service\LIVE_PATH;
 	use Media\Service\MediaItem;
 	use Media\Service\MediaService;
+	use Zend\Form\View\Helper\AbstractHelper;
 
-	class MediaHelper
+	class MediaHelper extends AbstractHelper
 	{
 		public $mediaService;
 
@@ -27,7 +28,7 @@
 			/** @var MediaItem $item */
 			$item = $this->mediaService->getItem($dataPath);
 
-			if ($item->type == 'Image') return $item->livePath;
+			if ($item->type == 'image') return $item->livePath;
 			else return null;
 		}
 
@@ -36,7 +37,7 @@
 			/** @var MediaItem $item */
 			$item = $this->mediaService->getItem($dataPath);
 
-			if ($item->type == 'Image') {
+			if ($item->type == 'image') {
 				$thumbName = $item->name;
 				$thumbName .= ($size == 'big') ? '_thumb_big' : '_thumb_small';
 				$thumbName .= '.' . $item->extension;

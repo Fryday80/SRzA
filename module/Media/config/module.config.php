@@ -33,7 +33,7 @@ return array(
     ),
 	'controller_plugins' => array(
 		'factories' => array(
-			'media' => 'Media\Factory\MediaPluginFactory',
+			'imageUpload' => 'Media\Factory\ImageUploadPluginFactory',
 		),
 	),
     'service_manager' => array(
@@ -50,6 +50,12 @@ return array(
             'media' => __DIR__ . '/../view'
         )
     ),
+	'view_helpers' => array(
+		'invokables' => array( ),
+		'factories' => array(
+			'media' => 'Media\Factory\View\Helper\MediaHelperFactory'
+		)
+	),
     'router' => array(
         'routes' => array(
             'media' => array(

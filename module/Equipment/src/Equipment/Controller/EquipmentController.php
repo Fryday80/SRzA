@@ -248,9 +248,8 @@ class EquipmentController extends AbstractActionController
     private function uploadImage ($data, $newId = null)
 	{
 		/** @var ImageUpload $imageUpload */
-		$imageUpload = $this->media()->imageUpload;
+		$imageUpload = $this->imageUpload;
 
-		$test = $this->media();
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();
 
@@ -264,7 +263,7 @@ class EquipmentController extends AbstractActionController
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/_equipment/' . $data['id'] .'/';
+				$dataTargetPath = '/equipment/' . $data['id'] .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
 					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
