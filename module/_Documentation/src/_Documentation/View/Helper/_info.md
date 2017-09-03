@@ -14,7 +14,7 @@
 - in Gallery
     - ##### [RandomImageHelper](###RandomImageHelper)
 - in Media
-    - ##### [MediaHelper](###MediaHelper)
+    - ##### [MediaHelper](#MediaHelper)
 
 
 
@@ -86,7 +86,7 @@
 ```
 ```
 
-###MediaHelper
+#MediaHelper
 - module: Media
 - regName: ?? 
 ```
