@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller\Plugin;
 
+use const Media\Service\DATA_PATH;
 use Media\Service\ImageProcessor;
 use Media\Service\MediaException;
 use Media\Service\MediaService;
@@ -14,8 +15,6 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  */
 class ImageUpload extends AbstractPlugin
 {
-	const DATA_FOLDER_FROM_ROOT = '/Data';
-
 	protected $config;
 	/** @var MediaService  */
 	public $mediaService;
@@ -31,20 +30,29 @@ class ImageUpload extends AbstractPlugin
 	private $uploadDestinationPath;
 	private $uploadFileName = null;
 
+	/** @var bool */
 	private $uploadArrayCheck = false;
+	/** @var bool */
 	private $hasUploads = false;
 	private $uploadedImages = array();
 
-	function __construct(Array $config, MediaService $mediaService)
+	function __construct(Array $config, MediaService &$mediaService)
 	{
 		$this->config = $config;
-		$this->mediaService = $mediaService;
+		$this->mediaService = &$mediaService;
 		$this->imageProcessor = &$mediaService->imageProcessor;
 
-		$this->storagePath = getcwd() . self::DATA_FOLDER_FROM_ROOT;
+		$this->storagePath = getcwd() . DATA_PATH;
 		$this->storagePath = str_replace('\\', '/', $this->storagePath);
 	}
 
+	/**
+	 * Set Data
+	 *
+	 * @param array $uploadData image upload array | Form data array
+	 *
+	 * @return $this
+	 */
 	public function setData($uploadData)
 	{
 		$this->uploadData = $uploadData;
@@ -52,6 +60,8 @@ class ImageUpload extends AbstractPlugin
 	}
 
 	/**
+	 * Set Destination Path
+	 *
 	 * @param string $uploadDestinationPath
 	 *
 	 * @return $this
@@ -61,7 +71,15 @@ class ImageUpload extends AbstractPlugin
 		$this->uploadDestinationPath = $uploadDestinationPath;
 		return $this;
 	}
-	
+
+	/**
+	 * Set Filename <br/>
+	 * 		overrides original filename and extension
+	 *
+	 * @param string $uploadFileName "file.name"
+	 *
+	 * @return $this
+	 */
 	public function setFileName($uploadFileName)
 	{
 		$this->uploadFileName = $uploadFileName;
@@ -79,7 +97,7 @@ class ImageUpload extends AbstractPlugin
 			$this->uploadFileName = $fileName . $extension;
 		}
 
-		return $this->uploadAction($this->uploadData, $this->uploadDestinationPath, $this->uploadFileName);
+		return $this->uploadAction();
 	}
 
 	/**
@@ -159,6 +177,7 @@ class ImageUpload extends AbstractPlugin
 		return ($this->hasUploads) ? $this->uploadedImages : array();
 	}
 
+
 	protected function checkForUploadArrayRecursive($array)
 	{
 		$result = $subResult = false;
@@ -190,9 +209,9 @@ class ImageUpload extends AbstractPlugin
 	 * @return MediaException|\Media\Service\MediaItem
 	 * @throws MediaException
 	 */
-	protected function uploadAction($uploadData, $destination, $fileName)
+	protected function uploadAction()
  	{
-		$itemOrError = $this->mediaService->upload($uploadData, $destination, $fileName, true);
+		$itemOrError = $this->mediaService->upload($this->uploadData, $this->uploadDestinationPath, $this->uploadFileName, true);
 		if ($itemOrError instanceof MediaException) {
 			throw $itemOrError;
 		}

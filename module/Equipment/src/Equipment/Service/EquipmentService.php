@@ -2,13 +2,14 @@
 namespace Equipment\Service;
 
 use Application\Service\CacheService;
+use Application\Service\MyService;
 use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\DataModels\Tent;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\EquipTable;
 
-class EquipmentService
+class EquipmentService extends MyService
 {
     // tables
     /** @var EquipTable  */
@@ -24,11 +25,6 @@ class EquipmentService
     {
         $this->table = $equipTable;
         $this->cache = $cacheService;
-    }
-
-    public function getAll()
-    {
-        return $this->table->getAll();
     }
 
     public function getAllPlannerObjects(){
@@ -54,11 +50,6 @@ class EquipmentService
         return $this->table->getByUserIdAndType($userId, $type);
     }
 
-    public function getById($id)
-    {
-        return $this->table->getById($id);
-    }
-
     public function deleteAllByUserId($userId)
     {
         return $this->table->removeByUserId($userId);
@@ -72,17 +63,6 @@ class EquipmentService
     {
         $this->table->removeByUserIdAndType((int)$userId, $type);
     }
-
-    public function deleteById($id)
-    {
-        return $this->table->remove($id);
-    }
-
-
-	public function getNextId()
-	{
-		return $this->table->getNextId();
-	}
 
     public function save($data)
     {

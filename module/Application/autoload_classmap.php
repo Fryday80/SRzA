@@ -46,6 +46,7 @@ return array(
     'Application\Service\CacheService'                       => __DIR__ . '/src/Application/Service/CacheService.php',
     'Application\Service\MessageService'                     => __DIR__ . '/src/Application/Service/MessageService.php',
     'TemplateTypes'                                          => __DIR__ . '/src/Application/Service/MessageService.php',
+    'Application\Service\MyService'                          => __DIR__ . '/src/Application/Service/MyService.php',
     'Application\Service\StatisticService'                   => __DIR__ . '/src/Application/Service/StatisticService.php',
     'Application\Service\SystemService'                      => __DIR__ . '/src/Application/Service/SystemService.php',
     'Application\Utility\CircularBuffer'                     => __DIR__ . '/src/Application/Utility/CircularBuffer.php',

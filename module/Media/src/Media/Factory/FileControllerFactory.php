@@ -3,7 +3,6 @@ namespace Nav\Factory;
 
 
 use Media\Controller\FileController;
-use Nav\Controller\NavController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -14,7 +13,7 @@ class FileControllerFactory implements FactoryInterface
      * Create service
      *
      * @param ServiceLocatorInterface $serviceLocator
-     * @return NavController
+     * @return FileController
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {

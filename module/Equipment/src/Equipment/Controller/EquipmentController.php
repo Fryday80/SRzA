@@ -24,8 +24,6 @@ class EquipmentController extends AbstractActionController
 	private $dataRootPath;
 
     private $dataTable;
-    /** @var  ImageUpload */
-	private $imageUpload;
 
 
 	public function __construct(
@@ -249,16 +247,17 @@ class EquipmentController extends AbstractActionController
 
     private function uploadImage ($data, $newId = null)
 	{
-		$this->imageUpload = $this->ImageUpload();
+		/** @var ImageUpload $imageUpload */
+		$imageUpload = $this->media()->imageUpload;
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();
 
 		// upload and save images
 		// =======================
 		// check if there is a upload array
-		if ($this->imageUpload->containsUploadArray($data))
+		if ($imageUpload->containsUploadArray($data))
 		{
-			$uploadedImages = $this->imageUpload->getUploadArrays();
+			$uploadedImages = $imageUpload->getUploadArrays();
 			// if sth was uploaded
 			if ( !empty($uploadedImages) )
 			{
@@ -266,23 +265,23 @@ class EquipmentController extends AbstractActionController
 				$dataTargetPath = '/_equipment/' . $data['id'] .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
-					list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
 					$uploadFileName = $key .'.' . $extension;
 					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
 
 					// upload image
-					$this->imageUpload
+					$imageUpload
 						->setData($uploadedImage)
 						->setDestination($dataTargetPath)
 						->setFileName($uploadFileName);
 
-					$mediaItem = $this->imageUpload->upload();
+					$mediaItem = $imageUpload->upload();
 
 					// process image
-					$this->imageUpload->imageProcessor->load($mediaItem);
+					$imageUpload->imageProcessor->load($mediaItem);
 					$side = 500; // @todo implement config
-					$this->imageUpload->imageProcessor->resize_square($side);
-					$this->imageUpload->imageProcessor->saveImage();
+					$imageUpload->imageProcessor->resize_square($side);
+					$imageUpload->imageProcessor->saveImage();
 				}
 			};
 

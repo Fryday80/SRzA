@@ -15,6 +15,7 @@ use ZipArchive;
 
 
 const DATA_PATH = '/Data';
+const LIVE_PATH = '/media/file/';
 const TRASH_BIN_PATH = '/_trash';
 const NOT_ALLOWED_IMAGE = 'public/img/imgNotFound.png';
 const NOT_FOUND_IMAGE = 'public/img/imgNotFound.png';
@@ -821,7 +822,8 @@ class MediaService {
             $pathInfo = pathinfo($path);
             $item->name = $pathInfo['filename'];
             $item->extension = $pathInfo['extension'];
-            $item->livePath = $this->cleanPath('/media/file/'.$path);
+            $livePath = LIVE_PATH . $path;
+            $item->livePath = $this->cleanPath($livePath);
             $item->modified = filectime($fullPath);
             $item->size = filesize($fullPath);
             if ($this->isImage($fullPath)) {
@@ -930,24 +932,9 @@ class MediaService {
      */
     //@todo move special cases
 
-	public function createProfileImage(MediaItem $item)
-	{
-		$profileImageMaxSize = $this->config['MediaService']['profile_images']['maxSide'];
-		$this->imageProcessor->load($item);
-		$this->imageProcessor->resizeToMaxSide($profileImageMaxSize);
-		$this->imageProcessor->saveImage();
-
-		$this->createDefaultThumbs($item);
-	}
-
 	public function createBlazon(MediaItem $item)
 	{
 		$this->createSquare($item, $this->config['Cast_MediaService']['blazon']['maxSide']);
-    }
-
-	public function createEquipImage(MediaItem $item)
-	{
-		$this->createSquare($item, $this->config['Equipment_MediaService']['images']['maxSide']);
     }
 
 	private function createSquare(MediaItem $item, $side)
@@ -957,7 +944,7 @@ class MediaService {
 		$this->imageProcessor->saveImage();
     }
 
-	private function createDefaultThumbs(MediaItem $item)
+	public function createDefaultThumbs(MediaItem $item)
 	{
 		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
 		$thumbPathBig   = $thumbFolder . str_replace($item->name, $item->name . '_thumb_big', $item->path);
@@ -969,6 +956,7 @@ class MediaService {
 		$profileImageThumbSmallSizeX = $this->config['MediaService']['thumbs']['sX'];
 		$profileImageThumbSmallSizeY = $this->config['MediaService']['thumbs']['sY'];
 
+		$this->imageProcessor->load($item);
 		$i = 0;
 		while ($i < 2)
 		{

@@ -33,7 +33,7 @@ return array(
     ),
 	'controller_plugins' => array(
 		'factories' => array(
-			'imageUpload' => 'Media\Factory\ImageUploadPluginFactory',
+			'media' => 'Media\Factory\MediaPluginFactory',
 		),
 	),
     'service_manager' => array(
