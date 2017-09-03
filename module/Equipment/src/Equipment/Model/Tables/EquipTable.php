@@ -48,10 +48,6 @@ class EquipTable extends DatabaseTable
         return $this->select(array('equip.user_id' => (int) $id, 'item_type' => (int)$type));
     }
 
-    public function removeById($id) {
-        return $this->remove($id);
-    }
-
     public function removeByUserIdAndType($userId, $type)
     {
         return ($this->delete(array('user_id' => (int)$userId, 'item_type' => $type)))? true : false;

@@ -164,7 +164,7 @@ class EquipmentController extends AbstractActionController
                 $data = $form->getData();
                 $newId = (int) $this->equipService->getNextId();
 
-                $data = $this->prepareAddAndSave($data, $newId);
+                $data = $this->uploadImage($data, $newId);
                 //		push into model for selection in service
 				$data = new $vars['model'][$type]($data);
 
@@ -204,7 +204,7 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
 				$data = $form->getData();
 
-				$data = $this->prepareAddAndSave($data, $data['id']);
+				$data = $this->uploadImage($data);
 //		push into model for selection in service
 				$data = new $vars['model'][$type]($data);
 
@@ -247,7 +247,7 @@ class EquipmentController extends AbstractActionController
         return $vars;
     }
 
-    private function prepareAddAndSave ($data, $newId = null)
+    private function uploadImage ($data, $newId = null)
 	{
 		$this->imageUpload = $this->ImageUpload();
 		if($newId !== null) $data['id'] = $newId;
@@ -259,7 +259,6 @@ class EquipmentController extends AbstractActionController
 		if ($this->imageUpload->containsUploadArray($data))
 		{
 			$uploadedImages = $this->imageUpload->getUploadArrays();
-
 			// if sth was uploaded
 			if ( !empty($uploadedImages) )
 			{

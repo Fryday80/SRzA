@@ -2,17 +2,18 @@
 namespace Equipment\Service;
 
 use Application\Service\CacheService;
+use Application\Service\MyService;
 use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\DataModels\LostAndFoundItem;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\Tables\lostAndFoundTable;
 
-class LostAndFoundService
+class LostAndFoundService extends MyService
 {
     // tables
     /** @var LostAndFoundTable  */
-    private $lostAndFoundTable;
+    protected $table;
 
     // services
     /** @var CacheService  */
@@ -22,36 +23,36 @@ class LostAndFoundService
     public function __construct (
         LostAndFoundTable $lostAndFoundTable, CacheService $cacheService )
     {
-        $this->lostAndFoundTable = $lostAndFoundTable;
+        $this->table = $lostAndFoundTable;
         $this->cache = $cacheService;
     }
 
     public function getAll()
     {
-        return $this->lostAndFoundTable->getAll();
+        return $this->table->getAll();
     }
 
     public function getById($id)
     {
-        return $this->lostAndFoundTable->getById($id);
+        return $this->table->getById($id);
     }
 
 	public function save($data)
 	{
 		if($data['id'] == "" || $data['id'] == null)
-			return $this->lostAndFoundTable->add($data);
+			return $this->table->add($data);
 		else {
-			return $this->lostAndFoundTable->save($data);
+			return $this->table->save($data);
 		}
 	}
 
     public function deleteById($id)
     {
-        return $this->lostAndFoundTable->removeById($id);
+        return $this->table->removeById($id);
     }
 
 	public function getNextId()
 	{
-		return $this->lostAndFoundTable->getNextId();
+		return $this->table->getNextId();
 	}
 }

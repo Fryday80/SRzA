@@ -12,7 +12,7 @@ class EquipmentService
 {
     // tables
     /** @var EquipTable  */
-    private $equipTable;
+    private $table;
 
     // services
     /** @var CacheService  */
@@ -22,17 +22,17 @@ class EquipmentService
     public function __construct (
         EquipTable $equipTable, CacheService $cacheService )
     {
-        $this->equipTable = $equipTable;
+        $this->table = $equipTable;
         $this->cache = $cacheService;
     }
 
     public function getAll()
     {
-        return $this->equipTable->getAll();
+        return $this->table->getAll();
     }
 
     public function getAllPlannerObjects(){
-    	return $this->equipTable->getAllPlannerObjects();
+    	return $this->table->getAllPlannerObjects();
 	}
 
     /**
@@ -41,7 +41,7 @@ class EquipmentService
      */
     public function getAllByType($type)
     {
-        return $this->equipTable->getAllByType($type);
+        return $this->table->getAllByType($type);
     }
 
     /**
@@ -51,17 +51,17 @@ class EquipmentService
      */
     public function getByUserIdAndType($userId, $type)
     {
-        return $this->equipTable->getByUserIdAndType($userId, $type);
+        return $this->table->getByUserIdAndType($userId, $type);
     }
 
     public function getById($id)
     {
-        return $this->equipTable->getById($id);
+        return $this->table->getById($id);
     }
 
     public function deleteAllByUserId($userId)
     {
-        return $this->equipTable->removeByUserId($userId);
+        return $this->table->removeByUserId($userId);
     }
 
     /**
@@ -70,31 +70,31 @@ class EquipmentService
      */
     public function deleteByTypeAndUSerId($type, $userId)
     {
-        $this->equipTable->removeByUserIdAndType((int)$userId, $type);
+        $this->table->removeByUserIdAndType((int)$userId, $type);
     }
 
     public function deleteById($id)
     {
-        return $this->equipTable->removeById($id);
+        return $this->table->remove($id);
     }
 
 
 	public function getNextId()
 	{
-		return $this->equipTable->getNextId();
+		return $this->table->getNextId();
 	}
 
     public function save($data)
     {
     	$id = (is_object($data)) ? $data->id : $data['id'];
         if($id == "")
-            return $this->equipTable->add($data);
+            return $this->table->add($data);
 
         $item = $this->getById($id);
         if ($data instanceof Tent)
             $data->image = ETentShape::IMAGES[$data->shape];
         else
 			$data['image']= ETentShape::IMAGES[$data['shape']];
-        return $this->equipTable->save($data);
+        return $this->table->save($data);
     }
 }

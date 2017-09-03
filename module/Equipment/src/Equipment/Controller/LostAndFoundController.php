@@ -1,6 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
+use Application\Controller\Plugin\ImageUpload;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\DataModels\LostAndFoundItem;
@@ -29,6 +30,8 @@ class LostAndFoundController extends AbstractActionController
 	private $dataRootPath;
 
     private $dataTable;
+    /** @var  ImageUpload */
+	private $imageUpload;
 
 
 	public function __construct(
@@ -113,7 +116,7 @@ class LostAndFoundController extends AbstractActionController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         /** @var Form $form */
-        $form = new $vars['formType'][$type]($this->equipService, $this->userService);
+        $form = new $vars['formType'][$type]($this->lostAndFoundService, $this->userService);
         $form->get('userId')->setValue($userId);
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -124,18 +127,14 @@ class LostAndFoundController extends AbstractActionController
             );
             $form->setData($post);
             if ($form->isValid()){
-                // push into model for selection in service
-                $data = new $vars['model'][$type]($form->getData());
-                $newId = $this->equipService->getNextId();
-
+				$data = $form->getData();
+				$newId = (int) $this->lostAndFoundService->getNextId();
 				// upload and save images
-				if ($data['image1'] !== null || $data['image2'] !== null){
-					$targetPaths = $this->imageProcessor->uploadEquipImages($data, $newId);
-					foreach ($targetPaths as $key => $targetPath) {
-						$data->$key = $targetPath;
-					}
-				}
-				$this->equipService->save($data);
+				$data = $this->uploadImage($data);
+
+				// push into model for selection in service
+				$item = new $vars['model'][$vars['type']]($data);
+				$this->lostAndFoundService->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -156,7 +155,7 @@ class LostAndFoundController extends AbstractActionController
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
-        $form = new $vars['formType'][$vars['type']]($this->equipService, $this->userService);
+        $form = new $vars['formType'][$vars['type']]($this->lostAndFoundService, $this->userService);
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -167,17 +166,13 @@ class LostAndFoundController extends AbstractActionController
             );
             $form->setData($post);
             if ($form->isValid()){
-                $item = new $vars['model'][$vars['type']]($form->getData());
-				// upload and save images
-				if ($item['image1'] !== null || $item['image2'] !== null){
-					$targetPaths = $this->imageProcessor->uploadEquipImages($item);
-					// set data in DataModel
-					foreach ($targetPaths as $key => $targetPath) {
-						$item->$key = $targetPath;
-					}
-				}
+				$data = $form->getData();
+            	// upload and save images
+				$data = $this->uploadImage($data);
 
-                $this->equipService->save($item);
+				// push into model for selection in service
+				$item = new $vars['model'][$vars['type']]($data);
+                $this->lostAndFoundService->save($item);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -185,10 +180,55 @@ class LostAndFoundController extends AbstractActionController
         $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
         $this->flashMessenger()->addMessage($ref, 'ref');
 
-        $equip = $this->equipService->getById($equipId);
+        $equip = $this->lostAndFoundService->getById($equipId);
         $form->setData($equip->toArray());
         return array_merge($vars, array(
             'form' => $form,
         ));
     }
+
+	private function uploadImage ($data, $newId = null)
+	{
+		$this->imageUpload = $this->ImageUpload();
+		if($newId !== null) $data['id'] = $newId;
+		$dataTarget = array();
+
+		// upload and save images
+		// =======================
+		// check if there is a upload array
+		if ($this->imageUpload->containsUploadArray($data))
+		{
+			$uploadedImages = $this->imageUpload->getUploadArrays();
+			// if sth was uploaded
+			if ( !empty($uploadedImages) )
+			{
+				// === create path
+				$dataTargetPath = '/_equipment/' . $data['id'] .'/';
+				foreach ($uploadedImages as $key => &$uploadedImage)
+				{
+					list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+					$uploadFileName = $key .'.' . $extension;
+					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
+
+					// upload image
+					$this->imageUpload
+						->setData($uploadedImage)
+						->setDestination($dataTargetPath)
+						->setFileName($uploadFileName);
+
+					$mediaItem = $this->imageUpload->upload();
+
+					// process image
+					$this->imageUpload->imageProcessor->load($mediaItem);
+					$side = 500; // @todo implement config
+					$this->imageUpload->imageProcessor->resize_square($side);
+					$this->imageUpload->imageProcessor->saveImage();
+				}
+			};
+
+			// write paths to item
+			$data = $dataTarget + $data;
+		}
+		return $data;
+	}
 }
