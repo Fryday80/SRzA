@@ -134,11 +134,6 @@ class EquipmentController extends AbstractActionController
         ));
     }
 
-	/**
-	 * @internal param $this->imageUpload EquipmentImageUpload
-	 *
-	 * @return array|\Zend\Http\Response
-	 */
     public function addAction()
     {
         $action = 'add';
@@ -163,6 +158,7 @@ class EquipmentController extends AbstractActionController
                 $newId = (int) $this->equipService->getNextId();
 
                 $data = $this->uploadImage($data, $newId);
+
                 //		push into model for selection in service
 				$data = new $vars['model'][$type]($data);
 
@@ -184,7 +180,7 @@ class EquipmentController extends AbstractActionController
     public function editAction(){
         $action = 'edit';
         $vars['typeString'] = $this->params()->fromRoute('type');
-		$type = $vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
+		$vars['type'] = EEquipTypes::TRANSLATE_TO_ID[strtolower($vars['typeString'])];
         $userId = (int) $this->params()->fromRoute('userId');
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
@@ -202,11 +198,13 @@ class EquipmentController extends AbstractActionController
             if ($form->isValid()){
 				$data = $form->getData();
 
+            	// upload and save images
 				$data = $this->uploadImage($data);
-//		push into model for selection in service
-				$data = new $vars['model'][$type]($data);
 
-                $this->equipService->save($data);
+				// push into model for selection in service
+				$item = new $vars['model'][$vars['type']]($data);
+
+                $this->equipService->save($item);
                 return $this->redirect()->toUrl("/equip/equipment");
             }
         }
@@ -255,7 +253,7 @@ class EquipmentController extends AbstractActionController
 
 		// upload and save images
 		// =======================
-		// check if there is a upload array
+		// === check if there is a upload array
 		if ($imageUpload->containsUploadArray($data))
 		{
 			$uploadedImages = $imageUpload->getUploadArrays();
@@ -270,7 +268,7 @@ class EquipmentController extends AbstractActionController
 					$uploadFileName = $key .'.' . $extension;
 					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
 
-					// upload image
+					// === upload image
 					$imageUpload
 						->setData($uploadedImage)
 						->setDestination($dataTargetPath)
@@ -278,7 +276,7 @@ class EquipmentController extends AbstractActionController
 
 					$mediaItem = $imageUpload->upload();
 
-					// process image
+					// === process image
 					$imageUpload->imageProcessor->load($mediaItem);
 					$side = 500; // @todo implement config
 					$imageUpload->imageProcessor->resize_square($side);
@@ -286,7 +284,7 @@ class EquipmentController extends AbstractActionController
 				}
 			};
 
-			// write paths to item
+			// === write paths to item
 			$data = $dataTarget + $data;
 		}
 		return $data;

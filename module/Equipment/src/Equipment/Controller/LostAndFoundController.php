@@ -8,12 +8,10 @@ use Equipment\Model\DataModels\LostAndFoundItem;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\LostAndFoundService;
 use Equipment\Utility\LostAndFoundDataTable;
-use Media\Service\ImageProcessor;
 use Zend\Form\Form;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
-class LostAndFoundController extends AbstractActionController
+class LostAndFoundController extends EquipmentController
 {
     /** @var LostAndFoundService  */
     private $lostAndFoundService;
@@ -21,30 +19,23 @@ class LostAndFoundController extends AbstractActionController
     private $userService;
     /** @var AccessService  */
     private $accessService;
-    /** @var ImageProcessor  */
-	private $imageProcessor;
 
 	private $activeUserId;
 
-	const READ_OUT = "/media/file/";
 	private $dataRootPath;
 
     private $dataTable;
-    /** @var  ImageUpload */
-	private $imageUpload;
 
 
 	public function __construct(
 		LostAndFoundService $lostAndFoundService,
 		UserService $userService,
-		AccessService $accessService,
-		ImageProcessor $imageProcessor
+		AccessService $accessService
 	) {
         $this->userService   = $userService;
         $this->accessService = $accessService;
         $this->lostAndFoundService  = $lostAndFoundService;
 
-		$this->imageProcessor = $imageProcessor;
 		$this->dataRootPath = getcwd() . '/Data';
 
 		$this->dataTable     = new LostAndFoundDataTable();
@@ -167,11 +158,13 @@ class LostAndFoundController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
 				$data = $form->getData();
+
             	// upload and save images
 				$data = $this->uploadImage($data);
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
+
                 $this->lostAndFoundService->save($item);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
@@ -189,44 +182,46 @@ class LostAndFoundController extends AbstractActionController
 
 	private function uploadImage ($data, $newId = null)
 	{
-		$this->imageUpload = $this->ImageUpload();
+		/** @var ImageUpload $imageUpload */
+		$imageUpload = $this->imageUpload();
+
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();
 
 		// upload and save images
 		// =======================
-		// check if there is a upload array
-		if ($this->imageUpload->containsUploadArray($data))
+		// === check if there is a upload array
+		if ($imageUpload->containsUploadArray($data))
 		{
-			$uploadedImages = $this->imageUpload->getUploadArrays();
+			$uploadedImages = $imageUpload->getUploadArrays();
 			// if sth was uploaded
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/_equipment/' . $data['id'] .'/';
+				$dataTargetPath = '/LostAndFound/' . $data['id'] .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
-					list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
 					$uploadFileName = $key .'.' . $extension;
 					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
 
-					// upload image
-					$this->imageUpload
+					// === upload image
+					$imageUpload
 						->setData($uploadedImage)
 						->setDestination($dataTargetPath)
 						->setFileName($uploadFileName);
 
-					$mediaItem = $this->imageUpload->upload();
+					$mediaItem = $imageUpload->upload();
 
-					// process image
-					$this->imageUpload->imageProcessor->load($mediaItem);
+					// === process image
+					$imageUpload->imageProcessor->load($mediaItem);
 					$side = 500; // @todo implement config
-					$this->imageUpload->imageProcessor->resize_square($side);
-					$this->imageUpload->imageProcessor->saveImage();
+					$imageUpload->imageProcessor->resize_square($side);
+					$imageUpload->imageProcessor->saveImage();
 				}
 			};
 
-			// write paths to item
+			// === write paths to item
 			$data = $dataTarget + $data;
 		}
 		return $data;

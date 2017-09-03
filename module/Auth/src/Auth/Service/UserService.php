@@ -4,6 +4,7 @@ namespace Auth\Service;
 
 
 use Application\Service\CacheService;
+use Application\Service\DataService;
 use Application\Utility\URLModifier;
 use Auth\Model\User;
 use Auth\Model\UserSet;
@@ -11,7 +12,7 @@ use Auth\Model\UserTable;
 use Cast\Service\CastService;
 use Media\Service\ImageProcessor;
 
-class UserService
+class UserService extends DataService
 {
     /** @var UserTable  */
     private $userTable;
@@ -112,6 +113,14 @@ class UserService
         $this->loaded = false;
     }
 
+	/**
+	 * @deprecated 03.09.2017
+	 *
+	 * @param $userID
+	 * @param $tempImageInfo
+	 *
+	 * @return string
+	 */
     public function updateUserImage($userID, $tempImageInfo) {
 		//@todo linux might bug here because of / instead of \
         $dataPath = realpath('./Data');

@@ -1,6 +1,7 @@
 <?php
 namespace Auth\Controller;
 
+use Application\Controller\Plugin\ImageUpload;
 use Application\Service\StatisticService;
 use Application\Utility\DataTable;
 use Application\Utility\URLModifier;
@@ -158,17 +159,14 @@ class ProfileController extends AbstractActionController
                     $id =  $this->accessService->getUserID();
                     if ($id === 0) return $this->redirect()->toRoute('profile');
                     if ($id !== $data['id']) return $this->redirect()->toRoute('profile');
+
+					//handle user image
+					$data = $this->uploadImage($data);
+
                     $user->exchangeArray($data);
                     if (strlen($data['password']) > MIN_PW_LENGTH) {
                         $userPassword = new UserPassword();
                         $user->password = $userPassword->create($user->password);
-                    }
-
-                    //handle user image
-                    if ($data['user_image'] === null || $data['user_image']['error'] > 0) {
-                        $user->user_image = null;
-                    } else {
-                        $user->user_image = $this->userService->updateUserImage($user->id, $data['user_image']);
                     }
                     $this->userService->saveUser($user);
                     //redirect
@@ -271,4 +269,54 @@ class ProfileController extends AbstractActionController
             'userTable' => $userTable,
         );
     }
+
+	private function uploadImage ($data, $newId = null)
+	{
+		/** @var ImageUpload $imageUpload */
+		$imageUpload = $this->imageUpload();
+
+		if($newId !== null) $data['id'] = $newId;
+		$dataTarget = array();
+
+		// upload and save images
+		// =======================
+		// === check if there is a upload array
+		if ($imageUpload->containsUploadArray($data))
+		{
+			$uploadedImages = $imageUpload->getUploadArrays();
+			// if sth was uploaded
+			if ( !empty($uploadedImages) )
+			{
+				// === create path
+				$dataTargetPath = '/users/' . $data['id'] .'/pub/';
+				foreach ($uploadedImages as $key => &$uploadedImage)
+				{
+					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
+					$uploadFileName = 'profileImage.' . $extension;
+					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
+
+					// === upload image
+					$imageUpload
+						->setData($uploadedImage)
+						->setDestination($dataTargetPath)
+						->setFileName($uploadFileName);
+
+					$mediaItem = $imageUpload->upload();
+
+					// === process image
+					$imageUpload->imageProcessor->load($mediaItem);
+					$side = 1000; // @todo implement config
+					$imageUpload->imageProcessor->resizeToMaxSide($side);
+					$imageUpload->imageProcessor->saveImage();
+
+					$imageUpload->imageProcessor->load($mediaItem);
+					$imageUpload->mediaService->createDefaultThumbs($mediaItem);
+				}
+			};
+
+			// === write paths to item
+			$data = $dataTarget + $data;
+		}
+		return $data;
+	}
 }

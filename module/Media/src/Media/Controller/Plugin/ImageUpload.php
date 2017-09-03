@@ -17,7 +17,7 @@ class ImageUpload extends AbstractPlugin
 {
 	protected $config;
 	/** @var MediaService  */
-	protected $mediaService;
+	public $mediaService;
 	/** @var ImageProcessor  */
 	public $imageProcessor;
 

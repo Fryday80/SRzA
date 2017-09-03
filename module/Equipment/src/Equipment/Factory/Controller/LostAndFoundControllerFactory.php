@@ -13,11 +13,9 @@ class LostAndFoundControllerFactory implements FactoryInterface
         $userService = $pL->get('UserService');
         /** @var \Auth\Service\AccessService $accessService */
         $accessService = $pL->get('AccessService');
-        /** @var \Equipment\Service\EquipmentService $lostAndFoundService */
+        /** @var \Equipment\Service\LostAndFoundService $lostAndFoundService */
         $lostAndFoundService = $pL->get('LostAndFoundService');
-        /** @var \Media\Service\ImageProcessor $imageProcessor */
-        $imageProcessor = $pL->get('ImageProcessor');
 
-        return new LostAndFoundController($lostAndFoundService, $userService, $accessService, $imageProcessor);
+        return new LostAndFoundController($lostAndFoundService, $userService, $accessService);
     }
 }

@@ -90,33 +90,16 @@ class UserController extends AbstractActionController
             $user = new User();
             $form->setData($post);
             if ($form->isValid()) {
-                $formData = $form->getData();
-                $user->exchangeArray($formData);
+                $data = $form->getData();
+
+				//handle user image
+				$data = $this->uploadImage($data, $this->userService->getNextId());
+
+                $user->exchangeArray($data);
 
                 if (strlen($form->getData()['password']) > 4) {
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
-                }
-
-                //handle user image
-                if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
-                    $user->user_image = null;
-                    //@todo no image or image upload error
-                } else {
-                    $user->user_image = $this->userService->updateUserImage($user->id, $formData['user_image']);
-//                    $userPic = $formData['user_image']['tmp_name'];
-//                    $dataPath = realpath('./data');
-//                    @mkdir($dataPath . '/_users', 0755);
-//                    @mkdir($dataPath . '/_users/' . $user->id, 0755);
-//                    @mkdir($dataPath . '/_users/' . $user->id . '/pub', 0755);
-//
-//                    $imageName = '/profileImage.' . pathinfo($formData['user_image']['name'], PATHINFO_EXTENSION);
-//                    $url = '/media/file/_users/' . $user->id . '/pub' . $imageName;
-//
-//                    $newPath = realpath('./data/_users/' . $user->id . '/pub');
-//                    $newPath = $newPath . $imageName;
-//                    rename($userPic, $newPath);
-//                    $user->user_image = $url;
                 }
                 $this->userService->saveUser($user);
                 return $this->redirect()->toRoute('user');
@@ -162,18 +145,15 @@ class UserController extends AbstractActionController
             }
             $form->setData($post);
             if ($form->isValid()) {
-                $formData = $form->getData();
-                $user->exchangeArray($formData);
+                $data = $form->getData();
+
+				//handle user image
+				$data = $this->uploadImage($data);
+
+                $user->exchangeArray($data);
                 if (strlen($form->getData()['password']) > 3) {
                     $userPassword = new UserPassword();
                     $user->password = $userPassword->create($user->password);
-                }
-                //handle user image
-                if ($formData['user_image'] === null || $formData['user_image']['error'] > 0) {
-                    $user->user_image = null;
-                    //@todo no image or image upload error
-                } else {
-                    $user->user_image = $this->userService->updateUserImage($user->id, $formData['user_image']);
                 }
                 $this->userService->saveUser($user);
                 // Redirect to list of Users
@@ -218,6 +198,7 @@ class UserController extends AbstractActionController
             'user' => $user,
         );
     }
+
     private function deleteRecursive($path) {
         $realPath = realpath($path);
         if (is_dir($realPath)){
@@ -232,4 +213,54 @@ class UserController extends AbstractActionController
             unlink($realPath);
         }
     }
+
+	private function uploadImage ($data, $newId = null)
+	{
+		/** @var ImageUpload $imageUpload */
+		$imageUpload = $this->imageUpload();
+
+		if($newId !== null) $data['id'] = $newId;
+		$dataTarget = array();
+
+		// upload and save images
+		// =======================
+		// === check if there is a upload array
+		if ($imageUpload->containsUploadArray($data))
+		{
+			$uploadedImages = $imageUpload->getUploadArrays();
+			// if sth was uploaded
+			if ( !empty($uploadedImages) )
+			{
+				// === create path
+				$dataTargetPath = '/users/' . $data['id'] .'/pub/';
+				foreach ($uploadedImages as $key => &$uploadedImage)
+				{
+					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
+					$uploadFileName = 'profileImage.' . $extension;
+					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
+
+					// === upload image
+					$imageUpload
+						->setData($uploadedImage)
+						->setDestination($dataTargetPath)
+						->setFileName($uploadFileName);
+
+					$mediaItem = $imageUpload->upload();
+
+					// === process image
+					$imageUpload->imageProcessor->load($mediaItem);
+					$side = 1000; // @todo implement config
+					$imageUpload->imageProcessor->resizeToMaxSide($side);
+					$imageUpload->imageProcessor->saveImage();
+
+					$imageUpload->imageProcessor->load($mediaItem);
+					$imageUpload->mediaService->createDefaultThumbs($mediaItem);
+				}
+			};
+
+			// === write paths to item
+			$data = $dataTarget + $data;
+		}
+		return $data;
+	}
 }

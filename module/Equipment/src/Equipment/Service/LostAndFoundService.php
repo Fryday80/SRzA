@@ -2,14 +2,10 @@
 namespace Equipment\Service;
 
 use Application\Service\CacheService;
-use Application\Service\MyService;
-use Equipment\Hydrator\EquipmentResultSet;
-use Equipment\Model\DataModels\LostAndFoundItem;
-use Equipment\Model\Enums\EEquipTypes;
-use Equipment\Model\Enums\ETentShape;
+use Application\Service\DataService;
 use Equipment\Model\Tables\lostAndFoundTable;
 
-class LostAndFoundService extends MyService
+class LostAndFoundService extends DataService
 {
     // tables
     /** @var LostAndFoundTable  */
