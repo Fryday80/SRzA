@@ -13,7 +13,7 @@ class EquipmentService extends MyService
 {
     // tables
     /** @var EquipTable  */
-    private $table;
+    protected $table;
 
     // services
     /** @var CacheService  */

@@ -249,6 +249,8 @@ class EquipmentController extends AbstractActionController
 	{
 		/** @var ImageUpload $imageUpload */
 		$imageUpload = $this->media()->imageUpload;
+
+		$test = $this->media();
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();
 
