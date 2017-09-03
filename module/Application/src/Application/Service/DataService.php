@@ -4,7 +4,7 @@
 
 	use Application\Model\AbstractModels\DatabaseTable;
 
-	class MyService
+	class DataService
 	{
 		/** @var  DatabaseTable */
 		protected $table;

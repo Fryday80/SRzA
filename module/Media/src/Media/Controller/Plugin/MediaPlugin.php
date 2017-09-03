@@ -20,7 +20,7 @@ class MediaPlugin extends AbstractPlugin
 	/** @var ImageProcessor  */
 	public $imageProcessor;
 	/** @var ImageUpload */
-	private $imageUpload;
+	public $imageUpload;
 
 	function __construct(Array $config, MediaService $mediaService)
 	{

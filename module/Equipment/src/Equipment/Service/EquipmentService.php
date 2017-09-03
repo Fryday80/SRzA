@@ -2,14 +2,14 @@
 namespace Equipment\Service;
 
 use Application\Service\CacheService;
-use Application\Service\MyService;
+use Application\Service\DataService;
 use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\DataModels\Tent;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
 use Equipment\Model\EquipTable;
 
-class EquipmentService extends MyService
+class EquipmentService extends DataService
 {
     // tables
     /** @var EquipTable  */
