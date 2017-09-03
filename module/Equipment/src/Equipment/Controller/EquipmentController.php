@@ -24,6 +24,8 @@ class EquipmentController extends AbstractActionController
 	private $dataRootPath;
 
     private $dataTable;
+    /** @var  ImageUpload */
+	private $imageUpload;
 
 
 	public function __construct(
@@ -245,41 +247,43 @@ class EquipmentController extends AbstractActionController
         return $vars;
     }
 
-    private function prepareAddAndSave ($data, $id)
+    private function prepareAddAndSave ($data, $newId = null)
 	{
-		$uploadedImages = $dataTarget = array();
+		$this->imageUpload = $this->ImageUpload();
+		if($newId !== null) $data['id'] = $newId;
+		$dataTarget = array();
 
 		// upload and save images
 		// =======================
 		// check if there is a upload array
-		if ($this->imageUpload()->containsUploadArray($data))
+		if ($this->imageUpload->containsUploadArray($data))
 		{
-			$keysOfImages = array ('image1', 'image2', 'bill');
-			// check if set data is
-			// string (old upload) or uploadArray has an error => skip
-			// or
-			// uploadArray => then push to uploadedImages array
-			foreach ($keysOfImages as $imageKey) {
-				if (isset($data[$imageKey]) && $data[$imageKey] !== null && $this->imageUpload()->isUploadArray($data[$imageKey]))
-					if ($data[$imageKey]['error'] < 1 )
-						$uploadedImages[$imageKey] = &$data[$imageKey];
-			}
+			$uploadedImages = $this->imageUpload->getUploadArrays();
 
 			// if sth was uploaded
 			if ( !empty($uploadedImages) )
 			{
+				// === create path
+				$dataTargetPath = '/_equipment/' . $data['id'] .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
-					// === create path
-					list ($fileName, $extension) = $this->imageUpload()->getFileDataFromUpload($data[$key]);
-					$dataTargetPath[$key] = '/_equipment/' . $id .'/';
-					$dataTarget[$key] = $key .'.' . $extension;
+					list ($fileName, $extension) = $this->imageUpload->getFileDataFromUpload($data[$key]);
+					$uploadFileName = $key .'.' . $extension;
+					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
 
 					// upload image
-					$mediaItem = $this->imageUpload()->upload($uploadedImage, $dataTargetPath[$key], $key .'.' . $extension);
+					$this->imageUpload
+						->setData($uploadedImage)
+						->setDestination($dataTargetPath)
+						->setFileName($uploadFileName);
+
+					$mediaItem = $this->imageUpload->upload();
 
 					// process image
-					$this->imageUpload()->mediaService->createEquipImage($mediaItem);
+					$this->imageUpload->imageProcessor->load($mediaItem);
+					$side = 500; // @todo implement config
+					$this->imageUpload->imageProcessor->resize_square($side);
+					$this->imageUpload->imageProcessor->saveImage();
 				}
 			};
 

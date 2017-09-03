@@ -27,6 +27,14 @@ class ImageUpload extends AbstractPlugin
 	/** @var  int maximum upload file size */
 	protected $maxFileSize;
 
+	private $uploadData;
+	private $uploadDestinationPath;
+	private $uploadFileName = null;
+
+	private $uploadArrayCheck = false;
+	private $hasUploads = false;
+	private $uploadedImages = array();
+
 	function __construct(Array $config, MediaService $mediaService)
 	{
 		$this->config = $config;
@@ -37,20 +45,41 @@ class ImageUpload extends AbstractPlugin
 		$this->storagePath = str_replace('\\', '/', $this->storagePath);
 	}
 
+	public function setData($uploadData)
+	{
+		$this->uploadData = $uploadData;
+		return $this;
+	}
+
 	/**
-	 * @param array  $uploadData
-	 * @param string $destination '/path/to/save/image' <br/>
-	 *                            !!leading '/' <br/>
-	 *                            relative to data folder
+	 * @param string $uploadDestinationPath
 	 *
-	 * @param string $fileName	  File.name
-	 *
+	 * @return $this
+	 */
+	public function setDestination($uploadDestinationPath)
+	{
+		$this->uploadDestinationPath = $uploadDestinationPath;
+		return $this;
+	}
+	
+	public function setFileName($uploadFileName)
+	{
+		$this->uploadFileName = $uploadFileName;
+		return $this;
+	}
+
+	/**
 	 * @return MediaException|\Media\Service\MediaItem
 	 */
-	public function upload($uploadData, $destination, $fileName)
+	public function upload()
 	{
-		if($destination[strlen($destination)-1] !== '/') $destination .= '/';
-		return $this->uploadAction($uploadData, $destination, $fileName);
+		if($this->uploadDestinationPath[strlen($this->uploadDestinationPath)-1] !== '/') $this->uploadDestinationPath .= '/';
+		if ($this->uploadFileName == null){
+			list ($fileName, $extension) = $this->getFileDataFromUpload($this->uploadData);
+			$this->uploadFileName = $fileName . $extension;
+		}
+
+		return $this->uploadAction($this->uploadData, $this->uploadDestinationPath, $this->uploadFileName);
 	}
 
 	/**
@@ -113,19 +142,35 @@ class ImageUpload extends AbstractPlugin
 	 */
 	public function containsUploadArray ($data)
 	{
+		$this->uploadArrayCheck = true;
 		if (!is_array($data)) return false;
-		elseif ($this->isUploadArray($data)) return true;
+		elseif ($this->isUploadArray($data)) {
+			$this->uploadedImages[0] = $data;
+			return true;
+		}
 		else
 			return $this->checkForUploadArrayRecursive($data);
 	}
 
+	public function getUploadArrays()
+	{
+		if (!$this->uploadArrayCheck) $this->containsUploadArray($this->uploadData);
+		return ($this->hasUploads) ? $this->uploadedImages : array();
+	}
+
 	protected function checkForUploadArrayRecursive($array)
 	{
-		$result = false;
+		$result = $subResult = false;
 		foreach ($array as $key => $value) {
-			if (is_array($value)){
-				if($this->isUploadArray($value)) $result = true;
-				$subResult = $this->checkForUploadArrayRecursive($value);
+			if (is_array($value))
+			{
+				if($this->isUploadArray($value))
+				{
+					$this->uploadedImages[$key] = $value;
+					$result = true;
+				}
+				else
+					$subResult = $this->checkForUploadArrayRecursive($value);
 				if ($subResult == true) $result = true;
 			}
 		}
