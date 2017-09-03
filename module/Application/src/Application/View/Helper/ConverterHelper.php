@@ -19,10 +19,16 @@ Class ConverterHelper extends AbstractHelper {
         //prepare forms date format .. array length 1 if timestamp
         $parts = explode('-', $date);
         //        "is timestamp"    ? create from timestamp  :  create from form date format
-        return (count($parts) == 1 )? date( 'd.m.Y', $date ) : $parts[2] . '.' . $parts[1] . '.' .$parts[0];;
+        return (count($parts) == 1 )? date( 'd.m.Y', $date ) : $parts[2] . '.' . $parts[1] . '.' .$parts[0];
     }
 
 // ====================== Byte Conversion =============================================
+
+    /**
+     * beautifies a number of bytes
+     * @param $bytes int
+     * @return string
+     */
     public function beautyBytes($bytes) {
         return $this->fileSizeConvert($bytes);
     }
