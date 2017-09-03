@@ -146,10 +146,11 @@ class ImageUpload extends AbstractPlugin
 		if (!is_array($data)) return false;
 		elseif ($this->isUploadArray($data)) {
 			$this->uploadedImages[0] = $data;
-			return true;
+			$this->hasUploads = true;
 		}
 		else
-			return $this->checkForUploadArrayRecursive($data);
+			$this->hasUploads = $this->checkForUploadArrayRecursive($data);
+		return $this->hasUploads;
 	}
 
 	public function getUploadArrays()
