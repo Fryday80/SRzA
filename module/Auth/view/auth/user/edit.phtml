@@ -6,6 +6,12 @@
   top: 0;
   right: 0;
  }
+ .profile-pic{
+     height: 300px;
+     position: absolute;
+     left: 50%;
+     top: 20%;
+ }
 </style>
 <?php
 $title = 'Edit User';
@@ -19,6 +25,9 @@ $this->headTitle($title);
  $form->prepare();
 
  echo $this->form($form);
-?>
 
-<img class="user-pic" src="<?php echo $user->user_image ?>" alt="profile pic">
+ if (isset($user->user_image) || $user->user_image !== null):
+?>
+<img class="profile-pic" src="<?php echo $this->media()->getImageUrl($user->user_image) ?>" alt="ProfilePic">
+
+<?php endif;?>

@@ -67,7 +67,7 @@ $userForm->prepare();
         echo $this->form($userForm);
         ?>
         <div class="profile-addons">
-            <img class="profile-pic" src="<?php echo $user->user_image ?>" alt="ProfilePic">
+            <img class="profile-pic" src="<?php echo $this->media()->getImageUrl($user->user_image) ?>" alt="ProfilePic">
             <br/>
         </div>
     </boxcontent>

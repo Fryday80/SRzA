@@ -124,23 +124,23 @@ class UserService extends DataService
     public function updateUserImage($userID, $tempImageInfo) {
 		//@todo linux might bug here because of / instead of \
         $dataPath = realpath('./Data');
-        @mkdir($dataPath . '/_users', 0755);
-        @mkdir($dataPath . '/_users/' . $userID, 0755);
-        @mkdir($dataPath . '/_users/' . $userID . '/pub', 0755);
+        @mkdir($dataPath . '/users', 0755);
+        @mkdir($dataPath . '/users/' . $userID, 0755);
+        @mkdir($dataPath . '/users/' . $userID . '/pub', 0755);
 
-        $items = scandir($dataPath . '/_users/' . $userID . '/pub');
+        $items = scandir($dataPath . '/users/' . $userID . '/pub');
         foreach ($items as $item)
             if (strlen($item) < 3)
                 continue;
             else
-                @unlink($dataPath . '/_users/' . $userID . '/pub/' . $item);
+                @unlink($dataPath . '/users/' . $userID . '/pub/' . $item);
 
         $imageName = '/profileImage.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
         $thumbName = '/profileImage_small.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
         $bigThumbName = '/profileImage_medium.' . pathinfo($tempImageInfo['name'], PATHINFO_EXTENSION);
-        $url = '/media/file/_users/' . $userID . '/pub' . $imageName;
+        $url = '/media/file/users/' . $userID . '/pub' . $imageName;
 
-        $newBasePath = realpath('./Data/_users/' . $userID . '/pub');
+        $newBasePath = realpath('./Data/users/' . $userID . '/pub');
 		$newPath = $newBasePath . $imageName;
         $thumbPath = $newBasePath . $thumbName;
         $bigThumbPath = $newBasePath . $bigThumbName;

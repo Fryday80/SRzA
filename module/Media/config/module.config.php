@@ -12,7 +12,7 @@ return array(
 			'bY' => 250,
 		),
 		'profile_images' => array (
-			'relPath' => '/_users',
+			'relPath' => '/users',
 			'maxSide' => 1000,
 		),
 	),
@@ -33,7 +33,7 @@ return array(
     ),
 	'controller_plugins' => array(
 		'factories' => array(
-			'imageUpload' => 'Media\Factory\ImageUploadPluginFactory',
+			'image' => 'Media\Factory\ImagePluginFactory',
 		),
 	),
     'service_manager' => array(

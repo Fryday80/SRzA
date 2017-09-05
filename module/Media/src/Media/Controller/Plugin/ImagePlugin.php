@@ -4,6 +4,7 @@ namespace Application\Controller\Plugin;
 use const Media\Service\DATA_PATH;
 use Media\Service\ImageProcessor;
 use Media\Service\MediaException;
+use Media\Service\MediaItem;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
@@ -13,7 +14,7 @@ use Zend\Mvc\Controller\Plugin\AbstractPlugin;
  *
  * @package Application\Controller\Plugin
  */
-class ImageUpload extends AbstractPlugin
+class ImagePlugin extends AbstractPlugin
 {
 	protected $config;
 	/** @var MediaService  */
@@ -26,6 +27,8 @@ class ImageUpload extends AbstractPlugin
 	/** @var  int maximum upload file size */
 	protected $maxFileSize;
 
+	/** @var bool */
+	private $overwrite = true;
 	private $uploadData;
 	private $uploadDestinationPath;
 	private $uploadFileName = null;
@@ -46,6 +49,7 @@ class ImageUpload extends AbstractPlugin
 		$this->storagePath = str_replace('\\', '/', $this->storagePath);
 	}
 
+	// === set data
 	/**
 	 * Set Data
 	 *
@@ -86,6 +90,13 @@ class ImageUpload extends AbstractPlugin
 		return $this;
 	}
 
+	public function setOverwriteMode(bool $mode)
+	{
+		$this->overwrite = $mode;
+	}
+
+
+	// === methods via MediaService
 	/**
 	 * @return MediaException|\Media\Service\MediaItem
 	 */
@@ -100,6 +111,16 @@ class ImageUpload extends AbstractPlugin
 		return $this->uploadAction();
 	}
 
+	public function delete($item)
+	{
+		if ($item instanceof MediaItem)
+			$this->mediaService->deleteItem($item->path);
+		// internal use -> $item is uploadArray
+		else
+			$this->internalDeleteItem();
+	}
+
+	// === prepare
 	/**
 	 * @param array $uploadDataArray from <strong>Form</strong> upload
 	 *
@@ -211,6 +232,9 @@ class ImageUpload extends AbstractPlugin
 	 */
 	protected function uploadAction()
  	{
+ 		// overwrite ->delete old item if name is the same
+		if ($this->overwrite)
+			$this->internalDeleteItem();
 		$itemOrError = $this->mediaService->upload($this->uploadData, $this->uploadDestinationPath, $this->uploadFileName, true);
 		if ($itemOrError instanceof MediaException) {
 			throw $itemOrError;
@@ -239,4 +263,10 @@ class ImageUpload extends AbstractPlugin
 		}
 		return $this->maxFileSize = $size;
   	}
+
+	protected function internalDeleteItem()
+	{
+		if ($item = $this->mediaService->getItem($this->uploadDestinationPath.$this->uploadFileName))
+			$this->mediaService->deleteItem($item->path);
+	}
 }

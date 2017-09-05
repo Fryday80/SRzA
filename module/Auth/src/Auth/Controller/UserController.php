@@ -187,7 +187,7 @@ class UserController extends AbstractActionController
                 $id = (int) $request->getPost('id');
                 $this->userService->deleteUserById($id);
                 //@todo der löscht nicht arrrg
-                $this->deleteRecursive('./Data/_users/'.$user->id);
+                $this->deleteRecursive('./Data/users/'.$user->id);
             }
             // Redirect to list of Users
             return $this->redirect()->toRoute('user');
@@ -216,8 +216,8 @@ class UserController extends AbstractActionController
 
 	private function uploadImage ($data, $newId = null)
 	{
-		/** @var ImageUpload $imageUpload */
-		$imageUpload = $this->imageUpload();
+		/** @var Image $imageUpload */
+		$imageUpload = $this->image();
 
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();

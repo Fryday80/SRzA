@@ -1,7 +1,7 @@
 <?php
 namespace Auth\Controller;
 
-use Application\Controller\Plugin\ImageUpload;
+use Application\Controller\Plugin\ImagePlugin;
 use Application\Service\StatisticService;
 use Application\Utility\DataTable;
 use Application\Utility\URLModifier;
@@ -272,8 +272,8 @@ class ProfileController extends AbstractActionController
 
 	private function uploadImage ($data, $newId = null)
 	{
-		/** @var ImageUpload $imageUpload */
-		$imageUpload = $this->imageUpload();
+		/** @var ImagePlugin $imageUpload */
+		$imageUpload = $this->image();
 
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();

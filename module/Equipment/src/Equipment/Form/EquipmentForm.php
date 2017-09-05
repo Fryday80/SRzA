@@ -8,7 +8,7 @@ use Equipment\Service\EquipmentService;
 
 class EquipmentForm extends MyForm
 {
-    const EQUIPMENT_IMAGES_PATH = '/media/file/_equipment/';
+    const EQUIPMENT_IMAGES_PATH = '/media/file/equipment/';
     /** @var  UserService */
     private $userService;
     /** @var EquipmentService  */

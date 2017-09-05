@@ -10,6 +10,7 @@
 
 
 	use const Media\Service\LIVE_PATH;
+	use Media\Service\MediaException;
 	use Media\Service\MediaItem;
 	use Media\Service\MediaService;
 	use Zend\Form\View\Helper\AbstractHelper;
@@ -25,19 +26,17 @@
 
 		public function getImageUrl($dataPath)
 		{
-			/** @var MediaItem $item */
-			$item = $this->mediaService->getItem($dataPath);
+			$item = $this->getItem($dataPath);
 
-			if ($item->type == 'image') return $item->livePath;
+			if ($item && $item->type == 'image') return $item->livePath;
 			else return null;
 		}
 
 		public function getThumbsUrl($dataPath, $size = 'big')
 		{
-			/** @var MediaItem $item */
-			$item = $this->mediaService->getItem($dataPath);
+			$item = $this->getItem($dataPath);
 
-			if ($item->type == 'image') {
+			if ($item && $item->type == 'image') {
 				$thumbName = $item->name;
 				$thumbName .= ($size == 'big') ? '_thumb_big' : '_thumb_small';
 				$thumbName .= '.' . $item->extension;
@@ -47,5 +46,19 @@
 				return $livePath;
 			}
 			else return null;
+		}
+
+		/**
+		 * @param $path
+		 *
+		 * @return MediaItem|null
+		 */
+		private function getItem($path)
+		{
+			$item = $this->mediaService->getItem($path);
+
+			if ($item instanceof MediaException)
+				return null;
+			return $item;
 		}
 	}

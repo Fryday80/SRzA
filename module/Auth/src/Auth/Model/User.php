@@ -42,7 +42,7 @@ class User
         $this->real_surename = (! empty($data['real_surename'])) ? $data['real_surename'] : $this->real_surename;
         $this->birthday      = (! empty($data['birthday']))      ? $data['birthday']      : $this->birthday;
         $this->gender        = (! empty($data['gender']))        ? $data['gender']        : $this->gender;
-//        $this->user_image = '/_users/'.$this->name.'/profileImage.jpg';
+//        $this->user_image = '/users/'.$this->name.'/profileImage.jpg';
         $this->user_image    = (! empty($data['user_image']))    ? $data['user_image']    : $this->user_image;
     }
 

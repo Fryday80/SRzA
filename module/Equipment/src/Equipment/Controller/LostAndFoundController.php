@@ -1,7 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Controller\Plugin\ImageUpload;
+use Application\Controller\Plugin\ImagePlugin;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\DataModels\LostAndFoundItem;
@@ -94,7 +94,7 @@ class LostAndFoundController extends EquipmentController
 //			'links' => ,
         );
         $viewModel = new ViewModel($vars);
-        $viewModel->setTemplate('application/default/delete.phtml');
+        $viewModel->setTemplate('application/defaults/delete.phtml');
         return $viewModel;
     }
 
@@ -182,8 +182,8 @@ class LostAndFoundController extends EquipmentController
 
 	private function uploadImage ($data, $newId = null)
 	{
-		/** @var ImageUpload $imageUpload */
-		$imageUpload = $this->imageUpload();
+		/** @var ImagePlugin $imageUpload */
+		$imageUpload = $this->image();
 
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();

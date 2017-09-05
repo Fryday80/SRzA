@@ -1,7 +1,7 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Controller\Plugin\ImageUpload;
+use Application\Controller\Plugin\ImagePlugin;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipTypes;
@@ -9,6 +9,7 @@ use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
 
 class EquipmentController extends AbstractActionController
 {
@@ -128,10 +129,17 @@ class EquipmentController extends AbstractActionController
 
         $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
         $this->flashMessenger()->addMessage($ref, 'ref');
-        return array_merge($vars, array(
-            'equip' => $equip,
-            'url' => $url,
-        ));
+
+        // === create delete view from default
+        return $this->defaultView()->delete(
+			array(
+				'title' => 'Equipment Löschen?',
+				'url' => $url, // target url for delete post request
+				'subjectName' => $equip->name,
+				'subjectId' => $equip->id,
+				'subjectImage' => isset($equip->image1) ? $equip->image1 : $equip->image2,
+			)
+		);
     }
 
     public function addAction()
@@ -196,6 +204,7 @@ class EquipmentController extends AbstractActionController
             );
             $form->setData($post);
             if ($form->isValid()){
+				bdump('hallo2');
 				$data = $form->getData();
 
             	// upload and save images
@@ -214,6 +223,15 @@ class EquipmentController extends AbstractActionController
 
         $equip = $this->equipService->getById($equipId);
         $form->setData($equip->toArray());
+		$image = ($equip->image1 !== null) ? $equip->image1 : $equip->image2;
+//        return $this->defaultView()->edit(
+//        	array(
+//        		'image' => $image,
+//        		'links' => $vars['links'],
+//        		'title' => 'edit user',
+//				'form' => $form,
+//			)
+//		);
         return array_merge($vars, array(
             'form' => $form,
         ));
@@ -245,8 +263,8 @@ class EquipmentController extends AbstractActionController
 
     private function uploadImage ($data, $newId = null)
 	{
-		/** @var ImageUpload $imageUpload */
-		$imageUpload = $this->imageUpload;
+		/** @var ImagePlugin $imageUpload */
+		$imageUpload = $this->image();
 
 		if($newId !== null) $data['id'] = $newId;
 		$dataTarget = array();
