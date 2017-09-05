@@ -16,6 +16,11 @@ return array(
             'Application\Controller\System' => 'Application\Factory\Controller\SystemControllerFactory',
         )
     ),
+	'controller_plugins' => array(
+		'invokables' => array(
+			'defaultView' => 'Application\Controller\Plugin\DefaultView',
+		),
+	),
     'service_manager' => array(
         'aliases' => array(
             'translator' => 'MvcTranslator',

@@ -1,3 +1,9 @@
+<style>
+    .image
+    {
+        height: 300px;
+    }
+</style>
 <?php
 $this->headTitle($title);
 if (isset($links)){
@@ -21,3 +27,11 @@ if (isset($links)){
         <input type="submit" name="del" value="No" />
     </div>
 </form>
+<?php
+    $imageUrl = null;
+    if (isset($image) || $image !== null) $imageUrl = $this->media()->getImageUrl($image);
+
+    if ($imageUrl !== null): ?>
+    <img class="image" src="<?php echo $imageUrl ?>" alt="image">
+
+<?php endif;?>
