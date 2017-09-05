@@ -120,6 +120,11 @@ class ImagePlugin extends AbstractPlugin
 			$this->internalDeleteItem();
 	}
 
+	public function deleteAll($path)
+	{
+
+	}
+
 	// === prepare
 	/**
 	 * @param array $uploadDataArray from <strong>Form</strong> upload
@@ -266,7 +271,8 @@ class ImagePlugin extends AbstractPlugin
 
 	protected function internalDeleteItem()
 	{
-		if ($item = $this->mediaService->getItem($this->uploadDestinationPath.$this->uploadFileName))
+		$item = $this->mediaService->getItem($this->uploadDestinationPath.$this->uploadFileName);
+		if (!($item instanceof MediaException))
 			$this->mediaService->deleteItem($item->path);
 	}
 }

@@ -122,6 +122,7 @@ class EquipmentController extends AbstractActionController
                 if ($askingUserId !== $checkItem->userId)
                     if ($askingRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
+                $this->deleteAllImages($checkItem);
                 $this->equipService->deleteById($equipId);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
@@ -285,6 +286,7 @@ class EquipmentController extends AbstractActionController
 					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
 					$uploadFileName = $key .'.' . $extension;
 					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
+					bdump($uploadFileName);
 
 					// === upload image
 					$imageUpload
@@ -294,6 +296,7 @@ class EquipmentController extends AbstractActionController
 
 					$mediaItem = $imageUpload->upload();
 
+					bdump(array($data, $dataTarget, $dataTarget + $data));die;
 					// === process image
 					$imageUpload->imageProcessor->load($mediaItem);
 					$side = 500; // @todo implement config
@@ -306,5 +309,12 @@ class EquipmentController extends AbstractActionController
 			$data = $dataTarget + $data;
 		}
 		return $data;
+	}
+
+	private function deleteAllImages($data)
+	{
+		/** @var ImagePlugin $image */
+		$image = $this->image();
+		$image->deleteAll('/equipment/' . $data['id'] .'/');
 	}
 }

@@ -179,6 +179,8 @@ class EquipmentForm extends MyForm
 
 	protected function prepareDataForSetData ($data)
 	{
+		if (!isset($data['lending']) || $data['lending'] == null) $data['lending'] = 0;
+		if (!isset($data['stored']) || $data['stored'] == null) $data['stored'] = 0;
 		$isEdit = false;
 		$newImage = false;
 		$images = array ('image1', 'image2');

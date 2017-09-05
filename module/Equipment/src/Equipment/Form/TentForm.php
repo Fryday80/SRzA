@@ -159,7 +159,8 @@ class TentForm extends MyForm
 
     protected function prepareDataForSetData($data)
     {
-
+		if (!isset($data['lending']) || $data['lending'] == null) $data['lending'] = 0;
+		if (!isset($data['stored']) || $data['stored'] == null) $data['stored'] = 0;
         if ($data['shape'] == ETentShape::ROUND)
             $data['width'] = $data['depth'];
         return $data;

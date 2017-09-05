@@ -64,7 +64,7 @@ class SystemController extends AbstractActionController
         if ($sysLogMod !== null) {
 			foreach ($sysLogMod as $key => $value) {
 				if ($value->data == null) $replace = '';
-				else {
+				elseif (is_array($value->data)) {
 					$replace = implode('---', $value->data);
 				}
 				$sysLogMod[ $key ]->data = $replace;
