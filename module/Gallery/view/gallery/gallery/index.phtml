@@ -10,7 +10,9 @@ $this->headTitle($title);
         <th style="text-align: left;">&nbsp;</th>
         <th style="width: 25%;text-align: left;">&nbsp;</th>
     </tr>
-    <?php foreach ($albums as $album) : ?>
+    <?php
+        /** @var \Gallery\Model\AlbumModel $album */
+		foreach ($albums as $album) : ?>
         <tr>
             <td><?php echo $album->getYear(); ?></td>
             <td><?php echo $album->getName(); ?></td>

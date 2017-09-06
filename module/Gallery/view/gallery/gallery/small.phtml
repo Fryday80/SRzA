@@ -36,8 +36,14 @@ $this->headScript()->appendFile('/js/selectedUsage/jgallery-patch/jgallery-patch
 <div id="gallery">
     <div class="album" data-jgallery-album-title="Album 1">
         <h1><?php echo $album->getName()?></h1>
-        <?php foreach ($album as $image) : ?>
-            <a href="<?= $src = "/media/image/".$image->path?>"><img src="<?= $src ?>" alt="Source: schwarze-ritter-augsburg.com/"  /></a>
+        <?php
+            /** @var \Media\Service\MediaItem $image */
+			foreach ($album as $image) :
+                // @todo cleanfix not neccessary for new media items??
+                $src = '/media/file';
+				$src .= ($image->path[0] == '/') ? $image->path : '/' . $image->path;
+				?>
+            <a href="<?= $src ?>"><img src="<?= $src ?>" alt="Source: schwarze-ritter-augsburg.com/"  /></a>
         <?php endforeach; ?>
     </div>
 </div>
