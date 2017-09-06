@@ -97,7 +97,6 @@ class ContentController extends AbstractActionController
     {
         $request = $this->getRequest();
         $post = $this->contentService->getById($this->params('id'));
-
         $this->contentForm->bind($post);
 
         if ($request->isPost()) {

@@ -31,19 +31,9 @@
 			return $this->getAll();
 		}
 
-		public function getById($id)
-		{
-			return $this->getById($id);
-		}
-
 		public function getByUrl($url)
 		{
 			return $this->getByKey('url', $url);
-		}
-
-		public function save($post)
-		{
-			return parent::save($post);
 		}
 
 		public function deleteContent (Content $post)

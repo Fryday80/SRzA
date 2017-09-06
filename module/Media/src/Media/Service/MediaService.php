@@ -834,6 +834,9 @@ class MediaService {
         } else {
             return new MediaException(ERROR_TYPES::MEDIA_ITEM_NOT_FOUND, $path);
         }
+        // security
+		if ($item->path[0]== '/') $item->path = substr($item->path, 1, strlen($item->path));
+
 		$this->addItem2cache($item);
         return $item;
     }
