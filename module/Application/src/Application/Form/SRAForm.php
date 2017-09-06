@@ -3,7 +3,7 @@ namespace Application\Form;
 
 use Zend\Form\Form;
 
-class MyForm extends Form
+class SRAForm extends Form
 {
     public function __construct($formName = null, $options = null)
     {

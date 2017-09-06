@@ -169,9 +169,9 @@ class EquipmentController extends AbstractActionController
                 $data = $this->uploadImage($data, $newId);
 
                 //		push into model for selection in service
-				$data = new $vars['model'][$type]($data);
-
-				$this->equipService->save($data);
+				$item = new $vars['model'][$type]($data);
+bdump($item);
+				$this->equipService->save($item);
 				$url = $this->flashMessenger()->getMessages('ref')[0];
 				if ($url = "/equip/equipment/add") $url = "/equip/equipment";
                 return $this->redirect()->toUrl($url);
@@ -266,8 +266,14 @@ class EquipmentController extends AbstractActionController
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
+		$modifyImage = null;
+		if($imageUpload->isUploadArray($data['image']))
+		{
+			$modifyImage = $data['image'];
+			unset ($data['image']);
+		}
 
-		if($newId !== null) $data['id'] = $newId;
+		$id = ($newId !== null) ? $newId : $data['id'];
 		$dataTarget = array();
 
 		// upload and save images
@@ -280,13 +286,14 @@ class EquipmentController extends AbstractActionController
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/equipment/' . $data['id'] .'/';
+				$dataTargetPath = '/equipment/' . $id .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
+					$catch = ($modifyImage == $uploadedImage)?: false;
+
 					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
 					$uploadFileName = $key .'.' . $extension;
 					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
-					bdump($uploadFileName);
 
 					// === upload image
 					$imageUpload
@@ -295,8 +302,8 @@ class EquipmentController extends AbstractActionController
 						->setFileName($uploadFileName);
 
 					$mediaItem = $imageUpload->upload();
+					if ($catch) $data['image'] = $mediaItem->path;
 
-					bdump(array($data, $dataTarget, $dataTarget + $data));die;
 					// === process image
 					$imageUpload->imageProcessor->load($mediaItem);
 					$side = 500; // @todo implement config

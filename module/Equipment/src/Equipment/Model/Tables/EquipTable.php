@@ -87,7 +87,6 @@ class EquipTable extends DatabaseTable
      * @return array for db save|add
      */
     protected function prepareDataForSave($data){
-    	bdump($data);
         return array(
             'id'    => (int) $data['id'],
             'data'  => serialize ($data),

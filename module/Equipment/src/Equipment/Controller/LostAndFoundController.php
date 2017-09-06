@@ -121,7 +121,7 @@ class LostAndFoundController extends EquipmentController
 				$data = $form->getData();
 				$newId = (int) $this->lostAndFoundService->getNextId();
 				// upload and save images
-				$data = $this->uploadImage($data);
+				$data = $this->uploadImage($data, $newId);
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
@@ -185,7 +185,7 @@ class LostAndFoundController extends EquipmentController
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
 
-		if($newId !== null) $data['id'] = $newId;
+		$id = ($newId !== null) ? $newId : $data['id'];
 		$dataTarget = array();
 
 		// upload and save images
@@ -198,7 +198,7 @@ class LostAndFoundController extends EquipmentController
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/LostAndFound/' . $data['id'] .'/';
+				$dataTargetPath = '/LostAndFound/' . $id .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
 					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);

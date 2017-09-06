@@ -16,7 +16,7 @@ return array(
     'Application\Form\Element\TextSearch'                    => __DIR__ . '/src/Application/Form/Element/TextSearch.php',
     'Application\Form\Filter\MailTemplatesFilter'            => __DIR__ . '/src/Application/Form/Filter/MailTemplatesFilter.php',
     'Application\Form\MailTemplatesForm'                     => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
-    'Application\Form\MyForm'                                => __DIR__ . '/src/Application/Form/MyForm.php',
+    'Application\Form\SRAForm'                               => __DIR__ . '/src/Application/Form/SRAForm.php',
     'Application\Form\TestForm'                              => __DIR__ . '/src/Application/Form/TestForm.php',
     'Application\Form\TestFormFilter'                        => __DIR__ . '/src/Application/Form/TestFormFilter.php',
     'Application\Hydrator\HydratingResultSet'                => __DIR__ . '/src/Application/Hydrator/HydratingResultSet.php',

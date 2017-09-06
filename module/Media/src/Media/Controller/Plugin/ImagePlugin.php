@@ -159,20 +159,21 @@ class ImagePlugin extends AbstractPlugin
 	 *
 	 * @return bool <strong>bool: if </strong>data is array from Form upload <strong>true else false</strong>
 	 */
-	public function isUploadArray($imageDataArray){
+	public function isUploadArray(&$imageDataArray){
 		if (!$imageDataArray) return false;
-	if (
-		isset($imageDataArray['name'])     &&
-		isset($imageDataArray['type' ])    &&
-		isset($imageDataArray['tmp_name']) &&
-		isset($imageDataArray['error'])    &&
-		isset($imageDataArray['size'])
-		&&
-		$imageDataArray['error'] == 0  // remove failures in upload
-	){
-		// a file was uploaded
-		return true;
-	}
+		if ( // is upload array
+			isset($imageDataArray['name'])     &&
+			isset($imageDataArray['type' ])    &&
+			isset($imageDataArray['tmp_name']) &&
+			isset($imageDataArray['error'])    &&
+			isset($imageDataArray['size'])
+		){
+			// if has no error
+			if($imageDataArray['error'] == 0)  // removes failure uploads
+				return true;
+			// upload with error
+			$imageDataArray = null;
+		}
 	return false;
 	}
 
@@ -194,6 +195,7 @@ class ImagePlugin extends AbstractPlugin
 		}
 		else
 			$this->hasUploads = $this->checkForUploadArrayRecursive($data);
+
 		return $this->hasUploads;
 	}
 
@@ -207,16 +209,20 @@ class ImagePlugin extends AbstractPlugin
 	protected function checkForUploadArrayRecursive($array)
 	{
 		$result = $subResult = false;
+		if ($array == null) return $result;
 		foreach ($array as $key => $value) {
 			if (is_array($value))
 			{
+				if ( $value == null) return $result;
 				if($this->isUploadArray($value))
 				{
 					$this->uploadedImages[$key] = $value;
 					$result = true;
 				}
 				else
+				{
 					$subResult = $this->checkForUploadArrayRecursive($value);
+				}
 				if ($subResult == true) $result = true;
 			}
 		}

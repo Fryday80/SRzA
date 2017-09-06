@@ -82,12 +82,10 @@ class DatabaseTable extends AbstractTableGateway
 
 	public function getNextId()
 	{
-		$query = "SELECT `auto_increment` FROM INFORMATION_SCHEMA.TABLES WHERE table_name = '$this->table'";
+		$query = "SELECT LAST_INSERT_ID()";
 		$query = "SHOW TABLE STATUS LIKE '$this->table'";
 		$res = $this->adapter->query($query, array());
-		$res = $res->toArray()[0]['Auto_increment'] + 1;
-
-		return $res;
+		return (int) $res->toArray()[0]['Auto_increment'];
 	}
 
     public function add($data) {

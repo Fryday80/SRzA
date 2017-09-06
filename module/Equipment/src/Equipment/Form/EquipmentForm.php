@@ -1,12 +1,12 @@
 <?php
 namespace Equipment\Form;
 
-use Application\Form\MyForm;
+use Application\Form\SRAForm;
 use Auth\Service\UserService;
 use Equipment\Model\Enums\EEquipSitePlannerImage;
 use Equipment\Service\EquipmentService;
 
-class EquipmentForm extends MyForm
+class EquipmentForm extends SRAForm
 {
     const EQUIPMENT_IMAGES_PATH = '/media/file/equipment/';
     /** @var  UserService */
@@ -179,56 +179,61 @@ class EquipmentForm extends MyForm
 
 	protected function prepareDataForSetData ($data)
 	{
+		// cleanfix normalize old entries - earlier than 05.09.2017 - can be removed for launch
 		if (!isset($data['lending']) || $data['lending'] == null) $data['lending'] = 0;
 		if (!isset($data['stored']) || $data['stored'] == null) $data['stored'] = 0;
+
+		// vars
 		$isEdit = false;
 		$newImage = false;
 		$images = array ('image1', 'image2');
-		foreach ($images as $key => $image) {
-			if (isset($data[$image])){
-				// source is sent form
-				if (is_array($data[$image]))
+
+		// prepare
+		foreach ($images as $fieldName) //
+		{
+			if (isset($data[$fieldName])){
+				// if source is form posted form && upload array
+				if (is_array($data[$fieldName]))
 				{
-					$isEdit = true;
+					$isEdit = true; // set when post data from form
 					// was a image uploaded?
-					if (isset($data[$image]['error']) && $data[$image]['error'] > 0) {
-						unset ($data[ $image ]);
-						unset ($images[$key]);
+					// --no
+					if (isset($data[$fieldName]['error']) && $data[$fieldName]['error'] > 0) // check for concrete upload array key ['error'] && if error code != 0
+					{
+						// delete if error occurred
+						unset ($data[ $fieldName ]); 	// from data set
+						unset ($images[$fieldName]);			// delete from $images
 					}
+					// --yes
 					else $newImage = true;
 				}
 			}
 		}
 
+		// if data set is from form
 		if ($isEdit)
 		{
-			if ($data['sitePlannerObject'] == '0' || $data['sitePlannerObject'] == null) unset ($data['image']);
+			// is planner object
+			// --no
+			if ($data['sitePlannerObject'] == '0' || $data['sitePlannerObject'] == null) $data['image'] = null;
+			// --yes
 			else {
+				// check selection of witch image should be used
+				// -- if not set (null) or "0" (drawing)
 				if ($data['sitePlannerImage'] == NULL || $data['sitePlannerImage'] == "0")
 				{
-					unset ($data['image']);
+					$data['image'] = null;
+					// add default values if nothing was set to avoid errors in SitePlanner
 					$data['depth'] = ($data['depth'] == "0" || $data['depth'] == NULL) ? 100 : $data['depth'];
 					$data['width'] = ($data['width'] == "0" || $data['width'] == NULL) ? 100 : $data['width'];
+					// set diameter on 'width' if round shape was selected
 					if ($data['shape'] == EEquipSitePlannerImage::ROUND_SHAPE)
 						$data['width'] = $data['depth'];
 				}
+				// -- if an image was selected
 				else
 				{
-					// if selected image was uploaded
-					if ($newImage && isset($data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ]) && is_array($data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ])) {
-						$imageData = $data[ EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] ];
-						$parts = explode('.', $imageData['name']);
-						$ext = '.' . $parts[ (count($parts) - 1) ];
-						$imageName = EEquipSitePlannerImage::IMAGE_TYPE[ $data['sitePlannerImage'] ] . $ext;
-						$data['image'] = self::EQUIPMENT_IMAGES_PATH . $data['id'] . "/" . $imageName;
-					}
-					// if the selected image was not uploaded, handle selection change
-					else {
-						if (!isset($data['image' . $data['sitePlannerImage']])) {
-							$dbItem = $this->equipService->getById($data['id']);
-							$data['image'] = $dbItem['image' . $data['sitePlannerImage']];
-						}
-					}
+					$data['image'] = ($data['sitePlannerImage'] == EEquipSitePlannerImage::IMAGE_2) ? $data['image2'] : $data['image1'];
 				}
 			}
 		}
