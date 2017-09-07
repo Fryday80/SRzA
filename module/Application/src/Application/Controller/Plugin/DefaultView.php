@@ -24,6 +24,7 @@
 			'form' => null
 		);
 
+
 		public function setVars($vars)
 		{
 			$this->vars = $vars;
@@ -39,6 +40,7 @@
 			$this->vars[$key] = $value;
 		}
 
+
 		public function delete($vars = null)
 		{
 			if ($vars !== null)
@@ -52,7 +54,7 @@
 			return $viewModel;
 		}
 
-		public function edit($vars)
+		public function edit($vars = null)
 		{
 			if ($vars !== null)
 				$this->vars = $vars + $this->vars;
