@@ -348,7 +348,7 @@ class MediaService {
         return $item;
     }
 
-	public function deleteAllItems($path)
+	public function deleteAllItemsByPath($path)
 	{
 		$item = $this->getItem($path);
 		if($item instanceof MediaException) return;
@@ -356,6 +356,7 @@ class MediaService {
 			$this->deleteRecursive($item->fullPath);
 		elseif ($item->type == 'image')
 			$this->deleteRecursive(str_replace($item->name . '/' . $item->extension, '', $item->fullPath));
+		$this->clearCache();
     }
 
     public function getFileContent($path) {
