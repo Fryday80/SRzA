@@ -206,7 +206,6 @@ bdump($item);
             );
             $form->setData($post);
             if ($form->isValid()){
-				bdump('hallo2');
 				$data = $form->getData();
 
             	// upload and save images

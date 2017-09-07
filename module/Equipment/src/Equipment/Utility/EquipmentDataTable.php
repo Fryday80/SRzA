@@ -230,7 +230,6 @@ class EquipmentDataTable extends DataTableAbstract
                 array(
                     'name' => 'colorField', 'label' => 'Farbe', 'type' => 'custom',
                     'render' => function ($row) {
-                        bdump($row);
                         if ((int)$row['sitePlannerImage'] == EEquipSitePlannerImage::DRAW) {
                             $c1 = $row['color1'];
                             $c2 = $row['color1'];

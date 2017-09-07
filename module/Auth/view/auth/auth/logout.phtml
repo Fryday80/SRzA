@@ -7,13 +7,13 @@
             <button class="logoutbutton" type="submit">
                 <div class="own_text_medium">Logout</div>
             </button>
-            <button class="logoutbutton user-menu-toggle" type="button">
+            <button class="logoutbutton user-menu-toggle js-S-view" type="button">
                 <div class="own_text_medium">Usermenü</div>
             </button>
-            <button class="logoutbutton mobile-menu-toggle" type="button">
+            <button class="logoutbutton mobile-menu-toggle js-S-view" type="button">
                 <div class="own_text_medium">Seitenmenü</div>
             </button>
-            <span class="own_text_big js-S-view " style="text-align: left; display:inline-block;">
+            <span class="own_text_big inline-block js-S-view" style="text-align: left;">
                 <?php $greet = $this->userinfo() ; if ($greet != '') {echo $greet;} ?>
             </span>
         </form>

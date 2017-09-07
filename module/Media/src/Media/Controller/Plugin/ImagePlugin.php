@@ -121,16 +121,6 @@ class ImagePlugin extends AbstractPlugin
 		return $this->uploadAction();
 	}
 
-	public function delete(MediaItem $item = null)
-	{
-		// delete single MediaItem
-		if ($item !== null)
-			$this->mediaService->deleteItem($item->path);
-		// delete Media Item using the data from SET_methods
-		else
-			$this->internalDeleteItem();
-	}
-
 	public function deleteAllImagesByPath($path)
 	{
 		$this->mediaService->deleteAllItems($path);
@@ -262,28 +252,6 @@ class ImagePlugin extends AbstractPlugin
 			throw $itemOrError;
 		}
 		return $itemOrError;
-  	}
-
-	protected function getMaxUploadSize()
-	{
-		if ($this->maxFileSize !== null) return $this->maxFileSize;
-		$size = trim(ini_get('upload_max_filesize'));
-
-		if ($size === null) return null;
-		$last = strtolower($size{strlen($size)-1});
-		$size = (int) $size;
-		switch($last) {
-			case 'g':
-				$size *= 1024;
-				break;
-			case 'm':
-				$size *= 1024;
-				break;
-			case 'k':
-				$size *= 1024;
-				break;
-		}
-		return $this->maxFileSize = $size;
   	}
 
 	protected function internalDeleteItem()
