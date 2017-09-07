@@ -95,6 +95,16 @@ class ImagePlugin extends AbstractPlugin
 		$this->overwrite = $mode;
 	}
 
+	public function reset()
+	{
+		$this->uploadData 			 = null;
+		$this->uploadDestinationPath = null;
+		$this->uploadFileName		 = null;
+		$this->uploadArrayCheck		 = false;
+		$this->hasUploads			 = false;
+		$this->uploadedImages		 = array();
+	}
+
 
 	// === methods via MediaService
 	/**
@@ -111,18 +121,19 @@ class ImagePlugin extends AbstractPlugin
 		return $this->uploadAction();
 	}
 
-	public function delete($item)
+	public function delete(MediaItem $item = null)
 	{
-		if ($item instanceof MediaItem)
+		// delete single MediaItem
+		if ($item !== null)
 			$this->mediaService->deleteItem($item->path);
-		// internal use -> $item is uploadArray
+		// delete Media Item using the data from SET_methods
 		else
 			$this->internalDeleteItem();
 	}
 
-	public function deleteAll($path)
+	public function deleteAllImagesByPath($path)
 	{
-
+		$this->mediaService->deleteAllItems($path);
 	}
 
 	// === prepare

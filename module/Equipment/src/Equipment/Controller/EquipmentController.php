@@ -322,6 +322,6 @@ bdump($item);
 	{
 		/** @var ImagePlugin $image */
 		$image = $this->image();
-		$image->deleteAll('/equipment/' . $data['id'] .'/');
+		$image->deleteAllImagesByPath('/equipment/' . $data['id'] .'/');
 	}
 }
