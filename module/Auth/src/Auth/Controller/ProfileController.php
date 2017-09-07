@@ -308,9 +308,6 @@ class ProfileController extends AbstractActionController
 					$side = 1000; // @todo implement config
 					$imageUpload->imageProcessor->resizeToMaxSide($side);
 					$imageUpload->imageProcessor->saveImage();
-
-					$imageUpload->imageProcessor->load($mediaItem);
-					$imageUpload->mediaService->createDefaultThumbs($mediaItem);
 				}
 			};
 

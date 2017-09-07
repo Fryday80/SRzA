@@ -940,24 +940,6 @@ class MediaService {
         // TODO: Implement setServiceManager() method.
     }
 
-
-    /*
-     * IMAGE PROCESSING
-     */
-    //@todo move special cases
-
-	public function createBlazon(MediaItem $item)
-	{
-		$this->createSquare($item, $this->config['Cast_MediaService']['blazon']['maxSide']);
-    }
-
-	private function createSquare(MediaItem $item, $side)
-	{
-		$this->imageProcessor->load($item);
-		$this->imageProcessor->resize_square($side);
-		$this->imageProcessor->saveImage();
-    }
-
 	public function createDefaultThumbs(MediaItem $item)
 	{
 		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];

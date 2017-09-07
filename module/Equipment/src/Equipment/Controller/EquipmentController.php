@@ -9,22 +9,21 @@ use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
 use Zend\Form\Form;
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 
 class EquipmentController extends AbstractActionController
 {
     /** @var EquipmentService  */
-    private $equipService;
+    protected $service;
     /** @var UserService  */
-    private $userService;
+    protected $userService;
     /** @var AccessService  */
-    private $accessService;
-    private $config;
+    protected $accessService;
+    protected $config;
 
-	const READ_OUT = "/media/file/";
-	private $dataRootPath;
+	protected $activeUserId;
+	protected $activeUserRole;
 
-    private $dataTable;
+    protected $dataTable;
 
 
 	public function __construct(
@@ -35,17 +34,21 @@ class EquipmentController extends AbstractActionController
 	) {
         $controllerName = str_replace("Controller", "", explode("\\", get_class($this))[2]);
         $this->config = $config[$controllerName];
+
         $this->userService   = $userService;
         $this->accessService = $accessService;
-        $this->equipService  = $equipmentService;
+        $this->service  = $equipmentService;
+
+		$this->activeUserId   = $this->accessService->getUserID();
+		$this->activeUserRole = $this->accessService->getRole();
+
         $this->dataTable     = new EquipmentDataTable();
-        $this->dataTable->setServices($this->accessService, $this->equipService);
-		$this->dataRootPath = getcwd() . '/Data';
+        $this->dataTable->setServices($this->accessService, $this->service);
     }
 
     public function indexAction() {
         $vars = $this->getVars('index');
-        $this->dataTable->configure('index', null, $this->equipService->getAll());
+        $this->dataTable->configure('index', null, $this->service->getAll());
         return $vars + array ('dataTable' => $this->dataTable);
     }
 
@@ -57,7 +60,7 @@ class EquipmentController extends AbstractActionController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString']));
 
         // create data table
-        $items = $this->equipService->getAllByType($type)->toArray();
+        $items = $this->service->getAllByType($type)->toArray();
         $this->dataTable->configure($action, $type, $items);
         
         foreach ($items as $item)
@@ -76,7 +79,7 @@ class EquipmentController extends AbstractActionController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         // create data table
-        $items = $this->equipService->getByUserIdAndType($userId, $type)->toArray();
+        $items = $this->service->getByUserIdAndType($userId, $type)->toArray();
         $this->dataTable->configure($action, $type, $items);
         foreach ($items as $item)
             $vars['userList'][$item['userId']] = $item['userName'];
@@ -95,7 +98,7 @@ class EquipmentController extends AbstractActionController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         return array_merge($vars, array(
-            'equip' => $this->equipService->getById($equipId),
+            'equip' => $this->service->getById($equipId),
         ));
     }
 
@@ -106,24 +109,22 @@ class EquipmentController extends AbstractActionController
         $equipId = (int) $this->params()->fromRoute('equipId');
         $userId = (int) $this->params()->fromRoute('userId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
+
         
-        $askingUserId = $this->accessService->getUserID();
-        $askingRole = $this->accessService->getRole();
-        
-        if ($userId !== $askingUserId && $askingRole !== 'Administrator') return $this->redirect()->toRoute('home');
+        if ($userId !== $this->activeUserId && $this->activeUserRole !== 'Administrator') return $this->redirect()->toRoute('home');
         
         $url = "/equip/" .$vars['typeString']. "/$userId/delete/$equipId";
-        $equip = $this->equipService->getById($equipId);
+        $equip = $this->service->getById($equipId);
         $request = $this->getRequest();
         if ($request->isPost()) {
             $post = $request->getPost();
             if ($post['del'] == 'Yes' && $equipId == $post['id']){
-                $checkItem = $this->equipService->getById($equipId);
-                if ($askingUserId !== $checkItem->userId)
-                    if ($askingRole !== 'Administrator')
+                $checkItem = $this->service->getById($equipId);
+                if ($this->activeUserId !== $checkItem->userId)
+                    if ($this->activeUserRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
                 $this->deleteAllImages($checkItem);
-                $this->equipService->deleteById($equipId);
+                $this->service->deleteById($equipId);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -152,7 +153,7 @@ class EquipmentController extends AbstractActionController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         /** @var Form $form */
-        $form = new $vars['formType'][$type]($this->equipService, $this->userService);
+        $form = new $vars['formType'][$type]($this->service, $this->userService);
         $form->get('userId')->setValue($userId);
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -164,14 +165,14 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 $data = $form->getData();
-                $newId = (int) $this->equipService->getNextId();
+                $newId = (int) $this->service->getNextId();
 
                 $data = $this->uploadImage($data, $newId);
 
                 //		push into model for selection in service
 				$item = new $vars['model'][$type]($data);
 bdump($item);
-				$this->equipService->save($item);
+				$this->service->save($item);
 				$url = $this->flashMessenger()->getMessages('ref')[0];
 				if ($url = "/equip/equipment/add") $url = "/equip/equipment";
                 return $this->redirect()->toUrl($url);
@@ -194,7 +195,7 @@ bdump($item);
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
-        $form = new $vars['formType'][$vars['type']]($this->equipService, $this->userService);
+        $form = new $vars['formType'][$vars['type']]($this->service, $this->userService);
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -214,7 +215,7 @@ bdump($item);
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
 
-                $this->equipService->save($item);
+                $this->service->save($item);
                 return $this->redirect()->toUrl("/equip/equipment");
             }
         }
@@ -222,7 +223,7 @@ bdump($item);
         $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
         $this->flashMessenger()->addMessage($ref, 'ref');
 
-        $equip = $this->equipService->getById($equipId);
+        $equip = $this->service->getById($equipId);
         $form->setData($equip->toArray());
 		$image = ($equip->image1 !== null) ? $equip->image1 : $equip->image2;
 //        return $this->defaultView()->edit(
@@ -262,7 +263,12 @@ bdump($item);
         return $vars;
     }
 
-    private function uploadImage ($data, $newId = null)
+	/* ===============================
+	 *
+	 *  Image Handling
+	 *
+	 * =============================== */
+    protected function uploadImage ($data, $newId = null)
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
@@ -286,7 +292,7 @@ bdump($item);
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/equipment/' . $id .'/';
+				$dataTargetPath = 'equipment/' . $id .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
 					$catch = ($modifyImage == $uploadedImage)?: false;
@@ -318,10 +324,10 @@ bdump($item);
 		return $data;
 	}
 
-	private function deleteAllImages($data)
+	protected function deleteAllImages($data)
 	{
 		/** @var ImagePlugin $image */
 		$image = $this->image();
-		$image->deleteAllImagesByPath('/equipment/' . $data['id'] .'/');
+		$image->deleteAllImagesByPath('equipment/' . $data['id'] .'/');
 	}
 }

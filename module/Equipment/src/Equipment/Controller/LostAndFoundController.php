@@ -14,18 +14,7 @@ use Zend\View\Model\ViewModel;
 class LostAndFoundController extends EquipmentController
 {
     /** @var LostAndFoundService  */
-    private $lostAndFoundService;
-    /** @var UserService  */
-    private $userService;
-    /** @var AccessService  */
-    private $accessService;
-
-	private $activeUserId;
-
-	private $dataRootPath;
-
-    private $dataTable;
-
+	protected $service;
 
 	public function __construct(
 		LostAndFoundService $lostAndFoundService,
@@ -34,18 +23,17 @@ class LostAndFoundController extends EquipmentController
 	) {
         $this->userService   = $userService;
         $this->accessService = $accessService;
-        $this->lostAndFoundService  = $lostAndFoundService;
+        $this->service  	 = $lostAndFoundService;
 
-		$this->dataRootPath = getcwd() . '/Data';
+		$this->activeUserId   = $this->accessService->getUserID();
+		$this->activeUserRole = $this->accessService->getRole();
 
 		$this->dataTable     = new LostAndFoundDataTable();
-        $this->dataTable->setServices($this->lostAndFoundService, $this->accessService);
-
-        $this->activeUserId = $this->accessService->getUserID();
-    }
+        $this->dataTable->setServices($this->service, $this->accessService);
+	}
 
     public function indexAction() {
-		$this->dataTable->configure($this->lostAndFoundService->getAll());
+		$this->dataTable->configure($this->service->getAll());
 
 		return array(
 			'dataTable' => $this->dataTable,
@@ -56,19 +44,18 @@ class LostAndFoundController extends EquipmentController
 	{
 		$itemId = $this->params()->fromRoute('id');
 		/** @var LostAndFoundItem $item */
-		$item = $this->lostAndFoundService->getById($itemId);
-		array_push($item->claimed, $this->accessService->getUserID());
-		$this->lostAndFoundService->save($item);
+		$item = $this->service->getById($itemId);
+		array_push($item->claimed, $this->activeUserId);
+		$this->service->save($item);
 		return $this->redirect()->toRoute('lostAndFound');
     }
 
     public function deleteAction(){
 		$itemId = $this->params()->fromRoute('id');
-        $askingRole = $this->accessService->getRole();
 
-        $item = $this->lostAndFoundService->getById($itemId);
+        $item = $this->service->getById($itemId);
         
-        if ($item->createdBy !== $this->activeUserId && $askingRole !== 'Administrator')
+        if ($item->createdBy !== $this->activeUserId && $this->activeUserRole !== 'Administrator')
         	return $this->redirect()->toRoute('home');
 
         $request = $this->getRequest();
@@ -76,10 +63,11 @@ class LostAndFoundController extends EquipmentController
             $post = $request->getPost();
             if ($post['del'] == 'Yes' && $itemId == $post['id']){
                 if ($item->createdBy !== $this->activeUserId)
-                    if ($askingRole !== 'Administrator')
+                    if ($this->activeUserRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
 
-                $this->lostAndFoundService->deleteById($itemId);
+                $this->deleteAllImages($item->path);
+                $this->service->deleteById($itemId);
 
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
@@ -107,7 +95,7 @@ class LostAndFoundController extends EquipmentController
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
         /** @var Form $form */
-        $form = new $vars['formType'][$type]($this->lostAndFoundService, $this->userService);
+        $form = new $vars['formType'][$type]($this->service, $this->userService);
         $form->get('userId')->setValue($userId);
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -119,13 +107,13 @@ class LostAndFoundController extends EquipmentController
             $form->setData($post);
             if ($form->isValid()){
 				$data = $form->getData();
-				$newId = (int) $this->lostAndFoundService->getNextId();
+				$newId = (int) $this->service->getNextId();
 				// upload and save images
 				$data = $this->uploadImage($data, $newId);
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
-				$this->lostAndFoundService->save($data);
+				$this->service->save($data);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -146,7 +134,7 @@ class LostAndFoundController extends EquipmentController
         $equipId = (int) $this->params()->fromRoute('equipId');
         $vars = array_merge_recursive($vars, $this->getVars($action, $vars['typeString'], $userId));
 
-        $form = new $vars['formType'][$vars['type']]($this->lostAndFoundService, $this->userService);
+        $form = new $vars['formType'][$vars['type']]($this->service, $this->userService);
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -165,7 +153,7 @@ class LostAndFoundController extends EquipmentController
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
 
-                $this->lostAndFoundService->save($item);
+                $this->service->save($item);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
         }
@@ -173,14 +161,19 @@ class LostAndFoundController extends EquipmentController
         $ref = ($request->getHeader('Referer')) ? $request->getHeader('Referer')->uri()->getPath() : '/equip';
         $this->flashMessenger()->addMessage($ref, 'ref');
 
-        $equip = $this->lostAndFoundService->getById($equipId);
+        $equip = $this->service->getById($equipId);
         $form->setData($equip->toArray());
         return array_merge($vars, array(
             'form' => $form,
         ));
     }
 
-	private function uploadImage ($data, $newId = null)
+	/* ===============================
+	 *
+	 *  Image Handling
+	 *
+	 * =============================== */
+	protected function uploadImage ($data, $newId = null)
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
@@ -198,7 +191,7 @@ class LostAndFoundController extends EquipmentController
 			if ( !empty($uploadedImages) )
 			{
 				// === create path
-				$dataTargetPath = '/LostAndFound/' . $id .'/';
+				$dataTargetPath = 'LostAndFound/' . $id .'/';
 				foreach ($uploadedImages as $key => &$uploadedImage)
 				{
 					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
@@ -225,5 +218,10 @@ class LostAndFoundController extends EquipmentController
 			$data = $dataTarget + $data;
 		}
 		return $data;
+	}
+
+	protected function deleteAllImages($path)
+	{
+		$this->image()->deleteAllImagesByPath($path);
 	}
 }
