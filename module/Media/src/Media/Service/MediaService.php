@@ -650,11 +650,9 @@ class MediaService {
         $path = '';
 
         try {
-            $uploadHandler = new UploadHandler();
+            $uploadHandler = new UploadHandler($filePostArray, $target);
 //            $uploadHandler->autoOverwrite = true;
             $uploadHandler->autoRename = true;
-            $uploadHandler->setSource($filePostArray, $fileName);
-            $uploadHandler->setDestinationPath($target);
             $newFilePath = $uploadHandler->upload();
             $item = $this->getItem(Pathfinder::getRelativePath($newFilePath));
             if ($this->isImage($item->fullPath)) {
@@ -667,6 +665,58 @@ class MediaService {
         }
     }
 
+	/**
+	 * @param array  $filePostArray
+	 * @param string $targetFolder
+	 * @param bool   $force
+	 *
+	 * @return MediaException|UploadHandler
+	 */
+	public function uploadHandlerFactory($filePostArray, $targetFolder, $force = false) {
+		$target = $this->realPath($targetFolder);
+
+		if (!$target && $force) {
+			$path = str_replace(getcwd(), '', $targetFolder);
+			$path = str_replace(DATA_PATH, '', $path);
+			$parts = substr($path, 1);
+			$parts = explode('/', $parts);
+			$rootPath = $this->cleanPath( getcwd() . DATA_PATH );
+			$c = count($parts);
+			$i = 0;
+			while ($i < $c-1){
+				$rootPath .= '/' . $parts[$i];
+				@mkdir( $rootPath, 0755);
+				$i++;
+			}
+			$target = $rootPath . '/' .$parts[$c-1];
+		}
+
+		$perm = $this->getPermission($target);
+		if (!$force && !$perm['writable']) {
+			return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
+		}
+
+		$path = '';
+
+		try {
+			$uploadHandler = new UploadHandler($filePostArray, $target);
+			$self = $this;
+			$uploadHandler->registerOnFinishHandler(function($targetPath) {
+				global $self;
+				bdump("ano func");
+				$item = $self->getItem(Pathfinder::getRelativePath($targetPath));
+				if ($self->isImage($item->fullPath)) {
+					$self->imageProcessor->load($item);
+					$self->createDefaultThumbs($item);
+				}
+			});
+			$uploadHandler->autoOverwrite = false;
+			$uploadHandler->autoRename = true;
+			return $uploadHandler;
+		} catch (Exception $e) {
+			return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
+		}
+	}
     private function addItem2cache(MediaItem $item) {
         $path = rtrim($item->path, "\x5C\x2F");
         $this->itemCache[$path] = $item;

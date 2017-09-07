@@ -40,13 +40,14 @@ class UploadHandler
     private $dstFolderPath;
     private $nameCount = 1;
 	private $imageProcessor;
+	private $onFinishHandlers = [];
 
 	/**
      * UploadHandler constructor.
      * @param $file {string|array} path string | $_FILES['form_field'] array
      * @param $destPath {string} save path for upload
      */
-    public function __construct($file = null, $destPath = null) {
+    public function __construct($file, $destPath) {
         $this->maxFileSizeRaw = trim(ini_get('upload_max_filesize'));
         $this->maxFileSize = $this->getSize($this->maxFileSizeRaw);
 
@@ -223,12 +224,9 @@ class UploadHandler
             'csv' => 'text/csv',
         );
 
-        if (is_array($file)) {
-            $this->setSource($file);
-        }
-        if (is_string($destPath)) {
-            $this->setDestinationPath($destPath);
-        }
+		$this->setSource($file);
+		$this->setDestinationPath($destPath);
+
     }
 
 	public function setImageProcessor($imageProcessor)
@@ -240,18 +238,17 @@ class UploadHandler
      * @param $array $_FILES['form_field'] array
      * @return bool
      */
-    public function setSource($array, $overrideName = null) {
+    private function setSource($array) {
         $this->srcPath      = $array['tmp_name'];
-        $this->srcFileName  = ($overrideName == null) ? $array['name'] : $overrideName;
+        $this->srcFileName  = $array['name'];
         $this->srcSize      = $array['size'];
         $this->srcMimeType  = $array['type'];
         $this->srcError     = trim($array['error']);
         return true;
     }
 
-	public function setName($filename)
-	{
-
+	public function setName($filename) {
+		$this->srcFileName = $filename;
     }
 
     public function validateSource() {
@@ -426,8 +423,16 @@ class UploadHandler
             throw new Exception('source file missing');
         }
 
+		foreach ($this->onFinishHandlers as $onFinishHandler) {
+			$onFinishHandler($this->dstPath);
+		}
+
         return $this->dstPath;
     }
+
+	public function registerOnFinishHandler($func) {
+		array_push($this->onFinishHandlers, $func);
+	}
 
     public function setDestinationPath($destPath) {
         if (!$destPath || empty($destPath)) {
@@ -603,6 +608,11 @@ class UploadHandler
      * @return boolean Success
      */
     private function rmkdir($path, $mode = 0777) {
+    	if($path == null) {
+    		debug_print_backtrace(1);
+			bdump('path = null');
+			die;
+		}
         return is_dir($path) || ( $this->rmkdir(dirname($path), $mode) && $this->mkdir($path, $mode) );
     }
     /**

@@ -169,9 +169,12 @@ class EquipmentController extends AbstractActionController
 
                 $data = $this->uploadImage($data, $newId);
 
+                $this->getFiles();
+                $this->getFile("fileName");
+
                 //		push into model for selection in service
 				$item = new $vars['model'][$type]($data);
-bdump($item);
+
 				$this->service->save($item);
 				$url = $this->flashMessenger()->getMessages('ref')[0];
 				if ($url = "/equip/equipment/add") $url = "/equip/equipment";
@@ -209,7 +212,11 @@ bdump($item);
 				$data = $form->getData();
 
             	// upload and save images
-				$data = $this->uploadImage($data);
+				$newPaths = $this->handleUploads($data['id'], array(
+					'image1' => $data['image1'],
+					'image2' => $data['image2'],
+					'bill'   => $data['bill']));
+				$data = $newPaths + $data;
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
@@ -267,60 +274,40 @@ bdump($item);
 	 *  Image Handling
 	 *
 	 * =============================== */
-    protected function uploadImage ($data, $newId = null)
+    protected function handleUploads ($id, $data)
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
-		$modifyImage = null;
-		if($imageUpload->isUploadArray($data['image']))
-		{
-			$modifyImage = $data['image'];
-			unset ($data['image']);
-		}
-
-		$id = ($newId !== null) ? $newId : $data['id'];
+		$dataTargetPaths = $uploadFileNames = null;
 		$dataTarget = array();
 
 		// upload and save images
 		// =======================
-		// === check if there is a upload array
-		if ($imageUpload->containsUploadArray($data))
-		{
-			$uploadedImages = $imageUpload->getUploadArrays();
-			// if sth was uploaded
-			if ( !empty($uploadedImages) )
-			{
-				// === create path
-				$dataTargetPath = 'equipment/' . $id .'/';
-				foreach ($uploadedImages as $key => &$uploadedImage)
-				{
-					$catch = ($modifyImage == $uploadedImage)?: false;
-
-					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
-					$uploadFileName = $key .'.' . $extension;
-					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
-
-					// === upload image
-					$imageUpload
-						->setData($uploadedImage)
-						->setDestination($dataTargetPath)
-						->setFileName($uploadFileName);
-
-					$mediaItem = $imageUpload->upload();
-					if ($catch) $data['image'] = $mediaItem->path;
-
-					// === process image
-					$imageUpload->imageProcessor->load($mediaItem);
-					$side = 500; // @todo implement config
-					$imageUpload->imageProcessor->resize_square($side);
-					$imageUpload->imageProcessor->saveImage();
-				}
-			};
-
-			// === write paths to item
-			$data = $dataTarget + $data;
+		// === create path
+		foreach ($data as $key => &$uploadedImage) {
+			if ($imageUpload->isValidUploadArray($uploadedImage)) {
+				list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[ $key ]);
+				$uploadFileNames[ $key ] = $key . '.' . $extension;
+				$dataTargetPaths[ $key ] = 'equipment/' . $id . '/';
+				$dataTarget[ $key ] = $dataTargetPaths[ $key ] . $uploadFileNames[ $key ];
+			}
 		}
-		return $data;
+		if ($dataTargetPaths !== null){
+			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
+			if (!is_array($mediaItems)){
+				$mediaItems[0] = $mediaItems;
+			}
+		}
+
+		foreach ($mediaItems as $mediaItem) {
+			// === process image
+			$imageUpload->imageProcessor->load($mediaItem);
+			$side = 500; // @todo implement config
+			$imageUpload->imageProcessor->resize_square($side);
+			$imageUpload->imageProcessor->saveImage();
+		}
+
+		return $dataTarget;
 	}
 
 	protected function deleteAllImages($data)

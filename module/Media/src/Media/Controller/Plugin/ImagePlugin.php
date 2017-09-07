@@ -6,6 +6,7 @@ use Media\Service\ImageProcessor;
 use Media\Service\MediaException;
 use Media\Service\MediaItem;
 use Media\Service\MediaService;
+use Media\Utility\Pathfinder;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
 
 /**
@@ -27,18 +28,6 @@ class ImagePlugin extends AbstractPlugin
 	/** @var  int maximum upload file size */
 	protected $maxFileSize;
 
-	/** @var bool */
-	private $overwrite = true;
-	private $uploadData;
-	private $uploadDestinationPath;
-	private $uploadFileName = null;
-
-	/** @var bool */
-	private $uploadArrayCheck = false;
-	/** @var bool */
-	private $hasUploads = false;
-	private $uploadedImages = array();
-
 	function __construct(Array $config, MediaService &$mediaService)
 	{
 		$this->config = $config;
@@ -49,76 +38,17 @@ class ImagePlugin extends AbstractPlugin
 		$this->storagePath = str_replace('\\', '/', $this->storagePath);
 	}
 
-	// === set data
-	/**
-	 * Set Data
-	 *
-	 * @param array $uploadData image upload array | Form data array
-	 *
-	 * @return $this
-	 */
-	public function setData($uploadData)
-	{
-		$this->uploadData = $uploadData;
-		return $this;
-	}
 
-	/**
-	 * Set Destination Path
-	 *
-	 * @param string $uploadDestinationPath
-	 *
-	 * @return $this
-	 */
-	public function setDestination($uploadDestinationPath)
-	{
-		$this->uploadDestinationPath = $uploadDestinationPath;
-		return $this;
-	}
-
-	/**
-	 * Set Filename <br/>
-	 * 		overrides original filename and extension
-	 *
-	 * @param string $uploadFileName "file.name"
-	 *
-	 * @return $this
-	 */
-	public function setFileName($uploadFileName)
-	{
-		$this->uploadFileName = $uploadFileName;
-		return $this;
-	}
-
-	public function setOverwriteMode(bool $mode)
-	{
-		$this->overwrite = $mode;
-	}
-
-	public function reset()
-	{
-		$this->uploadData 			 = null;
-		$this->uploadDestinationPath = null;
-		$this->uploadFileName		 = null;
-		$this->uploadArrayCheck		 = false;
-		$this->hasUploads			 = false;
-		$this->uploadedImages		 = array();
-	}
-
-
-	// === methods via MediaService
 	/**
 	 * @return MediaException|\Media\Service\MediaItem
 	 */
-	public function upload()
+	public function upload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{
-		if($this->uploadDestinationPath[strlen($this->uploadDestinationPath)-1] !== '/') $this->uploadDestinationPath .= '/';
-		if ($this->uploadFileName == null){
-			list ($fileName, $extension) = $this->getFileDataFromUpload($this->uploadData);
-			$this->uploadFileName = $fileName . $extension;
-		}
+		if (is_array($uploadDestinationPath))
+			return $this->multiUpload($uploadData, $uploadDestinationPath, $uploadFileName);
+		else
+			return $this->singleUpload($uploadData, $uploadDestinationPath, $uploadFileName);
 
-		return $this->uploadAction();
 	}
 
 	public function deleteAllImagesByPath($path)
@@ -160,7 +90,7 @@ class ImagePlugin extends AbstractPlugin
 	 *
 	 * @return bool <strong>bool: if </strong>data is array from Form upload <strong>true else false</strong>
 	 */
-	public function isUploadArray(&$imageDataArray){
+	public function isValidUploadArray(&$imageDataArray){
 		if (!$imageDataArray) return false;
 		if ( // is upload array
 			isset($imageDataArray['name'])     &&
@@ -178,80 +108,50 @@ class ImagePlugin extends AbstractPlugin
 	return false;
 	}
 
-	/**
-	 * Checks recursive if there is a Upload Array in given array <br/>
-	 * returns "false" if there was a uploadError detected
-	 *
-	 * @param $data
-	 *
-	 * @return bool
-	 */
-	public function containsUploadArray ($data)
+	protected function multiUpload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{
-		$this->uploadArrayCheck = true;
-		if (!is_array($data)) return false;
-		elseif ($this->isUploadArray($data)) {
-			$this->uploadedImages[0] = $data;
-			$this->hasUploads = true;
+		$return = array();
+		foreach ($uploadData as $key => $uploadArray) {
+			$name = (isset($uploadFileName[$key])) ? $uploadFileName[$key] : null;
+			$return[$key] = $this->singleUpload($uploadData[$key], $uploadDestinationPath[$key], $name);
 		}
-		else
-			$this->hasUploads = $this->checkForUploadArrayRecursive($data);
-
-		return $this->hasUploads;
+		return $return;
 	}
 
-	public function getUploadArrays()
-	{
-		if (!$this->uploadArrayCheck) $this->containsUploadArray($this->uploadData);
-		return ($this->hasUploads) ? $this->uploadedImages : array();
-	}
-
-
-	protected function checkForUploadArrayRecursive($array)
-	{
-		$result = $subResult = false;
-		if ($array == null) return $result;
-		foreach ($array as $key => $value) {
-			if (is_array($value))
-			{
-				if ( $value == null) return $result;
-				if($this->isUploadArray($value))
-				{
-					$this->uploadedImages[$key] = $value;
-					$result = true;
-				}
-				else
-				{
-					$subResult = $this->checkForUploadArrayRecursive($value);
-				}
-				if ($subResult == true) $result = true;
-			}
+	protected function singleUpload($uploadData, $uploadDestinationPath, $uploadFileName = null) {
+		if($uploadDestinationPath[strlen($uploadDestinationPath)-1] !== '/') $uploadDestinationPath .= '/';
+		if ($uploadFileName == null){
+			list ($fileName, $extension) = $this->getFileDataFromUpload($uploadData);
+			$uploadFileName = $fileName . $extension;
 		}
-		return $result;
 
+		return $this->uploadAction($uploadData, $uploadDestinationPath, $uploadFileName);
 	}
 
 	/**
-	 * @param array  $uploadData
-	 * @param string $destination '/path/to/save/image' <br/>
-	 *                            !!leading '/' <br/>
-	 *                            relative to data folder
+	 * @param array $uploadData
+	 * @param       $uploadDestinationPath
+	 * @param       $uploadFileName
 	 *
-	 * @param string $fileName    File.name
-	 *
-	 * @return MediaException|\Media\Service\MediaItem
+	 * @return MediaException|MediaItem
 	 * @throws MediaException
+	 *
+	 * @internal param string $fileName File.name
+	 *
 	 */
-	protected function uploadAction()
+	protected function uploadAction($uploadData, $uploadDestinationPath, $uploadFileName)
  	{
- 		// overwrite ->delete old item if name is the same
-		if ($this->overwrite)
-			$this->internalDeleteItem();
-		$itemOrError = $this->mediaService->upload($this->uploadData, $this->uploadDestinationPath, $this->uploadFileName, true);
-		if ($itemOrError instanceof MediaException) {
-			throw $itemOrError;
+		$uploadHandler = $this->mediaService->uploadHandlerFactory($uploadData, $uploadDestinationPath, true);
+		if ($uploadHandler instanceof MediaException) {
+			throw $uploadHandler;
 		}
-		return $itemOrError;
+		$uploadHandler->autoOverwrite = true;
+		$uploadHandler->setName($uploadFileName);
+		$item = $this->mediaService->getItem(Pathfinder::getRelativePath($uploadHandler->upload()));
+		if ($item instanceof MediaException) {
+			throw $item;
+		}
+		return $item;
   	}
 
 	protected function internalDeleteItem()
