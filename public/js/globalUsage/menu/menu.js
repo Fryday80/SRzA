@@ -4,31 +4,36 @@
 
     /**
      *
-     * @typedef {{ mode: string,
-      *         changeMode: state.changeMode,
-      *         browserMode: state.browserMode,
-      *         mobileMode: state.mobileMode,
-      *         resized: boolean,
-      *         resizeAction: state.resizeAction}} State
+     * @typedef {{
+     *              mode: string,
+     *              mobile: string,
+     *              browser: string,
+      *             setMode: state.setMode,
+      *             setBrowserMode: state.browserMode,
+      *             setMobileMode: state.mobileMode,
+      *             resized: boolean,
+      *             resizeAction: state.resizeAction
+      *         }} State
      */
     /** @var State*/
     var state = {
         mode: 'browser',
+        mobile: "mobile",
+        browser: "browser",
         resized: false,
-        changeMode: function (modus) {
+        setMode: function (modus) {
             this.mode = modus;
         },
-        browserMode: function () {
-            this.mode = 'browser';
+        setBrowserMode: function () {
+            this.mode = this.browser;
         },
-        mobileMode: function () {
-            this.mode = 'mobile';
+        setMobileMode: function () {
+            this.mode = this.mobile;
         },
         resizeAction: function () {
             this.resized = true;
         }
     };
-
     apps.menuHandler = {
 
         run: function () {
@@ -52,30 +57,65 @@
             }
 
             /**
+             * performs the user menu show-hide action
+             */
+            function userMenuToggle () {
+                $(".logout-list.myMenu").toggleClass("hidden")
+                    .toggleClass("mobile-animation");
+            }
+
+            /**
+             * performs the mobile login show-hide action
+             */
+            function loginMenuToggle () {
+                $(".login-form").toggleClass("hidden")
+                    .toggleClass("mobile-animation");
+            }
+
+            /**
              * Sets the mode by view size
              * sets mode to "browser" || "mobile"
              * and runs designing script
              */
             function setMode () {
                 /**
-                 * binds the menu show-hide action
+                 * binds the menu show-hide action and sets all hidden
                  */
                 function menuActionsMobile() {
-                    $(".menu_button_img").on("click", menuToggle);
-                }
+                    $(".menu_items").not('hidden').addClass("hidden");
+                    $(".mobile-menu-toggle").on("click", menuToggle);
 
-                if (state.resized) {
-                    /** removes click event to avoid multiple bindings **/
-                    $(".menu_button_img").off("click", menuToggle);
-                    /** removes the animation to avoid view bugs when resized in open state or to normal view **/
-                    $(".menu_items").removeClass("mobile-animation");
+                    $(".logout-list.myMenu").not('hidden').addClass("hidden");
+                    $(".user-menu-toggle").on("click", userMenuToggle);
+
+                    $(".login-form").not('hidden').addClass("hidden");
+                    $(".login-menu-toggle").on("click", loginMenuToggle);
                 }
 
                 if (window.matchMedia('(max-width: 700px)').matches) {
-                    state.changeMode("mobile");
-                    menuActionsMobile();
+                    state.setMobileMode();
                 } else {
-                    state.changeMode("browser");
+                    state.setBrowserMode();
+                }
+
+                if (state.resized) {
+                    /* removes click events to avoid multiple bindings */
+                    $(".mobile-menu-toggle").off("click", menuToggle);
+                    $(".login-menu-toggle").off("click", loginMenuToggle);
+                    $(".user-menu-toggle").off("click", userMenuToggle);
+
+                    /* removes the animation to avoid view bugs when resized in open state or to normal view */
+                    $(".menu_items").removeClass("mobile-animation");
+
+                    if (state.mode === state.browser) {
+                        /* remove 'hidden' from mobile views */
+                        $(".menu_items").removeClass("hidden");
+                        $(".logout-list.myMenu").removeClass("hidden");
+                    }
+                }
+
+                if (state.mode === state.mobile){
+                    menuActionsMobile();
                 }
             }
 
@@ -120,8 +160,9 @@
                     $(Designer.ele).off("mouseout", down);
                 }
 
-                if (window.matchMedia('(min-width: 700px)').matches) {
-                    /** to avoid view bugs when started in mobile view **/
+
+                if (state.mode === "browser") {
+                    /* to avoid view bugs when started in mobile view */
                     if (state.resized) {
                         getPropertys();
                     }

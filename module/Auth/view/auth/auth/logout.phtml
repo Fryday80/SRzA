@@ -4,9 +4,18 @@
     </boxtitle>
     <boxcontent>
         <form method="get" action="/logout">
-            <button class="logoutbutton" style="width:100%;" type="submit">
-                <div class="own_text_medium" style="width:100%;">Logout</div>
+            <button class="logoutbutton" type="submit">
+                <div class="own_text_medium">Logout</div>
             </button>
+            <button class="logoutbutton user-menu-toggle" type="button">
+                <div class="own_text_medium">Usermenü</div>
+            </button>
+            <button class="logoutbutton mobile-menu-toggle" type="button">
+                <div class="own_text_medium">Seitenmenü</div>
+            </button>
+            <span class="own_text_big js-S-view " style="text-align: left; display:inline-block;">
+                <?php $greet = $this->userinfo() ; if ($greet != '') {echo $greet;} ?>
+            </span>
         </form>
         <?php include_once ('logoutData.php'); ?>
         </boxcontent>

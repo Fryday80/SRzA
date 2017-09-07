@@ -59,13 +59,13 @@
 
     $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
 
-    $class = ($this->userinfo('logged'))? 'loogged-in' : 'logged-out';
+    $class = ($this->userinfo('logged'))? 'logged-in' : 'logged-out';
     $body = " class = '$class' '";
 ?>
 <body <?php echo $body;?> >
 
 <!-- Login Window -->
-<div class="login-container">
+<div class="logging-container">
 	<?php echo $this->loginview(); ?>
 </div>
     <div class="body box">
@@ -102,7 +102,7 @@
         </div>
 <!----  NAVIGATION   ---->
         <div class="menu_button_div js-S-view ">
-            <img class="menu_button_img" src="/img/uikit/menu_button.png">
+            <img class="menu_button_img mobile-menu-toggle" src="/img/uikit/menu_button.png">
         </div>
         <div id="navframe">
             <div class="menu_titel js-L-view ">
@@ -110,7 +110,7 @@
                     <span class="own_text_big">Wegweiser</span>
                 </box>
             </div>
-            <div class="overlayShadow menu_items js-L-view ">
+            <div class="overlayShadow menu_items">
                 <div class="topics">
                     <?php
                     echo $this->navigation('navigation')

@@ -34,7 +34,7 @@ class UserInfo extends AbstractHelper
             elseif ($role == 'Vorstand') $roleName = $role;
             elseif ($role == 'Administrator') $roleName = $role;
             else $roleName = 'erweiterter Vorstand';
-            $showrole = ' <span class="js-S-view">|</span> '.$roleName;
+            $showrole = ' | '.$roleName;
             $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showrole. '</span>';
             return $expression;
         }

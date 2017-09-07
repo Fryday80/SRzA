@@ -2,8 +2,12 @@
 @login-max-height: 20vw;
 
 
-// basic style of login.phtml and logout.phtml
-// .rightbarDown and .box and _forms.less
+// <div class = 'logging-container'>
+//    <box class = 'logging login|logout' >
+//      <boxtitle>
+//      <boxcontent>
+//          <form> for logging action
+//          <ul class logout-list>  // when logged on
 
 // behavior when logged in:
 // .loggin {
@@ -13,7 +17,7 @@
 // MEDIA browser view
 @media only screen and (min-width: 700px) {
 
-  .login-container
+  .logging-container
   {
     position: absolute;
     right: 0;
@@ -21,10 +25,10 @@
     z-index: 1;
   }
 
-  .login-container.logged-in,
-  .login-container.login-active,
-  .login-container:hover,
-  .login-container:active
+  .logging-container.logged-in,
+  .logging-container.login-active,
+  .logging-container:hover,
+  .logging-container:active
   {
     z-index: 2;
   }
@@ -97,30 +101,55 @@
       text-align: center;
     }
   }
+
+  .logoutbutton
+  {
+    width: 100%;
+  }
 }
 
 
 // MEDIA browser view
-@media only screen and (max-width: 700px)
-{
-  .login-container
-  {
+@media only screen and (max-width: 700px) {
+  body.logged-in .menu_button_div {
+    display: none;
+  }
+
+  .logging-container {
     position: relative;
-    height: 30px;
+    height: auto;
     overflow: hidden;
   }
 
-  .login-container.login-active,
-  .login-container:hover,
-  .login-container:active
-  {
+  .logging-container.login-active,
+  .logging-container:hover,
+  .logging-container:active {
     height: auto;
   }
 
+  .logging.logout .logoutbutton {
+    margin-top: -6px;
+  }
+
+  .logging boxcontent {
+    margin: 0;
+    padding-top: 0;
+  }
+
+  form .menu_button_img
+  {
+    margin: 0;
+    padding: 0;
+    margin-left: 40px;
+  }
+ form .logoutbutton
+  {
+    display: inline-block;
+    width: 20%;
+  }
 }
 
 // general Settings
-.logoutbutton
-{
-  height: 30px;
+.logoutbutton {
+  height: auto;
 }

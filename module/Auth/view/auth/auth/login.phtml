@@ -1,8 +1,11 @@
 <box class="logging login loggedOut">
     <boxtitle>
-        <span class="own_text_big">Login</span>
+        <span class="own_text_big js-L-view">Login</span>
+        <button class="logoutbutton login-menu-toggle js-S-view" type="button">
+            <div class="own_text_medium">Login</div>
+        </button>
     </boxtitle>
-    <boxcontent >
+    <boxcontent class="login-form">
         <?php
 
         $form = $this->form;
