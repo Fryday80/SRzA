@@ -39,18 +39,40 @@
     apps.menuHandler = {
 
         run: function () {
-            /* ------------------ RUNNING SCRIPT -------------------- */
-            setMode();
-            menuRowDesigner();
+            /* ------------------ RUNNING SCRIPT --START------------- */
             menuActionPin();
+            modeSwitching();
 
             $(window).resize(function () {
                 state.resizeAction();
-                setMode();
-                menuRowDesigner();
+                modeSwitching();
             });
+            /* ------------------ RUNNING SCRIPT --END--------------- */
 
+            function modeSwitching(){
+                setMode();
+                modeDependencyActions();
+                menuRowDesigner();
+            }
 
+            /**
+             * Sets the mode by view size
+             * sets mode to state.browser || state.mobile
+             */
+            function setMode(){
+                if (window.matchMedia('(max-width: 700px)').matches) {
+                    state.setMobileMode();
+                } else {
+                    state.setBrowserMode();
+                }
+            }
+
+            /** binds pinToggle to img **/
+            function menuActionPin(){
+                $('.log-pin').on("click", pinToggle);
+            }
+
+            /* toggle functions */
             /**
              * performs the menu show-hide action
              */
@@ -75,6 +97,9 @@
                     .toggleClass("mobile-animation");
             }
 
+            /**
+             * performs the z-index adjustment in browser view
+             */
             function pinToggle () {
                 $(".log-pin-overlay").toggleClass("hidden");
                 if (state.togglePin){
@@ -86,55 +111,63 @@
                 }
             }
 
-            function menuActionPin(){
-                $('.log-pin').on("click", pinToggle);
-            }
-
             /**
-             * Sets the mode by view size
-             * sets mode to "browser" || "mobile"
-             * and runs designing script
+             * Runs designing and handler scripts
+             * in dependency of state.mode
              */
-            function setMode () {
+            function modeDependencyActions () {
+
+                function mobileMenuHandling(){
+                    menuActionsMobile();
+                    menuDesignMobile();
+                }
 
                 /**
                  * binds the menu show-hide action and sets all hidden
                  */
                 function menuActionsMobile() {
-                    $(".menu_items").not('hidden').addClass("hidden");
                     $(".mobile-menu-toggle").on("click", menuToggle);
 
-                    $(".logout-list.myMenu").not('hidden').addClass("hidden");
                     $(".user-menu-toggle").on("click", userMenuToggle);
 
-                    $(".login-form").not('hidden').addClass("hidden");
                     $(".login-menu-toggle").on("click", loginMenuToggle);
                 }
+                function menuDesignMobile(){
+                    $(".menu_items")        .not('hidden').addClass("hidden");
+                    $(".logout-list.myMenu").not('hidden').addClass("hidden");
+                    $(".login-form")        .not('hidden').addClass("hidden");
 
-                if (window.matchMedia('(max-width: 700px)').matches) {
-                    state.setMobileMode();
-                } else {
-                    state.setBrowserMode();
                 }
 
-                if (state.resized) {
-                    /* removes click events to avoid multiple bindings */
+                /** removes click events to avoid multiple bindings */
+                function removeMobileHandlers() {
                     $(".mobile-menu-toggle").off("click", menuToggle);
                     $(".login-menu-toggle").off("click", loginMenuToggle);
                     $(".user-menu-toggle").off("click", userMenuToggle);
+                }
+                /** reverts menuDesignMobile() */
+                function removeDesignOfMobileViewInBrowserView(){
+                    /* remove 'hidden' from mobile views */
+                    $(".menu_items").removeClass("hidden");
+                    $(".logout-list.myMenu").removeClass("hidden");
+                    $(".login-form").removeClass("hidden");
+                }
+
+                if (state.resized) {
+                    /* remove click events to avoid multiple bindings */
+                    removeMobileHandlers();
 
                     /* removes the animation to avoid view bugs when resized in open state or to normal view */
                     $(".menu_items").removeClass("mobile-animation");
 
                     if (state.mode === state.browser) {
-                        /* remove 'hidden' from mobile views */
-                        $(".menu_items").removeClass("hidden");
-                        $(".logout-list.myMenu").removeClass("hidden");
+                        /* remove 'hidden' from mobile views ... reverts menuDesignMobile() */
+                        removeDesignOfMobileViewInBrowserView();
                     }
                 }
 
                 if (state.mode === state.mobile){
-                    menuActionsMobile();
+                    mobileMenuHandling();
                 }
             }
 
