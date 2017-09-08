@@ -4,6 +4,7 @@ namespace Equipment\Controller;
 use Application\Controller\Plugin\ImagePlugin;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
+use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
@@ -123,7 +124,7 @@ class EquipmentController extends AbstractActionController
                 if ($this->activeUserId !== $checkItem->userId)
                     if ($this->activeUserRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
-                $this->deleteAllImages($checkItem);
+                $this->handleDeleteAllImages($checkItem);
                 $this->service->deleteById($equipId);
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
             }
@@ -165,9 +166,13 @@ class EquipmentController extends AbstractActionController
             $form->setData($post);
             if ($form->isValid()){
                 $data = $form->getData();
-                $newId = (int) $this->service->getNextId();
+                $newId = $this->service->getNextId();
 
-                $data = $this->uploadImage($data, $newId);
+				$newPaths = $this->handleUploads($newId, array(
+					'image1' => $data['image1'],
+					'image2' => $data['image2'],
+					'bill'   => $data['bill']));
+				$data = $newPaths + $data;
 
                 $this->getFiles();
                 $this->getFile("fileName");
@@ -212,7 +217,7 @@ class EquipmentController extends AbstractActionController
 				$data = $form->getData();
 
             	// upload and save images
-				$newPaths = $this->handleUploads($data['id'], array(
+				$newPaths = $this->handleUploads((int) $data['id'], array(
 					'image1' => $data['image1'],
 					'image2' => $data['image2'],
 					'bill'   => $data['bill']));
@@ -274,7 +279,13 @@ class EquipmentController extends AbstractActionController
 	 *  Image Handling
 	 *
 	 * =============================== */
-    protected function handleUploads ($id, $data)
+	/**
+	 * @param  int   $id	special dynamic selector
+	 * @param  array $data  array of upload arrays like [$key1 => $uploadArray1]
+	 *
+	 * @return array 		array prepared for save
+	 */
+    protected function handleUploads (int $id, array $data)
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
@@ -310,10 +321,11 @@ class EquipmentController extends AbstractActionController
 		return $dataTarget;
 	}
 
-	protected function deleteAllImages($data)
+	/**
+	 * @param int $itemId
+	 */
+	protected function handleDeleteAllImages(int $itemId)
 	{
-		/** @var ImagePlugin $image */
-		$image = $this->image();
-		$image->deleteAllImagesByPath('equipment/' . $data['id'] .'/');
+		$this->image()->deleteAllImagesByPath('equipment/' . $itemId .'/');
 	}
 }

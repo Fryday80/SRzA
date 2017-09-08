@@ -66,7 +66,7 @@ class LostAndFoundController extends EquipmentController
                     if ($this->activeUserRole !== 'Administrator')
                         return $this->redirect()->toRoute('home');
 
-                $this->deleteAllImages($item->path);
+                $this->handleDeleteAllImages((int) $item->id);
                 $this->service->deleteById($itemId);
 
                 return $this->redirect()->toUrl($this->flashMessenger()->getMessages('ref')[0]);
@@ -109,7 +109,9 @@ class LostAndFoundController extends EquipmentController
 				$data = $form->getData();
 				$newId = (int) $this->service->getNextId();
 				// upload and save images
-				$data = $this->uploadImage($data, $newId);
+				$newPaths = $this->handleUploads($newId, array(
+					'image' => $data['image']));
+				$data = $newPaths + $data;
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
@@ -148,7 +150,9 @@ class LostAndFoundController extends EquipmentController
 				$data = $form->getData();
 
             	// upload and save images
-				$data = $this->uploadImage($data);
+				$newPaths = $this->handleUploads((int) $data['id'], array(
+					'image' => $data['image']));
+				$data = $newPaths + $data;
 
 				// push into model for selection in service
 				$item = new $vars['model'][$vars['type']]($data);
@@ -173,55 +177,53 @@ class LostAndFoundController extends EquipmentController
 	 *  Image Handling
 	 *
 	 * =============================== */
-	protected function uploadImage ($data, $newId = null)
+	/**
+	 * @param  int   $id	special dynamic selector
+	 * @param  array $data  array of upload arrays like [$key1 => $uploadArray1]
+	 *
+	 * @return array 		array prepared for save
+	 */
+	protected function handleUploads (int $id, array $data)
 	{
 		/** @var ImagePlugin $imageUpload */
 		$imageUpload = $this->image();
-
-		$id = ($newId !== null) ? $newId : $data['id'];
+		$dataTargetPaths = $uploadFileNames = null;
 		$dataTarget = array();
 
 		// upload and save images
 		// =======================
-		// === check if there is a upload array
-		if ($imageUpload->containsUploadArray($data))
-		{
-			$uploadedImages = $imageUpload->getUploadArrays();
-			// if sth was uploaded
-			if ( !empty($uploadedImages) )
-			{
-				// === create path
-				$dataTargetPath = 'LostAndFound/' . $id .'/';
-				foreach ($uploadedImages as $key => &$uploadedImage)
-				{
-					list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[$key]);
-					$uploadFileName = $key .'.' . $extension;
-					$dataTarget[$key] = $dataTargetPath . $uploadFileName;
-
-					// === upload image
-					$imageUpload
-						->setData($uploadedImage)
-						->setDestination($dataTargetPath)
-						->setFileName($uploadFileName);
-
-					$mediaItem = $imageUpload->upload();
-
-					// === process image
-					$imageUpload->imageProcessor->load($mediaItem);
-					$side = 500; // @todo implement config
-					$imageUpload->imageProcessor->resize_square($side);
-					$imageUpload->imageProcessor->saveImage();
-				}
-			};
-
-			// === write paths to item
-			$data = $dataTarget + $data;
+		// === create path
+		foreach ($data as $key => &$uploadedImage) {
+			if ($imageUpload->isValidUploadArray($uploadedImage)) {
+				list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[ $key ]);
+				$uploadFileNames[ $key ] = $key . '.' . $extension;
+				$dataTargetPaths[ $key ] = 'LostAndFound/' . $id . '/';
+				$dataTarget[ $key ] = $dataTargetPaths[ $key ] . $uploadFileNames[ $key ];
+			}
 		}
-		return $data;
+		if ($dataTargetPaths !== null){
+			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
+			if (!is_array($mediaItems)){
+				$mediaItems[0] = $mediaItems;
+			}
+		}
+
+		foreach ($mediaItems as $mediaItem) {
+			// === process image
+			$imageUpload->imageProcessor->load($mediaItem);
+			$side = 500; // @todo implement config
+			$imageUpload->imageProcessor->resize_square($side);
+			$imageUpload->imageProcessor->saveImage();
+		}
+
+		return $dataTarget;
 	}
 
-	protected function deleteAllImages($path)
+	/**
+	 * @param int $itemId
+	 */
+	protected function handleDeleteAllImages(int $itemId)
 	{
-		$this->image()->deleteAllImagesByPath($path);
+		$this->image()->deleteAllImagesByPath('equipment/' . $itemId .'/');
 	}
 }

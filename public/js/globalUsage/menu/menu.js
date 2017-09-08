@@ -12,7 +12,8 @@
       *             setBrowserMode: state.browserMode,
       *             setMobileMode: state.mobileMode,
       *             resized: boolean,
-      *             resizeAction: state.resizeAction
+      *             resizeAction: state.resizeAction,
+      *             togglePin: boolean
       *         }} State
      */
     /** @var State*/
@@ -21,6 +22,7 @@
         mobile: "mobile",
         browser: "browser",
         resized: false,
+        togglePin: false,
         setMode: function (modus) {
             this.mode = modus;
         },
@@ -40,6 +42,7 @@
             /* ------------------ RUNNING SCRIPT -------------------- */
             setMode();
             menuRowDesigner();
+            menuActionPin();
 
             $(window).resize(function () {
                 state.resizeAction();
@@ -72,12 +75,28 @@
                     .toggleClass("mobile-animation");
             }
 
+            function pinToggle () {
+                $(".log-pin-overlay").toggleClass("hidden");
+                if (state.togglePin){
+                    state.togglePin = false;
+                    $('.logging-container').css('z-index', '1')
+                } else {
+                    state.togglePin = true;
+                    $('.logging-container').css('z-index', '10')
+                }
+            }
+
+            function menuActionPin(){
+                $('.log-pin').on("click", pinToggle);
+            }
+
             /**
              * Sets the mode by view size
              * sets mode to "browser" || "mobile"
              * and runs designing script
              */
             function setMode () {
+
                 /**
                  * binds the menu show-hide action and sets all hidden
                  */
