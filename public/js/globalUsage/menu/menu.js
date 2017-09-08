@@ -8,11 +8,11 @@
      *              mode: string,
      *              mobile: string,
      *              browser: string,
-      *             setMode: state.setMode,
-      *             setBrowserMode: state.browserMode,
-      *             setMobileMode: state.mobileMode,
+      *             setMode: menuState.setMode,
+      *             setBrowserMode: menuState.browserMode,
+      *             setMobileMode: menuState.mobileMode,
       *             resized: boolean,
-      *             resizeAction: state.resizeAction,
+      *             resizeAction: menuState.resizeAction,
       *             togglePin: boolean
       *         }} MenuState
      */
@@ -55,7 +55,7 @@
         },
             /**
              * Sets the mode by view size
-             * sets mode to state.browser || state.mobile
+             * sets mode to menuState.browser || menuState.mobile
              */
         setMode: function(){
             if (window.matchMedia('(max-width: 700px)').matches) {
@@ -110,7 +110,7 @@
 
         /**
          * Runs designing and handler scripts
-         * in dependency of state.mode
+         * in dependency of menuState.mode
          */
         modeDependencyActions: function () {
 
@@ -157,7 +157,7 @@
                 /* removes the animation to avoid view bugs when resized in open state or to normal view */
                 $(".menu_items").removeClass("mobile-animation");
 
-                if (state.mode === state.browser) {
+                if (menuState.mode === menuState.browser) {
                     /* remove 'hidden' from mobile views ... reverts menuDesignMobile() */
                     removeDesignOfMobileViewInBrowserView();
                 }
@@ -210,9 +210,9 @@
             }
 
 
-            if (state.mode === "browser") {
+            if (menuState.mode === "browser") {
                 /* to avoid view bugs when started in mobile view */
-                if (state.resized) {
+                if (menuState.resized) {
                     getPropertys();
                 }
                 if (window.matchMedia(Designer.selector).matches) {
@@ -222,13 +222,13 @@
                     $(Designer.ele).on("mouseout", down);
                 }
                 else {
-                    if (state.resized) {
+                    if (menuState.resized) {
                         removeStyles();
                     }
                 }
             }
             else {
-                if (state.resized) {
+                if (menuState.resized) {
                     removeStyles();
                 }
             }
