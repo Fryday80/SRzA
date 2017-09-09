@@ -486,66 +486,43 @@ class MediaService {
     public function getPermission($path) {
         $fullPath = $this->realPath($path);
         if (!$fullPath) return ['readable' => 0, 'writable' => 0];
-//@todo deprecated systemPermission
-//        $sysPerms = $this->getSystemPermission($fullPath);
-        $isDir = is_dir($fullPath);
-        $file = basename($fullPath);
         $role = $this->accessService->getRole();
+        if ($role === "Administrator") return ['readable' => 1, 'writable' => 1];
+
+        $file = basename($fullPath);
         $readable = 0;
         $writable = 0;
 
-        if ($isDir) {
-            $meta = $this->getFolderMeta($path);
-            if ($meta instanceof MediaException) {
-                return ['readable' => 0, 'writable' => 0];
-            }
-            if ($meta && isset($meta['Permissions']) ) {
-                if (isset($meta['Permissions']['folderRead'])) {
-                    if (in_array($role, $meta['Permissions']['folderRead']) ) {
-                        $readable = 1;
-                    }
-                }
-                if (isset($meta['Permissions']['folderWrite'])) {
-                    if (in_array($role, $meta['Permissions']['folderWrite']) ) {
-                        $writable = 1;
-                    }
+        $meta = $this->getFolderMeta($path);
+        if ($meta instanceof MediaException) {
+            return ['readable' => 0, 'writable' => 0];
+        }
+        if ($meta && isset($meta['Permissions']) ) {
+            if (isset($meta['Permissions']['read'])) {
+                if (in_array($role, $meta['Permissions']['read']) ) {
+                    $readable = 1;
                 }
             }
-        } else {
-            $meta = $this->getFolderMeta($path);
-            if ($meta instanceof MediaException) {
-                return ['readable' => 0, 'writable' => 0];
+            if (isset($meta['Permissions']['write'])) {
+                if (in_array($role, $meta['Permissions']['write']) ) {
+                    $writable = 1;
+                }
             }
-            if ($meta && isset($meta['Permissions']) ) {
-                if (isset($meta['Permissions']['allRead'])) {
-                    if (in_array($role, $meta['Permissions']['allRead']) ) {
-                        $readable = 1;
+            // permission restrictions
+            if ($meta && isset($meta['Restrictions']) ) {
+                if (isset($meta['Restrictions'][$role.'Read'])) {
+                    if (in_array($file, $meta['Restrictions'][$role.'Read']) ) {
+                        $readable = 0;
                     }
                 }
-                if (isset($meta['Permissions']['allWrite'])) {
-                    if (in_array($role, $meta['Permissions']['allWrite']) ) {
-                        $writable = 1;
-                    }
-                }
-                //file permission exeptions
-                if ($meta && isset($meta['FileRestrictions']) ) {
-                    if (isset($meta['FileRestrictions'][$role.'Read'])) {
-                        if (in_array($file, $meta['FileRestrictions'][$role.'Read']) ) {
-                            $readable = 0;
-                        }
-                    }
-                    if (isset($meta['FileRestrictions'][$role.'Write'])) {
-                        if (in_array($file, $meta['FileRestrictions'][$role.'Write']) ) {
-                            $writable = 0;
-                        }
+                if (isset($meta['Restrictions'][$role.'Write'])) {
+                    if (in_array($file, $meta['Restrictions'][$role.'Write']) ) {
+                        $writable = 0;
                     }
                 }
             }
         }
         return [
-//@todo deprecated systemPermission
-//            'readable' => ($sysPerms['r'] == 0)? 0: $readable,
-//            'writable' => ($sysPerms['w'] == 0)? 0: $writable
             'readable' => $readable,
             'writable' => $writable
         ];
@@ -665,57 +642,73 @@ class MediaService {
         }
     }
 
-	/**
-	 * @param array  $filePostArray
-	 * @param string $targetFolder
-	 * @param bool   $force
-	 *
-	 * @return MediaException|UploadHandler
-	 */
-	public function uploadHandlerFactory($filePostArray, $targetFolder, $force = false) {
+    /**
+     * @param array $uploadFileDefsArray the php FILES array
+     * @param string|array $targetFolder string or array of target folders. (length needs to be the same as fileDefsArray)
+     * @param string|array $targetName string(without extension) or array of file names. (length needs to be the same as fileDefsArray)
+     * @throws Exception
+     */
+    public function multiUpload($uploadFileDefsArray, $targetFolder, $targetName) {
+        $fileCount = count($uploadFileDefsArray);
+        if (is_array($targetFolder) && count($targetFolder) != $fileCount) {
+            throw new Exception("if targetFolder is an array, it must have the same length");
+        }
+        if (is_array($targetName) && count($targetName) != $fileCount) {
+            throw new Exception("if targetName is an array, it must have the same length");
+        }
+        $index = 0;
+        foreach ($uploadFileDefsArray as $key => $value) {
+            $name = (is_string($targetName))? $targetName: $targetName[$index];
+            $target = (is_string($targetFolder))? $targetFolder: $targetFolder[$index];
+            $handler = $this->uploadHandlerFactory($value, $target);
+            $handler->autoOverwrite = false;
+            $handler->setName($name);
+
+            $handler->upload();
+            $index++;
+        }
+    }
+
+    /**
+     * @param array $uploadFileDef    one element of the php FILES array
+     * @param string $targetFolder
+     * @param bool $force ignore write permission
+     * @return UploadHandler
+     * @throws MediaException
+     */
+	public function uploadHandlerFactory($uploadFileDef, $targetFolder, $force = false) {
 		$target = $this->realPath($targetFolder);
 
-		if (!$target && $force) {
-			$path = str_replace(getcwd(), '', $targetFolder);
-			$path = str_replace(DATA_PATH, '', $path);
-			$parts = substr($path, 1);
-			$parts = explode('/', $parts);
-			$rootPath = $this->cleanPath( getcwd() . DATA_PATH );
-			$c = count($parts);
-			$i = 0;
-			while ($i < $c-1){
-				$rootPath .= '/' . $parts[$i];
-				@mkdir( $rootPath, 0755);
-				$i++;
-			}
-			$target = $rootPath . '/' .$parts[$c-1];
-		}
-
+		if (!$target) {
+            $dirs = explode('/', $targetFolder);
+            $lastDir = '/';
+            foreach ($dirs as $key => $value) {
+                if ($value == '') continue;
+                $nextDir = $lastDir . $value.'/';
+                if (file_exists($this->dataPath.$nextDir)) {
+                    $lastDir = $nextDir;
+                } else {
+                    $target = $lastDir;
+                    break;
+                }
+            }
+        }
 		$perm = $this->getPermission($target);
 		if (!$force && !$perm['writable']) {
-			return new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
+			throw new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
 		}
-
-		$path = '';
-
-		try {
-			$uploadHandler = new UploadHandler($filePostArray, $target);
-			$self = $this;
-			$uploadHandler->registerOnFinishHandler(function($targetPath) {
-				global $self;
-				bdump("ano func");
-				$item = $self->getItem(Pathfinder::getRelativePath($targetPath));
-				if ($self->isImage($item->fullPath)) {
-					$self->imageProcessor->load($item);
-					$self->createDefaultThumbs($item);
-				}
-			});
-			$uploadHandler->autoOverwrite = false;
-			$uploadHandler->autoRename = true;
-			return $uploadHandler;
-		} catch (Exception $e) {
-			return new MediaException(ERROR_TYPES::UPLOAD_ERROR, $e->getMessage());
-		}
+        $uploadHandler = new UploadHandler($uploadFileDef, $this->dataPath.$targetFolder);
+        $self = $this;
+        $uploadHandler->registerOnFinishHandler(function($targetPath) use ($self) {
+            $item = $self->getItem(Pathfinder::getRelativePath($targetPath));
+            if ($self->isImage($item->fullPath)) {
+                $self->imageProcessor->load($item);
+                $self->createDefaultThumbs($item);
+            }
+        });
+        $uploadHandler->autoOverwrite = false;
+        $uploadHandler->autoRename = true;
+        return $uploadHandler;
 	}
     private function addItem2cache(MediaItem $item) {
         $path = rtrim($item->path, "\x5C\x2F");
@@ -765,8 +758,11 @@ class MediaService {
             return false;
         }
 
-        $dir = scandir($path);
         $role = $this->accessService->getRole();
+        if ($role === "Administrator") {
+            return true;
+        }
+        $dir = scandir($path);
         $meta = $this->getFolderMeta($path);
         if ($meta instanceof MediaException) {
             return false;
@@ -836,7 +832,6 @@ class MediaService {
         }
         $dir = $objectivePath;
         $objectivePath = $objectivePath.'/folder.conf';
-//        var_dump($objectivePath);die;//ich muss weg bis in 20 min :)kk
         $process_sections = true;
         $scanner_mode = INI_SCANNER_TYPED;
         if (array_key_exists($objectivePath, $this->metaCache)) {
@@ -851,7 +846,7 @@ class MediaService {
             if ($ini instanceof MediaException) {
                 return $ini;
             }
-            unset($ini['FileRestrictions']);
+//            unset($ini['Restrictions']);
             $this->metaCache[$objectivePath] = $ini;
         }
         return $ini;

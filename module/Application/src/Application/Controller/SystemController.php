@@ -11,6 +11,7 @@ use Application\Service\SystemService;
 use Application\Utility\DataTable;
 use Exception;
 use Media\Service\ImageProcessor;
+use Media\Service\MediaException;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -126,9 +127,25 @@ class SystemController extends AbstractActionController
             /** @var MediaService $mediaService */
             $mediaService = $this->systemService->serviceManager->get('MediaService');
 
-            $fileData = $this->getRequest()->getFiles()->toArray()['File'];
-            $mediaService->upload($fileData, 'gallery');
-
+            if (false) {
+                $fileData = $this->getRequest()->getFiles()->toArray()['File'];
+                try {
+                    $uploadHandler = $mediaService->uploadHandlerFactory($fileData, '/gallery/pups', true);
+                    $uploadHandler->autoRename = true;
+                    $uploadHandler->upload();
+                } catch (Exception $e) {
+                    bdump($e->getMessage());
+                }
+            } else {
+                //@todo testen
+                $filesData = $this->getRequest()->getFiles()->toArray();
+                try {
+                    //@todo testen -> targetFolder und targetName als string[] übergeben
+                    $mediaService->multiUpload($filesData, '/gallery/pups', "neuerName");
+                } catch (Exception $e) {
+                    bdump($e->getMessage());
+                }
+            }
         }
         $form->isValid();
         return array(
