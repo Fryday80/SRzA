@@ -171,7 +171,9 @@
         },
 
         menuRowDesigner: function () {
-            var Designer;
+            var Designer, self;
+
+            self = this;
 
             Designer = {
                 selector: '',
@@ -197,11 +199,11 @@
             }
 
             function up() {
-                $('*', this).css('z-index', 12);
+                $('*', self).css('z-index', 12);
             }
 
             function down() {
-                $('*', this).css('z-index', Designer.zIndex);
+                $('*', self).css('z-index', Designer.zIndex);
             }
 
             function removeStyles() {
