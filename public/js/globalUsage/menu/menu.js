@@ -38,13 +38,14 @@
     };
     apps.menuHandler = {
         run: function () {
+            var self = this;
             /* ------------------ RUNNING SCRIPT --START------------- */
             this.menuActionPin();
             this.modeSwitching();
 
             $(window).resize(function () {
                 menuState.resizeAction();
-                this.modeSwitching();
+                self.modeSwitching();
             });
             /* ------------------ RUNNING SCRIPT --END--------------- */
         },
@@ -113,6 +114,7 @@
          * in dependency of menuState.mode
          */
         modeDependencyActions: function () {
+            var self = this;
 
             function mobileMenuHandling(){
                 menuActionsMobile();
@@ -123,11 +125,11 @@
              * binds the menu show-hide action and sets all hidden
              */
             function menuActionsMobile() {
-                $(".mobile-menu-toggle").on("click", this.menuToggle);
+                $(".mobile-menu-toggle").on("click", self.menuToggle);
 
-                $(".user-menu-toggle").on("click", this.userMenuToggle);
+                $(".user-menu-toggle").on("click", self.userMenuToggle);
 
-                $(".login-menu-toggle").on("click", this.loginMenuToggle);
+                $(".login-menu-toggle").on("click", self.loginMenuToggle);
             }
             function menuDesignMobile(){
                 $(".menu_items")        .not('hidden').addClass("hidden");
@@ -138,9 +140,9 @@
 
             /** removes click events to avoid multiple bindings */
             function removeMobileHandlers() {
-                $(".mobile-menu-toggle").off("click", menuToggle);
-                $(".login-menu-toggle").off("click", loginMenuToggle);
-                $(".user-menu-toggle").off("click", userMenuToggle);
+                $(".mobile-menu-toggle").off("click", self.menuToggle);
+                $(".login-menu-toggle") .off("click", self.loginMenuToggle);
+                $(".user-menu-toggle")  .off("click", self.userMenuToggle);
             }
             /** reverts menuDesignMobile() */
             function removeDesignOfMobileViewInBrowserView(){
