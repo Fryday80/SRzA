@@ -21,11 +21,6 @@
         .at-hide;
     }
 
-    //.js-L-view {
-    //    display:none;
-    //}
-
-
     /* ----------------- fonts -------------------- */
     .own_text_big,
     .own_text_medium
@@ -88,5 +83,47 @@
     button
     {
         min-height: 35px;
+    }
+    .js-L-view
+    {
+        display: none;
+    }
+    .js-L-view-inline
+    {
+        display: none;
+    }
+    .js-S-view
+    {
+        display: block;
+    }
+    .js-S-view-inline
+    {
+        display: inline-block;
+    }
+}
+
+@media only screen and (min-width: 700px) {
+    .js-L-view
+    {
+        display: block;
+    }
+
+    .js-S-view
+    {
+        display: none;
+    }
+    .js-S-view-inline
+    {
+        display: none;
+    }
+
+    .js-L-view
+    {
+        display: block;
+    }
+
+    .js-L-view-inline
+    {
+        display: inline-block;
     }
 }
