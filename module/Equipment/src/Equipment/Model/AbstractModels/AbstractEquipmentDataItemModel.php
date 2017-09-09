@@ -2,9 +2,8 @@
 namespace Equipment\Model\AbstractModels;
 
 use Application\Model\AbstractModels\AbstractModel;
-use Equipment\Model\Interfaces\IEquipment;
 
-class AbstractEquipmentDataItemModel extends AbstractModel implements IEquipment
+class AbstractEquipmentDataItemModel extends AbstractModel
 {
     /** @var  int */
     public $id;

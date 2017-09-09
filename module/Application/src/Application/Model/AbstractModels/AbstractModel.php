@@ -122,13 +122,8 @@ class AbstractModel implements ArrayAccess, IObjectToArray
         return false;
     }
 
-	public function getArrayCopy()
-	{
-		return get_object_vars($this);
-	}
-
 	public function toArray()
 	{
-		return $this->getArrayCopy();
+		return get_object_vars($this);
 	}
 }

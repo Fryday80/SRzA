@@ -202,7 +202,6 @@ class Hydrator extends ClassMethods
             $values[$realAttributeName] = $this->extractValue($realAttributeName, $object->$methodName(), $object);
         }
 
-
         $data   = get_object_vars($object);
         $filter = $this->getFilter();
         foreach ($data as $name => $value) {
