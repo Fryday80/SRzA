@@ -40,6 +40,7 @@ return array(
     'Application\Model\Enums\LogType'                        => __DIR__ . '/src/Application/Model/Enums/LogType.php',
     'Application\Model\Enums\Microtime'                      => __DIR__ . '/src/Application/Model/Enums/Microtime.php',
     'Application\Model\Enums\OrderType'                      => __DIR__ . '/src/Application/Model/Enums/OrderType.php',
+    'Application\Model\Interfaces\IHydratorModelAccess' => __DIR__ . '/src/Application/Model/Interfaces/IHydratorAccess.php',
     'Application\Model\Interfaces\IObjectToArray'            => __DIR__ . '/src/Application/Model/Interfaces/IObjectToArray.php',
     'Application\Model\DynamicHashTable'                     => __DIR__ . '/src/Application/Model/Tables/DynamicHashTable.php',
     'Application\Model\MailTemplatesTable'                   => __DIR__ . '/src/Application/Model/Tables/MailTemplatesTable.php',

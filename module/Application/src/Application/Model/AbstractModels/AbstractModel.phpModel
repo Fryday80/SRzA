@@ -8,10 +8,11 @@
 
 namespace Application\Model\AbstractModels;
 
+use Application\Model\Interfaces\IHydratorModelAccess;
 use Application\Model\Interfaces\IObjectToArray;
 use ArrayAccess;
 
-class AbstractModel implements ArrayAccess, IObjectToArray
+class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess
 {
     private $propertiesCache;
 

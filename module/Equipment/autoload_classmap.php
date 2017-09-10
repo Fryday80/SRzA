@@ -26,7 +26,6 @@ return array(
     'Equipment\Model\Enums\EStoragePlaces'                          => __DIR__ . '/src/Equipment/Model/Enums/EStoragePlaces.php',
     'Equipment\Model\Enums\ETentShape'                              => __DIR__ . '/src/Equipment/Model/Enums/ETentShape.php',
     'Equipment\Model\Enums\ETentType'                               => __DIR__ . '/src/Equipment/Model/Enums/ETentType.php',
-    'Equipment\Model\Interfaces\IEquipment'                         => __DIR__ . '/src/Equipment/Model/Interfaces/IEquipment.php',
     'Equipment\Model\EquipTable'                                    => __DIR__ . '/src/Equipment/Model/Tables/EquipTable.php',
     'Equipment\Model\Tables\LostAndFoundTable'                      => __DIR__ . '/src/Equipment/Model/Tables/LostAndFoundTable.php',
     'Equipment\Model\SitePlannerTable'                              => __DIR__ . '/src/Equipment/Model/Tables/SitePlannerTable.php',
