@@ -10,6 +10,7 @@
 <a name="MessageRedirect"></a>
 ---
 ###MessageRedirect
+>Flash Message and redirect
 - module: Application
 - regName: ??  @todo ist nicht registriert
 
