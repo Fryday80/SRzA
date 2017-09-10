@@ -5,6 +5,8 @@
     - ##### [MyUrl](###MyUrl)
     - ##### [MyViewHelper](###MyViewHelper)
 - in Auth
+- in Media
+    - ##### [ImagePlugin](###ImagePlugin)
 
 
 
@@ -38,3 +40,18 @@ setzt eine Flash Massage und redirect zu message page
 - regName: ??
 ```
 ```
+
+###ImagePlugin
+- module: ImagePlugin
+- regName: image
+
+>DE: Plugin um die Bilder über den Media Service hoch zu laden und zu löschen
+>EN: Plugin to manage Image upload and delete via MediaService
+```
+in Controller xy:
+$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
+```
+- $data:            array of form upload arrays
+- $dataTargetPaths: single target path string | array of target path strings
+- $uploadFileNames: single target file name | array of target filename strings
+- @return: $mediaItems: array of [MediaItems]

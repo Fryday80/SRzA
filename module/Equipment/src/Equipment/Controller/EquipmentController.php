@@ -291,6 +291,7 @@ class EquipmentController extends AbstractActionController
 		$imageUpload = $this->image();
 		$dataTargetPaths = $uploadFileNames = null;
 		$dataTarget = array();
+		$mediaItems = null;
 
 		// upload and save images
 		// =======================
@@ -305,19 +306,19 @@ class EquipmentController extends AbstractActionController
 		}
 		if ($dataTargetPaths !== null){
 			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
-			if (!is_array($mediaItems)){
-				$mediaItems[0] = $mediaItems;
+		}
+
+		if ($mediaItems){
+			foreach ($mediaItems as $mediaItem) {
+				// === process image
+				$imageUpload->imageProcessor->load($mediaItem);
+				$side = 500; // @todo implement config
+				$imageUpload->imageProcessor->resize_square($side);
+				$imageUpload->imageProcessor->saveImage();
 			}
 		}
 
-		foreach ($mediaItems as $mediaItem) {
-			// === process image
-			$imageUpload->imageProcessor->load($mediaItem);
-			$side = 500; // @todo implement config
-			$imageUpload->imageProcessor->resize_square($side);
-			$imageUpload->imageProcessor->saveImage();
-		}
-
+		if (empty($dataTarget)) return null;
 		return $dataTarget;
 	}
 

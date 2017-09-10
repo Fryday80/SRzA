@@ -47,7 +47,7 @@ class ImagePlugin extends AbstractPlugin
 		if (is_array($uploadDestinationPath))
 			return $this->multiUpload($uploadData, $uploadDestinationPath, $uploadFileName);
 		else
-			return $this->singleUpload($uploadData, $uploadDestinationPath, $uploadFileName);
+			return array($this->singleUpload($uploadData, $uploadDestinationPath, $uploadFileName));
 
 	}
 
