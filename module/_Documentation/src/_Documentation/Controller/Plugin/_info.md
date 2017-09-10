@@ -1,12 +1,14 @@
 #Controller Plugins
 - ## Application Module
-    - ##### [MessageRedirect](###MessageRedirect)
-    - ##### [DefaultView](###DefaultView)
+    - ##### [MessageRedirect](#MessageRedirect)
+    - ##### [DefaultView](#DefaultView)
     
 - ## Media Module
-    - ##### [ImagePlugin](###ImagePlugin)
+    - ##### [ImagePlugin](#ImagePlugin)
 
-#
+
+<a id="MessageRedirect"></a>
+---
 ###MessageRedirect
 - module: Application
 - regName: ??  @todo ist nicht registriert
@@ -16,6 +18,8 @@ setzt eine Flash Massage und redirect zu message page
     public function __invoke($title, $msg);
 ```
 
+<a name="DefaultView"></a>
+---
 ###DefaultView
 >Provides access to default view models
 - module: Application
@@ -26,13 +30,17 @@ setzt eine Flash Massage und redirect zu message page
     public function setVars($vars);
     public function addVars($vars);
     public function setVar;
-    // get default view for:
+```
+- ` ->vars ` provides std array of vars  
+- ` ->addVars($vars) ` uses ` $vars + $this->vars ` to avoid multiple entries per key
+
+get default views by:
+```
     public function delete($vars = null);
     public function edit($vars = null);
 ```
-` ->vars ` provides std array of vars  
-` ->addVars($vars) ` uses ` $vars + $this->vars ` to avoid multiple entries per key
-
+<a id="ImagePlugin"></a>
+---
 ###ImagePlugin
 >Plugin to manage Image upload and delete via MediaService   
 - module: Media

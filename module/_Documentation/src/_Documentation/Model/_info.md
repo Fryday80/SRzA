@@ -27,28 +27,28 @@
     - ##### Tables
 - ## Nav Module
 
-#
 <a name="AbstractModel"></a>
+---
 ###AbstractModel
+`class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess` 
 >Basic Model for Data Models
 - module: Application
 - type: Basic Model
 
-```
-    class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess
-```
+
 - allows array access to object
 - allows hydrator access to object
 - contains method ->toArray() to get (public) values as array
 
+<a name="DatabaseTable"></a>
+---
 ###DatabaseTable
+`class DatabaseTable extends AbstractTableGateway`  
 >Basic Model for Tables
 - module: Application
 - type: Basic Model
 
 ```php
-    class DatabaseTable extends AbstractTableGateway
-    
     public function __construct(Adapter $adapter, $objectPrototype, Hydrator $hydrator = null )
     
     public function getAll()
@@ -79,13 +79,18 @@
 ```
 - standard db access
 
-###MediaItem<a id="MediaItem"></a>
->Model for MediaService
+<a id="MediaItem"></a>
+---
+###MediaItem
+` class MediaItem `
+>Model for MediaService  
+
+
 - module: Application
-- type: Standalone
+- type: Explicit Model / Standalone
 
 ```
     class MediaItem
 ```
-return type from [MediaService](../Service/_info.md) requests
-return type from [MediaService](../Service/_info.md) requests
+return type from [MediaService](../Service/_info.md#MediaService) requests  
+[goto Services](../Service/_info.md)
