@@ -20,6 +20,8 @@
 
 <br><br>
 
+<a name="ConverterHelper"></a>
+---
 ###ConverterHelper
 - module: Application
 - regName: ?? 
@@ -39,55 +41,73 @@
     public function beautyBytes($bytes);
 ```
 
+<a name="ConverterHelper"></a>
+---
 ###DataTableHelper
 - module: Application
 - regName: ?? 
 ```
 ```
 
+<a name="MyUrl"></a>
+---
 ###MyUrl
 - module: Application
 - regName: ?? 
 ```
 ```
 
+<a name="MyViewHelper"></a>
+---
 ###MyViewHelper
 - module: Application
 - regName: ?? 
 ```
 ```
 
+<a name="LoginView"></a>
+---
 ###LoginView
 - module: Auth
 - regName: ?? 
 ```
 ```
 
+<a name="UserInfo"></a>
+---
 ###UserInfo
 - module: Auth
 - regName: ?? 
 ```
 ```
 
+<a name="UpcomingEvents"></a>
+---
 ###UpcomingEvents
 - module: Calendar
 - regName: ?? 
 ```
 ```
 
+<a name="BlazonHelper"></a>
+---
 ###BlazonHelper
 - module: Cast
 - regName: ?? 
 ```
 ```
 
+<a name="RandomImageHelper"></a>
+---
 ###RandomImageHelper
 - module: Gallery
 - regName: ?? 
 ```
 ```
 
-#MediaHelper
+<a name="MediaHelper"></a>
+---
+###MediaHelper
 - module: Media
 - regName: ?? 
 ```

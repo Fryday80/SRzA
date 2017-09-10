@@ -7,7 +7,7 @@
     - ##### [ImagePlugin](#ImagePlugin)
 
 
-<a id="MessageRedirect"></a>
+<a name="MessageRedirect"></a>
 ---
 ###MessageRedirect
 - module: Application
@@ -39,7 +39,7 @@ get default views by:
     public function delete($vars = null);
     public function edit($vars = null);
 ```
-<a id="ImagePlugin"></a>
+<a name="ImagePlugin"></a>
 ---
 ###ImagePlugin
 >Plugin to manage Image upload and delete via MediaService   
