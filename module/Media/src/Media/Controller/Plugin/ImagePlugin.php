@@ -4,7 +4,7 @@ namespace Application\Controller\Plugin;
 use const Media\Service\DATA_PATH;
 use Media\Service\ImageProcessor;
 use Media\Service\MediaException;
-use Media\Service\MediaItem;
+use Media\Model\MediaItem;
 use Media\Service\MediaService;
 use Media\Utility\Pathfinder;
 use Zend\Mvc\Controller\Plugin\AbstractPlugin;
@@ -40,7 +40,7 @@ class ImagePlugin extends AbstractPlugin
 
 
 	/**
-	 * @return MediaException[]|\Media\Service\MediaItem[]
+	 * @return MediaException[] | MediaItem[]
 	 */
 	public function upload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{

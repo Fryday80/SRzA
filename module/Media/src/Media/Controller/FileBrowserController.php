@@ -3,7 +3,7 @@ namespace Media\Controller;
 
 use Media\Service\ERROR_TYPES;
 use Media\Service\MediaException;
-use Media\Service\MediaItem;
+use Media\Model\MediaItem;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;

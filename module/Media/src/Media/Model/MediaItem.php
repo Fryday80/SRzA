@@ -1,5 +1,5 @@
 <?php
-namespace Media\Service;
+namespace Media\Model;
 
 class MediaItem {
     public $name;

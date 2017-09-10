@@ -37,7 +37,7 @@ $this->headScript()->appendFile('/js/selectedUsage/jgallery-patch/jgallery-patch
     <div class="album" data-jgallery-album-title="Album 1">
         <h1><?php echo $album->getName()?></h1>
         <?php
-            /** @var \Media\Service\MediaItem $image */
+            /** @var \Media\Model\MediaItem $image */
 			foreach ($album as $image) : ?>
             <a href="<?= $src = '/media/file/' . $image->path; ?>"><img src="<?= $src ?>" alt="Source: schwarze-ritter-augsburg.com/"  /></a>
         <?php endforeach; ?>

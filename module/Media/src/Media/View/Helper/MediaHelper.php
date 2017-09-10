@@ -11,7 +11,7 @@
 
 	use const Media\Service\LIVE_PATH;
 	use Media\Service\MediaException;
-	use Media\Service\MediaItem;
+	use Media\Model\MediaItem;
 	use Media\Service\MediaService;
 	use Zend\Form\View\Helper\AbstractHelper;
 

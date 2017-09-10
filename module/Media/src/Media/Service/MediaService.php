@@ -11,6 +11,7 @@ use RecursiveIteratorIterator;
 use Zend\Http\Response;
 use Zend\ServiceManager\ServiceManager;
 use ZipArchive;
+use Media\Model\MediaItem;
 
 
 

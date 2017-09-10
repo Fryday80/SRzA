@@ -2,7 +2,7 @@
 namespace Gallery\Model;
 
 
-use Media\Service\MediaItem;
+use Media\Model\MediaItem;
 use Media\Service\MediaService;
 use Tracy\Debugger;
 
