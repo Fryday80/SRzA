@@ -167,17 +167,19 @@ return array(
                         ),
                         'may_terminate' => true,
                         'child_routes' => array(
-                            'add' => array(
-                                'type' => 'Segment',
-                                'options' => array(
-                                    'route' => '/add',
-                                    'constraints' => array(),
-                                    'defaults' => array(
-                                        'action' => 'addMailTemplate',
-                                    )
-                                ),
-                                'may_terminate' => true,
-                            ),
+                        	//@todo cleanfix
+//                            'add' => array(
+//                                'type' => 'Segment',
+//                                'options' => array(
+//                                    'route' => '/add',
+//                                    'constraints' => array(),
+//                                    'defaults' => array(
+//                                        'action' => 'addMailTemplate',
+//                                    )
+//                                ),
+//                                'may_terminate' => true,
+//                            ),
+							//@todo cleanfix
                             'template' => array(
                                 'type' => 'Segment',
                                 'options' => array(
