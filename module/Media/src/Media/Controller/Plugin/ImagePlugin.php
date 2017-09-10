@@ -40,7 +40,7 @@ class ImagePlugin extends AbstractPlugin
 
 
 	/**
-	 * @return MediaException|\Media\Service\MediaItem
+	 * @return MediaException[]|\Media\Service\MediaItem[]
 	 */
 	public function upload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{
@@ -53,7 +53,7 @@ class ImagePlugin extends AbstractPlugin
 
 	public function deleteAllImagesByPath($path)
 	{
-		$this->mediaService->deleteAllItems($path);
+		$this->mediaService->deleteAllItemsByPath($path);
 	}
 
 	// === prepare
