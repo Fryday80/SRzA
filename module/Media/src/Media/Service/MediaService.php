@@ -663,7 +663,6 @@ class MediaService {
             $target = (is_string($targetFolder))? $targetFolder: $targetFolder[$index];
             $handler = $this->uploadHandlerFactory($value, $target);
             $handler->autoOverwrite = false;
-            $handler->
 			if ($targetName !== null){
 				$name = (is_string($targetName)) ? $targetName : $targetName[ $index ];
 			}

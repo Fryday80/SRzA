@@ -9,6 +9,7 @@
 namespace Gallery\Utility;
 
 
+use Exception;
 use Gallery\Service\GalleryService;
 use Zarganwar\PerformancePanel\Register;
 use Zend\View\Helper\AbstractHelper;
