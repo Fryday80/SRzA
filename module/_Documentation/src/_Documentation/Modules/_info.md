@@ -1,0 +1,19 @@
+#Modules
+- ## Application Module
+    - Main module of Zend Skeleton
+- ## Auth Module
+    - Authentication
+    - login handling
+    - User handling
+- ## Calendar Module
+    - implementation of Google Calendar
+- ## Cast Module
+    - Cast Management
+- ## Cms Module
+    - CMS
+- ## Equipment Module
+    - Stuff and Equipment management
+- ## Gallery Module
+- ## Media Module
+- ## Nav Module
+ - Navigation

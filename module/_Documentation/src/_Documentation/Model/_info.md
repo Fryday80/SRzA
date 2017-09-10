@@ -1,13 +1,15 @@
 # Models
-## Application Module
-##### Abstract Models
-- ##### [AbstractModel](##AbstractModel)
-- ##### [DatabaseTable](##DatabaseTable)
-##### Enums
-##### Models / DataModels
-##### Interfaces
-##### Tables
+- ## Application Module
+    - ##### Abstract Models
+        - ##### [AbstractModel](##AbstractModel)
+        - ##### [DatabaseTable](##DatabaseTable)
+    - ##### Enums
+    - ##### Models / DataModels
+    - ##### Interfaces
+    - ##### Tables
+- ## Auth Module
 
+#
 ###AbstractModel
 Basic Model for Data Models
 - module: Application
