@@ -648,7 +648,7 @@ class MediaService {
      * @param string|array $targetName string(without extension) or array of file names. (length needs to be the same as fileDefsArray)
      * @throws Exception
      */
-    public function multiUpload($uploadFileDefsArray, $targetFolder, $targetName) {
+    public function multiUpload($uploadFileDefsArray, $targetFolder, $targetName = null) {
         $fileCount = count($uploadFileDefsArray);
         if (is_array($targetFolder) && count($targetFolder) != $fileCount) {
             throw new Exception("if targetFolder is an array, it must have the same length");
@@ -658,12 +658,16 @@ class MediaService {
         }
         $index = 0;
         foreach ($uploadFileDefsArray as $key => $value) {
-            $name = (is_string($targetName))? $targetName: $targetName[$index];
+			$name = null;
             $target = (is_string($targetFolder))? $targetFolder: $targetFolder[$index];
             $handler = $this->uploadHandlerFactory($value, $target);
             $handler->autoOverwrite = false;
-            $handler->setName($name);
+            $handler->
+			if ($targetName !== null){
+				$name = (is_string($targetName)) ? $targetName : $targetName[ $index ];
+			}
 
+			$handler->setName($name);
             $handler->upload();
             $index++;
         }
@@ -677,7 +681,7 @@ class MediaService {
      * @throws MediaException
      */
 	public function uploadHandlerFactory($uploadFileDef, $targetFolder, $force = false) {
-		$target = $this->realPath($targetFolder);
+		$target = $permTest = $this->realPath($targetFolder);
 
 		if (!$target) {
             $dirs = explode('/', $targetFolder);
@@ -688,13 +692,14 @@ class MediaService {
                 if (file_exists($this->dataPath.$nextDir)) {
                     $lastDir = $nextDir;
                 } else {
-                    $target = $lastDir;
+					$permTest = $lastDir;
                     break;
                 }
             }
         }
-		$perm = $this->getPermission($target);
-		if (!$force && !$perm['writable']) {
+
+		$perm = $this->getPermission($permTest);
+		if (!$force && $perm['writable'] != 1) {
 			throw new MediaException(ERROR_TYPES::NO_WRITE_PERMISSION, $targetFolder);
 		}
         $uploadHandler = new UploadHandler($uploadFileDef, $this->dataPath.$targetFolder);
@@ -798,8 +803,11 @@ class MediaService {
 	 * @return bool|string
 	 */
     private function realPath($path) {
-    	// todo false if comtains '../' or './'
-		if (Pathfinder::isAbsolute($path)) return false;
+		if (Pathfinder::isAbsolute($path)) {
+			$dataRoot = $this->cleanPath(getcwd() . '/Data');
+			$test = substr($path, 0 , strlen($dataRoot));
+			if ($test !== $dataRoot) return false;
+		}
         $realPath = realpath($this->dataPath.'/'.$path);
         if (!$realPath)
             $realPath = realpath($path);

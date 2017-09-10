@@ -97,6 +97,14 @@ class TestForm extends Form
                 'label' => 'File',
             ),
         ));
+/// File
+		$this->add(array(
+			'name' => 'File2',
+			'type' => 'Zend\Form\Element\File',
+			'options' => array(
+				'label' => 'File2',
+			),
+		));
 /// Button
         $this->add(array(
             'name' => 'Button',

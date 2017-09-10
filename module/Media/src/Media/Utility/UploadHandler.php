@@ -39,7 +39,6 @@ class UploadHandler
     private $newName;
     private $dstFolderPath;
     private $nameCount = 1;
-	private $imageProcessor;
 	private $onFinishHandlers = [];
 
 	/**
@@ -229,10 +228,6 @@ class UploadHandler
 
     }
 
-	public function setImageProcessor($imageProcessor)
-	{
-		$this->imageProcessor = $imageProcessor;
-    }
 
     /**
      * @param $array $_FILES['form_field'] array
@@ -248,7 +243,8 @@ class UploadHandler
     }
 
 	public function setName($filename) {
-		$this->srcFileName = $filename;
+    	if ($filename !== null || $filename == "")
+			$this->srcFileName = $filename;
     }
 
     public function validateSource() {

@@ -95,8 +95,12 @@ class DatabaseTable extends AbstractTableGateway
         return $this->getLastInsertValue();
     }
 
+	/**
+	 * @param $data AbstractModel|Array
+	 *
+	 * @return bool|int
+	 */
     public function save($data) {
-        $data = $this->prepareDataForSave($data);
         if (!isset($data['id']) || !is_integer($data['id']) || $data['id'] == 0) {
             if (!$this->insert($data) )
                 return false;

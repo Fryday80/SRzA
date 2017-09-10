@@ -8,36 +8,36 @@ class Content extends AbstractModel
     /**
      * @var int
      */
-    protected $id;
+    public $id;
 
     /**
      * @var string
      */
-    protected $title;
+	public $title;
 
     /**
      * @var string
      */
-    protected $url;
+	public $url;
 
     /**
      * @var string
      */
-    protected $content;
+    public $content;
 
     /**
      * @var string
      */
-    protected $exceptedRoles;
+    public $exceptedRoles;
 
-    protected $updated;
+    public $updated;
 
     /**
      * {@inheritDoc}
      */
     public function getId()
     {
-        return $this->id;
+        return (int) $this->id;
     }
 
     /**
@@ -45,7 +45,7 @@ class Content extends AbstractModel
      */
     public function setId($id)
     {
-        $this->id = $id;
+        $this->id = (int) $id;
     }
 
 	/**

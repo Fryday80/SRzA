@@ -127,11 +127,12 @@ class SystemController extends AbstractActionController
             /** @var MediaService $mediaService */
             $mediaService = $this->systemService->serviceManager->get('MediaService');
 
-            if (false) {
+            if (true) {
                 $fileData = $this->getRequest()->getFiles()->toArray()['File'];
                 try {
                     $uploadHandler = $mediaService->uploadHandlerFactory($fileData, '/gallery/pups', true);
                     $uploadHandler->autoRename = true;
+                    $uploadHandler->setName("a");
                     $uploadHandler->upload();
                 } catch (Exception $e) {
                     bdump($e->getMessage());
@@ -141,8 +142,10 @@ class SystemController extends AbstractActionController
                 $filesData = $this->getRequest()->getFiles()->toArray();
                 try {
                     //@todo testen -> targetFolder und targetName als string[] übergeben
-                    $mediaService->multiUpload($filesData, '/gallery/pups', "neuerName");
+                    $mediaService->multiUpload($filesData, '/', "neuerName");
                 } catch (Exception $e) {
+                    bdump($e->getFile());
+                    bdump($e->getLine());
                     bdump($e->getMessage());
                 }
             }
