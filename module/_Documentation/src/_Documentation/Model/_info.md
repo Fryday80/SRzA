@@ -22,7 +22,7 @@
     - ##### Abstract Models
     - ##### Enums
     - ##### Models / DataModels
-        - ##### [MediaItem](###MediaItem)
+        - ##### [MediaItem](#MediaItem)
     - ##### Interfaces
     - ##### Tables
 - ## Nav Module
@@ -45,7 +45,7 @@
 - module: Application
 - type: Basic Model
 
-```
+```php
     class DatabaseTable extends AbstractTableGateway
     
     public function __construct(Adapter $adapter, $objectPrototype, Hydrator $hydrator = null )
@@ -78,7 +78,7 @@
 ```
 - standard db access
 
-###MediaItem
+###<a id="MediaItem"></a>MediaItem
 >Model for MediaService
 - module: Application
 - type: Standalone
