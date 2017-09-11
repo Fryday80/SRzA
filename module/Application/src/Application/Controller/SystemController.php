@@ -1,6 +1,7 @@
 <?php
 namespace Application\Controller;
 
+use Application\Form\ContactForm;
 use Application\Form\MailTemplatesForm;
 use Application\Form\TestForm;
 use Application\Model\Enums\Microtime;
@@ -46,7 +47,7 @@ class SystemController extends AbstractActionController
         bdump($mediaService->getItem('users/2/pub/profileImage.png') );
 
 		$msg = 'msg';
-		$test = 'nösing';
+		$test = new ContactForm();
 
 		return array (
 			'log' => $log,

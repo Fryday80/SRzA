@@ -16,3 +16,7 @@
 	echo ' <img src="'.$path.'">';
 	if (!empty($log)) echo ($log);
 	if (!empty($dumpLog)) bdump ($dumpLog);
+
+	bdump($test);
+	if ($test instanceof \Application\Form\SRAForm)
+	    echo $this->form($test);

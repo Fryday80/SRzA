@@ -6,6 +6,9 @@ use Auth\Model\AuthStorage;
 
 class UserInfo extends AbstractHelper
 {
+	const ROLE = 0;
+	const NAME = 1;
+	const IS_LOGGED_IN = 2;
     /**
      *
      * @var AuthStorage
@@ -21,11 +24,9 @@ class UserInfo extends AbstractHelper
     {
         $role = $this->storage->getRoleName();
         $name = $this->storage->getUserName();
-		if ($info == 'role') return $role;
-		if ($info == 'name') return $name;
-		if ($info == 'logged') {
-			return (!($role == 'Guest'));
-		}
+		if ($info == self::ROLE)  		 return $role;
+		if ($info == self::NAME)   		 return $name;
+		if ($info == self::IS_LOGGED_IN) return (!($role == 'Guest'));
 
         if ($role == 'Guest') {
             return 'Hallo Gast';
@@ -34,8 +35,8 @@ class UserInfo extends AbstractHelper
             elseif ($role == 'Vorstand') $roleName = $role;
             elseif ($role == 'Administrator') $roleName = $role;
             else $roleName = 'erweiterter Vorstand';
-            $showrole = ' | '.$roleName;
-            $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showrole. '</span>';
+            $showRole = $roleName;
+            $expression = '<span class="greets"> Hallo '.$name.'<br class="js-L-view">'.$showRole. '</span>';
             return $expression;
         }
     }

@@ -292,12 +292,14 @@ class EquipmentController extends AbstractActionController
 		$dataTargetPaths = $uploadFileNames = null;
 		$dataTarget = array();
 		$mediaItems = null;
+		$uploadCount = 0;
 
 		// upload and save images
 		// =======================
 		// === create path
 		foreach ($data as $key => &$uploadedImage) {
 			if ($imageUpload->isValidUploadArray($uploadedImage)) {
+				$uploadCount++;
 				list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[ $key ]);
 				$uploadFileNames[ $key ] = $key . '.' . $extension;
 				$dataTargetPaths[ $key ] = 'equipment/' . $id . '/';
@@ -305,6 +307,7 @@ class EquipmentController extends AbstractActionController
 			}
 		}
 		if ($dataTargetPaths !== null){
+			if ($uploadCount == 1)
 			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
 		}
 

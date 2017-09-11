@@ -13,6 +13,7 @@ return array(
     'Application\Factory\Service\MessageServiceFactory'      => __DIR__ . '/src/Application/Factory/Service/MessageServiceFactory.php',
     'Application\Factory\Service\StatisticServiceFactory'    => __DIR__ . '/src/Application/Factory/Service/StatisticServiceFactory.php',
     'Application\Factory\Service\SystemServiceFactory'       => __DIR__ . '/src/Application/Factory/Service/SystemServiceFactory.php',
+    'Application\Form\ContactForm'                           => __DIR__ . '/src/Application/Form/ContactForm.php',
     'Application\Form\Element\TextSearch'                    => __DIR__ . '/src/Application/Form/Element/TextSearch.php',
     'Application\Form\Filter\MailTemplatesFilter'            => __DIR__ . '/src/Application/Form/Filter/MailTemplatesFilter.php',
     'Application\Form\MailTemplatesForm'                     => __DIR__ . '/src/Application/Form/MailTemplatesForm.php',
