@@ -82,5 +82,14 @@
 					'label' => 'Zusätzliche Angaben'
 				)
 			));
+
+			$this->add(array(
+				'name' => 'submit',
+				'type' => 'submit',
+				'attributes' => array(
+					'value' => 'Absenden'
+				)
+
+			));
 		}
 	}
