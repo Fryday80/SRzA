@@ -1027,20 +1027,50 @@ class MediaService {
 
 	public function cleanUpThumbs()
 	{
-		$dataPath = getcwd() . DATA_PATH;
-		$dataPath = Pathfinder::cleanPath($dataPath);
+		$dataPath = Pathfinder::getAbsolutePath(null);
 		$thumbsPath = $dataPath .'/_thumbs';
 		$imagesInDirs = $this->readDirRecursive($thumbsPath);
 		$imagePaths = $this->prepareFileArray($imagesInDirs);
 
 		// deletes all Thumbs that have no image
 		foreach ($imagePaths as $imagePath) {
-			if (!file_exists(getcwd() . DATA_PATH . $imagePath)){
+			// @todo permission for folder -> can't delete folder in the moment
+			if (!file_exists($dataPath . $imagePath) && !is_dir($dataPath. '/_thumbs' . $imagePath)){
 				unlink($dataPath. '/_thumbs' . $imagePath);
 			}
 		}
 	}
 
+	public function createThumbsForAll()
+	{
+		$thumbsInDir = array();
+		$newImages = array();
+		$imagesInDir = $this->readDirRecursive(Pathfinder::getAbsolutePath(null));
+		if (isset($imagesInDir['_thumbs'])) {
+			$thumbsInDir = $imagesInDir['_thumbs'];
+			unset($imagesInDir['_thumbs']);
+		}
+
+		if (!empty($thumbsInDir))
+			$thumbsInDir = $this->prepareFileArray($thumbsInDir);
+
+		$imagesInDir = $this->prepareFileArray($imagesInDir);
+		if ($key = array_search('/', $imagesInDir)) unset($imagesInDir[$key]);
+
+		foreach ($thumbsInDir as $thumbPath) {
+			if($key = array_search($thumbPath, $imagesInDir))
+				unset($imagesInDir[$key]);
+		}
+
+		// create thumbs
+		foreach ($imagesInDir as $imagePath) {
+			$item = $this->getItem(substr($imagePath, 1, strlen($imagePath)));
+			if ($item->type !== 'image') continue;
+			$this->createDefaultThumbs($item);
+		}
+			bdump($imagesInDir);
+
+	}
 	/**
 	 * Reads Dir Recursive
 	 *

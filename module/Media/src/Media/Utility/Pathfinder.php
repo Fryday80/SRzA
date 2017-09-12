@@ -59,7 +59,7 @@
 		{
 			if ($path[0] == '/') throw new Exception("Path forbidden");
 
-			return getcwd() . '/Data' . $path;
+			return str_replace('\\', '/', getcwd() . '/Data' . $path);
 		}
 
 		/**

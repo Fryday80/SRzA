@@ -2,6 +2,7 @@
 
 namespace Media\Service;
 
+use Media\Model\MediaItem;
 use Media\Utility\Pathfinder;
 use Media\Model\Enums\EImageProcessor;
 
