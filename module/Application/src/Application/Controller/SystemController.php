@@ -44,7 +44,7 @@ class SystemController extends AbstractActionController
 
 		/** @var MediaService $mediaService */
         $mediaService = $this->systemService->serviceManager->get('MediaService');
-        bdump($mediaService->getItem('users/2/pub/profileImage.png') );
+        bdump($mediaService->cleanUpThumbs() );
 
 		$msg = 'msg';
 		$test = new ContactForm();

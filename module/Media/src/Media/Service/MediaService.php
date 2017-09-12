@@ -2,7 +2,6 @@
 namespace Media\Service;
 use Auth\Service\AccessService;
 use Exception;
-use Media\Model\Enums\EImageProcessor;
 use Media\Utility\FmHelper;
 use Media\Utility\Pathfinder;
 use Media\Utility\UploadHandler;
@@ -1024,5 +1023,71 @@ class MediaService {
 			}
 			$i++;
 		}
+	}
+
+	public function cleanUpThumbs()
+	{
+		$dataPath = getcwd() . DATA_PATH;
+		$dataPath = Pathfinder::cleanPath($dataPath);
+		$thumbsPath = $dataPath .'/_thumbs';
+		$imagesInDirs = $this->readDirRecursive($thumbsPath);
+		$imagePaths = $this->prepareFileArray($imagesInDirs);
+
+		// deletes all Thumbs that have no image
+		foreach ($imagePaths as $imagePath) {
+			if (!file_exists(getcwd() . DATA_PATH . $imagePath)){
+				unlink($dataPath. '/_thumbs' . $imagePath);
+			}
+		}
+	}
+
+	/**
+	 * Reads Dir Recursive
+	 *
+	 * @param string $path absolute path to folder
+	 *
+	 * @return null | array array of files that preserves folder tree structure
+	 */
+	private function readDirRecursive($path)
+	{
+		$result = null;
+		if ( is_dir ( $path))
+		{
+			if ( $handle = opendir($path) )
+			{
+				while (($file = readdir($handle)) !== false)
+				{
+					if ($file == '..' || $file == '.' || $file == 'folder.conf') continue;
+					if ($path[strlen($path)-1] !== '/') $path .= '/';
+//
+					if (is_dir($path.$file)) $result[$file] = $this->readDirRecursive($path.$file);
+					else $result[$file] = $file;
+				}
+				closedir($handle);
+			}
+			return $result;
+		}
+	}
+
+	/**
+	 * @param array  $readDirArray
+	 * @param string $parentKey
+	 *
+	 * @return array numeric array of absolute paths
+	 */
+	private function prepareFileArray($readDirArray, $parentKey = '')
+	{
+		$result = array();
+		foreach ($readDirArray as $key => $value) {
+			if (!is_array($value)) array_push($result, $parentKey . '/' . $value);
+			else {
+				$subResult = array();
+				array_push($subResult, $this->prepareFileArray($value, $parentKey . '/' .$key));
+				foreach ($subResult[0] as $sub){
+					array_push($result, $sub);
+				}
+			}
+		}
+		return $result;
 	}
 }
