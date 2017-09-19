@@ -68,6 +68,10 @@ class MediaService {
     private $itemCache = array();
     private $config;
 
+    // for delete and create Thumbs
+    private $thumbsDataPath;
+    private $imagesDataPath;
+
     function __construct($config, AccessService $accessService, ImageProcessor $imageProcessor) {
         try {
             $this->accessService = $accessService;
@@ -1027,18 +1031,18 @@ class MediaService {
 
 	public function cleanUpThumbs()
 	{
-		$dataPath = Pathfinder::getAbsolutePath(null);
-		$thumbsPath = $dataPath .'/_thumbs';
+		$this->imagesDataPath = $dataPath = Pathfinder::getAbsolutePath(null);
+		$this->thumbsDataPath = $thumbsPath = $dataPath .'/_thumbs';
+		// read file structure in array
 		$imagesInDirs = $this->readDirRecursive($thumbsPath);
-		$imagePaths = $this->prepareFileArray($imagesInDirs);
-
+		// and resort to single level array
+		list ($imagePaths, $folderPaths, $emptyDirs) = $this->prepareFileArray($imagesInDirs);
+		$this->removeEmptyDirs($emptyDirs);
+		// check if folders are present (to speed up deleting if whole folder is't there any more)
+		$this->compareAndDeleteFolders($folderPaths);
 		// deletes all Thumbs that have no image
-		foreach ($imagePaths as $imagePath) {
-			// @todo permission for folder -> can't delete folder in the moment
-			if (!file_exists($dataPath . $imagePath) && !is_dir($dataPath. '/_thumbs' . $imagePath)){
-				unlink($dataPath. '/_thumbs' . $imagePath);
-			}
-		}
+		$this->compareAndDeleteFiles($imagePaths);
+
 	}
 
 	public function createThumbsForAll()
@@ -1107,17 +1111,83 @@ class MediaService {
 	 */
 	private function prepareFileArray($readDirArray, $parentKey = '')
 	{
+		$paths = array();
 		$result = array();
+		$emptyDirs = array();
 		foreach ($readDirArray as $key => $value) {
-			if (!is_array($value)) array_push($result, $parentKey . '/' . $value);
+			/*
+			 * if $value == null 	 => $key is an empty folder
+			 * if $value IS NO array => $key | $value is the file name
+			 * if $value IS AN array => $key is the folder name and $value the structure
+			 */
+			// skip empty folders ($value is null)
+			if($value == null){
+				// add to paths list
+				array_push($emptyDirs, $parentKey . '/' .$key);
+			}
+
+			// add image --- $value is a string  && !is_array($value) && $key == $value
+			elseif (!is_array($value))
+				// add to images list
+				array_push($result, $parentKey . '/' . $value);
+
 			else {
+				// add to paths list
+				array_push($paths, $parentKey . '/' .$key);
+				// get sub folders info recursive
 				$subResult = array();
-				array_push($subResult, $this->prepareFileArray($value, $parentKey . '/' .$key));
+//				array_push($subResult, $this->prepareFileArray($value, $parentKey . '/' .$key));
+				$subResult = $this->prepareFileArray($value, $parentKey . '/' .$key);
+
+				// sub folders image list $subResult[0]
 				foreach ($subResult[0] as $sub){
 					array_push($result, $sub);
 				}
+
+				// sub folders path list $subResult[1]
+				foreach ($subResult[1] as $sub){
+					array_push($paths, $sub);
+				}
+
+				// empty sub folders path list $subResult[2]
+				foreach ($subResult[2] as $sub){
+					array_push($emptyDirs, $sub);
+				}
 			}
 		}
-		return $result;
+		return array($result, $paths, $emptyDirs);
+	}
+
+	private function compareAndDeleteFolders(&$folderPaths)
+	{
+		foreach ($folderPaths as $key => $folderPath) {
+			if (!is_dir($this->imagesDataPath . $folderPath)){
+				@rmdir($this->thumbsDataPath . $folderPath);
+				unset ($folderPaths[$key]);
+			}
+		}
+	}
+
+	private function compareAndDeleteFiles(&$filePaths)
+	{
+		foreach ($filePaths as $key => $filePath) {
+			if (!file_exists($this->imagesDataPath . $filePath)){
+				@unlink($this->thumbsDataPath . $filePath);
+				unset ($filePaths[$key]);
+			}
+		}
+	}
+
+	private function removeEmptyDirs(&$emptyDirs)
+	{
+		if ($emptyDirs !== null || !empty($emptyDirs)){
+			foreach ($emptyDirs as $key => $emptyDir) {
+				if (!is_dir($this->imagesDataPath . $emptyDir)){
+					@rmdir($this->thumbsDataPath . $emptyDir);
+					bdump($key);
+					unset ($emptyDirs[$key]);
+				}
+			}
+		}
 	}
 }
