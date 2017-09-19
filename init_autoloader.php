@@ -16,24 +16,7 @@
  * most users, however, feel free to configure autoloading however you'd like.
  */
 
-
-//debugging
-//function dump ($varray = 'Dump test', $marker = '##########BUGFIX######', $trace=3)
-//{
-//    echo $marker;
-//    echo ('<pre style="background-color: #0ac2d2">');
-//    var_dump($varray);
-//    echo ('</pre>');
-//    echo ('<pre style="background-color: #949c53">');
-//    //debug_print_backtrace (null, $trace);
-//    echo ('</pre>');
-//
-//}
-//
-//function dumpd ($varray = 'Dump test', $marker = '##########BUGFIX######', $trace=3){
-//    dump ($varray, $marker, $trace);
-//    die;
-//}
+include_once('OwnFunctions.php');
 
 // Composer autoloading
 if (file_exists('vendor/autoload.php')) {
