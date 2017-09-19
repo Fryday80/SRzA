@@ -11,8 +11,6 @@ use Application\Service\StatisticService;
 use Application\Service\SystemService;
 use Application\Utility\DataTable;
 use Exception;
-use Media\Service\ImageProcessor;
-use Media\Service\MediaException;
 use Media\Service\MediaService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -44,7 +42,7 @@ class SystemController extends AbstractActionController
 
 		/** @var MediaService $mediaService */
         $mediaService = $this->systemService->serviceManager->get('MediaService');
-        bdump($mediaService->cleanUpThumbs() );
+//        bdump($mediaService->createThumbsForAll() );
 
 		$msg = 'msg';
 		$test = new ContactForm();
