@@ -57,6 +57,11 @@ const ERROR_STRINGS = [
 
 ];
 class MediaService {
+	const THUMB_BIG = 0;
+	const THUMB_SMALL = 1;
+	private $big_thumbs = '_thumb_big';
+	private $small_thumbs = '_thumb_small';
+
 	/** @var ImageProcessor  */
 	public $imageProcessor;
 
@@ -996,11 +1001,14 @@ class MediaService {
         // TODO: Implement setServiceManager() method.
     }
 
+    /* ===================================================================
+     *  Thumbs handling
+     * =================================================================== */
+
 	public function createDefaultThumbs(MediaItem $item)
 	{
-		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
-		$thumbPathBig   = $thumbFolder . str_replace($item->name, $item->name . '_thumb_big', $item->path);
-		$thumbPathSmall = $thumbFolder . str_replace($item->name, $item->name . '_thumb_small', $item->path);
+		$thumbPathBig   = $this->imageThumbsTranslator($item);
+		$thumbPathSmall = $this->imageThumbsTranslator($item, self::THUMB_SMALL);
 
 		$profileImageThumbBigSizeX = $this->config['MediaService']['thumbs']['bX'];
 		$profileImageThumbBigSizeY = $this->config['MediaService']['thumbs']['bY'];
@@ -1034,36 +1042,45 @@ class MediaService {
 		$this->imagesDataPath = $dataPath = Pathfinder::getAbsolutePath(null);
 		$this->thumbsDataPath = $thumbsPath = $dataPath .'/_thumbs';
 		// read file structure in array
-		$imagesInDirs = $this->readDirRecursive($thumbsPath);
+		$imagesInDirs = readDirRecursive($thumbsPath, array('folder.conf'));
 		// and resort to single level array
 		list ($imagePaths, $folderPaths, $emptyDirs) = $this->prepareFileArray($imagesInDirs);
 		$this->removeEmptyDirs($emptyDirs);
 		// check if folders are present (to speed up deleting if whole folder is't there any more)
-		$this->compareAndDeleteFolders($folderPaths);
+		$this->compareAndDeleteThumbFolders($folderPaths);
 		// deletes all Thumbs that have no image
-		$this->compareAndDeleteFiles($imagePaths);
+		$this->compareAndDeleteThumbFiles($imagePaths);
 
 	}
 
 	public function createThumbsForAll()
 	{
 		$thumbsInDir = array();
-		$newImages = array();
-		$imagesInDir = $this->readDirRecursive(Pathfinder::getAbsolutePath(null));
+
+		// get data folder images and structure
+		$imagesInDir = readDirRecursive(Pathfinder::getAbsolutePath(null), array('folder.conf'));
+
+		// remove the thumbs folder from list and sve to own array
 		if (isset($imagesInDir['_thumbs'])) {
 			$thumbsInDir = $imagesInDir['_thumbs'];
 			unset($imagesInDir['_thumbs']);
 		}
 
+		// prepare the arrays
 		if (!empty($thumbsInDir))
-			$thumbsInDir = $this->prepareFileArray($thumbsInDir);
+			$thumbsInDir = $this->prepareFileArray($thumbsInDir)[0];
 
-		$imagesInDir = $this->prepareFileArray($imagesInDir);
+		$imagesInDir = $this->prepareFileArray($imagesInDir)[0];
+
+		// unset data root folder (there should be nothing!)
 		if ($key = array_search('/', $imagesInDir)) unset($imagesInDir[$key]);
 
-		foreach ($thumbsInDir as $thumbPath) {
-			if($key = array_search($thumbPath, $imagesInDir))
-				unset($imagesInDir[$key]);
+		// remove image if thumb already exists
+		if (!empty($thumbsInDir)) {
+			foreach ($thumbsInDir as $thumbPath) {
+				if ($key = array_search($this->imageThumbsTranslator($thumbPath), $imagesInDir))
+					unset($imagesInDir[ $key ]);
+			}
 		}
 
 		// create thumbs
@@ -1072,39 +1089,71 @@ class MediaService {
 			if ($item->type !== 'image') continue;
 			$this->createDefaultThumbs($item);
 		}
-			bdump($imagesInDir);
 
 	}
-	/**
-	 * Reads Dir Recursive
-	 *
-	 * @param string $path absolute path to folder
-	 *
-	 * @return null | array array of files that preserves folder tree structure
-	 */
-	private function readDirRecursive($path)
+
+	public function removeEmptyDataDirs(){
+		$imagesInDir = readDirRecursive(Pathfinder::getAbsolutePath(null), array('folder.conf'));
+		$emptyDirs = $this->prepareFileArray($imagesInDir)[2];
+		$this->removeEmptyDirs($emptyDirs);
+	}
+
+
+
+	private function compareAndDeleteThumbFolders(&$thumbFolderPaths)
 	{
-		$result = null;
-		if ( is_dir ( $path))
-		{
-			if ( $handle = opendir($path) )
-			{
-				while (($file = readdir($handle)) !== false)
-				{
-					if ($file == '..' || $file == '.' || $file == 'folder.conf') continue;
-					if ($path[strlen($path)-1] !== '/') $path .= '/';
-//
-					if (is_dir($path.$file)) $result[$file] = $this->readDirRecursive($path.$file);
-					else $result[$file] = $file;
-				}
-				closedir($handle);
+		foreach ($thumbFolderPaths as $key => $folderPath) {
+			if (!is_dir($this->imagesDataPath . $folderPath)){
+				@rmdir($this->thumbsDataPath . $folderPath);
+				unset ($thumbFolderPaths[$key]);
 			}
-			return $result;
 		}
 	}
 
+	private function compareAndDeleteThumbFiles(&$thumbsFilePaths)
+	{
+		foreach ($thumbsFilePaths as $key => $filePath) {
+			if (!file_exists($this->imagesDataPath . $this->imageThumbsTranslator($filePath))){
+				@unlink($this->thumbsDataPath . $filePath);
+				unset ($thumbsFilePaths[$key]);
+			}
+		}
+	}
+
+	private function imageThumbsTranslator($item, $size = self::THUMB_BIG){
+		$thumbFolder    = $this->config['MediaService']['thumbs']['relPath'];
+		// prepare path
+		if ($thumbFolder[strlen($thumbFolder)-1] !== '/')
+			$thumbFolder = $thumbFolder . '/';
+
+		// if item is Media Item //used in $this->createDefaultThumbs()
+		if($item instanceof MediaItem){
+			if ($size == self::THUMB_BIG){
+				return $thumbFolder . str_replace_last($item->name, $item->name . $this->big_thumbs, $item->path);
+			}
+			return $thumbFolder . str_replace_last($item->name, $item->name . $this->small_thumbs, $item->path);
+		}
+
+		// if thumbs name // used in $this->compareAndDeleteThumbFiles() && $this->createThumbsForAll
+		if ($this->isThumbPath($item)){
+			if(strpos($item, $this->big_thumbs)){
+				return str_replace_last($this->big_thumbs, '', $item);
+			}
+			return str_replace_last($this->small_thumbs, '', $item);
+		}
+		return false;
+	}
+
+	private function isThumbPath($path)
+	{
+		if (strpos($path, $this->big_thumbs) ||strpos($path, $this->small_thumbs))
+			return true;
+		return false;
+	}
+
+
 	/**
-	 * @param array  $readDirArray
+	 * @param array  $readDirArray result of readDirRecursive()
 	 * @param string $parentKey
 	 *
 	 * @return array numeric array of absolute paths
@@ -1156,26 +1205,6 @@ class MediaService {
 			}
 		}
 		return array($result, $paths, $emptyDirs);
-	}
-
-	private function compareAndDeleteFolders(&$folderPaths)
-	{
-		foreach ($folderPaths as $key => $folderPath) {
-			if (!is_dir($this->imagesDataPath . $folderPath)){
-				@rmdir($this->thumbsDataPath . $folderPath);
-				unset ($folderPaths[$key]);
-			}
-		}
-	}
-
-	private function compareAndDeleteFiles(&$filePaths)
-	{
-		foreach ($filePaths as $key => $filePath) {
-			if (!file_exists($this->imagesDataPath . $filePath)){
-				@unlink($this->thumbsDataPath . $filePath);
-				unset ($filePaths[$key]);
-			}
-		}
 	}
 
 	private function removeEmptyDirs(&$emptyDirs)
