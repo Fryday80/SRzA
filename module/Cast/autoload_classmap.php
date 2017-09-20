@@ -26,6 +26,7 @@ return array(
     'Cast\Form\Filter\BlazonFilter'                      => __DIR__ . '/src/Cast/Form/Filter/BlazonFilter.php',
     'Cast\Form\Filter\CharacterFilter'                   => __DIR__ . '/src/Cast/Form/Filter/CharacterFilter.php',
     'Cast\Form\JobForm'                                  => __DIR__ . '/src/Cast/Form/JobForm.php',
+    'Cast\Model\Blazon'                                  => __DIR__ . '/src/Cast/Model/Blazon.php',
     'Cast\Model\BlazonTable'                             => __DIR__ . '/src/Cast/Model/BlazonTable.php',
     'Cast\Model\CastTable'                               => __DIR__ . '/src/Cast/Model/CastTable.php',
     'Cast\Model\CharacterTable'                          => __DIR__ . '/src/Cast/Model/CharacterTable.php',
