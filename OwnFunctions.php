@@ -43,7 +43,8 @@
 	/**
 	 * Gets the extension of given file path <br/>
 	 * returns null if $filePath has no extension (no '.sth' part)
-	 * @param string $filePath
+	 *
+	 * @param string $filePath path string to search in
 	 *
 	 * @return null|string null | file extension without '.'
 	 */
@@ -52,6 +53,22 @@
 		if($lastDot === false)
 			return false;
 		return substr($filePath, $lastDot+1);
+	}
+
+	/**
+	 * Gets the string after $delimiter <br/>
+	 * returns $string if $delimiter wasn't found
+	 *
+	 * @param string $string	  string to search in
+	 * @param string $delimiter   string to search for
+	 *
+	 * @return string 			  original string if $delimiter not found | string from $delimiter on
+	 */
+	function getFromLast($string, $delimiter){
+		$lastOccurrence = strrpos($string, $delimiter);
+		if($lastOccurrence === false)
+			return $string;
+		return substr($string, $lastOccurrence+1);
 	}
 
 	/**
