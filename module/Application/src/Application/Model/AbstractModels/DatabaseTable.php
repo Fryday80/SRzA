@@ -82,7 +82,6 @@ class DatabaseTable extends AbstractTableGateway
 
 	public function getNextId()
 	{
-		$query = "SELECT LAST_INSERT_ID()";
 		$query = "SHOW TABLE STATUS LIKE '$this->table'";
 		$res = $this->adapter->query($query, array());
 		return (int) $res->toArray()[0]['Auto_increment'];
@@ -96,7 +95,7 @@ class DatabaseTable extends AbstractTableGateway
     }
 
 	/**
-	 * @param $data AbstractModel|Array
+	 * @param array|AbstractModel $data
 	 *
 	 * @return bool|int
 	 */
