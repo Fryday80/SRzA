@@ -4,7 +4,6 @@ namespace Equipment\Controller;
 use Application\Controller\Plugin\ImagePlugin;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
-use Equipment\Model\AbstractModels\AbstractEquipmentDataItemModel;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Service\EquipmentService;
 use Equipment\Utility\EquipmentDataTable;
@@ -25,6 +24,10 @@ class EquipmentController extends AbstractActionController
 	protected $activeUserRole;
 
     protected $dataTable;
+
+    //image processing
+	protected $localDataPath = 'equipment/';
+	protected $imageSides = 500; // @todo implement config
 
 
 	public function __construct(
@@ -292,31 +295,27 @@ class EquipmentController extends AbstractActionController
 		$dataTargetPaths = $uploadFileNames = null;
 		$dataTarget = array();
 		$mediaItems = null;
-		$uploadCount = 0;
 
 		// upload and save images
 		// =======================
 		// === create path
 		foreach ($data as $key => &$uploadedImage) {
 			if ($imageUpload->isValidUploadArray($uploadedImage)) {
-				$uploadCount++;
 				list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[ $key ]);
 				$uploadFileNames[ $key ] = $key . '.' . $extension;
-				$dataTargetPaths[ $key ] = 'equipment/' . $id . '/';
+				$dataTargetPaths[ $key ] = $this->localDataPath . $id . '/';
 				$dataTarget[ $key ] = $dataTargetPaths[ $key ] . $uploadFileNames[ $key ];
 			}
 		}
 		if ($dataTargetPaths !== null){
-			if ($uploadCount == 1)
-			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
+				$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
 		}
 
 		if ($mediaItems){
 			foreach ($mediaItems as $mediaItem) {
 				// === process image
 				$imageUpload->imageProcessor->load($mediaItem);
-				$side = 500; // @todo implement config
-				$imageUpload->imageProcessor->resize_square($side);
+				$imageUpload->imageProcessor->resize_square($this->imageSides);
 				$imageUpload->imageProcessor->saveImage();
 			}
 		}
@@ -330,6 +329,6 @@ class EquipmentController extends AbstractActionController
 	 */
 	protected function handleDeleteAllImages(int $itemId)
 	{
-		$this->image()->deleteAllImagesByPath('equipment/' . $itemId .'/');
+		$this->image()->deleteAllImagesByPath($this->localDataPath . $itemId .'/');
 	}
 }

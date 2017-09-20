@@ -1,7 +1,6 @@
 <?php
 namespace Equipment\Controller;
 
-use Application\Controller\Plugin\ImagePlugin;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Equipment\Model\DataModels\LostAndFoundItem;
@@ -15,6 +14,10 @@ class LostAndFoundController extends EquipmentController
 {
     /** @var LostAndFoundService  */
 	protected $service;
+
+	//image processing
+	protected $localDataPath = 'LostAndFound/';
+	protected $imageSides = 500; // @todo implement config
 
 	public function __construct(
 		LostAndFoundService $lostAndFoundService,
@@ -172,58 +175,9 @@ class LostAndFoundController extends EquipmentController
         ));
     }
 
-	/* ===============================
+	/* ========================================
 	 *
-	 *  Image Handling
+	 *  Image Handling see EquipmentController
 	 *
-	 * =============================== */
-	/**
-	 * @param  int   $id	special dynamic selector
-	 * @param  array $data  array of upload arrays like [$key1 => $uploadArray1]
-	 *
-	 * @return array 		array prepared for save
-	 */
-	protected function handleUploads (int $id, array $data)
-	{
-		/** @var ImagePlugin $imageUpload */
-		$imageUpload = $this->image();
-		$dataTargetPaths = $uploadFileNames = null;
-		$dataTarget = array();
-
-		// upload and save images
-		// =======================
-		// === create path
-		foreach ($data as $key => &$uploadedImage) {
-			if ($imageUpload->isValidUploadArray($uploadedImage)) {
-				list ($fileName, $extension) = $imageUpload->getFileDataFromUpload($data[ $key ]);
-				$uploadFileNames[ $key ] = $key . '.' . $extension;
-				$dataTargetPaths[ $key ] = 'LostAndFound/' . $id . '/';
-				$dataTarget[ $key ] = $dataTargetPaths[ $key ] . $uploadFileNames[ $key ];
-			}
-		}
-		if ($dataTargetPaths !== null){
-			$mediaItems = $imageUpload->upload($data, $dataTargetPaths, $uploadFileNames);
-			if (!is_array($mediaItems)){
-				$mediaItems[0] = $mediaItems;
-			}
-		}
-
-		foreach ($mediaItems as $mediaItem) {
-			// === process image
-			$imageUpload->imageProcessor->load($mediaItem);
-			$side = 500; // @todo implement config
-			$imageUpload->imageProcessor->resize_square($side);
-			$imageUpload->imageProcessor->saveImage();
-		}
-
-		return $dataTarget;
-	}
-
-	/**
-	 * @param int $itemId
-	 */
-	protected function handleDeleteAllImages(int $itemId)
-	{
-		$this->image()->deleteAllImagesByPath('equipment/' . $itemId .'/');
-	}
+	 * ======================================== */
 }
