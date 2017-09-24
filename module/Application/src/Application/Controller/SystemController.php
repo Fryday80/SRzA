@@ -42,7 +42,7 @@ class SystemController extends AbstractActionController
 
 		/** @var MediaService $mediaService */
         $mediaService = $this->systemService->serviceManager->get('MediaService');
-//        bdump($mediaService->createThumbsForAll() );
+        bdump($mediaService->createThumbsForAll() );
 
 		$msg = 'msg';
 		$test = new ContactForm();
@@ -267,6 +267,17 @@ class SystemController extends AbstractActionController
         return new JsonModel($result);
     }
 
+	public function jsonGetMissingThumbsAction()
+	{
+		/** @var MediaService $mediaService */
+		$mediaService = $this->systemService->serviceManager->get('MediaService');
+		return new JsonModel($mediaService->getMissingThumbs());
+
+    }
+	public function jsonRecreateThumbsAction()
+	{
+
+	}
     public function maintenanceAction() {
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);

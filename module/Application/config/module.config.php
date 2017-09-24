@@ -216,6 +216,16 @@ return array(
                             )
                         )
                     ),
+                    'getMissingThumbs' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/getMissingThumbs',
+                            'constraints' => array(),
+                            'defaults' => array(
+                                'action' => 'jsonGetMissingThumbsAction'
+                            )
+                        )
+                    ),
                     'formtest' => array(
                         'type' => 'Segment',
                         'options' => array(

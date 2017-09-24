@@ -7,6 +7,7 @@ use Media\Utility\Pathfinder;
 use Media\Utility\UploadHandler;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Tracy\Debugger;
 use Zend\Http\Response;
 use Zend\ServiceManager\ServiceManager;
 use ZipArchive;
@@ -75,7 +76,6 @@ class MediaService {
 
     // for delete and create Thumbs
     private $thumbsDataPath;
-    private $imagesDataPath;
 
     function __construct($config, AccessService $accessService, ImageProcessor $imageProcessor) {
         try {
@@ -1039,8 +1039,7 @@ class MediaService {
 
 	public function cleanUpThumbs()
 	{
-		$this->imagesDataPath = $dataPath = Pathfinder::getAbsolutePath(null);
-		$this->thumbsDataPath = $thumbsPath = $dataPath .'/_thumbs';
+		$this->thumbsDataPath = $thumbsPath = $this->dataPath .'/_thumbs';
 		// read file structure in array
 		$imagesInDirs = readDirRecursive($thumbsPath, array('folder.conf'));
 		// and resort to single level array
@@ -1053,12 +1052,16 @@ class MediaService {
 
 	}
 
+	/**
+	 * @deprecated moved to ajax
+	 */
 	public function createThumbsForAll()
 	{
+		Debugger::timer();
 		$thumbsInDir = array();
 
 		// get data folder images and structure
-		$imagesInDir = readDirRecursive(Pathfinder::getAbsolutePath(null), array('folder.conf'));
+		$imagesInDir = readDirRecursive($this->dataPath, array('folder.conf'));
 
 		// remove the thumbs folder from list and sve to own array
 		if (isset($imagesInDir['_thumbs'])) {
@@ -1089,7 +1092,42 @@ class MediaService {
 			if ($item->type !== 'image') continue;
 			$this->createDefaultThumbs($item);
 		}
+		bdump(Debugger::timer());
+	}
 
+	public function getMissingThumbs()
+	{
+		$thumbsInDir = array();
+
+		// get data folder images and structure
+		$imagesInDir = readDirRecursive($this->dataPath, array('folder.conf'));
+
+		// remove the thumbs folder from list and sve to own array
+		if (isset($imagesInDir['_thumbs'])) {
+			unset($imagesInDir['_thumbs']);
+		}
+
+		// prepare the arrays
+		if (!empty($thumbsInDir))
+			$thumbsInDir = $this->prepareFileArray($thumbsInDir)[0];
+
+		$imagesInDir = $this->prepareFileArray($imagesInDir)[0];
+
+		// unset data root folder (there should be nothing!)
+		if ($key = array_search('/', $imagesInDir)) unset($imagesInDir[$key]);
+
+		$relativePath = strlen($this->dataPath);
+
+		// remove image if thumb already exists
+		if (!empty($thumbsInDir)) {
+			foreach ($thumbsInDir as $thumbPath) {
+				if ($key = array_search($this->imageThumbsTranslator($thumbPath), $imagesInDir))
+					unset($imagesInDir[ $key ]);
+				else
+					$imagesInDir[ $key ] = substr($imagesInDir[ $key ], $relativePath);
+			}
+		}
+		return $imagesInDir;
 	}
 
 	public function removeEmptyDataDirs(){
@@ -1103,7 +1141,7 @@ class MediaService {
 	private function compareAndDeleteThumbFolders(&$thumbFolderPaths)
 	{
 		foreach ($thumbFolderPaths as $key => $folderPath) {
-			if (!is_dir($this->imagesDataPath . $folderPath)){
+			if (!is_dir($this->dataPath . $folderPath)){
 				@rmdir($this->thumbsDataPath . $folderPath);
 				unset ($thumbFolderPaths[$key]);
 			}
@@ -1113,7 +1151,7 @@ class MediaService {
 	private function compareAndDeleteThumbFiles(&$thumbsFilePaths)
 	{
 		foreach ($thumbsFilePaths as $key => $filePath) {
-			if (!file_exists($this->imagesDataPath . $this->imageThumbsTranslator($filePath))){
+			if (!file_exists($this->dataPath . $this->imageThumbsTranslator($filePath))){
 				@unlink($this->thumbsDataPath . $filePath);
 				unset ($thumbsFilePaths[$key]);
 			}
@@ -1184,8 +1222,6 @@ class MediaService {
 				// add to paths list
 				array_push($paths, $parentKey . '/' .$key);
 				// get sub folders info recursive
-				$subResult = array();
-//				array_push($subResult, $this->prepareFileArray($value, $parentKey . '/' .$key));
 				$subResult = $this->prepareFileArray($value, $parentKey . '/' .$key);
 
 				// sub folders image list $subResult[0]
@@ -1211,9 +1247,8 @@ class MediaService {
 	{
 		if ($emptyDirs !== null || !empty($emptyDirs)){
 			foreach ($emptyDirs as $key => $emptyDir) {
-				if (!is_dir($this->imagesDataPath . $emptyDir)){
+				if (!is_dir($this->dataPath . $emptyDir)){
 					@rmdir($this->thumbsDataPath . $emptyDir);
-					bdump($key);
 					unset ($emptyDirs[$key]);
 				}
 			}

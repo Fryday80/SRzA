@@ -36,7 +36,7 @@
             this.resized = true;
         }
     };
-    apps.menuHandler = {
+    apps.menuHandler = window.menuHandler = {
         run: function () {
             var self = this;
             /* ------------------ RUNNING SCRIPT --START------------- */
