@@ -219,7 +219,7 @@ return array(
                     'getMissingThumbs' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/getMissingThumbs/:imgPath',
+                            'route' => '/getMissingThumbs',
                             'constraints' => array(),
                             'defaults' => array(
                                 'action' => 'jsonGetMissingThumbs'
@@ -227,13 +227,16 @@ return array(
                         )
                     ),
                     'RecreateThumbs' => array(
-                        'type' => 'Segment',
+                        'type' => 'Regex',
                         'options' => array(
-                            'route' => '/RecreateThumbs',
-                            'constraints' => array(),
+							'regex'     => '/recreateThumbs(?<path>\/.*)',
+                            'constraints' => array(
+//                            	'imgPath' => '[a-zA-Z]'
+							),
                             'defaults' => array(
                                 'action' => 'jsonRecreateThumbs'
-                            )
+                            ),
+                            'spec'  => '/path%path%'
                         )
                     ),
                     'formtest' => array(

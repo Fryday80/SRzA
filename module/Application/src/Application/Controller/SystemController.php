@@ -279,7 +279,7 @@ class SystemController extends AbstractActionController
 	{
 		/** @var MediaService $mediaService */
 		$mediaService = $this->systemService->serviceManager->get('MediaService');
-		$path = $this->params()->fromRoute('imgPath');
+		$path = $this->params()->fromRoute('path');
 
 		$item = $mediaService->getItem($path);
 		$mediaService->createDefaultThumbs($item);

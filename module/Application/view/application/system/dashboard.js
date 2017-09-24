@@ -190,7 +190,7 @@
             for(let i = 0; i < e.length; i++) {
                 //send request
                 $.ajax({
-                    url: "/system/recreateThumbs/" + e[i],
+                    url: "/system/recreateThumbs" + e[i],
                     type: "GET",
                 }).always(function(e) {
                     if (i + 1 < e.length) {

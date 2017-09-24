@@ -1007,6 +1007,7 @@ class MediaService {
 
 	public function createDefaultThumbs(MediaItem $item)
 	{
+		if ($item->type !== 'image') return;
 		$thumbPathBig   = $this->imageThumbsTranslator($item);
 		$thumbPathSmall = $this->imageThumbsTranslator($item, self::THUMB_SMALL);
 
@@ -1104,6 +1105,7 @@ class MediaService {
 
 		// remove the thumbs folder from list and sve to own array
 		if (isset($imagesInDir['_thumbs'])) {
+			$thumbsInDir = $imagesInDir['_thumbs'];
 			unset($imagesInDir['_thumbs']);
 		}
 
@@ -1115,19 +1117,18 @@ class MediaService {
 
 		// unset data root folder (there should be nothing!)
 		if ($key = array_search('/', $imagesInDir)) unset($imagesInDir[$key]);
-
-		$relativePath = strlen($this->dataPath);
-
+		$returnNewImages = array();
 		// remove image if thumb already exists
 		if (!empty($thumbsInDir)) {
 			foreach ($thumbsInDir as $thumbPath) {
-				if ($key = array_search($this->imageThumbsTranslator($thumbPath), $imagesInDir))
-					unset($imagesInDir[ $key ]);
-				else
-					$imagesInDir[ $key ] = substr($imagesInDir[ $key ], $relativePath);
+				if (($key = array_search($this->imageThumbsTranslator($thumbPath), $imagesInDir)) !== false) {
+					if ($this->isImage($imagesInDir[ $key ]))
+						$returnNewImages[ $key ] = $imagesInDir[ $key ];
+				}
 			}
 		}
-		return $imagesInDir;
+//		var_dump(($returnNewImages));
+		return $returnNewImages;
 	}
 
 	public function removeEmptyDataDirs(){
