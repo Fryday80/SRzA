@@ -219,10 +219,20 @@ return array(
                     'getMissingThumbs' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/getMissingThumbs',
+                            'route' => '/getMissingThumbs/:imgPath',
                             'constraints' => array(),
                             'defaults' => array(
-                                'action' => 'jsonGetMissingThumbsAction'
+                                'action' => 'jsonGetMissingThumbs'
+                            )
+                        )
+                    ),
+                    'RecreateThumbs' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/RecreateThumbs',
+                            'constraints' => array(),
+                            'defaults' => array(
+                                'action' => 'jsonRecreateThumbs'
                             )
                         )
                     ),

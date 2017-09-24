@@ -274,10 +274,18 @@ class SystemController extends AbstractActionController
 		return new JsonModel($mediaService->getMissingThumbs());
 
     }
+
 	public function jsonRecreateThumbsAction()
 	{
+		/** @var MediaService $mediaService */
+		$mediaService = $this->systemService->serviceManager->get('MediaService');
+		$path = $this->params()->fromRoute('imgPath');
 
+		$item = $mediaService->getItem($path);
+		$mediaService->createDefaultThumbs($item);
+		return new JsonModel();
 	}
+
     public function maintenanceAction() {
         $viewModel = new ViewModel();
         $viewModel->setTerminal(true);
