@@ -121,8 +121,11 @@
         if (type === 'function') {
             let valueName = $(this).attr('name');
             //handle function
-            console.log(valueName, type);
-            setSystemConfig(valueName, [], $(this));
+            if (valueName === "fixMissingThumbs") {
+                fixMissingThumbs();
+            } else {
+                setSystemConfig(valueName, valueName, $(this));
+            }
         } else if (type === 'boolean') {
             //handle string, number
             let $input = $('input', $(this).parent())
@@ -131,7 +134,7 @@
             let $img = $('img', $(this).parent());
             let imgSrc;
             let imgAlt;
-            if (value == true){
+            if (value === true){
                 imgSrc = '/img/uikit/led-on.png';
                 imgAlt = 'on';
             } else {
@@ -168,6 +171,18 @@
         $li.fadeOut(500);
     });
 
+    function fixMissingThumbs() {
+        var prom = $.ajax({
+            url: "/system/getMissingThumbs",
+            type: "GET",
+        });
+        prom.done(function(e) {
+            console.log("sers", e);
+        });
+        prom.fail(function(e) {
+            console.log("error", e);
+        });
+    }
     function getSystemConfig() {
         send({
             method: 'getSystemConfig'

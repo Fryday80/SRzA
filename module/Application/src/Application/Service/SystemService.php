@@ -23,6 +23,10 @@ class SystemService
             'type' => 'function',
             'value' => array()
         ),
+        'fixMissingThumbs' => array(
+            'type' => 'function',
+            'value' => array()
+        ),
     );
 
     public function __construct(AccessService $accessService, ServiceManager $serviceManager) {
@@ -34,6 +38,9 @@ class SystemService
 
     public function logoutUsers() {
         //@todo logout all users except admins
+    }
+    public function fixMissingThumbs() {
+        //unused but
     }
 
 
