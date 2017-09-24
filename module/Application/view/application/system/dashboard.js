@@ -172,14 +172,36 @@
     });
 
     function fixMissingThumbs() {
-        var prom = $.ajax({
+        let progName = "Recreate Thumbs";
+        notify.startProgress(progName);
+        $.ajax({
             url: "/system/getMissingThumbs",
             type: "GET",
-        });
-        prom.done(function(e) {
-            console.log("sers", e);
-        });
-        prom.fail(function(e) {
+        })
+        .done(function(e) {
+            let step = 1 / e.length + 1;
+            if (e.length === 0) {
+                notify.stopProgress(progName);
+                notify.info("Info", "No missing thumbs");
+                return;
+            }
+            notify.doProgress(progName, step, e[0]);
+
+            for(let i = 0; i < e.length; i++) {
+                //send request
+                $.ajax({
+                    url: "/system/recreateThumbs/" + e[i],
+                    type: "GET",
+                }).always(function(e) {
+                    if (i + 1 < e.length) {
+                        notify.doProgress(progName, step, e[i + 1]);
+                    } else {
+                        notify.setProgress(progName, 1, "Done!");
+                    }
+                });
+            }
+        })
+        .fail(function(e) {
             console.log("error", e);
         });
     }
