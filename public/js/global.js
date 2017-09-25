@@ -221,6 +221,9 @@
         }
         stop() {
             this.loader.remove();
+            var i = taskNameHash.indexOf(this.name);
+            if (i < 0) return;
+            taskNameHash.splice(i, 1);
         }
     }
 

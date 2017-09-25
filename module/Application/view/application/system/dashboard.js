@@ -144,14 +144,11 @@
             $img.attr('src', imgSrc)
                 .attr('alt', imgAlt);
             //handle checkbox
-            console.log(valueName, value, type);
-            console.log($img);
             setSystemConfig(valueName, value, $(this));
         } else {
             let $input = $('input', $(this).parent())
             let valueName = $input.attr('name');
             let value = $input.val();
-            console.log(valueName, value, type);
             setSystemConfig(valueName, value, $(this));
         }
     });
@@ -173,36 +170,43 @@
 
     function fixMissingThumbs() {
         let progName = "Recreate Thumbs";
-        notify.startProgress(progName);
+        let prog = notify.getProgress(progName);
+        if (prog != null) return;
+
+        prog = notify.startProgress(progName);
+
         $.ajax({
             url: "/system/getMissingThumbs",
             type: "GET",
         })
         .done(function(e) {
-            let step = 1 / e.length + 1;
             if (e.length === 0) {
-                notify.stopProgress(progName);
+                prog.stop();
                 notify.info("Info", "No missing thumbs");
                 return;
             }
-            notify.doProgress(progName, step, e[0]);
-
+            let step = 1 / (e.length + 1);
+            let length = e.length;
+            prog.do(step, e[0]);
             for(let i = 0; i < e.length; i++) {
                 //send request
                 $.ajax({
                     url: "/system/recreateThumbs" + e[i],
                     type: "GET",
                 }).always(function(e) {
-                    if (i + 1 < e.length) {
-                        notify.doProgress(progName, step, e[i + 1]);
+                    if (i + 1 < length) {
+                        prog.do(step, e[i + 1]);
                     } else {
-                        notify.setProgress(progName, 1, "Done!");
+                        prog.set(1, "Done!");
                     }
+                }).fail(function() {
+
                 });
             }
         })
         .fail(function(e) {
-            console.log("error", e);
+            prog.stop();
+            notify.error("Error", "Http error");
         });
     }
     function getSystemConfig() {
