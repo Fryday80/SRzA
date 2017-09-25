@@ -5,6 +5,7 @@ use Application\Controller\Plugin\ImagePlugin;
 use Cast\Model\DataModels\Blazon;
 use Cast\Model\Tables\BlazonTable;
 use Cast\Model\Enums\EBlazonDataType;
+use Media\Model\MediaItem;
 use Media\Service\MediaException;
 
 class BlazonService
@@ -248,41 +249,56 @@ class BlazonService
         return $newItem->id;
     }
 
-    /**
+	/**
 	 * Save edited blazon
 	 *
-     * @param int  $id
-     * @param int  $isOverlay
-     * @param null $name
-     * @param null $blazonData
-     * @param null $blazonBigData
-     * @return bool
-     */
+	 * @param int  $id
+	 * @param int  $isOverlay
+	 * @param null $name
+	 * @param null $blazonData
+	 * @param null $blazonBigData
+	 *
+	 * @return bool
+	 * @throws MediaException
+	 */
     public function save($id, $isOverlay, $name = null, $blazonData = null, $blazonBigData = null)
 	{
 		$id = (int) $id;
 		/** @var Blazon $item */
         $item = $this->getById($id);
 
+        if($blazonData['error'] > 0) $blazonData = null;
+        if($blazonBigData['error'] > 0) $blazonBigData = null;
+
         if(!$item) return false;
 
         // get copy of original data
 		$newItem = $item;
 		$newItem->isOverlay = (int) $isOverlay;
-
         // name changed ?
         if ($name !== null && $item['name'] !== $name) {
-            if ($item->filename !== null && $blazonData == null)
-                $newItem->filename = $this->uploader->rename($item->filename, $name);
-            if ($item->bigFilename !== null && $blazonBigData == null)
+            if ($item->filename !== null && $blazonData == null) {
+				$newItem->filename = $this->uploader->rename($item->filename, $name);
+				if ($newItem->filename instanceof MediaException)
+					throw $newItem->filename;
+				elseif ($newItem->filename instanceof MediaItem)
+					$newItem->filename = $newItem->filename->path;
+			}
+
+            if ($item->bigFilename !== null && $blazonBigData == null) {
 				$newItem->bigFilename = $this->uploader->rename($item->bigFilename, $name . '_big');
+				if ($newItem->bigFilename instanceof MediaException)
+					throw $newItem->bigFilename;
+				elseif ($newItem->bigFilename instanceof MediaItem)
+					$newItem->bigFilename = $newItem->bigFilename->path;
+			}
+
 			$newItem->name = $name;
         }
 
 		list($fileName, $bigFileName) = $this->uploadImages($name, $blazonData, $blazonBigData);
         if ($fileName !== null)    $newItem->filename    = $fileName;
         if ($bigFileName !== null) $newItem->bigFilename = $bigFileName;
-
 		$this->updateCache($newItem);
         $this->blazonTable->save($newItem);
         return true;
@@ -300,11 +316,17 @@ class BlazonService
 
         if ($this->blazonTable->remove($id) ) {
             //remove file
-            $this->uploader->deleteAllImagesByPath($item->filename);
-            $this->uploader->deleteAllImagesByPath($item->bigFilename);
+			if ($item->filename !== null)
+				$this->uploader->deleteAllImagesByPath($item->filename);
+
+			if ($item->bigFilename !== null)
+				$this->uploader->deleteAllImagesByPath($item->bigFilename);
+
             $this->removeFromCache($id);
+
             return true;
         }
+        return false;
     }
 
 	protected function uploadImages($name, $blazonData = null, $blazonBigData = null)
