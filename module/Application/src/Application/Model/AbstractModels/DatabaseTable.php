@@ -100,7 +100,7 @@ class DatabaseTable extends AbstractTableGateway
 	 * @return bool|int
 	 */
     public function save($data) {
-        if (!isset($data['id']) || !is_integer($data['id']) || $data['id'] == 0) {
+        if (!isset($data['id']) || $data['id'] == 0) {
             if (!$this->insert($data) )
                 return false;
             return $this->getLastInsertValue();

@@ -29,7 +29,9 @@ class BlazonController extends AbstractActionController
         ));
     }
 
-    public function addAction() {
+    public function addAction()
+	{
+		$this->blaService->setImageUploadPlugin($this->image());
         $form = new BlazonForm();
         $form->get('submit')->setValue('add');
         $form->setAttribute('action', '/castmanager/wappen/add');
@@ -59,13 +61,14 @@ class BlazonController extends AbstractActionController
             'form' => $form
         );
     }
-    public function editAction() {
+    public function editAction()
+	{
+		$this->blaService->setImageUploadPlugin($this->image());
         $request = $this->getRequest();
         $id = (int) $this->params()->fromRoute('id', null);
         if (! $id && !$request->isPost()) {
             return $this->redirect()->toRoute('castmanager/wappen');
         }
-
         if (!$blazon = $this->blaService->getById($id)) {
             return $this->redirect()->toRoute('castmanager/wappen');
         }
@@ -79,7 +82,7 @@ class BlazonController extends AbstractActionController
             $form->get('blazonBig')->setAttribute('value', $blazon['filenameBig']);
         }
         $form->get('submit')->setAttribute('value', $operator);
-        $form->populateValues($blazon);
+        $form->populateValues($blazon->toArray());
         $form->setAttribute('action', '/castmanager/wappen/edit/' . $id);
 
         if ($request->isPost()) {
@@ -106,6 +109,7 @@ class BlazonController extends AbstractActionController
         );
     }
     public function deleteAction() {
+		$this->blaService->setImageUploadPlugin($this->image());
         $id = (int) $this->params()->fromRoute('id', 0);
         if (! $id) {
             return $this->redirect()->toRoute('castmanager/wappen');

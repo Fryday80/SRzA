@@ -1,9 +1,11 @@
 <?php
 namespace Cast\Service;
 
-use Cast\Model\BlazonTable;
-use Cast\Model\EBlazonDataType;
-use Media\Service\MediaService;
+use Application\Controller\Plugin\ImagePlugin;
+use Cast\Model\DataModels\Blazon;
+use Cast\Model\Tables\BlazonTable;
+use Cast\Model\Enums\EBlazonDataType;
+use Media\Service\MediaException;
 
 class BlazonService
 {
@@ -22,6 +24,9 @@ class BlazonService
     private $data = null;
     private $dataNoOverlays = null;
     private $dataOverlays = null;
+    // image upload
+	/** @var  ImagePlugin */
+	private $uploader;
 
 	function __construct(BlazonTable $blazonTable, CastService $castService) {
         $this->blazonTable = $blazonTable;
@@ -33,7 +38,7 @@ class BlazonService
 	 * ========================================================= */
     /**
      * Get all blazons
-     * @return array 'id' => data
+     * @return Blazon[] 'id' => data; data is Blazon Object
      */
     public function getAll() {
         $this->loadData(EBlazonDataType::ALL);
@@ -42,7 +47,7 @@ class BlazonService
 
     /**
      * Get all blazons that are overlays
-     * @return array 'id' => data
+     * @return Blazon[] 'id' => data; data is Blazon Object
      */
     public function getAllOverlays() {
         $this->loadData(EBlazonDataType::OVERLAY);
@@ -51,7 +56,7 @@ class BlazonService
 
     /**
      * Get all blazons that are no overlays
-     * @return array 'id' => data
+     * @return Blazon[] 'id' => data; data is Blazon Object
      */
     public function getAllNoOverlays() {
         $this->loadData(EBlazonDataType::NO_OVERLAY);
@@ -61,13 +66,15 @@ class BlazonService
     /**
      * Get blazon by id
      * @param int $id
-     * @return array|false
+     * @return false | Blazon
      */
     public function getById($id) {
+    	// if id exists in cache return value
     	$item = (isset($this->data[$id])) ? $this->data[$id] : false;
+    	// else load single entry from db to cache
     	if (!$item)
         	$this->loadData(EBlazonDataType::SINGLE, $id);
-
+		// return item or false
         return (isset($this->data[$id])) ? $this->data[$id] : false;
     }
 
@@ -98,7 +105,8 @@ class BlazonService
 				}
 				break;
 			case EBlazonDataType::SINGLE:
-				$data = $this->blazonTable->getById($id);
+				$data[0] = $this->blazonTable->getById($id);
+				if ($data[0] == false) $data = false;
 				break;
 		}
 
@@ -108,22 +116,25 @@ class BlazonService
 		}
 	}
 
-	private function addItem2Cache($blazonData)
+	private function addItem2Cache(Blazon $blazonData)
 	{
-		$this->data[ $blazonData['id'] ] = $blazonData;
-		if ($blazonData['isOverlay'] == 0) $this->dataNoOverlays[$blazonData['id']] = $blazonData;
-		else $this->dataOverlays[$blazonData['id']] = $blazonData;
+		$blazonId = (int) $blazonData->id;
+		// add to cache of all blazons
+		$this->data[ $blazonId ] = $blazonData;
+		// add to cache of overlays | no overlays
+		if ($blazonData->isOverlay == 0) $this->dataNoOverlays[$blazonId] = $blazonData;
+		else $this->dataOverlays[$blazonId] = $blazonData;
 	}
 
-	private function updateCache($blazonData, $id = null)
+	private function updateCache(Blazon $blazonData, $id = null)
 	{
-		if ($id !== null) $blazonData['id'] = $id;
-		array_merge_recursive($this->data[$blazonData['id']], $blazonData);
-
+		if ($id !== null) $blazonData->id = (int) $id;
+		$this->data[$blazonData->id] = $blazonData;
 	}
 
 	private function removeFromCache($id)
 	{
+		$id = (int) $id;
 		unset ($this->data[$id]);
 		if (isset ($this->dataNoOverlays[$id])) unset ($this->dataNoOverlays[$id]);
 		if (isset ($this->dataOverlays[$id])) unset ($this->dataOverlays[$id]);
@@ -202,80 +213,78 @@ class BlazonService
 	/* =========================================================
 	 * Add, edit, delete
 	 * ========================================================= */
+	public function setImageUploadPlugin(ImagePlugin $imageUploadPlugin)
+	{
+		$this->uploader = $imageUploadPlugin;
+	}
+
     /**
 	 * Add new blazon
 	 *
-     * @param $name string
-     * @param $isOverlay
-     * @param null $blazonData
-     * @param null $blazonBigData
-     * @return bool
+     * @param string $name
+     * @param int    $isOverlay
+     * @param array  $blazonData    form upload array
+     * @param array  $blazonBigData form upload array
+     * @return bool|int new id or false
      */
-    public function addNew($name, $isOverlay, $blazonData = null, $blazonBigData = null) {
-        $fileData['fileName'] = $bigFileData['fileName'] = null;
-        // small blazon uploaded ?
-        if (!($blazonData['error'] > 0)) {
-            $fileData = $this->moveFile($blazonData['tmp_name'], $name, $blazonData['name']);
-            $this->imageProcessor->createBlazon($fileData['filePath']);
-        }
-        // big blazon uploaded ?
-        if (!($blazonBigData['error'] > 0)) {
-            $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $name.'_big', $blazonBigData['name']);
-            $this->imageProcessor->createBlazon($bigFileData['filePath']);
-        }
+    public function addNew($name, $isOverlay, $blazonData = null, $blazonBigData = null)
+	{
+		$isOverlay = (int) $isOverlay;
 
-        $newItem = array(
-            'isOverlay' => $isOverlay,
-            'name' => $name,
-            'filename' => $fileData['fileName'],
-            'bigFilename' => $bigFileData['fileName']
-        );
+		list($fileName, $bigFileName) = $this->uploadImages($name, $blazonData, $blazonBigData);
+
+        $newItem = new Blazon();
+        $newItem->appendDataArray(
+        	array(
+				'isOverlay' => $isOverlay,
+				'name' => $name,
+				'filename' => $fileName,
+				'bigFilename' => $bigFileName
+			)
+		);
         $newId = $this->blazonTable->add($newItem);
-        $newItem['id'] = $newId;
+        $newItem->id = (int) $newId;
         $this->addItem2Cache($newItem);
-        return $newId;
+        return $newItem->id;
     }
 
     /**
 	 * Save edited blazon
 	 *
-     * @param $id
-     * @param $isOverlay
+     * @param int  $id
+     * @param int  $isOverlay
      * @param null $name
      * @param null $blazonData
      * @param null $blazonBigData
      * @return bool
      */
-    public function save($id, $isOverlay, $name = null, $blazonData = null, $blazonBigData = null) {
-        $data['isOverlay'] = (int) $isOverlay;
+    public function save($id, $isOverlay, $name = null, $blazonData = null, $blazonBigData = null)
+	{
+		$id = (int) $id;
+		/** @var Blazon $item */
         $item = $this->getById($id);
+
         if(!$item) return false;
 
-        $fileData['fileName'] = $bigFileData['fileName'] = null;
+        // get copy of original data
+		$newItem = $item;
+		$newItem->isOverlay = (int) $isOverlay;
 
         // name changed ?
-        if ($name !== null && $item['name'] != $name) {
-            if ($item['filename'] !== null)
-                $data['fileName'] = $this->renameItem($item, $name);
-            if ($item['bigFilename'] !== null)
-                $data['bigFilename'] = $this->renameItem($item, $name . '_big');
-            $data['name'] = $name;
-        }
-        // small blazon uploaded ?
-        if (!($blazonData['error'] > 0)) {
-            $fileData = $this->moveFile($blazonData['tmp_name'], $item['name'], $blazonData['name']);
-            $this->imageProcessor->createBlazon($fileData['filePath']);
-            $data['filename'] = $fileData['fileName'];
-        }
-        // big blazon uploaded ?
-        if (!($blazonBigData['error'] > 0)) {
-            $bigFileData = $this->moveFile($blazonBigData['tmp_name'], $item['name'].'_big', $blazonBigData['name']);
-            $this->imageProcessor->createBlazon($bigFileData['filePath']);
-            $data['bigFilename'] = $bigFileData['fileName'];
+        if ($name !== null && $item['name'] !== $name) {
+            if ($item->filename !== null && $blazonData == null)
+                $newItem->filename = $this->uploader->rename($item->filename, $name);
+            if ($item->bigFilename !== null && $blazonBigData == null)
+				$newItem->bigFilename = $this->uploader->rename($item->bigFilename, $name . '_big');
+			$newItem->name = $name;
         }
 
-        $this->updateCache($data, $id);
-        $this->blazonTable->save($id, $data);
+		list($fileName, $bigFileName) = $this->uploadImages($name, $blazonData, $blazonBigData);
+        if ($fileName !== null)    $newItem->filename    = $fileName;
+        if ($bigFileName !== null) $newItem->bigFilename = $bigFileName;
+
+		$this->updateCache($newItem);
+        $this->blazonTable->save($newItem);
         return true;
     }
 
@@ -291,57 +300,95 @@ class BlazonService
 
         if ($this->blazonTable->remove($id) ) {
             //remove file
-            $wappenPath = realpath($this::BLAZON_IMAGE_PATH);
-            $path = $wappenPath.'/'.$item['filename'];
-            @unlink($path);
+            $this->uploader->deleteAllImagesByPath($item->filename);
+            $this->uploader->deleteAllImagesByPath($item->bigFilename);
             $this->removeFromCache($id);
             return true;
         }
     }
 
-    /* ============================================================
-	 * Image handling
-     * ============================================================ */
-	/**
-	 * Moves file to $path
-	 *
-     * @param string $path source path
-     * @param string $name filename with extension
-     * @param string $originalFileName original file name
-	 *
-     * @return array array( 0 => file name with extension, 1 => file path)
-     */
-    private function moveFile($path, $name, $originalFileName) {
-        $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
-        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
-        if (!$blazonPath) {
-			@mkdir($blazonPath, 0755);
-        }
-        $newPath = $blazonPath.'/'.$name.'.'.$ext;
-        rename($path, $newPath);
-        return array(
-            'fileName' => pathinfo($newPath, PATHINFO_BASENAME),
-            'filePath' => $newPath,
-        );
+	protected function uploadImages($name, $blazonData = null, $blazonBigData = null)
+	{
+		$uploadedImages = $uploadPath = $uploadName = $blazonItems = array();
+		// small blazon uploaded, no errors AND sth given ?
+		if ($blazonData !== null && !($blazonData['error'] > 0)) {
+			$uploadedImages[0] = $blazonData;
+			$uploadPath[0] = self::BLAZON_IMAGE_URL;
+			$uploadName[0] = $name;
+		}
+		// big blazon uploaded, no errors  AND sth given ?
+		if ($blazonBigData !== null && !($blazonBigData['error'] > 0)) {
+			$uploadedImages[1] = $blazonBigData;
+			$uploadPath[1] = self::BLAZON_IMAGE_URL;;
+			$uploadName[1] = $name . '_big';
+		}
+
+		if(!empty($uploadedImages))
+			$blazonItems = $this->uploader->upload($uploadedImages, $uploadPath, $uploadName);
+
+		$fileName    = (isset($blazonItems[0]) && $blazonItems[0] !== null && !($blazonItems[0] instanceof MediaException) ) ? $blazonItems[0]->path : null;
+		$bigFileName = (isset($blazonItems[1]) && $blazonItems[1] !== null && !($blazonItems[1] instanceof MediaException) ) ? $blazonItems[1]->path : null;
+
+		if ($fileName !== null) $this->resizeImage($fileName);
+		if ($bigFileName !== null) $this->resizeImage($bigFileName);
+
+		return array($fileName, $bigFileName);
     }
 
-    /**
-	 * Rename after edit
-	 *
-     * @param $item array
-     * @param $newName string
-     * @return string file name with extension
-     */
-    private function renameItem(&$item, $newName) {
-        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
-        $path = $blazonPath.'/'.$item['filename'];
-        if (file_exists($path)) {
-            $newPath = $blazonPath . '/' . $newName . '.' . pathinfo($path, PATHINFO_EXTENSION);
-            rename($path, $newPath);
-            $item['name'] = $newName;
-            $item['filename'] = pathinfo($newPath, PATHINFO_BASENAME);
-        return $item['filename'];
-        }
-        return null;
+	protected function resizeImage($path)
+	{
+		$iP = &$this->uploader->imageProcessor;
+		$iP->load($this->uploader->mediaService->getItem($path));
+		$iP->resize_square(500);
+		$iP->saveImage();
     }
+/**
+ * @deprecated since 25.09.2017
+ */
+    //
+//    /* ============================================================
+//	 * Image handling
+//     * ============================================================ */
+//	/**
+//	 * Moves file to $path
+//	 *
+//     * @param string $path source path
+//     * @param string $name filename with extension
+//     * @param string $originalFileName original file name
+//	 *
+//     * @return array array( 0 => file name with extension, 1 => file path)
+//     */
+//    private function moveFile($path, $name, $originalFileName) {
+//        $ext = pathinfo($originalFileName, PATHINFO_EXTENSION);
+//        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
+//        if (!$blazonPath) {
+//			@mkdir($blazonPath, 0755);
+//        }
+//        $newPath = $blazonPath.'/'.$name.'.'.$ext;
+//        rename($path, $newPath);
+//        return array(
+//            'fileName' => pathinfo($newPath, PATHINFO_BASENAME),
+//            'filePath' => $newPath,
+//        );
+//    }
+//
+//    /**
+//	 * Rename after edit
+//	 *
+//     * @param $item array
+//     * @param $newName string
+//     * @return string file name with extension
+//     */
+//    private function renameItem(&$item, $newName) {
+//        $blazonPath = realpath($this::BLAZON_IMAGE_PATH);
+//        $path = $blazonPath.'/'.$item['filename'];
+//        if (file_exists($path)) {
+//            $newPath = $blazonPath . '/' . $newName . '.' . pathinfo($path, PATHINFO_EXTENSION);
+//            rename($path, $newPath);
+//            $item['name'] = $newName;
+//            $item['filename'] = pathinfo($newPath, PATHINFO_BASENAME);
+//        return $item['filename'];
+//        }
+//        return null;
+//    }
 }

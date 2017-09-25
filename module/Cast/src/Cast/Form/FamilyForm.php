@@ -73,7 +73,7 @@ EOD;
             )
         );
         foreach ($blazonService->getAllNoOverlays() as $value) {
-            $blazonUrl = '/media/file/wappen/'.$value['filename'];
+            $blazonUrl = '/media/file/'.$value['filename'];
             $liCss = sprintf($liCssTemplate, $blazonUrl);
             array_push($data, array(
                     'attributes'=> [
