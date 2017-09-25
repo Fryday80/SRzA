@@ -1,14 +1,8 @@
 <?php
 namespace Cast;
 
-use Cast\Helper\CharProfile;
-use Cast\Model\BlazonTable;
-use Cast\Model\CharacterTable;
-use Cast\Model\FamiliesTable;
-use Cast\Model\JobTable;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {

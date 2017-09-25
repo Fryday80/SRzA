@@ -24,7 +24,6 @@ return array(
     'Application\Hydrator\Hydrator'                          => __DIR__ . '/src/Application/Hydrator/Hydrator.php',
     'Application\Model\AbstractModels\AbstractModel'         => __DIR__ . '/src/Application/Model/AbstractModels/AbstractModel.php',
     'Application\Model\AbstractModels\DatabaseTable'         => __DIR__ . '/src/Application/Model/AbstractModels/DatabaseTable.php',
-    'Application\Model\AbstractModels\DataSet'               => __DIR__ . '/src/Application/Model/AbstractModels/DataSet.php',
     'Application\Model\AbstractModels\DataTableAbstract'     => __DIR__ . '/src/Application/Model/AbstractModels/DataTableAbstract.php',
     'Application\Model\AbstractModels\Extras'                => __DIR__ . '/src/Application/Model/AbstractModels/Extras.php',
     'Application\Model\AbstractModels\StatsDataItem'         => __DIR__ . '/src/Application/Model/AbstractModels/StatsDataItem.php',
