@@ -18,6 +18,7 @@ class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess
 
     /**
      * called after hydrating data into this model
+     * @param $data
      */
     public function preHydrate($data) { }
     public function postHydrate($data) { }
@@ -95,7 +96,7 @@ class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess
 //            return $this->$setterName($value);
 //        }
         if ($this->propertyExists($offset)) {
-            return $this->$offset = $value;
+            $this->$offset = $value;
         }
     }
 
@@ -110,7 +111,7 @@ class AbstractModel implements ArrayAccess, IObjectToArray, IHydratorModelAccess
      */
     public function offsetUnset($offset) {
         if ($this->propertyExists($offset)) {
-            return $this->$offset = null;
+            $this->$offset = null;
         }
     }
     private function propertyExists($name) {

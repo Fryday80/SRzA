@@ -58,7 +58,6 @@ class Module
 
     public function checkLogin(MvcEvent $e)
     {
-        return;
         /** @var Request $request */
         $serviceManager     = $e->getApplication()->getServiceManager();
         /** @var AccessService $accessService */
