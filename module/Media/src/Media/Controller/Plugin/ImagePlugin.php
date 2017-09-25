@@ -40,7 +40,7 @@ class ImagePlugin extends AbstractPlugin
 
 
 	/**
-	 * @return MediaException[] | MediaItem[]
+	 * @return MediaException[] | MediaItem[] array of MediaItems | MediaExeptions
 	 */
 	public function upload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{
@@ -54,6 +54,11 @@ class ImagePlugin extends AbstractPlugin
 	public function deleteAllImagesByPath($path)
 	{
 		$this->mediaService->deleteAllItemsByPath($path);
+	}
+
+	public function rename($path, $newName)
+	{
+		return $this->mediaService->renameItem($path, $newName);
 	}
 
 	// === prepare
@@ -108,6 +113,13 @@ class ImagePlugin extends AbstractPlugin
 	return false;
 	}
 
+	/**
+	 * @param array $uploadData				array of form upload arrays
+	 * @param array $uploadDestinationPath
+	 * @param array $uploadFileName
+	 *
+	 * @return array keeping $key => $value relation
+	 */
 	protected function multiUpload($uploadData, $uploadDestinationPath, $uploadFileName = null)
 	{
 		$return = array();

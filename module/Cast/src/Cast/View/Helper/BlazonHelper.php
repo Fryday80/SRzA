@@ -6,7 +6,7 @@ use Zend\View\Helper\AbstractHelper;
 
 class BlazonHelper extends AbstractHelper
 {
-    const BLAZON_PATH = '/media/file/wappen/';
+    const BLAZON_PATH = '/media/file/';
 
     /** @var  BlazonService */
     private $service;

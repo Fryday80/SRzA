@@ -12,7 +12,7 @@ class BlazonDataTable extends DataTable
             'name' => 'Wappen',
             'type' => 'custom',
             'render' => function($row) {
-                $links = '<img height="50px" src="/media/file/wappen/' . $row['filename'] . '">';
+                $links = '<img height="50px" src="/media/file/' . $row['filename'] . '">';
                 return $links;
             }
         ));
@@ -20,7 +20,7 @@ class BlazonDataTable extends DataTable
             'name' => 'BigWappen',
             'type' => 'custom',
             'render' => function($row) {
-                $pic = (isset($row['bigFilename']))? '/media/file/wappen/'.$row['bigFilename'] : '/img/uikit/cross-NO.gif';
+                $pic = (isset($row['bigFilename']))? '/media/file/'.$row['bigFilename'] : '/img/uikit/cross-NO.gif';
                 $links = '<img height="50px" src="' . $pic . '">';
                 return $links;
             }

@@ -4,9 +4,9 @@ $this->headTitle($title);
 ?>
 <h1><?php echo $this->escapeHtml($title); ?></h1>
 <div class="blazon-preview" style="float:left; margin-right: 20px;">
-    <img width="200px" src="<?php echo '/media/file/wappen/'.$blazon['filename']; ?>" style="display: block; margin-right: 20px;">
+    <img width="200px" src="<?php echo '/media/file/'.$blazon['filename']; ?>" style="display: block; margin-right: 20px;">
     <?php if (isset($blazon['bigFilename'])): ?>
-    <img width="200px" src="<?php echo '/media/file/wappen/'.$blazon['bigFilename']; ?>" style="display: block; margin-right: 20px;">
+    <img width="200px" src="<?php echo '/media/file/'.$blazon['bigFilename']; ?>" style="display: block; margin-right: 20px;">
     <?php endif; ?>
 </div>
 <div style="float:left">

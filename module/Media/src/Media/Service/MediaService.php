@@ -154,6 +154,12 @@ class MediaService {
 
     }
 
+	/**
+	 * @param $path
+	 * @param $newName
+	 *
+	 * @return MediaItem|MediaException|null returns changed Item or MediaException
+	 */
     public function renameItem($path, $newName) {
         $item = $this->getItem($path);
         if ($item instanceof MediaException) {
