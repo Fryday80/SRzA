@@ -176,7 +176,7 @@ class MediaService {
         }
 
         $parentPath = dirname($item->fullPath).'/';
-        $targetPath = $this->cleanPath($parentPath.$newName);
+        $targetPath = $this->cleanPath($parentPath.$newName) . '.' . $item->extension;
 
         if(file_exists($targetPath)) {
             if (is_dir($targetPath)) {
@@ -185,6 +185,7 @@ class MediaService {
                 return new MediaException(ERROR_TYPES::FILE_ALREADY_EXISTS, $path);
             }
         }
+
         if(!rename($item->fullPath, $targetPath)) {
             if (is_dir($item->fullPath)) {
                 return new MediaException(ERROR_TYPES::ERROR_RENAMING_FOLDER, $path);
@@ -193,7 +194,7 @@ class MediaService {
             }
         }
         //@todo remove item from item cache, when cache is implemented :)
-        return $this->loadItem($targetPath);
+        return $this->loadItem(str_replace($this->dataPath . '/', '', $targetPath));
     }
 
     /**
