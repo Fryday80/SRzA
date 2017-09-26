@@ -357,6 +357,13 @@ class BlazonService
 		return array($fileName, $bigFileName);
     }
 
+	/**
+	 * Do the resizing for blazons
+	 *
+	 * @param $path
+	 *
+	 * @internal ImageProcessor $iP
+	 */
 	protected function resizeImage($path)
 	{
 		$iP = &$this->uploader->imageProcessor;
