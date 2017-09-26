@@ -25,6 +25,8 @@ class BlazonService
     private $data = null;
     private $dataNoOverlays = null;
     private $dataOverlays = null;
+    private $dataByChar = null;
+
     // image upload
 	/** @var  ImagePlugin */
 	private $uploader;
@@ -161,19 +163,22 @@ class BlazonService
      * @return array array of blazon ids
      */
     public function getArgumentsByChar($char, $familyBlazon = false) {
-        $this->loadData(EBlazonDataType::ALL);
-        if ($familyBlazon)
-            $base = ($char['family_blazon_id'] !== 0) ? $char['family_blazon_id'] : 1;
-        else
-            $base  = ($char['blazon_id'] !== 0) ? $char['blazon_id'] : 1;
-        $over1 = ($base == 1 && isset($char['job_blazon_id'])) ? $char['job_blazon_id'] : 0;
-        if (isset($char['supervisor_id']))
-        {
-            $supervisorBlazonId = $this->getSupervisorBlazon($char['supervisor_id'])['blazon_id'];
-        }
-        $over2 = (isset($this->data[$supervisorBlazonId])) ? $supervisorBlazonId : 0;
+    	$familyBlazon = ($familyBlazon)? 1 : 0;
+    	if (!(isset($this->dataByChar['arguments'][$char['id']][$familyBlazon]))) {
+			$this->loadData(EBlazonDataType::ALL);
+			if ($familyBlazon === 1)
+				$base = ($char['family_blazon_id'] !== 0) ? $char['family_blazon_id'] : 1;
+			else
+				$base = ($char['blazon_id'] !== 0) ? $char['blazon_id'] : 1;
+			$over1 = ($base == 1 && isset($char['job_blazon_id'])) ? $char['job_blazon_id'] : 0;
+			if (isset($char['supervisor_id'])) {
+				$supervisorBlazonId = $this->getSupervisorBlazon($char['supervisor_id'])['blazon_id'];
+			}
+			$over2 = (isset($this->data[ $supervisorBlazonId ])) ? $supervisorBlazonId : 0;
 
-        return array($base, $over1, $over2);
+			$this->dataByChar['arguments'][ $char['id'] ][ $familyBlazon ] = array($base, $over1, $over2);
+		}
+        return $this->dataByChar['arguments'][ $char['id'] ][ $familyBlazon ];
     }
 
     /**
