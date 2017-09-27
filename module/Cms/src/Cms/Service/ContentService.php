@@ -2,7 +2,7 @@
 namespace Cms\Service;
 
 use Cms\Model\DataModels\Content;
-use Cms\Model\ContentTable;
+use Cms\Model\Tables\ContentTable;
 
 class ContentService
 {

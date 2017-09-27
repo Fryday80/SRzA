@@ -1,5 +1,5 @@
 <?php
-namespace Auth\Model;
+namespace Auth\Model\Tables;
 
 use Zend\Db\Sql\Sql;
 use Zend\Db\TableGateway\AbstractTableGateway;

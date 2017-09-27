@@ -1,5 +1,5 @@
 <?php
-namespace Cast\Model;
+namespace Cast\Model\Tables;
 
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\Sql\Predicate\PredicateSet;

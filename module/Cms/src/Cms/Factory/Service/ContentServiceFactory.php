@@ -1,7 +1,7 @@
 <?php
  namespace Cms\Factory\Service;
 
- use Cms\Model\ContentTable;
+ use Cms\Model\Tables\ContentTable;
  use Cms\Service\ContentService;
  use Zend\ServiceManager\FactoryInterface;
  use Zend\ServiceManager\ServiceLocatorInterface;

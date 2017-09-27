@@ -1,6 +1,7 @@
 <?php
 namespace Application\Service;
 
+use Application\Model\Tables\SystemLogTable;
 use Exception;
 use Zend\Mvc\MvcEvent;
 use Zend\Http\Response;
@@ -8,7 +9,6 @@ use Zend\Mvc\Application;
 use Auth\Service\AccessService;
 use Zend\Http\Header\SetCookie;
 use Zarganwar\PerformancePanel\Register;
-use Application\Model\SystemLogTable;
 // data items
 use Application\Model\DataModels\Stats;
 use Application\Model\DataModels\Action;

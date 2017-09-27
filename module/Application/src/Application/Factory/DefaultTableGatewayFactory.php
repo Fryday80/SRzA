@@ -34,6 +34,10 @@ class DefaultTableGatewayFactory implements AbstractFactoryInterface
      */
     public function createServiceWithName(ServiceLocatorInterface $serviceLocator, $name, $requestedName)
     {
+		$nameSpace = explode( '\\', $requestedName);
+		$nameSpace [3] = $nameSpace[2];
+		$nameSpace[2] = 'Tables';
+		$requestedName = implode('\\', $nameSpace);
         $adapter = $serviceLocator->get('Zend\Db\Adapter\Adapter');
         $new  = new $requestedName($adapter);
         return $new;

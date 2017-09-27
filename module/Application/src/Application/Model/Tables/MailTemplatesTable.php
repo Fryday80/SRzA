@@ -1,5 +1,5 @@
 <?php
-namespace Application\Model;
+namespace Application\Model\Tables;
 
 use Exception;
 use Zend\Db\TableGateway\AbstractTableGateway;
