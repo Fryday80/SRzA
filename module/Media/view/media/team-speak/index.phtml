@@ -9,17 +9,17 @@
  */
 
 /*-------SETTINGS-------*/
-$ts3_ip = '127.0.0.1';
-$ts3_queryport = 10011;
-$ts3_user = 'serveradmin';
-$ts3_pass = 'password';
+//$ts3_ip = '127.0.0.1';
+//$ts3_queryport = 10011;
+//$ts3_user = 'serveradmin';
+//$ts3_pass = 'password';
 /*----------------------*/
 
 #Include ts3admin.class.php
-require("../lib/ts3admin.class.php");
+//require("../lib/ts3admin.class.php");
 
 #build a new ts3admin object
-$tsAdmin = new ts3admin($ts3_ip, $ts3_queryport);
+$tsAdmin = $this->tsService;// new ts3admin($ts3_ip, $ts3_queryport);
 
 if($tsAdmin->getElement('success', $tsAdmin->connect())) {
     #login as serveradmin
@@ -55,10 +55,10 @@ if($tsAdmin->getElement('success', $tsAdmin->connect())) {
     echo 'Connection could not be established.';
 }
 
-if(count($tsAdmin->getDebugLog()) > 0) {
-    foreach($tsAdmin->getDebugLog() as $logEntry) {
-        echo '<script>alert("'.$logEntry.'");</script>';
-    }
-}
-
+//if(count($tsAdmin->getDebugLog()) > 0) {
+//    foreach($tsAdmin->getDebugLog() as $logEntry) {
+//        echo '<script>alert("'.$logEntry.'");</script>';
+//    }
+//}
+echo $output;
 ?>
