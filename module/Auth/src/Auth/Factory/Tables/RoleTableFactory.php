@@ -1,8 +1,8 @@
 <?php
-namespace Auth\Factory\Table;
+namespace Auth\Factory\Tables;
 
+use Auth\Model\Tables\RoleTable;
 use Zend\ServiceManager\FactoryInterface;
-use Auth\Model\RoleTable;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 class RoleTableFactory implements FactoryInterface

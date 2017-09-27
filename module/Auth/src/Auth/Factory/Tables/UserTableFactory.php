@@ -1,9 +1,9 @@
 <?php
-namespace Auth\Factory\Table;
+namespace Auth\Factory\Tables;
 
+use Auth\Model\Tables\UserTable;
 use Zend\ServiceManager\FactoryInterface;
 use Auth\Model\User;
-use Auth\Model\UserTable;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Hydrator\ObjectProperty;
 use Zend\ServiceManager\ServiceLocatorInterface;

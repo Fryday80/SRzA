@@ -16,7 +16,7 @@ class TeamSpeakService {
         $ts3_queryport = 10011;
         $ts3_user = 'serveradmin';
         $ts3_pass = 'password';
-        $this->tsAdmin = new ts3admin($ts3_ip, $ts3_queryport);
+		$this->tsAdmin = new ts3admin($ts3_ip, $ts3_queryport);
     }
     public function getChannels() {
     	//@todo check if connected

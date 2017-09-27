@@ -2,8 +2,8 @@
 namespace Auth\Controller;
 
 use Application\Service\CacheService;
-use Auth\Model\PermissionTable;
-use Auth\Model\ResourceTable;
+use Auth\Model\Tables\PermissionTable;
+use Auth\Model\Tables\ResourceTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Auth\Form\ResourceForm;

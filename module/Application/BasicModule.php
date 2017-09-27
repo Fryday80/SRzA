@@ -21,7 +21,6 @@
 
 		public function getAutoloaderConfig()
 		{
-			bdump($this->nameSpace);
 			if (getenv('APPLICATION_ENV') == 'production')
 				return array(
 					'Zend\Loader\ClassMapAutoloader' => array(

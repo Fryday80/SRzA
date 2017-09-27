@@ -1,5 +1,5 @@
 <?php
-namespace Nav\Factory;
+namespace Media\Factory\Service;
 
 
 use Media\Controller\FileController;
@@ -13,12 +13,11 @@ class TeamSpeakServiceFactory implements FactoryInterface
     /**
      * Create service
      *
-     * @param ServiceLocatorInterface $serviceLocator
+     * @param $sm $serviceLocator
      * @return FileController
      */
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ServiceLocatorInterface $sm)
     {
-        $sm = $serviceLocator->getServiceLocator();
         $config = $sm->get('Config')['TeamSpeak'];
         return new TeamSpeakService($config);
     }

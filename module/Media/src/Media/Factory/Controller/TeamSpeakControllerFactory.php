@@ -1,5 +1,5 @@
 <?php
-namespace Nav\Factory;
+namespace Media\Factory\Controller;
 
 use Media\Controller\FileController;
 use Media\Controller\TeamSpeakController;
@@ -20,7 +20,7 @@ class TeamSpeakControllerFactory implements FactoryInterface
         $sm = $serviceLocator->getServiceLocator();
         $tsService = $sm->get('TSService');
         $userService = $sm->get('UserService');
-		$acl = $sm->get('AclService');
+		$acl = $sm->get('Auth\AclService');
         return new TeamSpeakController($tsService, $userService, $acl);
     }
 }

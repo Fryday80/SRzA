@@ -2,9 +2,9 @@
 namespace Cast\Controller;
 
 use Cast\Form\FamilyForm;
-use Cast\Model\CharacterTable;
-use Cast\Model\FamiliesTable;
-use Cast\Model\JobTable;
+use Cast\Model\Tables\CharacterTable;
+use Cast\Model\Tables\FamiliesTable;
+use Cast\Model\Tables\JobTable;
 use Zend\Mvc\Controller\AbstractActionController;
 
 class ManagerController extends AbstractActionController

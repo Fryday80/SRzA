@@ -11,22 +11,30 @@
 /*-------SETTINGS-------*/
 //$ts3_ip = '127.0.0.1';
 //$ts3_queryport = 10011;
-//$ts3_user = 'serveradmin';
-//$ts3_pass = 'password';
+$ts3_user = 'website';
+$ts3_pass = '+sSGXCMF';
 /*----------------------*/
 
 #Include ts3admin.class.php
 //require("../lib/ts3admin.class.php");
 
 #build a new ts3admin object
+	/** @var \Media\Utility\ts3admin $tsAdmin */
 $tsAdmin = $this->tsService;// new ts3admin($ts3_ip, $ts3_queryport);
 
 if($tsAdmin->getElement('success', $tsAdmin->connect())) {
     #login as serveradmin
-    $tsAdmin->login($ts3_user, $ts3_pass);
+	$tsAdmin->login($ts3_user, $ts3_pass);
+	$tsAdmin->selectServer(9987);
+	bdump($tsAdmin->privilegekeyList());
+	$tsAdmin->privilegekeyUse("10011");
+
+//	bdump($tsAdmin->clientGetIds());
 
     #get serverlist
     $servers = $tsAdmin->serverList();
+	bdump($tsAdmin->getDebugLog());
+    bdump($servers);
 
     #set output var
     $output = '';
@@ -54,7 +62,6 @@ if($tsAdmin->getElement('success', $tsAdmin->connect())) {
 }else{
     echo 'Connection could not be established.';
 }
-
 //if(count($tsAdmin->getDebugLog()) > 0) {
 //    foreach($tsAdmin->getDebugLog() as $logEntry) {
 //        echo '<script>alert("'.$logEntry.'");</script>';

@@ -7,7 +7,7 @@ use Equipment\Hydrator\EquipmentResultSet;
 use Equipment\Model\DataModels\Tent;
 use Equipment\Model\Enums\EEquipTypes;
 use Equipment\Model\Enums\ETentShape;
-use Equipment\Model\EquipTable;
+use Equipment\Model\Tables\EquipTable;
 
 class EquipmentService extends DataService
 {

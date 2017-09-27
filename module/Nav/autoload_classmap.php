@@ -6,5 +6,5 @@ return array(
     'Nav\Factory\MainNavigationFactory' => __DIR__ . '/src/Nav/Factory/MainNavigationFactory.php',
     'Nav\Factory\NavControllerFactory'  => __DIR__ . '/src/Nav/Factory/NavControllerFactory.php',
     'Nav\Form\NavForm'                  => __DIR__ . '/src/Nav/Form/NavForm.php',
-    'Nav\Model\NavTable'                => __DIR__ . '/src/Nav/Model/NavTable.php',
+    'Nav\Model\Tables\NavTable'         => __DIR__ . '/src/Nav/Model/Tables/NavTable.php',
 );
