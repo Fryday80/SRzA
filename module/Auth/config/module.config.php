@@ -24,10 +24,12 @@ return array(
             'AccessService'          => 'Auth\Factory\Service\AccessServiceFactory',
             'Auth\AclService'        => 'Auth\Factory\Service\AclServiceFactory',
             'AuthService'            => 'Auth\Factory\Service\AuthServiceFactory',
+			'UserService'            => 'Auth\Factory\Service\UserServiceFactory',
+
             'Auth\Model\AuthStorage' => 'Auth\Factory\AuthStorageFactory',
-            'Auth\Model\RoleTable'   => 'Auth\Factory\Table\RoleTableFactory',
-            'Auth\Model\UserTable'   => 'Auth\Factory\Table\UserTableFactory',
-            'UserService'            => 'Auth\Factory\Service\UserServiceFactory'
+
+            'Auth\Model\RoleTable'   => 'Auth\Factory\Tables\RoleTableFactory',
+            'Auth\Model\UserTable'   => 'Auth\Factory\Tables\UserTableFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

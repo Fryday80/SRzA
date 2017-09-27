@@ -4,6 +4,9 @@ use Media\Factory\GeneralMediaFactory;
 
 return array(
     'controllers' => array(
+    	'factories' => array(
+			'Media\Controller\TeamSpeak'    => 'Media\Factory\Controller\TeamSpeakControllerFactory'
+		),
         'abstract_factories' => array(
             'Media\Controller\FileBrowser'  => GeneralMediaFactory::class,
             'Media\Controller\List'         => GeneralMediaFactory::class,
@@ -20,7 +23,7 @@ return array(
         'factories' => array(
             'MediaService'   => 'Media\Factory\MediaServiceFactory',
 			'ImageProcessor' => 'Media\Factory\ImageProcessorFactory',
-			'TSService' 	 => 'Media\Factory\Service\TeamSpeakService.php'
+			'TSService' 	 => 'Media\Factory\Service\TeamSpeakServiceFactory'
         ),
         'abstract_factories' => array(
             'Media\Model\FileTable' => DefaultTableGatewayFactory::class

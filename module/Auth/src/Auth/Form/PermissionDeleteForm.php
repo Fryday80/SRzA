@@ -4,8 +4,8 @@ namespace Auth\Form;
 use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\Form\Element\Csrf;
-use Auth\Model\RoleTable;
-use Auth\Model\PermissionTable;
+use Auth\Model\Tables\RoleTable;
+use Auth\Model\Tables\PermissionTable;
 
 class PermissionDeleteForm extends Form
 {

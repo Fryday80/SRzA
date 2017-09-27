@@ -3,6 +3,17 @@
 	return array(
 		'router' => array(
 			'routes' => array(
+				'teamspeak'  => array(
+					'type'  => 'literal',
+					'options'   => array(
+						'route'     => '/ts',
+						'defaults'  => array(
+							'__NAMESPACE__' => 'Media\Controller',
+							'controller'    => 'TeamSpeak',
+							'action'        => 'index',
+						),
+					),
+				),
 				'media' => array(
 					'type' => 'literal',
 					'options' => array(
@@ -59,16 +70,6 @@
 								),
 								'spec'  => '/path%path%'
 							),
-						),
-                        'teamspeak'  => array(
-                            'type'  => 'literal',
-                            'options'   => array(
-                                'route'     => '/ts',
-                                'defaults'  => array(
-                                    'controller'    => 'TeamSpeak',
-                                    'action'        => 'index',
-                                ),
-                            ),
 						),
 //                    'image' => array(
 //                        'type' => 'regex',

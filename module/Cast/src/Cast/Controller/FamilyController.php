@@ -2,7 +2,6 @@
 namespace Cast\Controller;
 
 use Cast\Form\FamilyForm;
-use Cast\Model\FamiliesTable;
 use Cast\Service\BlazonService;
 use Cast\Service\CastService;
 use Cast\Utility\FamilyDataTable;

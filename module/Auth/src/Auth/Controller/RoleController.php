@@ -2,7 +2,7 @@
 namespace Auth\Controller;
 
 use Application\Service\CacheService;
-use Auth\Model\RoleTable;
+use Auth\Model\Tables\RoleTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\RoleForm;
 

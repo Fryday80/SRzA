@@ -3,7 +3,7 @@ namespace Nav;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Nav\Model\NavTable;
+use Nav\Model\Tables\NavTable;
 
 class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 {

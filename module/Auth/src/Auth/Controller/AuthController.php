@@ -3,13 +3,13 @@ namespace Auth\Controller;
 
 use Application\Model\Enums\LogType;
 use Application\Model\DataModels\SystemLog;
-use Application\Model\DynamicHashTable;
+use Application\Model\Tables\DynamicHashTable;
 use Application\Service\MessageService;
 use Application\Service\StatisticService;
 use Auth\Form\EmailForm;
 use Auth\Form\PWForgetForm;
 use Auth\Model\AuthStorage;
-use Auth\Model\UserTable;
+use Auth\Model\Tables\UserTable;
 use Auth\Utility\UserPassword;
 use Exception;
 use Zend\Authentication\AuthenticationService;

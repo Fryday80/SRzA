@@ -2,9 +2,9 @@
 namespace Auth\Controller;
 
 use Application\Service\CacheService;
-use Auth\Model\PermissionTable;
-use Auth\Model\RolePermissionTable;
-use Auth\Model\RoleTable;
+use Auth\Model\Tables\PermissionTable;
+use Auth\Model\Tables\RolePermissionTable;
+use Auth\Model\Tables\RoleTable;
 use Zend\Mvc\Controller\AbstractActionController;
 use Auth\Form\PermissionAddForm;
 use Auth\Form\PermissionDeleteForm;

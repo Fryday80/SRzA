@@ -1,7 +1,7 @@
 <?php
 namespace Calendar\Controller;
 
-use Auth\Model\RoleTable;
+use Auth\Model\Tables\RoleTable;
 use Auth\Service\AccessService;
 use Calendar\Form\CalendarForm;
 use Calendar\Form\EventForm;

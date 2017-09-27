@@ -4,7 +4,7 @@ namespace Auth\Controller;
 use Application\Service\MessageService;
 use Application\Service\TemplateTypes;
 use Application\Utility\DataTable;
-use Auth\Model\RoleTable;
+use Auth\Model\Tables\RoleTable;
 use Auth\Service\AccessService;
 use Auth\Service\UserService;
 use Auth\Utility\UserPassword;

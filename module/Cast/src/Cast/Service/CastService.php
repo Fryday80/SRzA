@@ -2,10 +2,10 @@
 namespace Cast\Service;
 
 use Application\Utility\URLModifier;
-use Auth\Model\UserTable;
-use Cast\Model\CharacterTable;
-use Cast\Model\FamiliesTable;
-use Cast\Model\JobTable;
+use Auth\Model\Tables\UserTable;
+use Cast\Model\Tables\CharacterTable;
+use Cast\Model\Tables\FamiliesTable;
+use Cast\Model\Tables\JobTable;
 
 class CastService
 {

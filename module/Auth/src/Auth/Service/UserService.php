@@ -8,7 +8,7 @@ use Application\Service\DataService;
 use Application\Utility\URLModifier;
 use Auth\Model\User;
 use Auth\Model\UserSet;
-use Auth\Model\UserTable;
+use Auth\Model\Tables\UserTable;
 use Cast\Service\CastService;
 use Media\Service\ImageProcessor;
 
