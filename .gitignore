@@ -22,3 +22,6 @@ public/css/
 public/fonts/backup/
 public/img/backup/
 public/img/uikit/backup/
+
+build/release/
+
