@@ -69,6 +69,7 @@
                                     'action'        => 'index',
                                 ),
                             ),
+						),
 //                    'image' => array(
 //                        'type' => 'regex',
 //                        'options' => array(
