@@ -25,6 +25,9 @@ class Module implements AutoloaderProviderInterface, ConfigProviderInterface
 
     public function getConfig()
     {
-        return include __DIR__ . '/config/module.config.php';
+    	$a1 = include __DIR__ . '/config/module.config.php';
+    	$a2 = include __DIR__ . '/config/route.config.php';
+    	$a3 = include __DIR__ . '/config/configuration.config.php';
+        return array_merge_recursive($a1, $a2 , $a3) ;
     }
 }
