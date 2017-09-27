@@ -19,6 +19,7 @@ var clearExisting = false;
 var ZendSkeletonUpdated = false;
 
 // ---------- prepare system
+shell.exec("classmapping.bat");
 if (clearExisting) {
     shell.rm('-r', Out);
 }

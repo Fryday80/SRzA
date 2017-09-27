@@ -1,28 +1,12 @@
 <?php
 namespace Cms;
 
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
+use Application\BasicModule;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface
+class Module extends BasicModule
 {
-
-    public function getConfig()
-    {
-        return include __DIR__ . '/config/module.config.php';
-    }
-
-    public function getAutoloaderConfig()
-    {
-         return array(
-             'Zend\Loader\ClassMapAutoloader' => array(
-                 __DIR__ . '/autoload_classmap.php',
-             ),
-//             'Zend\Loader\StandardAutoloader' => array(
-//                 'namespaces' => array(
-//                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-//                 )
-//             )
-         );
-    }
+	public function __construct()
+	{
+		parent::__construct(__DIR__);
+	}
 }
