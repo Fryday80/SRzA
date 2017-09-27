@@ -1,14 +1,15 @@
 <?php
-namespace Cast\Model;
+namespace Cast\Model\Tables;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Adapter;
 
-class FamiliesTable extends AbstractTableGateway
+class CastTable extends AbstractTableGateway
 {
 
-    public $table = 'families';
+    public $table = 'characters';
 
-    public function __construct($adapter)
+    public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
         $this->initialize();
@@ -26,32 +27,18 @@ class FamiliesTable extends AbstractTableGateway
         $row = $this->select(array('id' => (int) $id));
         if (!$row)
             return false;
+        
         return $row->toArray()[0];
     }
 
-    public function getByName($familyName)
-    {
-        $row = $this->select(array('name' => $familyName));
-        if (!$row) return false;
-        $row = $row->toArray();
-        if (empty ($row)) return false;
-        return $row[0];
-    }
-
     public function add($data) {
-        if (!$this->insert(array('name' => $data['name'])))
+        if (!$this->insert(array('job' => $data['job'])))
             return false;
         return $this->getLastInsertValue();
     }
     
     public function save($id, $data) {
-        if (!isset($data['name'])) return false;
-        if (!isset($data['blazon_id'])) $data['blazon_id'] = 1;
-        $dataSet = array(
-            'name' => $data['name'],
-            'blazon_id' => $data['blazon_id']
-        );
-        if (!$this->update($dataSet, array('id' => (int)$id)))
+        if (!$this->update(array('job' => $data['job']), array('id' => (int)$id)))
             return false;
         return $id;
     }

@@ -6,7 +6,7 @@
 	 * Time: 15:00
 	 */
 
-	namespace Cms\Model;
+	namespace Cms\Model\Tables;
 
 	use Application\Model\AbstractModels\AbstractModel;
 	use Application\Model\AbstractModels\DatabaseTable;

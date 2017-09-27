@@ -45,7 +45,7 @@ return array(
     'Application\Model\Interfaces\IObjectToArray'            => __DIR__ . '/src/Application/Model/Interfaces/IObjectToArray.php',
     'Application\Model\DynamicHashTable'                     => __DIR__ . '/src/Application/Model/Tables/DynamicHashTable.php',
     'Application\Model\MailTemplatesTable'                   => __DIR__ . '/src/Application/Model/Tables/MailTemplatesTable.php',
-    'Application\Model\SystemLogTable'                       => __DIR__ . '/src/Application/Model/Tables/SystemLogTable.php',
+    'Application\Model\Tables\SystemLogTable'                => __DIR__ . '/src/Application/Model/Tables/SystemLogTable.php',
     'Application\Service\CacheService'                       => __DIR__ . '/src/Application/Service/CacheService.php',
     'Application\Service\DataService'                        => __DIR__ . '/src/Application/Service/DataService.php',
     'Application\Service\MessageService'                     => __DIR__ . '/src/Application/Service/MessageService.php',

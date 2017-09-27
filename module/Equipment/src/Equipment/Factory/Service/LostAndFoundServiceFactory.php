@@ -9,7 +9,7 @@ class LostAndFoundServiceFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $sm) {
 //        $pL = $sm->getServiceLocator();
-        $lostAndFoundTable = $sm->get('Equipment\Model\Tables\LostAndFoundTable');
+        $lostAndFoundTable = $sm->get('Equipment\Model\LostAndFoundTable');
         $cacheService = $sm->get('CacheService');
 
         return new LostAndFoundService($lostAndFoundTable, $cacheService);

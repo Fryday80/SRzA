@@ -8,24 +8,31 @@
 	class BasicModule implements AutoloaderProviderInterface, ConfigProviderInterface
 	{
 		protected $dir;
+		protected $nameSpace;
 
-		public function __construct($dir)
+		public function __construct($dir = null)
 		{
-			$this->dir = $dir;
+			if ( $dir !== null)
+				$this->dir = $dir;
+			else $this->dir = __DIR__;
+
+			$this->nameSpace = getFromLast($this->dir, '\\');
 		}
 
 		public function getAutoloaderConfig()
 		{
+			bdump($this->nameSpace);
 			if (getenv('APPLICATION_ENV') == 'production')
 				return array(
 					'Zend\Loader\ClassMapAutoloader' => array(
 						$this->dir . '/autoload_classmap.php',
 					),
 				);
+
 			return array(
 				'Zend\Loader\StandardAutoloader' => array(
 					'namespaces' => array(
-						__NAMESPACE__ => $this->dir . '/src/' . __NAMESPACE__
+						$this->nameSpace => $this->dir . '/src/' . $this->nameSpace
 					)
 				)
 			);

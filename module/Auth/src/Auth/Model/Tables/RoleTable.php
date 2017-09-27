@@ -1,5 +1,5 @@
 <?php
-namespace Auth\Model;
+namespace Auth\Model\Tables;
 
 use Exception;
 use Zend\Db\Sql\Sql;

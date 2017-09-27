@@ -1,13 +1,12 @@
 <?php
-namespace Cast\Model;
-
+namespace Cast\Model\Tables;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
 
-class CastTable extends AbstractTableGateway
+class JobTable extends AbstractTableGateway
 {
 
-    public $table = 'characters';
+    public $table = 'job';
 
     public function __construct(Adapter $adapter)
     {
@@ -15,7 +14,7 @@ class CastTable extends AbstractTableGateway
         $this->initialize();
     }
 
-    public function getAll () {
+    public function getAll() {
         $row = $this->select();
         if (!$row)
             return false;
@@ -32,13 +31,19 @@ class CastTable extends AbstractTableGateway
     }
 
     public function add($data) {
-        if (!$this->insert(array('job' => $data['job'])))
+        if (!$this->insert(array(
+            'job' => $data['job'],
+            'blazon_id' => $data['blazon_id'],
+        )))
             return false;
         return $this->getLastInsertValue();
     }
     
     public function save($id, $data) {
-        if (!$this->update(array('job' => $data['job']), array('id' => (int)$id)))
+        if (!$this->update(array(
+            'job' => $data['job'],
+            'blazon_id' => $data['blazon_id'],
+        ), array('id' => (int)$id)))
             return false;
         return $id;
     }

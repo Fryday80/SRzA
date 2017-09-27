@@ -7,6 +7,6 @@ class Module extends BasicModule
 {
 	public function __construct()
 	{
-		parent::__construct(__DIR__);
+		parent::__construct(__DIR__, __NAMESPACE__);
 	}
 }
