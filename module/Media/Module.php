@@ -1,33 +1,12 @@
 <?php
 namespace Media;
 
-use Media\Model\FileTable;
-use Media\Service\MediaService;
-use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\ConfigProviderInterface;
+use Application\BasicModule;
 
-class Module implements AutoloaderProviderInterface, ConfigProviderInterface
+class Module extends BasicModule
 {
-
-    public function getAutoloaderConfig()
-    {
-        return array(
-            'Zend\Loader\ClassMapAutoloader' => array(
-                __DIR__ . '/autoload_classmap.php',
-            ),
-//            'Zend\Loader\StandardAutoloader' => array(
-//                'namespaces' => array(
-//                    __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__
-//                )
-//            )
-        );
-    }
-
-    public function getConfig()
-    {
-    	$a1 = include __DIR__ . '/config/module.config.php';
-    	$a2 = include __DIR__ . '/config/route.config.php';
-    	$a3 = include __DIR__ . '/config/configuration.config.php';
-        return array_merge_recursive($a1, $a2 , $a3) ;
-    }
+	public function __construct()
+	{
+		parent::__construct(__DIR__);
+	}
 }
