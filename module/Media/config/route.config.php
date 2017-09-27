@@ -60,6 +60,15 @@
 								'spec'  => '/path%path%'
 							),
 						),
+                        'teamspeak'  => array(
+                            'type'  => 'literal',
+                            'options'   => array(
+                                'route'     => '/ts',
+                                'defaults'  => array(
+                                    'controller'    => 'TeamSpeak',
+                                    'action'        => 'index',
+                                ),
+                            ),
 //                    'image' => array(
 //                        'type' => 'regex',
 //                        'options' => array(
