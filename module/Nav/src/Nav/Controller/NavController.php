@@ -4,7 +4,6 @@ namespace Nav\Controller;
 use Application\Service\CacheService;
 use Auth\Model\RoleTable;
 use Nav\Model\NavTable;
-use Zend\Config\Config;
 use Zend\Mvc\Controller\AbstractActionController;
 use Nav\Form\NavForm;
 use Zend\Json\Json;

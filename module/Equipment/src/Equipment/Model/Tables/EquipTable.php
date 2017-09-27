@@ -1,5 +1,5 @@
 <?php
-namespace Equipment\Model;
+namespace Equipment\Model\Tables;
 
 use Application\Model\AbstractModels\DatabaseTable;
 use Equipment\Hydrator\EquipmentResultSet;

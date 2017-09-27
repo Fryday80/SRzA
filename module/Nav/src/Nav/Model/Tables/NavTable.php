@@ -1,5 +1,5 @@
 <?php
-namespace Nav\Model;
+namespace Nav\Model\Tables;
 
 use Zend\Db\Sql\Expression;
 use Zend\Db\Sql\Where;
