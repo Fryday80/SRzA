@@ -18,7 +18,6 @@ return array(
 			'image' => 'Media\Factory\ImagePluginFactory',
 		),
 	),
-
     'service_manager' => array(
         'factories' => array(
             'MediaService'   => 'Media\Factory\MediaServiceFactory',
