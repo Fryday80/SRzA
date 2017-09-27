@@ -1,5 +1,5 @@
 <?php
-namespace Media\Model;
+namespace Media\Model\Tables;
 
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Adapter;
