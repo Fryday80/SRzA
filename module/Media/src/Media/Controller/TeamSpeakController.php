@@ -25,8 +25,11 @@ class TeamSpeakController extends AbstractActionController  {
     }
     public function indexAction()
     {
+        $this->tsService->connect();
+
         return array(
-            "tsService" => $this->tsService->tsAdmin
+            "channels" => $this->tsService->getChannels(),
+            "clients" => $this->tsService->getClients(),
         );
     }
 }

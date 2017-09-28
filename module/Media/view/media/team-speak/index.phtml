@@ -1,71 +1,32 @@
-<?PHP
-/**
- * serverlist.php
- *
- * Is a small script to demonstrate how to get a serverlist via ts3admin.class
- *
- * by par0noid solutions - ts3admin.info
- *
- */
+<?php
 
-/*-------SETTINGS-------*/
-//$ts3_ip = '127.0.0.1';
-//$ts3_queryport = 10011;
-$ts3_user = 'website';
-$ts3_pass = '+sSGXCMF';
-/*----------------------*/
-
-#Include ts3admin.class.php
-//require("../lib/ts3admin.class.php");
-
-#build a new ts3admin object
-	/** @var \Media\Utility\ts3admin $tsAdmin */
-$tsAdmin = $this->tsService;// new ts3admin($ts3_ip, $ts3_queryport);
-
-if($tsAdmin->getElement('success', $tsAdmin->connect())) {
-    #login as serveradmin
-	$tsAdmin->login($ts3_user, $ts3_pass);
-	$tsAdmin->selectServer(9987);
-	bdump($tsAdmin->privilegekeyList());
-	$tsAdmin->privilegekeyUse("10011");
-
-//	bdump($tsAdmin->clientGetIds());
-
-    #get serverlist
-    $servers = $tsAdmin->serverList();
-	bdump($tsAdmin->getDebugLog());
-    bdump($servers);
-
-    #set output var
-    $output = '';
-
-    #generate table codes for all servers
-    foreach($servers['data'] as $server) {
-        $output .= '<tr bgcolor="#ffffff" onmouseover="style.backgroundColor=\'#eeeeee\'" onmouseout="style.backgroundColor=\'#ffffff\'">';
-        $output .= '<td width="50px" align="center">#'.$server['virtualserver_id'].'</td>';
-        $output .= '<td width="300px">&nbsp;&nbsp;'.htmlspecialchars($server['virtualserver_name']).'</td>';
-        $output .= '<td width="100px" align="center">'.$server['virtualserver_port'].'</td>';
-        if(isset($server['virtualserver_clientsonline'])) {
-            $clients = $server['virtualserver_clientsonline'] . '/' . $server['virtualserver_maxclients'];
-        }else{
-            $clients = '-';
-        }
-        $output .= '<td width="200px" align="center">'.$clients.'</td>';
-        $output .= '<td width="100px" align="center">'.$server['virtualserver_status'].'</td>';
-        if(isset($server['virtualserver_uptime'])) {
-            $uptime = $tsAdmin->convertSecondsToStrTime(($server['virtualserver_uptime']));
-        }else{
-            $uptime = '-';
-        }
-        $output .= '<td width="150px" align="center">'.$uptime.'</td>';
+function renderClientList($channelID, $clients) {
+    foreach ($clients as $client) {
+        if ($client['cid'] !== $channelID) continue;
+        echo '<li class="client">CLIENT: ';
+        echo $client['client_nickname'];
+        echo '</li>';
     }
-}else{
-    echo 'Connection could not be established.';
 }
-//if(count($tsAdmin->getDebugLog()) > 0) {
-//    foreach($tsAdmin->getDebugLog() as $logEntry) {
-//        echo '<script>alert("'.$logEntry.'");</script>';
-//    }
-//}
-echo $output;
+function renderChannelList($channels, $clients) {
+    foreach ($channels as $channel) {
+        echo '<li class="channel">CHANNEL: ';
+        echo $channel['channel_name'];
+        echo ' ('. $channel['total_clients'] .')';
+        echo '<ul>';
+        renderClientList($channel['cid'], $clients);
+        if (isset($channel['children']) && is_array($channel['children'])) {
+            renderChannelList($channel['children'], $clients);
+        }
+        echo '</ul>';
+        echo '</li>';
+    }
+}
+bdump($channels);
+bdump($clients);
+echo '<ul id="channelList">';
+renderChannelList($channels, $clients);
+echo '</ul>';
+
+
 ?>

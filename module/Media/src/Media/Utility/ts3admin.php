@@ -4539,7 +4539,7 @@ class ts3admin {
   * @author     Stefan Zehnpfennig
   * @return     boolean connected
   */
-	private function isConnected() {
+	public function isConnected() {
 		return !empty($this->runtime['socket']);
 	}
 

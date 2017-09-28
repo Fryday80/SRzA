@@ -3,7 +3,9 @@
 	return array(
 		'TeamSpeak' => array(
 			'ip' => '4istfast1.de',
-
+			'queryPort' => 10011,
+			'user' => 'website',
+			'pass' => '+sSGXCMF'
 		),
 
 		'MediaService' => array(
