@@ -37,7 +37,8 @@ return array(
 	'view_helpers' => array(
 		'invokables' => array( ),
 		'factories' => array(
-			'media' => 'Media\Factory\View\Helper\MediaHelperFactory'
+			'media' => 'Media\Factory\View\Helper\MediaHelperFactory',
+			'ts3'   => 'Media\Factory\View\Helper\TSHelperFactory',
 		)
 	),
 );

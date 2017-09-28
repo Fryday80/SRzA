@@ -5,7 +5,11 @@
 			'ip' => '4istfast1.de',
 			'queryPort' => 10011,
 			'user' => 'website',
-			'pass' => '+sSGXCMF'
+			'pass' => '+sSGXCMF',
+			'Helper' => array (
+				'channelImage' => '/img/tross.pale.png',
+				'clientImage' => '/img/maintenance.gif',
+			),
 		),
 
 		'MediaService' => array(

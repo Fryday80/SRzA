@@ -22,11 +22,10 @@ function renderChannelList($channels, $clients) {
         echo '</li>';
     }
 }
-bdump($channels);
-bdump($clients);
+//bdump($channels);
+//bdump($clients);
 echo '<ul id="channelList">';
-renderChannelList($channels, $clients);
+//renderChannelList($channels, $clients);
 echo '</ul>';
 
-
-?>
+echo $this->ts3()->getChannels();

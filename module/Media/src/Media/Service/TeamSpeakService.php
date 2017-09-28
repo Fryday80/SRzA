@@ -30,7 +30,7 @@ class TeamSpeakService {
         foreach ($channels['data'] as $channelInfo) {
             $channelList[$channelInfo['cid']] = $channelInfo;
         }
-        $this->sendMsgToServer(1, ":P :D :P :D   Ich will nur nerven   :P :D :P :D");
+//        $this->sendMsgToServer(1, ":P :D :P :D   Ich will nur nerven   :P :D :P :D");
         return $this->buildChannelTree($channelList);
 	}
 	public function getClients() {
@@ -39,8 +39,30 @@ class TeamSpeakService {
             return [];
         }
         //@todo map clients to users
+
+		// remove ServerQuery as client
+        $data = $result['data'];
+        $result['data'] = array();
+        foreach ($data as $client){
+        	if ($client['client_version'] !== "ServerQuery")
+        		array_push($result['data'], $client);
+		}
+
         return $result['data'];
     }
+
+	/**
+	 * Get Clients INCLUDING the Server Query
+	 * @return array
+	 */
+	public function getAllClients() {
+		$result = $this->tsAdmin->clientList("-uid -away -times -groups -info -country -icon -ip");
+		if (!$result['success']) {
+			return [];
+		}
+		//@todo map clients to users
+		return $result['data'];
+	}
     public function sendMsgToClient($clientID, $msg) {
         $this->tsAdmin->sendMessage(1, $clientID, $msg);
     }
