@@ -16,7 +16,9 @@ class UserServiceFactory implements FactoryInterface
         $castService   = $sm->get('CastService');
         /** @var \Media\Service\ImageProcessor $imageProcessor */
         $imageProcessor   = $sm->get('ImageProcessor');
+        /** @var \Auth\Service\AccessService $imageProcessor */
+        $accessService   = $sm->get('AccessService');
 
-        return new UserService($table, $cacheService, $castService, $imageProcessor);
+        return new UserService($table, $cacheService, $castService, $accessService, $imageProcessor);
     }
 }

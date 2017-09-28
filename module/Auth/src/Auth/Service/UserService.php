@@ -11,6 +11,7 @@ use Auth\Model\UserSet;
 use Auth\Model\Tables\UserTable;
 use Cast\Service\CastService;
 use Media\Service\ImageProcessor;
+use function Sodium\crypto_box_publickey_from_secretkey;
 
 class UserService extends DataService
 {
@@ -23,19 +24,37 @@ class UserService extends DataService
     /** @var ImageProcessor  */
 	private $imageProcessor;
 
+	private $activeUser;
+	private $activeUserId;
+	private $activeRole;
+
 	private $loaded = false;
 
     /** @var  array ['id'] */
     private $idNameHash;
 
-	function __construct(UserTable $userTable, CacheService $cacheService, CastService $castService, ImageProcessor $imageProcessor)
+	function __construct(UserTable $userTable, CacheService $cacheService, CastService $castService, AccessService $accessService, ImageProcessor $imageProcessor)
     {
         $this->userTable = $userTable;
         $this->cacheService = $cacheService;
         $this->castService = $castService;
         $this->imageProcessor = $imageProcessor;
+		$this->activeUser   = $accessService->getUserName();
+		$this->activeUserId = $accessService->getUserID();
+		$this->activeRole   = $accessService->getRole();
+
         $this->load();
     }
+
+	public function getUserName(){
+		return $this->activeUser;
+	}
+	public function getUserID(){
+		return $this->activeUserId;
+	}
+	public function getRole(){
+		return $this->activeRole;
+	}
 
     // cached user information
     public function getUserNameByID($id)
