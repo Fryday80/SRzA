@@ -21,6 +21,10 @@
 		/** @var  ts3admin */
 		protected $ts3;
 
+		protected $tsConnectionState;
+		protected $clientsOnline;
+		protected $clientsOnlineCount;
+
 		protected $channelImage; // channel image
 		protected $clientImage; // user/client image
 
@@ -29,45 +33,69 @@
 			$this->config = $config;
 			$this->tsService = $tsService;
 			$this->ts3 = &$this->tsService->tsAdmin;
-			$this->tsService->connect();
+			$connection = $this->tsService->connect();
+			$this->tsConnectionState = ($connection === true) ?: false;
+			$this->clientsOnline = ($this->tsConnectionState) ? $this->tsService->getClients() : [];
+			$this->clientsOnlineCount = count($this->clientsOnline);
 			$this->setImages();
 		}
 
-		public function getChannels()
+		public function getTS()
 		{
-			return '<br/>'
-				. $this->css()
-				. $this->renderChannelList($this->tsService->getChannels(), $this->tsService->getClients())
-				;
+			return ($this->clientsOnlineCount < 1) ? $this->inactiveView() : $this->activeView();
 		}
 
-		protected function css(){
+		private function activeView()
+		{
+			return $this->css() . $this->renderChannelList($this->tsService->getChannels(), $this->clientsOnline);
+		}
+
+		private function inactiveView()
+		{
+			$return  = $this->css() . $this->channelImage . '<br/><br/><span>der TS3 Server ist ';
+			$return .= ($this->tsConnectionState)? 'online aber verlassen' : 'offline';
+			$return .= '</span>';
+			return $return;
+		}
+
+		private function css()
+		{
 			$css = '<style>';
-			$css .= 'ul.ts3-channel, ul.ts3-channel * {
-						list-style: none;
-					}';
-			$css .= '.ts3-channel-image {
-						background: #fff;
-						height: 20px;
-					} ';
-			$css .= '.ts3-channel {
-						background: #fff;
-					} ';
-			$css .= '.ts3-client-image {
-						background: lightblue;
-						height: 20px;
-						margin-right: 5px;
-					} ';
-			$css .= '.ts3-client {
-						background: lightblue;
-						margin-left: 20px;
-					} ';
+			switch ($this->clientsOnlineCount < 1) {
+				case true:
+					$css .= '.ts3-channel-image {
+							background: none;
+							height: 50px;
+						} ';
+					break;
+				case false:
+					$css .= 'ul.ts3-channel, ul.ts3-channel * {
+							list-style: none;
+						}';
+					$css .= '.ts3-channel-image {
+							background: #fff;
+							height: 20px;
+						} ';
+					$css .= '.ts3-channel {
+							background: #fff;
+						} ';
+					$css .= '.ts3-client-image {
+							background: lightblue;
+							height: 20px;
+							margin-right: 5px;
+						} ';
+					$css .= '.ts3-client {
+							background: lightblue;
+							margin-left: 20px;
+						} ';
+				break;
+			}
 			$css .= '</style>';
 
 			return $css;
 		}
 
-		protected function renderClientList($channelID, $clients) {
+		private function renderClientList($channelID, $clients) {
 			$clientList = '';
 			foreach ($clients as $client) {
 				if ($client['cid'] !== $channelID) continue;
@@ -79,13 +107,15 @@
 			return $clientList;
 		}
 
-		protected function renderChannelList($channels, $clients) {
+		private function renderChannelList($channels, $clients) {
 			$channelList = '<ul class="ts3-channel">';
 			foreach ($channels as $channel) {
 				$channelList .= '<li class="ts3-channel">';
 				$channelList .= $this->channelImage;
 				$channelList .= $channel['channel_name'];
-				$channelList .= ' ('. $channel['total_clients'] .')';
+				// remove count of ServerQuery from default channel
+				$totalClients = ($channel['channel_flag_default'] == 1) ? $channel['total_clients']-1 : $channel['total_clients'];
+				$channelList .= " ( $totalClients )";
 				$channelList .= '<ul>';
 				$channelList .= $this->renderClientList($channel['cid'], $clients);
 				if (isset($channel['children']) && is_array($channel['children'])) {

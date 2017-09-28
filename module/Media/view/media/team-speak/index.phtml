@@ -1,31 +1,3 @@
 <?php
 
-function renderClientList($channelID, $clients) {
-    foreach ($clients as $client) {
-        if ($client['cid'] !== $channelID) continue;
-        echo '<li class="client">CLIENT: ';
-        echo $client['client_nickname'];
-        echo '</li>';
-    }
-}
-function renderChannelList($channels, $clients) {
-    foreach ($channels as $channel) {
-        echo '<li class="channel">CHANNEL: ';
-        echo $channel['channel_name'];
-        echo ' ('. $channel['total_clients'] .')';
-        echo '<ul>';
-        renderClientList($channel['cid'], $clients);
-        if (isset($channel['children']) && is_array($channel['children'])) {
-            renderChannelList($channel['children'], $clients);
-        }
-        echo '</ul>';
-        echo '</li>';
-    }
-}
-//bdump($channels);
-//bdump($clients);
-echo '<ul id="channelList">';
-//renderChannelList($channels, $clients);
-echo '</ul>';
-
-echo $this->ts3()->getChannels();
+echo $this->ts3()->getTS();
