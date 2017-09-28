@@ -1,6 +1,7 @@
 <?php
 namespace Media\Service;
 
+use Auth\Service\UserService;
 use Media\Utility\ts3admin;
 
 
@@ -8,9 +9,11 @@ class TeamSpeakService {
     private $config;
     /** @var  ts3admin */
     public $tsAdmin;
+    public $userService;
 
-    function __construct($config) {
+    function __construct($config, UserService $userService) {
         $this->config = $config;
+        $this->userService = $userService;
 		$this->tsAdmin = new ts3admin($config['ip'], $config['queryPort']);
     }
     public function connect() {
