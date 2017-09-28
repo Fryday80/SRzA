@@ -8,7 +8,6 @@ class TeamSpeakService {
     private $config;
     /** @var  ts3admin */
     public $tsAdmin;
-    private $channelList;
 
     function __construct($config) {
         $this->config = $config;
