@@ -74,6 +74,7 @@ class SystemController extends AbstractActionController
         $sysConf = $this->systemService->getConfig();
         $cacheList = $this->cacheService->getCacheList();
         return new ViewModel(array(
+        	'controller' => $this->params('controller'),
             'systemConfig' => $sysConf,
             'cacheList' => $cacheList,
             'top10'     => $top10,

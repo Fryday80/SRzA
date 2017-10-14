@@ -1,0 +1,42 @@
+<?php
+$GLOBALS['nav'] = $this;
+
+
+function linkImage ( $level ) {
+    $linkImgSrc  = "/img/uikit/link.png";
+
+    return ( $level == 0 ) ? '<img src="' . $linkImgSrc . '" class="linkPic js-L-view-inline">' : '';
+};
+
+function createMenuHtmlRecursive($page, $level) {
+//        if ($page->isVisible() && $GLOBALS['nav']->navigation()->accept($page)) {
+    if($level !== 0) echo '<br/>';
+        echo "<li class='whole whole-level_$level'>" .
+            '<a href="' . $page->getUri() . '" class="whole whole-level_' . $level .'_a" target="'.$page->getTarget().'">' .
+            '<p>' .
+            linkImage($level) .
+            $page->getLabel() .
+            '</p></a>';
+        if ($page->hasPages()) {
+            $nextLevel = $level + 1;
+            echo '<br/>';
+            echo '<ul class="ul_level_' . $nextLevel . '">';
+            foreach ($page->getPages() as $child) {
+                createMenuHtmlRecursive($child, $nextLevel);
+            }
+            echo '</ul>';
+
+        }
+        echo '</li>';
+//        }
+    return;
+}
+
+
+echo '<ul class="whole-navigation">';
+foreach($container->getPages() as $child) {
+    createMenuHtmlRecursive($child, 0);
+
+}
+echo '</ul>';
+?>
