@@ -20,7 +20,6 @@ class TeamSpeakControllerFactory implements FactoryInterface
         $sm = $serviceLocator->getServiceLocator();
         $tsService = $sm->get('TSService');
         $userService = $sm->get('UserService');
-		$acl = $sm->get('Auth\AclService');
-        return new TeamSpeakController($tsService, $userService, $acl);
+        return new TeamSpeakController($tsService, $userService);
     }
 }

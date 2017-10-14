@@ -6,7 +6,7 @@
 			'queryPort' => 10011,
 			'user' => 'website',
 			'pass' => '+sSGXCMF',
-			'Helper' => array (
+			'Images' => array (
 				'channelImage' => '/img/tross.pale.png',
 				'clientImage' => '/img/maintenance.gif',
 			),

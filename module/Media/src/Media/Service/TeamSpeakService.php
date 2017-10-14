@@ -93,4 +93,9 @@ class TeamSpeakService {
         }
         return $op;
     }
+
+	public function getImageConfig()
+	{
+		return $this->config['Images'];
+	}
 }

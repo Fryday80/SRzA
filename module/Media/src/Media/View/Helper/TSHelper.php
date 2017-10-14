@@ -40,7 +40,7 @@
 			$this->setImages();
 		}
 
-		public function getTS()
+		public function __invoke()
 		{
 			return ($this->clientsOnlineCount < 1) ? $this->inactiveView() : $this->activeView();
 		}

@@ -1,4 +1,25 @@
-<?php echo $this->doctype(); ?>
+<?php echo $this->doctype();
+	// ============================= Setting variables
+	$disclaimLink  = '<a href="/disclaimer" class="disclaim" > Haftungsausschluss </a>';
+	$impressumLink = '<a href="/impressum"  class="impressum"> Impressum </a>';
+	$contactLink   = '<a href="mailto:info@schwarze-ritter-augsburg.com"> Kontakt </a>';
+	$agbLink       = '<a href="/agb"> AGBs </a>';
+	// ================ set default values
+	if (!isset($this->showSidebar)) {
+		$this->showSidebar = true;
+	}
+	// usage in controller:
+	// $this->layout()->setVariable('showSidebar', false);
+
+	// =============== OPTIONS
+	$teamSpeakWidget = false;
+	$loginWindow = true;
+
+	$fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
+
+	$class = ($this->userinfo('logged'))? 'logged-in' : 'logged-out';
+	$body = " class = '$class' '";
+?>
 <html>
 <head>
 <!----  Meta & Titel   ---->
@@ -45,29 +66,26 @@
             ->prependFile($this->basePath(  'js/globalUsage/jquery/jquery-3.2.0.min.js'))
 	; ?>
 </head>
-<?php
-    $disclaimLink  = '<a href="/disclaimer" class="disclaim" > Haftungsausschluss </a>';
-    $impressumLink = '<a href="/impressum"  class="impressum"> Impressum </a>';
-    $contactLink   = '<a href="mailto:info@schwarze-ritter-augsburg.com"> Kontakt </a>';
-    $agbLink       = '<a href="/agb"> AGBs </a>';
-    // set default values
-    if (!isset($this->showSidebar)) {
-        $this->showSidebar = true;
-    }
-    // usage in controller:
-    // $this->layout()->setVariable('showSidebar', false);
 
-    $fullWidth = ($this->showSidebar) ? '' : 'class="fullWidth"';
-
-    $class = ($this->userinfo('logged'))? 'logged-in' : 'logged-out';
-    $body = " class = '$class' '";
-?>
 <body <?php echo $body;?> >
-
-<!-- Login Window -->
-<div class="logging-container">
-	<?php echo $this->loginview(); ?>
+<!-- TS -->
+<?php
+    if ($teamSpeakWidget == false):
+        /*skip*/
+    elseif ($this->userinfo('logged')):
+?>
+<div style="position: absolute; top:0; left:0">
+    <box>
+        <?php echo $this->ts3(); ?>
+    </box>
 </div>
+<?php endif;?>
+<!-- Login Window -->
+<?php if($loginWindow): ?>
+    <div class="logging-container">
+        <?php echo $this->loginview(); ?>
+    </div>
+<?php endif; ?>
     <div class="body box">
         <!----  NO SCRIPT   ---->
         <noscript>

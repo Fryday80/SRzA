@@ -1,3 +1,47 @@
 <?php
+$GLOBALS['clientImage'] = $this->clientImage;
+$GLOBALS['channelImage'] = $this->channelImage;
 
-echo $this->ts3()->getTS();
+function renderClientList($channelID, $clients) {
+	$clientList = '';
+	foreach ($clients as $client) {
+		if ($client['cid'] !== $channelID) continue;
+		$clientList .= '<li class="ts3-client">';
+		$clientList .= $GLOBALS['clientImage'];
+		$clientList .= $client['client_nickname'];
+		$clientList .= '</li>';
+	}
+	return $clientList;
+}
+
+function renderChannelList($channels, $clients) {
+	$channelList = '<ul class="ts3-channel">';
+	foreach ($channels as $channel) {
+		$channelList .= '<li class="ts3-channel">';
+		$channelList .= $GLOBALS['channelImage'];
+		$channelList .= $channel['channel_name'];
+		// remove count of ServerQuery from default channel
+		$totalClients = ($channel['channel_flag_default'] == 1) ? $channel['total_clients']-1 : $channel['total_clients'];
+		$channelList .= " ( $totalClients )";
+		$channelList .= '<ul>';
+		$channelList .= renderClientList($channel['cid'], $clients);
+		if (isset($channel['children']) && is_array($channel['children'])) {
+			$channelList .= $this->renderChannelList($channel['children'], $clients);
+		}
+		$channelList .= '</ul>';
+		$channelList .= '</li>';
+	}
+	$channelList .= '</ul>';
+	return $channelList;
+}
+
+if ($this->clientsOnlineCount < 1) {
+	$return = $this->css . $this->channelImage . '<br/><br/><span>der TS3 Server ist ';
+	$return .= ($this->tsConnectionState) ? 'online aber verlassen' : 'offline';
+	$return .= '</span>';
+	echo $return;
+} else {
+	$this->css . renderChannelList($this->channels, $this->clientsOnline);
+}
+
+//echo $this->ts3();

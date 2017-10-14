@@ -17,7 +17,7 @@
 		public function createService(ServiceLocatorInterface $serviceLocator)
 		{
 			$sm = $serviceLocator->getServiceLocator();
-			$config = $sm->get('Config')['TeamSpeak']['Helper'];
+			$config = $sm->get('Config')['TeamSpeak']['Images'];
 			$tsService = $sm->get('TSService');
 			return new TSHelper($config, $tsService);
 		}
