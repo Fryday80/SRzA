@@ -16,7 +16,9 @@
  * most users, however, feel free to configure autoloading however you'd like.
  */
 
+putenv ( "APPLICATION_ENV=development");
 include_once('OwnFunctions.php');
+
 
 // Composer autoloading
 if (file_exists('vendor/autoload.php')) {
